@@ -1,14 +1,13 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Services;
 
 public interface ICachedLocationLookupService
 {
-    Task<LocationItem> GetCachedLocationInformation(string location, double lat, double lon, bool includeDistrictNameInPostcodeDisplayName = false);
+    Task<LocationItem> GetCachedLocationInformation(string locationDescription, bool includeDistrictNameInPostcodeDisplayName = false);
 }
 
 public sealed class CachedLocationLookupService : ICachedLocationLookupService
@@ -25,20 +24,25 @@ public sealed class CachedLocationLookupService : ICachedLocationLookupService
         _locationLookupService = locationLookupService;
     }
 
-    public async Task<LocationItem> GetCachedLocationInformation(string location, double lat, double lon, bool includeDistrictNameInPostcodeDisplayName = false)
+    public async Task<LocationItem> GetCachedLocationInformation(string locationDescription, bool includeDistrictNameInPostcodeDisplayName = false)
     {
-        LocationItem locationItem = await _cacheStorageService.RetrieveFromCache<LocationItem>($"loc:{location}");
+        if(string.IsNullOrWhiteSpace(locationDescription))
+        {
+            return null;
+        }
+
+        LocationItem locationItem = await _cacheStorageService.RetrieveFromCache<LocationItem>($"loc:{locationDescription}");
 
         if (locationItem is not null)
         {
             return locationItem;
         }
 
-        locationItem = await _locationLookupService.GetLocationInformation(location, 0, 0);
+        locationItem = await _locationLookupService.GetLocationInformation(locationDescription, 0, 0, includeDistrictNameInPostcodeDisplayName);
 
         if (locationItem is not null)
         {
-            await _cacheStorageService.SaveToCache($"loc:{location}", locationItem, TimeSpan.FromHours(LocationItemCacheExpirationInHours));
+            await _cacheStorageService.SaveToCache($"loc:{locationDescription}", locationItem, TimeSpan.FromHours(LocationItemCacheExpirationInHours));
         }
 
         return locationItem;

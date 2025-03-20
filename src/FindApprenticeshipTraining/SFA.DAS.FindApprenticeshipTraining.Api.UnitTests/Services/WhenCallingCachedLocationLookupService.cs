@@ -28,7 +28,7 @@ public sealed class WhenCallingCachedLocationLookupService
             .Setup(a => a.RetrieveFromCache<LocationItem>($"loc:{location}")
         ).ReturnsAsync(locationItem);
 
-        var result = await sut.GetCachedLocationInformation(location, 0, 0);
+        var result = await sut.GetCachedLocationInformation(location);
 
         Assert.That(result, Is.Not.Null);
 
@@ -65,7 +65,7 @@ public sealed class WhenCallingCachedLocationLookupService
             .Setup(a => a.GetLocationInformation(location, 0, 0, false)
         ).ReturnsAsync(locationItem);
         
-        var result = await sut.GetCachedLocationInformation(location, 0, 0);
+        var result = await sut.GetCachedLocationInformation(location);
 
         Assert.That(result, Is.Not.Null);
 
@@ -102,7 +102,7 @@ public sealed class WhenCallingCachedLocationLookupService
             .Setup(a => a.GetLocationInformation(location, 0, 0, false)
         ).ReturnsAsync((LocationItem)null);
 
-        var result = await sut.GetCachedLocationInformation(location, 0, 0);
+        var result = await sut.GetCachedLocationInformation(location);
 
         Assert.That(result, Is.Null);
 

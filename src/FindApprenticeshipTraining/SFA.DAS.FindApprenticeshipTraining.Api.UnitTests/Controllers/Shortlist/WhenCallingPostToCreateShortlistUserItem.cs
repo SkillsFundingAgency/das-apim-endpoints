@@ -34,9 +34,7 @@ public class WhenCallingPostToCreateShortlistUserItem
         mockMediator
             .Verify(mediator => mediator.Send(
                 It.Is<CreateShortlistForUserCommand>(command =>
-                    command.ShortlistUserId == shortlistRequest.ShortlistUserId
-                    && command.Lat.Equals(shortlistRequest.Lat)
-                    && command.Lon.Equals(shortlistRequest.Lon)
+                       command.ShortlistUserId == shortlistRequest.ShortlistUserId
                     && command.Ukprn.Equals(shortlistRequest.Ukprn)
                     && command.LocationDescription.Equals(shortlistRequest.LocationDescription)
                     && command.LarsCode.Equals(shortlistRequest.LarsCode)

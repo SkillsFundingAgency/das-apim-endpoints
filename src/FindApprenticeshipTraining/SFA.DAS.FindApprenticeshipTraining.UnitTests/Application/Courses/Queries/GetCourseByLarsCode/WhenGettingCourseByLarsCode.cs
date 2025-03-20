@@ -455,7 +455,7 @@ public sealed class WhenGettingCourseByLarsCode
         var query = new GetCourseByLarsCodeQuery { LarsCode = 456, Location = "sw1", Distance = 10 };
 
         _cachedLocationLookupService.Setup(x => 
-            x.GetCachedLocationInformation(query.Location, 0, 0, false)
+            x.GetCachedLocationInformation(query.Location, false)
         ).ReturnsAsync(locationItem);
 
         _coursesApiClientMock
@@ -492,7 +492,7 @@ public sealed class WhenGettingCourseByLarsCode
         Assert.That(sut, Is.Not.Null);
 
         _cachedLocationLookupService.Verify(x =>
-            x.GetCachedLocationInformation(query.Location, 0, 0, false
+            x.GetCachedLocationInformation(query.Location, false
         ), Times.Once);
     }
 }

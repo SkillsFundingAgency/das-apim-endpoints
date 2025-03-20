@@ -9,7 +9,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,15 +41,15 @@ public sealed class GetCourseByLarsCodeQueryHandler(
             standardDetails.ApprenticeshipFunding[standardDetails.ApprenticeshipFunding.Count - 1] :
         null;
 
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location, 0, 0);
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
 
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 new GetCourseTrainingProvidersCountRequest(
                     [query.LarsCode],
                     query.Distance,
-                    (decimal?)locationItem?.GeoPoint?[0] ?? null,
-                    (decimal?)locationItem?.GeoPoint?[1] ?? null
+                    locationItem?.Latitude,
+                    locationItem?.Longitude
                 )
         );
 

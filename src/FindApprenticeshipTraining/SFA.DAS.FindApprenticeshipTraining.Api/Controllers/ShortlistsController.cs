@@ -24,8 +24,6 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
         PostShortListResponse result = await _mediator.Send(
             new CreateShortlistForUserCommand
             {
-                Lat = shortlistRequest.Lat,
-                Lon = shortlistRequest.Lon,
                 Ukprn = shortlistRequest.Ukprn,
                 LocationDescription = shortlistRequest.LocationDescription,
                 LarsCode = shortlistRequest.LarsCode,
