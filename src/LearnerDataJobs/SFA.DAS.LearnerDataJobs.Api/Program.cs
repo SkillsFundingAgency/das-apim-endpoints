@@ -19,7 +19,7 @@ builder.Services
         c.SwaggerDoc("v1",
             new OpenApiInfo
             {
-                Title = "ToolsSupportOuterApi",
+                Title = "LearnerDataJobsOuterApi",
                 Version = "v1"
             });
     })
