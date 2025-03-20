@@ -18,7 +18,7 @@ public class WhenBuildingSendSubmitApplicationEmailReminderTemplate
             {"vacancyUrl", vacancyUrl },
             {"employer", employer },
             {"location", location },
-            {"closingDate", closingDate.ToString("d MMM yyyy") },
+            {"closingDate", closingDate.ToString("dddd d MMMM yyyy") },
             {"continueApplicationLink", continueApplicationUrl },
             {"settingsUrl", settingsUrl }
         };

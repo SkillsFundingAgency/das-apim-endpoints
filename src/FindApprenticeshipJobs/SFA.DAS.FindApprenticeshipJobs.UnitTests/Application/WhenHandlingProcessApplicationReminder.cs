@@ -86,7 +86,7 @@ public class WhenHandlingProcessApplicationReminder
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName 
                     && c.Tokens["location"] == $"{expectedAddress}"
-                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("d MMM yyyy") 
+                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("dddd d MMMM yyyy") 
                     && !string.IsNullOrEmpty(c.Tokens["continueApplicationLink"])
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
@@ -147,7 +147,7 @@ public class WhenHandlingProcessApplicationReminder
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName
                     && c.Tokens["location"] == $"{employmentWorkLocation}"
-                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("d MMM yyyy")
+                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("dddd d MMMM yyyy")
                     && !string.IsNullOrEmpty(c.Tokens["continueApplicationLink"])
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
@@ -219,7 +219,7 @@ public class WhenHandlingProcessApplicationReminder
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName
                     && c.Tokens["location"] == $"{expectedAddress}"
-                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("d MMM yyyy")
+                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("dddd d MMMM yyyy")
                     && !string.IsNullOrEmpty(c.Tokens["continueApplicationLink"])
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
@@ -291,7 +291,7 @@ public class WhenHandlingProcessApplicationReminder
                     && c.Tokens["vacancy"] == recruitApiResponse.Title
                     && c.Tokens["employer"] == recruitApiResponse.EmployerName
                     && c.Tokens["location"] == $"{expectedAddress}"
-                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("d MMM yyyy")
+                    && c.Tokens["closingDate"] == recruitApiResponse.ClosingDate.ToString("dddd d MMMM yyyy")
                     && !string.IsNullOrEmpty(c.Tokens["continueApplicationLink"])
                     && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
                     && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])

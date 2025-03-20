@@ -15,8 +15,8 @@ public class SendSubmitApplicationEmailReminderTemplate : EmailTemplateArguments
             {"vacancy", vacancy },
             {"vacancyUrl", vacancyUrl },
             {"employer", employer },
-            {"location", location},
-            {"closingDate", closingDate.ToString("d MMM yyyy") },
+            {"location", location },
+            {"closingDate", closingDate.ToString("dddd d MMMM yyyy") },
             {"continueApplicationLink", continueApplicationUrl },
             {"settingsUrl", settingsUrl }
         };
