@@ -19,8 +19,7 @@ public class GetApprenticeshipsQueryHandlerTests
         GetApprenticeshipsQueryHandler sut)
     {
         var expectedUrl = $"/{query.Ukprn}/academicyears/{query.AcademicYear}/apprenticeships?page={query.Page}&pageSize={query.PageSize}";
-
-
+        
         apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllApprenticeshipsForAcademicYearRequest>(c => c.GetUrl == expectedUrl)))
             .ReturnsAsync(apiResponse);
 
@@ -31,5 +30,7 @@ public class GetApprenticeshipsQueryHandlerTests
         actual.TotalPages.Should().Be((int)Math.Ceiling((double)apiResponse.TotalItems / apiResponse.PageSize));
         actual.Page.Should().Be(apiResponse.Page);
         actual.PageSize.Should().Be(apiResponse.PageSize);
+
+        apiClient.Verify(client => client.GenerateServiceToken("ApprenticeshipsManage"), Times.Once());
     }
 }
