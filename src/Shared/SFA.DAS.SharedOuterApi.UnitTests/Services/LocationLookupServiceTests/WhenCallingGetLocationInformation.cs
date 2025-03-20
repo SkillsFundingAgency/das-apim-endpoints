@@ -1,17 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
 {
@@ -20,11 +21,16 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         [Test, MoqAutoData]
         public async Task And_No_Location_Then_Does_Not_Call_Api(
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var location = "";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
 
             await service.GetLocationInformation(location, lat, lon);
 
@@ -37,11 +43,18 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             string authorityName,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
-            LocationLookupService service)
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
+            LocationLookupService service
+        )
         {
             var location = $"{locationName}, {authorityName} ";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -61,12 +74,18 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             string authorityName,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var location = $"{locationName}, {locationName}, {authorityName} ";
             var lat = 0;
             var lon = 0;
             var encodedLocation = "?locationName=" + HttpUtility.UrlEncode($"{locationName}, {locationName}");
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -85,11 +104,16 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             string locationName,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var location = $"{locationName} ";//no regex match
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
 
             var result = await service.GetLocationInformation(location, lat, lon);
 
@@ -101,6 +125,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         public async Task Then_If_There_Is_An_Outcode_Supplied_It_Is_Searched_And_Returned(
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var outcode = "CV1";
@@ -108,6 +133,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = $"{outcode}";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -124,6 +154,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         [Test, MoqAutoData]
         public async Task Then_If_The_Outcode_Returns_No_Results_Then_No_Location_Is_Returned(
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var outcode = "NO1SE";
@@ -131,6 +162,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = $"{outcode}";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -152,6 +188,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             string postcode,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var location = $"{postcode}";
@@ -159,6 +196,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var lon = 0;
             apiLocationResponse.Outcode = "";
             apiLocationResponse.Postcode = postcode;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -177,6 +219,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         public async Task Then_If_There_Is_A_Postcode_And_Include_District_Name_Is_Included_Option_Then_It_Is_Returned_As_Display_Name(
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var postcode = "CV1 1AA";
@@ -185,6 +228,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var lon = 0;
             apiLocationResponse.Postcode = postcode;
             apiLocationResponse.Outcode = "";
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -203,12 +251,18 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         public async Task Then_If_There_Is_An_Outcode_And_District_Supplied_It_Is_Searched_And_Returned(
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var outcode = "CV1";
             var location = $"{outcode} Birmingham, West Midlands";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -225,11 +279,16 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_Lat_Lon_In_The_Request_Then_The_Location_Is_Not_Searched(
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var location = "somewhere nice";
             var lat = 25;
             var lon = 2;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
 
             await service.GetLocationInformation(location, lat, lon);
 
@@ -241,12 +300,18 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             string location,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             apiLocationResponse.Postcode = "";
             apiLocationResponse.DistrictName = "";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListResponse>(
@@ -263,11 +328,17 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         [Test, MoqAutoData]
         public async Task Then_If_Doing_A_Partial_Search_And_No_Matches_Then_Null_Location_Returned(
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService handler)
         {
             var location = "no-match";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListResponse>(
@@ -281,11 +352,16 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
 
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_A_Partial_Location_Name_Which_Is_Less_Than_Two_Characters_Then_Location_Is_Set_To_Null(
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             var location = "C";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
 
             var result = await service.GetLocationInformation(location, lat, lon);
 
@@ -296,6 +372,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
         public async Task Then_If_The_Location_Lookup_Returns_Empty_And_There_Is_A_Location_It_Is_Searched_And_First_Returned(
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
             LocationLookupService service)
         {
             apiLocationResponse.Postcode = "";
@@ -303,6 +380,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = "LE1";
             var lat = 0;
             var lon = 0;
+
+            mockCacheStorageService
+                .Setup(x => x.RetrieveFromCache<LocationItem>(It.IsAny<string>()))
+                .ReturnsAsync((LocationItem)null);
+
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -323,6 +405,106 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             result.Name.Should().Be($"{apiLocationResponse.LocationName}, {apiLocationResponse.LocalAuthorityName}");
             result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
             result.Country.Should().Be(apiLocationResponse.Country);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Cache_Hit_Then_Location_Is_Returned_From_Cache(
+            LocationItem locationItem,
+            [Frozen] Mock<ICacheStorageService> _cacheStorageServiceMock,
+            LocationLookupService service
+        )
+        {
+            _cacheStorageServiceMock
+                .Setup(a => a.RetrieveFromCache<LocationItem>($"loc:{locationItem.Name}")
+            ).ReturnsAsync(locationItem);
+            
+            var sut = await service.GetLocationInformation(locationItem.Name, 0, 0);
+
+            Assert.That(sut.Name, Is.EqualTo(locationItem.Name));
+        
+            _cacheStorageServiceMock.Verify(x =>
+                x.SaveToCache(
+                    It.IsAny<string>(), 
+                    It.IsAny<object>(), 
+                    It.IsAny<int>()
+                ), Times.Never);
+
+            _cacheStorageServiceMock.Verify(x =>
+                x.RetrieveFromCache<LocationItem>($"loc:{locationItem.Name}"
+            ), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Cache_Miss_Then_Location_Retrieved_From_Location_API_Client_And_Saved_To_Cache(
+            string locationName,
+            string authorityName,
+            GetLocationsListItem apiLocationResponse,
+            [Frozen] Mock<ICacheStorageService> _cacheStorageServiceMock,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            LocationLookupService service
+        )
+        {
+            var location = $"{locationName}, {authorityName}";
+
+            _cacheStorageServiceMock
+                .Setup(a => a.RetrieveFromCache<LocationItem>($"loc:{location}")
+            ).ReturnsAsync((LocationItem)null);
+
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim()))))
+                .ReturnsAsync(apiLocationResponse);
+
+            var sut = await service.GetLocationInformation(location, 0, 0);
+
+            _cacheStorageServiceMock.Verify(x =>
+               x.RetrieveFromCache<LocationItem>($"loc:{location}"
+            ), Times.Once);
+
+            _cacheStorageServiceMock.Verify(x =>
+                x.SaveToCache(
+                    $"loc:{sut.Name}",
+                    It.IsAny<LocationItem>(),
+                    TimeSpan.FromHours(LocationLookupService.LocationItemCacheExpirationInHours)
+                ), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Location_Is_Null_Then_Cache_Update_Is_Avoided(
+            string locationName,
+            string authorityName,
+            [Frozen] Mock<ICacheStorageService> _cacheStorageServiceMock,
+            [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
+            LocationLookupService service
+        )
+        {
+            var location = $"{locationName}, {authorityName}";
+
+            _cacheStorageServiceMock
+                .Setup(a => a.RetrieveFromCache<LocationItem>($"loc:{location}")
+            ).ReturnsAsync((LocationItem)null);
+
+            mockLocationApiClient
+                .Setup(client =>
+                    client.Get<GetLocationsListItem>(
+                        It.Is<GetLocationByLocationAndAuthorityName>(c => c.GetUrl.Contains(locationName.Trim()) && c.GetUrl.Contains(authorityName.Trim()))))
+                .ReturnsAsync((GetLocationsListItem)null);
+
+            var sut = await service.GetLocationInformation(location, 0, 0);
+
+            Assert.That(sut, Is.Null);
+
+            _cacheStorageServiceMock.Verify(x =>
+               x.RetrieveFromCache<LocationItem>($"loc:{location}"
+           ), Times.Once);
+
+            _cacheStorageServiceMock.Verify(x =>
+                x.SaveToCache(
+                    It.IsAny<string>(),
+                    It.IsAny<LocationItem>(),
+                    TimeSpan.FromHours(LocationLookupService.LocationItemCacheExpirationInHours)
+                ), Times.Never);
         }
     }
 }

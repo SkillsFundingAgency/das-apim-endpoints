@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -17,13 +16,15 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
     public class WhenCallingGetExactMatchAddresses
     {
         private Mock<ILocationApiClient<LocationApiConfiguration>> _locationApiClientMock;
+        private Mock<ICacheStorageService> _cacheStorageService;
         private LocationLookupService _sut;
 
         [SetUp]
         public void Before_Each_Test()
         {
             _locationApiClientMock = new Mock<ILocationApiClient<LocationApiConfiguration>>();
-            _sut = new LocationLookupService(_locationApiClientMock.Object);
+            _cacheStorageService = new Mock<ICacheStorageService>();
+            _sut = new LocationLookupService(_locationApiClientMock.Object, _cacheStorageService.Object);
         }
 
         [Test]
