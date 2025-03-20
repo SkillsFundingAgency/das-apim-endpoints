@@ -1,6 +1,7 @@
 ﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
@@ -23,7 +24,7 @@ public sealed class WhenGettingCourseByLarsCode
 {
     private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClientMock;
     private Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpCourseManagementApiClientMock;
-    private Mock<ILocationLookupService> _locationLookupServiceMock;  
+    private Mock<ICachedLocationLookupService> _cachedLocationLookupService;  
     private GetCourseByLarsCodeQueryHandler _handler;
 
     [SetUp]
@@ -31,12 +32,12 @@ public sealed class WhenGettingCourseByLarsCode
     {
         _coursesApiClientMock = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
         _roatpCourseManagementApiClientMock = new Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>>();
-        _locationLookupServiceMock = new Mock<ILocationLookupService>();
+        _cachedLocationLookupService = new Mock<ICachedLocationLookupService>();
 
         _handler = new GetCourseByLarsCodeQueryHandler(
             _coursesApiClientMock.Object,
             _roatpCourseManagementApiClientMock.Object,
-            _locationLookupServiceMock.Object
+            _cachedLocationLookupService.Object
         );
     }
 
@@ -453,8 +454,8 @@ public sealed class WhenGettingCourseByLarsCode
     {
         var query = new GetCourseByLarsCodeQuery { LarsCode = 456, Location = "sw1", Distance = 10 };
 
-        _locationLookupServiceMock.Setup(x => 
-            x.GetLocationInformation(query.Location, 0, 0, false)
+        _cachedLocationLookupService.Setup(x => 
+            x.GetCachedLocationInformation(query.Location, 0, 0, false)
         ).ReturnsAsync(locationItem);
 
         _coursesApiClientMock
@@ -490,8 +491,8 @@ public sealed class WhenGettingCourseByLarsCode
 
         Assert.That(sut, Is.Not.Null);
 
-        _locationLookupServiceMock.Verify(x =>
-            x.GetLocationInformation(query.Location, 0, 0, false
+        _cachedLocationLookupService.Verify(x =>
+            x.GetCachedLocationInformation(query.Location, 0, 0, false
         ), Times.Once);
     }
 }

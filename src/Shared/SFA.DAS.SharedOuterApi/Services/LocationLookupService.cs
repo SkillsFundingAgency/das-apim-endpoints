@@ -13,7 +13,6 @@ namespace SFA.DAS.SharedOuterApi.Services;
 
 public class LocationLookupService : ILocationLookupService
 {
-    private readonly ICacheStorageService _cacheStorageService;
     private readonly ILocationApiClient<LocationApiConfiguration> _locationApiClient;
 
     private const string PostcodeRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s*\d[A-Za-z]{2}$";
@@ -21,14 +20,11 @@ public class LocationLookupService : ILocationLookupService
     private const string OutcodeDistrictRegex = @"^[A-Za-z]{1,2}\d[A-Za-z\d]?\s[A-Za-z]*";
     private const double MinMatch = 1;
 
-    public const int LocationItemCacheExpirationInHours = 1;
-
     private TimeSpan RegexTimeOut = TimeSpan.FromMilliseconds(500);
 
-    public LocationLookupService(ILocationApiClient<LocationApiConfiguration> locationApiClient, ICacheStorageService cacheStorageService)
+    public LocationLookupService(ILocationApiClient<LocationApiConfiguration> locationApiClient)
     {
         _locationApiClient = locationApiClient;
-        _cacheStorageService = cacheStorageService;
     }
 
     public async Task<LocationItem> GetLocationInformation(string location, double lat, double lon, bool includeDistrictNameInPostcodeDisplayName = false)
@@ -36,13 +32,6 @@ public class LocationLookupService : ILocationLookupService
         if (string.IsNullOrWhiteSpace(location))
         {
             return null;
-        }
-
-        LocationItem cachedLocationItem = await _cacheStorageService.RetrieveFromCache<LocationItem>($"loc:{location}");
-
-        if(cachedLocationItem is not null)
-        {
-            return cachedLocationItem;
         }
 
         if (lat != 0 && lon != 0)
@@ -91,16 +80,9 @@ public class LocationLookupService : ILocationLookupService
             }
         }
 
-        LocationItem locationItem = getLocationsListItem?.Location != null
+        return getLocationsListItem?.Location != null
             ? new LocationItem(location, getLocationsListItem.Location.GeoPoint, getLocationsListItem.Country)
             : null;
-
-        if(locationItem is not null)
-        {
-            await _cacheStorageService.SaveToCache($"loc:{location}", locationItem, TimeSpan.FromHours(LocationItemCacheExpirationInHours));
-        }
-
-        return locationItem;
     }
 
     public async Task<GetAddressesListResponse> GetExactMatchAddresses(string fullPostcode)

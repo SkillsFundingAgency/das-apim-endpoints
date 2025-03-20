@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -18,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCour
 public sealed class GetCourseByLarsCodeQueryHandler(
     ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient,
     IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient,
-    ILocationLookupService _locationLookupService
+    ICachedLocationLookupService _cachedLocationLookupService
 ) : IRequestHandler<GetCourseByLarsCodeQuery, GetCourseByLarsCodeQueryResult>
 {
     public const string KsbsSkillsType = "Skill";
@@ -41,7 +42,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
             standardDetails.ApprenticeshipFunding[standardDetails.ApprenticeshipFunding.Count - 1] :
         null;
 
-        LocationItem locationItem = await _locationLookupService.GetLocationInformation(query.Location, 0, 0);
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location, 0, 0);
 
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
