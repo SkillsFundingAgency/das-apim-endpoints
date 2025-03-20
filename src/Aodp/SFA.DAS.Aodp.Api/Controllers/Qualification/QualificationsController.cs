@@ -105,6 +105,15 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationDiscussionHistory);
         }
 
+        [HttpGet("processstatuses")]
+        [ProducesResponseType(typeof(GetProcessStatusesQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetProcessingStatuses()
+        {
+            return await SendRequestAsync(new GetProcessStatusesQuery());
+        }
+
         [HttpGet("{qualificationReference}/qualificationdiscussionhistories")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

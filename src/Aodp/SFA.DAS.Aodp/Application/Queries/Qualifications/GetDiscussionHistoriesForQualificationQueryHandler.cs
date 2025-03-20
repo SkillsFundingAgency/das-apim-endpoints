@@ -14,7 +14,7 @@ public class GetDiscussionHistoriesForQualificationQueryHandler(IAodpApiClient<A
         var response = new BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>();
         try
         {
-            var result = await _apiClient.Get<BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>>(new GetDiscussionHistoryForQualificationApiRequest(request.QualificationReference));
+            var result = await _apiClient.Get<GetDiscussionHistoriesForQualificationQueryResponse>(new GetDiscussionHistoryForQualificationApiRequest(request.QualificationReference));
             if (result != null && result.Value != null)
             {
                 response.Value = result.Value;

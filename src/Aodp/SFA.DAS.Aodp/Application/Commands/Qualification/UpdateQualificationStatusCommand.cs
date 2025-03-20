@@ -6,4 +6,6 @@ public class UpdateQualificationStatusCommand : IRequest<BaseMediatrResponse<Emp
 {
     public string QualificationReference { get; set; } = string.Empty;
     public Guid ProcessStatusId { get; set; }
+    public string? UserDisplayName { get; set; }
+    public string? Notes { get; set; }
 }
