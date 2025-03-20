@@ -78,6 +78,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
 
         private string GetBearerToken(string serviceAccount)
         {
+            _logger.LogInformation("TokenPassThroughInternalApiClient.GetBearerToken attempt for {service}", serviceAccount);
+
             var authorizationHeader = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             if (string.IsNullOrEmpty(authorizationHeader))
             {
