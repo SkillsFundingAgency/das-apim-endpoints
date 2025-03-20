@@ -117,4 +117,31 @@ public sealed class WhenCallingCachedLocationLookupService
                 TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours)
             ), Times.Never);
     }
+
+    [Test]
+    [MoqAutoData]
+    public async Task When_Location_Is_Null_Then_Null_Is_Returned(
+        [Frozen] Mock<ICacheStorageService> _cacheStorageServiceMock,
+        [Frozen] Mock<ILocationLookupService> _locationLookupService,
+        CachedLocationLookupService sut
+    )
+    {
+        var result = await sut.GetCachedLocationInformation(string.Empty);
+
+        Assert.That(result, Is.Null);
+
+        _cacheStorageServiceMock.Verify(x =>
+            x.RetrieveFromCache<LocationItem>(
+                It.IsAny<string>()
+            ), 
+            Times.Never
+        );
+
+        _cacheStorageServiceMock.Verify(x =>
+            x.SaveToCache(
+                It.IsAny<string>(),
+                It.IsAny<LocationItem>(),
+                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours)
+            ), Times.Never);
+    }
 }
