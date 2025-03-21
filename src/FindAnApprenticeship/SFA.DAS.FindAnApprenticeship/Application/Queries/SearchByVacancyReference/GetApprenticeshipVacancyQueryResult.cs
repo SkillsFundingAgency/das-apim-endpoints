@@ -22,6 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         public CandidateApplication Application { get; init; }
         public string CandidatePostcode { get; set; }
         public bool IsSavedVacancy { get; set; }
+        public DateTime? CandidateDateOfBirth { get; set; }
 
         public class Vacancy
         {
@@ -68,9 +69,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public decimal? WageAmountLowerBound { get; init; }
             
             public decimal? WageAmountUpperBound { get; init; }
-            
             public string WageText { get; init; }
-            
+            public decimal? ApprenticeMinimumWage { get; set; }
+            public decimal? Over25NationalMinimumWage { get; set; }
+            public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+            public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+            public decimal? Under18NationalMinimumWage { get; set; }
             public int WageUnit { get; init; }
             public string WageAdditionalInformation { get; set; }
 
@@ -285,6 +289,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     WageType = source.WageType,
                     WageUnit = source.WageUnit,
                     WorkingWeek = source.WorkingWeek,
+                    Under18NationalMinimumWage = source.Under18NationalMinimumWage,
+                    Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
+                    Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
+                    Over25NationalMinimumWage = source.Over25NationalMinimumWage,
+                    ApprenticeMinimumWage = source.ApprenticeMinimumWage
                 };
             }
         }

@@ -12,6 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models
         {
             var actual = (SearchApprenticeshipsApiResponse)source;
 
+            actual.CandidateDateOfBirth.Should().Be(source.CandidateDateOfBirth);
             actual.TotalApprenticeshipCount.Should().Be(source.TotalApprenticeshipCount);
             actual.TotalCompetitiveVacanciesCount.Should().Be(source.TotalWageTypeVacanciesCount);
             actual.TotalFound.Should().Be(source.TotalFound);
