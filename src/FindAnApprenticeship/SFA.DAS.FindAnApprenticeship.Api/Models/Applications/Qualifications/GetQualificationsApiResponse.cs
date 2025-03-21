@@ -18,7 +18,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications.Qualifications
             return new GetQualificationsApiResponse
             {
                 IsSectionCompleted = source.IsSectionCompleted,
-                Qualifications = source.Qualifications.Select(x=>(ApplicationQualificationApiResponse)x).ToList(),
+                Qualifications = source.Qualifications.Select(x=>(ApplicationQualificationApiResponse)x).OrderBy(fil => fil.QualificationOrder).ToList(),
                 QualificationTypes = source.QualificationTypes.Select(x => (QualificationTypeApiResponse)x).ToList()
             };
         }
