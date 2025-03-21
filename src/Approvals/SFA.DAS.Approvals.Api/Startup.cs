@@ -13,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Approvals.Api.AppStart;
+using SFA.DAS.Approvals.Api.Telemetry;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 using SFA.DAS.Approvals.ErrorHandling;
 using SFA.DAS.SharedOuterApi.AppStart;
@@ -84,6 +85,7 @@ namespace SFA.DAS.Approvals.Api
             });
 
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+            services.AddApplicationInsightsTelemetryProcessor<NotFoundDependencyTelemetryProcessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
