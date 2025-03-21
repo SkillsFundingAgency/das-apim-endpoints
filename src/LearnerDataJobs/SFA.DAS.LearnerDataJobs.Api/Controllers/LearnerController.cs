@@ -17,12 +17,11 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         try
         {
             logger.LogTrace("Calling AddLearnerCommand");
-            var result = await mediator.Send(new AddLearnerDataCommand {LearnerData = request});
-            if ((int) result >= 200 && (int) result < 300)
+            var created = await mediator.Send(new AddLearnerDataCommand {LearnerData = request});
+            if (created)
             {
                 return Created();
             }
-            logger.LogInformation("Calling AddLearnerDataCommand returned a status of {0}", result);
             return StatusCode((int)HttpStatusCode.FailedDependency);
         }
         catch (Exception ex)

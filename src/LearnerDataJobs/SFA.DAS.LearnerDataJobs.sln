@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs", "SFA.DAS.LearnerDataJobs\SFA.DAS.LearnerDataJobs.csproj", "{A8388B9D-304A-482A-BAC5-EA7290C27878}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs.UnitTests", "SFA.DAS.LearnerDataJobs.UnitTests\SFA.DAS.LearnerDataJobs.UnitTests.csproj", "{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{A8388B9D-304A-482A-BAC5-EA7290C27878}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A8388B9D-304A-482A-BAC5-EA7290C27878}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A8388B9D-304A-482A-BAC5-EA7290C27878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
