@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs.UnitTests", "SFA.DAS.LearnerDataJobs.UnitTests\SFA.DAS.LearnerDataJobs.UnitTests.csproj", "{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs.Api.UnitTests", "SFA.DAS.LearnerDataJobs.Api.UnitTests\SFA.DAS.LearnerDataJobs.Api.UnitTests.csproj", "{E075214B-B106-4E2A-94B5-CB1571451937}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

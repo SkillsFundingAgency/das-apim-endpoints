@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.LearnerDataJobs\SFA.DAS.LearnerDataJobs.csproj" />
+    <ProjectReference Include="..\SFA.DAS.LearnerDataJobs.Api\SFA.DAS.LearnerDataJobs.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
