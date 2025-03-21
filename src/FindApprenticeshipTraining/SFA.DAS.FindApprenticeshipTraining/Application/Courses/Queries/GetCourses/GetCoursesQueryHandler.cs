@@ -70,8 +70,8 @@ public sealed class GetCoursesQueryHandler(
                 new GetCourseTrainingProvidersCountRequest(
                     pagedStandards.Select(a => a.LarsCode).ToArray(),
                     query.Distance,
-                    (decimal?)locationItem?.GeoPoint?[0] ?? null,
-                    (decimal?)locationItem?.GeoPoint?[1] ?? null
+                    locationItem?.Latitude,
+                    locationItem?.Longitude
                 )
         );
 

@@ -5,6 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -23,7 +24,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
         public async Task Handle_ReturnsExpectedReponse(
             GetCourseProvidersResponse apiResponse,
             GetCourseProvidersQuery query,
-            [Frozen] Mock<ILocationLookupService> locationLookupServiceMock,
+            [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Greedy] GetTrainingCourseProvidersQueryHandler handler,
             CancellationToken cancellationToken
@@ -32,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             courseManagementApiMock
                 .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
                     c => c.GetUrl.Contains(query.Id.ToString())
-                    && c.GetUrl.Contains($"api/courses/{query.Id}/providers")
+                      && c.GetUrl.Contains($"api/courses/{query.Id}/providers")
                     )
                 ))
                 .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse,
@@ -47,32 +48,30 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
         public async Task Handler_NoLocationMatched_ReturnsExpectedResponse(
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
-            [Frozen] Mock<ILocationLookupService> locationLookupServiceMock,
+            [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
             [Greedy] GetTrainingCourseProvidersQueryHandler handler,
             GetStandardsListItem standardResponse,
             CancellationToken cancellationToken
         )
         {
-            locationLookupServiceMock.Setup(
-                client => client.GetLocationInformation(query.Location, 0, 0, false))
-                .ReturnsAsync((LocationItem)null);
+            cachedLocationLookupService.Setup(
+                client => client.GetCachedLocationInformation(query.Location, false))
+            .ReturnsAsync((LocationItem)null);
 
             coursesApiMock.Setup(
                 client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(x => x.StandardId == query.Id)))
             .ReturnsAsync(standardResponse);
-
-            var expectedStandardName = $"{standardResponse.Title} (level {standardResponse.Level})";
 
             var expectedResponse = new GetCourseProvidersResponse
             {
                 PageSize = 10,
                 Page = 1,
                 LarsCode = query.Id,
-                Providers = new List<ProviderData>(),
+                Providers = [],
                 QarPeriod = string.Empty,
                 ReviewPeriod = string.Empty,
-                StandardName = expectedStandardName,
+                StandardName = $"{standardResponse.Title} (level {standardResponse.Level})",
                 TotalCount = 0,
                 TotalPages = 0
             };

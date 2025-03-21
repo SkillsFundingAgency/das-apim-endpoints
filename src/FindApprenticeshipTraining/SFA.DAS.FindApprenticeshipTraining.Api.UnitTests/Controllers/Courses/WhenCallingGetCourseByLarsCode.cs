@@ -30,13 +30,12 @@ public sealed class WhenCallingGetCourseByLarsCode
                 It.Is<GetCourseByLarsCodeQuery>(c =>
                     c.LarsCode.Equals(query.LarsCode) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Lat.Equals(query.Lat) &&
-                    c.Lon.Equals(query.Lon)
+                    c.Location.Equals(query.Location)
                 ),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(result);
 
-        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Lat, query.Lon) as ObjectResult;
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Location) as ObjectResult;
 
         Assert.That(sut, Is.Not.Null);
         Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
@@ -59,13 +58,12 @@ public sealed class WhenCallingGetCourseByLarsCode
                 It.Is<GetCourseByLarsCodeQuery>(c =>
                     c.LarsCode.Equals(query.LarsCode) &&
                     c.Distance.Equals(query.Distance) &&
-                    c.Lat.Equals(query.Lat) &&
-                    c.Lon.Equals(query.Lon)
+                    c.Location.Equals(query.Location)
                 ),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseByLarsCodeQueryResult)null);
 
-        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Lat, query.Lon) as NotFoundResult;
+        var sut = await controller.GetCourseByLarsCode(query.LarsCode, query.Distance, query.Location) as NotFoundResult;
 
         Assert.That(sut, Is.Not.Null);
         Assert.That(sut.StatusCode, Is.EqualTo((int)HttpStatusCode.NotFound));
