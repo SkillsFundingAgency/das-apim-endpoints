@@ -17,22 +17,22 @@ public class CreateShortlistForUserCommandHandler(
 {
     public async Task<PostShortListResponse> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
     {
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.LocationDescription);
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.LocationName);
 
         ApiResponse<PostShortListResponse> response = await _roatpCourseManagementApiClient.PostWithResponseCode<PostShortListResponse>(
             new PostShortlistForUserRequest
             {
                 Data = new PostShortlistData
                 {
-                    Latitude = (float?)locationItem?.Latitude,
-                    Longitude = (float?)locationItem?.Longitude,
+                    Latitude = locationItem?.Latitude,
+                    Longitude = locationItem?.Longitude,
                     Ukprn = request.Ukprn,
-                    LocationDescription = request.LocationDescription,
+                    LocationDescription = request.LocationName,
                     LarsCode = request.LarsCode,
                     UserId = request.ShortlistUserId
                 }
             },
-            false);
+            true);
 
         response.EnsureSuccessStatusCode();
 

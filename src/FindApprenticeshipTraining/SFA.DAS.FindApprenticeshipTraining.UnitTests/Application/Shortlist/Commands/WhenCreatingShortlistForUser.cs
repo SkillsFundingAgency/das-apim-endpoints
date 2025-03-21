@@ -33,7 +33,7 @@ public class WhenCreatingShortlistForUser
             .ReturnsAsync(new ApiResponse<PostShortListResponse>(expectedResult, HttpStatusCode.Created, ""));
 
         cachedLocationLookupService
-            .Setup(a => a.GetCachedLocationInformation(command.LocationDescription, false))
+            .Setup(a => a.GetCachedLocationInformation(command.LocationName, false))
             .ReturnsAsync(locationItem);
 
         //Act
@@ -43,11 +43,11 @@ public class WhenCreatingShortlistForUser
         roatpApiClient.Verify(x => x
             .PostWithResponseCode<PostShortListResponse>(It.Is<PostShortlistForUserRequest>(c =>
                    ((PostShortlistData)c.Data).Ukprn.Equals(command.Ukprn)
-                && ((PostShortlistData)c.Data).Latitude.Equals((float?)locationItem.Latitude)
-                && ((PostShortlistData)c.Data).Longitude.Equals((float?)locationItem.Longitude)
-                && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationDescription)
+                && ((PostShortlistData)c.Data).Latitude.Equals(locationItem.Latitude)
+                && ((PostShortlistData)c.Data).Longitude.Equals(locationItem.Longitude)
+                && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationName)
                 && ((PostShortlistData)c.Data).LarsCode.Equals(command.LarsCode)
-                && ((PostShortlistData)c.Data).UserId.Equals(command.ShortlistUserId)), false));
+                && ((PostShortlistData)c.Data).UserId.Equals(command.ShortlistUserId)), true));
         actualResult.Should().BeEquivalentTo(expectedResult);
     }
 
@@ -66,7 +66,7 @@ public class WhenCreatingShortlistForUser
             .ReturnsAsync(new ApiResponse<PostShortListResponse>(expectedResult, HttpStatusCode.Created, ""));
 
         cachedLocationLookupService
-            .Setup(a => a.GetCachedLocationInformation(command.LocationDescription, false))
+            .Setup(a => a.GetCachedLocationInformation(command.LocationName, false))
             .ReturnsAsync((LocationItem)null);
 
         //Act
@@ -78,9 +78,9 @@ public class WhenCreatingShortlistForUser
                    ((PostShortlistData)c.Data).Ukprn.Equals(command.Ukprn)
                 && ((PostShortlistData)c.Data).Latitude.Equals(null)
                 && ((PostShortlistData)c.Data).Longitude.Equals(null)
-                && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationDescription)
+                && ((PostShortlistData)c.Data).LocationDescription.Equals(command.LocationName)
                 && ((PostShortlistData)c.Data).LarsCode.Equals(command.LarsCode)
-                && ((PostShortlistData)c.Data).UserId.Equals(command.ShortlistUserId)), false));
+                && ((PostShortlistData)c.Data).UserId.Equals(command.ShortlistUserId)), true));
         actualResult.Should().BeEquivalentTo(expectedResult);
     }
 }

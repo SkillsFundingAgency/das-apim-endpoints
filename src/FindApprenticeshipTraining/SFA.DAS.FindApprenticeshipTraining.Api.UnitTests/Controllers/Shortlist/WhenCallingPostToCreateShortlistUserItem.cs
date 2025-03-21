@@ -36,11 +36,11 @@ public class WhenCallingPostToCreateShortlistUserItem
                 It.Is<CreateShortlistForUserCommand>(command =>
                        command.ShortlistUserId == shortlistRequest.ShortlistUserId
                     && command.Ukprn.Equals(shortlistRequest.Ukprn)
-                    && command.LocationDescription.Equals(shortlistRequest.LocationDescription)
+                    && command.LocationName.Equals(shortlistRequest.LocationName)
                     && command.LarsCode.Equals(shortlistRequest.LarsCode)
                 ), It.IsAny<CancellationToken>()));
 
-        controllerResult.As<CreatedAtActionResult>().Should().NotBeNull();
-        controllerResult.As<CreatedAtActionResult>().Value.Should().BeEquivalentTo(expectedResult);
+        controllerResult.As<OkObjectResult>().Should().NotBeNull();
+        controllerResult.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedResult);
     }
 }
