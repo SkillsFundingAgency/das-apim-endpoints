@@ -126,12 +126,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualificationVersionsForQualificationByReference(string qualificationReference)
         {
-            var response = await _mediator.Send(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
-            if (response.Success)
-            {
-                return Ok(response);
-            }
-            return StatusCode(StatusCodes.Status500InternalServerError, response.ErrorMessage);
+            return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
         }
 
         [HttpGet("api/qualifications/{qualificationVersionId}/feedback")]

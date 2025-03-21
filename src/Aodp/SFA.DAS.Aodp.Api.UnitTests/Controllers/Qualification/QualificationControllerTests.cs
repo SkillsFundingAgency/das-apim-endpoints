@@ -222,7 +222,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.AssignableFrom<BaseMediatrResponse<GetQualificationVersionsForQualificationByReferenceQueryResponse>>());
+            Assert.That(okResult.Value, Is.AssignableFrom<GetQualificationVersionsForQualificationByReferenceQueryResponse>());
         }
 
         [Test]
