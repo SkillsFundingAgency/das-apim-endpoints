@@ -15,9 +15,9 @@ public class GetDiscussionHistoriesForQualificationQueryHandler(IAodpApiClient<A
         try
         {
             var result = await _apiClient.Get<GetDiscussionHistoriesForQualificationQueryResponse>(new GetDiscussionHistoryForQualificationApiRequest(request.QualificationReference));
-            if (result != null && result.Value != null)
+            if (result != null)
             {
-                response.Value = result.Value;
+                response.Value = result;
                 response.Success = true;
             }
             else

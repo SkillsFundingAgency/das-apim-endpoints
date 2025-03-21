@@ -86,15 +86,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 return BadRequest(new { message = "Qualification reference cannot be empty" });
             }
 
-            var result = await _mediator.Send(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
-
-            if (!result.Success || result.Value == null)
-            {
-                _logger.LogWarning(result.ErrorMessage);
-                return NotFound(new { message = $"No details found for qualification reference: {qualificationReference}" });
-            }
-
-            return Ok(result);
+            return await SendRequestAsync(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
         }
 
         [HttpPost("qualificationdiscussionhistory")]
