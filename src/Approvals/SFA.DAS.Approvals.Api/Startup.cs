@@ -1,15 +1,18 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Azure.Amqp;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Approvals.Api.AppStart;
@@ -18,6 +21,7 @@ using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 using SFA.DAS.Approvals.ErrorHandling;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using OpenTelemetry.Trace;
 
 namespace SFA.DAS.Approvals.Api
 {
@@ -85,7 +89,11 @@ namespace SFA.DAS.Approvals.Api
             });
 
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
-            services.AddApplicationInsightsTelemetryProcessor<NotFoundDependencyTelemetryProcessor>();
+
+            services.AddOpenTelemetry().WithTracing(builder =>
+            {
+                builder.AddProcessor<NotFoundDependencyTelemetryProcessor>();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

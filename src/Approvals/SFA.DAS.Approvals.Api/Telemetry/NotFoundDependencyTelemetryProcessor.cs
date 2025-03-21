@@ -1,26 +1,19 @@
-﻿using Microsoft.ApplicationInsights.Channel;
-using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.ApplicationInsights.Extensibility;
+﻿using OpenTelemetry;
 
 namespace SFA.DAS.Approvals.Api.Telemetry;
 
-/// <summary>
-/// Telemetry Processor that prevents 404 Not Found results being logged as errors
-/// </summary>
-public class NotFoundDependencyTelemetryProcessor(ITelemetryProcessor next) : ITelemetryProcessor
+public class NotFoundDependencyTelemetryProcessor : BaseProcessor<System.Diagnostics.Activity>
 {
-    private ITelemetryProcessor Next { get; set; } = next;
-
-    /// <summary>
-    /// Process a collected telemetry item.
-    /// </summary>
-    public void Process(ITelemetry item)
+    public override void OnEnd(System.Diagnostics.Activity activity)
     {
-        if (item is DependencyTelemetry { ResultCode: "404" } dependency)
+        // Suppress 404 errors for dependencies by marking them as successful
+        if (activity.GetTagItem("http.status_code")?.ToString() == "404")
         {
-            dependency.Success = true;
+            activity.SetTag("otel.status_code", "OK");
+            activity.SetTag("otel.status_description", "Suppressed 404 error for dependency.");
         }
 
-        Next.Process(item);
+        // Ensure the activity is passed to the next processor
+        base.OnEnd(activity);
     }
 }
