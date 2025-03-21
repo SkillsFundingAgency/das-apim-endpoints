@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.Aodp.Application.Queries.Jobs
 {
-    public class GetJobRunsByNameQueryResponse
+    public class GetJobRunsQueryResponse
     {
         public List<JobRun> JobRuns { get; set; }
     }
