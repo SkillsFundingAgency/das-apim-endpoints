@@ -20,6 +20,7 @@ public class Apprenticeship
     public DateTime PlannedEndDate { get; set; }
     public List<Episode> Episodes { get; set; }
     public int AgeAtStartOfApprenticeship { get; set; }
+    public DateTime? WithdrawnDate { get; set; }
 }
 
 public class Episode

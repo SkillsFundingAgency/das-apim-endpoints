@@ -58,7 +58,7 @@ public static class ServiceCollectionExtensions
         AddCoursesApiClient(services, configuration);
         AddLocationApiClient(services, configuration);
 
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
