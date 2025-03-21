@@ -241,7 +241,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var result = await controller.SaveQualificationFundingOffersOutcome(command, Guid.NewGuid());
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
 
         [Test]
@@ -260,7 +260,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var result = await controller.SaveQualificationFundingOffers(command, Guid.NewGuid());
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
 
         [Test]
@@ -279,7 +279,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var result = await controller.SaveFundingOfferDetails(command, Guid.NewGuid());
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
 
         [Test]
@@ -298,7 +298,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var result = await controller.QualificationFundingOffersSummary(command, Guid.NewGuid());
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkResult>());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
         }
 
     }

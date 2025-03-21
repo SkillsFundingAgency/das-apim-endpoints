@@ -144,12 +144,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> SaveQualificationFundingOffersOutcome(SaveQualificationFundingOffersOutcomeCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-            var response = await SendRequestAsync(command);
-            if (response is OkObjectResult)
-            {
-                return Ok();
-            }
-            return response;
+            return await SendRequestAsync(command);
         }
 
         [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers")]
@@ -158,12 +153,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> SaveQualificationFundingOffers(SaveQualificationFundingOffersCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-            var response = await SendRequestAsync(command);
-            if (response is OkObjectResult)
-            {
-                return Ok();
-            }
-            return response;
+            return await SendRequestAsync(command);
         }
 
         [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers-details")]
@@ -172,12 +162,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> SaveFundingOfferDetails(SaveQualificationFundingOffersDetailsCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-            var response = await SendRequestAsync(command);
-            if (response is OkObjectResult)
-            {
-                return Ok();
-            }
-            return response;
+            return await SendRequestAsync(command);
         }
 
         [HttpPut("/api/qualifications/{qualificationVersionId}/Create-QualificationDiscussionHistory")]
@@ -186,12 +171,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         public async Task<IActionResult> QualificationFundingOffersSummary(CreateQualificationDiscussionHistoryCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
-            var response = await SendRequestAsync(command);
-            if (response is OkObjectResult)
-            {
-                return Ok();
-            }
-            return response;
+            return await SendRequestAsync(command);
         }
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {           
