@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.LearnerDataJobs.InnerApi;
 
 namespace SFA.DAS.LearnerDataJobs.Api.AppStart;
 
@@ -18,9 +17,4 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerDataInnerApiConfiguration>>().Value);
     }
 
-    public class LearnerDataInnerApiConfiguration : IInternalApiConfiguration
-    {
-        public string Url { get; set; }
-        public string Identifier { get; set; }
-    }
 }
