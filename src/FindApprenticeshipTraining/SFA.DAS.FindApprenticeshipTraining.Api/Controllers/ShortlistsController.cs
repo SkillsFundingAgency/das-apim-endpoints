@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.FindApprenticeshipTraining.Api.ApiRequests;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.DeleteShortlistItem;
@@ -15,26 +15,28 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsController> _logger) : ControllerBase
+public class ShortlistsController(IMediator _mediator) : ControllerBase
 {
     [HttpPost]
     [Route("")]
+    [ProducesResponseType<PostShortListResponse>(StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateShortlistForUser(CreateShortListRequest shortlistRequest)
     {
         PostShortListResponse result = await _mediator.Send(
             new CreateShortlistForUserCommand
             {
                 Ukprn = shortlistRequest.Ukprn,
-                LocationDescription = shortlistRequest.LocationDescription,
+                LocationName = shortlistRequest.LocationName,
                 LarsCode = shortlistRequest.LarsCode,
                 ShortlistUserId = shortlistRequest.ShortlistUserId
             });
 
-        return CreatedAtAction(nameof(GetShortlistsForUser), new { UserId = shortlistRequest.ShortlistUserId }, result);
+        return Ok(result);
     }
 
     [HttpDelete]
     [Route("{id}")]
+    [ProducesResponseType(StatusCodes.Status202Accepted)]
     public async Task<IActionResult> DeleteShortlistItemForUser(Guid id)
     {
         await _mediator.Send(new DeleteShortlistItemCommand
@@ -46,9 +48,10 @@ public class ShortlistsController(IMediator _mediator, ILogger<ShortlistsControl
 
     [HttpGet]
     [Route("users/{userId}/count")]
+    [ProducesResponseType<GetShortlistCountForUserQueryResult>(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetShortlistCountForUser(Guid userId)
     {
-        var result = await _mediator.Send(new GetShortlistCountForUserQuery(userId));
+        GetShortlistCountForUserQueryResult result = await _mediator.Send(new GetShortlistCountForUserQuery(userId));
         return Ok(result);
     }
 

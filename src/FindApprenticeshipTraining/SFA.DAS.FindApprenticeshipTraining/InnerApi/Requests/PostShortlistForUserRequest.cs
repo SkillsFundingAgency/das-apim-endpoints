@@ -15,8 +15,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
         public int Ukprn { get; set; }
         public int LarsCode { get; set; }
         public string LocationDescription { get; set; }
-        public float? Latitude { get; set; }
-        public float? Longitude { get; set; }
+        public decimal? Latitude { get; set; }
+        public decimal? Longitude { get; set; }
     }
 
     public class PostShortListResponse
