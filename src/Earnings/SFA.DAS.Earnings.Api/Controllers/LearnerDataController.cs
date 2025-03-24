@@ -8,10 +8,10 @@ namespace SFA.DAS.Earnings.Api.Controllers;
 public class LearnerDataController : Controller
 {
     [HttpPut]
-    [Route("/providers/{ukprn}/academicyears/{academicYear}/apprenticeships")]
+    [Route("/providers/{ukprn}/academicyears/{academicyear}/apprenticeships")]
     public async Task<IActionResult> Search(
         [FromRoute]long ukprn,
-        [FromRoute]int academicYear,
+        [FromRoute]int academicyear,
         [FromBody] LearnerRecord[] records)
     {
         if (ModelState.IsValid)
