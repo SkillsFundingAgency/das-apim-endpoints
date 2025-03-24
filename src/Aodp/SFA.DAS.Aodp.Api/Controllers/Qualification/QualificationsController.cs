@@ -127,48 +127,36 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationStatus);
         }
 
-        [HttpGet("export")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsCsvExportResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsCsvExportResponse>), StatusCodes.Status200OK)]
+        [HttpGet("export")]        
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationsExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationCSVExportData([FromQuery] string? status)
+        public async Task<IActionResult> GetQualificationExportData([FromQuery] string? status)
         {
-     
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                _logger.LogWarning("Status parameter is empty");
+                return BadRequest(new { message = "Status parameter cannot be empty" });
+            }
 
-            IActionResult response = status switch
+            IActionResult response = status.ToLower() switch
             {
                 "new" => await HandleNewQualificationCSVExport(),
                 "changed" => await HandleChangedQualificationCSVExport(),
-       
+                _ => BadRequest(new { message = "Status parameter not a valid value" })
             };
 
             return response;
         }
         private async Task<IActionResult> HandleNewQualificationCSVExport()
-        {
-            var result = await _mediator.Send(new GetNewQualificationsCsvExportQuery());
-
-            if (result == null || !result.Success || result.Value == null)
-            {
-                _logger.LogWarning(result?.ErrorMessage);
-                return NotFound(new { message = result?.ErrorMessage });
-            }
-            return Ok(result);
+        {           
+            return await SendRequestAsync(new GetNewQualificationsExportQuery());
         }
 
         private async Task<IActionResult> HandleChangedQualificationCSVExport()
         {
-            var result = await _mediator.Send(new GetChangedQualificationsCsvExportQuery());
-
-
-            if (result == null || !result.Success || result.Value == null)
-            {
-                _logger.LogWarning(result?.ErrorMessage);
-                return NotFound(new { message = result?.ErrorMessage });
-            }
-            return Ok(result);
+            return await SendRequestAsync(new GetChangedQualificationsExportQuery());
         }
 
         private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan)
