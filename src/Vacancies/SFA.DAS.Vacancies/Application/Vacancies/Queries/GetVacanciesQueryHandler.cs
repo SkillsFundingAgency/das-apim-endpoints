@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -65,7 +66,8 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
             var vacanciesTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
                 request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
-                request.Lat, request.Lon, request.DistanceInMiles, request.Routes, request.PostedInLastNumberOfDays, request.AdditionalDataSources, request.Sort));
+                request.Lat, request.Lon, request.DistanceInMiles, request.Routes, request.PostedInLastNumberOfDays, request.AdditionalDataSources, request.Sort,
+                request.ExcludeNational));
             var standardsTask = _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
             await Task.WhenAll(vacanciesTask, standardsTask);
@@ -90,7 +92,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference.Replace("VAC","")}";
 
                 // increase the count of vacancy appearing in search results counter metrics.
-                _metrics.IncreaseVacancySearchResultViews(vacanciesItem.Id);
+                _metrics.IncreaseVacancySearchResultViews(vacanciesItem.VacancyReference.TrimVacancyReference());
             }
             
             return new GetVacanciesQueryResult()

@@ -56,7 +56,7 @@ public class SubmitApplicationCommandHandler(
             application.Candidate.FirstName,
             vacancy.Title,
             vacancy.EmployerName,
-            vacancyService.GetVacancyWorkLocation(vacancy),
+            vacancyService.GetVacancyWorkLocation(vacancy, true),
             helper.CandidateApplicationUrl);
         await notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens));
         var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();

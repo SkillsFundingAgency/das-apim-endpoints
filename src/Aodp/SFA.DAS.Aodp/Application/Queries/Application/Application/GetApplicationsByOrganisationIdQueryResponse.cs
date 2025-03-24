@@ -1,6 +1,6 @@
-﻿using SFA.DAS.Aodp.Application;
+﻿
 
-public class GetApplicationsByOrganisationIdQueryResponse
+public partial class GetApplicationsByOrganisationIdQueryResponse
 {
     public List<Application> Applications { get; set; } = new();
 
@@ -14,6 +14,8 @@ public class GetApplicationsByOrganisationIdQueryResponse
         public string Owner { get; set; }
         public string Reference { get; set; }
         public Guid FormVersionId { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public string? Status { get; set; }
 
     }
 }

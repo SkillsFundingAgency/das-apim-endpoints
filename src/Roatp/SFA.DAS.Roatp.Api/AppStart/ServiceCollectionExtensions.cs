@@ -16,7 +16,7 @@ public static class ServiceCollectionExtensions
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient();
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         AddCharityApiClient(services, configuration);
     }
 
