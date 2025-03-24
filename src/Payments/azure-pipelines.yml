@@ -52,5 +52,3 @@ stages:
   parameters:
     OuterApiName: Payments
     MandateCheckClientCert: $True
-    ConfigurationSecrets:
-      UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
