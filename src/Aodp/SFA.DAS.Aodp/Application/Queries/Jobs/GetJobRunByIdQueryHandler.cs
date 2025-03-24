@@ -16,10 +16,19 @@ namespace SFA.DAS.Aodp.Application.Queries.Jobs
             response.Success = false;
             try
             {
-                var result = await _apiClient.GetWithResponseCode<GetJobRunByIdQueryResponse>(new GetJobRunByIdApiRequest(query.Id));
+                var result = await _apiClient.GetWithResponseCode<GetJobRunByIdApiResponse>(new GetJobRunByIdApiRequest(query.Id));
                 result.EnsureSuccessStatusCode();
 
-                response.Value = result.Body;
+                response.Value = new GetJobRunByIdQueryResponse()
+                { 
+                    Id = result.Body.Id,
+                    EndTime = result.Body.EndTime,
+                    JobId = result.Body.JobId,
+                    RecordsProcessed = result.Body.RecordsProcessed,
+                    StartTime = result.Body.StartTime,
+                    Status = result.Body.Status,
+                    User = result.Body.User
+                };
                 response.Success = true;
 
             }

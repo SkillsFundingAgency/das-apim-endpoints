@@ -18,10 +18,13 @@ public class GetJobRunsQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClie
 
         try
         {
-            var result = await _apiClient.GetWithResponseCode<GetJobRunsQueryResponse>(new GetJobRunsApiRequest() { JobName = query.JobName });
+            var result = await _apiClient.GetWithResponseCode<GetJobRunsApiResponse>(new GetJobRunsApiRequest() { JobName = query.JobName });
             result.EnsureSuccessStatusCode();
 
-            response.Value = result.Body;
+            response.Value = new GetJobRunsQueryResponse()
+            {
+                 JobRuns = result.Body.JobRuns,
+            };
             response.Success = true;
 
         }

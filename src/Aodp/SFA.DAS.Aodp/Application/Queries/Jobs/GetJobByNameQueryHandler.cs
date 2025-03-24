@@ -17,10 +17,17 @@ public class GetJobByNameQueryHandler(IAodpApiClient<AodpApiConfiguration> apiCl
 
         try
         {
-            var result = await _apiClient.GetWithResponseCode<GetJobByNameQueryResponse>(new GetJobByNameApiRequest(query.JobName));
+            var result = await _apiClient.GetWithResponseCode<GetJobByNameApiResponse>(new GetJobByNameApiRequest(query.JobName));
             result.EnsureSuccessStatusCode();
 
-            response.Value = result.Body;
+            response.Value = new GetJobByNameQueryResponse()
+            {
+                Id = result.Body.Id,
+                Status = result.Body.Status,
+                Enabled = result.Body.Enabled,
+                LastRunTime = result.Body.LastRunTime,
+                Name = result.Body.Name,
+            };
             response.Success = true;
 
         }
