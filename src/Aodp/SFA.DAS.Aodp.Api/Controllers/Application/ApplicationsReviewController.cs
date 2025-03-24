@@ -131,13 +131,13 @@ public class ApplicationsReviewController : BaseController
     }
 
 
-    [HttpGet("/api/application-reviews/{applicationReviewId}/details")]
-    [ProducesResponseType(typeof(GetApplicationDetailsByIdQueryResponse), StatusCodes.Status200OK)]
+    [HttpGet("/api/application-reviews/{applicationReviewId}/form-answers")]
+    [ProducesResponseType(typeof(GetApplicationFormAnswersByReviewIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetApplicationDetailsByIdAsync(Guid applicationReviewId)
+    public async Task<IActionResult> GetApplicationFormDetailsByIdAsync(Guid applicationReviewId)
     {
-        var query = new GetApplicationDetailsByIdQuery(applicationReviewId);
+        var query = new GetApplicationFormAnswersByReviewIdQuery(applicationReviewId);
         return await SendRequestAsync(query);
     }
 }
