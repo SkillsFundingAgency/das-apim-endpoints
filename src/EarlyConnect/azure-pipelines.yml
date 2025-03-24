@@ -58,3 +58,4 @@ stages:
       EarlyConnectLepsNeApiClientId: $(EarlyConnectLepsNeApiClientId)
       EarlyConnectLepsNeApiClientSecret: $(EarlyConnectLepsNeApiClientSecret)
       EarlyConnectLepsLoApiKey: $(EarlyConnectLepsLoApiKey)
+      EarlyConnectLepsLaApiKey: $(EarlyConnectLepsLaApiKey)
