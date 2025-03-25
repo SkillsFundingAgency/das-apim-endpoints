@@ -2,7 +2,7 @@
 
 public class PagedApprenticeshipsResponse
 {
-    public List<Apprenticeship> Apprenticeships { get; set; } = [];
+    public List<Apprenticeship> Items { get; set; } = [];
 
     public int TotalItems { get; set; }
     public int TotalPages { get; set; }

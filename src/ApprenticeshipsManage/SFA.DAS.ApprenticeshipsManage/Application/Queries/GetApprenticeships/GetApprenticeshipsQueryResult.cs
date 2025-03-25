@@ -14,7 +14,7 @@ public class GetApprenticeshipsQueryResult : PagedQueryResult<Apprenticeship>
             TotalItems = source.TotalItems,
             Page = source.Page,
             PageSize = source.PageSize,
-            Items = source.Apprenticeships
+            Items = source.Items
         };
     }
 }

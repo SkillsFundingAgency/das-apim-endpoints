@@ -15,6 +15,11 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<ApprenticeshipsApiConfiguration>(configuration.GetSection(nameof(ApprenticeshipsApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>()!.Value);
+        services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection(nameof(CollectionCalendarApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>()!.Value);
 
+        var azureAdConfiguration = configuration
+                .GetSection("CollectionCalendarApiConfiguration")
+                .Get<CollectionCalendarApiConfiguration>();
     }
 }

@@ -83,7 +83,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             var authorizationHeader = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                throw new AuthException("Cannot generate service token as the Authorization header is present");
+                throw new AuthException("Cannot generate service token as the Authorization header is not present");
             }
 
             var claims = new JwtSecurityTokenHandler().ReadJwtToken(authorizationHeader.Replace("Bearer ", string.Empty)).Claims.ToList();

@@ -22,11 +22,14 @@ public class ApprenticeshipsControllerTests
           [Greedy] ApprenticeshipsController appretniceshipsController)
     {
         string academicyear = "2024-09-01";
+
+        var validDate = DateTime.TryParse(academicyear, out var searchDateValue);
+
         mockMediator
             .Setup(x => x.Send(
                 It.Is<GetApprenticeshipsQuery>(x =>
                 x.Ukprn == ukprn &&
-                x.AcademicYear == academicyear &&
+                x.AcademicYearDate == searchDateValue &&
                 x.Page == page &&
                 x.PageSize == Math.Clamp(pageSize, 10, 100)
                 ),

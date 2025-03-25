@@ -22,6 +22,29 @@ builder.Services
                 Title = "ApprenticeshipsManageOuterApi",
                 Version = "v1"
             });
+        c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+            Name = "Authorization", // The header name
+            In = ParameterLocation.Header, // Location of the parameter
+            Type = SecuritySchemeType.Http, // HTTP-based authentication
+            Scheme = "bearer", // The scheme (lowercase "bearer" for Bearer auth)
+            BearerFormat = "JWT" // Optional: indicates the token format (e.g., JWT)
+        });
+        c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>() // No scopes needed for simple Bearer auth
+        }
+    });
     })
     .AddControllers(o =>
     {

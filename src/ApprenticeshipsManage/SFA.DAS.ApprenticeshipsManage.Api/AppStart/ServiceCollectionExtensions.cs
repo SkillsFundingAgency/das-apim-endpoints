@@ -13,9 +13,12 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+
         services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
 
         services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
+        services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
 
 
         return services;
