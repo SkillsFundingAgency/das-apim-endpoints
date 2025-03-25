@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
-using SFA.DAS.Aodp.Application.Commands.Qualification;
-using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Application.Commands.Qualification;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
+using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Queries.Application.Review;
+using SFA.DAS.Aodp.Application.Queries.Qualifications;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
 {
@@ -148,6 +150,60 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             };
 
             return response;
+        }
+
+        [HttpGet("/api/qualifications/{qualificationReference}/QualificationVersions")]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationVersionsForQualificationByReferenceQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetQualificationVersionsForQualificationByReference(string qualificationReference)
+        {
+            return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
+        }
+
+        [HttpGet("api/qualifications/{qualificationVersionId}/feedback")]
+        [ProducesResponseType(typeof(GetFeedbackForQualificationFundingByIdQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetFeedbackForQualificationFundingById(Guid qualificationVersionId)
+        {
+            return await SendRequestAsync(new GetFeedbackForQualificationFundingByIdQuery(qualificationVersionId));
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers-outcome")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveQualificationFundingOffersOutcome(SaveQualificationFundingOffersOutcomeCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveQualificationFundingOffers(SaveQualificationFundingOffersCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers-details")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveFundingOfferDetails(SaveQualificationFundingOffersDetailsCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/Create-QualificationDiscussionHistory")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> QualificationFundingOffersSummary(CreateQualificationDiscussionHistoryCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
         }
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {           
