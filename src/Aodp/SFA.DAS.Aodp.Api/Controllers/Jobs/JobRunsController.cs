@@ -41,7 +41,7 @@ namespace SFA.DAS.Aodp.Api.Controllers.JobRuns
             return await SendRequestAsync(query);
         }
 
-        [HttpPost("/api/job/requestrun")]
+        [HttpPost("/api/job/request-run")]
         [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> RequestJobRuns([FromBody] RequestJobRunCommand command)
