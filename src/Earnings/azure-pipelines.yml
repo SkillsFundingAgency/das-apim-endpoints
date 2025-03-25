@@ -49,3 +49,5 @@ stages:
   parameters:
     OuterApiName: Earnings
     AzureArtifactsFeed: dct-pkg
+    ConfigurationSecrets:
+      UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
