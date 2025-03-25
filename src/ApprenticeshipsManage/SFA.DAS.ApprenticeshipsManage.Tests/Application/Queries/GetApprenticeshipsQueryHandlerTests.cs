@@ -45,6 +45,6 @@ public class GetApprenticeshipsQueryHandlerTests
         actual.Page.Should().Be(apiResponse.Page);
         actual.PageSize.Should().Be(apiResponse.PageSize);
 
-        //apiClient.Verify(client => client.GenerateServiceToken("ApprenticeshipsManage"), Times.Once());
+        apiClient.Verify(client => client.GenerateServiceToken("ApprenticeshipsManage"), Times.Once());
     }
 }
