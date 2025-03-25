@@ -1,5 +1,6 @@
 using System.Globalization;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Extensions;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.VacancyServices.Wage;
@@ -70,21 +71,6 @@ public class GetSavedSearchVacanciesQueryResult
                 TrainingCourse = $"{source.CourseTitle} (level {source.CourseLevel})",
                 Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,
                 VacancySource = source.VacancySource,
-            };
-        }
-        private static string GetClosingDate(DateTime closingDate, bool isExternalVacancy = false)
-        {
-            var timeSuffix = isExternalVacancy ? string.Empty : " at 11:59pm";
-            var timeUntilClosing = closingDate.Date - DateTime.UtcNow;
-            var daysToExpiry = (int)Math.Ceiling(timeUntilClosing.TotalDays);
-
-            return daysToExpiry switch
-            {
-                < 0 => $"Closed on {closingDate:dddd d MMMM}",
-                0 => $"Closes today{timeSuffix}",
-                1 => $"Closes tomorrow ({closingDate:dddd d MMMM}{timeSuffix})",
-                <= 31 => $"Closes in {daysToExpiry} days ({closingDate:dddd d MMMM}{timeSuffix})",
-                _ => $"Closes on {closingDate:dddd d MMMM}"
             };
         }
     }
