@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -7,6 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,7 +17,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCour
 
 public sealed class GetCourseByLarsCodeQueryHandler(
     ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient,
-    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient,
+    ICachedLocationLookupService _cachedLocationLookupService
 ) : IRequestHandler<GetCourseByLarsCodeQuery, GetCourseByLarsCodeQueryResult>
 {
     public const string KsbsSkillsType = "Skill";
@@ -36,15 +39,17 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding?.Count > 0 ?
             standardDetails.ApprenticeshipFunding[standardDetails.ApprenticeshipFunding.Count - 1] :
-            null;
+        null;
+
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
 
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 new GetCourseTrainingProvidersCountRequest(
                     [query.LarsCode],
                     query.Distance,
-                    query.Lat,
-                    query.Lon
+                    locationItem?.Latitude,
+                    locationItem?.Longitude
                 )
         );
 
