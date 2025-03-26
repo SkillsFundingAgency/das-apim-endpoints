@@ -75,13 +75,12 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetCourseByLarsCodeQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCourseByLarsCode([FromRoute] int larscode, [FromQuery] int? distance, [FromQuery] decimal? lat, [FromQuery] decimal? lon)
+    public async Task<IActionResult> GetCourseByLarsCode([FromRoute] int larscode, [FromQuery] int? distance, [FromQuery] string location)
     {
         var result = await _mediator.Send(new GetCourseByLarsCodeQuery
         {
             LarsCode = larscode,
-            Lat = lat,
-            Lon = lon,
+            Location = location,
             Distance = distance
         });
 
