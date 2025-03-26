@@ -97,7 +97,7 @@
     <PackageVersion Include="contentful.aspnetcore" Version="7.5.2" />
     <PackageVersion Include="Polly" Version="8.5.2" />
     <PackageVersion Include="Polly.Extensions.Http" Version="3.0.0" />
-	<PackageVersion Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
-	<PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+    <PackageVersion Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
+    <PackageVersion Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
   </ItemGroup>
 </Project>
