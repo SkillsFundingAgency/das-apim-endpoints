@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -22,5 +23,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public bool DisabilityConfident { get; set; }
         public int SavedSearchesCount { get; init; }
         public bool SearchAlreadySaved { get; init; }
+        public DateTime? CandidateDateOfBirth { get; set; }
     }
 }
