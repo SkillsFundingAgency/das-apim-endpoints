@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Queries.Application.Application;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
@@ -129,5 +130,15 @@ public class ApplicationsReviewController : BaseController
         return await SendRequestAsync(command);
     }
 
+
+    [HttpGet("/api/application-reviews/{applicationReviewId}/form-answers")]
+    [ProducesResponseType(typeof(GetApplicationFormAnswersByReviewIdQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationFormDetailsByIdAsync(Guid applicationReviewId)
+    {
+        var query = new GetApplicationFormAnswersByReviewIdQuery(applicationReviewId);
+        return await SendRequestAsync(query);
+    }
 }
  
