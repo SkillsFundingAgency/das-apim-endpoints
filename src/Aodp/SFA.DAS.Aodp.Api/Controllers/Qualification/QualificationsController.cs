@@ -76,7 +76,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
          
         }
 
-        [HttpGet("{qualificationReference}")]
+        [HttpGet("{qualificationReference}/detail")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationDetailsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
