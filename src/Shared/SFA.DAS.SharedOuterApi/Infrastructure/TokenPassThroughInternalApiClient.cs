@@ -51,7 +51,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             {
                 var serviceBearerToken = _httpContextAccessor.HttpContext.Items[_serviceBearerTokenKey].ToString();
                 httpRequestMessage.Headers.Add("Authorization", $"Bearer {serviceBearerToken}");
-                _logger.LogInformation("Service Bearer token attached to request message.");
+                _logger.LogInformation("Service Bearer token attached to request message: {token}", serviceBearerToken);
                 return Task.CompletedTask;
             }
 
@@ -81,6 +81,8 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
             _logger.LogInformation("TokenPassThroughInternalApiClient.GetBearerToken attempt for {service}", serviceAccount);
 
             var authorizationHeader = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
+            _logger.LogInformation("TokenPassThroughInternalApiClient existing authHeader {service}", authorizationHeader);
+
             if (string.IsNullOrEmpty(authorizationHeader))
             {
                 throw new AuthException("Cannot generate service token as the Authorization header is not present");
