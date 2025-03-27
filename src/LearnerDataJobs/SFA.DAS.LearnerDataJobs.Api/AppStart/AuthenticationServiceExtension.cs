@@ -18,8 +18,6 @@ public static class AuthenticationServiceExtension
             {
                 {"default", "APIM"}
             };
-
-            //services.AddAuthentication(azureAdConfiguration, policies);
         }
 
         return services;
