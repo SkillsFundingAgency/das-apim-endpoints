@@ -134,7 +134,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                 IsSavedVacancy = source.IsSavedVacancy,
                 VacancySource = source.VacancySource,
-                StartDate = source.StartDate
             };
         }
     }
