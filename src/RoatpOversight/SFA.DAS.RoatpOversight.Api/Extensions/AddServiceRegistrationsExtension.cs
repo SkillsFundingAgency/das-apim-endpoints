@@ -15,7 +15,7 @@ public static class AddServiceRegistrationsExtension
     public static IServiceCollection AddServiceRegistrations(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient();
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
         AddRoatpV2ApiClient(services, configuration);
         return services;

@@ -96,7 +96,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
     }
     
     [Test, MoqAutoData]
-    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_Success_Email_Sent_When_Successful_With_Old_Location_Values(
+    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_Success_Email_Sent_When_Successful_With_Null_Or_Empty_Location_Values(
         EmailEnvironmentHelper emailEnvironmentHelper,
         CandidateApplicationStatusCommand request,
         GetCandidateApiResponse candidateResponse,
@@ -129,13 +129,13 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 && c.Tokens["firstName"] == candidateResponse.FirstName
                 && c.Tokens["vacancy"] == request.VacancyTitle
                 && c.Tokens["employer"] == request.VacancyEmployerName
-                && c.Tokens["location"] == $"{request.VacancyCity}, {request.VacancyPostcode}"
+                && c.Tokens["location"] == "Unknown"
             )
         ), Times.Once);
     }
     
     [Test, MoqAutoData]
-    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_Unsuccess_Email_Sent_When_Unsuccessful_With_Old_Location_Values(
+    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_Unsuccess_Email_Sent_When_Unsuccessful_With_Null_Or_Empty_Location_Values(
         CandidateApplicationStatusCommand request,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetCandidateApiResponse candidateResponse,
@@ -168,7 +168,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 && c.Tokens["firstName"] == candidateResponse.FirstName
                 && c.Tokens["vacancy"] == request.VacancyTitle
                 && c.Tokens["employer"] == request.VacancyEmployerName
-                && c.Tokens["location"] == $"{request.VacancyCity}, {request.VacancyPostcode}"
+                && c.Tokens["location"] == "Unknown"
             )
         ), Times.Once);
     }
