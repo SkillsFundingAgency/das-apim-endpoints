@@ -3,8 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
+using SFA.DAS.AODP.Application.Commands.Qualification;
+using SFA.DAS.AODP.Application.Queries.Qualifications;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
 {

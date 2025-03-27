@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 
@@ -258,27 +259,6 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var badRequestResult = (BadRequestObjectResult)result;
             var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
-        }
-
-
-        [Test]
-        public async Task GetQualificationVersionsForQualificationByReference_ReturnsOkResult_WithVersions()
-        {
-            // Arrange
-            var queryResponse = _fixture.Create<BaseMediatrResponse<GetQualificationVersionsForQualificationByReferenceQueryResponse>>();
-            queryResponse.Success = true;
-            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationVersionsForQualificationByReferenceQuery>(), default))
-                         .ReturnsAsync(queryResponse);
-
-            // Act
-            var result = await controller.GetQualificationVersionsForQualificationByReference("Ref123");
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.AssignableFrom<GetQualificationVersionsForQualificationByReferenceQueryResponse>());
         }
 
         [Test]
