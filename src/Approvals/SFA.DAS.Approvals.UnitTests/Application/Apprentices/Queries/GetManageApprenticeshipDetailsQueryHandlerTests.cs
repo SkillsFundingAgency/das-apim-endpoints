@@ -7,6 +7,7 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Exceptions;
@@ -66,6 +67,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
             .With(x => x.EmployerAccountId, 123)
             .With(x => x.Id, _query.ApprenticeshipId)
             .With(x => x.ActualStartDate, (DateTime?)null)
+            .With(x => x.IsOnFlexiPaymentPilot, true)
             .Create();
 
         _priceEpisodesResponse = fixture.Create<GetPriceEpisodesResponse>();
@@ -571,5 +573,38 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
         result.PaymentsStatus.ReasonFrozen.Should().BeNull();
         result.PaymentsStatus.FrozenOn.Should().BeNull();
+    }
+
+    [Test]
+    public async Task Handle_If_Not_On_PaymentsSimplificationPilot_Do_Not_Call_ApprenticeshipsApi_Subsequently()
+    {
+        _apprenticeship.IsOnFlexiPaymentPilot = false;
+
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<Guid>(
+                It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)), Times.Never);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(
+                It.IsAny<GetPendingPriceChangeRequest>()), Times.Never);
+
+        _apprenticeshipsApiClient.Verify(x =>
+            x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(
+                It.IsAny<GetPendingStartDateChangeRequest>()), Times.Never);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(
+                It.IsAny<GetPaymentStatusRequest>()), Times.Never);
+
+        _apprenticeshipsApiClient.Verify(
+            x => x.GetWithResponseCode<GetLearnerStatusResponse>(
+                It.IsAny<GetLearnerStatusRequest>()), Times.Never);
+
+        result.LearnerStatusDetails.Should().NotBeNull();
+        result.LearnerStatusDetails.LearnerStatus.Should().Be(LearnerStatus.None);
+        result.PaymentsStatus.Should().NotBeNull();
+        result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
     }
 }

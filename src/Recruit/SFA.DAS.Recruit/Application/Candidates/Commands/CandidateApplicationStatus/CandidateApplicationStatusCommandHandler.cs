@@ -68,7 +68,7 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
                 _emailEnvironmentHelper.SuccessfulApplicationEmailTemplateId, 
                 candidate.Body.Email,
                 candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
-                GetLocation(request));
+                GetLocation(request.VacancyLocation));
             sendEmailCommand = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
         }
         else
@@ -77,7 +77,7 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
                 _emailEnvironmentHelper.UnsuccessfulApplicationEmailTemplateId,
                 candidate.Body.Email,
                 candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
-                GetLocation(request),
+                GetLocation(request.VacancyLocation),
                 request.Feedback, _emailEnvironmentHelper.CandidateApplicationUrl);
             sendEmailCommand = new SendEmailCommand(unsuccessfulEmail.TemplateId, unsuccessfulEmail.RecipientAddress, unsuccessfulEmail.Tokens);
         }
@@ -86,18 +86,14 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
         return new Unit();
     }
 
-    private static string GetLocation(CandidateApplicationStatusCommand request)
+    /// <summary>
+    /// Gets the location of the vacancy from the request.
+    /// If the VacancyLocation is not provided, it returns "Unknown".
+    /// </summary>
+    /// <param name="vacancyLocation"></param>
+    /// <returns>The location of the vacancy or "Unknown" if not provided. This ensures that the email tokens always have a meaningful value, avoiding null or empty strings.</returns>
+    private static string GetLocation(string vacancyLocation)
     {
-        if (!string.IsNullOrWhiteSpace(request.VacancyLocation))
-        {
-            return request.VacancyLocation;
-        }
-
-        // TODO: remove once MultipleLocations is released
-        return string.IsNullOrEmpty(request.VacancyCity)
-            ? request.VacancyPostcode
-            : string.IsNullOrEmpty(request.VacancyPostcode)
-                ? request.VacancyCity
-                : $"{request.VacancyCity}, {request.VacancyPostcode}";
+        return !string.IsNullOrWhiteSpace(vacancyLocation) ? vacancyLocation : "Unknown";
     }
 }

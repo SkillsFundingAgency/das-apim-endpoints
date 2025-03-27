@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
 using MediatR;
@@ -8,6 +9,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
+using SFA.DAS.Apprenticeships.Application.Notifications;
+using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -19,6 +22,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 public class WhenUnfreezingPayments
 {
     private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
+    private Mock<IMediator> _mockMediator = null!;
     private ApprenticeshipController _sut = null!;
     private Fixture _fixture = null!;
 
@@ -27,6 +31,7 @@ public class WhenUnfreezingPayments
     {
         _fixture = new Fixture();
         _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockMediator = new Mock<IMediator>();
     }
 
     [Test]
@@ -59,15 +64,32 @@ public class WhenUnfreezingPayments
         result.ShouldBeOfType<OkResult>();
     }
 
+    [Test]
+    public async Task ThenSendsNotification()
+    {
+        // Arrange
+        SetUpController();
+        var apprenticeshipKey = _fixture.Create<Guid>();
+
+        //  Act
+        var result = await _sut.UnfreezeApprenticeshipPayments(apprenticeshipKey);
+
+        // Assert
+        _mockMediator.Verify(x => x.Send(It.Is<PaymentStatusActiveCommand>(cmd => cmd.ApprenticeshipKey == apprenticeshipKey), default), Times.Once);
+    }
+
     private void SetUpController()
     {
         var basicApiResponse = new ApiResponse<object>("", HttpStatusCode.OK, "");
         _mockApprenticeshipsApiClient
             .Setup(apiClient => apiClient.PostWithResponseCode<object>(It.IsAny<PostUnfreezePaymentsRequest>(), false))
             .ReturnsAsync(basicApiResponse);
+        _mockMediator
+            .Setup(x => x.Send(It.IsAny<PaymentStatusActiveCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new NotificationResponse{ Success = true });
         _sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(),
             _mockApprenticeshipsApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(),
-            Mock.Of<IMediator>());
+            _mockMediator.Object);
     }
 
     private void SetUpControllerWithErrorResponseFromInnerApi()
