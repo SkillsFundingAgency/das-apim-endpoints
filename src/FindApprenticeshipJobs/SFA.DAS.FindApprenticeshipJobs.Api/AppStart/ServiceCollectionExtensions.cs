@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient();
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();

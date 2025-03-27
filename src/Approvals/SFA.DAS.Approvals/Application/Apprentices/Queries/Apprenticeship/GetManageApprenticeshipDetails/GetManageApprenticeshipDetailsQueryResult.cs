@@ -28,7 +28,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public bool? CanActualStartDateBeChanged { get; set; }
         public PendingStartDateChange PendingStartDateChange { get; set; }
         public PaymentsStatus PaymentsStatus { get; set; }
-        public LearnerStatus LearnerStatus { get; set; }
+        public LearnerStatusDetails LearnerStatusDetails { get; set; }
     }
 
     public class PendingPriceChange
@@ -55,5 +55,14 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetMa
         public bool PaymentsFrozen { get; set; }
         public string ReasonFrozen { get; set; }
         public DateTime? FrozenOn { get; set; }
+    }
+
+    public class LearnerStatusDetails
+    {
+        public LearnerStatus LearnerStatus { get; set; }
+        public DateTime? WithdrawalChangedDate { get; set; }
+        public string WithdrawalReason { get; set; }
+        public DateTime? LastCensusDateOfLearning { get; set; }
+        public DateTime? LastDayOfLearning { get; set; }
     }
 }
