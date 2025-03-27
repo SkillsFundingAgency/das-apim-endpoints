@@ -7,17 +7,12 @@ using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Reservations.Application.AccountUsers.Queries
 {
-    public class GetAccountsQueryHandler : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
+    public class GetAccountsQueryHandler(IEmployerAccountsService employerAccountsService)
+        : IRequestHandler<GetAccountsQuery, GetAccountsQueryResult>
     {
-        private readonly IEmployerAccountsService _employerAccountsService;
-
-        public GetAccountsQueryHandler(IEmployerAccountsService employerAccountsService)
-        {
-            _employerAccountsService = employerAccountsService;
-        }
         public async Task<GetAccountsQueryResult> Handle(GetAccountsQuery request, CancellationToken cancellationToken)
         {
-            var employerAccounts = (await _employerAccountsService.GetEmployerAccounts(new EmployerProfile
+            var employerAccounts = (await employerAccountsService.GetEmployerAccounts(new EmployerProfile
             {
                 Email = request.Email,
                 UserId = request.UserId

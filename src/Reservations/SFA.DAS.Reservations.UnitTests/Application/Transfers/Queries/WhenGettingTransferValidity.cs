@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Application.Transfers.Queries.GetTransferValidity;
@@ -34,7 +35,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.That(result.IsValid, Is.True);
+            result.IsValid.Should().BeTrue();
         }
 
         [Test, MoqAutoData]
@@ -55,7 +56,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.That(result.IsValid, Is.False);
+            result.IsValid.Should().BeFalse();
         }
 
         [Test, MoqAutoData]
@@ -79,7 +80,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.That(result.IsValid, Is.True);
+            result.IsValid.Should().BeTrue();
         }
 
 
@@ -100,7 +101,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.Transfers.Queries
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            Assert.That(result.IsValid, Is.False);
+            result.IsValid.Should().BeFalse();
         }
     }
 }

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
+using FluentAssertions;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Reservations.Api.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -37,7 +38,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.AppStart
             var provider = serviceCollection.BuildServiceProvider();
 
             var type = provider.GetService(toResolve);
-            Assert.That(type, Is.Not.Null);
+            type.Should().NotBeNull();
         }
         
         private static IConfigurationRoot GenerateConfiguration()

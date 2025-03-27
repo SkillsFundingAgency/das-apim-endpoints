@@ -8,18 +8,12 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Reservations.Application.Providers.Queries.GetProvider
 {
-    public class GetProviderQueryHandler : IRequestHandler<GetProviderQuery, GetProviderResult>
+    public class GetProviderQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> roatpApiClient)
+        : IRequestHandler<GetProviderQuery, GetProviderResult>
     {
-        private readonly IRoatpServiceApiClient<RoatpConfiguration> _roatpApiClient;
-  
-        public GetProviderQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> roatpApiClient)
-        {
-            _roatpApiClient = roatpApiClient;
-        }
-
         public async Task<GetProviderResult> Handle(GetProviderQuery request, CancellationToken cancellationToken)
         {
-            var result = await _roatpApiClient.Get<GetRoatpProviderResponse>(
+            var result = await roatpApiClient.Get<GetRoatpProviderResponse>(
                 new GetProviderRequest
                 {
                     Ukprn = request.Ukprn

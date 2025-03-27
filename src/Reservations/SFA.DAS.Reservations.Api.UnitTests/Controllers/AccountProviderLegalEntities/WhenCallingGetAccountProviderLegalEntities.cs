@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Api.Controllers;
+using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.AccountProviderLegalEntities.Queries;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Reservations.InnerApi.Responses;
 
 namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.AccountProviderLegalEntities
 {
@@ -35,10 +37,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.AccountProviderLegalEnt
 
             var controllerResult = await controller.Get(ukprn, operations) as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProviderAccountLegalEntitiesResponse;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             model.Should().BeEquivalentTo(mediatorResult.AccountProviderLegalEntities);
         }
         [Test, MoqAutoData]
@@ -57,7 +59,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.AccountProviderLegalEnt
 
             var controllerResult = await controller.Get(ukprn, operations) as NotFoundResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
 

@@ -12,6 +12,7 @@ using SFA.DAS.Reservations.Api.Controllers;
 using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.ProviderAccounts.Queries;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Reservations.InnerApi.Responses;
 
 namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
 {
@@ -29,7 +30,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
 
             var actual = await controller.GetProviderStatus(ukprn) as OkObjectResult;
             
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             var actualModel = actual.Value as ProviderAccountResponse;
             actualModel.CanAccessService.Should().Be(result);
         }
