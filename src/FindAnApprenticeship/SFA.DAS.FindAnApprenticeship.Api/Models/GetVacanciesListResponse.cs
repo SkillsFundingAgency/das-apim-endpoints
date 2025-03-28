@@ -98,6 +98,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             {
                 Id = source.Id,
                 ClosingDate = source.ClosingDate,
+                StartDate = source.StartDate,
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 PostedDate = source.PostedDate,
                 Title = source.Title,
@@ -133,7 +134,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                 IsSavedVacancy = source.IsSavedVacancy,
                 VacancySource = source.VacancySource,
-                StartDate = source.StartDate
             };
         }
     }

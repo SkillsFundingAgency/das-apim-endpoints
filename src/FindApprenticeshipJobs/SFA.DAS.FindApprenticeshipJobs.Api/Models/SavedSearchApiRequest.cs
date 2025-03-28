@@ -35,6 +35,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
             public string? Wage { get; set; }
 
             public string? ClosingDate { get; set; }
+            public string? StartDate { get; set; }
 
             public string? TrainingCourse { get; set; }
 
@@ -98,6 +99,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                     {
                         Id = vacancy.Id,
                         ClosingDate = vacancy.ClosingDate,
+                        StartDate = vacancy.StartDate,
                         Distance = vacancy.Distance,
                         EmployerName = vacancy.EmployerName,
                         Title = vacancy.Title,
