@@ -29,6 +29,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
         public short AcademicYear { get; set; }
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
+        public Guid EpisodePriceKey { get; set; }
     }
 
     public class AdditionalPayment
