@@ -14,7 +14,7 @@ public class GetApprenticeshipsQueryHandler(
 {
     public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
     {
-        var academicDatesResponse = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByDateRequest(request.AcademicYearDate));
+        var academicDatesResponse = await collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByYearRequest(request.AcademicYear));
         apprenticeshipApiClient.GenerateServiceToken("ApprenticeshipsManage");
       
         var applicationsResponse = await apprenticeshipApiClient.Get<PagedApprenticeshipsResponse>(

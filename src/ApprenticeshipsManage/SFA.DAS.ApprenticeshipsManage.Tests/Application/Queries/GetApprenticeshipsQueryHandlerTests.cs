@@ -27,11 +27,11 @@ public class GetApprenticeshipsQueryHandlerTests
             EndDate = new DateTime(2025, 7, 31)
         };
 
-        query.AcademicYearDate = new DateTime(2024, 11, 30);
+        query.AcademicYear = 2425;
 
-        var expectedUrl = $"/{query.Ukprn}/apprenticeships/by-dates?startDate={calendarResponse.StartDate.ToString("yyy-MM-dd")}&endDate={calendarResponse.EndDate.ToString("yyy-MM-dd")}&page={query.Page}&pageSize={query.PageSize}";
+        var expectedUrl = $"/{query.Ukprn}/apprenticeships/by-dates?startDate={calendarResponse.StartDate:yyy-MM-dd}&endDate={calendarResponse.EndDate:yyy-MM-dd}&page={query.Page}&pageSize={query.PageSize}";
 
-        calendarApi.Setup(client => client.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearByDateRequest>()))
+        calendarApi.Setup(client => client.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearByYearRequest>()))
           .ReturnsAsync(calendarResponse);
 
         apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllApprenticeshipsByDatesRequest>(c => c.GetUrl == expectedUrl)))

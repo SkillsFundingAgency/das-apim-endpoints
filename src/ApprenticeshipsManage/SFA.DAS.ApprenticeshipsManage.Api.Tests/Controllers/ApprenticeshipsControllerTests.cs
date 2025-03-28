@@ -21,15 +21,13 @@ public class ApprenticeshipsControllerTests
           [Frozen] Mock<IMediator> mockMediator,
           [Greedy] ApprenticeshipsController appretniceshipsController)
     {
-        string academicyear = "2024-09-01";
-
-        var validDate = DateTime.TryParse(academicyear, out var searchDateValue);
+        int academicyear = 2425;       
 
         mockMediator
             .Setup(x => x.Send(
                 It.Is<GetApprenticeshipsQuery>(x =>
                 x.Ukprn == ukprn &&
-                x.AcademicYearDate == searchDateValue &&
+                x.AcademicYear == academicyear &&
                 x.Page == page &&
                 x.PageSize == Math.Clamp(pageSize, 10, 100)
                 ),
@@ -48,21 +46,5 @@ public class ApprenticeshipsControllerTests
         model.PageSize.Should().Be(getApprenticeshipsResult.PageSize);
         model.Total.Should().Be(getApprenticeshipsResult.TotalItems);
         model.TotalPages.Should().Be(getApprenticeshipsResult.TotalPages);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Invalid_Date_Returns_BadRequest(
-         string ukprn,
-         int page,
-         int pageSize,
-         [Greedy] ApprenticeshipsController appretniceshipsController)
-    {
-        string academicyear = "2425";
-
-
-        var controllerResult = await appretniceshipsController.GetApprenticeships(ukprn, academicyear, page, pageSize) as BadRequestResult;
-
-        controllerResult.Should().NotBeNull();
-        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
     }
 }
