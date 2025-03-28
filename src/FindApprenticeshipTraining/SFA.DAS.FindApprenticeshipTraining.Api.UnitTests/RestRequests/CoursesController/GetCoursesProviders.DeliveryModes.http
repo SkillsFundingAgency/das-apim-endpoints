@@ -1,0 +1,50 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 119
+@OrderByDistance = Distance
+@DeliveryModesWorkpace = Workplace
+@DeliveryModesProvider = Provider
+@DeliveryModesDayRelease = DayRelease
+@DeliveryModesBlockRelease = BlockRelease
+@DeliveryModesInvalidValue=Nothing
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&DeliveryModes={{DeliveryModesWorkpace}}&Distance=50&Latitude=53&Longitude=0
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given delivery mode
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&DeliveryModes={{DeliveryModesProvider}}&Distance=50&Latitude=53&Longitude=0
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given delivery mode
+
+ ### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&DeliveryModes={{DeliveryModesDayRelease}}&Distance=50&Latitude=53&Longitude=0
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given delivery mode
+
+ ### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&DeliveryModes={{DeliveryModesBlockRelease}}&Distance=50&Latitude=53&Longitude=0
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given delivery mode
+
+ ### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&DeliveryModes={{DeliveryModesWorkpace}}&DeliveryModes={{DeliveryModesProvider}}&DeliveryModes={{DeliveryModesDayRelease}}&DeliveryModes={{DeliveryModesBlockRelease}}&Distance=50&Latitude=53&Longitude=0
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for given delivery mode
+
+### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&DeliveryModes={{DeliveryModesInvalidValue}}
+
+# {
+#   "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+#   "title": "One or more validation errors occurred.",
+#   "status": 400,
+#   "errors": {
+#     "DeliveryModes": [
+#       "The value 'Nothing' is not valid."
+#     ]
+#   },
+#   "traceId": ...
+# }
+###
