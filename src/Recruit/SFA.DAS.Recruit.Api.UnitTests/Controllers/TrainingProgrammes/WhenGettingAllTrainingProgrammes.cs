@@ -25,11 +25,11 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.TrainingProgrammes
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetTrainingProgrammesQuery>(),
+                    It.Is<GetTrainingProgrammesQuery>(c=>c.IncludeFoundationApprenticeships),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAll() as ObjectResult;
+            var controllerResult = await controller.GetAll(true) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);

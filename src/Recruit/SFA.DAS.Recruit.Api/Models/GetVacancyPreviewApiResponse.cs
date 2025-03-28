@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SFA.DAS.Recruit.Application.Queries.GetVacancyPreview;
 using SFA.DAS.Recruit.Domain;
@@ -23,6 +24,8 @@ public class GetVacancyPreviewApiResponse
             return null;
         }
         
+        _ = Enum.TryParse<TrainingType>(source.Course.ApprenticeshipType, out var trainingType);
+        
         return new GetVacancyPreviewApiResponse
         {
             OverviewOfRole = source.Course.OverviewOfRole,
@@ -33,7 +36,7 @@ public class GetVacancyPreviewApiResponse
             Title = source.Course.Title,
             ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Course.Level),
             EducationLevelNumber = source.Course.Level,
-            ApprenticeshipType = TrainingType.Standard
+            ApprenticeshipType = trainingType
         };
     }
 

@@ -13,11 +13,13 @@ public class WhenMappingGetVacancyPreviewQueryResultToApiResponse
     public void Then_The_Values_Are_Mapped(GetVacancyPreviewQueryResult source)
     {
         source.Course.Level = 2;
+        source.Course.ApprenticeshipType = "Standard";
         var actual = (GetVacancyPreviewApiResponse)source;
 
-        actual.Should().BeEquivalentTo(source.Course, options => options.ExcludingMissingMembers());
+        actual.Should().BeEquivalentTo(source.Course, options => options.ExcludingMissingMembers().Excluding(c=>c.ApprenticeshipType));
         actual.EducationLevelNumber.Should().Be(source.Course.Level);
         actual.ApprenticeshipLevel.Should().Be(ApprenticeshipLevel.Intermediate);
+        actual.ApprenticeshipType.Should().Be(TrainingType.Standard);
     }
 
     [Test, AutoData]

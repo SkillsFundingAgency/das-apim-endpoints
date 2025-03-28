@@ -28,5 +28,6 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
             }
             return  Skills;
         }
+        public string ApprenticeshipType { get; set; }
     }
 }

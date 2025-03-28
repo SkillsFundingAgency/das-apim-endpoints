@@ -40,10 +40,11 @@ namespace SFA.DAS.Recruit.Domain
 
         public static implicit operator TrainingProgramme(GetStandardsListItem source)
         {
+            _ = Enum.TryParse<TrainingType>(source.ApprenticeshipType, out var apprenticeshipType);
             return new TrainingProgramme
             {
                 Id = source.LarsCode.ToString(),
-                ApprenticeshipType = TrainingType.Standard,
+                ApprenticeshipType = apprenticeshipType,
                 Title = source.Title,
                 EffectiveFrom = source.StandardDates.EffectiveFrom,
                 EffectiveTo = source.StandardDates.EffectiveTo,
