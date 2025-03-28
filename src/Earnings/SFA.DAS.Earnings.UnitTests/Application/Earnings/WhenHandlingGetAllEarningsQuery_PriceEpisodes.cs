@@ -260,7 +260,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.Should().NotBeNull();
 
                 var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+
+                var academicYearInstalments = earningEpisode.Instalments
+                    .Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear))
+                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                    .ToList();
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeInstalmentsThisPeriod");
                 result.Should().NotBeNull();
@@ -291,16 +295,22 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var fm36Learner = _testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
-            foreach (var episodePrice in _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
+            var expectedPriceEpisodes = _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes).ToList();
+            foreach (var episodePrice in expectedPriceEpisodes)
             {
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
                 actualPriceEpisode.Should().NotBeNull();
 
                 var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+
+                var academicYearInstalments = earningEpisode.Instalments
+                    .Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear))
+                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                    .ToList();
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeOnProgPayment");
+
                 result.Should().NotBeNull();
                 result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
                 result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
@@ -336,7 +346,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.Should().NotBeNull();
 
                 var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+
+                var academicYearInstalments = earningEpisode.Instalments
+                    .Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear))
+                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                    .ToList();
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeProgFundIndMaxEmpCont");
                 result.Should().NotBeNull();
@@ -377,7 +391,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.Should().NotBeNull();
 
                 var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+
+                var academicYearInstalments = earningEpisode.Instalments
+                    .Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear))
+                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                    .ToList();
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeProgFundIndMinCoInvest");
                 result.Should().NotBeNull();
@@ -418,7 +436,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.Should().NotBeNull();
 
                 var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-                var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+
+                var academicYearInstalments = earningEpisode.Instalments
+                    .Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear))
+                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                    .ToList();
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeTotProgFunding");
                 result.Should().NotBeNull();
@@ -462,6 +484,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 var earningEpisode = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
                 var expectedAdditionalPayment = earningEpisode.AdditionalPayments
                     .Where(x => x.AcademicYear == short.Parse(_testFixture.CollectionCalendarResponse.AcademicYear) && x.AdditionalPaymentType == incentiveType)
+                    .Where(x => x.DueDate >= episodePrice.Price.StartDate && x.DueDate <= episodePrice.Price.EndDate)
                     .OrderBy(x => x.DueDate)
                     .Skip(paymentNumber - 1)
                     .FirstOrDefault();
