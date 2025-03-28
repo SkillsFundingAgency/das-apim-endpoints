@@ -3,8 +3,10 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Transaction;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
@@ -164,28 +166,9 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.AssignableFrom<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>());
-            var model = (BaseMediatrResponse<GetQualificationDetailsQueryResponse>)okResult.Value;
-            Assert.That(model.Value.Id, Is.EqualTo(queryResponse.Value.Id));
-        }
-
-        [Test]
-        public async Task GetQualificationDetails_ReturnsNotFound_WhenQueryFails()
-        {
-            // Arrange
-            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-            var queryResponse = _fixture.Create<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>();
-            queryResponse.Success = false;
-            queryResponse.ErrorMessage = "No details found for qualification reference: Ref123";
-
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationDetailsQuery>(), default))
-                         .ReturnsAsync(queryResponse);
-
-            // Act
-            var result = await controller.GetQualificationDetails("Ref123");
-
-            // Assert
-            Assert.That(result, Is.InstanceOf<NotFoundObjectResult>());
+            Assert.That(okResult.Value, Is.AssignableFrom<GetQualificationDetailsQueryResponse>());
+            var model = (GetQualificationDetailsQueryResponse)okResult.Value;
+            Assert.That(model.Id, Is.EqualTo(queryResponse.Value.Id));
         }
 
         [Test]
@@ -204,6 +187,45 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
         }
 
+        [Test]
+        public async Task AddQualificationDiscussionHistory_ReturnsOkResult()
+        {
+            //Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            var queryResponse = _fixture.Create<BaseMediatrResponse<EmptyResponse>>();
+            var command = _fixture.Create<AddQualificationDiscussionHistoryCommand>();
+            queryResponse.Success = true;
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<AddQualificationDiscussionHistoryCommand>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.AddQualificationDiscussionHistory(command);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetDiscussionHistoriesForQualification_ReturnsOk()
+        {
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>>();
+            queryResponse.Success = true;
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetDiscussionHistoriesForQualificationQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetDiscussionHistoriesForQualification("Ref123");
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.InstanceOf<GetDiscussionHistoriesForQualificationQueryResponse>());
+            var model = (GetDiscussionHistoriesForQualificationQueryResponse)okResult.Value;
+            Assert.That(queryResponse.Value.QualificationDiscussionHistories[0].Id, Is.EqualTo(model.QualificationDiscussionHistories[0].Id));
+        }
 
         [Test]
         public async Task GetQualificationVersionsForQualificationByReference_ReturnsOkResult_WithVersions()
@@ -223,6 +245,20 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
             Assert.That(okResult.Value, Is.AssignableFrom<GetQualificationVersionsForQualificationByReferenceQueryResponse>());
+        }
+
+        [Test]
+        public async Task GetDiscussionHistoriesForQualification_ReturnsBadRequest_WhenQualificationReferenceIsEmpty()
+        {
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            // Act
+            var result = await controller.GetDiscussionHistoriesForQualification(string.Empty);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            var badRequestResult = (BadRequestObjectResult)result;
+            var badRequestValue = badRequestResult.Value?.GetType().GetProperty("message")?.GetValue(badRequestResult.Value, null);
+            Assert.That(badRequestValue, Is.EqualTo("Qualification reference cannot be empty"));
         }
 
         [Test]
