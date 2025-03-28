@@ -32,19 +32,18 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         {
             // Arrange
             var query = _fixture.Create<GetQualificationDetailsQuery>();
-            var response = _fixture.Create<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>();
-            response.Success = true;
+            var response = _fixture.Create<GetQualificationDetailsQueryResponse>();
 
-            _apiClientMock.Setup(x => x.Get<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>(It.IsAny<GetQualificationDetailsApiRequest>()))
+            _apiClientMock.Setup(x => x.Get<GetQualificationDetailsQueryResponse>(It.IsAny<GetQualificationDetailsApiRequest>()))
                           .ReturnsAsync(response);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(x => x.Get<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>(It.IsAny<GetQualificationDetailsApiRequest>()), Times.Once);
+            _apiClientMock.Verify(x => x.Get<GetQualificationDetailsQueryResponse>(It.IsAny<GetQualificationDetailsApiRequest>()), Times.Once);
             Assert.That(result.Success, Is.True);
-            Assert.That(result.Value.Id, Is.EqualTo(response.Value.Id));
+            Assert.That(result.Value.Id, Is.EqualTo(response.Id));
         }
 
         [Test]
@@ -52,21 +51,15 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         {
             // Arrange
             var query = _fixture.Create<GetQualificationDetailsQuery>();
-            var baseResponse = new BaseMediatrResponse<GetQualificationDetailsQueryResponse>
-            {
-                Success = false,
-                Value = null,
-                ErrorMessage = $"No details found for qualification reference: {query.QualificationReference}"
-            };
 
-            _apiClientMock.Setup(x => x.Get<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>(It.IsAny<GetQualificationDetailsApiRequest>()))
-                          .ReturnsAsync(baseResponse);
+            _apiClientMock.Setup(x => x.Get<GetQualificationDetailsQueryResponse>(It.IsAny<GetQualificationDetailsApiRequest>()))
+                          .Returns(Task.FromResult<GetQualificationDetailsQueryResponse>(null));
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(x => x.Get<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>(It.IsAny<GetQualificationDetailsApiRequest>()), Times.Once);
+            _apiClientMock.Verify(x => x.Get<GetQualificationDetailsQueryResponse>(It.IsAny<GetQualificationDetailsApiRequest>()), Times.Once);
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorMessage, Is.EqualTo($"No details found for qualification reference: {query.QualificationReference}"));
         }
@@ -77,14 +70,14 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             // Arrange
             var query = _fixture.Create<GetQualificationDetailsQuery>();
             var exceptionMessage = "An error occurred";
-            _apiClientMock.Setup(x => x.Get<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>(It.IsAny<GetQualificationDetailsApiRequest>()))
+            _apiClientMock.Setup(x => x.Get<GetQualificationDetailsQueryResponse>(It.IsAny<GetQualificationDetailsApiRequest>()))
                           .ThrowsAsync(new Exception(exceptionMessage));
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(x => x.Get<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>(It.IsAny<GetQualificationDetailsApiRequest>()), Times.Once);
+            _apiClientMock.Verify(x => x.Get<GetQualificationDetailsQueryResponse>(It.IsAny<GetQualificationDetailsApiRequest>()), Times.Once);
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
         }

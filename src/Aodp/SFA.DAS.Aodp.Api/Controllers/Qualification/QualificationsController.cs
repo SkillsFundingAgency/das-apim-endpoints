@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
+using SFA.DAS.AODP.Application.Commands.Qualification;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
 {
@@ -73,7 +76,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
          
         }
 
-        [HttpGet("{qualificationReference}")]
+        [HttpGet("{qualificationReference}/detail")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationDetailsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -86,15 +89,45 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 return BadRequest(new { message = "Qualification reference cannot be empty" });
             }
 
-            var result = await _mediator.Send(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
+            return await SendRequestAsync(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
+        }
 
-            if (!result.Success || result.Value == null)
+        [HttpPost("qualificationdiscussionhistory")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> AddQualificationDiscussionHistory([FromBody] AddQualificationDiscussionHistoryCommand qualificationDiscussionHistory)
+        {
+            return await SendRequestAsync(qualificationDiscussionHistory);
+        }
+
+        [HttpGet("processstatuses")]
+        [ProducesResponseType(typeof(GetProcessStatusesQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetProcessingStatuses()
+        {
+            return await SendRequestAsync(new GetProcessStatusesQuery());
+        }
+
+        [HttpGet("{qualificationReference}/qualificationdiscussionhistories")]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetDiscussionHistoriesForQualification(string qualificationReference)
+        {
+            if (string.IsNullOrWhiteSpace(qualificationReference))
             {
-                _logger.LogWarning(result.ErrorMessage);
-                return NotFound(new { message = $"No details found for qualification reference: {qualificationReference}" });
+                _logger.LogWarning("Qualification reference is empty");
+                return BadRequest(new { message = "Qualification reference cannot be empty" });
             }
+            return await SendRequestAsync(new GetDiscussionHistoriesForQualificationQuery { QualificationReference = qualificationReference });
+        }
 
-            return Ok(result);
+        [HttpPost("qualificationstatus")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateQualificationStatus([FromBody] UpdateQualificationStatusCommand qualificationStatus)
+        {
+            return await SendRequestAsync(qualificationStatus);
         }
 
         [HttpGet("export")]        
