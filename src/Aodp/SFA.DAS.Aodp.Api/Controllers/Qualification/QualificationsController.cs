@@ -94,7 +94,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
         }
 
-        [HttpGet("{qualificationReference}/{version}")]
+        [HttpGet("{qualificationReference}/qualificationversions/{version}")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationDetailsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -104,7 +104,13 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             if (string.IsNullOrWhiteSpace(qualificationReference))
             {
                 _logger.LogWarning("Qualification reference is empty");
-                return BadRequest(new { message = "Qualification reference cannot be empty" });
+                return BadRequest(new { message = "No version specified" });
+            }
+
+            if (version is null|version==0)
+            {
+                _logger.LogWarning("No version specified");
+                return BadRequest(new { message = "No version specified" });
             }
 
             return await SendRequestAsync(new GetQualificationVersionQuery { QualificationReference = qualificationReference, Version = version });
