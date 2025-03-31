@@ -103,6 +103,27 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'                       
 
+  /reference-data/providers/{ukprn}/employers:
+    get:
+      summary: This endpoint returns the employers linked to the provider sent across in the ukprn field
+      description: This endpoint is required when the ConRefNumber is updated from the provider within the ILR record. Data returned will form the basis for validation of the conRefNumber stored in the ILR record to ensure that incorrect relationships are not stored
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner cohort
+          schema:
+            type: string
+          
+      responses:
+        '200':
+          $ref: '#/components/responses/refDataEmployersPerProvider'
+        '401':
+          $ref: '#/components/responses/unauthorized'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse' 
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -156,6 +177,15 @@ components:
               $ref: '#/components/schemas/learnerRequest'
 
   responses:
+    refDataEmployersPerProvider:
+      description: Response for reference data endpoint returning employers with a relationship to a provider
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/employer'
+    
     acceptedResponse:
       description: A resource has been created or updated through the service
       headers:
@@ -236,6 +266,12 @@ components:
       required:
         - code
         - message
+    
+    employer:
+      type: object
+      properties:
+        employerAgreementId:
+          type: string
     
     healthcheckResults:
       type: array
