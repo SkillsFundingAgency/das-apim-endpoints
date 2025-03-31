@@ -11,6 +11,7 @@ public class GetQualificationDetailsQueryResponse
     public Guid Id { get; set; }
     public Guid QualificationId { get; set; }
     public Guid VersionFieldChangesId { get; set; }
+    public string? VersionFieldChanges { get; set; }
     public Guid ProcessStatusId { get; set; }
     public int AdditionalKeyChangesReceivedFlag { get; set; }
     public Guid LifecycleStageId { get; set; }
