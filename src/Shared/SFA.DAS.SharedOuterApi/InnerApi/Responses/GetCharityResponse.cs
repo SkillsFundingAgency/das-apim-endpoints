@@ -23,7 +23,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         public bool IsInAdministration { get; set; }
         public bool? WasPreviouslyExcepted { get; set; }
         public DateTime? RemovalDate { get; set; }
-        public List<CharityTrustee> Trustees { get; set; } = new List<CharityTrustee>();
+        public List<CharityTrustee> Trustees { get; set; } = new();
     }
 
     public class CharityTrustee
