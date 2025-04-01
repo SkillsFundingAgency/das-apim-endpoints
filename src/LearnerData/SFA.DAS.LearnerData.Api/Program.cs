@@ -70,8 +70,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-app
-    .UseSwagger()
+app.UseSwagger()
     .UseSwaggerUI(s =>
     {
         s.SwaggerEndpoint("/swagger/v1/swagger.json", "LearnerDataOuterApi");
