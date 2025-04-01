@@ -47,7 +47,7 @@ internal static class JoinedDataModelsExtensions
                 EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive, 
                 2),
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLearnerAdditionalPayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildPriceEpisodeInstalmentsThisPeriodValues(joinedEarningsApprenticeship, joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear()),
+            PriceEpisodePeriodisedValuesBuilder.BuildPriceEpisodeInstalmentsThisPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear()),
             PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeOnProgPayment),
             PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier),
             PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier),

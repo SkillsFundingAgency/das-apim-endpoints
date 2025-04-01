@@ -26,7 +26,7 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
 
-    public static PriceEpisodePeriodisedValues BuildPriceEpisodeInstalmentsThisPeriodValues(JoinedEarningsApprenticeship apprenticeship, JoinedPriceEpisode joinedPriceEpisode, short academicYear)
+    public static PriceEpisodePeriodisedValues BuildPriceEpisodeInstalmentsThisPeriodValues(JoinedPriceEpisode joinedPriceEpisode, short academicYear)
     {
         var instalments = GetInstalmentsForAcademicYear(joinedPriceEpisode, academicYear);
 
