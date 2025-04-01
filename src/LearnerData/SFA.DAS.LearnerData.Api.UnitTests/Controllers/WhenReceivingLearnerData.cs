@@ -19,14 +19,12 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
     public class WhenReceivingLearnerData
     {
-
         [Test, MoqAutoData]
         public async Task And_when_working_Then_Accepted_returned(
             List<LearnerDataRequest> learners,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LearnersController sut)
         {
-
             var result = await sut.Post(learners) as AcceptedResult;
 
             result.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
@@ -47,4 +45,3 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
-
