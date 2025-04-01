@@ -9,6 +9,7 @@ using NServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.LearnerData.Api.AppStart;
+using System.Net;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,9 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
 
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
     transport.ConnectionString(configuration["NServiceBusConfiguration:NServiceBusConnectionString"]);
+
+    var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
+    if (!string.IsNullOrWhiteSpace(decodedLicence)) endpointConfiguration.License(decodedLicence);
 
     return NServiceBus.Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
 });
