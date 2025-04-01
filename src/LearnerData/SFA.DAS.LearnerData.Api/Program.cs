@@ -8,6 +8,8 @@ using SFA.DAS.LearnerData.Application;
 using NServiceBus;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Configuration;
+using SFA.DAS.LearnerData.Api.AppStart;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +18,6 @@ var configuration = builder.Configuration.BuildSharedConfiguration();
 builder.Services
     .AddLogging()
     .AddApplicationInsightsTelemetry()
-    //.AddServiceRegistration()
     .AddEndpointsApiExplorer()
     .AddSwaggerGen(c =>
     {
@@ -52,13 +53,12 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
     return NServiceBus.Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
 });
 
-
 builder.Logging.AddApplicationInsights();
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("SFA.DAS", LogLevel.Information);
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Warning);
 
-//builder.Services.AddAuthentication(configuration);
-//builder.Services.AddConfigurationOptions(configuration);
+builder.Services.AddAuthentication(configuration);
+builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
 
@@ -80,32 +80,3 @@ app
 app.MapControllers();
 
 app.Run();
-
-
-// Add services to the container.
-
-/*
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-
-app.MapControllers();
-
-app.Run();
-*/
