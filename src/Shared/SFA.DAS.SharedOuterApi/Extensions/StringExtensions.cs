@@ -10,5 +10,10 @@ namespace SFA.DAS.SharedOuterApi.Extensions
                 ? string.Empty 
                 : vacancyReference.Replace("VAC", string.Empty, StringComparison.CurrentCultureIgnoreCase);
         }
+        
+        public static long ConvertVacancyReferenceToLong(this string vacancyReference)
+        {
+            return Convert.ToInt64(vacancyReference?.TrimVacancyReference() ?? "0");
+        }
     }
 }
