@@ -56,8 +56,8 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 
         _apprenticeshipsApiClient.GenerateServiceToken("Earnings");
-        var apprenticeshipsData = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
-        var earningsData = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
+        var apprenticeshipsData = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn, CollectionYear = request.CollectionYear, CollectionPeriod = request.CollectionPeriod });
+        var earningsData = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn, request.CollectionYear, request.CollectionPeriod));
 
         if(!IsDataReturnedValid(request.Ukprn, apprenticeshipsData, earningsData))
             return new GetAllEarningsQueryResult { FM36Learners = [] };
