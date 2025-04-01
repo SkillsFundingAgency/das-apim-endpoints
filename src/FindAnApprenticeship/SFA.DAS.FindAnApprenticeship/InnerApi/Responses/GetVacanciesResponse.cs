@@ -32,6 +32,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("closingDate")] 
         public DateTime ClosingDate { get; set; }
 
+        [JsonPropertyName("startDate")]
+        public DateTime StartDate { get; set; }
+
         [JsonPropertyName("employerName")] 
         public string EmployerName { get; set; }
 
@@ -40,9 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonPropertyName("postedDate")] 
         public DateTime PostedDate { get; set; }
-        [JsonPropertyName("startDate")] 
-        public DateTime StartDate { get; set; }
-
+        
         [JsonPropertyName("title")] 
         public string Title { get; set; }
 
