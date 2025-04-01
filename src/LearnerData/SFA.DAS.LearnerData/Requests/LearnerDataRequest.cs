@@ -13,7 +13,7 @@ public class LearnerDataRequest
     public int PercentageLearningToBeDelivered { get; set; }
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
-    public int AgreementId { get; set; }
+    public string AgreementId { get; set; }
     public bool IsFlexJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
     public int StandardCode { get; set; }
