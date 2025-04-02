@@ -66,11 +66,22 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 
         _logger.LogInformation("Found {apprenticeshipsCount} apprenticeships, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", apprenticeshipsData.Apprenticeships.Count, earningsData.Count, request.Ukprn);
 
-        var joinedApprenticeships = apprenticeshipsData.Apprenticeships
-                .Join(earningsData, 
-                    a => a.Key, 
-                    e => e.Key, 
-                    (apprenticeship, earningsApprenticeship) => new JoinedEarningsApprenticeship(apprenticeship, earningsApprenticeship)).ToList();
+        var joinedApprenticeships = new List<JoinedEarningsApprenticeship>();
+
+        foreach (var apprenticeship in apprenticeshipsData.Apprenticeships)
+        {
+            // Find matching entries in earningsData
+            var matchingEarnings = earningsData.FirstOrDefault(e => e.Key == apprenticeship.Key);
+
+            if (matchingEarnings != null)
+            {
+                // Log the apprenticeship's key
+                _logger.LogInformation($"Processing apprenticeship with key: {apprenticeship.Key}");
+
+                // Add the joined result to the list
+                joinedApprenticeships.Add(new JoinedEarningsApprenticeship(apprenticeship, matchingEarnings));
+            }
+        }
 
         var result = new GetAllEarningsQueryResult
         {
