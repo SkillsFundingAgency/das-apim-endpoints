@@ -5,31 +5,24 @@ using SFA.DAS.Recruit.Application.Queries.GetAddresses;
 using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Recruit.Application.Queries.GetGeoPoint;
+using SFA.DAS.Recruit.Application.Queries.GetPostcodeData;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class LocationsController : ControllerBase
+    public class LocationsController(ILogger<LocationsController> logger, IMediator mediator) : ControllerBase
     {
-        private readonly ILogger<LocationsController> _logger;
-        private readonly IMediator _mediator;
-
-        public LocationsController(ILogger<LocationsController> logger, IMediator mediator)
-        {
-            _logger = logger;
-            _mediator = mediator;
-        }
-
         [HttpGet]
         [Route("")]
         public async Task<IActionResult> Index([FromQuery]string query)
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetAddressesQuery(query));
+                var queryResponse = await mediator.Send(new GetAddressesQuery(query));
 
                 if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
                     return NotFound();
@@ -38,7 +31,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get list of addresses");
+                logger.LogError(e, "Error attempting to get list of addresses");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -49,7 +42,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetGeoPointQuery(postcode));
+                var queryResponse = await mediator.Send(new GetGeoPointQuery(postcode));
 
                 if (queryResponse.GetPointResponse == null)
                     return NotFound();
@@ -58,7 +51,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get geopoint of postcode");
+                logger.LogError(e, "Error attempting to get geopoint of postcode");
                 return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
