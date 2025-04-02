@@ -1,35 +1,36 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using Moq;
-using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Review
+namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Application
 {
     [TestFixture]
-    public class SaveQualificationFundingOffersOutcomeCommandHandlerTests
+    public class SaveSurveyCommandHandlerTests
     {
         private IFixture _fixture;
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-        private SaveQualificationFundingOffersOutcomeCommandHandler _handler;
+        private SaveSurveyCommandHandler _handler;
 
         [SetUp]
         public void SetUp()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
-            _handler = new SaveQualificationFundingOffersOutcomeCommandHandler(_apiClientMock.Object);
+            _handler = new SaveSurveyCommandHandler(_apiClientMock.Object);
         }
 
         [Test]
         public async Task Handle_ReturnsSuccessResponse_WhenApiCallIsSuccessful()
         {
             // Arrange
-            var command = _fixture.Create<SaveQualificationFundingOffersOutcomeCommand>();
+            var command = _fixture.Create<SaveSurveyCommand>();
 
-            _apiClientMock.Setup(x => x.Put(It.IsAny<SaveQualificationFundingOffersOutcomeApiRequest>()))
-                          .Returns(Task.CompletedTask);
+         _apiClientMock.Setup(x => x.PostWithResponseCode<EmptyResponse>(It.IsAny<SaveSurveyApiRequest>(),It.IsAny<bool>()))
+                          .ReturnsAsync(new ApiResponse<EmptyResponse>(new EmptyResponse(), System.Net.HttpStatusCode.OK, ""));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -43,10 +44,10 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Review
         public async Task Handle_ReturnsErrorResponse_WhenApiCallFails()
         {
             // Arrange
-            var command = _fixture.Create<SaveQualificationFundingOffersOutcomeCommand>();
+            var command = _fixture.Create<SaveSurveyCommand>();
             var exceptionMessage = "API call failed";
 
-            _apiClientMock.Setup(x => x.Put(It.IsAny<SaveQualificationFundingOffersOutcomeApiRequest>()))
+            _apiClientMock.Setup(x => x.PostWithResponseCode<EmptyResponse>(It.IsAny<SaveSurveyApiRequest>(), It.IsAny<bool>()))
                           .ThrowsAsync(new Exception(exceptionMessage));
 
             // Act
