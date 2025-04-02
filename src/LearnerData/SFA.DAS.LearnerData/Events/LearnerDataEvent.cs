@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.LearnerData.Events;
 
@@ -25,8 +24,8 @@ public class LearnerDataEvent
     {
         ULN = request.ULN,
         UKPRN = request.UKPRN,
-        Firstname = request.Firstname,
-        Lastname = request.Lastname,
+        FirstName = request.FirstName,
+        LastName = request.LastName,
         Email = request.Email,
         DoB = request.DoB,
         StartDate = request.StartDate,
