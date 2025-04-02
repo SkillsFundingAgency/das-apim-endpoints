@@ -199,4 +199,36 @@ public class RoutesControllerTests
         var model = (ConfigureRoutingForQuestionCommandResponse)okResult.Value;
         Assert.That(model, Is.EqualTo(response));
     }
+
+
+    [Test]
+    public async Task DeleteRouteForQuestion_ReturnsOkResult()
+    {
+        // Arrange
+        DeleteRouteCommand command = _fixture.Create<DeleteRouteCommand>();
+        var response = _fixture.Create<EmptyResponse>();
+        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<DeleteRouteCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.DeleteRouteAsync(command.FormVersionId, command.SectionId, command.PageId, command.QuestionId);
+
+        // Assert
+        _mediatorMock.Verify(m => m.Send(It.Is<DeleteRouteCommand>(c => c.FormVersionId == command.FormVersionId), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(It.Is<DeleteRouteCommand>(c => c.SectionId == command.SectionId), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(It.Is<DeleteRouteCommand>(c => c.PageId == command.PageId), default), Times.Once());
+        _mediatorMock.Verify(m => m.Send(It.Is<DeleteRouteCommand>(c => c.QuestionId == command.QuestionId), default), Times.Once());
+
+        var okResult = (OkObjectResult)result;
+        Assert.That(okResult.Value, Is.AssignableFrom<EmptyResponse>());
+        var model = (EmptyResponse)okResult.Value;
+        Assert.That(model, Is.EqualTo(response));
+    }
 }
