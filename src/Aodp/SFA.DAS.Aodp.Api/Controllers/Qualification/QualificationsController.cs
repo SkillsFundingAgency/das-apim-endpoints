@@ -5,9 +5,11 @@ using SFA.DAS.AODP.Application.Commands.Qualification;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
+using SFA.DAS.AODP.Application.Queries.Qualifications;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
 {
@@ -74,8 +76,8 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             else
             {
                 return BadRequest(new { message = validationResult.ErrorMessage });
-            }           
-         
+            }
+
         }
 
         [HttpGet("{qualificationReference}/detail")]
@@ -92,6 +94,28 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             }
 
             return await SendRequestAsync(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
+        }
+
+        [HttpGet("{qualificationReference}/qualificationversions/{version}")]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationDetailsQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetQualificationDetails(string? qualificationReference, int? version)
+        {
+            if (string.IsNullOrWhiteSpace(qualificationReference))
+            {
+                _logger.LogWarning("Qualification reference is empty");
+                return BadRequest(new { message = "No version specified" });
+            }
+
+            if (version is null|version==0)
+            {
+                _logger.LogWarning("No version specified");
+                return BadRequest(new { message = "No version specified" });
+            }
+
+            return await SendRequestAsync(new GetQualificationVersionQuery { QualificationReference = qualificationReference, Version = version });
         }
 
         [HttpPost("qualificationdiscussionhistory")]
@@ -164,7 +188,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
         }
 
-        [HttpGet("api/qualifications/{qualificationVersionId}/feedback")]
+        [HttpGet("/api/qualifications/{qualificationVersionId}/feedback")]
         [ProducesResponseType(typeof(GetFeedbackForQualificationFundingByIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -209,7 +233,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(command);
         }
         private async Task<IActionResult> HandleNewQualificationCSVExport()
-        {           
+        {
             return await SendRequestAsync(new GetNewQualificationsExportQuery());
         }
 
@@ -224,9 +248,9 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             status = status?.Trim().ToLower();
 
             if (string.IsNullOrEmpty(status))
-            {                
+            {
                 result.IsValid = false;
-                result.ErrorMessage = "Qualification status cannot be empty.";                
+                result.ErrorMessage = "Qualification status cannot be empty.";
             }
             else
             {
@@ -234,7 +258,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             }
 
             if (skip < 0)
-            {                
+            {
                 result.IsValid = false;
                 result.ErrorMessage = "Skip param is invalid.";
             }
