@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Aodp.Application.Queries.Qualifications
+﻿namespace SFA.DAS.Aodp.InnerApi.AodpApi.Jobs
 {
     public class GetJobByNameApiResponse
     {
