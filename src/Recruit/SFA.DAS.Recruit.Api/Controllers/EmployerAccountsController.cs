@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetAccount;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
+using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
 using SFA.DAS.Recruit.InnerApi.Requests;
 
@@ -68,6 +70,23 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Error getting employer dashboard stats");
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("count")]
+        public async Task<IActionResult> GetApplicationReviewsCount([FromRoute] long accountId, [FromBody] List<long> vacancyReferences)
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetApplicationReviewsCountByAccountIdQuery(accountId, vacancyReferences));
+
+                return Ok(queryResult);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting employer application reviews stats");
                 return BadRequest();
             }
         }
