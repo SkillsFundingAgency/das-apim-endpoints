@@ -32,7 +32,7 @@ public class GetTasksQueryHandler(
     public async Task<GetTasksQueryResult> Handle(GetTasksQuery request, CancellationToken cancellationToken)
     {
         logger.LogInformation("Getting Tasks for account {AccountId}", request.AccountId);
-
+        
         var accountTask = accountsApi.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(request.AccountId));
 
         var pledgeApplicationsToReviewTask = ltmApiClient.Get<GetApplicationsResponse>(new GetApplicationsRequest
@@ -53,7 +53,6 @@ public class GetTasksQueryHandler(
             ApplicationStatusFilter = ApplicationStatus.Accepted
         });
         
-
         var apprenticeChangesTask = commitmentsV2ApiClient.Get<GetApprenticeshipUpdatesResponse>(new GetPendingApprenticeChangesRequest(request.AccountId));
 
         var transferRequestsTask = commitmentsV2ApiClient.Get<GetTransferRequestSummaryResponse>(new GetTransferRequestsRequest(request.AccountId, TransferType.AsSender));
@@ -95,13 +94,15 @@ public class GetTasksQueryHandler(
         );
 
         var pendingTransferRequestsRequestsToReviewCount = transferRequests?.TransferRequestSummaryResponse?.Count(x => x.Status == TransferApprovalStatus.Pending);
-
+        var isWithinLevyNotificationDateRange = IsWithinLevyNotificationDateRange();
+        var showLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && isWithinLevyNotificationDateRange;
+        
         return new GetTasksQueryResult
         {
             NumberOfCohortsReadyToReview = cohortsToReview?.Count ?? 0,
             NumberTransferPledgeApplicationsToReview = pledgeApplicationsToReviewResponse?.TotalItems ?? 0,
             NumberOfPendingTransferConnections = pendingTransferConnections?.Count ?? 0,
-            ShowLevyDeclarationTask = account?.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy && IsInDateRange(),
+            ShowLevyDeclarationTask = showLevyDeclarationTask,
             NumberOfTransferRequestToReview = pendingTransferRequestsRequestsToReviewCount ?? 0,
             NumberOfApprenticesToReview = apprenticeChangesCount,
             NumberOfAcceptedTransferPledgeApplicationsWithNoApprentices = pledgeApplicationsAcceptedIdsWithoutApprentices.Count,
@@ -143,10 +144,8 @@ public class GetTasksQueryHandler(
         return acceptedApplicationIdsWithoutApprentices;
     }
 
-    private bool IsInDateRange()
+    private bool IsWithinLevyNotificationDateRange()
     {
-        int dayOfMonth = currentDateTime.Now.Day;
-        var isInDateRange = dayOfMonth >= 16 && dayOfMonth < 20;
-        return isInDateRange;
+        return currentDateTime.Now.Day is >= 16 and < 20;
     }
 }

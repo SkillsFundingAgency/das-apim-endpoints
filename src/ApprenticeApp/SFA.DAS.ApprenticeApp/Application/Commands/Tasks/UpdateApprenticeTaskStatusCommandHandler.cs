@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands
         public async Task<Unit> Handle(UpdateApprenticeTaskStatusCommand request, CancellationToken cancellationToken)
         {
             ApprenticeTaskData data = new ApprenticeTaskData();
-            await _progressApi.PostWithResponseCode<PatchApprenticeTaskStatusRequest>(new PatchApprenticeTaskStatusRequest(request.ApprenticeshipId, request.TaskId, request.StatusId, data));
+            await _progressApi.PostWithResponseCode<PatchApprenticeTaskStatusRequest>(new PatchApprenticeTaskStatusRequest(request.ApprenticeshipId, request.TaskId, request.StatusId, data), false);
             return Unit.Value;
         }
     }

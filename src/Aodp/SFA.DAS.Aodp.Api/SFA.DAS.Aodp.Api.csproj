@@ -17,6 +17,7 @@
 		<PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
 		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
 		<PackageReference Include="Microsoft.Extensions.Options" />
+		<PackageReference Include="System.Security.Cryptography.X509Certificates" />
 	</ItemGroup>
 
 	<ItemGroup>

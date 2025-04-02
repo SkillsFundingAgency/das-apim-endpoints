@@ -1,3 +1,4 @@
+using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 TotalFound = source.TotalFound,
                 DisabilityConfident = source.DisabilityConfident,
                 SavedSearchesCount = source.SavedSearchesCount,
-                SearchAlreadySaved = source.SearchAlreadySaved
+                SearchAlreadySaved = source.SearchAlreadySaved,
+                CandidateDateOfBirth = source.CandidateDateOfBirth,
             };
         }
+        [JsonPropertyName("candidateDateOfBirth")]
+        public DateTime? CandidateDateOfBirth { get; set; }
         [JsonPropertyName("totalFound")]
         public long TotalFound { get; set; }
-
         [JsonPropertyName("totalApprenticeshipCount")]
         public long TotalApprenticeshipCount { get; init; }
         [JsonPropertyName("totalCompetitiveVacanciesCount")]

@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.AODP.Domain.Qualifications.Requests
+namespace SFA.DAS.Aodp.InnerApi.AodpApi.Jobs
 {
     public class GetJobByNameApiRequest : IGetApiRequest
     {

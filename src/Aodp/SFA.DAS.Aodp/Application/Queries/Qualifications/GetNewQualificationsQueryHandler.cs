@@ -1,6 +1,7 @@
 ﻿using MediatR;
+using SFA.DAS.Aodp.Application.Queries.Jobs;
+using SFA.DAS.Aodp.InnerApi.AodpApi.Jobs;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
-using SFA.DAS.AODP.Domain.Qualifications.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 

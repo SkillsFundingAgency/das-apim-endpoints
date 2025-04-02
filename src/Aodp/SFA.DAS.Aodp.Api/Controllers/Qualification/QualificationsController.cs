@@ -1,8 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
+using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
+using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
 {
@@ -21,6 +23,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
 
         [HttpGet]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualifications([FromQuery] string? status,
@@ -48,7 +51,14 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 }
                 else if (validationResult.ProcessedStatus == "changed")
                 {
-                    var query = new GetChangedQualificationsQuery();
+                    var query = new GetChangedQualificationsQuery()
+                    {
+                        Name = name,
+                        Organisation = organisation,
+                        QAN = qan,
+                        Skip = skip,
+                        Take = take
+                    };
                     return await SendRequestAsync(query);
                 }
                 else
@@ -87,28 +97,90 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return Ok(result);
         }
 
-        [HttpGet("export")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetNewQualificationsCsvExportResponse>), StatusCodes.Status200OK)]
+        [HttpGet("export")]        
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationsExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationCSVExportData([FromQuery] string? status)
+        public async Task<IActionResult> GetQualificationExportData([FromQuery] string? status)
         {
-            IActionResult response = await HandleNewQualificationCSVExport();          
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                _logger.LogWarning("Status parameter is empty");
+                return BadRequest(new { message = "Status parameter cannot be empty" });
+            }
+
+            IActionResult response = status.ToLower() switch
+            {
+                "new" => await HandleNewQualificationCSVExport(),
+                "changed" => await HandleChangedQualificationCSVExport(),
+                _ => BadRequest(new { message = "Status parameter not a valid value" })
+            };
 
             return response;
-        }       
+        }
 
-        private async Task<IActionResult> HandleNewQualificationCSVExport()
+        [HttpGet("/api/qualifications/{qualificationReference}/QualificationVersions")]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationVersionsForQualificationByReferenceQueryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetQualificationVersionsForQualificationByReference(string qualificationReference)
         {
-            var result = await _mediator.Send(new GetNewQualificationsCsvExportQuery());
+            return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
+        }
 
-            if (result == null || !result.Success || result.Value == null)
-            {
-                _logger.LogWarning(result?.ErrorMessage);
-                return NotFound(new { message = result?.ErrorMessage });
-            }
-            return Ok(result);
+        [HttpGet("api/qualifications/{qualificationVersionId}/feedback")]
+        [ProducesResponseType(typeof(GetFeedbackForQualificationFundingByIdQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetFeedbackForQualificationFundingById(Guid qualificationVersionId)
+        {
+            return await SendRequestAsync(new GetFeedbackForQualificationFundingByIdQuery(qualificationVersionId));
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers-outcome")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveQualificationFundingOffersOutcome(SaveQualificationFundingOffersOutcomeCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveQualificationFundingOffers(SaveQualificationFundingOffersCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/save-qualification-funding-offers-details")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> SaveFundingOfferDetails(SaveQualificationFundingOffersDetailsCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+
+        [HttpPut("/api/qualifications/{qualificationVersionId}/Create-QualificationDiscussionHistory")]
+        [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> QualificationFundingOffersSummary(CreateQualificationDiscussionHistoryCommand command, Guid qualificationVersionId)
+        {
+            command.QualificationVersionId = qualificationVersionId;
+            return await SendRequestAsync(command);
+        }
+        private async Task<IActionResult> HandleNewQualificationCSVExport()
+        {           
+            return await SendRequestAsync(new GetNewQualificationsExportQuery());
+        }
+
+        private async Task<IActionResult> HandleChangedQualificationCSVExport()
+        {
+            return await SendRequestAsync(new GetChangedQualificationsExportQuery());
         }
 
         private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan)

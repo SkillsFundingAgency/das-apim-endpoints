@@ -16,6 +16,7 @@ public partial class GetApplicationsByOrganisationIdQueryResponse
         public Guid FormVersionId { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public string? Status { get; set; }
+        public bool NewMessage { get; set; }
 
     }
 }

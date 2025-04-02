@@ -79,4 +79,18 @@ public class RoutesController : BaseController
     {
         return await SendRequestAsync(command);
     }
+
+    [HttpDelete("/api/routes/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}")]
+    [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteRouteAsync(Guid formVersionId, Guid sectionId, Guid pageId, Guid questionId)
+    {
+        return await SendRequestAsync(new DeleteRouteCommand()
+        {
+            FormVersionId = formVersionId,
+            SectionId = sectionId,
+            PageId = pageId,
+            QuestionId = questionId
+        });
+    }
 }

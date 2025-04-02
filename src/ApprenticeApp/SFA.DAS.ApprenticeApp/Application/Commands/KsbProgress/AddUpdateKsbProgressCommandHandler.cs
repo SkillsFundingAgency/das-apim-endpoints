@@ -18,7 +18,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands
 
         public async Task<Unit> Handle(AddUpdateKsbProgressCommand request, CancellationToken cancellationToken)
         {
-            await _progressApi.PostWithResponseCode<PostApprenticeTaskRequest>(new PostKsbProgressRequest(request.ApprenticeshipId, request.Data));
+            await _progressApi.PostWithResponseCode<PostApprenticeTaskRequest>(new PostKsbProgressRequest(request.ApprenticeshipId, request.Data), false);
             return Unit.Value;
         }
     }
