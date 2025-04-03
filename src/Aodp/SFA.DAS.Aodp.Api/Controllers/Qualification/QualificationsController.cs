@@ -31,7 +31,8 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualifications([FromQuery] string? status,
+        public async Task<IActionResult> GetQualifications([FromQuery] List<Guid>? processStatusIds,
+            [FromQuery] string? status,
             [FromQuery] int? skip,
             [FromQuery] int? take,
             [FromQuery] string? name,
@@ -50,7 +51,8 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                         Organisation = organisation,
                         QAN = qan,
                         Skip = skip,
-                        Take = take
+                        Take = take,
+                        ProcessStatusIds = processStatusIds
                     };
                     return await SendRequestAsync(query);
                 }
