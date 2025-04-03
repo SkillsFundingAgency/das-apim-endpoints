@@ -105,12 +105,12 @@ public class FormsController : BaseController
         return await SendRequestAsync(command);
     }
 
-    [HttpDelete("/api/forms/{formVersionId}")]
+    [HttpDelete("/api/forms/{formId}")]
     [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> RemoveAsync(Guid formVersionId)
+    public async Task<IActionResult> RemoveAsync(Guid formId)
     {
-        var command = new DeleteFormVersionCommand(formVersionId);
+        var command = new DeleteFormCommand(formId);
 
         return await SendRequestAsync(command);
     }
