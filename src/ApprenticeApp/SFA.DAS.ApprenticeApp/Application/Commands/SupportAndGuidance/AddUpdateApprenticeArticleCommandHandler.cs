@@ -35,10 +35,11 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeSubscriptions
             ApprenticeArticle apprenticeArticleData = new ApprenticeArticle()
             {
                 LikeStatus = request.LikeStatus,
-                IsSaved = request.IsSaved
+                IsSaved = request.IsSaved,
+                EntryTitle = request.EntryTitle
             };
 
-            await _accountsApiClient.Post(new PostApprenticeArticlesRequest(request.Id, request.EntryId){ Data = apprenticeArticleData });
+            await _accountsApiClient.Post(new PostApprenticeArticlesRequest(request.Id, request.EntryId, request.EntryTitle){ Data = apprenticeArticleData });
 
             return Unit.Value;
         }
