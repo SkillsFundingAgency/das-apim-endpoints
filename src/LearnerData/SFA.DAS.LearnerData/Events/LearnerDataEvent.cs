@@ -19,23 +19,7 @@ public class LearnerDataEvent
     public bool IsFlexJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
     public int StandardCode { get; set; }
-
-    public static implicit operator LearnerDataEvent(LearnerDataRequest request) => new LearnerDataEvent
-    {
-        ULN = request.ULN,
-        UKPRN = request.UKPRN,
-        FirstName = request.FirstName,
-        LastName = request.LastName,
-        Email = request.Email,
-        DoB = request.DoB,
-        StartDate = request.StartDate,
-        PlannedEndDate = request.PlannedEndDate,
-        PercentageLearningToBeDelivered = request.PercentageLearningToBeDelivered,
-        EpaoPrice = request.EpaoPrice,
-        TrainingPrice = request.TrainingPrice,
-        AgreementId = request.AgreementId,
-        IsFlexJob = request.IsFlexJob,
-        PlannedOTJTrainingHours = request.PlannedOTJTrainingHours,
-        StandardCode = request.StandardCode
-    };
+    public Guid CorrelationId { get; set; }
+    public DateTime ReceivedOn { get; set; }
+    public int AcademicYear { get; set; }
 }
