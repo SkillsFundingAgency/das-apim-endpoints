@@ -2,8 +2,12 @@
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Assessor;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Threading;

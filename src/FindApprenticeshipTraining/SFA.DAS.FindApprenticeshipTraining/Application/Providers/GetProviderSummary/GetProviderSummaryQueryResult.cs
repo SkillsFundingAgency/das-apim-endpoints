@@ -1,4 +1,5 @@
-﻿using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
 using System;
 using System.Collections.Generic;
 
