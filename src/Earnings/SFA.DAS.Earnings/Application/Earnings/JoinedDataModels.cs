@@ -66,9 +66,9 @@ public class JoinedEarningsApprenticeship
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static EarningsEpisode ResolveLegacyEpisodes(EarningsApprenticeship earningsApprenticeship, EpisodePrice episodePrice)
+    private static EarningsEpisode? ResolveLegacyEpisodes(EarningsApprenticeship earningsApprenticeship, EpisodePrice episodePrice)
     {
-        return earningsApprenticeship.Episodes.Single(x => 
+        return earningsApprenticeship.Episodes.SingleOrDefault(x => 
             x.Instalments.Any(y => 
                 y.AcademicYear.GetDateTime(y.DeliveryPeriod) >= episodePrice.StartDate &&
                 y.AcademicYear.GetDateTime(y.DeliveryPeriod) <= episodePrice.EndDate));
@@ -121,19 +121,19 @@ public class JoinedPriceEpisode
     /// <param name="apprenticeshipEpisode"></param>
     /// <param name="apprenticeshipEpisodePrice"></param>
     /// <param name="earningsEpisode"></param>
-    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode earningsEpisode)
+    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
     {
         TrainingCode = apprenticeshipEpisode.TrainingCode;
         StartDate = apprenticeshipEpisodePrice.StartDate;
         EndDate = apprenticeshipEpisodePrice.EndDate;
-        CompletionPayment = earningsEpisode.CompletionPayment;
-        OnProgramTotal = earningsEpisode.OnProgramTotal;
+        CompletionPayment = earningsEpisode?.CompletionPayment ?? 0;
+        OnProgramTotal = earningsEpisode?.OnProgramTotal ?? 0;
         TotalPrice = apprenticeshipEpisodePrice.TotalPrice;
         TrainingPrice = apprenticeshipEpisodePrice.TrainingPrice;
         EndPointAssessmentPrice = apprenticeshipEpisodePrice.EndPointAssessmentPrice;
         FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
-        Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode.Instalments);
-        AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode.AdditionalPayments);
+        Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
+        AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
     }
 
     /// <summary>
