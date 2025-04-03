@@ -91,7 +91,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
-                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription);
             }
 
             services.AddSwaggerGen(c =>
