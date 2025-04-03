@@ -16,7 +16,7 @@ public class LearnerDataController : Controller
     {
         if (ModelState.IsValid)
         {
-            return Accepted( new { correlationId = 1231333 });
+            return Accepted( new { correlationId = Guid.NewGuid().ToString() });
         }
 
         return BadRequest();

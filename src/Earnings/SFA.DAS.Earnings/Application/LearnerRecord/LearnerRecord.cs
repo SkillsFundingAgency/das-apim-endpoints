@@ -14,7 +14,7 @@ public class LearnerRecord
     public int EpaoPrice { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime PlannedEndDate { get; set; }
-    public int AgreementId { get; set; }
+    public string AgreementId { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
 }
