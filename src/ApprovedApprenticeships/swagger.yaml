@@ -111,11 +111,11 @@ components:
       description: A paged apprenticeship response
       headers:
         Link:
-          description: Pagination links (next, prev, first, last)
+          description: Pagination links (next, prev)
           schema:
             type: string
             format: url
-          example: '<https://api.example.com/items?page=2>; rel="next", <https://api.example.com/items?page=5>; rel="last"'
+          example: '<https://api.example.com/items?page=2>; rel="prev", <https://api.example.com/items?page=5>; rel="next"'
       content:
         application/json:
           schema:
