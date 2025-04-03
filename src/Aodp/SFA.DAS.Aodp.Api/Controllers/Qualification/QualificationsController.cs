@@ -64,7 +64,8 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                         Organisation = organisation,
                         QAN = qan,
                         Skip = skip,
-                        Take = take
+                        Take = take,
+                        ProcessStatusIds = processStatusIds
                     };
                     return await SendRequestAsync(query);
                 }
@@ -122,7 +123,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 return BadRequest(new { message = "No version specified" });
             }
 
-            if (version is null|version==0)
+            if (version is null | version == 0)
             {
                 _logger.LogWarning("No version specified");
                 return BadRequest(new { message = "No version specified" });
@@ -169,7 +170,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationStatus);
         }
 
-        [HttpGet("export")]        
+        [HttpGet("export")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationsExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
