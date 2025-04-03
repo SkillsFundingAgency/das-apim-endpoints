@@ -89,6 +89,13 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             FM36Learners = joinedApprenticeships
                 .Select(joinedApprenticeship => {
                     var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear).ToList();
+
+                    if (priceEpisodesForAcademicYear.Count == 0)
+                    {
+                        _logger.LogInformation($"No price episodes for apprenticeship {joinedApprenticeship.Uln}");
+                        _logger.LogInformation($"Academic year info: {currentAcademicYear.AcademicYear} ({currentAcademicYear.StartDate} - {currentAcademicYear.EndDate})");
+                    }
+
                     return new FM36Learner
                     {
                         ULN = long.Parse(joinedApprenticeship.Uln),
