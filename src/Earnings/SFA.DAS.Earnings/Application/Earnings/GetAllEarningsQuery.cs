@@ -126,13 +126,12 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         GetAcademicYearsResponse currentAcademicYear,
            byte collectionPeriod)
     {
-
-        var lastPriceEpisode = priceEpisodesForAcademicYear.OrderBy(x => x.EndDate).Last();
+        var lastPriceEpisode = priceEpisodesForAcademicYear.MaxBy(x => x.EndDate);
 
         return priceEpisodesForAcademicYear
             .Select(priceEpisodeModel => {
 
-                var hasSubsequentPriceEpisodes = priceEpisodeModel.EndDate != lastPriceEpisode.EndDate;
+                var hasSubsequentPriceEpisodes = lastPriceEpisode != null && priceEpisodeModel.EndDate != lastPriceEpisode.EndDate;
                 return new PriceEpisode
                 {
                     PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.TrainingCode.Trim()}-{priceEpisodeModel.StartDate:dd/MM/yyyy}",
@@ -167,9 +166,10 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
     {
         foreach (var episodePrice in priceEpisodes)
         {
-            if (episodePrice.StartDate <= academicYearDetails.StartDate && episodePrice.EndDate >= academicYearDetails.StartDate)
+            if (episodePrice.StartDate <= academicYearDetails.StartDate)
             {
                 // Some of the later instalments are in the current academic year, capture these as a price episode
+                // Include also old episodes, so that we always report on completed episodes
                 yield return new JoinedPriceEpisode(episodePrice, academicYearDetails.StartDate, episodePrice.EndDate);
             }
             else if(episodePrice.StartDate < academicYearDetails.EndDate && episodePrice.EndDate > academicYearDetails.EndDate)
