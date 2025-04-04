@@ -581,5 +581,42 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             var result = await controller.GetApprenticeshipKsbProgress(apprenticeId, ksbId);
             result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
         }
+
+        [Test, MoqAutoData]
+        public async Task GetKsbProgressForTask_NoApprenticeshipDetailsFound_Test(
+           [Frozen] Mock<IApprenticeAppMetrics> metrics,
+           Mock<IMediator> mediator)
+        {
+            var httpContext = new DefaultHttpContext();
+            var apprenticeId = Guid.NewGuid();
+            Guid ksbId = Guid.NewGuid();
+            mediator.Setup(m => m.Send(It.IsAny<GetApprenticeDetailsQuery>(), default)).ReturnsAsync(new GetApprenticeDetailsQueryResult
+            {
+                ApprenticeDetails = new ApprenticeDetails
+                {
+                    Apprentice = new Apprentice
+                    {
+                        ApprenticeId = apprenticeId
+                    },
+                    MyApprenticeship = new MyApprenticeship
+                    {
+                        ApprenticeshipId = 1,
+                        StandardUId = "TestStandardUid"
+                    }
+                }
+            });
+
+            mediator.Setup(m => m.Send(It.IsAny<GetApprenticeshipQuery>(), default)).ReturnsAsync((GetApprenticeshipQueryResult)null);
+
+            var controller = new KsbProgressController(mediator.Object, metrics.Object);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.GetApprenticeshipKsbProgress(apprenticeId, ksbId);
+            result.Should().BeOfType(typeof(Microsoft.AspNetCore.Mvc.OkResult));
+        }
     }
 }
