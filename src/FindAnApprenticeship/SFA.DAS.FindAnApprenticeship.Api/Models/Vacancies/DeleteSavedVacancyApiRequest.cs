@@ -2,6 +2,6 @@
 {
     public record DeleteSavedVacancyApiRequest
     {
-        public string VacancyReference { get; set; }
+        public string VacancyId { get; set; }
     }
 }
