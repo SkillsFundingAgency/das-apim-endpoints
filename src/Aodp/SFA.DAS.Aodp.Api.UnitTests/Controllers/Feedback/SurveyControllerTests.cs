@@ -5,10 +5,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SFA.DAS.Aodp.Api.Controllers.Application;
-using SFA.DAS.Aodp.Application.Commands.Application.Application;
+using SFA.DAS.Aodp.Api.Controllers.Feedback;
+using SFA.DAS.Aodp.Application.Commands.Feedback;
 
-namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Application
+namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Feedback
 {
     [TestFixture]
     public class SurveyControllerTests

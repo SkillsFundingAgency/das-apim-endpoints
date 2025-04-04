@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.Aodp.Application.Commands.Application.Application
+namespace SFA.DAS.Aodp.Application.Commands.Feedback
 {
     public class SaveSurveyCommand : IRequest<BaseMediatrResponse<EmptyResponse>>
     {

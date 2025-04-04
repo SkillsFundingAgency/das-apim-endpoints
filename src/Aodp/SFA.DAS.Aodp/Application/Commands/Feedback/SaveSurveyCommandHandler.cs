@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Aodp.Application.Commands.Application.Application
+namespace SFA.DAS.Aodp.Application.Commands.Feedback
 {
     public class SaveSurveyCommandHandler : IRequestHandler<SaveSurveyCommand, BaseMediatrResponse<EmptyResponse>>
     {
@@ -27,6 +28,7 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Application
                 {
                     Data = request
                 });
+                result.EnsureSuccessStatusCode();
                 response.Success = true;
             }
             catch (Exception ex)

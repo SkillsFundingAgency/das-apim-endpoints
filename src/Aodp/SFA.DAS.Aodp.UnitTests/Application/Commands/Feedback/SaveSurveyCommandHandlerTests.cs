@@ -1,12 +1,12 @@
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using Moq;
-using SFA.DAS.Aodp.Application.Commands.Application.Application;
+using SFA.DAS.Aodp.Application.Commands.Feedback;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Application
+namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Feedback
 {
     [TestFixture]
     public class SaveSurveyCommandHandlerTests
