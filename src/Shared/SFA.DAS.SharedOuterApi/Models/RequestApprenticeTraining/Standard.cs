@@ -11,7 +11,7 @@
         {
             if (source == null) return null;
 
-            return new Standard()
+            return new Standard
             {
                 StandardReference = source.IfateReferenceNumber,
                 StandardTitle = source.Title,

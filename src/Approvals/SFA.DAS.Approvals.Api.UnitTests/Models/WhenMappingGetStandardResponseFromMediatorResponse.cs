@@ -33,6 +33,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
             actual.VersionMinor.Should().Be(source.VersionMinor);
             actual.VersionDetail.Should().BeEquivalentTo(source.VersionDetail);
             actual.Route.Should().BeEquivalentTo(source.Route);
+            actual.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
         }
     }
 }

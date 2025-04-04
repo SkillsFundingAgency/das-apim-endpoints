@@ -45,13 +45,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             {
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = DateTime.UtcNow.AddDays(-10),
                         EffectiveTo = DateTime.UtcNow.AddDays(-9),
                         Duration = notDuration
                     },
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = DateTime.UtcNow.AddDays(-1),
                         EffectiveTo = null,

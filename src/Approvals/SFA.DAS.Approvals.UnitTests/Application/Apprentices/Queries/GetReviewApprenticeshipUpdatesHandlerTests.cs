@@ -150,7 +150,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _priceEpisodesResponse = _fixture.Build<GetPriceEpisodesResponse>()
                 .Create();
 
-            _providerStandardsData.Standards = new List<Standard> { new Standard("123", "123") };
+            _providerStandardsData.Standards = new List<Standard> { new("123", "123") };
 
             _serviceParameters = new ServiceParameters(Party.Provider, _apprenticeship.ProviderId);
 

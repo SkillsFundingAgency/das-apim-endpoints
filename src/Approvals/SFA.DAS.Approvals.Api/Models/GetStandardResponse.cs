@@ -28,6 +28,7 @@ namespace SFA.DAS.Approvals.Api.Models
         public List<GetStandardFundingResponse> ApprenticeshipFunding { get; set; }
         public string StandardPageUrl { get; set; }
         public string Route { get; set; }
+        public string ApprenticeshipType { get; set; }
 
         public static implicit operator GetStandardResponse(GetStandardsListItem source)
         {
@@ -51,7 +52,8 @@ namespace SFA.DAS.Approvals.Api.Models
                 LastDateForNewStarts = source.StandardDates?.LastDateStarts,
                 ApprenticeshipFunding = source.ApprenticeshipFunding.Select(c => (GetStandardFundingResponse)c).ToList(),
                 StandardPageUrl = source.StandardPageUrl,
-                Route = source.Route
+                Route = source.Route,
+                ApprenticeshipType = source.ApprenticeshipType
             };
         }
     }

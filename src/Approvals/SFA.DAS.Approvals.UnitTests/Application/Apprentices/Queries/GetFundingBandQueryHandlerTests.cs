@@ -35,10 +35,9 @@ public class GetFundingBandQueryHandlerTests
             CourseCode = _query.CourseCode,
             StandardUId = "XXXX",
             StandardPageUrl = "https://test123",
-            FundingPeriods = new List<TrainingProgrammeFundingPeriod>()
+            FundingPeriods = new List<TrainingProgrammeFundingPeriod>
             {
-                new TrainingProgrammeFundingPeriod
-                    {EffectiveFrom = DateTime.MinValue, EffectiveTo = DateTime.MaxValue, FundingCap = 1234}
+                new() {EffectiveFrom = DateTime.MinValue, EffectiveTo = DateTime.MaxValue, FundingCap = 1234}
             }
         };
 

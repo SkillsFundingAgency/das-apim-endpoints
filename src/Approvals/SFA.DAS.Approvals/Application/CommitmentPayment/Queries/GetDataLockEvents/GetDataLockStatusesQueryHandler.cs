@@ -31,7 +31,7 @@ namespace SFA.DAS.Approvals.Application.CommitmentPayment.Queries.GetDataLockEve
             
             response.EnsureSuccessStatusCode();
 
-            return new GetDataLockStatusesQueryResult()
+            return new GetDataLockStatusesQueryResult
             {
                 PagedDataLockEvent = response.Body ?? new PageOfResults<DataLockStatusEvent>()
             };

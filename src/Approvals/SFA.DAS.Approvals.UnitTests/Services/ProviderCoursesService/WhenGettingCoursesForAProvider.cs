@@ -91,7 +91,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>> _managingStandardsApiClient;
             private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsV2ApiClient;
             private Mock<ICacheStorageService> _cacheStorageService;
-            private Fixture _autoFixture = new Fixture();
+            private Fixture _autoFixture = new();
             private long _trainingProviderId;
             private TrainingProviderResponse _trainingProviderResponse;
             private TrainingProviderResponse _trainingProviderCacheResponse;

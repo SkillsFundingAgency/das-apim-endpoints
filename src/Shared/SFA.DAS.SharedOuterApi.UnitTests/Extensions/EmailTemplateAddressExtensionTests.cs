@@ -27,8 +27,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Arrange
             var addresses = new List<Address>
             {
-                new Address { AddressLine1 = "123 Main St", Postcode = "12345" },
-                new Address { AddressLine1 = "456 Elm St", Postcode = "67890" }
+                new() { AddressLine1 = "123 Main St", Postcode = "12345" },
+                new() { AddressLine1 = "456 Elm St", Postcode = "67890" }
             };
 
             // Act
@@ -44,12 +44,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Arrange
             var addresses = new List<Address>
             {
-                new Address { AddressLine1 = "Coventry", Postcode = "CV2" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS6" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS16" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS9" },
-                new Address { AddressLine1 = "London", Postcode = "SW1A" },
-                new Address { AddressLine1 = "Newcastle", Postcode = "ST5" },
+                new() { AddressLine1 = "Coventry", Postcode = "CV2" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS6" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS16" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS9" },
+                new() { AddressLine1 = "London", Postcode = "SW1A" },
+                new() { AddressLine1 = "Newcastle", Postcode = "ST5" },
             };
 
             // Act
@@ -65,12 +65,12 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Arrange
             var addresses = new List<Address>
             {
-                new Address { AddressLine1 = "Newcastle", Postcode = "ST5" },
-                new Address { AddressLine1 = "Coventry", Postcode = "CV2" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS6" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS16" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS9" },
-                new Address { AddressLine1 = "London", Postcode = "SW1A" },
+                new() { AddressLine1 = "Newcastle", Postcode = "ST5" },
+                new() { AddressLine1 = "Coventry", Postcode = "CV2" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS6" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS16" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS9" },
+                new() { AddressLine1 = "London", Postcode = "SW1A" },
             };
 
             // Act
@@ -86,9 +86,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Arrange
             var addresses = new List<Address>
             {
-                new Address { AddressLine1 = "Leeds", Postcode = "LS6" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS16" },
-                new Address { AddressLine1 = "Leeds", Postcode = "LS9" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS6" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS16" },
+                new() { AddressLine1 = "Leeds", Postcode = "LS9" },
             };
 
             // Act
@@ -153,9 +153,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Arrange
             var addresses = new List<Address>
             {
-                new Address { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "12345" },
-                new Address { AddressLine1 = "456 Elm St", AddressLine2 = "CityB", Postcode = "67890" },
-                new Address { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "54321" }
+                new() { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "12345" },
+                new() { AddressLine1 = "456 Elm St", AddressLine2 = "CityB", Postcode = "67890" },
+                new() { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "54321" }
             };
 
             // Act
@@ -171,9 +171,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Arrange
             var addresses = new List<Address>
             {
-                new Address { AddressLine1 = "456 Elm St", AddressLine2 = "CityB", Postcode = "67890" },
-                new Address { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "12345" },
-                new Address { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "54321" }
+                new() { AddressLine1 = "456 Elm St", AddressLine2 = "CityB", Postcode = "67890" },
+                new() { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "12345" },
+                new() { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "54321" }
             };
 
             // Act
@@ -189,9 +189,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Arrange
             var addresses = new List<Address>
             {
-                new Address { AddressLine1 = "456 Elm St", AddressLine2 = "CityA", Postcode = "67890" },
-                new Address { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "67890" },
-                new Address { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "67890" }
+                new() { AddressLine1 = "456 Elm St", AddressLine2 = "CityA", Postcode = "67890" },
+                new() { AddressLine1 = "123 Main St", AddressLine2 = "CityA", Postcode = "67890" },
+                new() { AddressLine1 = "789 Oak St", AddressLine2 = "CityA", Postcode = "67890" }
             };
 
             // Act

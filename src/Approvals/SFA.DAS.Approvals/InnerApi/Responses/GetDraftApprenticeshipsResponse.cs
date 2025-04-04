@@ -5,7 +5,7 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
 {
     public class GetDraftApprenticeshipsResponse
     {
-        public List<DraftApprenticeship> DraftApprenticeships { get; set; } = new List<DraftApprenticeship>();
+        public List<DraftApprenticeship> DraftApprenticeships { get; set; } = new();
     }
 
     public class DraftApprenticeship

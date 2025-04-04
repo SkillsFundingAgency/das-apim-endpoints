@@ -5,7 +5,7 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
 {
     public class BulkCreateReservationsWithNonLevyResult
     {
-        public List<BulkCreateReservationResult> BulkCreateResults { get; set; } = new List<BulkCreateReservationResult>();
+        public List<BulkCreateReservationResult> BulkCreateResults { get; set; } = new();
     }
 
     public class BulkCreateReservationResult

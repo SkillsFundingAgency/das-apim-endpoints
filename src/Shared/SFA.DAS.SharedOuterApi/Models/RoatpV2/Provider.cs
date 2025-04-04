@@ -62,7 +62,7 @@
         {
             if (source == null) return null;
 
-            return new Provider()
+            return new Provider
             {
                 Ukprn = source.Ukprn,
                 Name = source.Name,

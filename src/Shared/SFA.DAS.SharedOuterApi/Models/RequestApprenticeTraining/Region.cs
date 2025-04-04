@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.Models.RequestApprenticeTraining
         {
             if (source == null) return null;
 
-            return new Region()
+            return new Region
             {
                 Id = source.Id,
                 SubregionName = source.SubregionName,
