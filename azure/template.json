@@ -96,6 +96,19 @@
         },
         "preProdAlertActionGroupResourceId": {
             "type": "string"
+        },
+        "EnableRouteTableAssociation": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Determines whether to enable route table association on subnet"
+            }
+        },
+        "SharedRouteTableName": {
+            "type": "string",
+            "metadata": {
+                "description": "Determines whether to enable route table association on subnet"
+            }
         }
     },
     "variables": {
@@ -103,8 +116,11 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]",
-        "alertActionGroupResourceId": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]"
-
+        "alertActionGroupResourceId": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
+        "routeTableId": {
+            "id": "[resourceId(subscription().subscriptionId, parameters('sharedEnvResourceGroup'), 'Microsoft.Network/routeTables', parameters('SharedRouteTableName'))]"
+        },
+        "emptyObject": {}
     },
     "resources": [
         {
