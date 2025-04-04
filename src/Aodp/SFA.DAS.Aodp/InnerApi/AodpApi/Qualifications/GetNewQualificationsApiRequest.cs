@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Aodp.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Collections.Specialized;
 
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
@@ -11,6 +12,7 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
         public string? Name { get; set; }
         public string? Organisation { get; set; }
         public string? QAN { get; set; }
+        public List<Guid>? ProcessStatusIds { get; set; }
         public string BaseUrl = "api/qualifications";
 
         public string GetUrl
@@ -48,6 +50,10 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
                 }
 
                 var url = BaseUrl.AttachParameters(queryParams);
+                if (ProcessStatusIds?.Any() ?? false)
+                {
+                    url += "&" + string.Join("&", ProcessStatusIds.Select(v => "processStatusIds=" + v.ToString()));
+                }
                 return url;
             }
         }
