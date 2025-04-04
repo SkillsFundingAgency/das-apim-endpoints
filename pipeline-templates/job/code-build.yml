@@ -9,7 +9,8 @@ parameters:
 jobs:
 - job: CodeBuild
   pool:
-    name: DAS - Continuous Integration Agents
+    name: DAS - Continuous Integration Beta
+    demands: Agent.OS -equals Linux
   variables:
   - group: ESFA - SonarCloud
   - name: buildConfiguration
