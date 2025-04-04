@@ -2,6 +2,7 @@
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Earnings.Helpers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -57,15 +58,28 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 
         _apprenticeshipsApiClient.GenerateServiceToken("Earnings");
-        var apprenticeshipsData = await _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
-        var earningsData = await _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
+        
+        var apprenticeshipsDataTask = _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn });
+        var earningsDataTask = _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn));
+        var currentAcademicYearTask = _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByYearRequest(request.CollectionYear));
 
-        if(!IsDataReturnedValid(request.Ukprn, apprenticeshipsData, earningsData))
+        await Task.WhenAll(apprenticeshipsDataTask, earningsDataTask, currentAcademicYearTask);
+
+        var apprenticeshipsData = apprenticeshipsDataTask.Result;
+        var earningsData = earningsDataTask.Result;
+        var currentAcademicYear = currentAcademicYearTask.Result;
+
+        if (currentAcademicYear == null)
+        {
+            _logger.LogWarning($"Collection Calendar Api failed to return data on requested collection year {request.CollectionYear}. A calculated fall-back will be used instead.");
+            currentAcademicYear = AcademicYearFallbackHelper.GetFallbackAcademicYearResponse(request.CollectionYear);
+        }
+
+        if (!IsDataReturnedValid(request.Ukprn, apprenticeshipsData, earningsData))
             return new GetAllEarningsQueryResult { FM36Learners = [] };
 
-        var currentAcademicYear = await _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByYearRequest(request.CollectionYear));
-
         _logger.LogInformation("Found {apprenticeshipsCount} apprenticeships, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", apprenticeshipsData.Apprenticeships.Count, earningsData.Count, request.Ukprn);
+        _logger.LogInformation($"Academic year {currentAcademicYear.AcademicYear}: {currentAcademicYear.StartDate:yyyy-MM-dd} - {currentAcademicYear.EndDate:yyyy-MM-dd}");
 
         var joinedApprenticeships = new List<JoinedEarningsApprenticeship>();
 
@@ -84,37 +98,42 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         var result = new GetAllEarningsQueryResult
         {
             FM36Learners = joinedApprenticeships
-        .Where(joinedApprenticeship =>
-        {
-            var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear).ToList();
-            return priceEpisodesForAcademicYear.Count != 0; //Include learner only if there are any price episodes
-        })
-        .Select(joinedApprenticeship =>
-        {
-            var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear).ToList();
-
-            return new FM36Learner
+            .Select(joinedApprenticeship =>
             {
-                ULN = long.Parse(joinedApprenticeship.Uln),
-                LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-                EarningsPlatform = SimplificationEarningsPlatform,
-                PriceEpisodes = GetPriceEpisodes(joinedApprenticeship, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
-                LearningDeliveries =
-                [
-                    new LearningDelivery
-                    {
-                        AimSeqNumber = 1,
-                        LearningDeliveryValues = joinedApprenticeship.GetLearningDelivery(currentAcademicYear),
-                        LearningDeliveryPeriodisedValues =
-                            joinedApprenticeship.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
-                        LearningDeliveryPeriodisedTextValues =
-                            joinedApprenticeship.GetLearningDeliveryPeriodisedTextValues()
-                    }
-                ],
-                HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
-            };
-        })
-        .ToArray()
+                var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear)
+                    .ToList();
+
+                //If there are no price episodes for the requested academic year, create one, using the values of the first actual episode
+                if (priceEpisodesForAcademicYear.Count == 0)
+                {
+                    priceEpisodesForAcademicYear =
+                    [
+                        new JoinedPriceEpisode(joinedApprenticeship.Episodes.First(),currentAcademicYear.StartDate, currentAcademicYear.EndDate)
+                    ];
+                }
+
+                return new FM36Learner
+                {
+                    ULN = long.Parse(joinedApprenticeship.Uln),
+                    LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                    EarningsPlatform = SimplificationEarningsPlatform,
+                    PriceEpisodes = GetPriceEpisodes(joinedApprenticeship, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
+                    LearningDeliveries =
+                    [
+                        new LearningDelivery
+                        {
+                            AimSeqNumber = 1,
+                            LearningDeliveryValues = joinedApprenticeship.GetLearningDelivery(currentAcademicYear),
+                            LearningDeliveryPeriodisedValues =
+                                joinedApprenticeship.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
+                            LearningDeliveryPeriodisedTextValues =
+                                joinedApprenticeship.GetLearningDeliveryPeriodisedTextValues()
+                        }
+                    ],
+                    HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
+                };
+            })
+            .ToArray()
         };
 
         return result;
@@ -178,7 +197,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             }
             else if (episodePrice.StartDate > academicYearDetails.EndDate || episodePrice.EndDate < academicYearDetails.StartDate)
             {
-                // no part of the price episode is in the current academic year, so ignore it
+                // no part of the price episode is in the current academic year, do not return it
             }
             else
             {
