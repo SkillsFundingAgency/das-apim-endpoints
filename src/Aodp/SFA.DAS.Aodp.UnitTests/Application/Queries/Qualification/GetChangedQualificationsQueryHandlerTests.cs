@@ -5,7 +5,7 @@ using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualification;
+namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications;
 
 
 [TestFixture]

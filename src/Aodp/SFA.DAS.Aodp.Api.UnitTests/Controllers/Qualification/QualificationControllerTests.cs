@@ -3,15 +3,14 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Transaction;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
-using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
+using SFA.DAS.AODP.Application.Queries.Qualifications;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 {
@@ -246,6 +245,26 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
             Assert.That(okResult.Value, Is.AssignableFrom<GetQualificationVersionsForQualificationByReferenceQueryResponse>());
+        }
+
+        [Test]
+        public async Task GetQualificationDetailsWithVersions_ReturnsOkResult_WithVersions()
+        {
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetQualificationDetailsQueryResponse>>();
+            queryResponse.Success = true;
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationDetailWithVersionsQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualificationDetailWithVersions("Ref123");
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<GetQualificationDetailsQueryResponse>());
         }
 
         [Test]
