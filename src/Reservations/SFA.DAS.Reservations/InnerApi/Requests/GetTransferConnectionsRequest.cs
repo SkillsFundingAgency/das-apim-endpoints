@@ -2,15 +2,8 @@
 
 namespace SFA.DAS.Reservations.InnerApi.Requests
 {
-    public class GetTransferConnectionsRequest : IGetAllApiRequest
+    public class GetTransferConnectionsRequest(long accountId) : IGetAllApiRequest
     {
-        private readonly long _accountId;
-
-        public GetTransferConnectionsRequest(long accountId)
-        {
-            _accountId = accountId;
-        }
-
-        public string GetAllUrl => $"api/accounts/internal/{_accountId}/transfers/connections";
+        public string GetAllUrl => $"api/accounts/internal/{accountId}/transfers/connections";
     }
 }

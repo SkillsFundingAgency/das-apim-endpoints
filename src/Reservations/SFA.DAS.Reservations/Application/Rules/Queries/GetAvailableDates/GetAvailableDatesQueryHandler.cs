@@ -9,22 +9,16 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Reservations.Application.Rules.Queries.GetAvailableDates
 {
-    public class GetAvailableDatesQueryHandler : IRequestHandler<GetAvailableDatesQuery, GetAvailableDatesResult>
+    public class GetAvailableDatesQueryHandler(
+        IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
+        ILogger<GetAvailableDatesQueryHandler> logger)
+        : IRequestHandler<GetAvailableDatesQuery, GetAvailableDatesResult>
     {
-        private readonly IReservationApiClient<ReservationApiConfiguration> _reservationApiClient;
-        private readonly ILogger<GetAvailableDatesQueryHandler> _logger;
-
-        public GetAvailableDatesQueryHandler(IReservationApiClient<ReservationApiConfiguration> reservationApiClient, ILogger<GetAvailableDatesQueryHandler> logger)
-        {
-            _reservationApiClient = reservationApiClient;
-            _logger = logger;
-        }
-
         public async Task<GetAvailableDatesResult> Handle(GetAvailableDatesQuery request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Getting Available Dates from Reservation api");
+            logger.LogInformation("Getting Available Dates from Reservation api");
 
-            var innerApiResponse = await _reservationApiClient.Get<GetAvailableDatesResponse>(new GetAvailableDatesRequest(request.AccountLegalEntityId));
+            var innerApiResponse = await reservationApiClient.Get<GetAvailableDatesResponse>(new GetAvailableDatesRequest(request.AccountLegalEntityId));
 
             return new GetAvailableDatesResult
             {

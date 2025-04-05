@@ -12,6 +12,7 @@ using SFA.DAS.Reservations.Api.Controllers;
 using SFA.DAS.Reservations.Api.Models;
 using SFA.DAS.Reservations.Application.AccountUsers.Queries;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Reservations.InnerApi.Responses;
 
 namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.EmployerAccounts
 {
@@ -33,10 +34,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.EmployerAccounts
 
             var controllerResult = await controller.GetUserAccounts(userId,email) as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetUserAccountsApiResponse;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             model.Should().BeEquivalentTo((GetUserAccountsApiResponse)mediatorResult);
         }
 

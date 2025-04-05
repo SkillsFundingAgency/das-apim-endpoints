@@ -2,15 +2,9 @@
 
 namespace SFA.DAS.Reservations.InnerApi.Requests
 {
-    public class GetCohortRequest : IGetApiRequest
+    public class GetCohortRequest(long cohortId) : IGetApiRequest
     {
-        public long CohortId { get; set; }
+        public long CohortId { get; set; } = cohortId;
         public string GetUrl => $"api/cohorts/{CohortId}";
-
-        public GetCohortRequest(long cohortId)
-        {
-            CohortId = cohortId;
-        }
-
     }
 }

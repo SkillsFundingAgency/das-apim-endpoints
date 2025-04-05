@@ -11,24 +11,15 @@ namespace SFA.DAS.Reservations.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class AccountUsersController : ControllerBase
+    public class AccountUsersController(IMediator mediator, ILogger<AccountUsersController> logger) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<AccountUsersController> _logger;
-
-        public AccountUsersController(IMediator mediator, ILogger<AccountUsersController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
         [HttpGet]
         [Route("{userId}/accounts")]
         public async Task<IActionResult> GetUserAccounts(string userId, [FromQuery] string email)
         {
             try
             {
-                var result = await _mediator.Send(new GetAccountsQuery
+                var result = await mediator.Send(new GetAccountsQuery
                 {
                     UserId = userId,
                     Email = email

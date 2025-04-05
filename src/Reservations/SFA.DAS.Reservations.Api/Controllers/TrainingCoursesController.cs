@@ -11,25 +11,17 @@ namespace SFA.DAS.Reservations.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class TrainingCoursesController : ControllerBase
+    public class TrainingCoursesController(
+        ILogger<TrainingCoursesController> logger,
+        IMediator mediator)
+        : ControllerBase
     {
-        private readonly ILogger<TrainingCoursesController> _logger;
-        private readonly IMediator _mediator;
-
-        public TrainingCoursesController(
-            ILogger<TrainingCoursesController> logger,
-            IMediator mediator)
-        {
-            _logger = logger;
-            _mediator = mediator;
-        }
-        
         [HttpGet]
         public async Task<IActionResult> GetList()
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetTrainingCoursesQuery());
+                var queryResult = await mediator.Send(new GetTrainingCoursesQuery());
                 
                 var model = new GetTrainingCoursesListResponse
                 {
@@ -40,7 +32,7 @@ namespace SFA.DAS.Reservations.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get list of training courses");
+                logger.LogError(e, "Error attempting to get list of training courses");
                 return BadRequest();
             }
         }

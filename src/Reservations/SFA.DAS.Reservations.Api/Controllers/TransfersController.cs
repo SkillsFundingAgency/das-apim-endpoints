@@ -10,24 +10,15 @@ namespace SFA.DAS.Reservations.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class TransfersController : ControllerBase
+    public class TransfersController(IMediator mediator, ILogger<TransfersController> logger) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<TransfersController> _logger;
-
-        public TransfersController(IMediator mediator, ILogger<TransfersController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
         [HttpGet]
         [Route("validity")]
         public async Task<IActionResult> GetTransferValidity(long senderId, long receiverId, int? pledgeApplicationId)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetTransferValidityQuery { SenderId = senderId, ReceiverId = receiverId, PledgeApplicationId = pledgeApplicationId});
+                var queryResult = await mediator.Send(new GetTransferValidityQuery { SenderId = senderId, ReceiverId = receiverId, PledgeApplicationId = pledgeApplicationId});
 
                 var model = (GetTransferValidityResponse)queryResult;
 
@@ -41,7 +32,7 @@ namespace SFA.DAS.Reservations.Api.Controllers
             catch (Exception e)
             {
                 var applicationId = pledgeApplicationId.HasValue ? pledgeApplicationId.Value.ToString() : "null";
-                _logger.LogError(e, $"Error attempting to get transfer validity for sender {senderId}, receiver {receiverId}, pledge application {applicationId}");
+                logger.LogError(e, $"Error attempting to get transfer validity for sender {senderId}, receiver {receiverId}, pledge application {applicationId}");
                 return BadRequest();
             }
         }
