@@ -331,6 +331,10 @@ components:
           type: boolean
         plannedOTJTrainingHours:
           type: integer
+        consumerReference:
+          type: string
+          description: This allows the consumer to set a reference for the records being submitted
+          example: LR-10034925-2425-20250301-113951-04
       required:
         - uln,
         - firstName
@@ -347,5 +351,6 @@ components:
         - agreementId     
         - plannedOTJTrainingHours
         - isFlexiJob 
+        - consumerReference
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
