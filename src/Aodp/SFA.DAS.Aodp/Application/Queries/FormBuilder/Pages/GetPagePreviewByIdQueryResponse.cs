@@ -1,4 +1,5 @@
-﻿
+﻿namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Pages;
+
 public class GetPagePreviewByIdQueryResponse
 {
     public string Title { get; set; } = string.Empty;

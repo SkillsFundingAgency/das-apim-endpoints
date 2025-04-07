@@ -1,5 +1,4 @@
-﻿
-namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
+﻿namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
 
 public class GetChangedQualificationsQueryResponse
 {

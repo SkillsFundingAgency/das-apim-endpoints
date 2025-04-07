@@ -1,5 +1,7 @@
 ﻿using MediatR;
 
+namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
+
 public class SubmitApplicationCommand : IRequest<BaseMediatrResponse<EmptyResponse>>
 {
     public Guid ApplicationId { get; set; }

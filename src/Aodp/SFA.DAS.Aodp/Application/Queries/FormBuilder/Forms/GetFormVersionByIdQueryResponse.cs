@@ -1,4 +1,6 @@
-﻿public class GetFormVersionByIdQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Forms;
+
+public class GetFormVersionByIdQueryResponse
 {
 
     public Guid Id { get; set; }

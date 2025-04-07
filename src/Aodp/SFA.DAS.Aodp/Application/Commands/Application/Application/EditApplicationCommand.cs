@@ -1,5 +1,7 @@
 ﻿using MediatR;
 
+namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
+
 public class EditApplicationCommand : IRequest<BaseMediatrResponse<EmptyResponse>>
 {
     public string? QualificationNumber { get; set; }

@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Aodp.Application.Queries.Jobs;
+namespace SFA.DAS.Aodp.Application.Commands.Jobs;
 
 public class RequestJobRunCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient) : IRequestHandler<RequestJobRunCommand, BaseMediatrResponse<EmptyResponse>>
 {

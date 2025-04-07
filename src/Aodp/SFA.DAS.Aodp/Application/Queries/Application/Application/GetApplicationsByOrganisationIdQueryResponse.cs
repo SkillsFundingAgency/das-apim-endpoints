@@ -1,4 +1,4 @@
-﻿
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Application;
 
 public partial class GetApplicationsByOrganisationIdQueryResponse
 {

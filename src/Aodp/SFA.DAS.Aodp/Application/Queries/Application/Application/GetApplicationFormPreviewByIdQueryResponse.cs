@@ -1,4 +1,6 @@
-﻿public class GetApplicationFormPreviewByIdQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Application;
+
+public class GetApplicationFormPreviewByIdQueryResponse
 {
     public Guid ApplicationId { get; set; }
     public Guid FormVersionId { get; set; }

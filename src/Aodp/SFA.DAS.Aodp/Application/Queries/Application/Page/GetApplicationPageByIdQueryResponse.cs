@@ -1,4 +1,6 @@
-﻿public class GetApplicationPageByIdQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Page;
+
+public class GetApplicationPageByIdQueryResponse
 {
     public Guid Id { get; set; }
     public string Title { get; set; } = string.Empty;

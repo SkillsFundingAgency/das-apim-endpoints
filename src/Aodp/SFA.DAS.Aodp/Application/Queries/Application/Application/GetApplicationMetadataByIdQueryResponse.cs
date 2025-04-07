@@ -1,4 +1,5 @@
-﻿
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Application;
+
 public class GetApplicationMetadataByIdQueryResponse
 {
     public Guid ApplicationId { get; set; }

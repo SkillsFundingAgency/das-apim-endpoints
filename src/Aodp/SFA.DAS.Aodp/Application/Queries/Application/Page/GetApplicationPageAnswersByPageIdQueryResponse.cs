@@ -1,4 +1,6 @@
-﻿public class GetApplicationPageAnswersByPageIdQueryResponse 
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Page;
+
+public class GetApplicationPageAnswersByPageIdQueryResponse 
 {
     public List<Question> Questions { get; set; } = new();
 

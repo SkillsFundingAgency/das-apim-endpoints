@@ -1,5 +1,7 @@
 ﻿using MediatR;
 
+namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
+
 public class CreateApplicationCommand : IRequest<BaseMediatrResponse<CreateApplicationCommandResponse>>
 {
     public string Title { get; set; }

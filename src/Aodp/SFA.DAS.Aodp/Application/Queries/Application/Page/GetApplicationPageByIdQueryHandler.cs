@@ -2,6 +2,8 @@
 using SFA.DAS.Aodp.Application;
 using SFA.DAS.SharedOuterApi.Configuration;using SFA.DAS.SharedOuterApi.Interfaces;
 
+namespace SFA.DAS.Aodp.Application.Queries.Application.Page;
+
 public class GetApplicationPageByIdQueryHandler : IRequestHandler<GetApplicationPageByIdQuery, BaseMediatrResponse<GetApplicationPageByIdQueryResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;

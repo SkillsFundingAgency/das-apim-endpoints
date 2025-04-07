@@ -28,4 +28,9 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\Commands\Jobs\" />
+    <Folder Include="Application\Commands\Qualification\" />
+  </ItemGroup>
+
 </Project>

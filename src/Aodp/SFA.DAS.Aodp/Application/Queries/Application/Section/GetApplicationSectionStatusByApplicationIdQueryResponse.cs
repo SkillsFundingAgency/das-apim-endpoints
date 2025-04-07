@@ -1,4 +1,6 @@
-﻿public class GetApplicationSectionStatusByApplicationIdQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Section;
+
+public class GetApplicationSectionStatusByApplicationIdQueryResponse
 {
     public List<Page> Pages { get; set; } = new();
 

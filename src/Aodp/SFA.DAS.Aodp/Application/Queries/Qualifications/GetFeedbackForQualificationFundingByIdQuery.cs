@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 
-namespace SFA.DAS.Aodp.Application.Queries.Application.Review
+namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
     public class GetFeedbackForQualificationFundingByIdQuery : IRequest<BaseMediatrResponse<GetFeedbackForQualificationFundingByIdQueryResponse>>
     {

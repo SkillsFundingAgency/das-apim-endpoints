@@ -2,7 +2,7 @@
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Aodp.Application.Commands.Application.Review
+namespace SFA.DAS.Aodp.Application.Commands.Application.Qualifications
 {
     public class SaveQualificationFundingOffersOutcomeCommandHandler : IRequestHandler<SaveQualificationFundingOffersOutcomeCommand, BaseMediatrResponse<EmptyResponse>>
     {

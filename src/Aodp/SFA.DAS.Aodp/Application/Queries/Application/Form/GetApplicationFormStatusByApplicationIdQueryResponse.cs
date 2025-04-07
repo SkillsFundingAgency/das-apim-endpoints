@@ -1,4 +1,6 @@
-﻿public class GetApplicationFormStatusByApplicationIdQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Form;
+
+public class GetApplicationFormStatusByApplicationIdQueryResponse
 {
     public string ApplicationName { get; set; }
     public string Reference { get; set; }

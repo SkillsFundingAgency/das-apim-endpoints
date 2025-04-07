@@ -1,4 +1,6 @@
-﻿public class GetApplicationSectionByIdQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Section;
+
+public class GetApplicationSectionByIdQueryResponse
 {
     public string SectionTitle { get; set; }
 

@@ -1,4 +1,6 @@
-﻿public class GetApplicationFormsQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Form;
+
+public class GetApplicationFormsQueryResponse
 {
     public List<Form> Forms { get; set; }
 

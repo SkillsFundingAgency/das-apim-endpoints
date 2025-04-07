@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Aodp.Application.Queries.Application.Review
+namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
     public class GetFeedbackForQualificationFundingByIdQueryHandler : IRequestHandler<GetFeedbackForQualificationFundingByIdQuery, BaseMediatrResponse<GetFeedbackForQualificationFundingByIdQueryResponse>>
     {

@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿namespace SFA.DAS.Aodp.Application.Queries.Application.Page;
+
+using MediatR;
 using SFA.DAS.Aodp.Application;
 
 public class GetApplicationPageAnswersByPageIdQuery : IRequest<BaseMediatrResponse<GetApplicationPageAnswersByPageIdQueryResponse>>

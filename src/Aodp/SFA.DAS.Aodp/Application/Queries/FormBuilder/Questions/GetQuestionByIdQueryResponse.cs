@@ -1,4 +1,6 @@
-﻿public class GetQuestionByIdQueryResponse
+﻿namespace SFA.DAS.Aodp.Application.Queries.FormBuilder.Questions;
+
+public class GetQuestionByIdQueryResponse
 {
     public Guid Id { get; set; }
     public Guid PageId { get; set; }

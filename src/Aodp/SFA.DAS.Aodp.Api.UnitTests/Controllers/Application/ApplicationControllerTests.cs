@@ -6,6 +6,12 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Api.Controllers;
 using NUnit.Framework;
+using SFA.DAS.Aodp.Application.Queries.Application.Form;
+using SFA.DAS.Aodp.Application.Queries.Application.Application;
+using SFA.DAS.Aodp.Application.Queries.Application.Page;
+using SFA.DAS.Aodp.Application.Queries.Application.Section;
+using SFA.DAS.Aodp.Application.Commands.Application.Application;
+using SFA.DAS.Aodp.Application.Commands.Application.Page;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Application;
 
