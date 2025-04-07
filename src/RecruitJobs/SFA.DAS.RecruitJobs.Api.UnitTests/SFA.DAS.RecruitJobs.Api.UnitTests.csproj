@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -26,7 +26,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Recruit.Jobs\SFA.DAS.Recruit.Jobs.csproj" />
+    <ProjectReference Include="..\SFA.DAS.RecruitJobs.Api\SFA.DAS.RecruitJobs.Api.csproj" />
+    <ProjectReference Include="..\SFA.DAS.RecruitJobs\SFA.DAS.RecruitJobs.csproj" />
   </ItemGroup>
 
 </Project>

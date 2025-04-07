@@ -27,7 +27,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SFA.DAS.Recruit.Jobs\SFA.DAS.Recruit.Jobs.csproj" />
+      <ProjectReference Include="..\SFA.DAS.RecruitJobs\SFA.DAS.RecruitJobs.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
