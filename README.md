@@ -241,7 +241,11 @@ Data: {{
         "AzureAd":{
             "tenant":"citizenazuresfabisgov.onmicrosoft.com",
             "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-apimendp-empincapi-as-ar"
-        }
+        },
+        "RoatpV2ApiConfiguration": {
+            "url": "https://at-roatp-api.apprenticeships.education.gov.uk/",
+            "identifier": "https://citizenazuresfabisgov.onmicrosoft.com/das-at-roatpv2api-as-ar"
+	    }
     }
 }
 ```
