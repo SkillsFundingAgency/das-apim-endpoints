@@ -45,7 +45,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             {
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = DateTime.UtcNow.AddDays(-1),
                         EffectiveTo = null,
@@ -66,13 +66,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             {
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = DateTime.UtcNow.AddDays(-10),
                         EffectiveTo = DateTime.UtcNow.AddDays(-9),
                         MaxEmployerLevyCap = notFundingPrice
                     },
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = DateTime.UtcNow.AddDays(-1),
                         EffectiveTo = null,
@@ -95,13 +95,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             {
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = DateTime.UtcNow.AddDays(-10),
                         EffectiveTo = DateTime.UtcNow.AddDays(9),
                         MaxEmployerLevyCap = fundingPrice
                     },
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = DateTime.UtcNow.AddDays(4),
                         EffectiveTo = null,
@@ -125,13 +125,13 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
             {
                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
                 {
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = effectiveDate.AddDays(-10),
                         EffectiveTo = effectiveDate.AddDays(-9),
                         MaxEmployerLevyCap = notFundingPrice
                     },
-                    new ApprenticeshipFunding
+                    new()
                     {
                         EffectiveFrom = effectiveDate.AddDays(-1),
                         EffectiveTo = null,
