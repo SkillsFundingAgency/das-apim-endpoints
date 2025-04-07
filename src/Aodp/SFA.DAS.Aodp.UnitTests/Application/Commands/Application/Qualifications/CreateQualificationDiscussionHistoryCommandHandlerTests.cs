@@ -13,25 +13,25 @@ using SFA.DAS.SharedOuterApi.Models;
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
 {
     [TestFixture]
-    public class CreateQualificationDiscussionHistoryCommandHandlerTests
+    public class CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandlerTests
     {
         private IFixture _fixture;
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-        private CreateQualificationDiscussionHistoryCommandHandler _handler;
+        private CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandler _handler;
 
         [SetUp]
         public void SetUp()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
-            _handler = new CreateQualificationDiscussionHistoryCommandHandler(_apiClientMock.Object);
+            _handler = new CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandler(_apiClientMock.Object);
         }
 
         [Test]
         public async Task Handle_ReturnsSuccessResponse_WhenApiCallIsSuccessful()
         {
             // Arrange
-            var command = _fixture.Create<CreateQualificationDiscussionHistoryCommand>();
+            var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
 
             _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryApiRequest>()))
                           .Returns(Task.CompletedTask);
@@ -48,7 +48,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
         public async Task Handle_ReturnsErrorResponse_WhenApiCallFails()
         {
             // Arrange
-            var command = _fixture.Create<CreateQualificationDiscussionHistoryCommand>();
+            var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
             var exceptionMessage = "API call failed";
 
             _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryApiRequest>()))

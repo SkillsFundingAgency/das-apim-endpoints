@@ -326,9 +326,9 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var commandResponse = _fixture.Create<BaseMediatrResponse<EmptyResponse>>();
             commandResponse.Success = true;
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-            var command = _fixture.Create<CreateQualificationDiscussionHistoryCommand>();
+            var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateQualificationDiscussionHistoryCommand>(), default))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>(), default))
                          .ReturnsAsync(commandResponse);
 
             // Act
