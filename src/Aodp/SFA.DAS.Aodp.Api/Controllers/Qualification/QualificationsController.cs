@@ -225,7 +225,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [HttpPut("/api/qualifications/{qualificationVersionId}/funding-offers-history-note")]
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> QualificationFundingOffersSummary(CreateQualificationDiscussionHistoryNoteForFundingOffersCommand command, Guid qualificationVersionId)
+        public async Task<IActionResult> CreateQualificationDiscussionHistoryNoteForFundingOffers(CreateQualificationDiscussionHistoryNoteForFundingOffersCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
             return await SendRequestAsync(command);

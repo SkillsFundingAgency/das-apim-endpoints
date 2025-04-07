@@ -320,7 +320,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         }
 
         [Test]
-        public async Task QualificationFundingOffersSummary_ReturnsOkResult()
+        public async Task CreateQualificationDiscussionHistoryNoteForFundingOffers_ReturnsOkResult()
         {
             // Arrange
             var commandResponse = _fixture.Create<BaseMediatrResponse<EmptyResponse>>();
@@ -332,7 +332,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(commandResponse);
 
             // Act
-            var result = await controller.QualificationFundingOffersSummary(command, Guid.NewGuid());
+            var result = await controller.CreateQualificationDiscussionHistoryNoteForFundingOffers(command, Guid.NewGuid());
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
