@@ -13,7 +13,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
         {
             services.AddOptions();
             services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value); 
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<FindApprenticeshipTrainingConfiguration>(configuration.GetSection(nameof(FindApprenticeshipTrainingConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingConfiguration>>().Value);
             services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
@@ -28,6 +28,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<ShortlistApiConfiguration>>().Value);
             services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
+            services.Configure<AssessorsApiConfiguration>(configuration.GetSection("AssessorServiceInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<AssessorsApiConfiguration>>().Value);
         }
     }
 }

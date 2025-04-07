@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -20,6 +14,12 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Queries;
 
@@ -341,6 +341,7 @@ public class WhenGettingProviderByTrainingCourse
             options
                 .Excluding(c => c.IsApprovedByRegulator)
                 .Excluding(c => c.ApprovalBody)
+                .Excluding(c => c.IfateReferenceNumber)
                 .WithMapping<GetAdditionalCourseListItem>(c => c.LarsCode, s => s.Id)
                 .WithMapping<GetAdditionalCourseListItem>(c => c.CourseName, s => s.Title)
                 );
@@ -416,6 +417,7 @@ public class WhenGettingProviderByTrainingCourse
             options
                 .Excluding(c => c.IsApprovedByRegulator)
                 .Excluding(c => c.ApprovalBody)
+                .Excluding(c => c.IfateReferenceNumber)
                 .WithMapping<GetAdditionalCourseListItem>(c => c.LarsCode, s => s.Id)
                 .WithMapping<GetAdditionalCourseListItem>(c => c.CourseName, s => s.Title)
                 );
