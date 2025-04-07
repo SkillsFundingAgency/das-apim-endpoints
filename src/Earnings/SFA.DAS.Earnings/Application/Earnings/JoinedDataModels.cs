@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Earnings.Application.Extensions;
+﻿using System.Diagnostics;
+using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
@@ -55,7 +56,7 @@ public class JoinedEarningsApprenticeship
                     earningEpisode = ResolveLegacyEpisodes(earningsApprenticeship, apprenticeshipEpisodePrice);
                 }
 
-                var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode, academicYear);
+                var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode);
 
                 joinedEpisodes.Add(joinedEpisode);
             }
@@ -121,7 +122,8 @@ public class JoinedPriceEpisode
     /// <param name="apprenticeshipEpisode"></param>
     /// <param name="apprenticeshipEpisodePrice"></param>
     /// <param name="earningsEpisode"></param>
-    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode, short academicYear)
+    /// <param name="academicYear"></param>
+    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
     {
         TrainingCode = apprenticeshipEpisode.TrainingCode;
         StartDate = apprenticeshipEpisodePrice.StartDate;
@@ -132,7 +134,7 @@ public class JoinedPriceEpisode
         TrainingPrice = apprenticeshipEpisodePrice.TrainingPrice;
         EndPointAssessmentPrice = apprenticeshipEpisodePrice.EndPointAssessmentPrice;
         FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
-        Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? [], academicYear);
+        Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
         AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
     }
 
@@ -154,7 +156,7 @@ public class JoinedPriceEpisode
         AdditionalPayments = existingEpisode.AdditionalPayments.Where(x => x.AcademicYear == academicYear).ToList();
     }
 
-    private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments, short academicYear)
+    private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
     {
         var matchingInstalments = instalments
             .Where(x => x.EpisodePriceKey == apprenticeshipEpisodePrice.Key)
@@ -170,13 +172,15 @@ public class JoinedPriceEpisode
             return matchingInstalments;
         }
 
-        return ResolveLegacyInstalments(apprenticeshipEpisodePrice, instalments, academicYear);
+        return ResolveLegacyInstalments(apprenticeshipEpisodePrice, instalments);
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static List<JoinedInstalment> ResolveLegacyInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments, short academicYear)
+    private static List<JoinedInstalment> ResolveLegacyInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
     {
-        return instalments.Where(y => y.AcademicYear == academicYear)
+        return instalments.Where(y =>
+                y.AcademicYear.GetDateTime(y.DeliveryPeriod) >= apprenticeshipEpisodePrice.StartDate &&
+                y.AcademicYear.GetDateTime(y.DeliveryPeriod) <= apprenticeshipEpisodePrice.EndDate)
             .Select(x => new JoinedInstalment
             {
                 AcademicYear = x.AcademicYear,
@@ -202,6 +206,7 @@ public class JoinedPriceEpisode
     }
 }
 
+[DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}")]
 public class JoinedInstalment
 {
     public short AcademicYear { get; set; }
