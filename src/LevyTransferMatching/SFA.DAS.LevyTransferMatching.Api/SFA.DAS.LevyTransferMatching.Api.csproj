@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.LevyTransferMatching\SFA.DAS.LevyTransferMatching.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
   </ItemGroup>
 
   <ItemGroup>
