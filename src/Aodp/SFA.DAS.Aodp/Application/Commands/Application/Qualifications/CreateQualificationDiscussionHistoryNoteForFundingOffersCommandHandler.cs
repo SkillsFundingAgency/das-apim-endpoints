@@ -23,7 +23,7 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Qualifications
 
             try
             {
-                var apiRequest = new CreateQualificationDiscussionHistoryApiRequest()
+                var apiRequest = new CreateQualificationDiscussionHistoryNoteForFundingApiRequest()
                 {
                     QualificationVersionId = request.QualificationVersionId,
                     Data = request
