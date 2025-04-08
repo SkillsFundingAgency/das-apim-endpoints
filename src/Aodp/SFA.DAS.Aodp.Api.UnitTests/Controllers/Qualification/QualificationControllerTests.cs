@@ -46,7 +46,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "",processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -69,7 +69,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -93,7 +93,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -112,7 +112,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -126,7 +126,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -140,7 +140,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         {
             // Act
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-            var result = await controller.GetQualifications("", 0, 0, "", "", "");
+            var result = await controller.GetQualifications("", 0, 0, "", "", "", null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -339,19 +339,19 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         }
 
         [Test]
-        public async Task QualificationFundingOffersSummary_ReturnsOkResult()
+        public async Task CreateQualificationDiscussionHistoryNoteForFundingOffers_ReturnsOkResult()
         {
             // Arrange
             var commandResponse = _fixture.Create<BaseMediatrResponse<EmptyResponse>>();
             commandResponse.Success = true;
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-            var command = _fixture.Create<CreateQualificationDiscussionHistoryCommand>();
+            var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateQualificationDiscussionHistoryCommand>(), default))
+            _mediatorMock.Setup(m => m.Send(It.IsAny<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>(), default))
                          .ReturnsAsync(commandResponse);
 
             // Act
-            var result = await controller.QualificationFundingOffersSummary(command, Guid.NewGuid());
+            var result = await controller.CreateQualificationDiscussionHistoryNoteForFundingOffers(command, Guid.NewGuid());
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());

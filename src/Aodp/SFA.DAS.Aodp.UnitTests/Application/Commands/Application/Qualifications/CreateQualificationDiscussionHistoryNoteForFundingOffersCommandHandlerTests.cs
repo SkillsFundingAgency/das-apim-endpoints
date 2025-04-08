@@ -1,39 +1,34 @@
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture;
 using AutoFixture.AutoMoq;
 using Moq;
-using NUnit.Framework;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
 {
     [TestFixture]
-    public class CreateQualificationDiscussionHistoryCommandHandlerTests
+    public class CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandlerTests
     {
         private IFixture _fixture;
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-        private CreateQualificationDiscussionHistoryCommandHandler _handler;
+        private CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandler _handler;
 
         [SetUp]
         public void SetUp()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
-            _handler = new CreateQualificationDiscussionHistoryCommandHandler(_apiClientMock.Object);
+            _handler = new CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandler(_apiClientMock.Object);
         }
 
         [Test]
         public async Task Handle_ReturnsSuccessResponse_WhenApiCallIsSuccessful()
         {
             // Arrange
-            var command = _fixture.Create<CreateQualificationDiscussionHistoryCommand>();
+            var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
 
-            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryApiRequest>()))
+            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryNoteForFundingApiRequest>()))
                           .Returns(Task.CompletedTask);
 
             // Act
@@ -48,10 +43,10 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
         public async Task Handle_ReturnsErrorResponse_WhenApiCallFails()
         {
             // Arrange
-            var command = _fixture.Create<CreateQualificationDiscussionHistoryCommand>();
+            var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
             var exceptionMessage = "API call failed";
 
-            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryApiRequest>()))
+            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryNoteForFundingApiRequest>()))
                           .ThrowsAsync(new Exception(exceptionMessage));
 
             // Act

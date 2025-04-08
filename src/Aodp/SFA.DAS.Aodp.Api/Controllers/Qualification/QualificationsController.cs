@@ -31,18 +31,20 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualifications([FromQuery] string? status,
+        public async Task<IActionResult> GetQualifications(
+            [FromQuery] string? status,
             [FromQuery] int? skip,
             [FromQuery] int? take,
             [FromQuery] string? name,
             [FromQuery] string? organisation,
-            [FromQuery] string? qan)
+            [FromQuery] string? qan,
+            [FromQuery] string? processStatusFilter)
         {
             var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan);
 
             if (validationResult.IsValid)
             {
-                if (validationResult.ProcessedStatus == "new")
+                if (validationResult.ParsedStatus == "new")
                 {
                     var query = new GetNewQualificationsQuery()
                     {
@@ -50,11 +52,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                         Organisation = organisation,
                         QAN = qan,
                         Skip = skip,
-                        Take = take
+                        Take = take,
+                        ProcessStatusFilter = processStatusFilter
                     };
                     return await SendRequestAsync(query);
                 }
-                else if (validationResult.ProcessedStatus == "changed")
+                else if (validationResult.ParsedStatus == "changed")
                 {
                     var query = new GetChangedQualificationsQuery()
                     {
@@ -68,7 +71,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 }
                 else
                 {
-                    return BadRequest(new { message = $"Invalid status: {validationResult.ProcessedStatus}" });
+                    return BadRequest(new { message = $"Invalid status: {validationResult.ParsedStatus}" });
                 }
             }
             else
@@ -235,10 +238,10 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(command);
         }
 
-        [HttpPut("/api/qualifications/{qualificationVersionId}/Create-QualificationDiscussionHistory")]
+        [HttpPut("/api/qualifications/{qualificationVersionId}/funding-offers-history-note")]
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> QualificationFundingOffersSummary(CreateQualificationDiscussionHistoryCommand command, Guid qualificationVersionId)
+        public async Task<IActionResult> CreateQualificationDiscussionHistoryNoteForFundingOffers(CreateQualificationDiscussionHistoryNoteForFundingOffersCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
             return await SendRequestAsync(command);
@@ -265,7 +268,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             }
             else
             {
-                result.ProcessedStatus = status;
+                result.ParsedStatus = status;
             }
 
             if (skip < 0)
@@ -292,7 +295,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         {
             public bool IsValid { get; set; }
             public string? ErrorMessage { get; set; }
-            public string? ProcessedStatus { get; set; }
+            public string? ParsedStatus { get; set; }
         }
     }
 }
