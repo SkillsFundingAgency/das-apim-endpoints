@@ -5,7 +5,9 @@ public class GetQualificationDetailsQueryResponse
     public Guid Id { get; set; }
     public Guid QualificationId { get; set; }
     public Guid VersionFieldChangesId { get; set; }
+    public string AgeGroup { get; set; }
     public string? VersionFieldChanges { get; set; }
+    public string? VersionType { get; set; }
     public Guid ProcessStatusId { get; set; }
     public int AdditionalKeyChangesReceivedFlag { get; set; }
     public Guid LifecycleStageId { get; set; }
@@ -29,7 +31,6 @@ public class GetQualificationDetailsQueryResponse
     public DateTime? OperationalEndDate { get; set; }
     public DateTime? CertificationEndDate { get; set; }
     public DateTime? ReviewDate { get; set; }
-    public DateTime? InsertedTimestamp { get; set; }
     public bool OfferedInEngland { get; set; }
     public bool? FundedInEngland { get; set; }
     public bool OfferedInNi { get; set; }
@@ -49,6 +50,7 @@ public class GetQualificationDetailsQueryResponse
     public DateTime LastUpdatedDate { get; set; }
     public DateTime UiLastUpdatedDate { get; set; }
     public DateTime InsertedDate { get; set; }
+    public DateTime? InsertedTimestamp { get; set; }
     public int? Version { get; set; }
     public bool? AppearsOnPublicRegister { get; set; }
     public int? LevelId { get; set; }
@@ -89,6 +91,8 @@ public class GetQualificationDetailsQueryResponse
         public string Qan { get; set; } = null!;
         public string? QualificationName { get; set; }
         public List<QualificationDiscussionHistory> QualificationDiscussionHistories { get; set; } = new List<QualificationDiscussionHistory>();
+
+        public List<GetQualificationDetailsQueryResponse> Versions { get; set; } = new List<GetQualificationDetailsQueryResponse>();
     }
 
     public partial class QualificationDiscussionHistory
