@@ -108,7 +108,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                 {
                     priceEpisodesForAcademicYear =
                     [
-                        new JoinedPriceEpisode(joinedApprenticeship.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear())
+                        new JoinedPriceEpisode(joinedApprenticeship.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear(), true)
                     ];
                 }
 
@@ -188,12 +188,12 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             if (episodePrice.StartDate <= academicYearDetails.StartDate && episodePrice.EndDate >= academicYearDetails.StartDate)
             {
                 // Some of the later instalments are in the current academic year, capture these as a price episode
-                yield return new JoinedPriceEpisode(episodePrice, academicYearDetails.StartDate, episodePrice.EndDate, academicYearDetails.GetShortAcademicYear());
+                yield return new JoinedPriceEpisode(episodePrice, academicYearDetails.StartDate, episodePrice.EndDate, academicYearDetails.GetShortAcademicYear(), false);
             }
             else if(episodePrice.StartDate < academicYearDetails.EndDate && episodePrice.EndDate > academicYearDetails.EndDate)
             {
                 // Some of the earlier instalments are in the current academic year, capture these as a price episode
-                yield return new JoinedPriceEpisode(episodePrice, episodePrice.StartDate, academicYearDetails.EndDate, academicYearDetails.GetShortAcademicYear());
+                yield return new JoinedPriceEpisode(episodePrice, episodePrice.StartDate, academicYearDetails.EndDate, academicYearDetails.GetShortAcademicYear(), true);
             }
             else if (episodePrice.StartDate > academicYearDetails.EndDate || episodePrice.EndDate < academicYearDetails.StartDate)
             {

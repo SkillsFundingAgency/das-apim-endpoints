@@ -62,8 +62,8 @@ public class JoinedEarningsApprenticeship
             }
 
         }
-
-        return joinedEpisodes;
+        
+        return joinedEpisodes.OrderBy(x => x.StartDate).ToList();
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
@@ -110,6 +110,11 @@ public class JoinedPriceEpisode
 
     /// <summary> Derived from apprenticeship.Episode.EpisodePrice.FundingBandMaximum </summary>
     public int FundingBandMaximum { get; set; }
+    
+    /// <summary>
+    /// Denotes an episode terminated by an "artificial" academic year-end boundary
+    /// </summary>
+    public bool IsTerminatedByAcademicYearEnd { get; set; }
 
     public JoinedPriceEpisode()
     {
@@ -142,7 +147,7 @@ public class JoinedPriceEpisode
     /// This constructor creates a new JoinedPriceEpisode based on an existing JoinedPriceEpisode, but sets the StartDate and EndDate and 
     /// only includes Instalments and AdditionalPayments for that academic year (excluding instalments that "overlap" other academic years)
     /// </summary>
-    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear){
+    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear, bool isTerminatedByAcademicYearEnd){
         StartDate = newStartDate;
         EndDate = newEndDate;
         TrainingCode = existingEpisode.TrainingCode;
@@ -154,6 +159,7 @@ public class JoinedPriceEpisode
         FundingBandMaximum = existingEpisode.FundingBandMaximum;
         Instalments = existingEpisode.Instalments.Where(x => x.AcademicYear == academicYear).ToList();
         AdditionalPayments = existingEpisode.AdditionalPayments.Where(x => x.AcademicYear == academicYear).ToList();
+        IsTerminatedByAcademicYearEnd = isTerminatedByAcademicYearEnd;
     }
 
     private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
@@ -165,7 +171,10 @@ public class JoinedPriceEpisode
                 AcademicYear = x.AcademicYear,
                 DeliveryPeriod = x.DeliveryPeriod,
                 Amount = x.Amount
-            }).ToList(); 
+            })
+            .OrderBy(x => x.AcademicYear)
+            .ThenBy(x => x.DeliveryPeriod)
+            .ToList(); 
 
         if(matchingInstalments.Any())
         {
