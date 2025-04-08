@@ -47,7 +47,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "",processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -70,7 +70,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -94,7 +94,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -113,7 +113,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -127,7 +127,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "");
+            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -141,7 +141,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         {
             // Act
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-            var result = await controller.GetQualifications("", 0, 0, "", "", "");
+            var result = await controller.GetQualifications("", 0, 0, "", "", "", null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
