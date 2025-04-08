@@ -18,7 +18,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
     {
         private ApprenticesController _controller;
         private Mock<IMediator> _mediator;
-        private readonly Fixture _fixture = new Fixture();
+        private readonly Fixture _fixture = new();
         private GetSelectDeliveryModelResult _queryResult;
         private long _providerId;
         private long _apprenticeshipId;

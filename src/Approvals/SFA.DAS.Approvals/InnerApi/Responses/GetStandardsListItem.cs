@@ -19,5 +19,6 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public StandardVersionDetail VersionDetail { get; set; }
         public string StandardPageUrl { get; set; }
         public string Route { get; set; }
+        public string ApprenticeshipType { get; set; }
     }
 }

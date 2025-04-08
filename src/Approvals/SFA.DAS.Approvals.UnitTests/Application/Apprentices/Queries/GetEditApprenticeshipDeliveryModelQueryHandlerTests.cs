@@ -24,7 +24,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private GetEditApprenticeshipDeliveryModelQueryHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
         private Mock<IDeliveryModelService> _deliveryModelService;
-        private static readonly Fixture _fixture = new Fixture();
+        private static readonly Fixture _fixture = new();
         private readonly GetEditApprenticeshipDeliveryModelQuery _query = _fixture.Create<GetEditApprenticeshipDeliveryModelQuery>();
         private readonly GetApprenticeshipResponse _apprenticeshipResponse = _fixture.Create<GetApprenticeshipResponse>();
         private readonly List<string> _deliveryModels = _fixture.Create<List<string>>();

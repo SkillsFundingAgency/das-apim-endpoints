@@ -9,24 +9,15 @@ namespace SFA.DAS.Reservations.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class CohortsController : ControllerBase
+    public class CohortsController(IMediator mediator, ILogger<TransfersController> logger) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<TransfersController> _logger;
-
-        public CohortsController(IMediator mediator, ILogger<TransfersController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
         [HttpGet]
         [Route("{cohortId}")]
         public async Task<IActionResult> Get(long cohortId)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetCohortQuery {CohortId = cohortId });
+                var queryResult = await mediator.Send(new GetCohortQuery {CohortId = cohortId });
                
                 if (queryResult?.Cohort == null)
                 {
@@ -37,7 +28,7 @@ namespace SFA.DAS.Reservations.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get Cohort, Id: [{cohortId}]");
+                logger.LogError(e, $"Error attempting to get Cohort, Id: [{cohortId}]");
                 return BadRequest();
             }
         }

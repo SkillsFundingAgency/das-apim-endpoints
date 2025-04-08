@@ -27,7 +27,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var response = await _mediator.Send(new GetDataLockStatuesQuery()
+                var response = await _mediator.Send(new GetDataLockStatuesQuery
                 {
                     EmployerAccountId = employerAccountId,
                     SinceEventId = sinceEventId,

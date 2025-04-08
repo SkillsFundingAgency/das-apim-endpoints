@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.Models.RoatpV2
         {
             if (source == null) return null;
 
-            return new ProviderAddress()
+            return new ProviderAddress
             {
                 AddressLine1 = source.AddressLine1,
                 AddressLine2 = source.AddressLine2,
