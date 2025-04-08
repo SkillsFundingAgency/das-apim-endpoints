@@ -8,18 +8,18 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using GetLevelsListResponse = SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses.GetLevelsListResponse;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
+namespace SFA.DAS.FindApprenticeshipTraining.Application
 {
     internal class CacheHelper
     {
         private const int ExpirationInHours = 2;
         private readonly ICacheStorageService _cacheStorageService;
 
-        public CacheHelper (ICacheStorageService cacheStorageService)
+        public CacheHelper(ICacheStorageService cacheStorageService)
         {
             _cacheStorageService = cacheStorageService;
         }
-        
+
         public async Task UpdateCachedItems(Task<GetRoutesListResponse> sectorsTask,
             Task<GetLevelsListResponse> levelsTask,
             Task<GetStandardsListResponse> standardsTask,
