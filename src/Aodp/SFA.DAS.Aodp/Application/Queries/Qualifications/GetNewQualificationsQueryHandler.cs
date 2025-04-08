@@ -29,7 +29,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                     Name = request.Name,
                     Organisation = request.Organisation,
                     QAN = request.QAN,
-                    ProcessStatusIds = request.ProcessStatusIds,
+                    ProcessStatusIds = request.ProcessStatusFilter,
                 });
 
                 if (qualificationsResponse?.Data != null)
