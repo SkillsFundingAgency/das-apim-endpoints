@@ -59,4 +59,4 @@ stages:
       NServiceBusLicense: $(NServiceBusLicense)
       ApprenticeAppDeliveryApiKey: $(ApprenticeAppDeliveryApiKey)
       ApprenticeAppPreviewApiKey: $(ApprenticeAppPreviewApiKey)
-      useProductAppInsights: 'True'
+    useProductAppInsights: 'True'
