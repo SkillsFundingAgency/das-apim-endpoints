@@ -1,9 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -12,7 +7,8 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System.Net;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
 {
@@ -28,8 +24,22 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
            ApplyCommandHandler handler)
         {
+            // Arrange
+            var addresses = new List<Address> {faaApiResponse.Address}.Concat(faaApiResponse.OtherAddresses!).ToList();
+            var location = new LocationDto
+            {
+                EmployerLocationOption = faaApiResponse.EmployerLocationOption,
+                EmploymentLocationInformation = faaApiResponse.EmploymentLocationInformation,
+                Addresses = addresses.Select((a, index) => new AddressDto
+                {
+                    IsSelected = false,
+                    FullAddress = a.ToSingleLineAddress(),
+                    AddressOrder = (short)(index + 1)
+
+                }).ToList()
+            };
             var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
-            { CandidateId = query.CandidateId };
+            { CandidateId = query.CandidateId, EmploymentLocation = location };
             var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.TrimVacancyReference(), expectedPutData);
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
@@ -62,8 +72,21 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             ApplyCommandHandler handler)
         {
+            var addresses = new List<Address> { faaApiResponse.Address }.Concat(faaApiResponse.OtherAddresses!).ToList();
+            var location = new LocationDto
+            {
+                EmployerLocationOption = faaApiResponse.EmployerLocationOption,
+                EmploymentLocationInformation = faaApiResponse.EmploymentLocationInformation,
+                Addresses = addresses.Select((a, index) => new AddressDto
+                {
+                    IsSelected = false,
+                    FullAddress = a.ToSingleLineAddress(),
+                    AddressOrder = (short)(index + 1)
+
+                }).ToList()
+            };
             var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
-                { CandidateId = query.CandidateId };
+                { CandidateId = query.CandidateId, EmploymentLocation = location };
             var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.TrimVacancyReference(), expectedPutData);
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);

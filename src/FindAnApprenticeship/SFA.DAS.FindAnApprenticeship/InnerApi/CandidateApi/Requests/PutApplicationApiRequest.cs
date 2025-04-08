@@ -1,6 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
@@ -24,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public short IsAdditionalQuestion1Complete { get; set; }
             public short IsAdditionalQuestion2Complete { get; set; }
             public short IsDisabilityConfidenceComplete { get; set; }
-            
+            public required LocationDto EmploymentLocation { get; init; } = null!;
         }
     }
 }
