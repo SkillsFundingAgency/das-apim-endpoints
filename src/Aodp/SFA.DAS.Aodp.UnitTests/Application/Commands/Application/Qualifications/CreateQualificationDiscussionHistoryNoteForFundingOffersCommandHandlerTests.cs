@@ -28,7 +28,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
             // Arrange
             var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
 
-            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryApiRequest>()))
+            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryNoteForFundingApiRequest>()))
                           .Returns(Task.CompletedTask);
 
             // Act
@@ -46,7 +46,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
             var command = _fixture.Create<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand>();
             var exceptionMessage = "API call failed";
 
-            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryApiRequest>()))
+            _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryNoteForFundingApiRequest>()))
                           .ThrowsAsync(new Exception(exceptionMessage));
 
             // Act

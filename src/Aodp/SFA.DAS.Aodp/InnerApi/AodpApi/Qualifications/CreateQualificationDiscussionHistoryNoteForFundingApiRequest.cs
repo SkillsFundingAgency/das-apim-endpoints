@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-public class CreateQualificationDiscussionHistoryApiRequest : IPutApiRequest
+public class CreateQualificationDiscussionHistoryNoteForFundingApiRequest : IPutApiRequest
 {
     public Guid QualificationVersionId { get; set; }
 
