@@ -3,6 +3,7 @@ public class PagedQuery
 {
     public int Page { get; set; }
     public int? PageSize { get; set; }
+    public int Offset => PageSize.HasValue ? (Page - 1) * PageSize.Value : 0;
 }
 
 public abstract class PagedQueryResult<T>
