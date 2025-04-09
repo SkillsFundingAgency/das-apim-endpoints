@@ -40,7 +40,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             [FromQuery] string? qan,
             [FromQuery] string? processStatusFilter)
         {
-            var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan);
+            var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan, processStatusFilter);
 
             if (validationResult.IsValid)
             {
@@ -65,7 +65,8 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                         Organisation = organisation,
                         QAN = qan,
                         Skip = skip,
-                        Take = take
+                        Take = take,
+                        ProcessStatusFilter = processStatusFilter
                     };
                     return await SendRequestAsync(query);
                 }
@@ -123,7 +124,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 return BadRequest(new { message = "No version specified" });
             }
 
-            if (version is null|version==0)
+            if (version is null | version == 0)
             {
                 _logger.LogWarning("No version specified");
                 return BadRequest(new { message = "No version specified" });
@@ -170,7 +171,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationStatus);
         }
 
-        [HttpGet("export")]        
+        [HttpGet("export")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationsExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -256,7 +257,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(new GetChangedQualificationsExportQuery());
         }
 
-        private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan)
+        private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan, string? processStatusFilter)
         {
             var result = new ParamValidationResult() { IsValid = true };
             status = status?.Trim().ToLower();
@@ -281,6 +282,20 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             {
                 result.IsValid = false;
                 result.ErrorMessage = "Take param is invalid.";
+            }
+
+            if (!string.IsNullOrWhiteSpace(processStatusFilter))
+            {
+                var procStatusIdStrings = processStatusFilter.Split(',').Select(v => v.Trim());
+                try
+                {
+                    var ids = procStatusIdStrings.Select(s => Guid.Parse(s)).ToList();
+                }
+                catch
+                {
+                    result.IsValid = false;
+                    result.ErrorMessage = "Process status filter param is invalid.";
+                }
             }
 
             if (!result.IsValid)
