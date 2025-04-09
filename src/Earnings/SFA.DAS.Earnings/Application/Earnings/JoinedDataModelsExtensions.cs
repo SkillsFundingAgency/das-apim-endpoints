@@ -47,7 +47,7 @@ internal static class JoinedDataModelsExtensions
                 EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive, 
                 2),
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLearnerAdditionalPayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildPriceEpisodeInstalmentsThisPeriodValues(joinedEarningsApprenticeship, joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear()),
+            PriceEpisodePeriodisedValuesBuilder.BuildPriceEpisodeInstalmentsThisPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear()),
             PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeOnProgPayment),
             PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier),
             PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier),
@@ -63,8 +63,8 @@ internal static class JoinedDataModelsExtensions
         byte collectionPeriod,
         bool hasSubsequentPriceEpisodes)
     {
-
         var previousEarnings = GetPreviousEarnings(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
+        var totalEpisodeEarnings = GetTotalEpisodeEarnings(joinedEarningsApprenticeship, joinedPriceEpisode);
 
         return new PriceEpisodeValues
         {
@@ -97,7 +97,7 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodePreviousEarnings = EarningsFM36Constants.PriceEpisodePreviousEarnings,
             PriceEpisodeInstalmentValue = joinedPriceEpisode.Instalments.FirstOrDefault()?.Amount ?? 0,
             PriceEpisodeOnProgPayment = EarningsFM36Constants.PriceEpisodeOnProgPayment,
-            PriceEpisodeTotalEarnings = joinedPriceEpisode.Instalments.Sum(x => x.Amount),
+            PriceEpisodeTotalEarnings = totalEpisodeEarnings,
             PriceEpisodeBalanceValue = EarningsFM36Constants.PriceEpisodeBalanceValue,
             PriceEpisodeBalancePayment = EarningsFM36Constants.PriceEpisodeBalancePayment,
             PriceEpisodeCompleted = joinedPriceEpisode.EndDate < DateTime.Now,
@@ -140,6 +140,36 @@ internal static class JoinedDataModelsExtensions
             - GetPreviousEarnings(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod)
                                         - joinedPriceEpisode.CompletionPayment,
         };
+    }
+
+    private static decimal GetTotalEpisodeEarnings(JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode joinedPriceEpisode)
+    {
+        var thisEpisode = joinedEarningsApprenticeship.Episodes
+            .SingleOrDefault(x => x.StartDate == joinedEarningsApprenticeship.StartDate);
+
+        if (thisEpisode == null) return 0;
+
+        var subsequentEpisodes = joinedEarningsApprenticeship.Episodes
+            .Where(x => x.StartDate > joinedPriceEpisode.StartDate)
+            .OrderBy(x => x.StartDate)
+            .ToList();
+
+        var totalEpisodeEarnings = thisEpisode.Instalments.Sum(x => x.Amount);
+
+        // Iterate through the subsequent episodes and accumulate instalment amounts
+        foreach (var episode in subsequentEpisodes)
+        {
+            // Check if the episode is terminated by academic year end
+            if (!episode.IsTerminatedByAcademicYearEnd)
+            {
+                break; // Stop iteration once a terminated episode is encountered
+            }
+
+            // Add instalment amounts for the current episode
+            totalEpisodeEarnings += episode.Instalments.Sum(x => x.Amount);
+        }
+
+        return totalEpisodeEarnings;
     }
 
     internal static LearningDeliveryValues GetLearningDelivery(

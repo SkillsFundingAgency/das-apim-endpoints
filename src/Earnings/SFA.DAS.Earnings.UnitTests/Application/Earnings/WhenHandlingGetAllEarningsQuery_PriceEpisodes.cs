@@ -56,6 +56,10 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                     (x.EpisodePriceKey == episodePrice.Price.Key || x.EpisodePriceKey == Guid.Empty) // the guid.empty is to account for apprenticeships that were created before episodePriceKey was recorded
                     ).ToList();
 
+                var firstEpisode = earningApprenticeship.Episodes.First();
+                var firstAmount = firstEpisode.Instalments.First().Amount;
+                var expectedEpisodeTotalEarnings = firstEpisode.Instalments.Where(x => x.Amount == firstAmount).Sum(x => x.Amount);
+
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
                 actualPriceEpisode.Should().NotBeNull();
@@ -98,7 +102,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarnings.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentValue.Should().Be(instalmentsForPricePeriod.First().Amount);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeOnProgPayment.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings.Should().Be(instalmentsForPricePeriod.Sum(x => x.Amount));
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings.Should().Be(expectedEpisodeTotalEarnings);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalanceValue.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalancePayment.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompleted.Should().Be(episodePrice.Price.EndDate < DateTime.Now);
