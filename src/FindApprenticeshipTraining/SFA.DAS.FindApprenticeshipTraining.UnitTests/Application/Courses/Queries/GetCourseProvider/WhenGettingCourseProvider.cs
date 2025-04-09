@@ -27,7 +27,7 @@ public sealed class WhenGettingCourseProvider
     private readonly Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpClientMock = new();
     private readonly Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> _employerFeedbackMock = new();
     private readonly Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> _apprenticeFeedbackMock = new();
-    private readonly Mock<IAccessorServiceInnerApiClient<AccessorServiceInnerApiConfiguration>> _accessorClientMock = new();
+    private readonly Mock<IAssessorsApiClient<AssessorsApiConfiguration>> _assessorClientMock = new();
     private readonly Mock<ICachedLocationLookupService> _cachedLocationLookupService = new();
 
     private GetCourseProviderQueryHandler SetupHandler(
@@ -60,7 +60,7 @@ public sealed class WhenGettingCourseProvider
             string.Empty
         ));
 
-        _accessorClientMock
+        _assessorClientMock
             .Setup(x => x.GetWithResponseCode<GetAssessmentsResponse>(
                 It.Is<GetAssessmentsRequest>(a =>
                     a.Ukprn.Equals(query.Ukprn) &&
@@ -128,7 +128,7 @@ public sealed class WhenGettingCourseProvider
             _roatpClientMock.Object,
             _employerFeedbackMock.Object,
             _apprenticeFeedbackMock.Object,
-            _accessorClientMock.Object,
+            _assessorClientMock.Object,
             _cachedLocationLookupService.Object
         );
     }
@@ -229,7 +229,7 @@ public sealed class WhenGettingCourseProvider
 
         await sut.Handle(query, CancellationToken.None);
 
-        _accessorClientMock.Verify(x =>
+        _assessorClientMock.Verify(x =>
             x.GetWithResponseCode<GetAssessmentsResponse>(It.Is<GetAssessmentsRequest>(a =>
                 a.Ukprn.Equals(query.Ukprn) &&
                 a.IFateReferenceNumber.Equals(courseProviderDetailsResponse.IFateReferenceNumber)
