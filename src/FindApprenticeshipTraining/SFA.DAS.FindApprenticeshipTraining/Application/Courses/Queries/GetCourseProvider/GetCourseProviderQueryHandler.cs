@@ -21,7 +21,7 @@ public sealed class GetCourseProviderQueryHandler(
     IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient,
     IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient,
     IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient,
-    IAccessorServiceInnerApiClient<AccessorServiceInnerApiConfiguration> _accessorServiceInnerApiClient,
+    IAssessorsApiClient<AssessorsApiConfiguration> _assessorServiceInnerApiClient,
     ICachedLocationLookupService _cachedLocationLookupService
 ) : IRequestHandler<GetCourseProviderQuery, GetCourseProviderQueryResult>
 {
@@ -44,7 +44,7 @@ public sealed class GetCourseProviderQueryHandler(
         courseProviderDetailsResponse.EnsureSuccessStatusCode();
 
         var assessmentsResponse =
-            await _accessorServiceInnerApiClient.GetWithResponseCode<GetAssessmentsResponse>(
+            await _assessorServiceInnerApiClient.GetWithResponseCode<GetAssessmentsResponse>(
                 new GetAssessmentsRequest(
                     query.Ukprn,
                     courseProviderDetailsResponse.Body.IFateReferenceNumber
