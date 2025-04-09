@@ -59,4 +59,5 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Application
             Assert.That(result.ErrorMessage, Is.EqualTo(exception.Message));
         }
     }
+
 }
