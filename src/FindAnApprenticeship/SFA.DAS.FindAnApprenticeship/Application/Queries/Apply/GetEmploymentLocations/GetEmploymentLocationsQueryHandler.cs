@@ -14,7 +14,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmploymentLo
         public async Task<GetEmploymentLocationsQueryResult> Handle(GetEmploymentLocationsQuery request, CancellationToken cancellationToken)
         {
             var employmentLocationsApiRequest = new GetEmploymentLocationsApiRequest(request.CandidateId, request.ApplicationId);
-            return await candidateApiClient.Get<GetEmploymentLocationsApiResponse>(employmentLocationsApiRequest);
+            return await candidateApiClient.Get<GetEmploymentLocationApiResponse>(employmentLocationsApiRequest);
         }
     }
 }

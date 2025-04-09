@@ -59,6 +59,12 @@ public class WhenHandlingGetIndexQuery
 
         result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
         result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
+        
+        result.EmploymentLocation.EmploymentLocationStatus.Should().Be(applicationApiResponse.EmploymentLocationStatus);
+        result.EmploymentLocation.EmploymentLocationInformation.Should().Be(applicationApiResponse.EmploymentLocation.EmploymentLocationInformation);
+        result.EmploymentLocation.EmployerLocationOption.Should().Be(applicationApiResponse.EmploymentLocation.EmployerLocationOption);
+        result.EmploymentLocation.Addresses.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation.Addresses);
+        
         result.WorkHistory.VolunteeringAndWorkExperience.Should().Be(applicationApiResponse.WorkExperienceStatus);
         result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
         result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);
@@ -114,6 +120,12 @@ public class WhenHandlingGetIndexQuery
 
         result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
         result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
+        
+        result.EmploymentLocation.EmploymentLocationStatus.Should().Be(applicationApiResponse.EmploymentLocationStatus);
+        result.EmploymentLocation.EmploymentLocationInformation.Should().Be(applicationApiResponse.EmploymentLocation.EmploymentLocationInformation);
+        result.EmploymentLocation.EmployerLocationOption.Should().Be(applicationApiResponse.EmploymentLocation.EmployerLocationOption);
+        result.EmploymentLocation.Addresses.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation.Addresses);
+        
         result.WorkHistory.VolunteeringAndWorkExperience.Should().Be(applicationApiResponse.WorkExperienceStatus);
         result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
         result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);
