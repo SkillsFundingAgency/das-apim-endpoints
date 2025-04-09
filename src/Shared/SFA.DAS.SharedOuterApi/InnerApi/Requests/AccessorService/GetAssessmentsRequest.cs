@@ -13,5 +13,5 @@ public sealed class GetAssessmentsRequest : IGetApiRequest
         IFateReferenceNumber = ifateReferenceNumber;
     }
 
-    public string GetUrl => $"api/ao/assessments?standard{IFateReferenceNumber}&ukprn={Ukprn}";
+    public string GetUrl => $"api/ao/assessments?standard={IFateReferenceNumber}&ukprn={Ukprn}";
 }

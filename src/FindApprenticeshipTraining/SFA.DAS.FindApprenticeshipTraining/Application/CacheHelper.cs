@@ -67,9 +67,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application
             return itemsTask;
         }
 
-        public bool FilterApplied(GetAvailableToStartStandardsListRequest request)
+        public static bool FilterApplied(GetAvailableToStartStandardsListRequest request)
         {
-            return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Any() || request.RouteIds.Any() || request.OrderBy != CoursesOrderBy.Score;
+            return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Count > 0 || request.RouteIds.Count > 0 || request.OrderBy != CoursesOrderBy.Score;
         }
 
         internal class SaveToCache
