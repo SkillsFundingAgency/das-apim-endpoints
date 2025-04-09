@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.ApprenticeshipsManage.InnerApi.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -19,7 +20,7 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
-
+        services.AddScoped<IPagedLinkHeaderService, PagedLinkHeaderService>();
 
         return services;
     }
