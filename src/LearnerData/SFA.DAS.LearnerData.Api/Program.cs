@@ -47,9 +47,14 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();
+    var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
+    if (string.IsNullOrWhiteSpace(nsbConnection))
+    {
+        throw new ApplicationException("NSBConnection string is empty");
+    }
 
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-    transport.ConnectionString(configuration["NServiceBusConfiguration:NServiceBusConnectionString"]);
+    transport.ConnectionString(nsbConnection);
 
     var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
     if (!string.IsNullOrWhiteSpace(decodedLicence)) endpointConfiguration.License(decodedLicence);
