@@ -13,6 +13,8 @@ namespace SFA.DAS.Reservations.Api.Models
 
         public int Id { get ; set ; }
 
+        public string ApprenticeshipType { get; set; }
+        
         public static implicit operator GetTrainingCoursesListItem(GetStandardsListItem standard)
         {
             return new GetTrainingCoursesListItem
@@ -20,7 +22,8 @@ namespace SFA.DAS.Reservations.Api.Models
                 Id = standard.LarsCode,
                 Level = standard.Level,
                 Title = standard.Title,
-                EffectiveTo = standard.EffectiveTo
+                EffectiveTo = standard.EffectiveTo,
+                ApprenticeshipType = standard.ApprenticeshipType
             };
         }
     }
