@@ -32,6 +32,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
                 EmploymentLocationInformation = faaApiResponse.EmploymentLocationInformation,
                 Addresses = addresses.Select((a, index) => new AddressDto
                 {
+                    Id = Guid.NewGuid(),
                     IsSelected = false,
                     FullAddress = a.ToSingleLineAddress(),
                     AddressOrder = (short)(index + 1)
@@ -79,6 +80,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
                 EmploymentLocationInformation = faaApiResponse.EmploymentLocationInformation,
                 Addresses = addresses.Select((a, index) => new AddressDto
                 {
+                    Id = Guid.NewGuid(),
                     IsSelected = false,
                     FullAddress = a.ToSingleLineAddress(),
                     AddressOrder = (short)(index + 1)

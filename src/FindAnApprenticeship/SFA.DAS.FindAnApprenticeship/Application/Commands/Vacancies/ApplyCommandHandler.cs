@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System;
+using MediatR;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
@@ -47,6 +48,7 @@ public class ApplyCommandHandler(
                 EmploymentLocationInformation = result.EmploymentLocationInformation,
                 Addresses = addresses.Select((a, index) => new AddressDto
                 {
+                    Id = Guid.NewGuid(),
                     IsSelected = false,
                     FullAddress = a.ToSingleLineAddress(),
                     AddressOrder = (short)(index + 1)
