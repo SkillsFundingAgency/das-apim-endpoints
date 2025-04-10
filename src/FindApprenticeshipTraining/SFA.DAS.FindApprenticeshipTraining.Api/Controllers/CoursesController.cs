@@ -4,11 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseLevels;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
@@ -43,7 +45,6 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(typeof(GetCourseProvidersResponse), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetCourseProviders(int id, [FromQuery] GetCourseProvidersModel model)
     {
-
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
             Id = id,
@@ -88,6 +89,24 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
         {
             return NotFound();
         }
+
+        return Ok(result);
+    }
+
+    [HttpGet]
+    [Route("{larsCode:int}/providers/{ukprn:int}")]
+    public async Task<IActionResult> GetCourseProvider([FromRoute] int larsCode, [FromRoute] long ukprn, [FromQuery] GetCourseProviderRequest request, CancellationToken cancellationToken)
+    {
+        var result = await _mediator.Send(
+            new GetCourseProviderQuery(
+                ukprn,
+                larsCode,
+                request.ShortlistUserId,
+                request.Location,
+                request.Distance
+            ),
+            cancellationToken
+        );
 
         return Ok(result);
     }

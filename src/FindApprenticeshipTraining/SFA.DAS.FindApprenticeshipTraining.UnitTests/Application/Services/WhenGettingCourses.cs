@@ -10,7 +10,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCourses.Services
+namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services
 {
     public class WhenGettingCourses
     {
@@ -49,7 +49,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.TrainingCours
 
             result.Should().BeEquivalentTo(coursesFromApi);
             mockCacheService.Verify(service =>
-                service.SaveToCache<GetStandardsListResponse>(
+                service.SaveToCache(
                     nameof(GetStandardsListResponse),
                     coursesFromApi,
                     expectedExpirationInHours));
