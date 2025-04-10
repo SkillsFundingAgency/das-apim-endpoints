@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
+﻿namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
 
 public class GetQualificationDetailsQueryResponse
 {
@@ -38,6 +32,7 @@ public class GetQualificationDetailsQueryResponse
     public DateTime? CertificationEndDate { get; set; }
     public DateTime? ReviewDate { get; set; }
     public bool OfferedInEngland { get; set; }
+    public bool? FundedInEngland { get; set; }
     public bool OfferedInNi { get; set; }
     public bool? OfferedInternationally { get; set; }
     public string? Specialism { get; set; }
