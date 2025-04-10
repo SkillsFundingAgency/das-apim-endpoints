@@ -12,8 +12,6 @@ public class ProcessLearnersCommandHandler(
 {
     public Task Handle(ProcessLearnersCommand request, CancellationToken cancellationToken)
     {
-
-
         return Parallel.ForEachAsync(request.Learners, new ParallelOptions {MaxDegreeOfParallelism = 5},
             async (learner, cancellationToken) =>
             {
