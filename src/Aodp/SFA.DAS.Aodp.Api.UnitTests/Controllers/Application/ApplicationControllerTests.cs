@@ -6,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Application;
-
 [TestFixture]
 public class ApplicationControllerTests
 {
