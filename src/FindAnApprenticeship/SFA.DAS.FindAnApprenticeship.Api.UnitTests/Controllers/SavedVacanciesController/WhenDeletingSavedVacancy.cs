@@ -26,7 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedVacanciesC
         {
             mediator.Setup(x => x.Send(It.Is<DeleteSavedVacancyCommand>(q =>
                         q.CandidateId == candidateId &&
-                        q.VacancyReference == request.VacancyReference),
+                        q.VacancyId == request.VacancyId),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(Unit.Value);
 
@@ -44,7 +44,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedVacanciesC
         {
             mediator.Setup(x => x.Send(It.Is<DeleteSavedVacancyCommand>(q =>
                         q.CandidateId == candidateId &&
-                        q.VacancyReference == request.VacancyReference),
+                        q.VacancyId == request.VacancyId),
                     It.IsAny<CancellationToken>()))
              .ThrowsAsync(new Exception());
 
