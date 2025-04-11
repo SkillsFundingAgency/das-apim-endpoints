@@ -18,6 +18,7 @@ using SFA.DAS.EmployerIncentives.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerIncentives.Api
@@ -72,6 +73,7 @@ namespace SFA.DAS.EmployerIncentives.Api
                 ;
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEligibleApprenticeshipsSearchQuery).Assembly));
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
 
             services
