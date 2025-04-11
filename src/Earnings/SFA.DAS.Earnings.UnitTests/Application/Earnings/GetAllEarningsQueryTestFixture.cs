@@ -65,13 +65,13 @@ public class GetAllEarningsQueryTestFixture
                 Key = Guid.NewGuid(),
                 Episodes = new List<Episode>
                 {
-                    new Episode
+                    new()
                     {
                         Key = Guid.NewGuid(),
                         TrainingCode = $"{Fixture.Create<int>()}    ",
                         Prices = new List<EpisodePrice>
                         {
-                            new EpisodePrice
+                            new()
                             {
                                 Key = Guid.NewGuid(),
                                 StartDate = new DateTime(2020, 1, 1),
@@ -97,13 +97,13 @@ public class GetAllEarningsQueryTestFixture
                 Key = Guid.NewGuid(),
                 Episodes = new List<Episode>
                 {
-                    new Episode
+                    new()
                     {
                         Key = Guid.NewGuid(),
                         TrainingCode = $"{Fixture.Create<int>()}    ",
                         Prices = new List<EpisodePrice>
                         {
-                            new EpisodePrice
+                            new()
                             {
                                 Key = Guid.NewGuid(),
                                 StartDate = new DateTime(2020, 8, 1),
@@ -113,7 +113,7 @@ public class GetAllEarningsQueryTestFixture
                                 TotalPrice = 22500,
                                 FundingBandMaximum = 30000
                             },
-                            new EpisodePrice
+                            new()
                             {
                                 Key = Guid.NewGuid(),
                                 StartDate = new DateTime(2021, 5, 3),
@@ -161,7 +161,7 @@ public class GetAllEarningsQueryTestFixture
                 FundingLineType = Fixture.Create<string>(),
                 Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>
                 {
-                    new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                    new()
                     {
                         Key = apprenticeshipsResponse.Apprenticeships[0].Episodes[0].Key,
                         NumberOfInstalments = 12,
@@ -200,7 +200,7 @@ public class GetAllEarningsQueryTestFixture
                 FundingLineType = Fixture.Create<string>(),
                 Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>
                 {
-                    new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                    new()
                     {
                         Key = apprenticeshipsResponse.Apprenticeships[1].Episodes[0].Key,
                         NumberOfInstalments = 12,
