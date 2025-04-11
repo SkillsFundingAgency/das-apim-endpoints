@@ -7,12 +7,12 @@ using SFA.DAS.LearnerDataJobs.InnerApi;
 namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 
 [ApiController]
-[Route("learners")]
 
 public class LearnersController(IMediator mediator, ILogger<LearnersController> logger) : ControllerBase
 {
-    [HttpPost]
-    public async Task<IActionResult> PostLearner([FromBody] LearnerDataRequest request)
+    [HttpPut]
+    [Route("providers/{providerId}/learners")]
+    public async Task<IActionResult> PutLearner([FromRoute] long providerId, [FromBody] LearnerDataRequest request)
     {
         try
         {

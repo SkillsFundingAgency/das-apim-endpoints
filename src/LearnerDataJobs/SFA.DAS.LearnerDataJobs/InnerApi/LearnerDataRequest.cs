@@ -17,4 +17,7 @@ public class LearnerDataRequest
     public bool IsFlexJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
     public int StandardCode { get; set; }
+    public Guid CorrelationId { get; set; }
+    public DateTime ReceivedOn { get; set; }
+    public int AcademicYear { get; set; }
 }
