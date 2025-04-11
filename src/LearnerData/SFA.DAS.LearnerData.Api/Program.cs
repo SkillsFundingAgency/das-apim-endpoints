@@ -48,9 +48,9 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
 
     endpointConfiguration.SendOnly();
     var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
-    if (string.IsNullOrWhiteSpace(nsbConnection))
+    if (!string.IsNullOrWhiteSpace(nsbConnection))
     {
-        throw new ApplicationException("NSBConnection string is empty");
+        throw new ApplicationException($"NSBConnection string is {nsbConnection}");
     }
 
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
