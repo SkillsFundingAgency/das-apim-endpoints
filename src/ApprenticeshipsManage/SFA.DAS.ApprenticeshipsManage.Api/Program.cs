@@ -5,6 +5,9 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.ApprenticeshipsManage.Api.AppStart;
 using SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using SFA.DAS.Api.Common.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,19 +35,19 @@ builder.Services
             BearerFormat = "JWT"
         });
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>() // No scopes needed for simple Bearer auth
-        }
-    });
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
     })
     .AddControllers(o =>
     {
@@ -64,7 +67,12 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
-builder.Services.AddHealthChecks();
+
+if (configuration["Environment"] != "DEV")
+{
+    builder.Services.AddHealthChecks()
+        .AddCheck<ApprenticeshipsApiHealthCheck>(ApprenticeshipsApiHealthCheck.HealthCheckResultDescription);
+}
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetApprenticeshipsQueryHandler).Assembly));
 
@@ -81,8 +89,12 @@ app
         s.RoutePrefix = string.Empty;
     })
     .UseHttpsRedirection()
-    .UseHealthChecks()
     .UseAuthentication();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
+});
 
 app.MapControllers();
 
