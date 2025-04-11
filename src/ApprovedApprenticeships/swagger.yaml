@@ -7,35 +7,23 @@ paths:
   /info:
     get:
       description: information regarding this API. The version will be returned
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
       responses:
         '200':
-          $ref: '#/components/responses/infoResponse'
-        '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'   
-  /liveness:
-    get:
-      description: The system is responsive and accepting incoming requests; however, this endpoint does not perform a dependency check, so the system may not be fully ready to process requests correctly.
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      responses:
-        '200':
-          $ref: '#/components/responses/okResponse'
+          $ref: '#/components/responses/infoResponse'  
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'
-  /readiness:
+  /health:
     get:
       description: The system is fully ready to accept requests and all the dependencies are healthy
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
       responses:
         '200':
+          description: All health checks have passed
           $ref: '#/components/responses/healthCheckResponse'
         '503':
+          description: A health check has failed
           $ref: '#/components/responses/healthCheckResponse'
         '429':
-          $ref: '#/components/responses/rateLimitExceededResponse' 
+          $ref: '#/components/responses/rateLimitExceededResponse'
 
   /providers/{ukprn}/academicyears/{academicyear}/apprenticeships:
     get:

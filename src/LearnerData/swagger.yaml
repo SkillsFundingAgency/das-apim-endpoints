@@ -10,6 +10,8 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/infoResponse'  
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'
   /health:
     get:
       description: The system is fully ready to accept requests and all the dependencies are healthy
@@ -20,6 +22,8 @@ paths:
         '503':
           description: A health check has failed
           $ref: '#/components/responses/healthCheckResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'
   /providers/{ukprn}/academicyears/{academicyear}/learners:
     put:
       summary: External authenticated endpoint for pushing ILR data (leaner data in our domain) into the apprenticeship service
