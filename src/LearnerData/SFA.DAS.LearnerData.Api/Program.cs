@@ -47,12 +47,8 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();
-    var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
-    if (!string.IsNullOrWhiteSpace(nsbConnection))
-    {
-        throw new ApplicationException($"NSBConnection string is {nsbConnection}");
-    }
 
+    var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
     transport.ConnectionString(nsbConnection);
 
