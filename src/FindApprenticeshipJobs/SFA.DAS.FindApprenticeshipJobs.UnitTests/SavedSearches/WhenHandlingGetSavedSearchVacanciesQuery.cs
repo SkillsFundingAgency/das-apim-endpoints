@@ -118,6 +118,9 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         actual.Vacancies.Should().NotBeEmpty();
         actual.Levels.Should().BeEquivalentTo(levels);
         actual.Categories.Should().BeEquivalentTo(categories);
+        actual.Vacancies.Should().AllSatisfy(vac => DateTime.TryParseExact(vac.StartDate, "d MMMM yyyy",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None, out _));
     }
     
     [Test, MoqAutoData]

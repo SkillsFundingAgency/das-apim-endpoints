@@ -212,6 +212,47 @@ Data: {
 
 Starting the API will then show the swagger definition with the available operations. The outer API is used to populate standards and frameworks in the forecasting database.
 
+### Funding
+
+The Funding outer api relies on the following inner api:
+
+* [das-funding-apprenticeship-earnings](https://github.com/SkillsFundingAgency/das-funding-apprenticeship-earnings)
+* [das-apprenticeships](https://github.com/SkillsFundingAgency/das-apprenticeships)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev. Adjust the settings to point at your local instances accordingly
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.Funding.OuterApi_1.0
+Data: {{
+        "FundingApprenticeshipEarningsInnerApi":{
+            "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+            "url":"https://localhost:5001/",
+            "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-empincapi-as-ar"
+        },
+        "ApprenticeshipsInnerApi":{
+            "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+            "url":"https://localhost:7015/",
+            "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-appsapi-as-ar"
+        },
+        "AzureAd":{
+            "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+            "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-apimendp-empincapi-as-ar"
+        },
+        "RoatpV2ApiConfiguration": {
+            "url": "https://at-roatp-api.apprenticeships.education.gov.uk/",
+            "identifier": "https://citizenazuresfabisgov.onmicrosoft.com/das-at-roatpv2api-as-ar"
+	    }
+    }
+}
+```
+* Start the api project ```SFA.DAS.Funding.Api```
+
+Starting the API will then show the swagger definition with the available operations. The outer API is used to populate standards and frameworks in the forecasting database.
+
 ### Manage Apprenticeships
 
 The Manage Apprenticeships outer api relies on the following inner apis:
