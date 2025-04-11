@@ -69,6 +69,7 @@ stages:
   dependsOn: Build
   displayName: Deploy to TEST
   variables:
+  - group: TEST das-apim-endpoints-LearnerData
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
