@@ -1,5 +1,5 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -31,9 +32,9 @@ public class ApplyCommandHandler(
         if (result.AdditionalQuestion1 != null) { additionalQuestions.Add(new KeyValuePair<int, string>(1, result.AdditionalQuestion1)); }
         if (result.AdditionalQuestion2 != null) { additionalQuestions.Add(new KeyValuePair<int, string>(2, result.AdditionalQuestion2)); }
 
-        var addresses = result.OtherAddresses is {Count: > 0}
-            ? new List<Address> {result.Address}.Concat(result.OtherAddresses).ToList()
-            : [result.Address];
+        var addresses = result.OtherAddresses is { Count: > 0 }
+            ? new List<Address> { result.Address }.Concat(result.OtherAddresses).ToList()
+            : result.Address != null ? [result.Address] : null;
 
         var putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
@@ -42,11 +43,12 @@ public class ApplyCommandHandler(
             IsAdditionalQuestion1Complete = string.IsNullOrEmpty(result.AdditionalQuestion1) ? (short)4 : (short)0,
             IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
             IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 : (short)4,
+            IsEmploymentLocationComplete = result.EmployerLocationOption is AvailableWhere.MultipleLocations ? (short)0 : (short)4,
             EmploymentLocation = new LocationDto
             {
                 EmployerLocationOption = result.EmployerLocationOption,
                 EmploymentLocationInformation = result.EmploymentLocationInformation,
-                Addresses = addresses.Select((a, index) => new AddressDto
+                Addresses = addresses?.Select((a, index) => new AddressDto
                 {
                     Id = Guid.NewGuid(),
                     IsSelected = false,

@@ -25,6 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public short IsAdditionalQuestion1Complete { get; set; }
             public short IsAdditionalQuestion2Complete { get; set; }
             public short IsDisabilityConfidenceComplete { get; set; }
+            public short IsEmploymentLocationComplete { get; set; }
             public required LocationDto EmploymentLocation { get; init; } = null!;
         }
     }
