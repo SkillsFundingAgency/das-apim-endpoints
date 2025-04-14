@@ -3,12 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using MediatR;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV
+namespace SFA.DAS.Approvals.Application.Learners.Queries
 {
     public class GetLearnersForProviderQueryHandler(
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IMapper mapper)
