@@ -8,18 +8,18 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using GetLevelsListResponse = SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses.GetLevelsListResponse;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
+namespace SFA.DAS.FindApprenticeshipTraining.Application
 {
     internal class CacheHelper
     {
         private const int ExpirationInHours = 2;
         private readonly ICacheStorageService _cacheStorageService;
 
-        public CacheHelper (ICacheStorageService cacheStorageService)
+        public CacheHelper(ICacheStorageService cacheStorageService)
         {
             _cacheStorageService = cacheStorageService;
         }
-        
+
         public async Task UpdateCachedItems(Task<GetRoutesListResponse> sectorsTask,
             Task<GetLevelsListResponse> levelsTask,
             Task<GetStandardsListResponse> standardsTask,
@@ -67,9 +67,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses
             return itemsTask;
         }
 
-        public bool FilterApplied(GetAvailableToStartStandardsListRequest request)
+        public static bool FilterApplied(GetAvailableToStartStandardsListRequest request)
         {
-            return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Any() || request.RouteIds.Any() || request.OrderBy != CoursesOrderBy.Score;
+            return !string.IsNullOrEmpty(request.Keyword) || request.Levels.Count > 0 || request.RouteIds.Count > 0 || request.OrderBy != CoursesOrderBy.Score;
         }
 
         internal class SaveToCache
