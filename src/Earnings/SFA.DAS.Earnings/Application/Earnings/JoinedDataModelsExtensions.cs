@@ -64,7 +64,58 @@ internal static class JoinedDataModelsExtensions
         bool hasSubsequentPriceEpisodes)
     {
         var previousEarnings = GetPreviousEarnings(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
-        var totalEpisodeEarnings = GetTotalEpisodeEarnings(joinedEarningsApprenticeship, joinedPriceEpisode);
+
+        Console.WriteLine($"Episode price key: {joinedPriceEpisode.EpisodePriceKey}");
+        Console.WriteLine($"Apprenticeship ULN {joinedEarningsApprenticeship.Uln}; Date {joinedEarningsApprenticeship.StartDate:yyyy-MM-dd} -> {joinedEarningsApprenticeship.PlannedEndDate:yyyy-MM-dd}");
+
+        Console.WriteLine($"Price Episode Start {joinedPriceEpisode.StartDate:yyyy-MM-dd} -> {joinedPriceEpisode.EndDate:yyyy-MM-dd}");
+
+        var instalmentSum = joinedPriceEpisode.Instalments.Sum(x => x.Amount);
+        
+        Console.WriteLine($"Instalment total: {instalmentSum}");
+
+        Console.WriteLine($"joinedEarningsApprenticeship episodes:{joinedEarningsApprenticeship.Episodes.Count}");
+
+        var allInstalments = joinedEarningsApprenticeship
+            .Episodes
+            .SelectMany(x => x.Instalments)
+            .ToList();
+
+        decimal total = 0m;
+        var i = 0;
+        foreach (var episode in joinedEarningsApprenticeship.Episodes)
+        {
+            var terminatedByAcademicYearBoundary =
+                episode.IsTerminatedByAcademicYearEnd ? "Terminated by a/y boundary" : "";
+            Console.WriteLine($" - Episode {i}: {episode.StartDate:yyyy-MM-dd} -> {episode.EndDate:yyyy-MM-dd}  - key: {episode.EpisodePriceKey} {terminatedByAcademicYearBoundary}");
+            i++;
+
+            foreach (var instalment in episode.Instalments)
+            {
+                Console.WriteLine($"      {instalment.AcademicYear} {instalment.DeliveryPeriod}: {instalment.Amount}");
+            }
+
+            total = episode.Instalments.Sum(x => x.Amount);
+            Console.WriteLine($"      Total: {total}");
+        }
+
+        Console.WriteLine("All instalments for the joinedEarningsApprenticeship:");
+        foreach (var instalment in allInstalments)
+        {
+            Console.WriteLine($"{instalment.AcademicYear} {instalment.DeliveryPeriod}: {instalment.Amount}");
+        }
+
+        var allInstalmentsSum = allInstalments.Sum(x => x.Amount);
+        Console.WriteLine($"All instalments sum: {allInstalmentsSum}");
+
+        //Total earnings are for the entire episode, irrespective of academic year
+        var totalEpisodeEarnings = joinedEarningsApprenticeship.Episodes
+            .Single(x => x.EpisodePriceKey == joinedPriceEpisode.EpisodePriceKey)
+            .Instalments.Sum(x => x.Amount);
+
+
+        Console.WriteLine("---------------------");
+        Console.WriteLine();
 
         return new PriceEpisodeValues
         {
@@ -141,37 +192,7 @@ internal static class JoinedDataModelsExtensions
                                         - joinedPriceEpisode.CompletionPayment,
         };
     }
-
-    private static decimal GetTotalEpisodeEarnings(JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode joinedPriceEpisode)
-    {
-        var thisEpisode = joinedEarningsApprenticeship.Episodes
-            .SingleOrDefault(x => x.StartDate == joinedEarningsApprenticeship.StartDate);
-
-        if (thisEpisode == null) return 0;
-
-        var subsequentEpisodes = joinedEarningsApprenticeship.Episodes
-            .Where(x => x.StartDate > joinedPriceEpisode.StartDate)
-            .OrderBy(x => x.StartDate)
-            .ToList();
-
-        var totalEpisodeEarnings = thisEpisode.Instalments.Sum(x => x.Amount);
-
-        // Iterate through the subsequent episodes and accumulate instalment amounts
-        foreach (var episode in subsequentEpisodes)
-        {
-            // Check if the episode is terminated by academic year end
-            if (!episode.IsTerminatedByAcademicYearEnd)
-            {
-                break; // Stop iteration once a terminated episode is encountered
-            }
-
-            // Add instalment amounts for the current episode
-            totalEpisodeEarnings += episode.Instalments.Sum(x => x.Amount);
-        }
-
-        return totalEpisodeEarnings;
-    }
-
+    
     internal static LearningDeliveryValues GetLearningDelivery(
         this JoinedEarningsApprenticeship joinedEarningsApprenticeship, 
         GetAcademicYearsResponse currentAcademicYear)
