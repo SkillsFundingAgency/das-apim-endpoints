@@ -38,7 +38,7 @@ public class WhenAddingServicesToTheContainer
         {
             InitialData = new List<KeyValuePair<string, string>>
             {
-                new("LearnerDataInnerApiConfiguration:url", "http://localhost:1"),
+                new("LearnerDataInnerApi:url", "http://localhost:1"),
                 new("ResourceEnvironmentName", "TEST"),
             }!
         };

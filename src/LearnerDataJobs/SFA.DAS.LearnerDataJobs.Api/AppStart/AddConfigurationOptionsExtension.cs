@@ -13,7 +13,7 @@ public static class AddConfigurationOptionsExtension
         services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
 
-        services.Configure<LearnerDataInnerApiConfiguration>(configuration.GetSection("LearnerDataInnerApiConfiguration"));
+        services.Configure<LearnerDataInnerApiConfiguration>(configuration.GetSection("LearnerDataInnerApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerDataInnerApiConfiguration>>().Value);
     }
 

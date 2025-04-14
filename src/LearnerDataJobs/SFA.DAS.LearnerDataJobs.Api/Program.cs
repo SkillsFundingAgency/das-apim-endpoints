@@ -11,7 +11,6 @@ var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
-
     .AddApplicationInsightsTelemetry()
     .AddServiceRegistration(configuration)
     .AddEndpointsApiExplorer()
