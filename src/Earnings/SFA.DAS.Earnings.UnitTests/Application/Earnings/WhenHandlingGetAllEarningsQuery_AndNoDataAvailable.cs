@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
@@ -35,12 +37,13 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
                 _mockLogger.Object);
         }
 
-
         [Test]
         public async Task EmptyArrayIsReturned()
         {
             // Arrange / Act
-            var result = await _handler.Handle(_fixture.Create<GetAllEarningsQuery>(), _fixture.Create<CancellationToken>());
+            var query = new GetAllEarningsQuery(12345678, 2425, 8);
+
+            var result = await _handler.Handle(query, _fixture.Create<CancellationToken>());
 
             // Assert
             result.Should().NotBeNull();

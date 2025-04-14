@@ -46,21 +46,10 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var expectedPriceEpisodesSplitByAcademicYear =
                 _testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes).ToList();
 
-            var apprenticeshipIndex = _testFixture.ApprenticeshipsResponse.Apprenticeships.IndexOf(apprenticeship);
-            Console.WriteLine($"Apprenticeship {apprenticeshipIndex}");
-            Console.WriteLine($"ExpectedPriceEpisodesSplitByAcademicYear: {expectedPriceEpisodesSplitByAcademicYear.Count}");
-            var i = 0;
-
             foreach (var episodePrice in expectedPriceEpisodesSplitByAcademicYear)
             {
-                Console.WriteLine($"Episode Price Key: {episodePrice.Price.Key}");
-                
                 var earningApprenticeship = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
                 var earningEpisode = earningApprenticeship.Episodes.Single();
-
-                Console.WriteLine($"Episode {i}: {earningEpisode.Instalments.Count} instalments");
-                i++;
-
 
                 var instalmentsForPricePeriod = earningEpisode.Instalments.Where(x =>
                     x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= _testFixture.CollectionCalendarResponse.StartDate &&
@@ -68,60 +57,13 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                     (x.EpisodePriceKey == episodePrice.Price.Key || x.EpisodePriceKey == Guid.Empty) // the guid.empty is to account for apprenticeships that were created before episodePriceKey was recorded
                     ).ToList();
 
-                var instalmentsOutsidePricePeriod = earningEpisode.Instalments.Where(x =>
-                        (x.AcademicYear.GetDateTime(x.DeliveryPeriod) < _testFixture.CollectionCalendarResponse.StartDate ||
-                         x.AcademicYear.GetDateTime(x.DeliveryPeriod) > _testFixture.CollectionCalendarResponse.EndDate)
-                        && (x.EpisodePriceKey == episodePrice.Price.Key || x.EpisodePriceKey == Guid.Empty) // the guid.empty is to account for apprenticeships that were created before episodePriceKey was recorded
-                ).ToList();
-
-
-                foreach (var instalment in earningEpisode.Instalments.OrderBy(x => x.AcademicYear).ThenBy(x => x.DeliveryPeriod))
-                {
-                    Console.WriteLine($" {instalment.AcademicYear} {instalment.DeliveryPeriod} : {instalment.Amount} - key: {instalment.EpisodePriceKey}");
-                }
-
-                Console.WriteLine("");
-                Console.WriteLine("Instalments for price period");
-                foreach (var instalment in instalmentsForPricePeriod)// earningEpisode.Instalments.OrderBy(x => x.AcademicYear).ThenBy(x => x.DeliveryPeriod))
-                {
-                    Console.WriteLine($" {instalment.AcademicYear} {instalment.DeliveryPeriod} : {instalment.Amount} - key: {instalment.EpisodePriceKey}");
-                }
-
-                var total = instalmentsForPricePeriod.Sum(x => x.Amount);
-                Console.WriteLine($"Total: {total}");
-
-
-                Console.WriteLine("");
-                Console.WriteLine("Instalments outside of price period");
-                foreach (var instalment in instalmentsOutsidePricePeriod)// earningEpisode.Instalments.OrderBy(x => x.AcademicYear).ThenBy(x => x.DeliveryPeriod))
-                {
-                    Console.WriteLine($" {instalment.AcademicYear} {instalment.DeliveryPeriod} : {instalment.Amount} - key: {instalment.EpisodePriceKey}");
-                }
-                total = instalmentsOutsidePricePeriod.Sum(x => x.Amount);
-                Console.WriteLine($"Total: {total}");
-
-                var expectedEpisodeTotalEarnings = instalmentsForPricePeriod.Sum(x => x.Amount) +
-                                                   instalmentsOutsidePricePeriod.Sum(x => x.Amount);
-
-                Console.WriteLine();
+                var expectedEpisodeTotalEarnings = earningEpisode.Instalments
+                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                    .Sum(x => x.Amount);
 
                 var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
                     x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
                 actualPriceEpisode.Should().NotBeNull();
-
-
-                //temporary assertion
-                if (actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings != expectedEpisodeTotalEarnings)
-                {
-                    Console.WriteLine($"FAIL! Expected PriceEpisodeTotalEarnings: {expectedEpisodeTotalEarnings}, Actual: {actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings}");
-                }
-                else
-                {
-                    Console.WriteLine($"PASS! Expected PriceEpisodeTotalEarnings: {expectedEpisodeTotalEarnings}, Actual: {actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings}");
-                }
-
-                Console.WriteLine();
-
 
                 actualPriceEpisode.PriceEpisodeIdentifier.Should()
                         .Be($"25-{episodePrice.Episode.TrainingCode.Trim()}-{episodePrice.Price.StartDate:dd/MM/yyyy}");
@@ -161,7 +103,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarnings.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentValue.Should().Be(instalmentsForPricePeriod.First().Amount);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeOnProgPayment.Should().Be(0);
-                //actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings.Should().Be(expectedEpisodeTotalEarnings);
+                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings.Should().Be(expectedEpisodeTotalEarnings);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalanceValue.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalancePayment.Should().Be(0);
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompleted.Should().Be(episodePrice.Price.EndDate < DateTime.Now);
