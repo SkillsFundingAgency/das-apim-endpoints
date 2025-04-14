@@ -157,12 +157,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAugmentedBandLimitFactor.Should().Be(1);
             }
             fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(episode => episode.Prices).Count());
-
-            Console.WriteLine();
-
         }
-
-        
     }
 
     [Test]
