@@ -18,10 +18,12 @@ public class AddLearnerDataCommandHandlerTests
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
+
+        var expectedUrl =
+            $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}/academicyears/{command.LearnerData.AcademicYear}/standardcodes/{command.LearnerData.StandardCode}";
         client.Setup(x =>
-                x.PostWithResponseCode<object>(
-                    It.Is<PostLearnerDataRequest>(p => p.Data == command.LearnerData && p.PostUrl == "api/learners"),
-                    false))
+                x.PutWithResponseCode<object>(
+                    It.Is<PutLearnerDataRequest>(p => p.Data == command.LearnerData && p.PutUrl == expectedUrl)))
             .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Created, ""));
 
         var result = await handler.Handle(command, CancellationToken.None);
@@ -36,8 +38,7 @@ public class AddLearnerDataCommandHandlerTests
         [Greedy] AddLearnerDataCommandHandler handler)
     {
         client.Setup(x =>
-                x.PostWithResponseCode<object>(It.IsAny<PostLearnerDataRequest>(),
-                    false))
+                x.PutWithResponseCode<object>(It.IsAny<PutLearnerDataRequest>()))
             .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.BadRequest, "Error"));
 
         var result = await handler.Handle(command, CancellationToken.None);
@@ -52,8 +53,8 @@ public class AddLearnerDataCommandHandlerTests
         [Greedy] AddLearnerDataCommandHandler handler)
     {
         client.Setup(x =>
-                x.PostWithResponseCode<object>(It.IsAny<PostLearnerDataRequest>(),
-                    false)).Throws(new ApplicationException("test"));
+                x.PutWithResponseCode<object>(It.IsAny<PutLearnerDataRequest>()))
+            .Throws(new ApplicationException("test"));
 
         var act = async () => await handler.Handle(command, CancellationToken.None);
 
