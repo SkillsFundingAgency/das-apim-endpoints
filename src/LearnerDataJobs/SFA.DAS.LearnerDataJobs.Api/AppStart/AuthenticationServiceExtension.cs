@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Api.Common.Configuration;
+﻿using SFA.DAS.Api.Common.AppStart;
+using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Diagnostics.CodeAnalysis;
 
@@ -18,8 +19,8 @@ public static class AuthenticationServiceExtension
             {
                 {"default", "APIM"}
             };
+            services.AddAuthentication(azureAdConfiguration, policies);
         }
-
         return services;
     }
 }

@@ -12,7 +12,7 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
     {
         try
         {
-            logger.LogTrace("Calling inner api to add new learner data");
+            logger.LogInformation("Calling inner api to add new learner data");
             var response = await client.PostWithResponseCode<object>(new PostLearnerDataRequest(command.LearnerData), false);
             if (!string.IsNullOrWhiteSpace(response.ErrorContent))
             {
