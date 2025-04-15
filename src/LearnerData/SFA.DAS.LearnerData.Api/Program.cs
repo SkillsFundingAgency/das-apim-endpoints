@@ -10,6 +10,9 @@ using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.LearnerData.Api.AppStart;
 using System.Net;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,7 +66,13 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
-builder.Services.AddHealthChecks();
+
+if (configuration["Environment"] != "DEV")
+{
+    builder.Services.AddHealthChecks()
+        .AddCheck<LearnerDataApiHealthCheck>(LearnerDataApiHealthCheck.HealthCheckResultDescription);
+}
+
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
 
 var app = builder.Build();
@@ -79,6 +88,11 @@ app.UseSwagger()
     .UseHttpsRedirection()
     .UseHealthChecks()
     .UseAuthentication();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
+});
 
 app.MapControllers();
 
