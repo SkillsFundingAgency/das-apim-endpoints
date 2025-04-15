@@ -9,7 +9,7 @@ namespace SFA.DAS.ApprenticeshipsManage.Api.Controllers;
 public class ApprenticeshipsController(IMediator mediator, ILogger<ApprenticeshipsController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/apprenticeships")]
-    public async Task<IActionResult> GetApprenticeships([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = null)
+    public async Task<IActionResult> GetApprenticeships([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
         logger.LogInformation("GetApprenticeships for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
