@@ -54,11 +54,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public DateTime ClosingDate { get; set; }
         public string EmployerName { get; set; }
         public DateTime PostedDate { get; set; }
+        public DateTime StartDate { get; set; }
         public string Title { get; set; }
         public string VacancyReference { get; set; }
         public string CourseTitle { get; set; }
         public string WageAmount { get; set; }
         public int WageType { get; set; }
+        public decimal? Over25NationalMinimumWage { get; set; }
+        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+        public decimal? Under18NationalMinimumWage { get; set; }
+        public decimal? ApprenticeMinimumWage { get; set; }
         public string AddressLine1 { get; private set; }
         public string? AddressLine2 { get; private set; }
         public string AddressLine3 { get; private set; }
@@ -92,6 +98,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
             {
                 Id = source.Id,
                 ClosingDate = source.ClosingDate,
+                StartDate = source.StartDate,
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 PostedDate = source.PostedDate,
                 Title = source.Title,
@@ -102,6 +109,11 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 CourseId = source.CourseId,
                 WageType = source.WageType,
                 WageAmount = source.WageAmount,
+                ApprenticeMinimumWage = source.ApprenticeMinimumWage,
+                Under18NationalMinimumWage = source.Under18NationalMinimumWage,
+                Over25NationalMinimumWage = source.Over25NationalMinimumWage,
+                Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
+                Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
                 WageText = source.WageText,
                 AddressLine1 = source.Address?.AddressLine1,
                 AddressLine2 = source.Address?.AddressLine2,
