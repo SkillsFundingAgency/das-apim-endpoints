@@ -9,18 +9,12 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Reservations.Application.Cohorts.Queries.GetCohort
 {
-    public class GetCohortQueryHandler : IRequestHandler<GetCohortQuery, GetCohortResult>
+    public class GetCohortQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
+        : IRequestHandler<GetCohortQuery, GetCohortResult>
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
-
-        public GetCohortQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient)
-        {
-            _commitmentsV2ApiClient = commitmentsV2ApiClient;
-        }
-
         public async Task<GetCohortResult> Handle(GetCohortQuery request, CancellationToken cancellationToken)
         {
-            var cohort = await _commitmentsV2ApiClient.Get<GetCohortResponse>(new GetCohortRequest(request.CohortId));
+            var cohort = await commitmentsV2ApiClient.Get<GetCohortResponse>(new GetCohortRequest(request.CohortId));
 
             return new GetCohortResult
             {
