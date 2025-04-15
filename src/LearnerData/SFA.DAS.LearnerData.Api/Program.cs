@@ -48,10 +48,13 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();
-
     var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-    transport.CustomTokenCredential(new DefaultAzureCredential());
+    if (!configuration.IsLocalOrDev())
+    {
+        nsbConnection = nsbConnection.Replace("Endpoint=sb://", string.Empty).TrimEnd('/');
+        transport.CustomTokenCredential(new DefaultAzureCredential());
+    }
     transport.ConnectionString(nsbConnection);
 
     var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
