@@ -13,9 +13,9 @@ public class ApprenticeshipsController(IMediator mediator, ILogger<Apprenticeshi
     {
         logger.LogInformation("GetApprenticeships for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
-        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 10, 100) : pagesize;
+        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
 
-        var queryResult = await mediator.Send(new GetApprenticeshipsQuery()
+        var queryResult = await mediator.Send(new GetApprenticeshipsQuery
         {
             Ukprn = ukprn,
             AcademicYear = academicyear,

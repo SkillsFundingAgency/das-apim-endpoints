@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.ApprenticeshipsManage.Infrastructure;
+
 public class PagedQuery
 {
     public int Page { get; set; }
