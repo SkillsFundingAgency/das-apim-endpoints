@@ -17,4 +17,5 @@ public class LearnerRecord
     public string? AgreementId { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
+    public int ConsumerReference { get; set; }
 }
