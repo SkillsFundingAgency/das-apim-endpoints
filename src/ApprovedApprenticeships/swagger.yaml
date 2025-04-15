@@ -59,7 +59,10 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/pagedApprenticeshipsResponse'  
-
+        '400':
+          $ref: '#/components/responses/badRequestResponse'  
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -129,6 +132,14 @@ components:
           schema:
             type: string
             example: OK
+    
+    badRequestResponse:
+      description: OK
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Page size invalid
 
     unauthorized:
       description: Unauthorized
