@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Earnings.Application.Extensions;
 using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
 
@@ -72,6 +73,7 @@ public class GetAllEarningsQueryTestFixture
                         {
                             new()
                             {
+                                Key = Guid.NewGuid(),
                                 StartDate = new DateTime(2020, 1, 1),
                                 EndDate = new DateTime(2021, 1, 1),
                                 TrainingPrice = 14000,
@@ -103,6 +105,7 @@ public class GetAllEarningsQueryTestFixture
                         {
                             new()
                             {
+                                Key = Guid.NewGuid(),
                                 StartDate = new DateTime(2020, 8, 1),
                                 EndDate = new DateTime(2021, 5, 2),
                                 TrainingPrice = 21000,
@@ -112,6 +115,7 @@ public class GetAllEarningsQueryTestFixture
                             },
                             new()
                             {
+                                Key = Guid.NewGuid(),
                                 StartDate = new DateTime(2021, 5, 3),
                                 EndDate = new DateTime(2021, 7, 31),
                                 TrainingPrice = 28500,
@@ -165,26 +169,26 @@ public class GetAllEarningsQueryTestFixture
                         OnProgramTotal = 12000,
                         Instalments = new List<Instalment>
                         {
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 9, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 10, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 11, Amount = 1000 },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 12, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000 }
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(1920,6) },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(1920,7) },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(1920,8) },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 9, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(1920,9) },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 10, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(1920, 10) },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 11, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(1920, 11) },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 12, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(1920, 12) },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(2021, 1) },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(2021, 2) },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(2021, 3) },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(2021, 4) },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000, EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[0].GetEpisodePriceKey(2021, 5) }
                         },
                         AdditionalPayments = new List<AdditionalPayment>
                         {
                             new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 8, 1) },
                             new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 8, 1)},
 
-                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2021, 2, 1) },
-                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2021, 2, 1)}
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 500, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 12, 1) },
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 500, AdditionalPaymentType = additionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 12, 1)}
                         }
                     }
                 }
@@ -204,22 +208,22 @@ public class GetAllEarningsQueryTestFixture
                         OnProgramTotal = 24000,
                         Instalments = new List<Instalment>
                         {
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 1875 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 4375 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 4375 },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 4375 }
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,1)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,2)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,3)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,4)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,5)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,6)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,7)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,8)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 1875 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,9)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 4375 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,10)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 4375 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,11)},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 4375 , EpisodePriceKey = apprenticeshipsResponse.Apprenticeships[1].GetEpisodePriceKey(2021,12)}
                         },
                         AdditionalPayments = new List<AdditionalPayment>
                         {
-                            new AdditionalPayment{ AcademicYear = 2020, DeliveryPeriod = 12, Amount = 1875, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 7, 1)},
+                            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1875, AdditionalPaymentType = additionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 8, 1)},
                         }
                     }
                 }
@@ -276,6 +280,7 @@ public class GetAllEarningsQueryTestFixture
             {
                 var price = new EpisodePrice
                 {
+                    Key = episodePrice.Price.Key,
                     StartDate = CollectionCalendarResponse.StartDate,
                     EndDate = episodePrice.Price.EndDate,
                     EndPointAssessmentPrice = episodePrice.Price.EndPointAssessmentPrice,
@@ -307,4 +312,11 @@ public static class GetAllEarningsQueryTestFixtureExtensions
         editAction(apprenticeship);
     }
 
+    public static Guid GetEpisodePriceKey(this Apprenticeship apprenticeship, short academicYear, byte deliveryPeriod)
+    {
+        var prices = apprenticeship.Episodes.SelectMany(e => e.Prices).ToList();
+        var searchDateTime = academicYear.GetDateTime(deliveryPeriod).AddDays(14);
+        var price = prices.FirstOrDefault(p => p.StartDate <= searchDateTime && p.EndDate >= searchDateTime);
+        return price?.Key ?? Guid.Empty;
+    }
 }
