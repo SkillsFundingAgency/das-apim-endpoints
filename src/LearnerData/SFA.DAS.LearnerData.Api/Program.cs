@@ -1,16 +1,17 @@
-using System.Reflection.Metadata.Ecma335;
+using System.Net;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
-using SFA.DAS.SharedOuterApi.AppStart;
-using System.Text.Json.Serialization;
-using SFA.DAS.LearnerData.Application;
 using NServiceBus;
-using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
-using SFA.DAS.NServiceBus.Configuration;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.LearnerData.Api.AppStart;
-using System.Net;
-
+using SFA.DAS.LearnerData.Api.HealthCheck;
+using SFA.DAS.LearnerData.Application;
+using SFA.DAS.NServiceBus.Configuration;
+using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
+using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -63,7 +64,14 @@ builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLev
 
 builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
-builder.Services.AddHealthChecks();
+builder.Services.AddServiceRegistration();
+
+if (configuration["Environment"] != "DEV")
+{
+    builder.Services.AddHealthChecks()
+        .AddCheck<LearnerDataApiHealthCheck>(LearnerDataApiHealthCheck.HealthCheckResultDescription);
+}
+
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
 
 var app = builder.Build();
@@ -79,6 +87,11 @@ app.UseSwagger()
     .UseHttpsRedirection()
     .UseHealthChecks()
     .UseAuthentication();
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
+});
 
 app.MapControllers();
 
