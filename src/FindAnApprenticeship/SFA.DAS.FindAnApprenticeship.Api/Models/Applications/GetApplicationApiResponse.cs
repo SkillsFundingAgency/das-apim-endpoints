@@ -18,7 +18,7 @@ public record GetApplicationApiResponse
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
-    public EmploymentLocationSection EmploymentLocation { get; set; }
+    public EmploymentLocationSection? EmploymentLocation { get; set; }
 
     public static implicit operator GetApplicationApiResponse(GetApplicationQueryResult source)
     {
@@ -320,10 +320,12 @@ public record GetApplicationApiResponse
     {
         public string EmploymentLocationStatus { get; set; }
 
-        public static implicit operator EmploymentLocationSection(GetApplicationQueryResult.EmploymentLocationSection source)
+        public static implicit operator EmploymentLocationSection(GetApplicationQueryResult.EmploymentLocationSection? source)
         {
+            if (source is null) return null;
             return new EmploymentLocationSection
             {
+                Id = source.Id,
                 EmploymentLocationStatus = source.EmploymentLocationStatus,
                 EmploymentLocationInformation = source.EmploymentLocationInformation,
                 Addresses = source.Addresses,

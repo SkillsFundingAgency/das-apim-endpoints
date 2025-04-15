@@ -5,18 +5,14 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
-    public class PutApplicationApiRequest : IPutApiRequest
+    public class PutApplicationApiRequest(
+        string vacancyReference,
+        PutApplicationApiRequest.PutApplicationApiRequestData data)
+        : IPutApiRequest
     {
-        private readonly string _vacancyReference;
-        public object Data { get; set; }
+        public object Data { get; set; } = data;
 
-        public PutApplicationApiRequest(string vacancyReference, PutApplicationApiRequestData data)
-        {
-            _vacancyReference = vacancyReference;
-            Data = data;
-        }
-
-        public string PutUrl => $"api/applications/{_vacancyReference}";
+        public string PutUrl => $"api/applications/{vacancyReference}";
         
         public class PutApplicationApiRequestData
         {
@@ -26,7 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public short IsAdditionalQuestion2Complete { get; set; }
             public short IsDisabilityConfidenceComplete { get; set; }
             public short IsEmploymentLocationComplete { get; set; }
-            public required LocationDto EmploymentLocation { get; init; } = null!;
+            public LocationDto? EmploymentLocation { get; init; }
         }
     }
 }

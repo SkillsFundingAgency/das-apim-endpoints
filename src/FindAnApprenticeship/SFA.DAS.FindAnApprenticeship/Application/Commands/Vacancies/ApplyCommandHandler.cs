@@ -44,19 +44,21 @@ public class ApplyCommandHandler(
             IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
             IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 : (short)4,
             IsEmploymentLocationComplete = result.EmployerLocationOption is AvailableWhere.MultipleLocations ? (short)0 : (short)4,
-            EmploymentLocation = new LocationDto
-            {
-                EmployerLocationOption = result.EmployerLocationOption,
-                EmploymentLocationInformation = result.EmploymentLocationInformation,
-                Addresses = addresses?.Select((a, index) => new AddressDto
+            EmploymentLocation = result.EmployerLocationOption != null ?
+                new LocationDto
                 {
                     Id = Guid.NewGuid(),
-                    IsSelected = false,
-                    FullAddress = a.ToSingleLineAddress(),
-                    AddressOrder = (short)(index + 1)
-
-                }).ToList()
-            }
+                    EmployerLocationOption = result.EmployerLocationOption,
+                    EmploymentLocationInformation = result.EmploymentLocationInformation,
+                    Addresses = addresses?.Select((a, index) => new AddressDto
+                    {
+                        Id = Guid.NewGuid(),
+                        IsSelected = false,
+                        FullAddress = a.ToSingleLineAddress(),
+                        AddressOrder = (short)(index + 1)
+                    }).ToList()
+                }
+                : null,
         };
         var vacancyReference = request.VacancyReference.TrimVacancyReference();
         var putRequest = new PutApplicationApiRequest(vacancyReference, putApplicationApiRequestData);

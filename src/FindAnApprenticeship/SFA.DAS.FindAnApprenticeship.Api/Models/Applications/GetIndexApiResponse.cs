@@ -19,7 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public PreviousApplicationDetails PreviousApplication { get; set; }
-        public EmploymentLocationSection EmploymentLocation { get; set; }
+        public EmploymentLocationSection? EmploymentLocation { get; set; }
 
         public class EducationHistorySection
         {
@@ -39,10 +39,13 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public record EmploymentLocationSection : LocationDto
         {
             public string EmploymentLocationStatus { get; set; }
-            public static implicit operator EmploymentLocationSection(GetIndexQueryResult.EmploymentLocationSection source)
+            public static implicit operator EmploymentLocationSection(GetIndexQueryResult.EmploymentLocationSection? source)
             {
+                if (source is null) return null;
+
                 return new EmploymentLocationSection
                 {
+                    Id = source.Id,
                     Addresses = source.Addresses,
                     EmploymentLocationInformation = source.EmploymentLocationInformation,
                     EmployerLocationOption = source.EmployerLocationOption,
