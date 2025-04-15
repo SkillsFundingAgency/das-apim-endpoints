@@ -1,4 +1,8 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
@@ -12,23 +16,17 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProvider;
 
 public sealed class WhenGettingCourseProvider
 {
-    private readonly Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpClientMock = new();
-    private readonly Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> _employerFeedbackMock = new();
-    private readonly Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> _apprenticeFeedbackMock = new();
-    private readonly Mock<IAssessorsApiClient<AssessorsApiConfiguration>> _assessorClientMock = new();
-    private readonly Mock<ICachedLocationLookupService> _cachedLocationLookupService = new();
+    private Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpClientMock;
+    private Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> _employerFeedbackMock;
+    private Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> _apprenticeFeedbackMock;
+    private Mock<IAssessorsApiClient<AssessorsApiConfiguration>> _assessorClientMock;
+    private Mock<ICachedLocationLookupService> _cachedLocationLookupService;
 
     private GetCourseProviderQueryHandler SetupHandler(
         GetCourseProviderQuery query,
@@ -38,19 +36,25 @@ public sealed class WhenGettingCourseProvider
         GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
-        LocationItem locationReponse
+        LocationItem locationResponse
     )
     {
+        _roatpClientMock = new Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>>();
+        _employerFeedbackMock = new Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>>();
+        _apprenticeFeedbackMock = new Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>>();
+        _assessorClientMock = new Mock<IAssessorsApiClient<AssessorsApiConfiguration>>();
+        _cachedLocationLookupService = new Mock<ICachedLocationLookupService>();
+
         _cachedLocationLookupService
             .Setup(x => x.GetCachedLocationInformation(query.Location, false))
-            .ReturnsAsync(locationReponse);
+            .ReturnsAsync(locationResponse);
 
         _roatpClientMock
             .Setup(x => x.GetWithResponseCode<GetCourseProviderDetailsResponse>(
                 It.Is<GetCourseProviderDetailsRequest>(a =>
                     a.GetUrl.Contains($"location={query.Location}") &&
-                    a.GetUrl.Contains($"latitude={locationReponse.Latitude}") &&
-                    a.GetUrl.Contains($"longitude={locationReponse.Longitude}") &&
+                    a.GetUrl.Contains($"latitude={locationResponse.Latitude}") &&
+                    a.GetUrl.Contains($"longitude={locationResponse.Longitude}") &&
                     a.GetUrl.Contains($"shortlistUserId={query.ShortlistUserId}")
                 )
             ))
@@ -114,8 +118,8 @@ public sealed class WhenGettingCourseProvider
                 It.Is<GetCourseTrainingProvidersCountRequest>(a =>
                     a.LarsCodes.SequenceEqual(new int[] { query.LarsCode }) &&
                     a.Distance.Equals(query.Distance) &&
-                    a.Latitude.Equals(locationReponse.Latitude) &&
-                    a.Longitude.Equals(locationReponse.Longitude)
+                    a.Latitude.Equals(locationResponse.Latitude) &&
+                    a.Longitude.Equals(locationResponse.Longitude)
                 )
             ))
         .ReturnsAsync(new ApiResponse<GetCourseTrainingProvidersCountResponse>(
@@ -147,13 +151,13 @@ public sealed class WhenGettingCourseProvider
     )
     {
         var sut = SetupHandler(
-            query, 
-            courseProviderDetailsResponse, 
-            employerFeedbackResponse, 
-            assessmentResponse, 
-            apprenticeFeedbackResponse, 
-            providerCoursesResponse, 
-            courseTrainingProvidersCountResponse, 
+            query,
+            courseProviderDetailsResponse,
+            employerFeedbackResponse,
+            assessmentResponse,
+            apprenticeFeedbackResponse,
+            providerCoursesResponse,
+            courseTrainingProvidersCountResponse,
             locationResponse
         );
 
@@ -176,7 +180,7 @@ public sealed class WhenGettingCourseProvider
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
-        
+
     )
     {
         var sut = SetupHandler(
