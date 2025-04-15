@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetRoatpProviders;
 public class GetRoatpProvidersQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient) : IRequestHandler<GetRoatpProvidersQuery, GetRoatpProvidersQueryResult>
@@ -16,7 +16,7 @@ public class GetRoatpProvidersQueryHandler(IRoatpCourseManagementApiClient<Roatp
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetProvidersResponse>(
                 new GetRoatpProvidersRequest()
                 {
-                    Live = request.Live
+                    Live = true
                 }
         );
 
