@@ -25,7 +25,15 @@ namespace SFA.DAS.Approvals.Api.Controllers
             try
             {
                 logger.LogInformation("Getting ILR records for Provider {providerId}", providerId);
-                var result = await mediator.Send(new GetLearnersForProviderQuery {  });
+                var result = await mediator.Send(new GetLearnersForProviderQuery
+                {
+                    ProviderId = providerId, 
+                    AccountLegalEntityId = accountLegalEntityId, 
+                    SearchTerm = searchTerm,
+                    SortField = sortColumn, 
+                    SortDescending = sortDescending, 
+                    Page = page
+                });
                 return Ok(result);
             }
             catch (Exception e)

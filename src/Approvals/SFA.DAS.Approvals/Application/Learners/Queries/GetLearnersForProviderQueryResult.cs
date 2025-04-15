@@ -5,7 +5,7 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries;
 
 public class GetLearnersForProviderQueryResult
 {
-    public DateTime LastSubmissionDate { get; set; }
+    public DateTime? LastSubmissionDate { get; set; }
     public int Total { get; set; }
     public int Page { get; set; }
     public int PageSize { get; set; }
