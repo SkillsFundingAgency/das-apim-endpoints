@@ -32,10 +32,10 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers.Rules
 
             var controllerResult = await controller.GetAvailableDates(accountLegalEntityId) as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAvailableDatesApiResponse;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             model.Should().BeEquivalentTo(mediatorResult);
         }
     }

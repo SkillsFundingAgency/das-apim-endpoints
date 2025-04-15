@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
@@ -105,7 +106,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
                 sb.AppendLine();
 
-                if (vacancy.VacancySource != null && vacancy.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase))
+                if (vacancy.VacancySource != null && vacancy.VacancySource.Equals(nameof(VacancyDataSource.Nhs), StringComparison.CurrentCultureIgnoreCase))
                 {
                     sb.AppendLine($"#[{vacancy.Title} (from NHS Jobs)]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
                     trainingCourseText = "See more details on NHS Jobs";
@@ -134,6 +135,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
                 }
 
+                if (vacancy.VacancySource != null
+                    && !string.IsNullOrEmpty(vacancy.StartDate)
+                    && vacancy.VacancySource.Equals(nameof(VacancyDataSource.Raa), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    sb.AppendLine($"* Start date: {vacancy.StartDate}");
+                }
                 sb.AppendLine($"* Training course: {trainingCourseText}");
                 sb.AppendLine($"* Wage: {wageText}");
 

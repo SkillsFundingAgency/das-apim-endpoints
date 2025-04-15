@@ -22,7 +22,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [Route("create")]
         public async Task<IActionResult> CreateOverlappingTrainingDate([FromBody] CreateOverlappingTrainingDateRequest request)
         {
-            var result = await _mediator.Send(new CreateOverlappingTrainingDateRequestCommand()
+            var result = await _mediator.Send(new CreateOverlappingTrainingDateRequestCommand
             {
                 ProviderId = request.ProviderId,
                 DraftApprenticeshipId = request.DraftApprenticeshipId,

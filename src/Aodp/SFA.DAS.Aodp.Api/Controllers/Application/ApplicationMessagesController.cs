@@ -37,4 +37,15 @@ public class ApplicationMessagesController : BaseController
     {
         return await SendRequestAsync(command);
     }
+
+    [HttpPut("/api/applications/{applicationId}/messages/read")]
+    [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> MarkAllMessagesAsRead([FromBody] MarkAllMessagesAsReadCommand command, [FromRoute] Guid applicationId)
+    {
+        command.ApplicationId = applicationId;
+
+        return await SendRequestAsync(command);
+
+    }
 }
