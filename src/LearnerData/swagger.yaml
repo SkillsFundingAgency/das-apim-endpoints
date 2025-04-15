@@ -327,16 +327,13 @@ components:
         - firstName
         - lastName
         - dateOfBirth
-        - learnerEmail
         - ukprn
-        - percentageLearningToBeDelivered
         - standardCode
         - trainingPrice
         - epaoPrice
         - startDate
         - plannedEndDate
         - agreementId     
-        - plannedOTJTrainingHours
         - isFlexiJob 
         - consumerReference
 security:
