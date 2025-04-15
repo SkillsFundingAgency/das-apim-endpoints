@@ -292,8 +292,8 @@ components:
           format: date
         learnerEmail:
           type: string
-        priorLearningPercent:
-          description: This is the percentage of learning already complete before this course starts
+        percentageLearningToBeDelivered:
+          description: This is the percentage of learning left to be delivered due to RPL
           type: integer
           example: 10
         ukprn:
@@ -329,7 +329,7 @@ components:
         - dateOfBirth
         - learnerEmail
         - ukprn
-        - priorLearningPercent
+        - percentageLearningToBeDelivered
         - standardCode
         - trainingPrice
         - epaoPrice
