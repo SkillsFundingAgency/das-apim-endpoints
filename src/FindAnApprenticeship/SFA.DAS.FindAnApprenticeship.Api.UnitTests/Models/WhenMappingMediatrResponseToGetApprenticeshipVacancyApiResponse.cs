@@ -37,7 +37,11 @@ public class WhenMappingMediatrResponseToGetApprenticeshipVacancyApiResponse
             result.WageAmountLowerBound.Should().Be(source.ApprenticeshipVacancy.WageAmountLowerBound);
             result.WageAmountUpperBound.Should().Be(source.ApprenticeshipVacancy.WageAmountUpperBound);
             result.WageText.Should().Be(source.ApprenticeshipVacancy.WageText);
-            result.WageUnit.Should().Be(source.ApprenticeshipVacancy.WageUnit);
+            result.Under18NationalMinimumWage.Should().Be(source.ApprenticeshipVacancy.Under18NationalMinimumWage);
+            result.Between21AndUnder25NationalMinimumWage.Should().Be(source.ApprenticeshipVacancy.Between21AndUnder25NationalMinimumWage);
+            result.Between18AndUnder21NationalMinimumWage.Should().Be(source.ApprenticeshipVacancy.Between18AndUnder21NationalMinimumWage);
+            result.Over25NationalMinimumWage.Should().Be(source.ApprenticeshipVacancy.Over25NationalMinimumWage);
+            result.ApprenticeMinimumWage.Should().Be(source.ApprenticeshipVacancy.ApprenticeMinimumWage);
             result.WorkingWeek.Should().Be(source.ApprenticeshipVacancy.WorkingWeek);
             result.ExpectedDuration.Should().Be(source.ApprenticeshipVacancy.ExpectedDuration);
             result.Score.Should().Be(source.ApprenticeshipVacancy.Score);
@@ -65,7 +69,14 @@ public class WhenMappingMediatrResponseToGetApprenticeshipVacancyApiResponse
             result.CourseId.Should().Be(source.ApprenticeshipVacancy.CourseId);
             result.WageAmount.Should().Be(source.ApprenticeshipVacancy.WageAmount);
             result.WageType.Should().Be(source.ApprenticeshipVacancy.WageType);
-            result.Address.Should().BeEquivalentTo(source.ApprenticeshipVacancy.Address);
+            result.Address.Should().BeEquivalentTo(source.ApprenticeshipVacancy.Address, options => options
+                .Excluding(c => c.Country)
+            );
+            result.EmploymentLocationInformation.Should().Be(source.ApprenticeshipVacancy.EmploymentLocationInformation);
+            result.EmployerLocationOption.Should().Be(source.ApprenticeshipVacancy.EmployerLocationOption);
+            result.OtherAddresses.Should().BeEquivalentTo(source.ApprenticeshipVacancy.OtherAddresses, options => options
+                .Excluding(c => c.Country)
+            );
             result.Distance.Should().Be(source.ApprenticeshipVacancy.Distance);
             result.CourseRoute.Should().Be(source.ApprenticeshipVacancy.CourseRoute);
             result.CourseLevel.Should().Be(source.ApprenticeshipVacancy.CourseLevel);
@@ -74,6 +85,7 @@ public class WhenMappingMediatrResponseToGetApprenticeshipVacancyApiResponse
             result.CourseOverviewOfRole.Should().Be(source.CourseDetail.OverviewOfRole);
             result.StandardPageUrl.Should().Be(source.CourseDetail.StandardPageUrl);
             result.CandidatePostcode.Should().Be(source.CandidatePostcode);
+            result.CandidateDateOfBirth.Should().Be(source.CandidateDateOfBirth);
         }
     }
     

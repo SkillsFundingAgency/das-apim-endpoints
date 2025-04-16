@@ -3,16 +3,25 @@ using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Text.RegularExpressions;
-using Address = SFA.DAS.FindApprenticeshipJobs.Application.Shared.Address;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
+using DisabilityConfident = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.DisabilityConfident;
+using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
 {
-    public class LiveVacancyMapper : ILiveVacancyMapper
+    public class LiveVacancyMapper(ILogger<LiveVacancyMapper> logger) : ILiveVacancyMapper
     {
         public Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards)
         {
-            var getStandardsListItem = standards.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId);
+            var getStandardsListItem = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId);
 
+            if (getStandardsListItem == null)
+            {
+                logger.LogError($"Standard not found {source.ProgrammeId}");
+            }
+            
             return new Application.Shared.LiveVacancy
             {
                 Id = source.VacancyReference.ToString(),
@@ -30,8 +39,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 IsPositiveAboutDisability = false,
                 
                 IsEmployerAnonymous = source.IsAnonymous,
-                VacancyLocationType = "NonNational",
-                ApprenticeshipLevel = GetApprenticeshipLevel(getStandardsListItem.Level),
+                VacancyLocationType = source.EmployerLocationOption == AvailableWhere.AcrossEngland ? "National" : "NonNational",
+                ApprenticeshipLevel = getStandardsListItem?.Level == null? "": GetApprenticeshipLevel(getStandardsListItem.Level),
                 Wage = new Application.Shared.Wage
                 {
                     Duration = source.Wage.Duration,
@@ -75,30 +84,24 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ProviderContactPhone = source.ProviderContactPhone,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                Address = new Address
-                {
-                    AddressLine1 = source.EmployerLocation?.AddressLine1,
-                    AddressLine2 = source.EmployerLocation?.AddressLine2,
-                    AddressLine3 = source.EmployerLocation?.AddressLine3,
-                    AddressLine4 = source.EmployerLocation?.AddressLine4,
-                    Postcode = source.EmployerLocation?.Postcode,
-                    Latitude = source.EmployerLocation?.Latitude ?? 0,
-                    Longitude = source.EmployerLocation?.Longitude ?? 0,
-                    Country = source.EmployerLocation?.Country
-                },
+                Address = source.Address,
+                OtherAddresses = source.OtherAddresses,
+                EmploymentLocations = source.EmployerLocations,
+                EmploymentLocationInformation = source.EmployerLocationInformation,
+                EmploymentLocationOption = source.EmployerLocationOption,
                 Duration = source.Wage.Duration,
                 DurationUnit = source.Wage.DurationUnit,
                 ThingsToConsider = source.ThingsToConsider,
-                ApprenticeshipTitle = getStandardsListItem.Title,
-                Level = getStandardsListItem.Level,
+                ApprenticeshipTitle = getStandardsListItem?.Title,
+                Level = getStandardsListItem?.Level ?? 0,
                 
-                StandardLarsCode = getStandardsListItem.LarsCode,
+                StandardLarsCode = getStandardsListItem?.LarsCode ?? 0,
                 
-                RouteCode = getStandardsListItem.RouteCode,  
+                RouteCode = getStandardsListItem?.RouteCode ?? 0,  
                 Route = getStandardsListItem?.Route ?? string.Empty,
 
                 IsRecruitVacancy = true,
-                TypicalJobTitles = getStandardsListItem.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
+                TypicalJobTitles = getStandardsListItem?.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,

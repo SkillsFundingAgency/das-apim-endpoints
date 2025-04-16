@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 
 namespace SFA.DAS.VacanciesManage.Api.Models
@@ -17,37 +18,58 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 out var applicationMethod);
             Enum.TryParse(typeof(InnerApi.Requests.CreateVacancyDisabilityConfident), source.DisabilityConfident.ToString(), true,
                 out var disabilityConfident);
+
+            var locationOption = source.RecruitingNationally
+                ? AvailableWhere.AcrossEngland
+                : source.MultipleAddresses is { Count: > 0 }
+                    ? AvailableWhere.MultipleLocations
+                    : AvailableWhere.OneLocation;
+
+            List<PostVacancyAddressData> addresses = null;
+            switch (locationOption)
+            {
+                case AvailableWhere.OneLocation:
+                    addresses = source.Address is null
+                        ? null
+                        : [(PostVacancyAddressData)source.Address];
+                    break;
+                case AvailableWhere.MultipleLocations:
+                    addresses = source.MultipleAddresses.Select(x => (PostVacancyAddressData)x).ToList();
+                    break;
+            }
             
             return new PostVacancyRequestData
             {
-                Title = source.Title,
-                Description = source.Description,
-                ProgrammeId = source.ProgrammeId,
-                User = Map(source.SubmitterContactDetails, source.ContractingParties),
-                EmployerName = source.EmployerName,
-                ShortDescription = source.ShortDescription,
-                NumberOfPositions = source.NumberOfPositions,
                 AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
-                ClosingDate = source.ClosingDate,
-                StartDate = source.StartDate,
-                EmployerDescription = source.EmployerDescription,
-                TrainingDescription = source.TrainingDescription,
-                Address = source.Address,
-                Wage = source.Wage,
-                Skills = source.Skills,
-                OutcomeDescription = source.OutcomeDescription,
-                EmployerNameOption = (InnerApi.Requests.EmployerNameOption)employerNameOption,
-                AnonymousReason = source.AnonymousReason,
-                ApplicationInstructions = source.ApplicationInstructions,
-                ApplicationUrl = source.ApplicationUrl,
-                ThingsToConsider = source.ThingsToConsider,
-                Qualifications = source.Qualifications.Select(c=>(PostCreateVacancyQualificationData)c).ToList(),
-                ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
-                DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
-                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                Addresses = addresses,
+                AnonymousReason = source.AnonymousReason,
+                ApplicationInstructions = source.ApplicationInstructions,
+                ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
+                ApplicationUrl = source.ApplicationUrl,
+                ClosingDate = source.ClosingDate,
+                Description = source.Description,
+                DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
+                EmployerDescription = source.EmployerDescription,
+                EmployerLocationInformation = source.RecruitingNationallyDetails,
+                EmployerLocationOption = locationOption,
+                EmployerName = source.EmployerName,
+                EmployerNameOption = (InnerApi.Requests.EmployerNameOption)employerNameOption,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                NumberOfPositions = source.NumberOfPositions,
+                OutcomeDescription = source.OutcomeDescription,
+                ProgrammeId = source.ProgrammeId,
+                Qualifications = source.Qualifications.Select(c=>(PostCreateVacancyQualificationData)c).ToList(),
+                ShortDescription = source.ShortDescription,
+                Skills = source.Skills,
+                StartDate = source.StartDate,
+                ThingsToConsider = source.ThingsToConsider,
+                Title = source.Title,
+                TrainingDescription = source.TrainingDescription,
+                User = Map(source.SubmitterContactDetails, source.ContractingParties),
+                Wage = source.Wage,
             };
         }
 
@@ -93,11 +115,34 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("wage")]
         [Required]
         public CreateVacancyWage Wage { get; set; }
+        
         /// <summary>
-        /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time.
+        /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time. Must be within England.
         /// </summary>
         [JsonPropertyName("address")]
         public CreateVacancyAddress Address { get; set; }
+        
+        /// <summary>
+        /// If the apprenticeship is available at more than one location, use this to submit multiple addresses for the vacancy. You can submit up to and including 10 addresses. Each location must contain address line 1 and a valid postcode. Each location must be within England.
+        /// </summary>
+        [JsonPropertyName("multipleAddresses")]
+        [MinLength(2)]
+        [MaxLength(10)]
+        public List<CreateVacancyAddress> MultipleAddresses { get; set; }
+
+        /// <summary>
+        /// If the apprenticeship is available to applicants across the entirety of England, you can advertise it nationally. For example, if your apprenticeship is available in many locations across England, remote working or provides live-in accommodation. The vacancy will display on Find an apprenticeship for searches across England. When recruitingNationally is true,  you cannot use address or multipleAddresses. If true, you must also include recruitingNationallyDetails. 
+        /// </summary>
+        [JsonPropertyName("recruitingNationally")]
+        public bool RecruitingNationally { get; set; }
+        
+        /// <summary>
+        /// Explain why recruitingNationally is true by giving more information to applicants about where they will work. Required if recruitingNationally is true.
+        /// </summary>
+        [JsonPropertyName("recruitingNationallyDetails")]
+        [MaxLength(500)]
+        public string RecruitingNationallyDetails { get; set; }
+
         /// <summary>
         /// A short summary of the overall apprenticeship. This appears at the top of the vacancy on Find an apprenticeship.
         /// </summary>
@@ -251,20 +296,22 @@ namespace SFA.DAS.VacanciesManage.Api.Models
     
     
     /// <summary>
-    /// Address for the apprenticeship advert. Must contain address line 1 and a valid postcode.
+    /// Address for the apprenticeship advert. Must contain address line 1 and a valid postcode. Must be within England.
     /// </summary>
     public class CreateVacancyAddress
     {
         public static implicit operator PostVacancyAddressData(CreateVacancyAddress source)
         {
-            return new PostVacancyAddressData
-            {
-                AddressLine1 = source.AddressLine1,
-                AddressLine2 = source.AddressLine2,
-                AddressLine3 = source.AddressLine3,
-                AddressLine4 = source.AddressLine4,
-                Postcode = source.Postcode
-            };
+            return source is null
+                ? null
+                : new PostVacancyAddressData
+                {
+                    AddressLine1 = source.AddressLine1,
+                    AddressLine2 = source.AddressLine2,
+                    AddressLine3 = source.AddressLine3,
+                    AddressLine4 = source.AddressLine4,
+                    Postcode = source.Postcode
+                };
         }
         /// <summary>
         /// First line of the address where the apprentice will work.

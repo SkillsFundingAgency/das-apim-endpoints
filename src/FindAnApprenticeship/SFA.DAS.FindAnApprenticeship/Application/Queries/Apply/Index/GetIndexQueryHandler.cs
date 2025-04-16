@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -41,13 +42,20 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         if (application.PreviousAnswersSourceId.HasValue)
         {
             previousApplication = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, application.PreviousAnswersSourceId.Value, false));
-            if (previousApplication == null) return null;
-
-            previousVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(await _vacancyService.GetVacancy(previousApplication.VacancyReference));
-            if (previousVacancy == null) return null;
+            if (previousApplication != null)
+            {
+                var previousVacancyFromApi = await _vacancyService.GetVacancy(previousApplication.VacancyReference);
+                if (previousVacancyFromApi != null)
+                {
+                    previousVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(previousVacancyFromApi);
+                }
+            }
         }
 
-        var additionalQuestions = application.AdditionalQuestions.ToList();
+        var additionalQuestions = application
+            .AdditionalQuestions
+            .OrderBy(ord => ord.QuestionOrder)
+            .ToList();
 
         return new GetIndexQueryResult
         {
@@ -73,11 +81,11 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
                 SkillsAndStrengths = application.SkillsAndStrengthStatus,
                 WhatInterestsYou = application.InterestsStatus,
                 AdditionalQuestion1 = application.AdditionalQuestion1Status,
-                AdditionalQuestion1Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].QuestionText : null,
-                AdditionalQuestion1Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(0) != null ? additionalQuestions[0].Id : null,
+                AdditionalQuestion1Label = GetAdditionalQuestion(additionalQuestions, 1)?.QuestionText,
+                AdditionalQuestion1Id = GetAdditionalQuestion(additionalQuestions, 1)?.Id,
                 AdditionalQuestion2 = application.AdditionalQuestion2Status,
-                AdditionalQuestion2Label = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].QuestionText : null,
-                AdditionalQuestion2Id = additionalQuestions is { Count: > 0 } && additionalQuestions.ElementAtOrDefault(1) != null ? additionalQuestions[1].Id : null
+                AdditionalQuestion2Label = GetAdditionalQuestion(additionalQuestions, 2)?.QuestionText,
+                AdditionalQuestion2Id = GetAdditionalQuestion(additionalQuestions, 2)?.Id,
             },
             InterviewAdjustments = new GetIndexQueryResult.InterviewAdjustmentsSection
             {
@@ -94,5 +102,34 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
                 VacancyTitle = previousVacancy.Title
             }
         };
+    }
+
+    private static Question GetAdditionalQuestion(List<Question> additionalQuestions, int questionNumber)
+    {
+        var additionalQuestion = additionalQuestions is { Count: > 0 } && additionalQuestions.FirstOrDefault(c => c.QuestionOrder==questionNumber) != null 
+            ? additionalQuestions.FirstOrDefault(c => c.QuestionOrder==questionNumber)! 
+            : null;
+
+        if (additionalQuestion == null && additionalQuestions.Count > 0 && additionalQuestions.TrueForAll(c => c.QuestionOrder == null))
+        {
+            if(additionalQuestions is { Count: >= 2 } )
+            {
+                switch (questionNumber)
+                {
+                    case 1:
+                        return additionalQuestions.FirstOrDefault();
+                    case 2:
+                        return additionalQuestions.LastOrDefault();
+                }
+            }
+
+            if (additionalQuestions is { Count: 1 } && questionNumber == 1)
+            {
+                return additionalQuestions.FirstOrDefault();
+            }
+        }
+            
+        
+        return additionalQuestion;
     }
 }

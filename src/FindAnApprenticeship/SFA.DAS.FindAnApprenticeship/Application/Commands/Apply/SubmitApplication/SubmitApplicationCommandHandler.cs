@@ -54,9 +54,9 @@ public class SubmitApplicationCommandHandler(
             helper.SubmitApplicationEmailTemplateId,
             application.Candidate.Email,
             application.Candidate.FirstName,
-            vacancy?.Title, vacancy?.EmployerName,
-            vacancy?.Address.AddressLine4 ?? vacancy?.Address.AddressLine3 ?? vacancy?.Address.AddressLine2 ?? vacancy?.Address.AddressLine1 ?? "Unknown",
-            vacancy?.Address.Postcode,
+            vacancy.Title,
+            vacancy.EmployerName,
+            vacancyService.GetVacancyWorkLocation(vacancy, true),
             helper.CandidateApplicationUrl);
         await notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens));
         var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
@@ -67,7 +67,7 @@ public class SubmitApplicationCommandHandler(
         await candidateApiClient.PatchWithResponseCode(patchRequest);
 
         // increase the count of vacancy submitted counter metrics.
-        metrics.IncreaseVacancySubmitted(application.VacancyReference);
+        if(vacancy.VacancySource == VacancyDataSource.Raa) metrics.IncreaseVacancySubmitted(application.VacancyReference);
 
         return true;
     }

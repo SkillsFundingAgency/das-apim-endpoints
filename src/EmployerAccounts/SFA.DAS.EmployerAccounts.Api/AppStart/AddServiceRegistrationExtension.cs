@@ -19,7 +19,7 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
@@ -33,7 +33,6 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
             services.AddTransient<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>, LevyTransferMatchingApiClient>();
-            services.AddTransient<IReferenceDataApiClient<ReferenceDataApiConfiguration>, ReferenceDataApiClient>();
             services.AddTransient<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>, EducationalOrganisationApiClient>();
             services.AddTransient<IPublicSectorOrganisationApiClient<PublicSectorOrganisationApiConfiguration>, PublicSectorOrganisationApiClient>();
             services.AddTransient<ICompaniesHouseApiClient<CompaniesHouseApiConfiguration>, CompaniesHouseApiClient<CompaniesHouseApiConfiguration>>();

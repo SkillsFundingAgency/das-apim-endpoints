@@ -8,20 +8,15 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Reservations.Application.AccountProviderLegalEntities.Queries
 {
-    public class GetAccountProviderLegalEntitiesQueryHandler : IRequestHandler<GetAccountProviderLegalEntitiesQuery, GetAccountProviderLegalEntitiesResult>
+    public class GetAccountProviderLegalEntitiesQueryHandler(
+        IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient)
+        : IRequestHandler<GetAccountProviderLegalEntitiesQuery, GetAccountProviderLegalEntitiesResult>
     {
-        private readonly IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> _providerRelationshipsApiClient;
-
-        public GetAccountProviderLegalEntitiesQueryHandler(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient)
-        {
-            _providerRelationshipsApiClient = providerRelationshipsApiClient;
-        }
-
         public async Task<GetAccountProviderLegalEntitiesResult> Handle(GetAccountProviderLegalEntitiesQuery request,
             CancellationToken cancellationToken)
         {
             var accountProviderLegalEntities =
-                await _providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+                await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
                     new GetProviderAccountLegalEntitiesRequest(request.Ukprn, request.Operations));
 
             return new GetAccountProviderLegalEntitiesResult

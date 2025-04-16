@@ -15,6 +15,7 @@ public class GetMemberProfileWithPreferencesQueryResult
     public DateTime JoinedDate { get; set; }
     public int? RegionId { get; set; }
     public string RegionName { get; set; } = null!;
+    public bool? ReceiveNotifications { get; set; }
     public MemberUserType UserType { get; set; }
     public bool IsRegionalChair { get; set; }
     public IEnumerable<MemberProfile> Profiles { get; set; } = Enumerable.Empty<MemberProfile>();

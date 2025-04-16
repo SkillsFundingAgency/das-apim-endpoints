@@ -13,6 +13,7 @@ namespace SFA.DAS.Recruit.UnitTests.Domain
         {
             //Arrange
             source.Level = (int) ApprenticeshipLevel.Advanced;
+            source.ApprenticeshipType = TrainingType.Standard.ToString();
 
             //Act
             var actual = (TrainingProgramme) source;

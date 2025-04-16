@@ -1,4 +1,6 @@
-﻿using MediatR;
+using MediatR;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification
 {
@@ -12,6 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
         public string? Location { get; set; }
         public string? SearchTerm { get; set; }
         public bool DisabilityConfident { get; set; }
+        public bool? ExcludeNational { get; set; }
         public string? UnSubscribeToken { get; set; }
         public List<Vacancy> Vacancies { get; set; } = [];
 
@@ -37,7 +40,10 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             public string? EmployerName { get; set; }
 
-            public Address Address { get; set; } = new();
+            public Address? EmployerLocation { get; set; }
+            public List<Address>? OtherAddresses { get; set; }
+            public AvailableWhere? EmploymentLocationOption { get; set; }
+
 
             public string? Wage { get; set; }
 
@@ -46,6 +52,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
             public string? WageType { get; set; }
 
             public string? ClosingDate { get; set; }
+            public string? StartDate { get; set; }
 
             public string? TrainingCourse { get; set; }
 
@@ -53,20 +60,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNo
 
             public string? VacancySource { get; set; }
         }
-
-        public class Address
-        {
-            public string? AddressLine1 { get; set; }
-
-            public string? AddressLine2 { get; set; }
-
-            public string? AddressLine3 { get; set; }
-
-            public string? AddressLine4 { get; set; }
-
-            public string? Postcode { get; set; }
-        }
-
         public class UserDetails
         {
             public Guid Id { get; set; }

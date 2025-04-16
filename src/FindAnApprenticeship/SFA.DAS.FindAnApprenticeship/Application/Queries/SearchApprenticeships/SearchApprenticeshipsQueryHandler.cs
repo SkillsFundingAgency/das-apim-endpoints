@@ -16,6 +16,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
@@ -86,7 +87,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                             {
                                 VacancyDataSource.Raa,
                                 VacancyDataSource.Nhs
-                            })); ;
+                            },
+                            request.ExcludeNational)); ;
             }
 
             var vacancyResult = await findApprenticeshipApiClient.Get<GetVacanciesResponse>(
@@ -105,7 +107,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     new List<VacancyDataSource>
                     {
                         VacancyDataSource.Nhs
-                    }));
+                    },
+                    request.ExcludeNational));
 
             var totalPages = (int)Math.Ceiling((double)vacancyResult.TotalFound / request.PageSize);
 
@@ -113,6 +116,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
 
             var savedSearchesCount = 0;
             var searchAlreadySaved = false;
+            DateTime? candidateDateOfBirth = null;
 
             if (request.CandidateId != null)
             {
@@ -121,6 +125,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 var candidateApplicationsTask =
                     candidateApiClient.Get<GetApplicationsApiResponse>(
                         new GetApplicationsApiRequest(candidateId));
+
+                var candidateTask =
+                    candidateApiClient.Get<GetCandidateApiResponse>(
+                        new GetCandidateApiRequest(candidateId.ToString()));
 
                 var savedVacanciesResponseTask =
                     candidateApiClient.Get<GetSavedVacanciesApiResponse>(
@@ -133,11 +141,13 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 await Task.WhenAll(
                     candidateApplicationsTask,
                     savedVacanciesResponseTask,
-                    savedSearchesResponseTask
+                    savedSearchesResponseTask,
+                    candidateTask
                 );
 
                 var candidateApplications = candidateApplicationsTask.Result;
                 var savedVacanciesResponse = savedVacanciesResponseTask.Result;
+                candidateDateOfBirth = candidateTask.Result.DateOfBirth;
 
                 foreach (var vacancy in vacancyResult.ApprenticeshipVacancies)
                 {
@@ -162,6 +172,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                     request.SelectedRouteIds?.Select(x => Convert.ToInt32(x)).ToList(),
                     request.Distance,
                     request.DisabilityConfident,
+                    request.ExcludeNational,
                     request.SelectedLevelIds?.Select(x => Convert.ToInt32(x)).ToList(),
                     request.Location,
                     location?.GeoPoint?.FirstOrDefault().ToString(CultureInfo.InvariantCulture),
@@ -177,7 +188,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
             }
 
             // increase the count of vacancy appearing in search results counter metrics.
-            apprenticeshipVacancies.ForEach(vacancy => metrics.IncreaseVacancySearchResultViews(vacancy.Id));
+            foreach (var vacancy in apprenticeshipVacancies.Where(fil => fil.VacancySource == VacancyDataSource.Raa))
+            {
+                metrics.IncreaseVacancySearchResultViews(vacancy.VacancyReference.TrimVacancyReference());
+            }
 
             return new SearchApprenticeshipsResult
             {
@@ -193,7 +207,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                 Levels = courseLevels.Levels.ToList(),
                 DisabilityConfident = request.DisabilityConfident,
                 SavedSearchesCount = savedSearchesCount,
-                SearchAlreadySaved = searchAlreadySaved
+                SearchAlreadySaved = searchAlreadySaved,
+                CandidateDateOfBirth = candidateDateOfBirth
             };
         }
     }

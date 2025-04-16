@@ -41,7 +41,7 @@ public static class AddServiceCollectionExtensions
     {
         services.AddHttpClient();
 
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
@@ -60,6 +60,15 @@ public static class AddServiceCollectionExtensions
     {
         services.AddHealthChecks()
             .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<PensionsRegulatorApiHealthCheck>(PensionsRegulatorApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: new[] { Ready })
+            .AddCheck<ProviderRelationshipsApiHealthCheck>(ProviderRelationshipsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
                 tags: new[] { Ready })
             .AddCheck<EmployerProfilesApiHealthCheck>(EmployerProfilesApiHealthCheck.HealthCheckResultDescription,

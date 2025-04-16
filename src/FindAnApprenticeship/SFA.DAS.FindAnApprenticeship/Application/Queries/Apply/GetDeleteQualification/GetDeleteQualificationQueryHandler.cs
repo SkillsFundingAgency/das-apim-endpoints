@@ -26,6 +26,8 @@ public class GetDeleteQualificationQueryHandler(ICandidateApiClient<CandidateApi
 
         var qualification = qualificationTypes.QualificationReferences.Single(x => x.Id == request.QualificationReference);
 
+        if (qualifications is null) return null;
+
         return new GetDeleteQualificationQueryResult
         {
             Qualifications = [qualifications.Qualification],

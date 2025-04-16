@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,10 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             _pledgeId = _fixture.Create<int>();
 
             _mediator = new Mock<IMediator>();
-            _queryResult = _fixture.Create<GetApplicationsQueryResult>();
+            _queryResult = _fixture.Build<GetApplicationsQueryResult>()
+                .With(x => x.TotalItems, 3)
+                .Create();
+
             _mediator.Setup(x => x.Send(It.Is<GetApplicationsQuery>(q => q.PledgeId == _pledgeId), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(_queryResult);
 
@@ -42,12 +46,12 @@ namespace SFA.DAS.LevyTransferMatching.Api.UnitTests.Controllers.PledgeTests
             var okObjectResult = controllerResponse as OkObjectResult;
             var response = okObjectResult.Value as GetApplicationsResponse;
 
-            Assert.That(okObjectResult, Is.Not.Null);
-            Assert.That(response, Is.Not.Null);
-            Assert.That(response.AutomaticApprovalOption, Is.Not.Null);
-            Assert.That(response.Applications.Count(), Is.EqualTo(_queryResult.Applications.Count()));
-            Assert.That(response.PledgeRemainingAmount, Is.EqualTo(_queryResult.RemainingAmount));
-            Assert.That(response.PledgeTotalAmount, Is.EqualTo(_queryResult.TotalAmount));
+            okObjectResult.Should().NotBeNull();
+            response.Should().NotBeNull();
+            response.TotalItems.Should().Be(response.Items.Count());
+            response.PledgeRemainingAmount.Should().Be(_queryResult.RemainingAmount);
+            response.PledgeTotalAmount.Should().Be(_queryResult.TotalAmount);
+            response.TotalPendingApplications.Should().Be(_queryResult.TotalPendingApplications);
         }
     }
 }

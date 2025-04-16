@@ -4,6 +4,7 @@ using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -51,6 +52,16 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public decimal? WageAmountLowerBound { get; init; }
         [JsonProperty("wageAmountUpperBound")]
         public decimal? WageAmountUpperBound { get; init; }
+        [JsonPropertyName("over25NationalMinimumWage")]
+        public decimal? Over25NationalMinimumWage { get; set; }
+        [JsonPropertyName("between21AndUnder25NationalMinimumWage")]
+        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+        [JsonPropertyName("between18AndUnder21NationalMinimumWage")]
+        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+        [JsonPropertyName("under18NationalMinimumWage")]
+        public decimal? Under18NationalMinimumWage { get; set; }
+        [JsonPropertyName("apprenticeMinimumWage")]
+        public decimal? ApprenticeMinimumWage { get; set; }
         [JsonProperty("wageText")]
         public string WageText { get; init; }
         [JsonProperty("wageUnit")]
@@ -104,9 +115,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonPropertyName("vacancySource")]
         public VacancyDataSource VacancySource { get; set; }
-
-        public string Postcode => Address.Postcode;
-        public string City => Address.AddressLine4;
+        public string Postcode => Address?.Postcode;
+        public string City => Address?.GetCity();
         public string ApplicationUrl { get; set; }
         public string ApplicationInstructions { get; set; }
         public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);

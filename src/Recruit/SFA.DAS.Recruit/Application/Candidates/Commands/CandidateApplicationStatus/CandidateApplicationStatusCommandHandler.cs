@@ -68,8 +68,7 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
                 _emailEnvironmentHelper.SuccessfulApplicationEmailTemplateId, 
                 candidate.Body.Email,
                 candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
-                request.VacancyCity,
-                request.VacancyPostcode);
+                GetLocation(request.VacancyLocation));
             sendEmailCommand = new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens);
         }
         else
@@ -78,15 +77,23 @@ public class CandidateApplicationStatusCommandHandler : IRequestHandler<Candidat
                 _emailEnvironmentHelper.UnsuccessfulApplicationEmailTemplateId,
                 candidate.Body.Email,
                 candidate.Body.FirstName, request.VacancyTitle, request.VacancyEmployerName,
-                request.VacancyCity,
-                request.VacancyPostcode,
+                GetLocation(request.VacancyLocation),
                 request.Feedback, _emailEnvironmentHelper.CandidateApplicationUrl);
             sendEmailCommand = new SendEmailCommand(unsuccessfulEmail.TemplateId, unsuccessfulEmail.RecipientAddress, unsuccessfulEmail.Tokens);
         }
         
-        
         await Task.WhenAll(_notificationService.Send(sendEmailCommand), _candidateApiClient.PatchWithResponseCode(patchRequest));
-        
         return new Unit();
+    }
+
+    /// <summary>
+    /// Gets the location of the vacancy from the request.
+    /// If the VacancyLocation is not provided, it returns "Unknown".
+    /// </summary>
+    /// <param name="vacancyLocation"></param>
+    /// <returns>The location of the vacancy or "Unknown" if not provided. This ensures that the email tokens always have a meaningful value, avoiding null or empty strings.</returns>
+    private static string GetLocation(string vacancyLocation)
+    {
+        return !string.IsNullOrWhiteSpace(vacancyLocation) ? vacancyLocation : "Unknown";
     }
 }

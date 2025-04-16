@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
 using CreateApprenticeshipStartDateChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipStartDateChangeRequest;
@@ -35,6 +36,13 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
                 Approver = response.Approver
             };
         }
+        public static ChangeOfDateApprovedCommand ToNotificationCommand(this ApproveStartDateChangeRequest request, Guid apprenticeshipKey)
+        {
+            return new ChangeOfDateApprovedCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey,                
+            };
+        }
 
         public static ChangeOfPriceRejectedCommand ToNotificationCommand(this PatchRejectApprenticeshipPriceChangeResponse response, Guid apprenticeshipKey)
         {
@@ -42,6 +50,32 @@ namespace SFA.DAS.Apprenticeships.Api.Extensions
             {
                 ApprenticeshipKey = apprenticeshipKey,
                 Rejector = response.Rejector
+            };
+        }
+
+        public static PaymentStatusInactiveCommand ToNotificationCommand(this FreezePaymentsRequest request, Guid apprenticeshipKey)
+        {
+            return new PaymentStatusInactiveCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey
+            };
+        }
+
+        public static PaymentStatusActiveCommand ToNotificationCommand(this PostUnfreezePaymentsRequest request, Guid apprenticeshipKey)
+        {
+            return new PaymentStatusActiveCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey
+            };
+        }
+        
+        public static ApprenticeshipWithdrawnCommand ToNotificationCommand(this HandleWithdrawalNotificationsRequest request, Guid apprenticeshipKey)
+        {
+            return new ApprenticeshipWithdrawnCommand
+            {
+                ApprenticeshipKey = apprenticeshipKey,
+                LastDayOfLearning = request.LastDayOfLearning,
+                Reason = request.Reason
             };
         }
     }

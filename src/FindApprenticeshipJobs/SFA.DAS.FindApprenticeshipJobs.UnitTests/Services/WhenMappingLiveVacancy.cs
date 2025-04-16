@@ -1,16 +1,19 @@
-﻿using System.Globalization;
-using System.Net;
+﻿using System.Net;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Services;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using DisabilityConfident = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.DisabilityConfident;
+using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
+using Qualification = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.Qualification;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
 {
@@ -28,6 +31,29 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             var result = sut.Map(source, mockStandardsListResponse);
 
             AssertResponse(result, source, mockStandardsListResponse);
+        }
+        
+        [Test]
+        [MoqInlineAutoData(null, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.OneLocation, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.MultipleLocations, "NonNational")]
+        [MoqInlineAutoData(AvailableWhere.AcrossEngland, "National")]
+        public void Then_The_Mapped_Vacancy_Has_The_Correct_VacancyLocationType(
+            AvailableWhere? locationType,
+            string expectedLocationType,
+            LiveVacancy source,
+            [Frozen] Mock<ICourseService> courseService,
+            LiveVacancyMapper sut)
+        {
+            // arrange
+            source.EmployerLocationOption = locationType;
+            var mockStandardsListResponse =  SetupCoursesApiResponse(source);
+
+            // act
+            var result = sut.Map(source, mockStandardsListResponse);
+
+            // assert
+            result.VacancyLocationType.Should().Be(expectedLocationType);
         }
 
         [Test, MoqAutoData]
@@ -66,6 +92,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.Route.Should().Be(route.Name);
             actual.RouteCode.Should().Be(route.Id);
             actual.SearchTags.Should().Be("NHS National Health Service Health Medical Hospital");
+            actual.EmploymentLocations.Should().BeNullOrEmpty();
         }
 
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)
@@ -131,25 +158,23 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).Route,
                 standardsListResponse.Standards.Single(s => s.LarsCode.ToString() == source.ProgrammeId).RouteCode,
-                Address = new FindApprenticeshipJobs.Application.Shared.Address
-                {
-                    AddressLine1 = source.EmployerLocation?.AddressLine1,
-                    AddressLine2 = source.EmployerLocation?.AddressLine2,
-                    AddressLine3 = source.EmployerLocation?.AddressLine3,
-                    AddressLine4 = source.EmployerLocation?.AddressLine4,
-                    Postcode = source.EmployerLocation?.Postcode,
-                    Latitude = source.EmployerLocation?.Latitude ?? 0,
-                    Longitude = source.EmployerLocation?.Longitude ?? 0,
-                    Country = source.EmployerLocation?.Country
-                },
+                source.Address,
+                source.OtherAddresses,
+                source.EmployerLocations,
+                source.EmployerLocationInformation,
+                source.EmployerLocationOption,
+                
                 source.AdditionalQuestion1,
                 source.AdditionalQuestion2,
                 source.AdditionalTrainingDescription
             };
 
-            actual.Should().BeEquivalentTo(expectedResult);
+            actual.Should().BeEquivalentTo(expectedResult, options => options
+                .WithMapping("EmployerLocations", "EmploymentLocations")
+                .WithMapping("EmployerLocationOption", "EmploymentLocationOption")
+                .WithMapping("EmployerLocationInformation", "EmploymentLocationInformation")
+            );
         }
-
 
         private static GetStandardsListResponse SetupCoursesApiResponse(LiveVacancy vacancy)
         {
