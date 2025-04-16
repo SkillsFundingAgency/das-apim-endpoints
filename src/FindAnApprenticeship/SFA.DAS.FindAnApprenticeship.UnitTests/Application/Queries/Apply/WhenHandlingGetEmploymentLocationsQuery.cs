@@ -12,11 +12,16 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
     {
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
+            bool status,
             GetApplicationApiResponse applicationApiResponse,
             GetEmploymentLocationsQuery query,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        GetEmploymentLocationsQueryHandler handler)
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetEmploymentLocationsQueryHandler handler)
         {
+            applicationApiResponse.EmploymentLocationStatus = status 
+                ? Constants.SectionStatus.Completed 
+                : Constants.SectionStatus.InProgress;
+
             var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
 
             candidateApiClient.Setup(x => x.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationApiRequest.GetUrl)))
@@ -24,20 +29,13 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            bool? expectSectionCompleted = applicationApiResponse.DisabilityConfidenceStatus switch
-            {
-                Constants.SectionStatus.InProgress => false,
-                Constants.SectionStatus.Completed => true,
-                _ => null
-            };
-
             using (new AssertionScope())
             {
                 result.Should().NotBeNull();
                 result.Should().BeOfType<GetEmploymentLocationsQueryResult>();
                 result.EmploymentLocation.Should().NotBeNull();
                 result.EmploymentLocation.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation);
-                result.IsSectionCompleted.Should().Be(expectSectionCompleted);
+                result.IsSectionCompleted.Should().Be(status);
             }
         }
     }

@@ -121,14 +121,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                     PhoneNumber = candidate.PhoneNumber,
                     Address = address
                 },
-                EmploymentLocation = application.EmploymentLocation != null ? new GetApplicationQueryResult.EmploymentLocationSection
-                {
-                    Id = application.EmploymentLocation.Id,
-                    EmploymentLocationStatus = application.EmploymentLocationStatus,
-                    Addresses = application.EmploymentLocation.Addresses,
-                    EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
-                    EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
-                } : null,
+                EmploymentLocation = application.EmploymentLocation is not null
+                    ? new GetApplicationQueryResult.EmploymentLocationSection
+                    {
+                        Id = application.EmploymentLocation.Id,
+                        EmploymentLocationStatus = application.EmploymentLocationStatus,
+                        Addresses = application.EmploymentLocation.Addresses,
+                        EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
+                        EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
+                    }
+                    : null,
                 AboutYou = new GetApplicationQueryResult.AboutYouSection
                 {
                     SkillsAndStrengths = application.Strengths,

@@ -64,7 +64,7 @@ public class GetIndexQueryHandler(
                 Qualifications = application.QualificationsStatus,
                 TrainingCourses = application.TrainingCoursesStatus,
             },
-            EmploymentLocation = application.EmploymentLocation != null
+            EmploymentLocation = application.EmploymentLocation is not null
                 ? new GetIndexQueryResult.EmploymentLocationSection
                 {
                     Id = application.EmploymentLocation.Id,
