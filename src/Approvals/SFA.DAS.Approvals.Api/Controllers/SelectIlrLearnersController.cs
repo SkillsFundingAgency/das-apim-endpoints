@@ -13,7 +13,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
     public class SelectIlrLearnersController(IMediator mediator, ILogger<SelectIlrLearnersController> logger) : Controller
     {
         [HttpGet]
-        [Route("/providers/{providerId}/unapproved/add/ilrs/select")]
+        [Route("/providers/{providerId}/unapproved/add/learners/select")]
         public async Task<IActionResult> Get(
             long providerId,
             [FromQuery] long accountLegalEntityId,
