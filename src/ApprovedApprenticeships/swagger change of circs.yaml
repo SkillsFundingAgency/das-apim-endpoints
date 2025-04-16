@@ -343,6 +343,10 @@ components:
           type: string
         changeType:
           type: string
+          enum:
+          - simpleChange
+          - startDateChange
+          - etc
         changes:
           type: array
           items:
@@ -353,9 +357,7 @@ components:
       additionalProperties:
         type: object
         properties:
-          previous:
-            type: string
-          new:
+          value:
             type: string
         
 security:
