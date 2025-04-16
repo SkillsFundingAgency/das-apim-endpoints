@@ -53,7 +53,7 @@ stages:
     AddXForwardedAuthorization: $True
 
 - stage: TriggerSmokeTest
-  dependsOn: Deploy_PROD
+  dependsOn: Deploy_DEMO
   displayName: Trigger Live Smoke Test 
   condition: succeeded()
   variables:
