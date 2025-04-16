@@ -20,7 +20,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
             [FromQuery] string searchTerm,
             [FromQuery] string sortColumn,
             [FromQuery] bool sortDescending,
-            [FromQuery] int page)
+            [FromQuery] int page,
+            [FromQuery] int? pageSize)
         {
             try
             {
@@ -32,7 +33,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     SearchTerm = searchTerm,
                     SortField = sortColumn, 
                     SortDescending = sortDescending, 
-                    Page = page
+                    Page = page,
+                    PageSize = pageSize
                 });
                 return Ok(result);
             }

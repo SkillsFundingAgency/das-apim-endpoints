@@ -30,7 +30,8 @@ public class GetLearnersForProviderQueryHandler(
                 request.SearchTerm,
                 request.SortField,
                 request.SortDescending,
-                request.Page
+                request.Page,
+                request.PageSize
             ));
 
         logger.LogInformation("Getting Account Legal Entity");
