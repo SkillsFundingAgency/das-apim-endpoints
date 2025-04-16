@@ -56,7 +56,6 @@ stages:
   dependsOn: Deploy_AT
   displayName: Trigger Live Smoke Test 
   condition: and(succeeded(), eq(variables['Deploy'], 'true'))
-
   variables:
     - group: LIVE Shared Resources
   jobs:  
