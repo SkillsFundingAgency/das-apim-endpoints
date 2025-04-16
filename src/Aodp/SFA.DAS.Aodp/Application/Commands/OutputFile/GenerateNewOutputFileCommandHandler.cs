@@ -8,10 +8,10 @@ namespace SFA.DAS.AODP.Application.Commands.OutputFile;
 
 public class GenerateNewOutputFileCommandHandler : IRequestHandler<GenerateNewOutputFileCommand, BaseMediatrResponse<EmptyResponse>>
 {
-    private readonly IAodpApiClient<GenerateNewOutputFileCommandHandler> _apiClient;
+    private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
 
-    public GenerateNewOutputFileCommandHandler(IAodpApiClient<GenerateNewOutputFileCommandHandler> aodpApiClient)
+    public GenerateNewOutputFileCommandHandler(IAodpApiClient<AodpApiConfiguration> aodpApiClient)
     {
         _apiClient = aodpApiClient;
 

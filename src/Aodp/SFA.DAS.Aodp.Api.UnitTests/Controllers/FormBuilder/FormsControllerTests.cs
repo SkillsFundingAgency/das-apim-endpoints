@@ -54,9 +54,6 @@ public class FormsControllerTests
 
         // Assert
         _mediatorMock.Verify(m => m.Send(It.IsAny<GetAllFormVersionsQuery>(), default), Times.Once());
-        _mediatorMock.Verify(m =>
-            m.Send(
-                It.IsAny<GetAllFormVersionsQuery>(), default), Times.Once());
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
         var okResult = (OkObjectResult)result;
         Assert.That(okResult.Value, Is.AssignableFrom<GetAllFormVersionsQueryResponse>());
