@@ -12,14 +12,16 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
     [ApiController]
     [Route("applications/{applicationId}/[controller]")]
-    public class EmploymentLocationsController(IMediator mediator, ILogger<EmploymentLocationsController> logger) : Controller
+    public class EmploymentLocationsController(IMediator mediator, ILogger<EmploymentLocationsController> logger) : ControllerBase
     {
         [HttpGet]
         public async Task<IActionResult> Get([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
         {
             try
             {
-                var result = await mediator.Send(new GetEmploymentLocationsQuery(applicationId, candidateId));                
+                var result = await mediator.Send(new GetEmploymentLocationsQuery(applicationId, candidateId));
+
+                if (result is null) return NotFound();
 
                 return Ok(result);
             }

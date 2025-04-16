@@ -37,6 +37,25 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.EmploymentLocat
         }
 
         [Test, MoqAutoData]
+        public async Task Then_The_Query_Response_Is_Null_Then_Returns_NotFound(
+            Guid candidateId,
+            Guid applicationId,
+            GetEmploymentLocationsQueryResult queryResult,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] Api.Controllers.EmploymentLocationsController controller)
+        {
+            mediator.Setup(x => x.Send(It.Is<GetEmploymentLocationsQuery>(q =>
+                        q.CandidateId == candidateId
+                        && q.ApplicationId == applicationId),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((GetEmploymentLocationsQueryResult)null!);
+
+            var actual = await controller.Get(applicationId, candidateId);
+
+            actual.As<StatusCodeResult>().StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        }
+
+        [Test, MoqAutoData]
         public async Task And_Exception_Is_Thrown_Then_Returns_InternalServerError(
             Guid candidateId,
             Guid applicationId,
