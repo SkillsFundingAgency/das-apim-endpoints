@@ -12,15 +12,15 @@ namespace SFA.DAS.Approvals.Services;
 
 public interface IMapLearnerRecords
 {
-    Task<List<IlrLearnerSummary>> Map(IEnumerable<LearnerDataRecord> learner);
+    Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> learner);
 }
 
 public class MapLearnerRecords(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILogger<IMapLearnerRecords> logger) : IMapLearnerRecords
 {
-    public async Task<List<IlrLearnerSummary>> Map(IEnumerable<LearnerDataRecord> learners)
+    public async Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> learners)
     {
         logger.LogInformation("Getting all Courses, to match with Learner Records");
-        var learnerSummaries = new List<IlrLearnerSummary>();
+        var learnerSummaries = new List<LearnerSummary>();
         var standards = await coursesApiClient.Get<GetStandardsListResponse>(new GetStandardsExportRequest());
 
         var list = standards.Standards.ToList();
@@ -28,7 +28,7 @@ public class MapLearnerRecords(ICoursesApiClient<CoursesApiConfiguration> course
         logger.LogInformation("Mapping Learner record to summary");
         foreach (var learner in learners)
         {
-            learnerSummaries.Add(new IlrLearnerSummary
+            learnerSummaries.Add(new LearnerSummary
             {
                 Id = learner.Id,
                 FirstName = learner.FirstName,

@@ -4,13 +4,12 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Microsoft.Identity.Client;
 using SFA.DAS.Approvals.Application.Learners.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
-    public class SelectIlrLearnersController(IMediator mediator, ILogger<SelectIlrLearnersController> logger) : Controller
+    public class SelectLearnersController(IMediator mediator, ILogger<SelectLearnersController> logger) : Controller
     {
         [HttpGet]
         [Route("/providers/{providerId}/unapproved/add/learners/select")]

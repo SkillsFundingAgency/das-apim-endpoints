@@ -27,7 +27,7 @@ public class WhenGettingLearnersForProvider
         int? pageSize,
         GetLearnersForProviderQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] SelectIlrLearnersController controller)
+        [Greedy] SelectLearnersController controller)
     {
         mockMediator.Setup(mediator => mediator.Send(
                 It.IsAny<GetLearnersForProviderQuery>(),
@@ -44,7 +44,7 @@ public class WhenGettingLearnersForProvider
             })
             .ReturnsAsync(mediatorResult);
 
-        var controllerResult = await controller.Get(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDescending, page, pagesize) as ObjectResult;
+        var controllerResult = await controller.Get(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDescending, page, pageSize) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -64,7 +64,7 @@ public class WhenGettingLearnersForProvider
         int pagesize,
         GetLearnersForProviderQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] SelectIlrLearnersController controller)
+        [Greedy] SelectLearnersController controller)
     {
         mockMediator.Setup(mediator => mediator.Send(
                 It.IsAny<GetLearnersForProviderQuery>(),
