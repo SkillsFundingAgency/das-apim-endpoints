@@ -39,7 +39,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             var trainingCourses = application.TrainingCourses;
             var jobs = application.WorkHistory?.Where(c=>c.WorkHistoryType == WorkHistoryType.Job);
             var volunteeringExperiences = application.WorkHistory?.Where(c=>c.WorkHistoryType == WorkHistoryType.WorkExperience);
-            var otherDetails = application.AboutYou;
 
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion1 = null;
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion2 = null;
@@ -122,13 +121,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                     PhoneNumber = candidate.PhoneNumber,
                     Address = address
                 },
-                EmploymentLocation = new GetApplicationQueryResult.EmploymentLocationSection
-                {
-                    EmploymentLocationStatus = application.EmploymentLocationStatus,
-                    Addresses = application.EmploymentLocation.Addresses,
-                    EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
-                    EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
-                },
+                EmploymentLocation = application.EmploymentLocation is not null
+                    ? new GetApplicationQueryResult.EmploymentLocationSection
+                    {
+                        Id = application.EmploymentLocation.Id,
+                        EmploymentLocationStatus = application.EmploymentLocationStatus,
+                        Addresses = application.EmploymentLocation.Addresses,
+                        EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
+                        EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
+                    }
+                    : null,
                 AboutYou = new GetApplicationQueryResult.AboutYouSection
                 {
                     SkillsAndStrengths = application.Strengths,

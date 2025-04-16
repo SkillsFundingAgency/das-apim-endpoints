@@ -59,12 +59,9 @@ public class WhenHandlingGetIndexQuery
 
         result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
         result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
-        
-        result.EmploymentLocation.EmploymentLocationStatus.Should().Be(applicationApiResponse.EmploymentLocationStatus);
-        result.EmploymentLocation.EmploymentLocationInformation.Should().Be(applicationApiResponse.EmploymentLocation.EmploymentLocationInformation);
-        result.EmploymentLocation.EmployerLocationOption.Should().Be(applicationApiResponse.EmploymentLocation.EmployerLocationOption);
-        result.EmploymentLocation.Addresses.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation.Addresses);
-        
+
+        result.EmploymentLocation.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation);
+
         result.WorkHistory.VolunteeringAndWorkExperience.Should().Be(applicationApiResponse.WorkExperienceStatus);
         result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
         result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);
@@ -72,6 +69,7 @@ public class WhenHandlingGetIndexQuery
         result.ApplicationQuestions.AdditionalQuestion1Id.Should().Be(questionOne.Id);
         result.ApplicationQuestions.AdditionalQuestion2Id.Should().Be(questionTwo.Id);
         result.InterviewAdjustments.RequestAdjustments.Should().Be(applicationApiResponse.InterviewAdjustmentsStatus);
+        
         result.DisabilityConfidence.InterviewUnderDisabilityConfident.Should().Be(applicationApiResponse.DisabilityConfidenceStatus);
         result.PreviousApplication.EmployerName.Should().Be(previousVacancyApiResponse.EmployerName);
         result.PreviousApplication.VacancyTitle.Should().Be(previousVacancyApiResponse.Title);
@@ -120,12 +118,9 @@ public class WhenHandlingGetIndexQuery
 
         result.EducationHistory.Qualifications.Should().Be(applicationApiResponse.QualificationsStatus);
         result.EducationHistory.TrainingCourses.Should().Be(applicationApiResponse.TrainingCoursesStatus);
-        
-        result.EmploymentLocation.EmploymentLocationStatus.Should().Be(applicationApiResponse.EmploymentLocationStatus);
-        result.EmploymentLocation.EmploymentLocationInformation.Should().Be(applicationApiResponse.EmploymentLocation.EmploymentLocationInformation);
-        result.EmploymentLocation.EmployerLocationOption.Should().Be(applicationApiResponse.EmploymentLocation.EmployerLocationOption);
-        result.EmploymentLocation.Addresses.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation.Addresses);
-        
+
+        result.EmploymentLocation.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation);
+
         result.WorkHistory.VolunteeringAndWorkExperience.Should().Be(applicationApiResponse.WorkExperienceStatus);
         result.WorkHistory.Jobs.Should().Be(applicationApiResponse.JobsStatus);
         result.ApplicationQuestions.AdditionalQuestion1.Should().Be(applicationApiResponse.AdditionalQuestion1Status);

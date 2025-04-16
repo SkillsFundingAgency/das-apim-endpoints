@@ -13,8 +13,26 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmploymentLo
     {
         public async Task<GetEmploymentLocationsQueryResult> Handle(GetEmploymentLocationsQuery request, CancellationToken cancellationToken)
         {
-            var employmentLocationsApiRequest = new GetEmploymentLocationsApiRequest(request.CandidateId, request.ApplicationId);
-            return await candidateApiClient.Get<GetEmploymentLocationApiResponse>(employmentLocationsApiRequest);
+            var applicationRequest = new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false);
+            var application = await candidateApiClient.Get<GetApplicationApiResponse>(applicationRequest);
+
+            if (application == null)
+            {
+                return null;
+            }
+
+            bool? isCompleted = application.EmploymentLocationStatus switch
+            {
+                Domain.Constants.SectionStatus.Incomplete => false,
+                Domain.Constants.SectionStatus.Completed => true,
+                _ => null
+            };
+
+            return new GetEmploymentLocationsQueryResult
+            {
+                EmploymentLocation = application.EmploymentLocation,
+                IsSectionCompleted = isCompleted
+            };
         }
     }
 }
