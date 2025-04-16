@@ -43,6 +43,8 @@
                     EndDate = funding.EndDate,
                     StartDate = funding.StartDate,
                     FundingOfferId = funding.FundingOfferId,
+                    FundedOfferName = funding.FundedOfferName,
+                    Id = funding.Id
                 });
             }
 
