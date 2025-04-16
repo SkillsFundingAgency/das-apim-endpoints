@@ -51,6 +51,7 @@ stages:
   parameters:
     OuterApiName: Approvals
     AddXForwardedAuthorization: $True
+    useProductAppInsights: 'True'
 
 - stage: TriggerSmokeTest
   dependsOn: Deploy_PROD
