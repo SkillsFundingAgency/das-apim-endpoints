@@ -64,7 +64,11 @@ internal static class JoinedDataModelsExtensions
         bool hasSubsequentPriceEpisodes)
     {
         var previousEarnings = GetPreviousEarnings(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
-        var totalEpisodeEarnings = GetTotalEpisodeEarnings(joinedEarningsApprenticeship, joinedPriceEpisode);
+
+        //Total earnings are for the entire episode, irrespective of academic year
+        var totalEpisodeEarnings = joinedEarningsApprenticeship.Episodes
+            .Single(x => x.EpisodePriceKey == joinedPriceEpisode.EpisodePriceKey)
+            .Instalments.Sum(x => x.Amount);
 
         return new PriceEpisodeValues
         {
@@ -141,37 +145,7 @@ internal static class JoinedDataModelsExtensions
                                         - joinedPriceEpisode.CompletionPayment,
         };
     }
-
-    private static decimal GetTotalEpisodeEarnings(JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode joinedPriceEpisode)
-    {
-        var thisEpisode = joinedEarningsApprenticeship.Episodes
-            .SingleOrDefault(x => x.StartDate == joinedEarningsApprenticeship.StartDate);
-
-        if (thisEpisode == null) return 0;
-
-        var subsequentEpisodes = joinedEarningsApprenticeship.Episodes
-            .Where(x => x.StartDate > joinedPriceEpisode.StartDate)
-            .OrderBy(x => x.StartDate)
-            .ToList();
-
-        var totalEpisodeEarnings = thisEpisode.Instalments.Sum(x => x.Amount);
-
-        // Iterate through the subsequent episodes and accumulate instalment amounts
-        foreach (var episode in subsequentEpisodes)
-        {
-            // Check if the episode is terminated by academic year end
-            if (!episode.IsTerminatedByAcademicYearEnd)
-            {
-                break; // Stop iteration once a terminated episode is encountered
-            }
-
-            // Add instalment amounts for the current episode
-            totalEpisodeEarnings += episode.Instalments.Sum(x => x.Amount);
-        }
-
-        return totalEpisodeEarnings;
-    }
-
+    
     internal static LearningDeliveryValues GetLearningDelivery(
         this JoinedEarningsApprenticeship joinedEarningsApprenticeship, 
         GetAcademicYearsResponse currentAcademicYear)
