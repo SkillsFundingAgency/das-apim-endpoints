@@ -53,9 +53,9 @@ stages:
     AddXForwardedAuthorization: $True
 
 - stage: TriggerSmokeTest
-  dependsOn: Deploy_AT
+  dependsOn: Deploy_PROD
   displayName: Trigger Live Smoke Test 
-  condition: always()
+  condition: succeeded()
   variables:
     - group: LIVE Shared Resources
   jobs:  
