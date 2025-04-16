@@ -53,7 +53,7 @@ stages:
     AddXForwardedAuthorization: $True
 
 - stage: TriggerSmokeTest
-  dependsOn: [] #Deploy_PROD
+  dependsOn: Deploy_AT
   displayName: Trigger Live Smoke Test 
   condition: and(succeeded(), eq(variables.Deploy, 'true'))
   variables:
