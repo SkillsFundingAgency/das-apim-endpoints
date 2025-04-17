@@ -162,7 +162,7 @@
         {
             "condition": "[parameters('deployPrivateLinkedScopedResource')]",
             "apiVersion": "2021-04-01",
-            "name": "[concat(variables('appServiceName'), '-private-link-scoped-', parameters('utcValue'))]",
+            "name": "[concat(parameters('appServiceName'), '-private-link-scoped-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
@@ -176,7 +176,7 @@
                         "value": "[variables('privateLinkScopeName')]"
                     },
                     "scopedResourceName": {
-                        "value": "[variables('appServiceName')]"
+                        "value": "[parameters('appServiceName')]"
                     },
                     "scopedResourceId": {
                         "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.AppInsightsResourceId.value]"
