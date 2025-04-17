@@ -99,6 +99,10 @@
         },
         "deployPrivateLinkedScopedResource": {
             "type": "bool"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow()]"
         }
     },
     "variables": {
