@@ -31,7 +31,7 @@ public sealed class GetCourseProviderDetailsRequest : IGetApiRequest
 
         if (!string.IsNullOrWhiteSpace(Location))
         {
-            query["location"] = HttpUtility.UrlEncode(Location);
+            query["location"] = Location;
         }
 
         if (Longitude.HasValue)
