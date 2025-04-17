@@ -1,5 +1,6 @@
 ﻿using System;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
@@ -18,6 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public PreviousApplicationDetails PreviousApplication { get; set; }
+        public EmploymentLocationSection EmploymentLocation { get; set; }
 
         public class EducationHistorySection
         {
@@ -30,6 +32,21 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 {
                     Qualifications = source.Qualifications,
                     TrainingCourses = source.TrainingCourses
+                };
+            }
+        }
+        
+        public record EmploymentLocationSection : LocationDto
+        {
+            public string EmploymentLocationStatus { get; set; }
+            public static implicit operator EmploymentLocationSection(GetIndexQueryResult.EmploymentLocationSection source)
+            {
+                return new EmploymentLocationSection
+                {
+                    Addresses = source.Addresses,
+                    EmploymentLocationInformation = source.EmploymentLocationInformation,
+                    EmployerLocationOption = source.EmployerLocationOption,
+                    EmploymentLocationStatus = source.EmploymentLocationStatus
                 };
             }
         }
@@ -113,6 +130,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 IsDisabilityConfident = source.IsDisabilityConfident,
                 IsApplicationComplete = source.IsApplicationComplete,
                 EducationHistory = source.EducationHistory,
+                EmploymentLocation = source.EmploymentLocation,
                 WorkHistory = source.WorkHistory,
                 ApplicationQuestions = source.ApplicationQuestions,
                 InterviewAdjustments = source.InterviewAdjustments,

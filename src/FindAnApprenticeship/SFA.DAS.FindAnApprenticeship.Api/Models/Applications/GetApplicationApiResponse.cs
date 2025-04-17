@@ -2,6 +2,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
@@ -17,6 +18,7 @@ public record GetApplicationApiResponse
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
+    public EmploymentLocationSection EmploymentLocation { get; set; }
 
     public static implicit operator GetApplicationApiResponse(GetApplicationQueryResult source)
     {
@@ -26,6 +28,7 @@ public record GetApplicationApiResponse
             DisabilityConfidence = source.DisabilityConfidence,
             ApplicationQuestions = source.ApplicationQuestions,
             EducationHistory = source.EducationHistory,
+            EmploymentLocation = source.EmploymentLocation,
             InterviewAdjustments = source.InterviewAdjustments,
             IsDisabilityConfident = source.IsDisabilityConfident,
             IsApplicationComplete = source.IsApplicationComplete,
@@ -309,6 +312,22 @@ public record GetApplicationApiResponse
             return new WhatIsYourInterestSection
             {
                 WhatIsYourInterest = source.WhatIsYourInterest
+            };
+        }
+    }
+    
+    public record EmploymentLocationSection : LocationDto
+    {
+        public string EmploymentLocationStatus { get; set; }
+
+        public static implicit operator EmploymentLocationSection(GetApplicationQueryResult.EmploymentLocationSection source)
+        {
+            return new EmploymentLocationSection
+            {
+                EmploymentLocationStatus = source.EmploymentLocationStatus,
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
+                Addresses = source.Addresses,
+                EmployerLocationOption = source.EmployerLocationOption,
             };
         }
     }
