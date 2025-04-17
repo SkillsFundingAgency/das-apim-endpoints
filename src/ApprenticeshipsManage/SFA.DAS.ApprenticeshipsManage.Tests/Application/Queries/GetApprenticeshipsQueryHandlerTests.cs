@@ -5,8 +5,6 @@ using SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
 using SFA.DAS.ApprenticeshipsManage.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -18,23 +16,14 @@ public class GetApprenticeshipsQueryHandlerTests
         GetApprenticeshipsQuery query,
         PagedApprenticeshipsResponse apiResponse,
         [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> apiClient,
-        [Frozen] Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> calendarApi,
         GetApprenticeshipsQueryHandler sut)
     {
-        var calendarResponse = new GetAcademicYearsResponse
-        {
-            StartDate = new DateTime(2024, 8, 1),
-            EndDate = new DateTime(2025, 7, 31)
-        };
 
         query.AcademicYear = 2425;
 
-        var expectedUrl = $"/{query.Ukprn}/apprenticeships/by-dates?startDate={calendarResponse.StartDate:yyy-MM-dd}&endDate={calendarResponse.EndDate:yyy-MM-dd}&page={query.Page}&pageSize={query.PageSize}";
+        var expectedUrl = $"/{query.Ukprn}/academicyears/{query.AcademicYear}/apprenticeships?page={query.Page}&pageSize={query.PageSize}";
 
-        calendarApi.Setup(client => client.Get<GetAcademicYearsResponse>(It.IsAny<GetAcademicYearByYearRequest>()))
-          .ReturnsAsync(calendarResponse);
-
-        apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllApprenticeshipsByDatesRequest>(c => c.GetUrl == expectedUrl)))
+        apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllApprenticeshipsRequest>(c => c.GetUrl == expectedUrl)))
             .ReturnsAsync(apiResponse);
 
         var actual = await sut.Handle(query, It.IsAny<CancellationToken>());
