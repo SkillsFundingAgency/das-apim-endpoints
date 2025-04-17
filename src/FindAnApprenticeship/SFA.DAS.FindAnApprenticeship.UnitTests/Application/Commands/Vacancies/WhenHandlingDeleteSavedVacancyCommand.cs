@@ -22,8 +22,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Vacancies
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             DeleteSavedVacancyCommandHandler handler)
         {
-            var vacancyReference = command.VacancyReference.TrimVacancyReference();
-            var expectedRequest = new PostDeleteSavedVacancyApiRequest(command.CandidateId, vacancyReference);
+            var vacancyId = command.VacancyId;
+            var expectedRequest = new PostDeleteSavedVacancyApiRequest(command.CandidateId, vacancyId);
 
             var actual = await handler.Handle(command, CancellationToken.None);
 
