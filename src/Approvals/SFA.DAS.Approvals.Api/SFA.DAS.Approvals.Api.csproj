@@ -19,6 +19,7 @@
     
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.Approvals\SFA.DAS.Approvals.csproj" />
+      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 

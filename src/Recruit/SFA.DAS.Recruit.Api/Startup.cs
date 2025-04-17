@@ -13,6 +13,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Recruit.Api.AppStart;
 using SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Recruit.Api;
@@ -41,6 +42,7 @@ public static class Startup
         }
 
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingProgrammesQuery).Assembly));
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
         services.AddServiceRegistration(configuration);
 
         services.Configure<RouteOptions>(options =>
