@@ -99,10 +99,6 @@
         },
         "deployPrivateLinkedScopedResource": {
             "type": "bool"
-        },
-        "utcValue": {
-            "type": "string",
-            "defaultValue": "[utcNow()]"
         }
     },
     "variables": {
@@ -166,7 +162,7 @@
         {
             "condition": "[parameters('deployPrivateLinkedScopedResource')]",
             "apiVersion": "2021-04-01",
-            "name": "[concat(parameters('appServiceName'), '-private-link-scoped-', parameters('utcValue'))]",
+            "name": "[concat(parameters('appServiceName'), '-private-link-scoped-')]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "properties": {
