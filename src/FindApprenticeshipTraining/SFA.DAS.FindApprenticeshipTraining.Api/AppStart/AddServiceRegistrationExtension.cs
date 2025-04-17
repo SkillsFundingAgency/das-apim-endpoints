@@ -15,7 +15,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
@@ -26,7 +26,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<ICachedCoursesService, CachedCoursesService>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
+            services.AddTransient<ICachedLocationLookupService, CachedLocationLookupService>();
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+            services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
         }
     }
 }
