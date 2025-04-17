@@ -12,7 +12,7 @@ using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.Learners.Queries;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.SelectIlrLearners;
+namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.SelectLearners;
 
 public class WhenGettingLearnersForProvider
 {
@@ -49,7 +49,7 @@ public class WhenGettingLearnersForProvider
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var model = controllerResult.Value as GetLearnersForProviderQueryResult;
-        Assert.That(model, Is.Not.Null);
+        model.Should().NotBeNull();
         model.Should().BeEquivalentTo(mediatorResult);
     }
 
