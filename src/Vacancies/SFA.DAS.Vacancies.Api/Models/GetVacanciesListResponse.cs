@@ -129,6 +129,11 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         public string VacancyReference { get; set; }
         public  bool IsNationalVacancy { get; set; }
+
+        /// <summary>
+        /// The web address for the apprentice will apply.
+        /// </summary>
+        public string ApplicationUrl { get; set; }
         
         public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
         {
@@ -158,6 +163,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactPhone = source.EmployerContactPhone,
                 ApprenticeshipLevel = source.ApprenticeshipLevel,
+                ApplicationUrl = source.ApplicationUrl,
                 ExpectedDuration = source.ExpectedDuration,
                 Location = new VacancyLocation
                 {

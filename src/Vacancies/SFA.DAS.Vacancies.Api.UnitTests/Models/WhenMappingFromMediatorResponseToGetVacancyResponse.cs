@@ -3,6 +3,7 @@ using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 
@@ -62,8 +63,9 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Wage.WageUnit.Should().Be((WageUnit)source.Vacancy.WageUnit);
             actual.Wage.WageAdditionalInformation.Should().Be(source.Vacancy.WageText);
             actual.Ukprn.Should().Be(ukprn);
-            actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.Replace("VAC", ""));
+            actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
             actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
+            actual.ApplicationUrl.Should().Be(source.Vacancy.ApplicationUrl);
         }
 
         [Test, AutoData]
@@ -83,8 +85,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.Location)
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.ClosingDate)
+                .Excluding(item => item.VacancyReference)
             );
             actual.EmployerName.Should().Be(source.Vacancy.AnonymousEmployerName);
+            actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
             actual.Location.Should().BeNull();
         }
 

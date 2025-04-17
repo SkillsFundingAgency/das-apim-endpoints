@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
@@ -42,6 +44,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 AdditionalTrainingDescription = source.Vacancy.AdditionalTrainingDescription,
                 Address = GetVacancyAddressItem.From(source.Vacancy.Address),
                 ApprenticeshipLevel = source.Vacancy.ApprenticeshipLevel,
+                ApplicationUrl = source.Vacancy.ApplicationUrl,
                 ClosingDate = source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
                 CompanyBenefitsInformation = source.Vacancy.CompanyBenefitsInformation,
                 Course = source.Vacancy,
@@ -71,7 +74,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Title = source.Vacancy.Title,
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 Ukprn = int.Parse(source.Vacancy.Ukprn),
-                VacancyReference = source.Vacancy.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.Replace("VAC",""),
+                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Nhs) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.TrimVacancyReference(),
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Wage = source.Vacancy,
             };

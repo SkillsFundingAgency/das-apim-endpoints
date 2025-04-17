@@ -35,11 +35,11 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                 CancellationToken.None)).ReturnsAsync(queryResult);
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as ObjectResult;
-            
-            Assert.That(controllerResult, Is.Not.Null);
+
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetVacancyResponse;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             model.Should().BeEquivalentTo((GetVacancyResponse)queryResult);
 
             metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference.TrimVacancyReference(), 1), Times.Once);
@@ -59,11 +59,11 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                 CancellationToken.None)).ReturnsAsync(queryResult);
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as NotFoundResult;
-            
-            Assert.That(controllerResult, Is.Not.Null);
+
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
 
-            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference.TrimVacancyReference(), 1), Times.Once);
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference.TrimVacancyReference(), 1), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -79,10 +79,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             
             var controllerResult = await controller.GetVacancy(vacancyReference) as StatusCodeResult;
             
-            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
 
-            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference.TrimVacancyReference(), 1), Times.Once);
+            metrics.Verify(x => x.IncreaseVacancyViews(vacancyReference.TrimVacancyReference(), 1), Times.Never);
         }
     }
 }

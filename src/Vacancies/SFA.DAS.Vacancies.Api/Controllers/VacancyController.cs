@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using SFA.DAS.Vacancies.Enums;
 using SFA.DAS.Vacancies.Services;
     
 namespace SFA.DAS.Vacancies.Api.Controllers;
@@ -109,6 +110,7 @@ public class VacancyController : ControllerBase
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetVacancy([FromRoute] string vacancyReference)
     {
+        var includeInMetrics = false;
         try
         {
             var result = await _mediator.Send(new GetVacancyQuery
@@ -121,7 +123,7 @@ public class VacancyController : ControllerBase
             {
                 return NotFound();
             }
-
+            includeInMetrics = result.Vacancy.VacancySource == DataSource.Raa;
             return Ok(response);
         }
         catch (Exception e)
@@ -131,7 +133,7 @@ public class VacancyController : ControllerBase
         }
         finally
         {
-            _metrics.IncreaseVacancyViews(vacancyReference.TrimVacancyReference());
+            if(includeInMetrics) _metrics.IncreaseVacancyViews(vacancyReference.TrimVacancyReference());
         }
     }
 }

@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Enums;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
 
@@ -66,7 +67,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         {
             vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
             courseResponse.LarsCode = vacancyApiResponse.StandardLarsCode!.Value;
-            vacancyApiResponse.VacancySource = "NhS";
+            vacancyApiResponse.VacancySource = DataSource.Nhs;
             vacancyApiResponse.VacancyReference = vacancyReference.ToString();
             standardsService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
                 { Standards = new List<GetStandardsListItem> { courseResponse } });
