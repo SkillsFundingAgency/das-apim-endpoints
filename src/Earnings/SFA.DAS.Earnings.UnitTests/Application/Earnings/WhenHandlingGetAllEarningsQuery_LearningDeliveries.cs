@@ -1,4 +1,6 @@
 using FluentAssertions;
+using SFA.DAS.Apprenticeships.Types;
+using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
