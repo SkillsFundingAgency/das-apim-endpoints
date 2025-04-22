@@ -71,17 +71,19 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 return Task.CompletedTask;
             }
 
-            _logger.LogWarning("No bearer Token Found in any headers or context, therefore no Authorization header was attached to request message.");               
+            _logger.LogWarning("No bearer Token Found in any headers or context, therefore no Authorization header was attached to request message.");
 
             return Task.CompletedTask;
         }
 
         private string GetBearerToken(string serviceAccount)
         {
+            _logger.LogInformation("TokenPassThroughInternalApiClient.GetBearerToken attempt for {service}", serviceAccount);
+
             var authorizationHeader = _httpContextAccessor.HttpContext.Request.Headers["Authorization"].FirstOrDefault();
             if (string.IsNullOrEmpty(authorizationHeader))
             {
-                throw new AuthException("Cannot generate service token as the Authorization header is present");
+                throw new AuthException("Cannot generate service token as the Authorization header is not present");
             }
 
             var claims = new JwtSecurityTokenHandler().ReadJwtToken(authorizationHeader.Replace("Bearer ", string.Empty)).Claims.ToList();

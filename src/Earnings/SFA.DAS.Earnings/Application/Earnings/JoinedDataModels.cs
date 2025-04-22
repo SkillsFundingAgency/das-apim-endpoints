@@ -115,6 +115,7 @@ public class JoinedPriceEpisode
     /// Denotes an episode terminated by an "artificial" academic year-end boundary
     /// </summary>
     public bool IsTerminatedByAcademicYearEnd { get; set; }
+    public Guid EpisodePriceKey { get; set; }
 
     public JoinedPriceEpisode()
     {
@@ -130,6 +131,7 @@ public class JoinedPriceEpisode
     /// <param name="academicYear"></param>
     public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
     {
+        EpisodePriceKey = apprenticeshipEpisodePrice.Key;
         TrainingCode = apprenticeshipEpisode.TrainingCode;
         StartDate = apprenticeshipEpisodePrice.StartDate;
         EndDate = apprenticeshipEpisodePrice.EndDate;
@@ -147,7 +149,9 @@ public class JoinedPriceEpisode
     /// This constructor creates a new JoinedPriceEpisode based on an existing JoinedPriceEpisode, but sets the StartDate and EndDate and 
     /// only includes Instalments and AdditionalPayments for that academic year (excluding instalments that "overlap" other academic years)
     /// </summary>
-    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear, bool isTerminatedByAcademicYearEnd){
+    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear, bool isTerminatedByAcademicYearEnd)
+    {
+        EpisodePriceKey = existingEpisode.EpisodePriceKey;
         StartDate = newStartDate;
         EndDate = newEndDate;
         TrainingCode = existingEpisode.TrainingCode;
