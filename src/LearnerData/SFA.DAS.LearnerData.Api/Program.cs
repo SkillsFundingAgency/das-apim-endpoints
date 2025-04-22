@@ -1,11 +1,9 @@
 using System.Net;
 using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
-using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.LearnerData.Api.AppStart;
 using SFA.DAS.LearnerData.Api.HealthCheck;
 using SFA.DAS.LearnerData.Application;
@@ -32,7 +30,10 @@ builder.Services
     })
     .AddControllers(o =>
     {
-        if (!configuration.IsLocalOrDev()) o.Filters.Add(new AuthorizeFilter("default"));
+        if (!configuration.IsLocalOrDev())
+        {
+            o.Filters.Add(new AuthorizeFilter("default"));
+        }
     })
     .AddJsonOptions(options =>
     {
@@ -53,7 +54,10 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
     transport.ConnectionString(configuration["NServiceBusConfiguration:NServiceBusConnectionString"]);
 
     var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
-    if (!string.IsNullOrWhiteSpace(decodedLicence)) endpointConfiguration.License(decodedLicence);
+    if (!string.IsNullOrWhiteSpace(decodedLicence))
+    {
+        endpointConfiguration.License(decodedLicence);
+    }
 
     return NServiceBus.Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
 });
@@ -66,17 +70,18 @@ builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddServiceRegistration();
 
-if (configuration["Environment"] != "DEV")
-{
-    builder.Services.AddHealthChecks()
-        .AddCheck<LearnerDataApiHealthCheck>(LearnerDataApiHealthCheck.HealthCheckResultDescription);
-}
+builder.Services
+    .AddHealthChecks()
+    .AddCheck<LearnerDataApiHealthCheck>(LearnerDataApiHealthCheck.HealthCheckResultDescription);
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
 
 app.UseSwagger()
     .UseSwaggerUI(s =>
@@ -87,11 +92,6 @@ app.UseSwagger()
     .UseHttpsRedirection()
     .UseHealthChecks()
     .UseAuthentication();
-
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
-});
 
 app.MapControllers();
 
