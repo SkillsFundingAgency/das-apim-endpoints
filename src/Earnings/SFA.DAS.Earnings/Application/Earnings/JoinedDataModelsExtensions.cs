@@ -63,8 +63,12 @@ internal static class JoinedDataModelsExtensions
         byte collectionPeriod,
         bool hasSubsequentPriceEpisodes)
     {
-
         var previousEarnings = GetPreviousEarnings(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), collectionPeriod);
+
+        //Total earnings are for the entire episode, irrespective of academic year
+        var totalEpisodeEarnings = joinedEarningsApprenticeship.Episodes
+            .Single(x => x.EpisodePriceKey == joinedPriceEpisode.EpisodePriceKey)
+            .Instalments.Sum(x => x.Amount);
 
         return new PriceEpisodeValues
         {
@@ -97,7 +101,7 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodePreviousEarnings = EarningsFM36Constants.PriceEpisodePreviousEarnings,
             PriceEpisodeInstalmentValue = joinedPriceEpisode.Instalments.FirstOrDefault()?.Amount ?? 0,
             PriceEpisodeOnProgPayment = EarningsFM36Constants.PriceEpisodeOnProgPayment,
-            PriceEpisodeTotalEarnings = joinedPriceEpisode.Instalments.Sum(x => x.Amount),
+            PriceEpisodeTotalEarnings = totalEpisodeEarnings,
             PriceEpisodeBalanceValue = EarningsFM36Constants.PriceEpisodeBalanceValue,
             PriceEpisodeBalancePayment = EarningsFM36Constants.PriceEpisodeBalancePayment,
             PriceEpisodeCompleted = joinedPriceEpisode.EndDate < DateTime.Now,
@@ -141,7 +145,7 @@ internal static class JoinedDataModelsExtensions
                                         - joinedPriceEpisode.CompletionPayment,
         };
     }
-
+    
     internal static LearningDeliveryValues GetLearningDelivery(
         this JoinedEarningsApprenticeship joinedEarningsApprenticeship, 
         GetAcademicYearsResponse currentAcademicYear)

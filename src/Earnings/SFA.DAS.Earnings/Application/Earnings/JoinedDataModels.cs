@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Earnings.Application.Extensions;
+﻿using System.Diagnostics;
+using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
@@ -55,14 +56,14 @@ public class JoinedEarningsApprenticeship
                     earningEpisode = ResolveLegacyEpisodes(earningsApprenticeship, apprenticeshipEpisodePrice);
                 }
 
-                var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode, academicYear);
+                var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode);
 
                 joinedEpisodes.Add(joinedEpisode);
             }
 
         }
-
-        return joinedEpisodes;
+        
+        return joinedEpisodes.OrderBy(x => x.StartDate).ToList();
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
@@ -109,6 +110,12 @@ public class JoinedPriceEpisode
 
     /// <summary> Derived from apprenticeship.Episode.EpisodePrice.FundingBandMaximum </summary>
     public int FundingBandMaximum { get; set; }
+    
+    /// <summary>
+    /// Denotes an episode terminated by an "artificial" academic year-end boundary
+    /// </summary>
+    public bool IsTerminatedByAcademicYearEnd { get; set; }
+    public Guid EpisodePriceKey { get; set; }
 
     public JoinedPriceEpisode()
     {
@@ -121,8 +128,10 @@ public class JoinedPriceEpisode
     /// <param name="apprenticeshipEpisode"></param>
     /// <param name="apprenticeshipEpisodePrice"></param>
     /// <param name="earningsEpisode"></param>
-    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode, short academicYear)
+    /// <param name="academicYear"></param>
+    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
     {
+        EpisodePriceKey = apprenticeshipEpisodePrice.Key;
         TrainingCode = apprenticeshipEpisode.TrainingCode;
         StartDate = apprenticeshipEpisodePrice.StartDate;
         EndDate = apprenticeshipEpisodePrice.EndDate;
@@ -132,7 +141,7 @@ public class JoinedPriceEpisode
         TrainingPrice = apprenticeshipEpisodePrice.TrainingPrice;
         EndPointAssessmentPrice = apprenticeshipEpisodePrice.EndPointAssessmentPrice;
         FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
-        Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? [], academicYear);
+        Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
         AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
     }
 
@@ -140,7 +149,9 @@ public class JoinedPriceEpisode
     /// This constructor creates a new JoinedPriceEpisode based on an existing JoinedPriceEpisode, but sets the StartDate and EndDate and 
     /// only includes Instalments and AdditionalPayments for that academic year (excluding instalments that "overlap" other academic years)
     /// </summary>
-    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear){
+    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear, bool isTerminatedByAcademicYearEnd)
+    {
+        EpisodePriceKey = existingEpisode.EpisodePriceKey;
         StartDate = newStartDate;
         EndDate = newEndDate;
         TrainingCode = existingEpisode.TrainingCode;
@@ -152,9 +163,10 @@ public class JoinedPriceEpisode
         FundingBandMaximum = existingEpisode.FundingBandMaximum;
         Instalments = existingEpisode.Instalments.Where(x => x.AcademicYear == academicYear).ToList();
         AdditionalPayments = existingEpisode.AdditionalPayments.Where(x => x.AcademicYear == academicYear).ToList();
+        IsTerminatedByAcademicYearEnd = isTerminatedByAcademicYearEnd;
     }
 
-    private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments, short academicYear)
+    private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
     {
         var matchingInstalments = instalments
             .Where(x => x.EpisodePriceKey == apprenticeshipEpisodePrice.Key)
@@ -163,20 +175,25 @@ public class JoinedPriceEpisode
                 AcademicYear = x.AcademicYear,
                 DeliveryPeriod = x.DeliveryPeriod,
                 Amount = x.Amount
-            }).ToList(); 
+            })
+            .OrderBy(x => x.AcademicYear)
+            .ThenBy(x => x.DeliveryPeriod)
+            .ToList(); 
 
         if(matchingInstalments.Any())
         {
             return matchingInstalments;
         }
 
-        return ResolveLegacyInstalments(apprenticeshipEpisodePrice, instalments, academicYear);
+        return ResolveLegacyInstalments(apprenticeshipEpisodePrice, instalments);
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static List<JoinedInstalment> ResolveLegacyInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments, short academicYear)
+    private static List<JoinedInstalment> ResolveLegacyInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
     {
-        return instalments.Where(y => y.AcademicYear == academicYear)
+        return instalments.Where(y =>
+                y.AcademicYear.GetDateTime(y.DeliveryPeriod) >= apprenticeshipEpisodePrice.StartDate &&
+                y.AcademicYear.GetDateTime(y.DeliveryPeriod) <= apprenticeshipEpisodePrice.EndDate)
             .Select(x => new JoinedInstalment
             {
                 AcademicYear = x.AcademicYear,
@@ -202,6 +219,7 @@ public class JoinedPriceEpisode
     }
 }
 
+[DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}")]
 public class JoinedInstalment
 {
     public short AcademicYear { get; set; }

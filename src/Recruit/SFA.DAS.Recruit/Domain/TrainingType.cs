@@ -3,6 +3,7 @@
     public enum TrainingType
     {
         Standard = 0,
-        Framework = 1
+        Framework = 1,
+        Foundation = 2
     }
 }
