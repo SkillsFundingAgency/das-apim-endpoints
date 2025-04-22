@@ -30,7 +30,9 @@ namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes
 
             var trainingProgrammes = new List<TrainingProgramme>();
             trainingProgrammes.AddRange(frameworksTask.Result.Frameworks?.Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
-            trainingProgrammes.AddRange(standardsTask.Result.Standards?.Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
+            trainingProgrammes.AddRange(standardsTask.Result.Standards?
+                .Where(c=>request.IncludeFoundationApprenticeships || c.ApprenticeshipType.Equals("Apprenticeship", StringComparison.CurrentCultureIgnoreCase))
+                .Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
             
             return new GetTrainingProgrammesQueryResult
             {
