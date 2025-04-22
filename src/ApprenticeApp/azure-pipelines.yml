@@ -28,6 +28,8 @@ pr:
 variables:
 - group: Release Management Resources
 - group: RELEASE das-apim-endpoints
+- name: ProductShortName
+  value: ya
 
 resources:
   repositories:
@@ -57,3 +59,4 @@ stages:
       NServiceBusLicense: $(NServiceBusLicense)
       ApprenticeAppDeliveryApiKey: $(ApprenticeAppDeliveryApiKey)
       ApprenticeAppPreviewApiKey: $(ApprenticeAppPreviewApiKey)
+    useProductAppInsights: 'True'
