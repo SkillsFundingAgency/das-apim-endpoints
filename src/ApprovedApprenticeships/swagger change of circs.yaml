@@ -359,7 +359,7 @@ components:
           type: string
         fundingModel:
           type: string
-  
+          
     # apprenticeship, short apprenticeship and foundation apprenticeship
     
     apprenticeshipChangeOfCircumstance:
@@ -387,6 +387,10 @@ components:
     apprenticeshipPaymentChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - payment
         pay1: 
           type: integer
         date:
@@ -396,18 +400,30 @@ components:
     apprenticeshipLearnerChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - learner
         pay1: 
           type: integer
 
     apprenticeshipMilestoneChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - milestone
         pay1: 
           type: integer
 
     apprenticeshipLearningDeliveryChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - learningDelivery
         pay1: 
           type: integer
           
@@ -430,6 +446,10 @@ components:
     bootcampPaymentChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - payment
         pay1: 
           type: integer
         date:
@@ -439,20 +459,32 @@ components:
     bootcampLearnerChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - learner
         pay1: 
           type: integer
 
     bootcampMilestoneChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - milestone
         pay1: 
           type: integer
 
     bootcampLearningDeliveryChange:
       type: object
       properties:
+        changeType:
+          type: string
+          enum: 
+          - learningDelivery
         pay1: 
           type: integer
-           
+                      
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
