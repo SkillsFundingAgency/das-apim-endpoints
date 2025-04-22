@@ -377,10 +377,12 @@ components:
             - $ref: "#/components/schemas/apprenticeshipLearningDeliveryChange"
     
     foundationApprenticeshipChangeOfCircumstance:
+      description: This is the exact copy of a normal apprenticeship
       allOf:
       - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
   
     shortApprenticeshipChangeOfCircumstance:
+      description: This is the exact copy of a normal apprenticeship
       allOf:
       - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
    
@@ -484,7 +486,7 @@ components:
           enum: 
           - learningDelivery
         pay1: 
-          type: integer
-                      
+          type: integer        
+        
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
