@@ -361,8 +361,6 @@ components:
     changeModel:
       type: object
       properties:
-        apprenticeshipKey:
-          type: string
         changeType:
           type: string
           enum:
@@ -415,10 +413,13 @@ components:
     header:
       type: object
       properties:
+        apprenticeshipKey:
+          type: string
         consumerReference:
           type: string
         fundingModel:
           type: string
+        
         
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
