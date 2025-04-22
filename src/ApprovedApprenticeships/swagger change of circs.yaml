@@ -84,7 +84,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'
 
-  /providers/{ukprn}/apprenticeships:
+  /providers/{ukprn}/apprenticeshipTypes/{apprenticeshipType}:
     patch:
       summary: Updates the details of an approved apprenticeship
       security:
@@ -98,6 +98,19 @@ paths:
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
+        - name: apprenticeshipType
+          in: path
+          required: true
+          description: The type of apprenticeship
+          schema:
+            type: string
+            enum:
+            - apprenticeship
+            - shortApprenticeship
+            - foundationApprenticeship
+            - Bootcamp
+            - HTC
+            
       responses:
         '200':
           $ref: "#/components/responses/apprenticeshipUpdatedResponse"
@@ -158,8 +171,9 @@ components:
         application/json:
           schema:
             oneOf:
-              - $ref: "#/components/schemas/fundingModel36"
-              - $ref: "#/components/schemas/fundingModel45"
+              - $ref: "#/components/schemas/apprenticeshipModel"
+              - $ref: "#/components/schemas/shortApprenticeshipModel"
+              - $ref: "#/components/schemas/foundationApprenticeshipModel"
             
   responses:
     pagedApprenticeshipsResponse:
@@ -334,73 +348,48 @@ components:
         possibleMatch:
           $ref: "#/components/schemas/matchedApprenticeship"
 
-    fundingModel36:
+    apprenticeshipModel:
       type: object
       properties:
         header:
           $ref: "#/components/schemas/header"
         changes:
           oneOf:
-            - $ref: "#/components/schemas/fundingModel36PaymentChange"
-            - $ref: "#/components/schemas/fundingModel36LearnerChange"
-            - $ref: "#/components/schemas/fundingModel36MilestoneChange"
-            - $ref: "#/components/schemas/fundingModel36LearningDeliveryChange"
+            - $ref: "#/components/schemas/apprenticeshipPaymentChange"
+            - $ref: "#/components/schemas/apprenticeshipLearnerChange"
+            - $ref: "#/components/schemas/apprenticeshipMilestoneChange"
+            - $ref: "#/components/schemas/apprenticeshipLearningDeliveryChange"
     
-    fundingModel45:
+    foundationApprenticeshipModel:
+      allOf:
+      - $ref: "#/components/schemas/apprenticeshipModel"
+  
+    shortApprenticeshipModel:
+      allOf:
+      - $ref: "#/components/schemas/apprenticeshipModel"
+
+    apprenticeshipPaymentChange:
       type: object
       properties:
-        header:
-          $ref: "#/components/schemas/header"
-        changes:
-          oneOf:
-            - $ref: "#/components/schemas/fundingModel45PaymentChange"
-            - $ref: "#/components/schemas/fundingModel45LearnerChange"
-            - $ref: "#/components/schemas/fundingModel45MilestoneChange"
-            - $ref: "#/components/schemas/fundingModel45LearningDeliveryChange"
+        pay1: 
+          type: integer
+        date:
+          type: string
+          format: date
 
-    fundingModel45PaymentChange:
+    apprenticeshipLearnerChange:
       type: object
       properties:
         pay1: 
           type: integer
 
-    fundingModel45LearnerChange:
+    apprenticeshipMilestoneChange:
       type: object
       properties:
         pay1: 
           type: integer
 
-    fundingModel45MilestoneChange:
-      type: object
-      properties:
-        pay1: 
-          type: integer
-
-    fundingModel45LearningDeliveryChange:
-      type: object
-      properties:
-        pay1: 
-          type: integer
-
-    fundingModel36PaymentChange:
-      type: object
-      properties:
-        pay1: 
-          type: integer
-
-    fundingModel36LearnerChange:
-      type: object
-      properties:
-        pay1: 
-          type: integer
-
-    fundingModel36MilestoneChange:
-      type: object
-      properties:
-        pay1: 
-          type: integer
-
-    fundingModel36LearningDeliveryChange:
+    apprenticeshipLearningDeliveryChange:
       type: object
       properties:
         pay1: 
