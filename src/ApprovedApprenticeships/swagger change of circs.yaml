@@ -171,9 +171,9 @@ components:
         application/json:
           schema:
             oneOf:
-              - $ref: "#/components/schemas/apprenticeshipModel"
-              - $ref: "#/components/schemas/shortApprenticeshipModel"
-              - $ref: "#/components/schemas/foundationApprenticeshipModel"
+              - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
+              - $ref: "#/components/schemas/shortApprenticeshipChangeOfCircumstance"
+              - $ref: "#/components/schemas/foundationApprenticeshipChangeOfCircumstance"
             
   responses:
     pagedApprenticeshipsResponse:
@@ -213,7 +213,14 @@ components:
                 type: string
                 example: "Rate limit exceeded. Try again later."
 
-
+    apprenticeshipUpdatedResponse:
+      description: OK
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: OK
+    
     okResponse:
       description: OK
       content:
@@ -252,14 +259,6 @@ components:
           schema:
             type: string
             example: Leaner data APIM for the apprenticeship service - Version 3.0.2
-
-    apprenticeshipUpdatedResponse:
-      description: OK
-      content:
-        text/plain:
-          schema:
-            type: string
-            example: OK
             
   schemas:
     error:
@@ -348,7 +347,7 @@ components:
         possibleMatch:
           $ref: "#/components/schemas/matchedApprenticeship"
 
-    apprenticeshipModel:
+    apprenticeshipChangeOfCircumstance:
       type: object
       properties:
         header:
@@ -356,33 +355,20 @@ components:
         changes:
           type: array
           items:
-            $ref: "#/components/schemas/changeModel"
-            
-    changeModel:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum:
-          - learner
-          - learningDelivery
-          - payment
-          - milestone
-        changes:
-          oneOf:
+            oneOf:
             - $ref: "#/components/schemas/apprenticeshipPaymentChange"
             - $ref: "#/components/schemas/apprenticeshipLearnerChange"
             - $ref: "#/components/schemas/apprenticeshipMilestoneChange"
             - $ref: "#/components/schemas/apprenticeshipLearningDeliveryChange"
     
-    foundationApprenticeshipModel:
+    foundationApprenticeshipChangeOfCircumstance:
       allOf:
-      - $ref: "#/components/schemas/apprenticeshipModel"
+      - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
   
-    shortApprenticeshipModel:
+    shortApprenticeshipChangeOfCircumstance:
       allOf:
-      - $ref: "#/components/schemas/apprenticeshipModel"
-
+      - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
+   
     apprenticeshipPaymentChange:
       type: object
       properties:
