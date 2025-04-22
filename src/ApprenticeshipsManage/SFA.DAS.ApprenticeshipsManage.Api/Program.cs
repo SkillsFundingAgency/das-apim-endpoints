@@ -35,19 +35,19 @@ builder.Services
             BearerFormat = "JWT"
         });
         c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
         {
-            new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference
+                new OpenApiSecurityScheme
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            Array.Empty<string>() // No scopes needed for simple Bearer auth
-        }
-    });
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                [] // No scopes needed for simple Bearer auth
+            }
+        });
     })
     .AddControllers(o =>
     {
@@ -73,6 +73,7 @@ if (configuration["Environment"] != "DEV")
     builder.Services.AddHealthChecks()
         .AddCheck<ApprenticeshipsApiHealthCheck>(ApprenticeshipsApiHealthCheck.HealthCheckResultDescription);
 }
+
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetApprenticeshipsQueryHandler).Assembly));
 
 var app = builder.Build();
@@ -90,11 +91,6 @@ app
     .UseHttpsRedirection()
     .UseHealthChecks()
     .UseAuthentication();
-
-app.MapHealthChecks("/health", new HealthCheckOptions
-{
-    ResponseWriter = HealthCheckResponseWriter.WriteJsonResponse
-});
 
 app.MapControllers();
 
