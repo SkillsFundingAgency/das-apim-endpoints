@@ -18,7 +18,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DeliveryModels.Queries.Inform
     {
         private GetInformQueryHandler _handler;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
-        private static readonly Fixture _fixture = new Fixture();
+        private static readonly Fixture _fixture = new();
         private readonly GetInformQuery _query = _fixture.Create<GetInformQuery>();
         private readonly GetApprenticeshipResponse _apprenticeshipResponse = _fixture.Create<GetApprenticeshipResponse>();
 

@@ -1,6 +1,8 @@
+using System.Globalization;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Extensions;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.VacancyServices.Wage;
 
@@ -45,6 +47,7 @@ public class GetSavedSearchVacanciesQueryResult
         public string? WageUnit { get; set; }
         public string? WageType { get; set; }
         public string? ClosingDate { get; set; }
+        public string? StartDate { get; set; }
         public string? TrainingCourse { get; set; }
         public decimal? Distance { get; set; }
         public string? VacancySource { get; set; }
@@ -56,6 +59,7 @@ public class GetSavedSearchVacanciesQueryResult
                 Id = source.Id,
                 VacancyReference = source.VacancyReference,
                 ClosingDate = DateTimeExtension.GetClosingDate(source.ClosingDate, !string.IsNullOrEmpty(source.ApplicationUrl)),
+                StartDate = source.StartDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture),
                 Title = source.Title,
                 EmployerName = source.EmployerName,
                 Wage = source.WageText,

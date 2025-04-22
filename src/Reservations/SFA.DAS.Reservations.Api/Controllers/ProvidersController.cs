@@ -10,26 +10,18 @@ namespace SFA.DAS.Reservations.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class ProvidersController : ControllerBase
+    public class ProvidersController(
+        ILogger<TrainingCoursesController> logger,
+        IMediator mediator)
+        : ControllerBase
     {
-        private readonly ILogger<TrainingCoursesController> _logger;
-        private readonly IMediator _mediator;
-
-        public ProvidersController(
-            ILogger<TrainingCoursesController> logger,
-            IMediator mediator)
-        {
-            _logger = logger;
-            _mediator = mediator;
-        }
-
         [HttpGet]
         [Route("{ukprn}")]
         public async Task<IActionResult> GetProvider(int ukprn)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetProviderQuery{Ukprn = ukprn});
+                var queryResult = await mediator.Send(new GetProviderQuery{Ukprn = ukprn});
 
                 var model = (GetProviderResponse) queryResult.Provider;
                 
@@ -42,7 +34,7 @@ namespace SFA.DAS.Reservations.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to get training provider, UKPRN: [{ukprn}]");
+                logger.LogError(e, $"Error attempting to get training provider, UKPRN: [{ukprn}]");
                 return BadRequest();
             }
         }
