@@ -354,6 +354,23 @@ components:
         header:
           $ref: "#/components/schemas/header"
         changes:
+          type: array
+          items:
+            $ref: "#/components/schemas/changeModel"
+            
+    changeModel:
+      type: object
+      properties:
+        apprenticeshipKey:
+          type: string
+        changeType:
+          type: string
+          enum:
+          - learner
+          - learningDelivery
+          - payment
+          - milestone
+        changes:
           oneOf:
             - $ref: "#/components/schemas/apprenticeshipPaymentChange"
             - $ref: "#/components/schemas/apprenticeshipLearnerChange"
@@ -402,18 +419,6 @@ components:
           type: string
         fundingModel:
           type: string
-        apprenticeshipKey:
-          type: string
-        changeType:
-          type: string
-          enum:
-          - learner
-          - learningDelivery
-          - payment
-          - milestone
-        dateOfChange:
-          type: string
-          format: date
         
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
