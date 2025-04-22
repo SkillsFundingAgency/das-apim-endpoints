@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.Models
         {
             if (source == null) return null;
 
-            return new Standard()
+            return new Standard
             {
                 StandardUId = source.StandardUId,
                 IfateReferenceNumber = source.IfateReferenceNumber,

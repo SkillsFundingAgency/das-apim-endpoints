@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
+    [Obsolete("FAT25 should be deleted eventually")]
     public class GetShortlistItem
     {
         public Guid Id { get; set; }

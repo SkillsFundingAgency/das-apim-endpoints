@@ -1,0 +1,36 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 119
+@OrderByDistance = Distance
+@Distance100 = 100
+@DistanceZero =  0
+@LatitudeValid = 89
+@LongitudeValid = 179
+@Latitude91 = 91
+@Longitude181 = 181
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Distance={{Distance100}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance
+
+### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Distance={{DistanceZero}}
+
+# Bad Request
+### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Distance=-{{Distance100}}
+
+# Bad Request
+### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Distance={{Distance100}}&Latitude={{LatitudeValid}}&Longitude={{LongitudeValid}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance,mith distances <= 100 miles included in response
+
+ ### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Latitude={{Latitude91}}&Longitude={{Longitude181}}
+# Bad Request
+###
