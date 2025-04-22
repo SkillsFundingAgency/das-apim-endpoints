@@ -21,7 +21,7 @@ public class ProcessLearnersCommandHandler(
             });
     }
 
-    private LearnerDataEvent MapToEvent(LearnerDataRequest request, Guid correlationId, DateTime recievedOn, int academicYear)
+    private LearnerDataEvent MapToEvent(LearnerDataRequest request, Guid correlationId, DateTime receivedOn, int academicYear)
     {
         return new LearnerDataEvent
         {
@@ -41,8 +41,9 @@ public class ProcessLearnersCommandHandler(
             PlannedOTJTrainingHours = request.PlannedOTJTrainingHours,
             StandardCode = request.StandardCode,
             CorrelationId = correlationId,
-            ReceivedOn = recievedOn,
-            AcademicYear = academicYear
+            ReceivedOn = receivedOn,
+            AcademicYear = academicYear,
+            ConsumerReference = request.ConsumerReference
         };
     }
 }

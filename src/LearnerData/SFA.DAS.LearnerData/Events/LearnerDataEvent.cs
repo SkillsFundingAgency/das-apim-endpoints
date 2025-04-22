@@ -22,4 +22,6 @@ public class LearnerDataEvent
     public Guid CorrelationId { get; set; }
     public DateTime ReceivedOn { get; set; }
     public int AcademicYear { get; set; }
+    public string ConsumerReference { get; set; }
+
 }
