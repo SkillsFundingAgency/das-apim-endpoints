@@ -157,10 +157,10 @@ components:
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/updateApprenticeshipRequest'
-
+            oneOf:
+              - $ref: "#/components/schemas/fundingModel36"
+              - $ref: "#/components/schemas/fundingModel45"
+            
   responses:
     pagedApprenticeshipsResponse:
       description: A paged apprenticeship response
@@ -199,13 +199,6 @@ components:
                 type: string
                 example: "Rate limit exceeded. Try again later."
 
-    apprenticeshipUpdatedResponse:
-      description: OK
-      content:
-        text/plain:
-          schema:
-            type: string
-            example: OK
 
     okResponse:
       description: OK
@@ -246,6 +239,14 @@ components:
             type: string
             example: Leaner data APIM for the apprenticeship service - Version 3.0.2
 
+    apprenticeshipUpdatedResponse:
+      description: OK
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: OK
+            
   schemas:
     error:
       type: object
@@ -333,32 +334,97 @@ components:
         possibleMatch:
           $ref: "#/components/schemas/matchedApprenticeship"
 
-    updateApprenticeshipRequest:
+    fundingModel36:
       type: object
       properties:
-        apprenticeshipKey:
-          type: string
-          format: uuid
+        header:
+          $ref: "#/components/schemas/header"
+        changes:
+          oneOf:
+            - $ref: "#/components/schemas/fundingModel36PaymentChange"
+            - $ref: "#/components/schemas/fundingModel36LearnerChange"
+            - $ref: "#/components/schemas/fundingModel36MilestoneChange"
+            - $ref: "#/components/schemas/fundingModel36LearningDeliveryChange"
+    
+    fundingModel45:
+      type: object
+      properties:
+        header:
+          $ref: "#/components/schemas/header"
+        changes:
+          oneOf:
+            - $ref: "#/components/schemas/fundingModel45PaymentChange"
+            - $ref: "#/components/schemas/fundingModel45LearnerChange"
+            - $ref: "#/components/schemas/fundingModel45MilestoneChange"
+            - $ref: "#/components/schemas/fundingModel45LearningDeliveryChange"
+
+    fundingModel45PaymentChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    fundingModel45LearnerChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    fundingModel45MilestoneChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    fundingModel45LearningDeliveryChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    fundingModel36PaymentChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    fundingModel36LearnerChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    fundingModel36MilestoneChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    fundingModel36LearningDeliveryChange:
+      type: object
+      properties:
+        pay1: 
+          type: integer
+
+    header:
+      type: object
+      properties:
         consumerReference:
+          type: string
+        fundingModel:
+          type: string
+        apprenticeshipKey:
           type: string
         changeType:
           type: string
           enum:
-          - simpleChange
-          - startDateChange
-          - etc
-        changes:
-          type: array
-          items:
-            $ref: "#/components/schemas/kvp"
-      
-    kvp:
-      type: object
-      additionalProperties:
-        type: object
-        properties:
-          value:
-            type: string
+          - learner
+          - learningDelivery
+          - payment
+          - milestone
+        dateOfChange:
+          type: string
+          format: date
         
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
