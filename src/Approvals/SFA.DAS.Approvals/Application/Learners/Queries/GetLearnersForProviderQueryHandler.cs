@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -8,6 +9,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -15,7 +17,8 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries;
 public class GetLearnersForProviderQueryHandler(
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsClient,
-    IMapLearnerRecords mapper, 
+    IMapLearnerRecords mapper,
+    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
     ILogger<GetLearnersForProviderQueryHandler> logger)
     : IRequestHandler<GetLearnersForProviderQuery, GetLearnersForProviderQueryResult>
 {
@@ -38,10 +41,14 @@ public class GetLearnersForProviderQueryHandler(
         var legalEntityResponseTask = commitmentsClient.GetWithResponseCode<GetAccountLegalEntityResponse>(
                 new GetAccountLegalEntityRequest(request.AccountLegalEntityId));
 
-        await Task.WhenAll(learnerDataResponseTask, legalEntityResponseTask);
+        logger.LogInformation("Getting All Courses");
+        var standardsTask = coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetStandardsExportRequest());
+
+        await Task.WhenAll(learnerDataResponseTask, legalEntityResponseTask, standardsTask);
 
         var learnerDataResponse = await learnerDataResponseTask;
         var legalEntityResponse = await legalEntityResponseTask;
+        var standardsResponse = await standardsTask;
 
         if (!string.IsNullOrEmpty(learnerDataResponse.ErrorContent))
         {
@@ -50,6 +57,10 @@ public class GetLearnersForProviderQueryHandler(
         if (!string.IsNullOrEmpty(legalEntityResponse.ErrorContent))
         {
             throw new ApplicationException($"Getting Legal Entity Data Failed. Status Code {legalEntityResponse.StatusCode} Error : {legalEntityResponse.ErrorContent}");
+        }
+        if (!string.IsNullOrEmpty(standardsResponse.ErrorContent))
+        {
+            throw new ApplicationException($"Getting all coursed Failed. Status Code {standardsResponse.StatusCode} Error : {standardsResponse.ErrorContent}");
         }
 
         logger.LogInformation("Building Learner Data result");
@@ -64,7 +75,7 @@ public class GetLearnersForProviderQueryHandler(
             Page = response.Page,
             PageSize = response.PageSize,
             TotalPages = response.TotalPages,
-            Learners = await mapper.Map(response.Data)
+            Learners = await mapper.Map(response.Data, standardsResponse.Body.Standards.ToList())
         };
     }
 }
