@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -9,6 +10,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
         int pageNumber,
         int pageSize,
         string accountLegalEntityPublicHashedId = "",
+        string employerName = "",
         int? ukprn = null,
         string accountPublicHashedId = "",
         List<int> standardLarsCode = null,
@@ -84,7 +86,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
              {
                  url += $"&excludeNational={excludeNational}";
              }
-            
+             if(!string.IsNullOrEmpty(employerName) && !string.IsNullOrEmpty(_accountLegalEntityPublicHashedId))
+             {
+                url += $"&employerName={HttpUtility.UrlEncode(employerName)}";
+             }
+
              return url;
         }
     }

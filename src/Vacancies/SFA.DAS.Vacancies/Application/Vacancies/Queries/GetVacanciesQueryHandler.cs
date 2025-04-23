@@ -54,7 +54,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
             }
 
             var vacanciesTask = findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
-                request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
+                request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, request.EmployerName,
                 request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
                 request.Lat, request.Lon, request.DistanceInMiles, request.Routes, request.PostedInLastNumberOfDays, request.AdditionalDataSources, request.Sort,
                 request.ExcludeNational));

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
@@ -47,7 +48,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 
             actual.Vacancy.Should().BeEquivalentTo(apiApiResponse);
             actual.Vacancy.VacancyUrl.Should()
-                .Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{actual.Vacancy.VacancyReference}");
+                .Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{actual.Vacancy.VacancyReference.TrimVacancyReference()}");
             actual.Vacancy.CourseLevel.Should().Be(courseResponse.Level);
             actual.Vacancy.CourseTitle.Should().Be(courseResponse.Title);
             actual.Vacancy.Route.Should().Be(courseResponse.Route);

@@ -9,7 +9,7 @@ using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Models
 {
-    public class WhenMappingFromMediatorResponseToGetVacancyResponse
+    public class WhenMappingFromMediatorResponseToGetVacancyResponseV2
     {
         [Test, AutoData]
         public void Then_The_Fields_Are_Mapped(GetVacancyQueryResult source, int ukprn)
@@ -19,7 +19,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             source.Vacancy.WageUnit = 1;
             source.Vacancy.VacancyReference = $"VAC{source.Vacancy.VacancyReference}";
             
-            var actual = (GetVacancyResponse)source;
+            var actual = (GetVacancyResponseV2)source;
             
             actual.Should().BeEquivalentTo(source.Vacancy, options => options
                 .Excluding(c=>c.CourseLevel)
@@ -49,7 +49,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.VacancyReference)
                 .Excluding(item => item.VacancySource)
-                .Excluding(item => item.ApplicationUrl)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -66,6 +65,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Ukprn.Should().Be(ukprn);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
             actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
+            actual.ApplicationUrl.Should().Be(source.Vacancy.ApplicationUrl);
         }
 
         [Test, AutoData]
@@ -75,7 +75,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             source.Vacancy.IsEmployerAnonymous = true;
             source.Vacancy.VacancyLocationType = "nATIonal";
             
-            var actual = (GetVacancyResponse)source;
+            var actual = (GetVacancyResponseV2)source;
             
             actual.Should().BeEquivalentTo(source.Vacancy,options => options
                 .ExcludingMissingMembers()
@@ -97,7 +97,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         {
             source.Vacancy = null;
             
-            var actual = (GetVacancyResponse)source;
+            var actual = (GetVacancyResponseV2)source;
 
             actual.Should().BeNull();
         }

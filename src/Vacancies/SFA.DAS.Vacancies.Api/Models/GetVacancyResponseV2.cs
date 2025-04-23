@@ -8,7 +8,7 @@ using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
-    public class GetVacancyResponse : GetVacanciesListResponseItem
+    public class GetVacancyResponseV2 : GetVacanciesListResponseItemV2
     {
         /// <summary>
         /// A description of the company the apprentice will work at. Will be less than or equal to 4000 characters.
@@ -33,17 +33,18 @@ namespace SFA.DAS.Vacancies.Api.Models
         public string ThingsToConsider { get; set; }
         public string CompanyBenefitsInformation { get; set; }
 
-        public static implicit operator GetVacancyResponse(GetVacancyQueryResult source)
+        public static implicit operator GetVacancyResponseV2(GetVacancyQueryResult source)
         {
             if (source.Vacancy == null)
             {
                 return null;
             }
-            return new GetVacancyResponse
+            return new GetVacancyResponseV2
             {
                 AdditionalTrainingDescription = source.Vacancy.AdditionalTrainingDescription,
                 Address = GetVacancyAddressItem.From(source.Vacancy.Address),
                 ApprenticeshipLevel = source.Vacancy.ApprenticeshipLevel,
+                ApplicationUrl = source.Vacancy.ApplicationUrl,
                 ClosingDate = source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
                 CompanyBenefitsInformation = source.Vacancy.CompanyBenefitsInformation,
                 Course = source.Vacancy,
