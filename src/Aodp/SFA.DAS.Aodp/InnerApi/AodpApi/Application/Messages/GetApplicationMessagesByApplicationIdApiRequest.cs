@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.Application.Messages;
 
-public class GetApplicationMessagesByIdApiRequest : IGetApiRequest
+public class GetApplicationMessagesByApplicationIdApiRequest : IGetApiRequest
 {
     public Guid ApplicationId { get; set; }
     public string UserType { get; set; }

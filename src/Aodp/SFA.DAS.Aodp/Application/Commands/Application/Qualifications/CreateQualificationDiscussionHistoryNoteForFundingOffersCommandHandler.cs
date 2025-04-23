@@ -4,17 +4,17 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Aodp.Application.Commands.Application.Qualifications
 {
-    public class CreateQualificationDiscussionHistoryCommandHandler : IRequestHandler<CreateQualificationDiscussionHistoryCommand, BaseMediatrResponse<EmptyResponse>>
+    public class CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandler : IRequestHandler<CreateQualificationDiscussionHistoryNoteForFundingOffersCommand, BaseMediatrResponse<EmptyResponse>>
     {
         private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
 
-        public CreateQualificationDiscussionHistoryCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
+        public CreateQualificationDiscussionHistoryNoteForFundingOffersCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
 
-        public async Task<BaseMediatrResponse<EmptyResponse>> Handle(CreateQualificationDiscussionHistoryCommand request, CancellationToken cancellationToken)
+        public async Task<BaseMediatrResponse<EmptyResponse>> Handle(CreateQualificationDiscussionHistoryNoteForFundingOffersCommand request, CancellationToken cancellationToken)
         {
             var response = new BaseMediatrResponse<EmptyResponse>()
             {
@@ -23,7 +23,7 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Qualifications
 
             try
             {
-                var apiRequest = new CreateQualificationDiscussionHistoryApiRequest()
+                var apiRequest = new CreateQualificationDiscussionHistoryNoteForFundingApiRequest()
                 {
                     QualificationVersionId = request.QualificationVersionId,
                     Data = request
