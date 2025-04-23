@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerDataJobs.InnerApi;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerDataJobs.Application.Commands;
@@ -17,7 +18,7 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
                 command.LearnerData.AcademicYear, command.LearnerData.StandardCode, command.LearnerData);
 
             logger.LogInformation("Calling inner api to add new learner data");
-            var response = await client.PutWithResponseCode<object>(request);
+            var response = await client.PutWithResponseCode<NullResponse>(request);
             if (!string.IsNullOrWhiteSpace(response.ErrorContent))
             {
                 logger.LogInformation("Adding learner data returned status code {0} and error {1}", response.StatusCode, response.ErrorContent);

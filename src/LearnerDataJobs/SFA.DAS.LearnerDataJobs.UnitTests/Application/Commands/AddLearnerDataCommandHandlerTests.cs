@@ -4,6 +4,7 @@ using FluentAssertions;
 using Moq;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -22,9 +23,9 @@ public class AddLearnerDataCommandHandlerTests
         var expectedUrl =
             $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}/academicyears/{command.LearnerData.AcademicYear}/standardcodes/{command.LearnerData.StandardCode}";
         client.Setup(x =>
-                x.PutWithResponseCode<object>(
+                x.PutWithResponseCode<NullResponse>(
                     It.Is<PutLearnerDataRequest>(p => p.Data == command.LearnerData && p.PutUrl == expectedUrl)))
-            .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.Created, ""));
+            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
 
         var result = await handler.Handle(command, CancellationToken.None);
 
@@ -38,8 +39,8 @@ public class AddLearnerDataCommandHandlerTests
         [Greedy] AddLearnerDataCommandHandler handler)
     {
         client.Setup(x =>
-                x.PutWithResponseCode<object>(It.IsAny<PutLearnerDataRequest>()))
-            .ReturnsAsync(new ApiResponse<object>(null, HttpStatusCode.BadRequest, "Error"));
+                x.PutWithResponseCode<NullResponse>(It.IsAny<PutLearnerDataRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.BadRequest, "Error"));
 
         var result = await handler.Handle(command, CancellationToken.None);
 
