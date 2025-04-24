@@ -2,7 +2,7 @@
 
 public class ErrorResponse
 {
-    public List<Error> Errors { get; set; } = new();
+    public IEnumerable<Error> Errors { get; set; }
 }
 
 public class Error

@@ -17,13 +17,18 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
     {
         [Test, MoqAutoData]
         public async Task And_when_working_Then_Accepted_returned(
-            long ukprn,
             int academicYear,
             List<LearnerDataRequest> learners,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LearnersController sut)
         {
-            learners.ForEach(x => { x.UKPRN = ukprn; });
+            long ukprn = 12345678;
+
+            learners.ForEach(x =>
+            {
+                x.UKPRN = ukprn;
+                x.ULN = 1234567890;
+            });
 
             var result = await sut.Post(ukprn, academicYear, learners) as AcceptedResult;
 
@@ -41,12 +46,19 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
     [Test, MoqAutoData]
     public async Task And_when_UKPRN_Does_Not_Match_Then_BadRequest_returned(
-        long ukprn,
         int academicYear,
         List<LearnerDataRequest> learners,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LearnersController sut)
     {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
+
         learners[0].UKPRN = ukprn + 1;
 
         var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
@@ -60,16 +72,73 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
-
     [Test, MoqAutoData]
-    public async Task And_when_not_working_Then_InternalError_returned(
-        long ukprn,
+    public async Task And_when_ULN_Does_Not_Match_Then_BadRequest_returned(
         int academicYear,
         List<LearnerDataRequest> learners,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] LearnersController sut)
     {
-        learners.ForEach(x => { x.UKPRN = ukprn; });
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 12345;
+        });
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        response.Errors.Count.Should().Be(1);
+        response.Errors[0].Code.Should().Be("ULN");
+        response.Errors[0].Message.Should().Be("Learner data contains incorrect ULNs");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_when_ConsumerReference_Is_Too_Big(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+            x.ConsumerReference = new string('C', 101);
+        });
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        response.Errors.Count.Should().Be(1);
+        response.Errors[0].Code.Should().Be("ConsumerReference");
+        response.Errors[0].Message.Should().Be("Learner data contains incorrect ConsumerReference (>100 chars)");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_when_not_working_Then_InternalError_returned(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
         mockMediator.Setup(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("test"));
 
         var result = await sut.Post(ukprn, academicYear, learners) as StatusCodeResult;

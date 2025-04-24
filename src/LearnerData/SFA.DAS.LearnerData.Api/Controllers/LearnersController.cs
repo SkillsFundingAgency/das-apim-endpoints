@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application;
 using SFA.DAS.LearnerData.Requests;
 using System.Net;
-using Microsoft.Extensions.Azure;
 using SFA.DAS.LearnerData.Responses;
-using Azure;
 
 namespace SFA.DAS.LearnerData.Api.Controllers
 {
@@ -20,7 +18,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
             var errors = ValidateLearnerData(ukprn, dataRequests);
             if (errors.Any())
             {
-                return new BadRequestObjectResult(new ErrorResponse { Errors = errors.ToList()});
+                return new BadRequestObjectResult(new ErrorResponse { Errors = errors });
             }
 
             try
@@ -47,14 +45,31 @@ namespace SFA.DAS.LearnerData.Api.Controllers
                 };
             }
 
-            if (dataRequests.Any(x => x.ULN == 1000000000 || x.ULN == 9999999999999))
+            if (dataRequests.Any(x => x.ULN <= 1000000000 || x.ULN >= 9999999999))
             {
                 yield return new Error
                 {
                     Code = "ULN",
                     Message = "Learner data contains incorrect ULNs"
                 };
+            }
 
+            if (dataRequests.Any(x => x.UKPRN < 10000000 || x.UKPRN > 99999999))
+            {
+                yield return new Error
+                {
+                    Code = "UKPRN",
+                    Message = "Learner data contains incorrect UKPRNs"
+                };
+            }
+
+            if (dataRequests.Any(x => x.ConsumerReference.Length > 100))
+            {
+                yield return new Error
+                {
+                    Code = "ConsumerReference",
+                    Message = "Learner data contains incorrect ConsumerReference (>100 chars)"
+                };
             }
 
         }
