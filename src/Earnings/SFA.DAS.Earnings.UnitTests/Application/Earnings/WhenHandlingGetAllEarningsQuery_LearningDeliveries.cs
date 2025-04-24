@@ -3,6 +3,7 @@ using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -362,20 +363,25 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
             var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstProv1618Pay");
             result.Should().NotBeNull();
-            var expectedLearnDelFirstProv1618Pay = providerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).MinBy(x => x.DeliveryPeriod);
-            
-            result.Period1.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period2.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period3.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 3 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period4.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 4 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period5.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 5 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period6.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 6 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period7.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 7 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period8.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 8 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period9.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 9 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period10.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period11.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
-            result.Period12.Should().Be((expectedLearnDelFirstProv1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelFirstProv1618Pay.Amount : 0));
+
+            var expectedIncentive = providerIncentives.FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != _testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
+
+            result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive.Amount : 0));
+            result.Period2.Should().Be((expectedIncentive?.DeliveryPeriod == 2 ? expectedIncentive.Amount : 0));
+            result.Period3.Should().Be((expectedIncentive?.DeliveryPeriod == 3 ? expectedIncentive.Amount : 0));
+            result.Period4.Should().Be((expectedIncentive?.DeliveryPeriod == 4 ? expectedIncentive.Amount : 0));
+            result.Period5.Should().Be((expectedIncentive?.DeliveryPeriod == 5 ? expectedIncentive.Amount : 0));
+            result.Period6.Should().Be((expectedIncentive?.DeliveryPeriod == 6 ? expectedIncentive.Amount : 0));
+            result.Period7.Should().Be((expectedIncentive?.DeliveryPeriod == 7 ? expectedIncentive.Amount : 0));
+            result.Period8.Should().Be((expectedIncentive?.DeliveryPeriod == 8 ? expectedIncentive.Amount : 0));
+            result.Period9.Should().Be((expectedIncentive?.DeliveryPeriod == 9 ? expectedIncentive.Amount : 0));
+            result.Period10.Should().Be((expectedIncentive?.DeliveryPeriod == 10 ? expectedIncentive.Amount : 0));
+            result.Period11.Should().Be((expectedIncentive?.DeliveryPeriod == 11 ? expectedIncentive.Amount : 0));
+            result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
         }
     }
 
@@ -395,20 +401,25 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
             var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondProv1618Pay");
             result.Should().NotBeNull();
-            var expectedLearnDelSecondProv1618Pay = providerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).OrderBy(x => x.DeliveryPeriod).Skip(1).FirstOrDefault();
 
-            result.Period1.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period2.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period3.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 3 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period4.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 4 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period5.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 5 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period6.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 6 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period7.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 7 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period8.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 8 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period9.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 9 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period10.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period11.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
-            result.Period12.Should().Be((expectedLearnDelSecondProv1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelSecondProv1618Pay.Amount : 0));
+            var expectedIncentive = providerIncentives.Skip(1).FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != _testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
+
+            result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive.Amount : 0));
+            result.Period2.Should().Be((expectedIncentive?.DeliveryPeriod == 2 ? expectedIncentive.Amount : 0));
+            result.Period3.Should().Be((expectedIncentive?.DeliveryPeriod == 3 ? expectedIncentive.Amount : 0));
+            result.Period4.Should().Be((expectedIncentive?.DeliveryPeriod == 4 ? expectedIncentive.Amount : 0));
+            result.Period5.Should().Be((expectedIncentive?.DeliveryPeriod == 5 ? expectedIncentive.Amount : 0));
+            result.Period6.Should().Be((expectedIncentive?.DeliveryPeriod == 6 ? expectedIncentive.Amount : 0));
+            result.Period7.Should().Be((expectedIncentive?.DeliveryPeriod == 7 ? expectedIncentive.Amount : 0));
+            result.Period8.Should().Be((expectedIncentive?.DeliveryPeriod == 8 ? expectedIncentive.Amount : 0));
+            result.Period9.Should().Be((expectedIncentive?.DeliveryPeriod == 9 ? expectedIncentive.Amount : 0));
+            result.Period10.Should().Be((expectedIncentive?.DeliveryPeriod == 10 ? expectedIncentive.Amount : 0));
+            result.Period11.Should().Be((expectedIncentive?.DeliveryPeriod == 11 ? expectedIncentive.Amount : 0));
+            result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
         }
     }
 
@@ -428,20 +439,25 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
             var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstEmp1618Pay");
             result.Should().NotBeNull();
-            var expectedLearnDelFirstEmp1618Pay = employerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).MinBy(x => x.DeliveryPeriod);
 
-            result.Period1.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period2.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period3.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 3 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period4.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 4 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period5.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 5 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period6.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 6 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period7.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 7 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period8.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 8 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period9.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 9 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period10.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period11.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
-            result.Period12.Should().Be((expectedLearnDelFirstEmp1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelFirstEmp1618Pay.Amount : 0));
+            var expectedIncentive = employerIncentives.FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != _testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
+
+            result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive?.Amount : 0));
+            result.Period2.Should().Be((expectedIncentive?.DeliveryPeriod == 2 ? expectedIncentive?.Amount : 0));
+            result.Period3.Should().Be((expectedIncentive?.DeliveryPeriod == 3 ? expectedIncentive?.Amount : 0));
+            result.Period4.Should().Be((expectedIncentive?.DeliveryPeriod == 4 ? expectedIncentive?.Amount : 0));
+            result.Period5.Should().Be((expectedIncentive?.DeliveryPeriod == 5 ? expectedIncentive?.Amount : 0));
+            result.Period6.Should().Be((expectedIncentive?.DeliveryPeriod == 6 ? expectedIncentive?.Amount : 0));
+            result.Period7.Should().Be((expectedIncentive?.DeliveryPeriod == 7 ? expectedIncentive?.Amount : 0));
+            result.Period8.Should().Be((expectedIncentive?.DeliveryPeriod == 8 ? expectedIncentive?.Amount : 0));
+            result.Period9.Should().Be((expectedIncentive?.DeliveryPeriod == 9 ? expectedIncentive?.Amount : 0));
+            result.Period10.Should().Be((expectedIncentive?.DeliveryPeriod == 10 ? expectedIncentive?.Amount : 0));
+            result.Period11.Should().Be((expectedIncentive?.DeliveryPeriod == 11 ? expectedIncentive?.Amount : 0));
+            result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive?.Amount : 0));
         }
     }
 
@@ -461,20 +477,25 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
             var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondEmp1618Pay");
             result.Should().NotBeNull();
-            var expectedLearnDelSecondEmp1618Pay = employerIncentives.Where(x => x.AcademicYear.ToString() == _testFixture.CollectionCalendarResponse.AcademicYear).OrderBy(x => x.DeliveryPeriod).Skip(1).FirstOrDefault();
 
-            result.Period1.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 1 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period2.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 2 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period3.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 3 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period4.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 4 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period5.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 5 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period6.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 6 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period7.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 7 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period8.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 8 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period9.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 9 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period10.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 10 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period11.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 11 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
-            result.Period12.Should().Be((expectedLearnDelSecondEmp1618Pay?.DeliveryPeriod == 12 ? expectedLearnDelSecondEmp1618Pay.Amount : 0));
+            var expectedIncentive = employerIncentives.Skip(1).FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != _testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
+
+            result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive.Amount : 0));
+            result.Period2.Should().Be((expectedIncentive?.DeliveryPeriod == 2 ? expectedIncentive.Amount : 0));
+            result.Period3.Should().Be((expectedIncentive?.DeliveryPeriod == 3 ? expectedIncentive.Amount : 0));
+            result.Period4.Should().Be((expectedIncentive?.DeliveryPeriod == 4 ? expectedIncentive.Amount : 0));
+            result.Period5.Should().Be((expectedIncentive?.DeliveryPeriod == 5 ? expectedIncentive.Amount : 0));
+            result.Period6.Should().Be((expectedIncentive?.DeliveryPeriod == 6 ? expectedIncentive.Amount : 0));
+            result.Period7.Should().Be((expectedIncentive?.DeliveryPeriod == 7 ? expectedIncentive.Amount : 0));
+            result.Period8.Should().Be((expectedIncentive?.DeliveryPeriod == 8 ? expectedIncentive.Amount : 0));
+            result.Period9.Should().Be((expectedIncentive?.DeliveryPeriod == 9 ? expectedIncentive.Amount : 0));
+            result.Period10.Should().Be((expectedIncentive?.DeliveryPeriod == 10 ? expectedIncentive.Amount : 0));
+            result.Period11.Should().Be((expectedIncentive?.DeliveryPeriod == 11 ? expectedIncentive.Amount : 0));
+            result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
         }
     }
 
