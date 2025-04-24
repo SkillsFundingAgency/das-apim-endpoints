@@ -33,6 +33,10 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
             GetFm36DataResponse = new GetFm36DataResponse();
         }
 
+        /// <summary>
+        /// Generates the same data as originally created by the test fixture,
+        /// for backwards compatibility
+        /// </summary>
         public void GenerateData()
         {
             InstantiateResponses();
@@ -51,9 +55,13 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
                 case TestScenario.ApprenticeshipWithPriceChange:
                     AddApprenticeshipWithPriceChange();
                     break;
+                case TestScenario.WithdrawnApprenticeship:
+                    AddWithdrawnApprenticeship();
+                    break;
                 case TestScenario.AllData:
                     AddSimpleApprenticeship();
                     AddApprenticeshipWithPriceChange();
+                    AddWithdrawnApprenticeship();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -223,5 +231,61 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
             GetFm36DataResponse.Add(earnings);
         }
 
+        private void AddWithdrawnApprenticeship()
+        {
+            var apprenticeship =
+                new Apprenticeship
+                {
+                    Uln = Fixture.Create<int>().ToString(),
+                    Key = Guid.NewGuid(),
+                    WithdrawnDate = new DateTime(2020, 1, 1),
+                    Episodes =
+                    [
+                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode
+                        {
+                            Key = Guid.NewGuid(),
+                            TrainingCode = $"{Fixture.Create<int>()}    ",
+                            Prices = new List<EpisodePrice>
+                            {
+                                new EpisodePrice
+                                {
+                                    Key = Guid.NewGuid(),
+                                    StartDate = new DateTime(2020, 1, 1),
+                                    EndDate = new DateTime(2021, 1, 1),
+                                    TrainingPrice = 14000,
+                                    EndPointAssessmentPrice = 1000,
+                                    TotalPrice = 15000,
+                                    FundingBandMaximum = 19000
+                                }
+                            }
+                        }
+                    ],
+                    StartDate = new DateTime(2020, 1, 1),
+                    PlannedEndDate = new DateTime(2021, 1, 1),
+                    AgeAtStartOfApprenticeship = 18
+                };
+
+            var earnings = new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
+            {
+                Key = apprenticeship.Key,
+                Ukprn = _ukprn,
+                FundingLineType = Fixture.Create<string>(),
+                Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>
+                {
+                    new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                    {
+                        Key = apprenticeship.Episodes[0].Key,
+                        NumberOfInstalments = 0,
+                        CompletionPayment = 3000,
+                        OnProgramTotal = 12000,
+                        Instalments = [],
+                        AdditionalPayments = []
+                    }
+                }
+            };
+
+            GetApprenticeshipsResponse.Apprenticeships.Add(apprenticeship);
+            GetFm36DataResponse.Add(earnings);
+        }
     }
 }

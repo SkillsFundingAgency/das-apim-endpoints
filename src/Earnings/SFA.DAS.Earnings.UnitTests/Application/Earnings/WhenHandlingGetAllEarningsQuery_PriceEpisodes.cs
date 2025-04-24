@@ -217,11 +217,13 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(12);
     }
 
-    [Test]
-    public async Task ThenReturnsDefaultedPriceEpisodePeriodisedValuesForEachApprenticeshipPriceEpisode()
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(TestScenario.WithdrawnApprenticeship)]
+    public async Task ThenReturnsDefaultedPriceEpisodePeriodisedValuesForEachApprenticeshipPriceEpisode(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture();
+        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -229,42 +231,41 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
         {
-            var fm36Learner = testFixture.Result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
 
-            foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
-            {
-                var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                actualPriceEpisode.Should().NotBeNull();
-
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeApplic1618FrameworkUpliftBalancing" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeBalancePayment" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeBalanceValue" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeCompletionPayment" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeFirstDisadvantagePayment" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeLevyNonPayInd" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeLSFCash" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeSecondDisadvantagePayment" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeLearnerAdditionalPayment" && x.AllValuesAreSetToZero());
-                actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                    .Contain(x => x.AttributeName == "PriceEpisodeESFAContribPct" && x.AllValuesAreSetTo(0.95m));
-            }
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeApplic1618FrameworkUpliftBalancing" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeBalancePayment" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeBalanceValue" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeCompletionPayment" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeFirstDisadvantagePayment" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeLevyNonPayInd" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeLSFCash" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeSecondDisadvantagePayment" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeLearnerAdditionalPayment" && x.AllValuesAreSetToZero());
+            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "PriceEpisodeESFAContribPct" && x.AllValuesAreSetTo(0.95m));
         }
     }
 
