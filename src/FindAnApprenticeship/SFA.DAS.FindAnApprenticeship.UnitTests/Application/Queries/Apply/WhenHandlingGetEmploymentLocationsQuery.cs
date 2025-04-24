@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetEmploymentLocations;
+using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -11,17 +12,20 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
     {
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
+            bool status,
+            GetApplicationApiResponse applicationApiResponse,
             GetEmploymentLocationsQuery query,
-        GetEmploymentLocationApiResponse apiResponse,
-        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        GetEmploymentLocationsQueryHandler handler)
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            GetEmploymentLocationsQueryHandler handler)
         {
-            var expectedRequest = new GetEmploymentLocationsApiRequest(query.CandidateId, query.ApplicationId);
+            applicationApiResponse.EmploymentLocationStatus = status 
+                ? Constants.SectionStatus.Completed 
+                : Constants.SectionStatus.InProgress;
 
-            candidateApiClient
-                .Setup(client => client.Get<GetEmploymentLocationApiResponse>(
-                    It.Is<GetEmploymentLocationsApiRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
-                .ReturnsAsync(apiResponse);
+            var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
+
+            candidateApiClient.Setup(x => x.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationApiRequest.GetUrl)))
+                .ReturnsAsync(applicationApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -29,8 +33,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
             {
                 result.Should().NotBeNull();
                 result.Should().BeOfType<GetEmploymentLocationsQueryResult>();
-                candidateApiClient.Verify(p => p.Get<GetEmploymentLocationApiResponse>(It.Is<GetEmploymentLocationsApiRequest>(x => x.GetUrl == expectedRequest.GetUrl)), Times.Once);
                 result.EmploymentLocation.Should().NotBeNull();
+                result.EmploymentLocation.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation);
+                result.IsSectionCompleted.Should().Be(status);
             }
         }
     }

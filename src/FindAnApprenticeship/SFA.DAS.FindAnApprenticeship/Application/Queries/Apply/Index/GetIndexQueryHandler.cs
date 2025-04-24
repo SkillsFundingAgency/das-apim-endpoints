@@ -64,13 +64,15 @@ public class GetIndexQueryHandler(
                 Qualifications = application.QualificationsStatus,
                 TrainingCourses = application.TrainingCoursesStatus,
             },
-            EmploymentLocation = new GetIndexQueryResult.EmploymentLocationSection
-            {
-                Addresses = application.EmploymentLocation.Addresses,
-                EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
-                EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
-                EmploymentLocationStatus = application.EmploymentLocationStatus
-            },
+            EmploymentLocation = application.EmploymentLocation is not null
+                ? new GetIndexQueryResult.EmploymentLocationSection
+                {
+                    Id = application.EmploymentLocation.Id,
+                    Addresses = application.EmploymentLocation.Addresses,
+                    EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
+                    EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
+                    EmploymentLocationStatus = application.EmploymentLocationStatus
+                } : null,
             WorkHistory = new GetIndexQueryResult.WorkHistorySection
             {
                 Jobs = application.JobsStatus,
