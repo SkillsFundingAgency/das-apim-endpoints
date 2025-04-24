@@ -79,7 +79,7 @@ public class WhenProcessingLearners
             }, CancellationToken.None);
 
         @event.CorrelationId.Should().Be(correlationId);
-        @event.ReceivedOn.Should().Be(recievedOn);
+        @event.ReceivedDate.Should().Be(recievedOn);
         @event.AcademicYear.Should().Be(academicYear);
     }
 
