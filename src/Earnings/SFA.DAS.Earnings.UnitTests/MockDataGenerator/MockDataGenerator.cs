@@ -49,6 +49,8 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
             InstantiateResponses();
             switch (scenario)
             {
+                case TestScenario.NoData:
+                    break;
                 case TestScenario.SimpleApprenticeship:
                     AddSimpleApprenticeship();
                     break;

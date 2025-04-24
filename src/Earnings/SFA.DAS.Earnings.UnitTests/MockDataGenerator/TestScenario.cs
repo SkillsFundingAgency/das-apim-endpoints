@@ -2,6 +2,7 @@
 {
     public enum TestScenario
     {
+        NoData,
         AllData,
         /// <summary>
         /// Models a simple one-year apprenticeship that crosses an Academic Year boundary

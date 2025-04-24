@@ -269,60 +269,60 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         }
     }
 
-    [Test]
-    public async Task ThenReturnsPriceEpisodeInstalmentsThisPeriodValuesForEachApprenticeship()
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    public async Task ThenReturnsPriceEpisodeInstalmentsThisPeriodValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture();
+        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
 
-
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
         {
-            var fm36Learner = testFixture.Result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
 
-            foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
-            {
-                var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                actualPriceEpisode.Should().NotBeNull();
+            var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 
-                var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var academicYearInstalments = earningEpisode.Instalments
+                .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                .ToList();
 
-                var academicYearInstalments = earningEpisode.Instalments
-                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
-                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
-                    .ToList();
-
-                var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeInstalmentsThisPeriod");
-                result.Should().NotBeNull();
-                result.Period1.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 1 && i.Amount != 0) ? 1 : 0);
-                result.Period2.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 2 && i.Amount != 0) ? 1 : 0);
-                result.Period3.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 3 && i.Amount != 0) ? 1 : 0);
-                result.Period4.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 4 && i.Amount != 0) ? 1 : 0);
-                result.Period5.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 5 && i.Amount != 0) ? 1 : 0);
-                result.Period6.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 6 && i.Amount != 0) ? 1 : 0);
-                result.Period7.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 7 && i.Amount != 0) ? 1 : 0);
-                result.Period8.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 8 && i.Amount != 0) ? 1 : 0);
-                result.Period9.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 9 && i.Amount != 0) ? 1 : 0);
-                result.Period10.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 10 && i.Amount != 0) ? 1 : 0);
-                result.Period11.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 11 && i.Amount != 0) ? 1 : 0);
-                result.Period12.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 12 && i.Amount != 0) ? 1 : 0);
-            }
+            var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeInstalmentsThisPeriod");
+            result.Should().NotBeNull();
+            result.Period1.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 1 && i.Amount != 0) ? 1 : 0);
+            result.Period2.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 2 && i.Amount != 0) ? 1 : 0);
+            result.Period3.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 3 && i.Amount != 0) ? 1 : 0);
+            result.Period4.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 4 && i.Amount != 0) ? 1 : 0);
+            result.Period5.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 5 && i.Amount != 0) ? 1 : 0);
+            result.Period6.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 6 && i.Amount != 0) ? 1 : 0);
+            result.Period7.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 7 && i.Amount != 0) ? 1 : 0);
+            result.Period8.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 8 && i.Amount != 0) ? 1 : 0);
+            result.Period9.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 9 && i.Amount != 0) ? 1 : 0);
+            result.Period10.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 10 && i.Amount != 0) ? 1 : 0);
+            result.Period11.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 11 && i.Amount != 0) ? 1 : 0);
+            result.Period12.Should().Be(academicYearInstalments.Any(i => i.DeliveryPeriod == 12 && i.Amount != 0) ? 1 : 0);
         }
     }
 
-    [Test]
-    public async Task ThenReturnsPriceEpisodeOnProgPaymentValuesForEachApprenticeship()
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    public async Task ThenReturnsPriceEpisodeOnProgPaymentValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture();
+        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -330,194 +330,190 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        var expectedPriceEpisodes = testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes).ToList();
+        foreach (var episodePrice in expectedPriceEpisodes)
         {
-            var fm36Learner = testFixture.Result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
 
-            var expectedPriceEpisodes = testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes).ToList();
-            foreach (var episodePrice in expectedPriceEpisodes)
-            {
-                var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                actualPriceEpisode.Should().NotBeNull();
+            var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 
-                var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var academicYearInstalments = earningEpisode.Instalments
+                .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                .ToList();
 
-                var academicYearInstalments = earningEpisode.Instalments
-                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
-                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
-                    .ToList();
+            var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeOnProgPayment");
 
-                var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeOnProgPayment");
-
-                result.Should().NotBeNull();
-                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
-                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
-                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
-                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
-                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
-                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
-                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
-                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
-                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
-                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
-                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
-                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
-            }
+            result.Should().NotBeNull();
+            result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
+            result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
+            result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
+            result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
+            result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
+            result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
+            result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
+            result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
+            result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
+            result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
+            result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
+            result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
         }
     }
 
-    [Test]
-    public async Task ThenReturnsPriceEpisodeProgFundIndMaxEmpContValuesForEachApprenticeship()
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    public async Task ThenReturnsPriceEpisodeProgFundIndMaxEmpContValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture();
+        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
 
-
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+    
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
         {
-            var fm36Learner = testFixture.Result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
 
-            foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
-            {
-                var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                actualPriceEpisode.Should().NotBeNull();
+            var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 
-                var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var academicYearInstalments = earningEpisode.Instalments
+                .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                .ToList();
 
-                var academicYearInstalments = earningEpisode.Instalments
-                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
-                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
-                    .ToList();
+            var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeProgFundIndMaxEmpCont");
+            result.Should().NotBeNull();
 
-                var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeProgFundIndMaxEmpCont");
-                result.Should().NotBeNull();
+            var expectedCoInvestEmployerPercentage = 0.05m;
 
-                var expectedCoInvestEmployerPercentage = 0.05m;
-
-                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
-            }
+            result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
+            result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * expectedCoInvestEmployerPercentage).GetValueOrDefault());
         }
     }
 
-    [Test]
-    public async Task ThenReturnsPriceEpisodeProgFundIndMinCoInvestValuesForEachApprenticeship()
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    public async Task ThenReturnsPriceEpisodeProgFundIndMinCoInvestValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture();
+        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
 
-
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
         {
-            var fm36Learner = testFixture.Result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
 
-            foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
-            {
-                var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                actualPriceEpisode.Should().NotBeNull();
+            var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 
-                var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var academicYearInstalments = earningEpisode.Instalments
+                .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                .ToList();
 
-                var academicYearInstalments = earningEpisode.Instalments
-                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
-                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
-                    .ToList();
+            var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeProgFundIndMinCoInvest");
+            result.Should().NotBeNull();
 
-                var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeProgFundIndMinCoInvest");
-                result.Should().NotBeNull();
+            var expectedCoInvestSfaPercentage = 0.95m;
 
-                var expectedCoInvestSfaPercentage = 0.95m;
-
-                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
-            }
+            result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
+            result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * expectedCoInvestSfaPercentage).GetValueOrDefault());
         }
     }
 
-    [Test]
-    public async Task ThenReturnsPriceEpisodeTotProgFundingValuesForEachApprenticeship()
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    public async Task ThenReturnsPriceEpisodeTotProgFundingValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture();
+        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
 
-
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
         {
-            var fm36Learner = testFixture.Result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
 
-            foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
-            {
-                var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                actualPriceEpisode.Should().NotBeNull();
+            var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 
-                var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+            var academicYearInstalments = earningEpisode.Instalments
+                .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                .ToList();
 
-                var academicYearInstalments = earningEpisode.Instalments
-                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
-                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
-                    .ToList();
-
-                var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeTotProgFunding");
-                result.Should().NotBeNull();
-                result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
-                result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
-                result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
-                result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
-                result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
-                result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
-                result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
-                result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
-                result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
-                result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
-                result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
-                result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
-            }
+            var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == "PriceEpisodeTotProgFunding");
+            result.Should().NotBeNull();
+            result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
+            result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
+            result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
+            result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
+            result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
+            result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
+            result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
+            result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
+            result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
+            result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
+            result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
+            result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
         }
     }
 
@@ -528,11 +524,10 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
     public async Task ThenReturnsProviderAndEmployerIncentiveValuesForEachApprenticeship(string incentiveType, string attributeName, int paymentNumber)
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture();
+        var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.AllData);
 
         // Act
         await testFixture.CallSubjectUnderTest();
-
 
         // Assert
         testFixture.Result.Should().NotBeNull();
