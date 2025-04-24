@@ -31,14 +31,17 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         _testFixture.Result.FM36Learners.SelectMany(learner => learner.LearningDeliveries).Count().Should().Be(_testFixture.ApprenticeshipsResponse.Apprenticeships.Count);
     }
 
-    [Test]
-    public void ThenReturnsLearningDeliveryValuesForEachApprenticeship()
+    [TestCase(0)]
+    [TestCase(1)]
+    public void ThenReturnsLearningDeliveryValuesForEachApprenticeship(int index)
     {
         // Assert
         _testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
-        {
+        var apprenticeship = _testFixture.ApprenticeshipsResponse.Apprenticeships[index];
+
+        //foreach (var apprenticeship in _testFixture.ApprenticeshipsResponse.Apprenticeships)
+        //{
             var expectedPriceEpisodeStartDate = apprenticeship.StartDate > _testFixture.CollectionCalendarResponse.StartDate ? apprenticeship.StartDate : _testFixture.CollectionCalendarResponse.StartDate;
             var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < _testFixture.CollectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : _testFixture.CollectionCalendarResponse.EndDate;
             var earningApprenticeship = _testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
@@ -120,7 +123,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.LearnDelLearnerAddPayThresholdDate.Should().BeNull();
             learningDelivery.LearningDeliveryValues.LearnDelRedCode.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnDelRedStartDate.Should().Be(new DateTime(9999, 9, 9));
-        }
+        //}
     }
 
     [Test]
