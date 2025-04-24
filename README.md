@@ -188,6 +188,55 @@ Data: {
 
 Starting the API will then show the swagger definition with the available operations. This outer API is to be used as a resource for external subscribers to ESFA services, to get information about Endpoint Assessment Organisations and the courses that they can assess. 
 
+### Early Connect
+
+The Early Connect outer api relies on the following inner api:
+
+* [das-earlyconnect-api](https://github.com/SkillsFundingAgency/das-earlyconnect-api)
+
+You are able to run the API by doing the following
+
+* * In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EarlyConnect.OuterApi_1.0
+Data: {
+  "EarlyConnectApiConfiguration": {
+    "url": "https://localhost:5104/",
+    "identifier": "https://**********.onmicrosoft.com/*********"
+  },
+  "LepsNeApiConfiguration": {
+    "url": "https://crmgen-web.azurewebsites.net/api/external/",
+    "identifier": "https://login.microsoftonline.com/*****************/oauth2/v2.0/token",
+    "Scope": "api://**************/.default",
+    "ClientId": "test",
+    "ClientSecret": "test"
+  },
+  "LepsLaApiConfiguration": {
+    "url": "https://Test/",
+    "KeyVaultIdentifier": "https://************.vault.azure.net/keys/lansignin",
+    "CertificateName": "dfeData-uat.lancashire.gov.uk"
+  },
+  "LepsLoApiConfiguration": {
+    "Url": "https://prod-**.westeurope.logic.azure.com:***/",
+    "ApiVersion": "2016-06-01",
+    "SignedPermissions": "%2Ftriggers%2Fmanual%2Frun",
+    "SignedVersion": "1.0",
+    "Signature": "xyz",
+    "ApiKey": "abc"
+  },
+  "AzureAd": {
+    "tenant": "**********.onmicrosoft.com",
+    "identifier": "https://***********.onmicrosoft.com/***************"
+  },
+  "Features": {
+    "NorthEastDataSharing": false,
+    "LondonDataSharing": false,
+    "LancashireDataSharing": false
+  }
+}
+```
+
 ### Forecasting
 
 The forecasting outer api relies on the following inner api:
@@ -209,6 +258,47 @@ Data: {
 }
 ```
 * Start the api project ```SFA.DAS.Forecasting.Api```
+
+Starting the API will then show the swagger definition with the available operations. The outer API is used to populate standards and frameworks in the forecasting database.
+
+### Funding
+
+The Funding outer api relies on the following inner api:
+
+* [das-funding-apprenticeship-earnings](https://github.com/SkillsFundingAgency/das-funding-apprenticeship-earnings)
+* [das-apprenticeships](https://github.com/SkillsFundingAgency/das-apprenticeships)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev. Adjust the settings to point at your local instances accordingly
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.Funding.OuterApi_1.0
+Data: {{
+        "FundingApprenticeshipEarningsInnerApi":{
+            "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+            "url":"https://localhost:5001/",
+            "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-empincapi-as-ar"
+        },
+        "ApprenticeshipsInnerApi":{
+            "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+            "url":"https://localhost:7015/",
+            "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-appsapi-as-ar"
+        },
+        "AzureAd":{
+            "tenant":"citizenazuresfabisgov.onmicrosoft.com",
+            "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-apimendp-empincapi-as-ar"
+        },
+        "RoatpV2ApiConfiguration": {
+            "url": "https://at-roatp-api.apprenticeships.education.gov.uk/",
+            "identifier": "https://citizenazuresfabisgov.onmicrosoft.com/das-at-roatpv2api-as-ar"
+	    }
+    }
+}
+```
+* Start the api project ```SFA.DAS.Funding.Api```
 
 Starting the API will then show the swagger definition with the available operations. The outer API is used to populate standards and frameworks in the forecasting database.
 

@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {
