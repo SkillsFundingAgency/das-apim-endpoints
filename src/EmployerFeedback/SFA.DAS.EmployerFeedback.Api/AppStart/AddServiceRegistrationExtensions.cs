@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerFeedback.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();

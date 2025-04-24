@@ -1,12 +1,15 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.Json;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using Azure.Security.KeyVault.Certificates;
+using Azure.Identity;
 using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
-using System.Net.Http.Headers;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -15,14 +18,13 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         private IInternalApiClient<LepsLaApiConfiguration> _apiClient;
         protected LepsLaApiConfiguration Configuration;
         protected HttpClient HttpClient;
-        public LepsLaApiClient(
-            IHttpClientFactory httpClientFactory,
+        public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient,
             LepsLaApiConfiguration apiConfiguration)
         {
-            HttpClient = httpClientFactory.CreateClient();
-            HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
+            _apiClient = apiClient;
             Configuration = apiConfiguration;
         }
+
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _apiClient.Get<TResponse>(request);
@@ -56,7 +58,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
 
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Basic", Configuration.ApiKey);
+            AddAuthenticationCertificate();
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -130,6 +132,31 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         public virtual string HandleException(HttpResponseMessage response, string json)
         {
             return json;
+        }
+
+        private void AddAuthenticationCertificate()
+        {
+            try
+            {
+                var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
+                var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
+                var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
+
+                if (certificate == null || certificate.Value == null)
+                {
+                    throw new Exception("Certificate was not properly returned from the Key Vault.");
+                }
+                var httpClientHandler = new HttpClientHandler();
+                httpClientHandler.ClientCertificates.Add(certificate);
+
+                HttpClient = new HttpClient(httpClientHandler);
+                HttpClient.BaseAddress = new Uri(Configuration.Url);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("An error occurred while reading certificate: " + ex.Message);
+                throw;
+            }
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)

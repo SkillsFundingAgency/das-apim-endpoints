@@ -96,9 +96,6 @@
         },
         "preProdAlertActionGroupResourceId": {
             "type": "string"
-        },
-        "deployPrivateLinkedScopedResource": {
-            "type": "bool"
         }
     },
     "variables": {
@@ -106,8 +103,7 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]",
-        "alertActionGroupResourceId": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
-        "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]"
+        "alertActionGroupResourceId": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]"
 
     },
     "resources": [
@@ -155,31 +151,6 @@
                     },
                     "logAnalyticsWorkspaceId": {
                         "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
-                    }
-                }
-            }
-        },
-        {
-            "condition": "[parameters('deployPrivateLinkedScopedResource')]",
-            "apiVersion": "2021-04-01",
-            "name": "[concat(parameters('appServiceName'), '-private-link-scoped-')]",
-            "type": "Microsoft.Resources/deployments",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'private-linked-scoped-resource.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "privateLinkScopeName": {
-                        "value": "[variables('privateLinkScopeName')]"
-                    },
-                    "scopedResourceName": {
-                        "value": "[parameters('appServiceName')]"
-                    },
-                    "scopedResourceId": {
-                        "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.AppInsightsResourceId.value]"
                     }
                 }
             }

@@ -18,7 +18,6 @@ using SFA.DAS.EmployerAccounts.Api.AppStart;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerAccounts.Services;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerAccounts.Api
@@ -61,7 +60,6 @@ namespace SFA.DAS.EmployerAccounts.Api
             }
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEnglishFractionCurrentQuery).Assembly));
-            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
 
             services

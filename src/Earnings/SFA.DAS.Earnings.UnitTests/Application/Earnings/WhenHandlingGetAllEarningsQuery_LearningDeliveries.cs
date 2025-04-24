@@ -1,6 +1,5 @@
 using FluentAssertions;
 using SFA.DAS.Apprenticeships.Types;
-using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 
@@ -66,12 +65,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
             learningDelivery.LearningDeliveryValues.LDApplic1618FrameworkUpliftTotalActEarnings.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be("ZPROG001");
             learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
-            learningDelivery.LearningDeliveryValues.LearnDel1618AtStart
-                .Should()
-                .Be(earningEpisode.AdditionalPayments.Any(x => 
-                    x.AdditionalPaymentType 
-                        is EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive 
-                        or EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive));
+            learningDelivery.LearningDeliveryValues.LearnDel1618AtStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship < 19);
             learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - apprenticeship.StartDate).Days);
             learningDelivery.LearningDeliveryValues.LearnDelApplicDisadvAmount.Should().Be(0);
             learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));

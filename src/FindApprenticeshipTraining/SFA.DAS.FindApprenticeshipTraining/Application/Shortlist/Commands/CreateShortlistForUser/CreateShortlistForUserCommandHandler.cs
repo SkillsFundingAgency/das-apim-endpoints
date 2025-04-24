@@ -1,41 +1,38 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using System.Threading;
+using System.Threading.Tasks;
+using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 
-public class CreateShortlistForUserCommandHandler(
-    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient,
-    ICachedLocationLookupService _cachedLocationLookupService
-) : IRequestHandler<CreateShortlistForUserCommand, PostShortListResponse>
+namespace SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser
 {
-    public async Task<PostShortListResponse> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
+    public class CreateShortlistForUserCommandHandler : IRequestHandler<CreateShortlistForUserCommand, Unit>
     {
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.LocationName);
+        private readonly IShortlistApiClient<ShortlistApiConfiguration> _shortlistApiClient;
 
-        ApiResponse<PostShortListResponse> response = await _roatpCourseManagementApiClient.PostWithResponseCode<PostShortListResponse>(
-            new PostShortlistForUserRequest
+        public CreateShortlistForUserCommandHandler(
+            IShortlistApiClient<ShortlistApiConfiguration> shortlistApiClient)
+        {
+            _shortlistApiClient = shortlistApiClient;
+        }
+        public async Task<Unit> Handle(CreateShortlistForUserCommand request, CancellationToken cancellationToken)
+        {
+            await _shortlistApiClient.PostWithResponseCode<PostShortListResponse>(new PostShortlistForUserRequest
             {
                 Data = new PostShortlistData
                 {
-                    Latitude = locationItem?.Latitude,
-                    Longitude = locationItem?.Longitude,
+                    Latitude = request.Lat,
+                    Longitude = request.Lon,
                     Ukprn = request.Ukprn,
-                    LocationDescription = request.LocationName,
-                    LarsCode = request.LarsCode,
-                    UserId = request.ShortlistUserId
-                }
-            },
-            true);
-
-        response.EnsureSuccessStatusCode();
-
-        return response.Body;
+                    LocationDescription = request.LocationDescription,
+                    Larscode = request.StandardId,
+                    ShortlistUserId = request.ShortlistUserId
+                } 
+            },false);
+            
+            return Unit.Value;
+        }
     }
 }
