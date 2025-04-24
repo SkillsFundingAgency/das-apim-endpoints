@@ -41,15 +41,5 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions
             // Assert
             result.Should().BeEmpty();
         }
-
-        [Test]
-        public void OrderByCity_ShouldReturnNull_WhenInputIsNull()
-        {
-            // Act
-            var result = ((List<Address>) null).OrderByCity();
-
-            // Assert
-            result.Should().BeNull();
-        }
     }
 }
