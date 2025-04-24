@@ -10,7 +10,7 @@ public class LearnerDataRequest
     public DateTime DoB { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime PlannedEndDate { get; set; }
-    public int PriorLearningPercentage { get; set; }
+    public int? PercentageLearningToBeDelivered { get; set; }
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
     public string? AgreementId { get; set; }
