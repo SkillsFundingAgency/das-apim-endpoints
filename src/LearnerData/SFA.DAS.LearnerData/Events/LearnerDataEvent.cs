@@ -18,7 +18,7 @@ public class LearnerDataEvent
     public int PlannedOTJTrainingHours { get; set; }
     public int StandardCode { get; set; }
     public Guid CorrelationId { get; set; }
-    public DateTime ReceivedOn { get; set; }
+    public DateTime ReceivedDate { get; set; }
     public int AcademicYear { get; set; }
     public string ConsumerReference { get; set; }
 

@@ -41,7 +41,7 @@ public class ProcessLearnersCommandHandler(
             PlannedOTJTrainingHours = request.PlannedOTJTrainingHours ?? 0,
             StandardCode = request.StandardCode,
             CorrelationId = correlationId,
-            ReceivedOn = receivedOn,
+            ReceivedDate = receivedOn,
             AcademicYear = academicYear,
             ConsumerReference = request.ConsumerReference
         };
