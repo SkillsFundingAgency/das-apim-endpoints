@@ -33,16 +33,16 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
             GetFm36DataResponse = new GetFm36DataResponse();
         }
 
-        /// <summary>
-        /// Generates the same data as originally created by the test fixture,
-        /// for backwards compatibility
-        /// </summary>
-        public void GenerateData()
-        {
-            InstantiateResponses();
-            AddSimpleApprenticeship();
-            AddApprenticeshipWithPriceChange();
-        }
+        ///// <summary>
+        ///// Generates the same data as originally created by the test fixture,
+        ///// for backwards compatibility
+        ///// </summary>
+        //public void GenerateData()
+        //{
+        //    InstantiateResponses();
+        //    AddSimpleApprenticeship();
+        //    AddApprenticeshipWithPriceChange();
+        //}
 
         public void GenerateData(TestScenario scenario)
         {

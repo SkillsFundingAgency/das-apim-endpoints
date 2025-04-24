@@ -35,29 +35,29 @@ public class GetAllEarningsQueryTestFixture
     private GetAllEarningsQueryHandler _handler;
     private GetAllEarningsQuery _query;
 
-    public GetAllEarningsQueryTestFixture()
-    {
-        // Arrange
-        MockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
-        MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
-        MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
+    //public GetAllEarningsQueryTestFixture()
+    //{
+    //    // Arrange
+    //    MockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+    //    MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+    //    MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
-        Ukprn = Fixture.Create<long>();
-        CollectionPeriod = 2;
-        CollectionYear = 2425;
+    //    Ukprn = Fixture.Create<long>();
+    //    CollectionPeriod = 2;
+    //    CollectionYear = 2425;
 
-        var dataGenerator = new MockDataGenerator.MockDataGenerator();
-        dataGenerator.GenerateData();
+    //    var dataGenerator = new MockDataGenerator.MockDataGenerator();
+    //    dataGenerator.GenerateData();
 
-        ApprenticeshipsResponse = dataGenerator.GetApprenticeshipsResponse;
-        EarningsResponse = dataGenerator.GetFm36DataResponse;
+    //    ApprenticeshipsResponse = dataGenerator.GetApprenticeshipsResponse;
+    //    EarningsResponse = dataGenerator.GetFm36DataResponse;
 
-        CollectionCalendarResponse = BuildCollectionCalendarResponse(ApprenticeshipsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, ApprenticeshipsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+    //    CollectionCalendarResponse = BuildCollectionCalendarResponse(ApprenticeshipsResponse);
+    //    SetupMocks(Ukprn, MockApprenticeshipsApiClient, ApprenticeshipsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
-        _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetAllEarningsQueryHandler>>());
-        _query = new GetAllEarningsQuery(Ukprn, CollectionYear, CollectionPeriod);
-    }
+    //    _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetAllEarningsQueryHandler>>());
+    //    _query = new GetAllEarningsQuery(Ukprn, CollectionYear, CollectionPeriod);
+    //}
 
     public GetAllEarningsQueryTestFixture(TestScenario scenario)
     {
