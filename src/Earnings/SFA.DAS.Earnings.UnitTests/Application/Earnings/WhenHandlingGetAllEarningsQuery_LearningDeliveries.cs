@@ -1,10 +1,6 @@
 using FluentAssertions;
-using NUnit.Framework.Internal;
-using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Earnings.Application.Earnings;
-using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
@@ -134,7 +130,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
 
         // Act
         await testFixture.CallSubjectUnderTest();
-
 
         // Assert
         testFixture.Result.Should().NotBeNull();
