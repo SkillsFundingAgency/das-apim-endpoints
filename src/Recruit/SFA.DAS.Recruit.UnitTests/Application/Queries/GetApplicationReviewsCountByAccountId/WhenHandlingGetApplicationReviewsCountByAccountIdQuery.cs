@@ -31,7 +31,27 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.ApplicationReviewStatsList.Should().BeEquivalentTo(apiResponse);
+            actual.Should().BeEquivalentTo(apiResponse);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Query_Is_Handled_And_Null_Returned(
+            GetApplicationReviewsCountByAccountIdQuery query,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            GetApplicationReviewsCountByAccountIdQueryHandler handler)
+        {
+            //Arrange
+            var expectedGetUrl = new GetApplicationReviewsCountByAccountIdApiRequest(query.AccountId, query.VacancyReferences);
+            recruitApiClient
+                .Setup(x => x.PostWithResponseCode<List<ApplicationReviewStats>>(
+                    It.Is<GetApplicationReviewsCountByAccountIdApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl), true))
+                .ReturnsAsync(new ApiResponse<List<ApplicationReviewStats>>(null!, HttpStatusCode.OK, string.Empty));
+
+            //Act
+            var actual = await handler.Handle(query, CancellationToken.None);
+
+            //Assert
+            actual.Should().BeEquivalentTo(new List<ApplicationReviewStats>());
         }
     }
 }

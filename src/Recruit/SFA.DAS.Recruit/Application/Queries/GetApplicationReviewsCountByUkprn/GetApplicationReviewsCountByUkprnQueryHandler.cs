@@ -11,17 +11,14 @@ namespace SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByUkprn
 {
     public class GetApplicationReviewsCountByUkprnQueryHandler(
         IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) 
-        : IRequestHandler<GetApplicationReviewsCountByUkprnQuery, GetApplicationReviewsCountByUkprnQueryResult>
+        : IRequestHandler<GetApplicationReviewsCountByUkprnQuery, List<ApplicationReviewStats>>
     {
-        public async Task<GetApplicationReviewsCountByUkprnQueryResult> Handle(GetApplicationReviewsCountByUkprnQuery request, CancellationToken cancellationToken)
+        public async Task<List<ApplicationReviewStats>> Handle(GetApplicationReviewsCountByUkprnQuery request, CancellationToken cancellationToken)
         {
             var response = await recruitApiClient.PostWithResponseCode<List<ApplicationReviewStats>>(
                 new GetApplicationReviewsCountByUkprnApiRequest(request.Ukprn, request.VacancyReferences));
 
-            return new GetApplicationReviewsCountByUkprnQueryResult
-            {
-                ApplicationReviewStatsList = response.Body
-            };
+            return response.Body ?? [];
         }
     }
 }
