@@ -1,5 +1,6 @@
 using FluentAssertions;
 using SFA.DAS.Earnings.Application.Earnings;
+using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
@@ -577,42 +578,21 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
      }
 
-    [TestCase("StillInLearning", true)]
-    [TestCase("WithdrawnAfterQualifyingPeriod", true)]
-    [TestCase("WithdrawnBeforeQualifyingPeriod", false)]
-    public async Task ThenReturnsCorrectFundStartValueForApprenticeship(string status, bool expectedFundingStart)
+    [TestCase(WithdrawalDate.None, true)]
+    [TestCase(WithdrawalDate.AfterQualifyingPeriod, true)]
+    [TestCase(WithdrawalDate.DuringQualifyingPeriod, false)]
+    [TestCase(WithdrawalDate.ApprenticeshipStart, false)]
+    public async Task ThenReturnsCorrectFundStartValueForApprenticeship(WithdrawalDate withdrawalDate, bool expectedFundingStart)
     {
         // Arrange
         var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.SimpleApprenticeship);
+        testFixture.ApprenticeshipsResponse.Apprenticeships.First().SetWithdrawalDate(withdrawalDate);
 
         // Act
         await testFixture.CallSubjectUnderTest();
 
-        // Arrange
-        testFixture.Result.Should().NotBeNull();
-        string uln = string.Empty;
-        testFixture.EditApprenticeshipResponse(0, x => {
-            switch (status)
-            {
-                case "StillInLearning":
-                    x.WithdrawnDate = null;
-                    break;
-                case "WithdrawnAfterQualifyingPeriod":
-                    x.WithdrawnDate = x.StartDate.AddDays(SFA.DAS.SharedOuterApi.Common.Constants.QualifyingPeriod + 1);
-                    break;
-                case "WithdrawnBeforeQualifyingPeriod":
-                    x.WithdrawnDate = x.StartDate.AddDays(SFA.DAS.SharedOuterApi.Common.Constants.QualifyingPeriod - 1);
-                    break;
-            }
-
-            uln = x.Uln;
-        });
-
-        // Act
-        await testFixture.CallSubjectUnderTest();// force it to recalculate
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == uln).LearningDeliveries.SingleOrDefault();
-
         // Assert
+        var learningDelivery = testFixture.Result.FM36Learners.Single().LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
 

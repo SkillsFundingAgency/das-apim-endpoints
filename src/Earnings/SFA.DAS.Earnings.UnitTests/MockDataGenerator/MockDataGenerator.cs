@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using SFA.DAS.Earnings.UnitTests.Application.Earnings;
+using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
@@ -32,17 +33,6 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
             };
             GetFm36DataResponse = new GetFm36DataResponse();
         }
-
-        ///// <summary>
-        ///// Generates the same data as originally created by the test fixture,
-        ///// for backwards compatibility
-        ///// </summary>
-        //public void GenerateData()
-        //{
-        //    InstantiateResponses();
-        //    AddSimpleApprenticeship();
-        //    AddApprenticeshipWithPriceChange();
-        //}
 
         public void GenerateData(TestScenario scenario)
         {
