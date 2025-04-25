@@ -37,130 +37,127 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Act
         await testFixture.CallSubjectUnderTest();
 
-
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        var expectedPriceEpisodesSplitByAcademicYear =
+            testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes).ToList();
+
+        foreach (var episodePrice in expectedPriceEpisodesSplitByAcademicYear)
         {
-            var fm36Learner = testFixture.Result.FM36Learners
-                .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+            var earningApprenticeship = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
+            var earningEpisode = earningApprenticeship.Episodes.Single();
 
-            var expectedPriceEpisodesSplitByAcademicYear =
-                testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes).ToList();
+            var instalmentsForPricePeriod = earningEpisode.Instalments.Where(x =>
+                x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= testFixture.CollectionCalendarResponse.StartDate &&
+                x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= testFixture.CollectionCalendarResponse.EndDate &&
+                (x.EpisodePriceKey == episodePrice.Price.Key || x.EpisodePriceKey == Guid.Empty) // the guid.empty is to account for apprenticeships that were created before episodePriceKey was recorded
+                ).ToList();
 
-            foreach (var episodePrice in expectedPriceEpisodesSplitByAcademicYear)
-            {
-                var earningApprenticeship = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
-                var earningEpisode = earningApprenticeship.Episodes.Single();
+            var expectedEpisodeTotalEarnings = earningEpisode.Instalments
+                .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
+                .Sum(x => x.Amount);
 
-                var instalmentsForPricePeriod = earningEpisode.Instalments.Where(x =>
-                    x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= testFixture.CollectionCalendarResponse.StartDate &&
-                    x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= testFixture.CollectionCalendarResponse.EndDate &&
-                    (x.EpisodePriceKey == episodePrice.Price.Key || x.EpisodePriceKey == Guid.Empty) // the guid.empty is to account for apprenticeships that were created before episodePriceKey was recorded
-                    ).ToList();
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
 
-                var expectedEpisodeTotalEarnings = earningEpisode.Instalments
-                    .Where(x => x.EpisodePriceKey == episodePrice.Price.Key)
-                    .Sum(x => x.Amount);
+            actualPriceEpisode.PriceEpisodeIdentifier.Should()
+                    .Be($"25-{episodePrice.Episode.TrainingCode.Trim()}-{episodePrice.Price.StartDate:dd/MM/yyyy}");
 
-                var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                actualPriceEpisode.Should().NotBeNull();
+            actualPriceEpisode.PriceEpisodeValues.TNP1.Should().Be(episodePrice.Price.TrainingPrice);
+            actualPriceEpisode.PriceEpisodeValues.TNP2.Should().Be(episodePrice.Price.EndPointAssessmentPrice);
+            actualPriceEpisode.PriceEpisodeValues.TNP3.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.TNP4.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA.Should().BeNull();
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUBalValue.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftCompElement.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FrameworkUpliftTotPrevEarnings.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FrameworkUpliftRemainingAmount.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUMonthInstValue.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUTotEarnings.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperBandLimit.Should().Be(episodePrice.Price.FundingBandMaximum);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate.Should().Be(apprenticeship.PlannedEndDate);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice.Should().Be(episodePrice.Price.TotalPrice);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperLimitAdjustment.Should().Be(0);
 
-                actualPriceEpisode.PriceEpisodeIdentifier.Should()
-                        .Be($"25-{episodePrice.Episode.TrainingCode.Trim()}-{episodePrice.Price.StartDate:dd/MM/yyyy}");
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(episodePrice.Price.StartDate, apprenticeship.PlannedEndDate));
+            
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentsThisPeriod.Should()
+                .Be(episodePrice.Price.StartDate 
+                    <= testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(testFixture.CollectionPeriod)
+                    &&
+                    testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(testFixture.CollectionPeriod)
+                    <= episodePrice.Price.EndDate
+                    &&
+                    earningEpisode.Instalments.Any(x =>
+                    x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear) &&
+                    x.DeliveryPeriod == testFixture.CollectionPeriod)
+                    ? 1 : 0);
+            
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionElement.Should().Be(earningEpisode.CompletionPayment);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarnings.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentValue.Should().Be(instalmentsForPricePeriod.First().Amount);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeOnProgPayment.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings.Should().Be(expectedEpisodeTotalEarnings);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalanceValue.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalancePayment.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompleted.Should().Be(episodePrice.Price.EndDate < DateTime.Now);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionPayment.Should().Be(0);
 
-                actualPriceEpisode.PriceEpisodeValues.TNP1.Should().Be(episodePrice.Price.TrainingPrice);
-                actualPriceEpisode.PriceEpisodeValues.TNP2.Should().Be(episodePrice.Price.EndPointAssessmentPrice);
-                actualPriceEpisode.PriceEpisodeValues.TNP3.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.TNP4.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA.Should().BeNull();
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUBalValue.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftCompElement.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FrameworkUpliftTotPrevEarnings.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FrameworkUpliftRemainingAmount.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUMonthInstValue.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUTotEarnings.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperBandLimit.Should().Be(episodePrice.Price.FundingBandMaximum);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedEndDate.Should().Be(apprenticeship.PlannedEndDate);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice.Should().Be(episodePrice.Price.TotalPrice);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeUpperLimitAdjustment.Should().Be(0);
+            var previousYearEarnings = earningApprenticeship.Episodes
+                .SelectMany(x => x.Instalments)
+                .Where(x => x.AcademicYear.IsEarlierThan(short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)))
+                .Sum(x => x.Amount);
+            var previousPeriodEarnings = earningApprenticeship.Episodes
+                .SelectMany(x => x.Instalments)
+                .Where(x => 
+                    x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)
+                    && x.DeliveryPeriod < testFixture.CollectionPeriod)
+                .Sum(x => x.Amount);
+            var allPreviousEarnings = previousYearEarnings + previousPeriodEarnings;
 
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingAmountWithinUpperLimit.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCappedRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeExpectedTotalMonthlyValue.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings - earningEpisode.CompletionPayment);
 
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePlannedInstalments.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(episodePrice.Price.StartDate, apprenticeship.PlannedEndDate));
-                
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentsThisPeriod.Should()
-                    .Be(episodePrice.Price.StartDate 
-                        <= testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(testFixture.CollectionPeriod)
-                        &&
-                        testFixture.CollectionCalendarResponse.GetCensusDateForCollectionPeriod(testFixture.CollectionPeriod)
-                        <= episodePrice.Price.EndDate
-                        &&
-                        earningEpisode.Instalments.Any(x =>
-                        x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear) &&
-                        x.DeliveryPeriod == testFixture.CollectionPeriod)
-                        ? 1 : 0);
-                
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionElement.Should().Be(earningEpisode.CompletionPayment);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarnings.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeInstalmentValue.Should().Be(instalmentsForPricePeriod.First().Amount);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeOnProgPayment.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalEarnings.Should().Be(expectedEpisodeTotalEarnings);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalanceValue.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeBalancePayment.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompleted.Should().Be(episodePrice.Price.EndDate < DateTime.Now);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompletionPayment.Should().Be(0);
-
-                var previousYearEarnings = earningApprenticeship.Episodes
-                    .SelectMany(x => x.Instalments)
-                    .Where(x => x.AcademicYear.IsEarlierThan(short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)))
-                    .Sum(x => x.Amount);
-                var previousPeriodEarnings = earningApprenticeship.Episodes
-                    .SelectMany(x => x.Instalments)
-                    .Where(x => 
-                        x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)
-                        && x.DeliveryPeriod < testFixture.CollectionPeriod)
-                    .Sum(x => x.Amount);
-                var allPreviousEarnings = previousYearEarnings + previousPeriodEarnings;
-
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRemainingAmountWithinUpperLimit.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCappedRemainingTNPAmount.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeExpectedTotalMonthlyValue.Should().Be(episodePrice.Price.FundingBandMaximum - allPreviousEarnings - earningEpisode.CompletionPayment);
-
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber.Should().Be(1);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstDisadvantagePayment.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondDisadvantagePayment.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftBalancing.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondProv1618Pay.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstEmp1618Pay.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondEmp1618Pay.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstProv1618Pay.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLSFCash.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType.Should().Be(earningApprenticeship.FundingLineType);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLevyNonPayInd.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Should().Be(episodePrice.Price.StartDate);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstAdditionalPaymentThresholdDate.Should().BeNull();
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate.Should().BeNull();
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType.Should().Be("Contract for services with the employer");
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarningsSameProvider.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotProgFunding.Should().Be(earningEpisode.OnProgramTotal);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeProgFundIndMinCoInvest.Should().Be(earningEpisode.OnProgramTotal * 0.95m);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeProgFundIndMaxEmpCont.Should().Be(earningEpisode.OnProgramTotal * 0.05m);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalPMRs.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLearnerAdditionalPaymentThresholdDate.Should().BeNull();
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStartDate.Should().BeNull();
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStatusCode.Should().Be(0);
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLDAppIdent.Should().Be($"25-{episodePrice.Episode.TrainingCode.Trim()}");
-                actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAugmentedBandLimitFactor.Should().Be(1);
-            }
-            fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(episode => episode.Prices).Count());
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber.Should().Be(1);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstDisadvantagePayment.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondDisadvantagePayment.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftBalancing.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondProv1618Pay.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstEmp1618Pay.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondEmp1618Pay.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstProv1618Pay.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLSFCash.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFundLineType.Should().Be(earningApprenticeship.FundingLineType);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLevyNonPayInd.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate.Should().Be(episodePrice.Price.StartDate);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeFirstAdditionalPaymentThresholdDate.Should().BeNull();
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate.Should().BeNull();
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeContractType.Should().Be("Contract for services with the employer");
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodePreviousEarningsSameProvider.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotProgFunding.Should().Be(earningEpisode.OnProgramTotal);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeProgFundIndMinCoInvest.Should().Be(earningEpisode.OnProgramTotal * 0.95m);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeProgFundIndMaxEmpCont.Should().Be(earningEpisode.OnProgramTotal * 0.05m);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeTotalPMRs.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCumulativePMRs.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeCompExemCode.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLearnerAdditionalPaymentThresholdDate.Should().BeNull();
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStartDate.Should().BeNull();
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeRedStatusCode.Should().Be(0);
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeLDAppIdent.Should().Be($"25-{episodePrice.Episode.TrainingCode.Trim()}");
+            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeAugmentedBandLimitFactor.Should().Be(1);
         }
+        fm36Learner.PriceEpisodes.Count.Should().Be(apprenticeship.Episodes.SelectMany(episode => episode.Prices).Count());
     }
 
     [Test]
