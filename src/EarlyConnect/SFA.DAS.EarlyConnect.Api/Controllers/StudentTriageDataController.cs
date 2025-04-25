@@ -1,17 +1,19 @@
-﻿using MediatR;
+﻿using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.EarlyConnect.Api.Models;
-using System.Net;
-using Asp.Versioning;
 using SFA.DAS.EarlyConnect.Api.Mappers;
-using SFA.DAS.EarlyConnect.Application.Commands.CreateOtherStudentTriageData;
-using SFA.DAS.EarlyConnect.InnerApi.Requests;
-using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
-using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
+using SFA.DAS.EarlyConnect.Api.Models;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
-using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
-using SendReminderEmailRequest = SFA.DAS.EarlyConnect.Api.Models.SendReminderEmailRequest;
+using SFA.DAS.EarlyConnect.Application.Commands.CreateOtherStudentTriageData;
+using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 using SFA.DAS.EarlyConnect.Application.Commands.SendReminderEmail;
+using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
+using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate;
+using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
+using SFA.DAS.EarlyConnect.InnerApi.Requests;
+using SFA.DAS.EarlyConnect.InnerApi.Responses;
+using System.Net;
+using SendReminderEmailRequest = SFA.DAS.EarlyConnect.Api.Models.SendReminderEmailRequest;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
@@ -45,7 +47,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     }
                 });
 
-                var model = new SendReminderEmailResponse()
+                var model = new Models.SendReminderEmailResponse()
                 {
                     Message = response.Message
                 };
@@ -162,6 +164,27 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
         }
 
+        
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetStudentTriageDataBeforeDate()
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetStudentDataBeforeDateQuery());
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
+
+                _logger.LogError(e, "Error getting student triage data ");
+
+                return BadRequest($"Error getting student triage data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
+            }
+        }
         private async Task<int> CreateLog(StudentDataUploadStatus status, string ipAddress, ManageStudentTriageDataPostRequest request)
         {
             if (request.StudentSurvey.DateCompleted == null)
