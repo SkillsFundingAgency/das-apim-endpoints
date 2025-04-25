@@ -210,7 +210,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
     public async Task ThenReturnsProgrammeAimOnProgPaymentValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
@@ -249,7 +248,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
     public async Task ThenReturnsProgrammeAimProgFundIndMaxEmpContValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
@@ -291,7 +289,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
     public async Task ThenReturnsProgrammeAimProgFundIndMinCoInvestValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
@@ -333,7 +330,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
     public async Task ThenReturnsProgrammeAimTotProgFundValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
@@ -372,7 +368,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
     public async Task ThenReturnsLearningDeliveryPeriodisedTextValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
@@ -595,6 +590,5 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         var learningDelivery = testFixture.Result.FM36Learners.Single().LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
-
     }
 }

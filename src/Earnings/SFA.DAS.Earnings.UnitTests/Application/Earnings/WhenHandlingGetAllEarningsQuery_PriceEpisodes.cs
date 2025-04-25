@@ -163,11 +163,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         }
     }
 
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    public async Task WhenNoSubsequentPriceInYearThenPriceEpisodeActualEndDateAndPriceEpisodeActualInstalmentsAreNotSet(TestScenario scenario)
+    [Test]
+    public async Task WhenNoSubsequentPriceInYearThenPriceEpisodeActualEndDateAndPriceEpisodeActualInstalmentsAreNotSet()
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
+        var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.SimpleApprenticeship);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -190,11 +190,11 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(0);
     }
 
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task WhenSubsequentPriceInYearThenPriceEpisodeActualEndDateAndPriceEpisodeActualInstalmentsAreSet(TestScenario scenario)
+    [Test]
+    public async Task WhenSubsequentPriceInYearThenPriceEpisodeActualEndDateAndPriceEpisodeActualInstalmentsAreSet()
     {
         // Arrange
-        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
+        var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.ApprenticeshipWithPriceChange);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -271,6 +271,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(TestScenario.WithdrawnApprenticeship)]
     public async Task ThenReturnsPriceEpisodeInstalmentsThisPeriodValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
