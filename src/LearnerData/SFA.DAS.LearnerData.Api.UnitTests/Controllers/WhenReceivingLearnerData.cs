@@ -66,9 +66,10 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
         result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         var response = result.Value as ErrorResponse;
         response.Should().NotBeNull();
-        response.Errors.Count.Should().Be(1);
-        response.Errors[0].Code.Should().Be("UKPRN");
-        response.Errors[0].Message.Should().Be($"Learner data contains different UKPRN to {ukprn}");
+        var errors = response.Errors.ToList();
+        errors.Count.Should().Be(1);
+        errors[0].Code.Should().Be("UKPRN");
+        errors[0].Message.Should().Be($"Learner data contains different UKPRN to {ukprn}");
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -92,9 +93,10 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
         result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         var response = result.Value as ErrorResponse;
         response.Should().NotBeNull();
-        response.Errors.Count.Should().Be(1);
-        response.Errors[0].Code.Should().Be("ULN");
-        response.Errors[0].Message.Should().Be("Learner data contains incorrect ULNs");
+        var errors = response.Errors.ToList();
+        errors.Count.Should().Be(1);
+        errors[0].Code.Should().Be("ULN");
+        errors[0].Message.Should().Be("Learner data contains incorrect ULNs");
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -119,9 +121,10 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
         result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         var response = result.Value as ErrorResponse;
         response.Should().NotBeNull();
-        response.Errors.Count.Should().Be(1);
-        response.Errors[0].Code.Should().Be("ConsumerReference");
-        response.Errors[0].Message.Should().Be("Learner data contains incorrect ConsumerReference (>100 chars)");
+        var errors = response.Errors.ToList();
+        errors.Count.Should().Be(1);
+        errors[0].Code.Should().Be("ConsumerReference");
+        errors[0].Message.Should().Be("Learner data contains incorrect ConsumerReference (>100 chars)");
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
