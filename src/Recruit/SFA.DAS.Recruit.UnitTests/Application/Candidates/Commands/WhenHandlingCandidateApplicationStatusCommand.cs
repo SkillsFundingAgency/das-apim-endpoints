@@ -1,19 +1,15 @@
-using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Application.Candidates.Commands.CandidateApplicationStatus;
 using SFA.DAS.Recruit.Domain;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Candidates.Commands;
 

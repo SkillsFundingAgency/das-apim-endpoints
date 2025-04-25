@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,7 +6,10 @@ using SFA.DAS.Recruit.Application.Queries.GetAccount;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
-using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.Enums;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -59,7 +59,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("dashboard")]
-        public async Task<IActionResult> GetDashboard([FromRoute] long accountId, [FromQuery] ApplicationStatus status)
+        public async Task<IActionResult> GetDashboard([FromRoute] long accountId, [FromQuery] ApplicationReviewStatus status)
         {
             try
             {

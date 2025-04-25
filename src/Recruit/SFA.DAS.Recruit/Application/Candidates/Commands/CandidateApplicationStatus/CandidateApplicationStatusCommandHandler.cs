@@ -12,6 +12,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Enums;
 
 namespace SFA.DAS.Recruit.Application.Candidates.Commands.CandidateApplicationStatus;
 

@@ -1,17 +1,10 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
+﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn;
-using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Recruit.Enums;
 using System;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
 {
@@ -21,7 +14,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
             int ukprn,
-            ApplicationStatus status,
+            ApplicationReviewStatus status,
             GetDashboardByUkprnQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
@@ -44,7 +37,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             int ukprn,
-            ApplicationStatus status,
+            ApplicationReviewStatus status,
             GetDashboardByUkprnQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
