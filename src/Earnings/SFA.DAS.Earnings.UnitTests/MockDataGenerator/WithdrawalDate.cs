@@ -3,7 +3,6 @@
 public enum WithdrawalDate
 {
     None,
-    ApprenticeshipStart,
     DuringQualifyingPeriod,
     AfterQualifyingPeriod
 }

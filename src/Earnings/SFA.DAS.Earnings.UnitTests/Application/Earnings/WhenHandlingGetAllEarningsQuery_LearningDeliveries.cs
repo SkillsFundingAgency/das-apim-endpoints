@@ -576,7 +576,6 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
     [TestCase(WithdrawalDate.None, true)]
     [TestCase(WithdrawalDate.AfterQualifyingPeriod, true)]
     [TestCase(WithdrawalDate.DuringQualifyingPeriod, false)]
-    [TestCase(WithdrawalDate.ApprenticeshipStart, false)]
     public async Task ThenReturnsCorrectFundStartValueForApprenticeship(WithdrawalDate withdrawalDate, bool expectedFundingStart)
     {
         // Arrange

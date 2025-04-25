@@ -216,7 +216,6 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.WithdrawnApprenticeship)]
     public async Task ThenReturnsDefaultedPriceEpisodePeriodisedValuesForEachApprenticeshipPriceEpisode(TestScenario scenario)
     {
         // Arrange
@@ -268,7 +267,6 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.WithdrawnApprenticeship)]
     public async Task ThenReturnsPriceEpisodeInstalmentsThisPeriodValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange

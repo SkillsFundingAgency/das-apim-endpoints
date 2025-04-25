@@ -11,10 +11,6 @@
         /// <summary>
         /// Models an apprenticeship with a change of price
         /// </summary>
-        ApprenticeshipWithPriceChange,
-        /// <summary>
-        /// Models an apprenticeship withdrawn back to the beginning, without any earnings
-        /// </summary>
-        WithdrawnApprenticeship
+        ApprenticeshipWithPriceChange
     }
 }

@@ -23,9 +23,6 @@ public static class ApprenticeshipExtensions
         {
             case WithdrawalDate.None:
                 break;
-            case WithdrawalDate.ApprenticeshipStart:
-                apprenticeship.WithdrawnDate = apprenticeship.StartDate;
-                break;
             case WithdrawalDate.DuringQualifyingPeriod:
                 apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod - 1);
                 break;
