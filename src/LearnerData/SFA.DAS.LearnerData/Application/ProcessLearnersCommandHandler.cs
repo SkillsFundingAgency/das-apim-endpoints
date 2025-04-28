@@ -37,7 +37,7 @@ public class ProcessLearnersCommandHandler(
             EpaoPrice = request.EpaoPrice,
             TrainingPrice = request.TrainingPrice,
             AgreementId = request.AgreementId,
-            IsFlexJob = request.IsFlexJob,
+            IsFlexiJob = request.IsFlexiJob,
             PlannedOTJTrainingHours = request.PlannedOTJTrainingHours ?? 0,
             StandardCode = request.StandardCode,
             CorrelationId = correlationId,
