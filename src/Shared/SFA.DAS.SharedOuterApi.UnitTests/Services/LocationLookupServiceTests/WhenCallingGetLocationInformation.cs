@@ -1,18 +1,17 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
 {
@@ -38,13 +37,11 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             string authorityName,
             GetLocationsListItem apiLocationResponse,
             [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
-            LocationLookupService service
-        )
+            LocationLookupService service)
         {
             var location = $"{locationName}, {authorityName} ";
             var lat = 0;
             var lon = 0;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -70,7 +67,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var lat = 0;
             var lon = 0;
             var encodedLocation = "?locationName=" + HttpUtility.UrlEncode($"{locationName}, {locationName}");
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -112,7 +108,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = $"{outcode}";
             var lat = 0;
             var lon = 0;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -136,7 +131,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = $"{outcode}";
             var lat = 0;
             var lon = 0;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -165,7 +159,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var lon = 0;
             apiLocationResponse.Outcode = "";
             apiLocationResponse.Postcode = postcode;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -192,7 +185,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var lon = 0;
             apiLocationResponse.Postcode = postcode;
             apiLocationResponse.Outcode = "";
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -217,7 +209,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = $"{outcode} Birmingham, West Midlands";
             var lat = 0;
             var lon = 0;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(
@@ -256,7 +247,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             apiLocationResponse.DistrictName = "";
             var lat = 0;
             var lon = 0;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListResponse>(
@@ -278,7 +268,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = "no-match";
             var lat = 0;
             var lon = 0;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListResponse>(
@@ -314,7 +303,6 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests
             var location = "LE1";
             var lat = 0;
             var lon = 0;
-
             mockLocationApiClient
                 .Setup(client =>
                     client.Get<GetLocationsListItem>(

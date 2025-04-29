@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts
 {
@@ -16,6 +15,5 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.Employe
         public string DasAccountName { get; set; }
         public string EncodedAccountId { get; set; }
         public string Role { get; set; }
-        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
     }
 }

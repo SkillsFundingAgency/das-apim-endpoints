@@ -1,15 +1,10 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
-using SFA.DAS.AODP.Application.Commands.Qualification;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
-using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
-using SFA.DAS.Aodp.Application.Commands.Qualification;
-using SFA.DAS.AODP.Application.Queries.Qualifications;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
 {
@@ -31,20 +26,18 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(typeof(BaseMediatrResponse<GetChangedQualificationsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualifications(
-            [FromQuery] string? status,
+        public async Task<IActionResult> GetQualifications([FromQuery] string? status,
             [FromQuery] int? skip,
             [FromQuery] int? take,
             [FromQuery] string? name,
             [FromQuery] string? organisation,
-            [FromQuery] string? qan,
-            [FromQuery] string? processStatusFilter)
+            [FromQuery] string? qan)
         {
-            var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan, processStatusFilter);
+            var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan);
 
             if (validationResult.IsValid)
             {
-                if (validationResult.ParsedStatus == "new")
+                if (validationResult.ProcessedStatus == "new")
                 {
                     var query = new GetNewQualificationsQuery()
                     {
@@ -52,12 +45,11 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                         Organisation = organisation,
                         QAN = qan,
                         Skip = skip,
-                        Take = take,
-                        ProcessStatusFilter = processStatusFilter
+                        Take = take
                     };
                     return await SendRequestAsync(query);
                 }
-                else if (validationResult.ParsedStatus == "changed")
+                else if (validationResult.ProcessedStatus == "changed")
                 {
                     var query = new GetChangedQualificationsQuery()
                     {
@@ -65,24 +57,23 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                         Organisation = organisation,
                         QAN = qan,
                         Skip = skip,
-                        Take = take,
-                        ProcessStatusFilter = processStatusFilter
+                        Take = take
                     };
                     return await SendRequestAsync(query);
                 }
                 else
                 {
-                    return BadRequest(new { message = $"Invalid status: {validationResult.ParsedStatus}" });
+                    return BadRequest(new { message = $"Invalid status: {validationResult.ProcessedStatus}" });
                 }
             }
             else
             {
                 return BadRequest(new { message = validationResult.ErrorMessage });
-            }
-
+            }           
+         
         }
 
-        [HttpGet("{qualificationReference}/detail")]
+        [HttpGet("{qualificationReference}")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationDetailsQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -95,83 +86,18 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 return BadRequest(new { message = "Qualification reference cannot be empty" });
             }
 
-            return await SendRequestAsync(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
-        }
+            var result = await _mediator.Send(new GetQualificationDetailsQuery { QualificationReference = qualificationReference });
 
-        [HttpGet("{qualificationReference}/detailwithversions")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationDetailWithVersions(string? qualificationReference)
-        {
-            if (string.IsNullOrWhiteSpace(qualificationReference))
+            if (!result.Success || result.Value == null)
             {
-                _logger.LogWarning("Qualification reference is empty");
-                return BadRequest(new { message = "Qualification reference cannot be empty" });
-            }
-            return await SendRequestAsync(new GetQualificationDetailWithVersionsQuery { QualificationReference = qualificationReference });
-        }
-
-        [HttpGet("{qualificationReference}/qualificationversions/{version}")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationDetailsQueryResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationDetails(string? qualificationReference, int? version)
-        {
-            if (string.IsNullOrWhiteSpace(qualificationReference))
-            {
-                _logger.LogWarning("Qualification reference is empty");
-                return BadRequest(new { message = "No version specified" });
+                _logger.LogWarning(result.ErrorMessage);
+                return NotFound(new { message = $"No details found for qualification reference: {qualificationReference}" });
             }
 
-            if (version is null | version == 0)
-            {
-                _logger.LogWarning("No version specified");
-                return BadRequest(new { message = "No version specified" });
-            }
-
-            return await SendRequestAsync(new GetQualificationVersionQuery { QualificationReference = qualificationReference, Version = version });
+            return Ok(result);
         }
 
-        [HttpPost("qualificationdiscussionhistory")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> AddQualificationDiscussionHistory([FromBody] AddQualificationDiscussionHistoryCommand qualificationDiscussionHistory)
-        {
-            return await SendRequestAsync(qualificationDiscussionHistory);
-        }
-
-        [HttpGet("processstatuses")]
-        [ProducesResponseType(typeof(GetProcessStatusesQueryResponse), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetProcessingStatuses()
-        {
-            return await SendRequestAsync(new GetProcessStatusesQuery());
-        }
-
-        [HttpGet("{qualificationReference}/qualificationdiscussionhistories")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetDiscussionHistoriesForQualification(string qualificationReference)
-        {
-            if (string.IsNullOrWhiteSpace(qualificationReference))
-            {
-                _logger.LogWarning("Qualification reference is empty");
-                return BadRequest(new { message = "Qualification reference cannot be empty" });
-            }
-            return await SendRequestAsync(new GetDiscussionHistoriesForQualificationQuery { QualificationReference = qualificationReference });
-        }
-
-        [HttpPost("qualificationstatus")]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateQualificationStatus([FromBody] UpdateQualificationStatusCommand qualificationStatus)
-        {
-            return await SendRequestAsync(qualificationStatus);
-        }
-
-        [HttpGet("export")]
+        [HttpGet("export")]        
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationsExportResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -203,7 +129,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
         }
 
-        [HttpGet("/api/qualifications/{qualificationVersionId}/feedback")]
+        [HttpGet("api/qualifications/{qualificationVersionId}/feedback")]
         [ProducesResponseType(typeof(GetFeedbackForQualificationFundingByIdQueryResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -239,16 +165,16 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(command);
         }
 
-        [HttpPut("/api/qualifications/{qualificationVersionId}/funding-offers-history-note")]
+        [HttpPut("/api/qualifications/{qualificationVersionId}/Create-QualificationDiscussionHistory")]
         [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> CreateQualificationDiscussionHistoryNoteForFundingOffers(CreateQualificationDiscussionHistoryNoteForFundingOffersCommand command, Guid qualificationVersionId)
+        public async Task<IActionResult> QualificationFundingOffersSummary(CreateQualificationDiscussionHistoryCommand command, Guid qualificationVersionId)
         {
             command.QualificationVersionId = qualificationVersionId;
             return await SendRequestAsync(command);
         }
         private async Task<IActionResult> HandleNewQualificationCSVExport()
-        {
+        {           
             return await SendRequestAsync(new GetNewQualificationsExportQuery());
         }
 
@@ -257,23 +183,23 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(new GetChangedQualificationsExportQuery());
         }
 
-        private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan, string? processStatusFilter)
+        private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan)
         {
             var result = new ParamValidationResult() { IsValid = true };
             status = status?.Trim().ToLower();
 
             if (string.IsNullOrEmpty(status))
-            {
+            {                
                 result.IsValid = false;
-                result.ErrorMessage = "Qualification status cannot be empty.";
+                result.ErrorMessage = "Qualification status cannot be empty.";                
             }
             else
             {
-                result.ParsedStatus = status;
+                result.ProcessedStatus = status;
             }
 
             if (skip < 0)
-            {
+            {                
                 result.IsValid = false;
                 result.ErrorMessage = "Skip param is invalid.";
             }
@@ -282,20 +208,6 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             {
                 result.IsValid = false;
                 result.ErrorMessage = "Take param is invalid.";
-            }
-
-            if (!string.IsNullOrWhiteSpace(processStatusFilter))
-            {
-                var procStatusIdStrings = processStatusFilter.Split(',').Select(v => v.Trim());
-                try
-                {
-                    var ids = procStatusIdStrings.Select(s => Guid.Parse(s)).ToList();
-                }
-                catch
-                {
-                    result.IsValid = false;
-                    result.ErrorMessage = "Process status filter param is invalid.";
-                }
             }
 
             if (!result.IsValid)
@@ -310,7 +222,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         {
             public bool IsValid { get; set; }
             public string? ErrorMessage { get; set; }
-            public string? ParsedStatus { get; set; }
+            public string? ProcessedStatus { get; set; }
         }
     }
 }

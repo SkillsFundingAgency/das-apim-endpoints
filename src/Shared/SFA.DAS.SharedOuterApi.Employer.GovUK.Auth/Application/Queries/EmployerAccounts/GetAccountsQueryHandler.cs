@@ -33,8 +33,7 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.Employe
                 {
                     DasAccountName = c.DasAccountName,
                     EncodedAccountId = c.EncodedAccountId,
-                    Role = c.Role,
-                    ApprenticeshipEmployerType = c.ApprenticeshipEmployerType
+                    Role = c.Role
                 })
             };
         }

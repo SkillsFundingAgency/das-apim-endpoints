@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -13,10 +14,9 @@ using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.ApimDeveloper.Api.AppStart;
-using SFA.DAS.ApimDeveloper.Application.ApiProducts.Queries.GetApiProduct;
+using SFA.DAS.ApimDeveloper.Application.EmployerAccounts.Queries;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.ApimDeveloper.Api
@@ -52,8 +52,7 @@ namespace SFA.DAS.ApimDeveloper.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetApiProductQuery).Assembly));
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>

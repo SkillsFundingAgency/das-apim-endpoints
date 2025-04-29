@@ -3,19 +3,20 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
-namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
-
-public class WhenBuildingThePostShortlistForUserRequest
+namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests
 {
-    [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed_With_Data(PostShortlistData source)
+    public class WhenBuildingThePostShortlistForUserRequest
     {
-        var actual = new PostShortlistForUserRequest
+        [Test, AutoData]
+        public void Then_The_Url_Is_Correctly_Constructed_With_Data(PostShortlistData source)
         {
-            Data = source
-        };
-
-        actual.Data.Should().BeEquivalentTo(source);
-        actual.PostUrl.Should().Be("api/shortlists");
+            var actual = new PostShortlistForUserRequest
+            {
+                Data = source
+            };
+            
+            actual.Data.Should().BeEquivalentTo(source);
+            actual.PostUrl.Should().Be("api/shortlist");
+        }
     }
 }

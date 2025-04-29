@@ -12,9 +12,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerProfiles.Api.AppStart;
-using SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands;
+using SFA.DAS.EmployerProfiles.Application.AccountUsers.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerProfiles.Api
@@ -48,8 +47,7 @@ namespace SFA.DAS.EmployerProfiles.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(UpsertAccountCommand).Assembly));
-            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>

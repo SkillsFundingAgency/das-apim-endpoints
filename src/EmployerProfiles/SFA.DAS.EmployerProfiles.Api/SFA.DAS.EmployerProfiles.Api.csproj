@@ -20,7 +20,6 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.EmployerProfiles\SFA.DAS.EmployerProfiles.csproj" />
-      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
     </ItemGroup>
     <ItemGroup>
         <None Include="nlog.Debug.config">

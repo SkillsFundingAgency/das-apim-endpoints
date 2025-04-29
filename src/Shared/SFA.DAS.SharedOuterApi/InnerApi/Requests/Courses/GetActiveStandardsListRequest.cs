@@ -1,51 +1,31 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
-
-public class GetActiveStandardsListRequest : IGetApiRequest
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
-    public List<int> RouteIds { get; set; } = [];
-    public List<int> Levels { get; set; } = [];
-    public string Keyword { get; set; } = string.Empty;
-    public CoursesOrderBy OrderBy { get; set; } = CoursesOrderBy.Score;
-
-    public string GetUrl => BuildUrl();
-
-    private const string _BASE_URL = "api/courses/standards";
-
-    private string BuildUrl()
+    public class GetActiveStandardsListRequest : IGetApiRequest
     {
-        var queryParams = new List<string>();
+        public List<Guid> RouteIds { get ; set ; }
+        public List<int> Levels { get ; set ; }
+        public string GetUrl => BuildUrl();
 
-        if (!string.IsNullOrWhiteSpace(Keyword))
+        private string BuildUrl()
         {
-            queryParams.Add($"keyword={Uri.EscapeDataString(Keyword)}");
-        }
+            var url = $"api/courses/standards?filter=Active";
 
-        if (RouteIds != null && RouteIds.Count > 0)
-        {
-            foreach (int routeId in RouteIds)
+            if (RouteIds != null && RouteIds.Any())
             {
-                queryParams.Add($"routeIds={routeId}");
+                url += "&routeIds=" + string.Join("&routeIds=", RouteIds);
             }
-        }
 
-        if (Levels != null && Levels.Count > 0)
-        {
-            foreach (int level in Levels)
+            if (Levels != null && Levels.Any())
             {
-                queryParams.Add($"levels={level}");
+                url += "&levels=" + string.Join("&levels=", Levels);
             }
+
+            return url;
         }
-
-        queryParams.Add("filter=Active");
-
-        queryParams.Add($"orderby={OrderBy}");
-
-        var queryString = string.Join("&", queryParams);
-
-        return $"{_BASE_URL}{(queryString.Length > 0 ? "?" + queryString : string.Empty)}";
     }
 }

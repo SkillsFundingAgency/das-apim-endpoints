@@ -24,7 +24,6 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
     <ProjectReference Include="..\SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj" />
   </ItemGroup>
 </Project>

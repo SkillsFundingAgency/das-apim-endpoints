@@ -11,9 +11,8 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
         public string? Name { get; set; }
         public string? Organisation { get; set; }
         public string? QAN { get; set; }
-        public string? ProcessStatusFilter { get; set; }
         public string BaseUrl = "api/qualifications";
-        
+
         public string GetUrl
         {
             get
@@ -48,13 +47,7 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
                     queryParams.Add("QAN", QAN);
                 }
 
-                if (!string.IsNullOrWhiteSpace(ProcessStatusFilter))
-                {
-                    queryParams.Add("ProcessStatusFilter", ProcessStatusFilter);
-                }
-
                 var url = BaseUrl.AttachParameters(queryParams);
-                
                 return url;
             }
         }

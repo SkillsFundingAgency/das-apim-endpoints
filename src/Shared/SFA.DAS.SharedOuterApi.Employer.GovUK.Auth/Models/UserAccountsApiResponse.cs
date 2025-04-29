@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Models
 {
@@ -39,7 +38,6 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Models
         public string EncodedAccountId { get ; set ; }
         public string DasAccountName { get ; set ; }
         public string Role { get ; set ; }
-        public ApprenticeshipEmployerType ApprenticeshipEmployerType { get; set; }
 
         public static implicit operator UserAccountsApiResponseItem(AccountUser source)
         {
@@ -47,8 +45,7 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Models
             {
                 DasAccountName = source.DasAccountName,
                 EncodedAccountId = source.EncodedAccountId,
-                Role = source.Role,
-                ApprenticeshipEmployerType = source.ApprenticeshipEmployerType
+                Role = source.Role
             };
         }
     }

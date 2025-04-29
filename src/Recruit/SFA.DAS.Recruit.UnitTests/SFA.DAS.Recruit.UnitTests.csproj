@@ -29,4 +29,8 @@
     <ProjectReference Include="..\SFA.DAS.Recruit\SFA.DAS.Recruit.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\AccountUsers\" />
+  </ItemGroup>
+
 </Project>

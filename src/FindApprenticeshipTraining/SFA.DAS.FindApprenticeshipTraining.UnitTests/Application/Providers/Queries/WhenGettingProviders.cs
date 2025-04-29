@@ -15,7 +15,6 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Providers.Queries;
-
 public class WhenGettingProviders
 {
     [Test, MoqAutoData]
@@ -23,20 +22,16 @@ public class WhenGettingProviders
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
         [Greedy] GetRoatpProvidersQueryHandler handler,
         GetProvidersResponse expected,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         var query = new GetRoatpProvidersQuery();
 
         apiClient.Setup(x =>
-            x.GetWithResponseCode<GetProvidersResponse>(
-                It.IsAny<GetRoatpProvidersRequest>()
-            )
-        )
-        .ReturnsAsync(new ApiResponse<GetProvidersResponse>(expected, HttpStatusCode.OK, string.Empty));
+                x.GetWithResponseCode<GetProvidersResponse>(
+                    It.IsAny<GetRoatpProvidersRequest>()))
+            .ReturnsAsync(new ApiResponse<GetProvidersResponse>(expected, HttpStatusCode.OK, ""));
 
-        var _sut = await handler.Handle(query, cancellationToken);
-
-        _sut.Providers.Should().BeEquivalentTo(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider));
+        var actual = await handler.Handle(query, cancellationToken);
+        actual.Providers.Should().BeEquivalentTo(expected.RegisteredProviders.Select(provider => (RoatpProvider)provider));
     }
 }
