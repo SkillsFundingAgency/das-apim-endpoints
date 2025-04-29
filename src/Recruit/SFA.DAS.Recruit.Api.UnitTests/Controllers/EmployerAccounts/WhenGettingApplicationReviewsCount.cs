@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
+using SFA.DAS.Recruit.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -15,7 +16,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
         public async Task Then_Gets_Account_From_Mediator(
             long accountId,
             List<long> vacancyReferences,
-            GetApplicationReviewsCountByAccountIdQueryResult mediatorResult,
+            List<ApplicationReviewStats> mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerAccountsController controller)
         {
@@ -29,7 +30,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetApplicationReviewsCountByAccountIdQueryResult;
+            var model = controllerResult.Value as List<ApplicationReviewStats>;
             Assert.That(model, Is.Not.Null);
             model.Should().BeEquivalentTo(mediatorResult);
         }
