@@ -5,7 +5,7 @@ trigger:
       - "master"
   paths:
     include:
-    - src/RoatpOversight
+    - src/LearnerDataJobs
     exclude:
     - azure
     - pipeline-templates
@@ -18,7 +18,7 @@ pr:
       - "master"
   paths:
     include:
-    - src/RoatpOversight
+    - src/LearnerDataJobs
     - Directory.Packages.props
     exclude:
     - azure
@@ -35,7 +35,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/3.0.6
+    ref: refs/tags/2.2.19
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -51,4 +51,4 @@ resources:
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
-    OuterApiName: RoatpOversight
+    OuterApiName: LearnerDataJobs
