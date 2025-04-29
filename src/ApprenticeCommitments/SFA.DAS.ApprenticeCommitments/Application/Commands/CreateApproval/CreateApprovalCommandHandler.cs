@@ -72,7 +72,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
                 RecognisePriorLearning = apprentice.RecognisePriorLearning,
                 DurationReducedByHours = apprentice.DurationReducedByHours,
-                DurationReducedBy = apprentice.DurationReducedBy
+                DurationReducedBy = apprentice.DurationReducedBy,
+                ApprenticeshipType = apprentice.ApprenticeshipType
             });
 
             var res = new CreateApprovalResponse
@@ -105,12 +106,15 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             var courseCode = apprenticeship.GetCourseCode(_logger);
             if (courseCode is null) return default;
 
-            var course = _coursesService.GetCourse(courseCode);
+            var course = await _coursesService.GetCourse(courseCode);
+            
+            // TODO implement
+            apprenticeship.ApprenticeshipType = course.ApprenticeshipType;
 
             var provider = _trainingProviderService.GetTrainingProviderDetails(
                 command.TrainingProviderId);
 
-            return (apprenticeship, await provider, await course);
+            return (apprenticeship, await provider, course);
         }
 
         private static string ProviderName(TrainingProviderResponse trainingProvider)
