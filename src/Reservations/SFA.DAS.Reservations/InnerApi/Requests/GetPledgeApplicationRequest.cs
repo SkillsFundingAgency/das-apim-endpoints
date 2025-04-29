@@ -2,15 +2,8 @@
 
 namespace SFA.DAS.Reservations.InnerApi.Requests
 {
-    public class GetPledgeApplicationRequest : IGetApiRequest
+    public class GetPledgeApplicationRequest(int applicationId) : IGetApiRequest
     {
-        private readonly int _applicationId;
-
-        public GetPledgeApplicationRequest(int applicationId)
-        {
-            _applicationId = applicationId;
-        }
-
-        public string GetUrl => $"applications/{_applicationId}";
+        public string GetUrl => $"applications/{applicationId}";
     }
 }

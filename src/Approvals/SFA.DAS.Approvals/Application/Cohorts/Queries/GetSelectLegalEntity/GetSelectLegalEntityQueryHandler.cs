@@ -24,7 +24,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectLegalEntity
                 return new GetSelectLegalEntityQueryResult();
             }
 
-            return new GetSelectLegalEntityQueryResult()
+            return new GetSelectLegalEntityQueryResult
             {
                 LegalEntities = response.ToList()
             };
