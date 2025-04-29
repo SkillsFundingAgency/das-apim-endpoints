@@ -1,6 +1,6 @@
 ﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Feedback;
 
-public class ProviderAttributeAnnualSummaryItem
+public class EmployerProviderAttributeAnnualSummaryItem
 {
     public string Name { get; set; }
     public int Strength { get; set; }

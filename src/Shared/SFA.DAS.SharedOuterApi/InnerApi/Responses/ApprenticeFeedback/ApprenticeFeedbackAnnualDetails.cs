@@ -13,5 +13,5 @@ public class ApprenticeFeedbackStarsAnnualSummary
     public int Stars { get; set; }
     public int ReviewCount { get; set; }
     public string TimePeriod { get; set; }
-    public List<ProviderAttributeAnnualSummaryItem> ProviderAttribute { get; set; }
+    public List<ApprenticeProviderAttributeAnnualSummaryItem> ProviderAttribute { get; set; }
 }
