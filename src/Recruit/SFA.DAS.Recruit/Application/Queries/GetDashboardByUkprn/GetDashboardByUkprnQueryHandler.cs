@@ -15,7 +15,7 @@ namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn
         public async Task<GetDashboardByUkprnQueryResult> Handle(GetDashboardByUkprnQuery request, CancellationToken cancellationToken)
         {
             return await recruitApiClient.Get<GetDashboardApiResponse>(
-                new GetDashboardByUkprnApiRequest(request.Ukprn, request.Status));
+                new GetDashboardByUkprnApiRequest(request.Ukprn));
         }
     }
 }

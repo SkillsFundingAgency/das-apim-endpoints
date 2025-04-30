@@ -6,7 +6,6 @@ using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByUkprn;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn;
 using SFA.DAS.Recruit.Application.Queries.GetProvider;
 using SFA.DAS.Recruit.Application.Queries.GetProviders;
-using SFA.DAS.Recruit.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -62,11 +61,11 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("{ukprn:int}/dashboard")]
-        public async Task<IActionResult> GetDashboard([FromRoute] int ukprn, [FromQuery] ApplicationReviewStatus status)
+        public async Task<IActionResult> GetDashboard([FromRoute] int ukprn)
         {
             try
             {
-                var queryResult = await mediator.Send(new GetDashboardByUkprnQuery(ukprn, status));
+                var queryResult = await mediator.Send(new GetDashboardByUkprnQuery(ukprn));
 
                 return Ok(queryResult);
             }

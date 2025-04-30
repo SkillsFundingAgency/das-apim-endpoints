@@ -18,7 +18,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetDashboardByUkprn
             GetDashboardByUkprnQueryHandler handler)
         {
             //Arrange
-            var expectedGetUrl = new GetDashboardByUkprnApiRequest(query.Ukprn, query.Status);
+            var expectedGetUrl = new GetDashboardByUkprnApiRequest(query.Ukprn);
             recruitApiClient
                 .Setup(x => x.Get<GetDashboardApiResponse>(
                     It.Is<GetDashboardByUkprnApiRequest>(c => c.GetUrl.Equals(expectedGetUrl.GetUrl))))

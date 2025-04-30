@@ -6,7 +6,7 @@ using SFA.DAS.Recruit.Application.Queries.GetAccount;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
-using SFA.DAS.Recruit.Enums;
+using SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -59,11 +59,11 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("dashboard")]
-        public async Task<IActionResult> GetDashboard([FromRoute] long accountId, [FromQuery] ApplicationReviewStatus status)
+        public async Task<IActionResult> GetDashboard([FromRoute] long accountId)
         {
             try
             {
-                var queryResult = await mediator.Send(new GetDashboardByAccountIdQuery(accountId, status));
+                var queryResult = await mediator.Send(new GetDashboardByAccountIdQuery(accountId));
 
                 return Ok(queryResult);
             }
