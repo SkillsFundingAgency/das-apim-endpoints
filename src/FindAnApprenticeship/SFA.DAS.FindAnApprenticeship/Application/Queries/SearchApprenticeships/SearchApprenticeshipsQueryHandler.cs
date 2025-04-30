@@ -159,7 +159,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
                             .Status
                     };
                     
-                    if (savedVacanciesResponse.SavedVacancies.Count > 0 && savedVacanciesResponse.SavedVacancies.Exists(vac => vac.VacancyReference.Equals(vacancy.Id, StringComparison.CurrentCultureIgnoreCase)))
+                    if (savedVacanciesResponse.SavedVacancies.Count > 0 && savedVacanciesResponse.SavedVacancies.Exists(vac => vac.VacancyId.Equals(vacancy.Id, StringComparison.CurrentCultureIgnoreCase)) ||
+                        savedVacanciesResponse.SavedVacancies.Exists(vac => vac.VacancyReference.Equals(vacancy.Id, StringComparison.CurrentCultureIgnoreCase) && vac.VacancyId == null))
                     {
                         vacancy.IsSavedVacancy = true;
                     }

@@ -27,6 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
         public class SavedVacancy
         {
             public Guid Id { get; set; }
+            public string? VacancyId { get; set; }
             public string Title { get; set; }
             public string VacancyReference { get; set; }
             public string EmployerName { get; set; }

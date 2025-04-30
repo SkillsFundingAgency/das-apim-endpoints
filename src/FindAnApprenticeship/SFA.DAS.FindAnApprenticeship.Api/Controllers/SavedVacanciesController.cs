@@ -40,7 +40,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await mediator.Send(new SaveVacancyCommand(candidateId, request.VacancyReference, request.VacancyId));
+                var result = await mediator.Send(new SaveVacancyCommand(candidateId, request.VacancyId));
 
                 return Ok(result);
             }

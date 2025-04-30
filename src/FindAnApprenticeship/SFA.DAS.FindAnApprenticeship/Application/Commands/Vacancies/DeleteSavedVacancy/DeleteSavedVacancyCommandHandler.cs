@@ -13,9 +13,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.DeleteSave
     {
         public async Task<Unit> Handle(DeleteSavedVacancyCommand request, CancellationToken cancellationToken)
         {
-            var vacancyId = request.VacancyId;
-
-            var postRequest = new PostDeleteSavedVacancyApiRequest(request.CandidateId, vacancyId);
+            var postRequest = new PostDeleteSavedVacancyApiRequest(request.CandidateId, request.VacancyId);
 
             await CandidateApiClient.Delete(postRequest);
 

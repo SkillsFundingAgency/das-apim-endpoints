@@ -17,7 +17,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies.SaveVacanc
             var postData = new PostSavedVacancyApiRequestData
             {
                 VacancyId = request.VacancyId,
-                VacancyReference = request.VacancyReference,
+                VacancyReference = request.VacancyId.Split('-')[0],
                 CreatedOn = DateTime.UtcNow
             };
 
