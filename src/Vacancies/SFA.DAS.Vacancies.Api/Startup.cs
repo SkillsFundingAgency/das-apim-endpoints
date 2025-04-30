@@ -127,7 +127,8 @@ public static class Startup
             {
                 options.GroupNameFormat = "'v'VVV"; // e.g., v1
                 options.SubstituteApiVersionInUrl = true;
-            }); ;
+            });
+        services.AddControllers();
         services.AddEndpointsApiExplorer();
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>();
     }
@@ -147,9 +148,6 @@ public static class Startup
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            //endpoints.MapControllerRoute(
-            //    name: "default",
-            //    pattern: "api/{controller=vacancy}/{action=index}/{id?}");
         });
 
         app.UseSwagger();
@@ -164,6 +162,7 @@ public static class Startup
                     var name = description.GroupName.ToUpperInvariant();
                     options.SwaggerEndpoint(url, name);
                 }
+                options.RoutePrefix = "swagger";
             });
     }
 }

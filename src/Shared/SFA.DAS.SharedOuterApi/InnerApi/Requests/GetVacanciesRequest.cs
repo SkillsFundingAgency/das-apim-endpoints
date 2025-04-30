@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
 using System.Web;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
 {
@@ -86,7 +84,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
              {
                  url += $"&excludeNational={excludeNational}";
              }
-             if(!string.IsNullOrEmpty(employerName) && !string.IsNullOrEmpty(_accountLegalEntityPublicHashedId))
+             if(!string.IsNullOrEmpty(employerName))
              {
                 url += $"&employerName={HttpUtility.UrlEncode(employerName)}";
              }

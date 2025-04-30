@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
-    public class GetVacanciesListResponseV2
+    public record GetVacanciesListResponseV2
     {
         public List<GetVacanciesListResponseItemV2> Vacancies { get; set; }
         public long Total { get ; set ; }
@@ -25,13 +26,22 @@ namespace SFA.DAS.Vacancies.Api.Models
         }
     }
     
-    public class GetVacanciesListResponseItemV2 : GetVacanciesListResponseItem
+    public record GetVacanciesListResponseItemV2 : GetVacanciesListResponseItem
     {
         /// <summary>
         /// The web address for the apprentice will apply.
         /// </summary>
         public string ApplicationUrl { get; set; }
-        
+        /// <summary>
+        /// If the apprenticeship is available at more than one location, there will be up to 9 otherAddresses. The API will also give you separate vacancies where each location is the set address and location with a corresponding distance.
+        /// </summary>
+        public List<GetVacancyAddressItem> Addresses { get; set; }
+
+        [JsonIgnore] 
+        public new List<GetVacancyAddressItem> OtherAddresses { get; set; }
+        [JsonIgnore]
+        public new VacancyLocation Location { get; set; }
+
         public static implicit operator GetVacanciesListResponseItemV2(GetVacanciesListItem source)
         {
             return new GetVacanciesListResponseItemV2
@@ -54,7 +64,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Wage = source,
                 Distance = source.Distance,
                 Address = GetVacancyAddressItem.From(source.Address),
-                OtherAddresses = source.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
+                Addresses = source.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 EmployerContactEmail = source.EmployerContactEmail,
                 EmployerContactName = source.EmployerContactName,
@@ -62,11 +72,6 @@ namespace SFA.DAS.Vacancies.Api.Models
                 ApprenticeshipLevel = source.ApprenticeshipLevel,
                 ApplicationUrl = source.ApplicationUrl,
                 ExpectedDuration = source.ExpectedDuration,
-                Location = new VacancyLocation
-                {
-                    Lat = source.Location.Lat,
-                    Lon = source.Location.Lon
-                }
             };
         }
     }

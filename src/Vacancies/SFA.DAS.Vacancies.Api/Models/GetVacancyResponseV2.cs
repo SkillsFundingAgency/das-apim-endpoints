@@ -8,7 +8,7 @@ using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
-    public class GetVacancyResponseV2 : GetVacanciesListResponseItemV2
+    public record GetVacancyResponseV2 : GetVacanciesListResponseItemV2
     {
         /// <summary>
         /// A description of the company the apprentice will work at. Will be less than or equal to 4000 characters.
@@ -61,7 +61,6 @@ namespace SFA.DAS.Vacancies.Api.Models
                 HoursPerWeek = source.Vacancy.HoursPerWeek,
                 IsDisabilityConfident = source.Vacancy.IsDisabilityConfident,
                 IsNationalVacancy = source.Vacancy.VacancyLocationType?.Equals("National", StringComparison.CurrentCultureIgnoreCase) ?? false,
-                Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation { Lat = source.Vacancy.Location.Lat, Lon = source.Vacancy.Location.Lon } : null,
                 NumberOfPositions = source.Vacancy.NumberOfPositions,
                 OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 OutcomeDescription = source.Vacancy.OutcomeDescription,

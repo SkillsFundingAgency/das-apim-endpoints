@@ -49,11 +49,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.VacancyReference)
                 .Excluding(item => item.VacancySource)
+                .Excluding(item => item.Location)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
-            actual.Location.Lat.Should().Be(source.Vacancy.Location.Lat);
-            actual.Location.Lon.Should().Be(source.Vacancy.Location.Lon);
             actual.Course.Level.Should().Be(source.Vacancy.CourseLevel);
             actual.Course.Title.Should().Be($"{source.Vacancy.CourseTitle} (level {source.Vacancy.CourseLevel})");
             actual.Course.Route.Should().Be(source.Vacancy.Route);

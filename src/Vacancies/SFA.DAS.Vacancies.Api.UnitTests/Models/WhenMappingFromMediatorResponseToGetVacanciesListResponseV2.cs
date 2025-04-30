@@ -25,6 +25,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                         .Excluding(c => c.Ukprn)
                         .Excluding(item => item.ClosingDate)
                         .Excluding(c => c.VacancyReference)
+                        .Excluding(item => item.Location)
+                        .Excluding(item => item.OtherAddresses)
             );
             actual.Total.Should().Be(source.Total);
             actual.TotalFiltered.Should().Be(source.TotalFiltered);
@@ -33,8 +35,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             {
                 var expectedVacancy =
                     source.Vacancies.Single(c => c.VacancyReference.Equals(vacancy.VacancyReference.Replace("VAC","")));
-                vacancy.Location.Lat.Should().Be(expectedVacancy.Location.Lat);
-                vacancy.Location.Lon.Should().Be(expectedVacancy.Location.Lon);
                 vacancy.ClosingDate.Should().Be(expectedVacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
                 vacancy.ApplicationUrl.Should().Be(expectedVacancy.ApplicationUrl);
             }
@@ -64,7 +64,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.CourseTitle)
                 .Excluding(item => item.CourseLevel)
                 .Excluding(item => item.ClosingDate)
-                .Excluding(item => item.Location));
+                .Excluding(item => item.Location)
+                .Excluding(item => item.OtherAddresses));
             actual.Vacancies.TrueForAll(c => c.IsNationalVacancy).Should().BeTrue();
             for (var i = 0; i < actual.Vacancies.Count; i++)
             {
@@ -74,8 +75,6 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 actual.Vacancies[i].Course.Level.Should().Be(sourceVacancies[i].CourseLevel);
                 actual.Vacancies[i].Course.Route.Should().Be(sourceVacancies[i].Route);
                 actual.Vacancies[i].Course.LarsCode.Should().Be(sourceVacancies[i].StandardLarsCode);
-                actual.Vacancies[i].Location.Lat.Should().Be(sourceVacancies[i].Location.Lat);
-                actual.Vacancies[i].Location.Lon.Should().Be(sourceVacancies[i].Location.Lon);
                 actual.Vacancies[i].ApplicationUrl.Should().Be(sourceVacancies[i].ApplicationUrl);
             }
         }

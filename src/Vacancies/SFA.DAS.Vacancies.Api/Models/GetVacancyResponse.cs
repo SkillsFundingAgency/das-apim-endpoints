@@ -8,7 +8,7 @@ using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
-    public class GetVacancyResponse : GetVacanciesListResponseItem
+    public record GetVacancyResponse : GetVacanciesListResponseItem
     {
         /// <summary>
         /// A description of the company the apprentice will work at. Will be less than or equal to 4000 characters.

@@ -79,7 +79,7 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
             return Ok((GetVacanciesListResponseV2)queryResponse);
 
         }
-        catch (SecurityException e)
+        catch (SecurityException)
         {
             logger.LogInformation("Unable to get vacancies - {AccountLegalEntityPublicHashedId} is not associated with subscription {AccountIdentifier}.", request.AccountLegalEntityPublicHashedId, accountIdentifier);
             return new StatusCodeResult((int)HttpStatusCode.Forbidden);
