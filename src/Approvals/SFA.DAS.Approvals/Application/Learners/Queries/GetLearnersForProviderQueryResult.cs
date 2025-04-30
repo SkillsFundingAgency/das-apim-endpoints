@@ -12,10 +12,10 @@ public class GetLearnersForProviderQueryResult
     public int TotalPages { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
-    public List<IlrLearnerSummary> Learners { get; set; }
+    public List<LearnerSummary> Learners { get; set; }
 }
 
-public class IlrLearnerSummary
+public class LearnerSummary
 {
     public long Id { get; set; }
     public string FirstName { get; set; }
