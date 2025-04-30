@@ -84,7 +84,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'
 
-  /providers/{ukprn}/apprenticeshipTypes/{apprenticeshipType}:
+  /apprenticeships/{apprenticeshipId}:
     patch:
       summary: Updates the details of an approved apprenticeship
       security:
@@ -92,25 +92,13 @@ paths:
       requestBody:
         $ref: '#/components/requestBodies/apprenticeshipUpdateRequest'
       parameters:
-        - name: ukprn
+        - apprenticeshipId:
           in: path
           required: true
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
-        - name: apprenticeshipType
-          in: path
-          required: true
-          description: The type of apprenticeship
-          schema:
-            type: string
-            enum:
-            - apprenticeship
-            - shortApprenticeship
-            - foundationApprenticeship
-            - Bootcamp
-            - HTC
-            
+        
       responses:
         '200':
           $ref: "#/components/responses/apprenticeshipUpdatedResponse"
@@ -353,6 +341,14 @@ components:
     header:
       type: object
       properties:
+        apprenticeshipType:
+          type: string
+          enum:
+          - apprenticeship
+          - shortApprenticeship
+          - foundationApprenticeship
+          - Bootcamp
+          - HTC
         apprenticeshipKey:
           type: string
         consumerReference:
@@ -393,11 +389,24 @@ components:
           type: string
           enum: 
           - payment
-        pay1: 
-          type: integer
-        date:
-          type: string
-          format: date
+        epaoPrice: 
+          description: The new costs 
+          type: object
+          properties:
+            date: 
+              type: string
+              format: date
+            amount:
+              type: int  
+        trainingPrice: 
+          description: The new costs 
+          type: object
+          properties:
+            date: 
+              type: string
+              format: date
+            amount:
+              type: int  
 
     apprenticeshipLearnerChange:
       type: object
@@ -406,8 +415,20 @@ components:
           type: string
           enum: 
           - learner
-        pay1: 
-          type: integer
+        firstname: 
+          type: string
+        lastname:
+          type: string
+        dob:
+          type: string
+          format: date
+        careLeaver: 
+          type: object
+          properties:
+            consentGiven:  
+              type: bool
+            status:
+              type: bool 
 
     apprenticeshipMilestoneChange:
       type: object
@@ -416,18 +437,26 @@ components:
           type: string
           enum: 
           - milestone
-        pay1: 
-          type: integer
-
+        completed:
+          type: object
+          properties:
+            effectiveDate:
+              type: string
+              format: date
+        stopped:
+          type: object
+          properties:
+            effectiveDate:
+              type: string
+              format: date
+        
     apprenticeshipLearningDeliveryChange:
       type: object
       properties:
         changeType:
           type: string
           enum: 
-          - learningDelivery
-        pay1: 
-          type: integer
+          - learningDelivery      
           
     # bootcamp, short apprenticeship and foundation apprenticeship
     
@@ -445,6 +474,10 @@ components:
             - $ref: "#/components/schemas/bootcampMilestoneChange"
             - $ref: "#/components/schemas/bootcampLearningDeliveryChange"
             
+            # Notes: CoC for milestones is this CoC
+            # milestones - completed, paused, stopped, delivery percentage
+            # worries about this future proofing
+
     bootcampPaymentChange:
       type: object
       properties:
