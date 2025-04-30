@@ -29,27 +29,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
             var myApprenticeshipTask = _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));
 
             await Task.WhenAll(apprenticeTask, myApprenticeshipTask);
-        {
-            var apprenticeTask = _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
-            var myApprenticeshipTask = _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));
-
-            await Task.WhenAll(apprenticeTask, myApprenticeshipTask);
-
-            var myApprenticeship = await myApprenticeshipTask;
-            if (myApprenticeship != null)
-            {
-               await PopulateMyApprenticeshipWithCourseTitle(myApprenticeship);
-            }
-
-            return new GetApprenticeDetailsQueryResult
-            {
-                ApprenticeDetails = new ApprenticeDetails
-                {
-                    Apprentice = await apprenticeTask,
-                    MyApprenticeship = await myApprenticeshipTask
-                }
-            };
-        }
 
             var myApprenticeship = await myApprenticeshipTask;
             if (myApprenticeship != null)
