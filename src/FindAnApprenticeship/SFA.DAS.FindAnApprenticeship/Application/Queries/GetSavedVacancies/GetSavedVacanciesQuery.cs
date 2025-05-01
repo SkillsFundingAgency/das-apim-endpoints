@@ -54,11 +54,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
                 await candidateApiClient.Get<GetSavedVacanciesApiResponse>(
                     new GetSavedVacanciesApiRequest(request.CandidateId));
 
-            var savedVacancyList = savedVacanciesResponse.SavedVacancies;
+            var savedVacancyList = savedVacanciesResponse.SavedVacancies
+                .GroupBy(x => x.VacancyReference.TrimVacancyReference())
+                .Select(g => g.OrderByDescending(x => x.CreatedOn).First())
+                .ToList();
 
             if (savedVacancyList.Count == 0) { return new GetSavedVacanciesQueryResult(); }
 
-            var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference.TrimVacancyReference()}").ToList();
+            var vacancyReferences = savedVacancyList
+                .Select(x => x.VacancyReference.TrimVacancyReference())
+                .ToList();
             var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
             var result = new GetSavedVacanciesQueryResult();
