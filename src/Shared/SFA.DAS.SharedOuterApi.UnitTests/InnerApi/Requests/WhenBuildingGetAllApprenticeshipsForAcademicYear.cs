@@ -6,10 +6,10 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 public class WhenBuildingGetAllApprenticeshipsForAcademicYear
 {
     [Test, AutoData]
-    public void Then_The_Request_Is_Correctly_Build(string ukprn, string startDate, string endDate, int page, int? pageSize = 20)
+    public void Then_The_Request_Is_Correctly_Built(string ukprn, int academicYear, int page, int? pageSize)
     {
-        var actual = new GetAllApprenticeshipsByDatesRequest(ukprn, startDate, endDate, page, pageSize);
+        var actual = new GetAllApprenticeshipsRequest(ukprn, academicYear, page, pageSize);
 
-        actual.GetUrl.Should().Be($"/{ukprn}/apprenticeships/by-dates?startDate={startDate}&endDate={endDate}&page={page}&pageSize={pageSize}");
+        actual.GetUrl.Should().Be($"/{ukprn}/academicyears/{academicYear}/apprenticeships?page={page}&pageSize={pageSize}");
     }
 }
