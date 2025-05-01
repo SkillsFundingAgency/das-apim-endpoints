@@ -162,7 +162,7 @@ public static class Startup
                     var name = description.GroupName.ToUpperInvariant();
                     options.SwaggerEndpoint(url, name);
                 }
-                options.RoutePrefix = "swagger";
+                options.RoutePrefix = string.Empty;
             });
     }
 }
