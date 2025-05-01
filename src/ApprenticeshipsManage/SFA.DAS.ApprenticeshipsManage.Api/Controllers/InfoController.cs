@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.ApprenticeshipsManage.Api.Controllers;
 
-[Route("api")]
 [ApiController]
 [AllowAnonymous]
 public class InfoController(IConfiguration config) : ControllerBase
