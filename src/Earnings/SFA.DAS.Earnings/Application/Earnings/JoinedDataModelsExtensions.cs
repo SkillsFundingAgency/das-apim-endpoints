@@ -173,7 +173,11 @@ internal static class JoinedDataModelsExtensions
             LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
             LearnAimRef = EarningsFM36Constants.LearnAimRef,
             LearnStartDate = joinedEarningsApprenticeship.StartDate,
-            LearnDel1618AtStart = joinedEarningsApprenticeship.AgeAtStartOfApprenticeship < 19,
+            LearnDel1618AtStart = joinedEarningsApprenticeship.Episodes.Any(episode => 
+                episode.AdditionalPayments.Any(additionalPayment => 
+                    additionalPayment.AdditionalPaymentType 
+                        is EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive 
+                        or EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive)),
             LearnDelAppAccDaysIL = 1 + ((joinedEarningsApprenticeship.PlannedEndDate < currentAcademicYear.EndDate
                     ? joinedEarningsApprenticeship.PlannedEndDate
                     : currentAcademicYear.EndDate) - joinedEarningsApprenticeship.StartDate).Days,

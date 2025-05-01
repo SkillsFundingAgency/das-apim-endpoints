@@ -48,11 +48,18 @@ public class ApplicationsReviewController : BaseController
 
     [HttpGet("/api/application-reviews/{applicationReviewId}/feedback/{userType}")]
     [ProducesResponseType(typeof(GetFeedbackForApplicationReviewByIdQueryResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> GetFeedbackForApplicationReviewById(Guid applicationReviewId, string userType)
     {
         return await SendRequestAsync(new GetFeedbackForApplicationReviewByIdQuery(applicationReviewId, userType));
+    }
+
+    [HttpGet("/api/application-reviews/{applicationReviewId}/qfau-feedback-review")]
+    [ProducesResponseType(typeof(GetQfauFeedbackForApplicationReviewConfirmationQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetQfauFeedbackForApplicationReviewConfirmationById(Guid applicationReviewId)
+    {
+        return await SendRequestAsync(new GetQfauFeedbackForApplicationReviewConfirmationQuery(applicationReviewId));
     }
 
     [HttpPut("/api/application-reviews/{applicationReviewId}/qfau-outcome")]
