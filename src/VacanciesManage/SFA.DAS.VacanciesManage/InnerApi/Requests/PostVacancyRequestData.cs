@@ -170,7 +170,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         FixedWage,
         NationalMinimumWageForApprentices,
         NationalMinimumWage,        
-        Unspecified
+        Unspecified,
+        CompetitiveSalary
     }
     
     public enum DurationUnit
