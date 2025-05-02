@@ -7,25 +7,23 @@ using SFA.DAS.ApprenticeshipsManage.InnerApi.Services;
 namespace SFA.DAS.ApprenticeshipsManage.Api.Controllers;
 
 [ApiController]
-public class ApprenticeshipsController(
-    IMediator mediator, 
+public class ApprenticeshipsController(IMediator mediator, 
     ILogger<ApprenticeshipsController> logger,
     IPagedLinkHeaderService pagedLinkHeaderService) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/apprenticeships")]
-    public async Task<IActionResult> GetApprenticeships([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int? page = 1, [FromQuery] int? pagesize = 20)
+    public async Task<IActionResult> GetApprenticeships([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
-        logger.LogInformation("GetApprenticeships for ukprn {ukprn}, year {year}", ukprn, academicyear);
+        logger.LogInformation("GetApprenticeships for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
-        page ??= 1;
-        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 10, 100) : 20;
+        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
 
         var query = new GetApprenticeshipsQuery()
         {
             Ukprn = ukprn,
             AcademicYear = academicyear,
-            Page = page.Value,
-            PageSize = pagesize.Value
+            Page = page,
+            PageSize = pagesize
         };
 
         var response = await mediator.Send(query);
