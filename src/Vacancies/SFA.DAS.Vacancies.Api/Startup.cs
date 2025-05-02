@@ -159,8 +159,7 @@ public static class Startup
                 foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
                 {
                     var url = $"/swagger/{description.GroupName}/swagger.json";
-                    var name = description.GroupName.ToUpperInvariant();
-                    options.SwaggerEndpoint(url, name);
+                    options.SwaggerEndpoint(url, "VacanciesOuterApi");
                 }
                 options.RoutePrefix = string.Empty;
             });
