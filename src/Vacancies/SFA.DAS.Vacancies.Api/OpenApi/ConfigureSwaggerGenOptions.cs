@@ -14,10 +14,9 @@ namespace SFA.DAS.Vacancies.Api.OpenApi
             {
                 // add swagger doc for each api version
 
-                var deprecated = description.IsDeprecated ? " (deprecated)" : string.Empty;
                 var openApiInfo = new OpenApiInfo
                 {
-                    Title = $"Display Advert API v{description.ApiVersion} {deprecated}",
+                    Title = $"Display Advert API",
                     Description = """
                                   Get and display adverts from Find an apprenticeship. 
                                   **Note.** It is not recommended to use The Display Advert API directly from a browser and as such we have not enabled CORS for this API.  Instead, we recommend you call the API intermittently to retrieve the latest vacancies, store those vacancies in your own data store, and then change your website to read those vacancies from your own data store.
