@@ -5,4 +5,5 @@ public class GetEmployerAccountsQuery : IRequest<GetEmployerAccountsQueryResult>
 {
     public long? AccountId { get; set; }
     public string? PayeSchemeRef { get; set; }
+    public string? EmployerName { get; set; }
 }

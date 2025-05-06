@@ -12,6 +12,7 @@ using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
+using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
@@ -329,5 +330,24 @@ public class EmployerAccountsControllerTests
         // Assert
         mockMediator.Verify();
         response.Should().NotBeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_EmployerAccounts_By_EmployerName_From_Mediator(
+        string employerName,
+        GetEmployerAccountsQueryResult mediatorResult,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] EmployerAccountsController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.Is<GetEmployerAccountsQuery>(x => x.EmployerName == employerName),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
+
+        var controllerResult = await controller.Get(null, null, employerName) as ObjectResult;
+
+        controllerResult.Should().NotBeNull();
+        controllerResult.Value.Should().BeEquivalentTo(mediatorResult);
     }
 }

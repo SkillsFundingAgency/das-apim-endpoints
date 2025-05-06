@@ -24,6 +24,24 @@ public class GetEmployerAccountsQueryHandler(IInternalApiClient<AccountsConfigur
                 await AddAccountDetails(payeDetail.AccountId, response);
             }
         }
+        else if (!string.IsNullOrWhiteSpace(request.EmployerName))
+        {
+            var results = await client.Get<GetEmployerAccountsByNameResponse>(new GetEmployerAccountsByNameRequest(request.EmployerName));
+            if (results?.Accounts != null)
+            {
+                foreach (var account in results.Accounts)
+                {
+                    response.Accounts.Add(new EmployerAccount
+                    {
+                        AccountId = account.AccountId,
+                        DasAccountName = account.DasAccountName,
+                        HashedAccountId = account.HashedAccountId,
+                        PublicHashedAccountId = account.PublicHashedAccountId
+                    });
+                }
+            }
+        }
+        
         return response;
     }
 

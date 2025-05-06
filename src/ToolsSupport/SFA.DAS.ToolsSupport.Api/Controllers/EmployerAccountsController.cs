@@ -21,19 +21,16 @@ namespace SFA.DAS.ToolsSupport.Api.Controllers;
 public class EmployerAccountsController(IMediator mediator, ILogger<EmployerAccountsController> logger) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] long? accountId, [FromQuery] string? payeSchemeRef)
+    public async Task<IActionResult> Get([FromQuery] long? accountId, [FromQuery] string? payeSchemeRef, [FromQuery] string? employerName)
     {
-
         try
         {
-            var response = await mediator.Send(new GetEmployerAccountsQuery { AccountId = accountId, PayeSchemeRef = payeSchemeRef });
-
+            var response = await mediator.Send(new GetEmployerAccountsQuery { AccountId = accountId, PayeSchemeRef = payeSchemeRef, EmployerName = employerName });
             return Ok(response);
-
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error attempting to query Employer Account using accountId {accountId} or PayeSchemeRef {payeSchemeRef}", accountId, payeSchemeRef);
+            logger.LogError(ex, "Error attempting to query Employer Account using accountId {accountId}, payeSchemeRef {payeSchemeRef}, or employerName {employerName}", accountId, payeSchemeRef, employerName);
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
