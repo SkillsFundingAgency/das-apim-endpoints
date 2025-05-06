@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
 using SFA.DAS.ToolsSupport.Application.Queries;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccounts;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
 

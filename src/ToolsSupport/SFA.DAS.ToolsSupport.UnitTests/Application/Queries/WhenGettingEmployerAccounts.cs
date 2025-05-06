@@ -9,6 +9,7 @@ using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 using FluentAssertions;
 using System.Net;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccounts;
 
 namespace SFA.DAS.ToolsSupport.UnitTests.Application.Queries;
 

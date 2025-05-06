@@ -11,6 +11,7 @@ using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccounts;
 using SFA.DAS.ToolsSupport.Application.Queries.GetPayeSchemeLevyDeclarations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetTeamMembers;
 
