@@ -8,8 +8,6 @@
   <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-    <PackageReference Include="NLog.Web.AspNetCore" />
-    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
     <PackageReference Include="SFA.DAS.NServiceBus" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
@@ -17,12 +15,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
     <ProjectReference Include="..\SFA.DAS.EmployerRequestApprenticeTraining\SFA.DAS.EmployerRequestApprenticeTraining.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="nlog.config">
-      <TransformOnBuild>true</TransformOnBuild>
-    </Content>
   </ItemGroup>
 
   <ItemGroup>
