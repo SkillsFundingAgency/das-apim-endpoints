@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
     <PackageReference Include="SFA.DAS.NServiceBus" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
@@ -20,7 +19,5 @@
   <ItemGroup>
     <Folder Include="Integration Tests\" />
   </ItemGroup>
-
-
 
 </Project>
