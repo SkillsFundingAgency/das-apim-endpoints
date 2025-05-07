@@ -6,6 +6,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {
     public record GetSavedVacancyApiRequest(Guid CandidateId, string VacancyId, string VacancyReference) : IGetApiRequest
     {
-        public string GetUrl => $"api/candidates/{CandidateId}/saved-vacancies/{VacancyId}?vacancyReference={VacancyReference}";
+        public string GetUrl => $"api/candidates/{CandidateId}/saved-vacancies/{VacancyReference}?vacancyId={VacancyId}";
     }
 }
