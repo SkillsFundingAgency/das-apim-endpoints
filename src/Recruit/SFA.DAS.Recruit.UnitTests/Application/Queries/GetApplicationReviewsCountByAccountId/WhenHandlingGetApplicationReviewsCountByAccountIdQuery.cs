@@ -31,7 +31,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.Should().BeEquivalentTo(apiResponse);
+            actual.ApplicationReviewStatsList.Should().BeEquivalentTo(apiResponse);
         }
 
         [Test, MoqAutoData]
@@ -51,7 +51,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.Should().BeEquivalentTo(new List<ApplicationReviewStats>());
+            actual.ApplicationReviewStatsList.Should().BeEquivalentTo(new List<ApplicationReviewStats>());
         }
     }
 }

@@ -11,14 +11,17 @@ namespace SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccoun
 {
     public class GetApplicationReviewsCountByAccountIdQueryHandler(
         IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) 
-        : IRequestHandler<GetApplicationReviewsCountByAccountIdQuery, List<ApplicationReviewStats>>
+        : IRequestHandler<GetApplicationReviewsCountByAccountIdQuery, GetApplicationReviewsCountByAccountIdQueryResult>
     {
-        public async Task<List<ApplicationReviewStats>> Handle(GetApplicationReviewsCountByAccountIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetApplicationReviewsCountByAccountIdQueryResult> Handle(GetApplicationReviewsCountByAccountIdQuery request, CancellationToken cancellationToken)
         {
             var response = await recruitApiClient.PostWithResponseCode<List<ApplicationReviewStats>>(
                 new GetApplicationReviewsCountByAccountIdApiRequest(request.AccountId, request.VacancyReferences));
 
-            return response.Body ?? [];
+            return new GetApplicationReviewsCountByAccountIdQueryResult
+            {
+                ApplicationReviewStatsList = response.Body ?? []
+            };
         }
     }
 }
