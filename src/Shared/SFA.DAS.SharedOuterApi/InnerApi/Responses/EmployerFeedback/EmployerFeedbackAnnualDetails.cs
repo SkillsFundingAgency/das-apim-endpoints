@@ -14,5 +14,5 @@ public class EmployerFeedbackStarsAnnualSummary
     public int Stars { get; set; }
     public int ReviewCount { get; set; }
     public string TimePeriod { get; set; }
-    public List<ProviderAttributeAnnualSummaryItem> ProviderAttribute { get; set; }
+    public List<EmployerProviderAttributeAnnualSummaryItem> ProviderAttribute { get; set; }
 }

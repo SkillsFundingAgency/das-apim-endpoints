@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs.Api", "SFA.DAS.LearnerDataJobs.Api\SFA.DAS.LearnerDataJobs.Api.csproj", "{E2EE0760-94D0-4294-9F96-FBA5D87FC587}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{A0030E96-9EB4-4AF9-9256-1152863D8B76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{2DC3CF2D-F8E0-42E3-AD06-D650FE4CBCCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs", "SFA.DAS.LearnerDataJobs\SFA.DAS.LearnerDataJobs.csproj", "{A8388B9D-304A-482A-BAC5-EA7290C27878}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs.UnitTests", "SFA.DAS.LearnerDataJobs.UnitTests\SFA.DAS.LearnerDataJobs.UnitTests.csproj", "{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerDataJobs.Api.UnitTests", "SFA.DAS.LearnerDataJobs.Api.UnitTests\SFA.DAS.LearnerDataJobs.Api.UnitTests.csproj", "{E075214B-B106-4E2A-94B5-CB1571451937}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2EE0760-94D0-4294-9F96-FBA5D87FC587}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2EE0760-94D0-4294-9F96-FBA5D87FC587}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2EE0760-94D0-4294-9F96-FBA5D87FC587}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2EE0760-94D0-4294-9F96-FBA5D87FC587}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0030E96-9EB4-4AF9-9256-1152863D8B76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0030E96-9EB4-4AF9-9256-1152863D8B76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0030E96-9EB4-4AF9-9256-1152863D8B76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0030E96-9EB4-4AF9-9256-1152863D8B76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DC3CF2D-F8E0-42E3-AD06-D650FE4CBCCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DC3CF2D-F8E0-42E3-AD06-D650FE4CBCCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DC3CF2D-F8E0-42E3-AD06-D650FE4CBCCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DC3CF2D-F8E0-42E3-AD06-D650FE4CBCCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8388B9D-304A-482A-BAC5-EA7290C27878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8388B9D-304A-482A-BAC5-EA7290C27878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8388B9D-304A-482A-BAC5-EA7290C27878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8388B9D-304A-482A-BAC5-EA7290C27878}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E82EF01C-E28D-4BC8-AB53-4B9F5A6B8C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E075214B-B106-4E2A-94B5-CB1571451937}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
