@@ -11,31 +11,21 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Vacancies.Enums;
 using SFA.DAS.Vacancies.InnerApi.Responses;
 using SFA.DAS.Vacancies.Services;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
 {
-    public class GetVacanciesQueryHandler: IRequestHandler<GetVacanciesQuery, GetVacanciesQueryResult>
+    public class GetVacanciesQueryHandler(
+        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+        IAccountLegalEntityPermissionService accountLegalEntityPermissionService,
+        ICourseService courseService,
+        IOptions<VacanciesConfiguration> vacanciesConfiguration,
+        IMetrics metrics)
+        : IRequestHandler<GetVacanciesQuery, GetVacanciesQueryResult>
     {
-        private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
-        private readonly IAccountLegalEntityPermissionService _accountLegalEntityPermissionService;
-        private readonly ICourseService _courseService;
-        private readonly IMetrics _metrics;
-        private readonly VacanciesConfiguration _vacanciesConfiguration;
-
-        public GetVacanciesQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, 
-            IAccountLegalEntityPermissionService accountLegalEntityPermissionService, 
-            ICourseService courseService,
-            IOptions<VacanciesConfiguration> vacanciesConfiguration,
-            IMetrics metrics)
-        {
-            _findApprenticeshipApiClient = findApprenticeshipApiClient;
-            _accountLegalEntityPermissionService = accountLegalEntityPermissionService;
-            _courseService = courseService;
-            _metrics = metrics;
-            _vacanciesConfiguration = vacanciesConfiguration.Value;
-        }
+        private readonly VacanciesConfiguration _vacanciesConfiguration = vacanciesConfiguration.Value;
 
         public async Task<GetVacanciesQueryResult> Handle(GetVacanciesQuery request, CancellationToken cancellationToken)
         {
@@ -51,7 +41,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                         break;
                     default:
                     {
-                        var accountLegalEntity = await _accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
+                        var accountLegalEntity = await accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
                                 request.AccountLegalEntityPublicHashedId);
                         
                         if (accountLegalEntity == null)
@@ -63,12 +53,12 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 }
             }
 
-            var vacanciesTask = _findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
-                request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, 
+            var vacanciesTask = findApprenticeshipApiClient.Get<GetVacanciesResponse>(new GetVacanciesRequest(
+                request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, request.EmployerName,
                 request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
                 request.Lat, request.Lon, request.DistanceInMiles, request.Routes, request.PostedInLastNumberOfDays, request.AdditionalDataSources, request.Sort,
                 request.ExcludeNational));
-            var standardsTask = _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+            var standardsTask = courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
             await Task.WhenAll(vacanciesTask, standardsTask);
             
@@ -92,10 +82,10 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 vacanciesItem.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacanciesItem.VacancyReference.Replace("VAC","")}";
 
                 // increase the count of vacancy appearing in search results counter metrics.
-                _metrics.IncreaseVacancySearchResultViews(vacanciesItem.VacancyReference.TrimVacancyReference());
+                if(vacanciesItem.VacancySource == DataSource.Raa) metrics.IncreaseVacancySearchResultViews(vacanciesItem.VacancyReference.TrimVacancyReference());
             }
             
-            return new GetVacanciesQueryResult()
+            return new GetVacanciesQueryResult
             {
                 Vacancies = vacanciesTask.Result.ApprenticeshipVacancies.Where(c=>c.StandardLarsCode!=null).ToList(),
                 Total = vacanciesTask.Result.Total,
