@@ -83,8 +83,8 @@
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="4.7.1" />
     <PackageVersion Include="System.Net.Security" Version="4.3.1" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageVersion Include="WireMock.Net" Version="1.7.4" />
-    <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.5.48" />
+    <PackageVersion Include="WireMock.Net" Version="1.8.3" />
+    <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.8.3" />
     <PackageVersion Include="FluentAssertions" Version="7.1.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
