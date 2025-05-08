@@ -47,7 +47,7 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
     /// <param name="request"></param>
     /// <returns></returns>
     [HttpGet]
-    [Route("/v{v:apiVersion}/vacancy")]
+    [Route("/vacancy")]
     [ProducesResponseType(typeof(GetVacanciesListResponseV2), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
     public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, [FromQuery] SearchVacancyRequestV2 request)
@@ -98,7 +98,7 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
     /// <param name="vacancyReference">Vacancy reference in the following format 10001122</param>
     /// <returns></returns>
     [HttpGet]
-    [Route("/v{v:apiVersion}/vacancy/{vacancyReference}")]
+    [Route("/vacancy/{vacancyReference}")]
     [ProducesResponseType(typeof(GetVacancyResponseV2), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
     public async Task<IActionResult> GetVacancy([FromRoute] string vacancyReference)
