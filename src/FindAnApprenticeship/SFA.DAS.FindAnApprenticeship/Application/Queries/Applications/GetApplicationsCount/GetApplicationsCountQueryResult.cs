@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -18,6 +19,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
 
         public record ApplicationStats
         {
+            public List<Guid> ApplicationIds { get; set; } = [];
             public string Status { get; set; }
             public int Count { get; set; }
 
@@ -26,7 +28,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
                 return new ApplicationStats
                 {
                     Status = source.Status,
-                    Count = source.Count
+                    Count = source.Count,
+                    ApplicationIds = source.ApplicationIds
                 };
             }
         }

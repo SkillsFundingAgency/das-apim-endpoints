@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
@@ -10,6 +11,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
 
         public record ApplicationStats
         {
+            public List<Guid> ApplicationIds { get; set; } = [];
             public string Status { get; set; }
             public int Count { get; set; }
         }
