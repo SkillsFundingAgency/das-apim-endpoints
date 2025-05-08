@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
 using SFA.DAS.ToolsSupport.Application.Queries;
+using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccounts;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
 
@@ -25,7 +26,7 @@ public class WhenGettingEmployerAccounts
     {
         mockMediator.Setup(x => x.Send(It.Is<GetEmployerAccountsQuery>(p=>p.AccountId == accountId && p.PayeSchemeRef == payRef), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
-        var actual = await sut.Get(accountId, payRef) as ObjectResult;
+        var actual = await sut.Get(accountId, payRef, null) as ObjectResult;
 
         using (new AssertionScope())
         {
@@ -45,7 +46,7 @@ public class WhenGettingEmployerAccounts
     {
         mockMediator.Setup(x => x.Send(It.IsAny<GetEmployerAccountsQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 
-        var actual = await sut.Get(accountId, payRef) as StatusCodeResult;
+        var actual = await sut.Get(accountId, payRef, null) as StatusCodeResult;
 
         actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
