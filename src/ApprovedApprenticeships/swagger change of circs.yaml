@@ -27,9 +27,37 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
 
-  /providers/{ukprn}/academicyears/{academicyear}/apprenticeships:
+  /providers/{ukprn}/academicyears/{academicyear}/training/{trainingKey}:
+    delete:
+      summary: Removes a training record from the AS service
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer 
+        - name: trainingKey
+          in: path
+          required: true
+          example: guid
+          schema:
+            type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'  
+            
+  /providers/{ukprn}/academicyears/{academicyear}/training:
     get:
-      summary: Returns a paged list of apprenticeships for this provider
+      summary: Returns a paged list of training for this provider
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -60,15 +88,13 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/pagedApprenticeshipsResponse'  
-
-  /providers/{ukprn}/apprenticeships/match:
-    patch:
-      summary: Accepts or rejects a matched apprenticeship
+          $ref: '#/components/responses/pagedTrainingResponse'  
+    put:
+      summary: Updates the details of an approved apprenticeship
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       requestBody:
-        $ref: '#/components/requestBodies/apprenticeshipMatchRequest'
+        $ref: '#/components/requestBodies/trainingUpdateRequest'
       parameters:
         - name: ukprn
           in: path
@@ -76,37 +102,19 @@ paths:
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
-      responses:
-        '200':
-          $ref: "#/components/responses/apprenticeshipMatchResponse"
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-
-  /apprenticeships/{apprenticeshipId}:
-    patch:
-      summary: Updates the details of an approved apprenticeship
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      requestBody:
-        $ref: '#/components/requestBodies/apprenticeshipUpdateRequest'
-      parameters:
-        - apprenticeshipId:
+        - name: academicyear
           in: path
           required: true
-          description: The UK Provider Reference Number for the provider entering this learner
+          example: 2425
           schema:
-            type: string
-        
+            type: integer
       responses:
-        '200':
-          $ref: "#/components/responses/apprenticeshipUpdatedResponse"
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
         '400':
           $ref: '#/components/responses/badRequest'
         '401':
           $ref: '#/components/responses/unauthorized'
-
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -142,30 +150,21 @@ components:
         example: 60
 
   requestBodies:
-    apprenticeshipMatchRequest:
-      description: Details of apprenticeships to match
+    trainingUpdateRequest:
+      description: Details of an updated training
       required: true
       content:
         application/json:
           schema:
-            type: array
+            type: array 
             items:
-              $ref: '#/components/schemas/matchApprenticeshipRequest'
+              oneOf:
+              - $ref: "#/components/schemas/apprenticeshipTraining"
+              - $ref: "#/components/schemas/shortApprenticeshipTraining"
+              - $ref: "#/components/schemas/foundationApprenticeshipTraining"
 
-    apprenticeshipUpdateRequest:
-      description: Details of an updated apprenticeships
-      required: true
-      content:
-        application/json:
-          schema:
-            oneOf:
-              - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
-              - $ref: "#/components/schemas/shortApprenticeshipChangeOfCircumstance"
-              - $ref: "#/components/schemas/foundationApprenticeshipChangeOfCircumstance"
-              - $ref: "#/components/schemas/bootcampChangeOfCircumstance"
-            
   responses:
-    pagedApprenticeshipsResponse:
+    pagedTrainingResponse:
       description: A paged apprenticeship response
       headers:
         Link:
@@ -181,16 +180,6 @@ components:
             items:
               $ref: '#/components/schemas/pagedApprenticeships'
 
-    apprenticeshipMatchResponse:
-      description: A apprenticeship match response
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              matchAccepted:
-                type: boolean
-
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
       content:
@@ -202,13 +191,15 @@ components:
                 type: string
                 example: "Rate limit exceeded. Try again later."
 
-    apprenticeshipUpdatedResponse:
-      description: OK
+    acceptedResponse:
+      description: A resource has been accepted on the platform    
       content:
-        text/plain:
+        application/json:
           schema:
-            type: string
-            example: OK
+            type: object
+            properties:
+              correlationId:
+                type: string
     
     okResponse:
       description: OK
@@ -300,7 +291,7 @@ components:
         result: 
           type: string    
 
-    matchedApprenticeship:
+    apprenticeship:
       type: object
       properties:
         ukprn:
@@ -309,39 +300,15 @@ components:
           type: integer
         standardCode:
           type: integer
-        startDate:
-          type: string
-          format: date
-
-    apprenticeship:
-      allOf:
-      - $ref: '#/components/schemas/matchedApprenticeship'
-      - type: object
-        properties:
-          careLeaver:
-            type: boolean
-          hasEhcp:
-            type: boolean
-          careLeaverEmployerConsent:
-            type: boolean
-
-    matchApprenticeshipRequest:
-      type: object
-      properties:
-        consumerReference:
-          type: string
-        apprenticeshipKey:
-          type: string
-          format: uuid
-        possibleMatch:
-          $ref: "#/components/schemas/matchedApprenticeship"
+        academicYear:
+          type: integer
 
     # common CoC header
     
     header:
       type: object
       properties:
-        apprenticeshipType:
+        trainingType:
           type: string
           enum:
           - apprenticeship
@@ -358,168 +325,76 @@ components:
           
     # apprenticeship, short apprenticeship and foundation apprenticeship
     
-    apprenticeshipChangeOfCircumstance:
+    apprenticeshipTraining:
       type: object
       properties:
         header:
           $ref: "#/components/schemas/header"
-        changes:
-          type: array
-          items:
-            oneOf:
-            - $ref: "#/components/schemas/apprenticeshipPaymentChange"
-            - $ref: "#/components/schemas/apprenticeshipLearnerChange"
-            - $ref: "#/components/schemas/apprenticeshipMilestoneChange"
-            - $ref: "#/components/schemas/apprenticeshipLearningDeliveryChange"
-    
-    foundationApprenticeshipChangeOfCircumstance:
-      description: This is the exact copy of a normal apprenticeship
-      allOf:
-      - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
-  
-    shortApprenticeshipChangeOfCircumstance:
-      description: This is the exact copy of a normal apprenticeship
-      allOf:
-      - $ref: "#/components/schemas/apprenticeshipChangeOfCircumstance"
-   
-    apprenticeshipPaymentChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - payment
-        epaoPrice: 
-          description: The new costs 
+        learner:
           type: object
           properties:
-            date: 
+            firstname:
+              type: string
+            lastname:
+              type: string
+            dob:
               type: string
               format: date
-            amount:
-              type: int  
-        trainingPrice: 
-          description: The new costs 
+            uln:
+              type: string
+        delivery:
           type: object
           properties:
-            date: 
+            ukprn:
+              type: string
+            agreementId:
+              type: string
+            standardCode:
+              type: integer
+            startDate:
               type: string
               format: date
-            amount:
-              type: int  
-
-    apprenticeshipLearnerChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - learner
-        firstname: 
-          type: string
-        lastname:
-          type: string
-        dob:
-          type: string
-          format: date
-        careLeaver: 
+            academicyear:
+              type: integer
+            expectedEndDate:
+              type: string
+              format: date
+            OffTheJobHours:
+              type: integer
+        status:
           type: object
           properties:
-            consentGiven:  
-              type: bool
             status:
-              type: bool 
-
-    apprenticeshipMilestoneChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - milestone
-        completed:
-          type: object
-          properties:
-            effectiveDate:
+              type: string
+              enum:
+              - pending
+              - started
+              - withdrawn
+              - complete
+              - paused
+            dateOfChange:
               type: string
               format: date
-        stopped:
+        costs:
           type: object
           properties:
-            effectiveDate:
-              type: string
-              format: date
-        
-    apprenticeshipLearningDeliveryChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - learningDelivery      
+            epaoCost:
+              type: integer
+            trainingCost:
+              type: integer
+            reduction4Rpl:
+              type: integer
           
-    # bootcamp, short apprenticeship and foundation apprenticeship
-    
-    bootcampChangeOfCircumstance:
-      type: object
-      properties:
-        header:
-          $ref: "#/components/schemas/header"
-        changes:
-          type: array
-          items:
-            oneOf:
-            - $ref: "#/components/schemas/bootcampPaymentChange"
-            - $ref: "#/components/schemas/bootcampLearnerChange"
-            - $ref: "#/components/schemas/bootcampMilestoneChange"
-            - $ref: "#/components/schemas/bootcampLearningDeliveryChange"
-            
-            # Notes: CoC for milestones is this CoC
-            # milestones - completed, paused, stopped, delivery percentage
-            # worries about this future proofing
-
-    bootcampPaymentChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - payment
-        pay1: 
-          type: integer
-        date:
-          type: string
-          format: date
-
-    bootcampLearnerChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - learner
-        pay1: 
-          type: integer
-
-    bootcampMilestoneChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - milestone
-        pay1: 
-          type: integer
-
-    bootcampLearningDeliveryChange:
-      type: object
-      properties:
-        changeType:
-          type: string
-          enum: 
-          - learningDelivery
-        pay1: 
-          type: integer        
+    foundationApprenticeshipTraining:
+      description: This is the exact copy of a normal apprenticeship
+      allOf:
+      - $ref: "#/components/schemas/apprenticeshipTraining"
+  
+    shortApprenticeshipTraining:
+      description: This is the exact copy of a normal apprenticeship
+      allOf:
+      - $ref: "#/components/schemas/apprenticeshipTraining"
+   
         
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
