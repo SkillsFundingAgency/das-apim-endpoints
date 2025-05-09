@@ -42,6 +42,34 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'         
   
+  /providers/{ukprn}/academicyears/{academicyear}/trainingIdentifiers/{trainingIdentifier}:
+    delete:
+      summary: Deletes a training record identified by this request for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: trainingIdentifier
+          in: path
+          required: true
+          description: The training identifier for the learner being requested
+          schema:
+            type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+        
   /providers/{ukprn}/academicyears/{academicyear}/trainingIdentifiers:
     get:
       summary: Returns a paged list of trainingIdentifiers for this provider
@@ -256,6 +284,9 @@ components:
     trainingIdentifier:
       type: object
       properties:
+        trainingKey:
+          type: string
+          format: uuid
         ukprn:
           type: integer
         uln:
