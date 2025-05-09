@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: Approved Apprenticeships external API for consumption from an authenticated consumer
-  description: 'This service will provide a contract to the Data Collections team for consumption of approved apprenticeships'
+  title: Approved Training external API for consumption from an authenticated consumer
+  description: 'This service will provide a contract to the Data Collections team for consumption of approved training'
 paths:
   /info:
     get:
@@ -29,7 +29,7 @@ paths:
 
   /providers/{ukprn}/academicyears/{academicyear}/training/{trainingKey}:
     delete:
-      summary: Removes a training record from the AS service
+      summary: Removes a training record from the AS service. Effectively this will set the record inactive
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -54,7 +54,39 @@ paths:
       responses:
         '201':
           $ref: '#/components/responses/acceptedResponse'  
-            
+    put:
+      summary: Updates the details of an approved training record
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      requestBody:
+        $ref: '#/components/requestBodies/trainingUpdateRequest'
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: trainingKey
+          in: path
+          required: true
+          example: guid
+          schema:
+            type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'         
+  
   /providers/{ukprn}/academicyears/{academicyear}/training:
     get:
       summary: Returns a paged list of training for this provider
@@ -89,32 +121,7 @@ paths:
       responses:
         '200':
           $ref: '#/components/responses/pagedTrainingResponse'  
-    put:
-      summary: Updates the details of an approved apprenticeship
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      requestBody:
-        $ref: '#/components/requestBodies/trainingUpdateRequest'
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          example: 2425
-          schema:
-            type: integer
-      responses:
-        '201':
-          $ref: '#/components/responses/acceptedResponse'
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '401':
-          $ref: '#/components/responses/unauthorized'
+    
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -165,7 +172,7 @@ components:
 
   responses:
     pagedTrainingResponse:
-      description: A paged apprenticeship response
+      description: A paged training response
       headers:
         Link:
           description: Pagination links (next, prev)
@@ -178,7 +185,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedApprenticeships'
+              $ref: '#/components/schemas/pagedTraining'
 
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
@@ -238,7 +245,7 @@ components:
         text/plain:
           schema:
             type: string
-            example: Leaner data APIM for the apprenticeship service - Version 3.0.2
+            example: Leaner data APIM for the training service - Version 3.0.2
             
   schemas:
     error:
@@ -252,13 +259,13 @@ components:
         - code
         - message
     
-    pagedApprenticeships:
+    pagedTraining:
       type: object
       properties:
-        apprenticeships:
+        training:
           type: array
           items:
-              $ref: '#/components/schemas/apprenticeship'
+              $ref: '#/components/schemas/training'
         total:
           type: integer
           minimum: 0
@@ -291,7 +298,7 @@ components:
         result: 
           type: string    
 
-    apprenticeship:
+    training:
       type: object
       properties:
         ukprn:
@@ -308,6 +315,16 @@ components:
     header:
       type: object
       properties:
+        ######## This is the natural key ########
+        uln:
+          type: string
+        ukprn:
+          type: string
+        academicYear:
+          type: integer
+        standardCode:
+          type: integer
+        #########################################
         trainingType:
           type: string
           enum:
@@ -316,8 +333,6 @@ components:
           - foundationApprenticeship
           - Bootcamp
           - HTC
-        apprenticeshipKey:
-          type: string
         consumerReference:
           type: string
         fundingModel:
@@ -340,27 +355,37 @@ components:
             dob:
               type: string
               format: date
-            uln:
-              type: string
+            careleaver:
+              type: boolean
+              
         delivery:
           type: object
           properties:
-            ukprn:
-              type: string
             agreementId:
               type: string
-            standardCode:
-              type: integer
             startDate:
               type: string
               format: date
-            academicyear:
-              type: integer
             expectedEndDate:
               type: string
               format: date
             OffTheJobHours:
               type: integer
+            englishAndMaths:
+              type: array
+              items:
+                type: object
+                properties:
+                  startDate:
+                    type: string
+                    format: date
+                  endDate:
+                    type: string
+                    format: date
+                  courseCode:
+                    type: integer
+                  amount:
+                    type: integer    
         status:
           type: object
           properties:
