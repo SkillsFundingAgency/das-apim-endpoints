@@ -40,7 +40,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await mediator.Send(new SaveVacancyCommand(candidateId, request.VacancyReference));
+                var result = await mediator.Send(new SaveVacancyCommand(candidateId, request.VacancyId));
 
                 return Ok(result);
             }
@@ -57,7 +57,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await mediator.Send(new DeleteSavedVacancyCommand(candidateId, request.VacancyReference));
+                var result = await mediator.Send(new DeleteSavedVacancyCommand(candidateId, request.VacancyId, request.DeleteAllByVacancyReference));
 
                 return Ok(result);
             }
