@@ -149,4 +149,64 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
         result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    [Test, MoqAutoData]
+    public async Task And_Firstname_Is_blank(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
+
+        var last = learners.Last();
+        last.FirstName = "    ";
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        var errors = response.Errors.ToList();
+        errors[0].Code.Should().Be("Name");
+        errors[0].Message.Should().Be("Learner data contains blank name fields");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_Lastname_Is_blank(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
+
+        var last = learners.Last();
+        last.LastName = "    ";
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        var errors = response.Errors.ToList();
+        errors[0].Code.Should().Be("Name");
+        errors[0].Message.Should().Be("Learner data contains blank name fields");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+
 }

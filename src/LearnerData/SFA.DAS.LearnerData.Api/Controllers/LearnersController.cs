@@ -72,9 +72,32 @@ namespace SFA.DAS.LearnerData.Api.Controllers
                 };
             }
 
+            if (dataRequests.Any(x => string.IsNullOrWhiteSpace(x.FirstName) || string.IsNullOrWhiteSpace(x.LastName)))
+            {
+                yield return new Error
+                {
+                    Code = "Name",
+                    Message = "Learner data contains blank name fields"
+                };
+            }
+
+            if (dataRequests.Any(x => string.IsNullOrWhiteSpace(x.FirstName) || string.IsNullOrWhiteSpace(x.LastName)))
+            {
+                yield return new Error
+                {
+                    Code = "Name",
+                    Message = "Learner data contains blank name fields"
+                };
+            }
+
+            if (dataRequests.Any(x => string.IsNullOrWhiteSpace(x.FirstName) || string.IsNullOrWhiteSpace(x.LastName)))
+            {
+                yield return new Error
+                {
+                    Code = "Name",
+                    Message = "Learner data contains blank name fields"
+                };
+            }
         }
-
-
-
     }
 }
