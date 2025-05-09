@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.InnerApi.Responses;
 
@@ -139,8 +140,11 @@ public class GetVacanciesListItem
     public decimal? Distance { get; set; }
         
     [JsonPropertyName("vacancySource")]
-    public string VacancySource { get; set; }
-        
+    public DataSource VacancySource { get; set; }
+
+    [JsonPropertyName("applicationUrl")]
+    public string ApplicationUrl { get; set; }
+
     [JsonIgnore]
     public string CourseTitle { get ; set ; }
     [JsonIgnore]
@@ -149,6 +153,7 @@ public class GetVacanciesListItem
     public int CourseLevel { get ; set ; }
     [JsonIgnore]
     public string VacancyUrl { get ; set ; }
+
 }
 
 public class Address

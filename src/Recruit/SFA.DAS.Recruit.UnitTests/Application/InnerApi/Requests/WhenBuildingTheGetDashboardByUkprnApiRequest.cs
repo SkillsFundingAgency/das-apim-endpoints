@@ -9,10 +9,10 @@ namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests
         public void Then_The_Url_Is_Correctly_Constructed(int ukprn, ApplicationReviewStatus status)
         {
             //Act
-            var actual = new GetDashboardByUkprnApiRequest(ukprn, status);
+            var actual = new GetDashboardByUkprnApiRequest(ukprn);
             
             //Assert
-            actual.GetUrl.Should().Be($"api/provider/{ukprn}/applicationReviews/dashboard?status={status}");
+            actual.GetUrl.Should().Be($"api/provider/{ukprn}/applicationReviews/dashboard");
         }
     }
 }

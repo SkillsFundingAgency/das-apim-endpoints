@@ -14,6 +14,6 @@ public class WhenBuildingGetProviderSummaryRequest
         var sut = new GetProviderSummaryRequest(ukprn);
 
         //Assert
-        sut.GetUrl.Should().Be($"api/Providers/{ukprn}");
+        sut.GetUrl.Should().Be($"api/providers/{ukprn}/summary");
     }
 }

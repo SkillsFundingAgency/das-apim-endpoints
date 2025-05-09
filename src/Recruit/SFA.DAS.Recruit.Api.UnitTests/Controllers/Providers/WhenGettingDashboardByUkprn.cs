@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn;
-using SFA.DAS.Recruit.Enums;
 using System;
 using System.Net;
 using System.Threading;
@@ -14,18 +13,17 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
             int ukprn,
-            ApplicationReviewStatus status,
             GetDashboardByUkprnQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetDashboardByUkprnQuery>(c => c.Ukprn.Equals(ukprn) &&  c.Status == status),
+                    It.Is<GetDashboardByUkprnQuery>(c => c.Ukprn.Equals(ukprn)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetDashboard(ukprn, status) as ObjectResult;
+            var controllerResult = await controller.GetDashboard(ukprn) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -37,18 +35,17 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             int ukprn,
-            ApplicationReviewStatus status,
             GetDashboardByUkprnQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ProvidersController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetDashboardByUkprnQuery>(c => c.Ukprn.Equals(ukprn) && c.Status == status),
+                    It.Is<GetDashboardByUkprnQuery>(c => c.Ukprn.Equals(ukprn)),
                     It.IsAny<CancellationToken>()))
                .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetDashboard(ukprn, status) as BadRequestResult;
+            var controllerResult = await controller.GetDashboard(ukprn) as BadRequestResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

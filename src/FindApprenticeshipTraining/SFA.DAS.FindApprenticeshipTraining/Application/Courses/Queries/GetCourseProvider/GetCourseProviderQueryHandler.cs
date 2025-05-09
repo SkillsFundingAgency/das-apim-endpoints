@@ -29,19 +29,62 @@ public sealed class GetCourseProviderQueryHandler(
     {
         LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
 
-        var courseProviderDetailsResponse =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProviderDetailsResponse>(
-                new GetCourseProviderDetailsRequest(
-                    query.LarsCode,
-                    query.Ukprn,
-                    query.Location,
-                    locationItem?.Longitude,
-                    locationItem?.Latitude,
-                    query.ShortlistUserId
-                )
+        List<Task> tasks = new List<Task>();
+
+        var courseProviderDetailsTask = _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProviderDetailsResponse>(
+            new GetCourseProviderDetailsRequest(
+                query.LarsCode,
+                query.Ukprn,
+                query.Location,
+                locationItem?.Longitude,
+                locationItem?.Latitude,
+                query.ShortlistUserId
+            )
         );
 
+        tasks.Add(courseProviderDetailsTask);
+
+        var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackSummaryAnnualResponse>(
+            new GetEmployerFeedbackSummaryAnnualRequest(query.Ukprn)
+        );
+
+        tasks.Add(employerFeedbackTask);
+
+        var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackSummaryAnnualResponse>(
+            new GetApprenticeFeedbackSummaryAnnualRequest(query.Ukprn)
+        );
+
+        tasks.Add(apprenticeFeedbackTask);
+
+        var courseDetailsTask = _roatpCourseManagementApiClient.GetWithResponseCode<List<ProviderCourseResponse>>(
+            new ProviderCoursesRequest(query.Ukprn)
+        );
+
+        tasks.Add(courseDetailsTask);
+
+        var courseTrainingProvidersCountTask = _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+            new GetCourseTrainingProvidersCountRequest(
+                [query.LarsCode],
+                query.Distance,
+                locationItem?.Latitude,
+                locationItem?.Longitude
+            )
+        );
+        tasks.Add(courseTrainingProvidersCountTask);
+
+        await Task.WhenAll(tasks);
+
+        ApiResponse<GetCourseProviderDetailsResponse> courseProviderDetailsResponse = courseProviderDetailsTask.Result;
+        ApiResponse<GetEmployerFeedbackSummaryAnnualResponse> employerFeedbackResponse = employerFeedbackTask.Result;
+        ApiResponse<GetApprenticeFeedbackSummaryAnnualResponse> apprenticeFeedbackResponse = apprenticeFeedbackTask.Result;
+        ApiResponse<List<ProviderCourseResponse>> courseDetailsResponse = courseDetailsTask.Result;
+        ApiResponse<GetCourseTrainingProvidersCountResponse> courseTrainingProvidersCountResponse = courseTrainingProvidersCountTask.Result;
+
         courseProviderDetailsResponse.EnsureSuccessStatusCode();
+        employerFeedbackResponse.EnsureSuccessStatusCode();
+        apprenticeFeedbackResponse.EnsureSuccessStatusCode();
+        courseDetailsResponse.EnsureSuccessStatusCode();
+        courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 
         var assessmentsResponse =
             await _assessorServiceInnerApiClient.GetWithResponseCode<GetAssessmentsResponse>(
@@ -52,45 +95,6 @@ public sealed class GetCourseProviderQueryHandler(
         );
 
         assessmentsResponse.EnsureSuccessStatusCode();
-
-        var employerFeedbackResponse = 
-            await _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackSummaryAnnualResponse>(
-                new GetEmployerFeedbackSummaryAnnualRequest(
-                    query.Ukprn
-                )
-        );
-
-        employerFeedbackResponse.EnsureSuccessStatusCode();
-
-        var apprenticeFeedbackResponse = 
-            await _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackSummaryAnnualResponse>(
-                new GetApprenticeFeedbackSummaryAnnualRequest(
-                    query.Ukprn
-                )
-        );
-
-        apprenticeFeedbackResponse.EnsureSuccessStatusCode();
-
-        var courseDetailsResponse =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<List<ProviderCourseResponse>>(
-                new ProviderCoursesRequest(
-                    query.Ukprn    
-                )
-        );
-
-        courseDetailsResponse.EnsureSuccessStatusCode();
-
-        var courseTrainingProvidersCountResponse =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
-                new GetCourseTrainingProvidersCountRequest(
-                    [query.LarsCode], 
-                    query.Distance, 
-                    locationItem?.Latitude, 
-                    locationItem?.Longitude
-                )
-        );
-
-        courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 
         CourseTrainingProviderCountModel trainingCourseCountDetails =
             courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ?
