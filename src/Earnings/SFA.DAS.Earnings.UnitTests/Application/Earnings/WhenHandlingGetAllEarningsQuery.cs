@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
@@ -15,7 +16,7 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Earnings
         public async Task SetUp()
         {
             // Arrange
-            _testFixture = new GetAllEarningsQueryTestFixture();
+            _testFixture = new GetAllEarningsQueryTestFixture(TestScenario.AllData);
 
             // Act
             await _testFixture.CallSubjectUnderTest();
