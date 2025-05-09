@@ -9,6 +9,7 @@ public class GetVacanciesQuery: IRequest<GetVacanciesQueryResult>
     public AccountIdentifier AccountIdentifier { get ; set ; }
     public string AccountLegalEntityPublicHashedId { get; set; }
     public string AccountPublicHashedId { get; set; }
+    public string? EmployerName { get; set; }
     public List<string> AdditionalDataSources { get; set; }
     public uint? DistanceInMiles { get ; set ; }
     public bool? ExcludeNational { get; set; }

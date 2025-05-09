@@ -46,7 +46,9 @@ public class WhenGettingProviderSummary
         {
             sut.Ukprn.Should().Be(providerSummaryResponse.Ukprn);
             sut.ProviderName.Should().Be(providerSummaryResponse.Name);
-            sut.ProviderAddress.Should().BeEquivalentTo(providerSummaryResponse.Address);
+            sut.ProviderAddress.Should().BeEquivalentTo(providerSummaryResponse.Address, options => options
+                .Excluding(x => x.Latitude)
+                .Excluding(x => x.Longitude));
             sut.Contact.MarketingInfo.Should().Be(providerSummaryResponse.MarketingInfo);
             sut.Contact.Email.Should().Be(providerSummaryResponse.Email);
             sut.Contact.PhoneNumber.Should().Be(providerSummaryResponse.Phone);

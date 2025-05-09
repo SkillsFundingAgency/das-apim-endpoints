@@ -26,7 +26,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         }
     }
     
-    public class GetVacanciesListResponseItem
+    public record GetVacanciesListResponseItem
     {
         /// <summary>
         /// The title for the apprenticeship vacancy. Will be less than or equal to 100 characters.
