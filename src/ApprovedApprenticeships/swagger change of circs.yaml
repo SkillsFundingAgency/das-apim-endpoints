@@ -371,6 +371,8 @@ components:
               format: date
             OffTheJobHours:
               type: integer
+            percentageOfLearningLeft:
+              type: integer
             englishAndMaths:
               type: array
               items:
@@ -400,6 +402,8 @@ components:
             dateOfChange:
               type: string
               format: date
+            reason:
+              type: string
         costs:
           type: object
           properties:
