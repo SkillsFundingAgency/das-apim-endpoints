@@ -47,7 +47,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("subCategoryCode")]
         public string SubCategoryCode { get; init; }
         [JsonProperty("ukprn")]
-        public string Ukprn { get; init; }
+        public string Ukprn { get; set; }
         [JsonProperty("wageAmountLowerBound")]
         public decimal? WageAmountLowerBound { get; init; }
         [JsonProperty("wageAmountUpperBound")]
@@ -123,6 +123,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string ExternalVacancyUrl => ApplicationUrl;
         public string? CompanyBenefitsInformation { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
+        public long? AccountId { get; set; }
+        public long? AccountLegalEntityId { get; set; } 
     }
 
     public class VacancyQualification

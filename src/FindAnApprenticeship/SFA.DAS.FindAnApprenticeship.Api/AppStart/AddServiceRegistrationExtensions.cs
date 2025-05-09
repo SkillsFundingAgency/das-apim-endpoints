@@ -25,10 +25,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
+            services.AddTransient<IRecruitApiClient<RecruitApiV2Configuration>, RecruitApiV2Client>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
-            services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IVacancyService, VacancyService>();
 			services.AddSingleton<IDateTimeService>(new DateTimeService());
             services.AddTransient<INotificationService, NotificationService>();
