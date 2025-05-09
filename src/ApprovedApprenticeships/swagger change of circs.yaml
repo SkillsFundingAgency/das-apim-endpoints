@@ -29,7 +29,7 @@ paths:
 
   /training:
     put:
-      summary: Updates the details of an approved training record
+      summary: Updates the details of a list of approved training records
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       requestBody:
