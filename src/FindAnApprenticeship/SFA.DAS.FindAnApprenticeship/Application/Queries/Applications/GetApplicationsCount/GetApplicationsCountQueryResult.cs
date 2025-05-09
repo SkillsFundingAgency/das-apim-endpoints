@@ -1,37 +1,23 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplicationsCount
 {
     public record GetApplicationsCountQueryResult
     {
-        public List<ApplicationStats> Stats { get; init; } = [];
+        public List<Guid> ApplicationIds { get; set; } = [];
+        public string Status { get; set; }
+        public int Count { get; set; }
 
-        public static implicit operator GetApplicationsCountQueryResult(PostApplicationsCountApiResponse source)
+        public static implicit operator GetApplicationsCountQueryResult(GetApplicationsCountApiResponse source)
         {
             return new GetApplicationsCountQueryResult
             {
-                Stats = source.Stats.Select(x => (ApplicationStats)x).ToList()
+                Status = source.Status,
+                Count = source.Count,
+                ApplicationIds = source.ApplicationIds
             };
-        }
-
-        public record ApplicationStats
-        {
-            public List<Guid> ApplicationIds { get; set; } = [];
-            public string Status { get; set; }
-            public int Count { get; set; }
-
-            public static implicit operator ApplicationStats(PostApplicationsCountApiResponse.ApplicationStats source)
-            {
-                return new ApplicationStats
-                {
-                    Status = source.Status,
-                    Count = source.Count,
-                    ApplicationIds = source.ApplicationIds
-                };
-            }
         }
     }
 }

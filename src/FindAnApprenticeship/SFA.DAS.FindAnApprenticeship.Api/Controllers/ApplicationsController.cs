@@ -38,14 +38,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 
-        [HttpPost("count")]
+        [HttpGet("count")]
         [ProducesResponseType<GetApplicationsCountQueryResult>((int)HttpStatusCode.OK)]
         [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-        public async Task<IActionResult> Count([FromQuery] Guid candidateId, [FromBody] List<ApplicationStatus> statuses)
+        public async Task<IActionResult> Count([FromQuery] Guid candidateId, [FromQuery] ApplicationStatus status)
         {
             try
             {
-                var result = await mediator.Send(new GetApplicationsCountQuery(candidateId, statuses));
+                var result = await mediator.Send(new GetApplicationsCountQuery(candidateId, status));
 
                 return Ok(result);
             }

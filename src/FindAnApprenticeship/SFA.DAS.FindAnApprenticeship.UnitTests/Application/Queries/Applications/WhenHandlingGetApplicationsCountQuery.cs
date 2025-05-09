@@ -14,24 +14,21 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
         [Test, MoqAutoData]
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetApplicationsCountQuery query,
-            PostApplicationsCountApiResponse applicationsCountApiResponse,
+            GetApplicationsCountApiResponse applicationsCountApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             GetApplicationsCountQueryHandler handler)
         {
-            var expectedPutData = new PostApplicationsCountApiRequest.PostApplicationsCountApiRequestData(query.Statuses);
-
-            var expectedRequest = new PostApplicationsCountApiRequest(query.CandidateId, expectedPutData);
+            var expectedRequest = new GetApplicationsCountApiRequest(query.CandidateId, query.Status);
 
             candidateApiClient
-                .Setup(client => client.PostWithResponseCode<PostApplicationsCountApiResponse>(
-                    It.Is<PostApplicationsCountApiRequest>(r => r.PostUrl == expectedRequest.PostUrl
-                    && r.Payload.Statuses == query.Statuses), true))
-                .ReturnsAsync(new ApiResponse<PostApplicationsCountApiResponse>(applicationsCountApiResponse, HttpStatusCode.OK, string.Empty));
+                .Setup(client => client.GetWithResponseCode<GetApplicationsCountApiResponse>(
+                    It.Is<GetApplicationsCountApiRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .ReturnsAsync(new ApiResponse<GetApplicationsCountApiResponse>(applicationsCountApiResponse, HttpStatusCode.OK, string.Empty));
             
             var result = await handler.Handle(query, CancellationToken.None);
 
             using var scope = new AssertionScope();
-            result.Stats.Should().BeEquivalentTo(applicationsCountApiResponse.Stats);
+            result.Should().BeEquivalentTo(applicationsCountApiResponse);
         }
     }
 }
