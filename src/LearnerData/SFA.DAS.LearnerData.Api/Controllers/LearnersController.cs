@@ -86,18 +86,48 @@ namespace SFA.DAS.LearnerData.Api.Controllers
                 yield return new Error
                 {
                     Code = "Name",
-                    Message = "Learner data contains blank name fields"
+                    Message = "Learner data contains blank names"
                 };
             }
 
-            if (dataRequests.Any(x => string.IsNullOrWhiteSpace(x.FirstName) || string.IsNullOrWhiteSpace(x.LastName)))
+            if (dataRequests.Any(x => x.EpaoPrice < 0))
             {
                 yield return new Error
                 {
-                    Code = "Name",
-                    Message = "Learner data contains blank name fields"
+                    Code = "EpaoPrice",
+                    Message = "Learner data contains a negative EpaoPrice"
                 };
             }
+
+            if (dataRequests.Any(x => x.TrainingPrice < 0))
+            {
+                yield return new Error
+                {
+                    Code = "TrainingPrice",
+                    Message = "Learner data contains a negative TrainingPrice"
+                };
+            }
+
+            if (dataRequests.Any(x => x.PlannedOTJTrainingHours < 0))
+            {
+                yield return new Error
+                {
+                    Code = "PlannedOTJTrainingHours",
+                    Message = "Learner data contains a negative PlannedOTJTrainingHours"
+                };
+            }
+
+            if (dataRequests.Any(x => x.StandardCode < 0))
+            {
+                yield return new Error
+                {
+                    Code = "StandardCode",
+                    Message = "Learner data contains a negative StandardCode"
+                };
+            }
+
         }
+
+
     }
 }

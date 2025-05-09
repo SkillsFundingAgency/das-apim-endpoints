@@ -207,6 +207,120 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
         errors[0].Message.Should().Be("Learner data contains blank name fields");
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
     }
+    
+    [Test, MoqAutoData]
+    public async Task And_EPAOPrice_Is_Negative(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
 
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
 
+        var last = learners.Last();
+        last.EpaoPrice = -1;
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        var errors = response.Errors.ToList();
+        errors[0].Code.Should().Be("EpaoPrice");
+        errors[0].Message.Should().Be("Learner data contains a negative EpaoPrice");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_TrainingPrice_Is_Negative(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
+
+        var last = learners.Last();
+        last.TrainingPrice = -1;
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        var errors = response.Errors.ToList();
+        errors[0].Code.Should().Be("TrainingPrice");
+        errors[0].Message.Should().Be("Learner data contains a negative TrainingPrice");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_PlannedOTJTrainingHours_Is_Negative(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
+
+        var last = learners.Last();
+        last.PlannedOTJTrainingHours = -1;
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        var errors = response.Errors.ToList();
+        errors[0].Code.Should().Be("PlannedOTJTrainingHours");
+        errors[0].Message.Should().Be("Learner data contains a negative PlannedOTJTrainingHours");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_StandardCode_Is_Negative(
+        int academicYear,
+        List<LearnerDataRequest> learners,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] LearnersController sut)
+    {
+        long ukprn = 12345678;
+
+        learners.ForEach(x =>
+        {
+            x.UKPRN = ukprn;
+            x.ULN = 1234567890;
+        });
+
+        var last = learners.Last();
+        last.StandardCode = -1;
+
+        var result = await sut.Post(ukprn, academicYear, learners) as BadRequestObjectResult;
+
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+        var response = result.Value as ErrorResponse;
+        response.Should().NotBeNull();
+        var errors = response.Errors.ToList();
+        errors[0].Code.Should().Be("StandardCode");
+        errors[0].Message.Should().Be("Learner data contains a negative StandardCode");
+        mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Never);
+    }
 }
