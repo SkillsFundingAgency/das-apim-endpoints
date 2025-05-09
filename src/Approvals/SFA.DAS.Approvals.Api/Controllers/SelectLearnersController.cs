@@ -14,7 +14,8 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
     [Route("/providers/{providerId}/unapproved/add/learners/select")]
     public async Task<IActionResult> Get(
         long providerId,
-        [FromQuery] long accountLegalEntityId,
+        [FromQuery] long? accountLegalEntityId,
+        [FromQuery] long? cohortId,
         [FromQuery] string searchTerm,
         [FromQuery] string sortColumn,
         [FromQuery] bool sortDescending,
@@ -28,6 +29,7 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
             {
                 ProviderId = providerId,
                 AccountLegalEntityId = accountLegalEntityId,
+                CohortId = cohortId,
                 SearchTerm = searchTerm,
                 SortField = sortColumn,
                 SortDescending = sortDescending,
