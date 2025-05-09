@@ -27,7 +27,7 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
 
-  /training:
+  /providers/{ukprn}/academicyears/{academicyear}/training:
     put:
       summary: Updates the details of a list of approved training records
       security:
