@@ -27,58 +27,13 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
 
-  /providers/{ukprn}/academicyears/{academicyear}/training/{trainingKey}:
-    delete:
-      summary: Removes a training record from the AS service. Effectively this will set the record inactive
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          example: 2425
-          schema:
-            type: integer 
-        - name: trainingKey
-          in: path
-          required: true
-          example: guid
-          schema:
-            type: string
-      responses:
-        '201':
-          $ref: '#/components/responses/acceptedResponse'  
+  /training:
     put:
       summary: Updates the details of an approved training record
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       requestBody:
         $ref: '#/components/requestBodies/trainingUpdateRequest'
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          example: 2425
-          schema:
-            type: integer
-        - name: trainingKey
-          in: path
-          required: true
-          example: guid
-          schema:
-            type: string
       responses:
         '201':
           $ref: '#/components/responses/acceptedResponse'
@@ -87,9 +42,9 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'         
   
-  /providers/{ukprn}/academicyears/{academicyear}/training:
+  /providers/{ukprn}/academicyears/{academicyear}/trainingIdentifiers:
     get:
-      summary: Returns a paged list of training for this provider
+      summary: Returns a paged list of trainingIdentifiers for this provider
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -120,7 +75,7 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/pagedTrainingResponse'  
+          $ref: '#/components/responses/pagedTrainingIdentifiersResponse'  
     
 components:  
   securitySchemes:
@@ -171,7 +126,7 @@ components:
               - $ref: "#/components/schemas/foundationApprenticeshipTraining"
 
   responses:
-    pagedTrainingResponse:
+    pagedTrainingIdentifiersResponse:
       description: A paged training response
       headers:
         Link:
@@ -185,7 +140,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedTraining'
+              $ref: '#/components/schemas/pagedTrainingIdentifiers'
 
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
@@ -259,13 +214,13 @@ components:
         - code
         - message
     
-    pagedTraining:
+    pagedTrainingIdentifiers:
       type: object
       properties:
         training:
           type: array
           items:
-              $ref: '#/components/schemas/training'
+              $ref: '#/components/schemas/trainingIdentifier'
         total:
           type: integer
           minimum: 0
@@ -298,7 +253,7 @@ components:
         result: 
           type: string    
 
-    training:
+    trainingIdentifier:
       type: object
       properties:
         ukprn:
