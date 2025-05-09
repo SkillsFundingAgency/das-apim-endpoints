@@ -168,7 +168,7 @@ public class WhenGettingLearnersForProvider
         [Greedy] GetLearnersForProviderQueryHandler handler
     )
     {
-        GetLearnersForProviderRequest input;
+        query.CohortId = null;
         learnerDataClient.Setup(x =>
                 x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));

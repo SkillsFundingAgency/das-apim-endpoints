@@ -29,17 +29,6 @@ public class GetLearnersForProviderQueryHandler(
         var (learnerData, standards) = await GetCourseAndLearnerData(request);
         long accountLegalEntityId = 0;
         string employerName = null;
-        if (request.AccountLegalEntityId.HasValue)
-        {
-            logger.LogInformation("Getting Account Legal Entity");
-            accountLegalEntityId = request.AccountLegalEntityId.Value;
-            var legalEntityResponse = await commitmentsClient.GetWithResponseCode<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
-            if (!string.IsNullOrEmpty(legalEntityResponse.ErrorContent))
-            {
-                throw new ApplicationException($"Getting Legal Entity Data Failed. Status Code {legalEntityResponse.StatusCode} Error : {legalEntityResponse.ErrorContent}");
-            }
-            employerName = legalEntityResponse.Body.LegalEntityName;
-        }
 
         if (request.CohortId.HasValue)
         {
@@ -53,6 +42,18 @@ public class GetLearnersForProviderQueryHandler(
             }
             employerName = cohortResponse.Body.LegalEntityName;
             accountLegalEntityId = cohortResponse.Body.AccountLegalEntityId;
+        }
+
+        if (request.AccountLegalEntityId.HasValue)
+        {
+            logger.LogInformation("Getting Account Legal Entity");
+            accountLegalEntityId = request.AccountLegalEntityId.Value;
+            var legalEntityResponse = await commitmentsClient.GetWithResponseCode<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+            if (!string.IsNullOrEmpty(legalEntityResponse.ErrorContent))
+            {
+                throw new ApplicationException($"Getting Legal Entity Data Failed. Status Code {legalEntityResponse.StatusCode} Error : {legalEntityResponse.ErrorContent}");
+            }
+            employerName = legalEntityResponse.Body.LegalEntityName;
         }
 
         logger.LogInformation("Building Learner Data result");
