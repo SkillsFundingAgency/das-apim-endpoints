@@ -125,9 +125,6 @@ namespace SFA.DAS.LearnerData.Api.Controllers
                     Message = "Learner data contains a negative StandardCode"
                 };
             }
-
         }
-
-
     }
 }
