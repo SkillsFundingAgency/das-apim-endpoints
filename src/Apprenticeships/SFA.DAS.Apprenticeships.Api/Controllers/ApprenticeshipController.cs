@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using Azure;
+using Azure.Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Apprenticeships.Api.Extensions;
 using SFA.DAS.Apprenticeships.Api.Models;
@@ -6,6 +8,7 @@ using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -270,7 +273,22 @@ public class ApprenticeshipController : ControllerBase
     [Route("{apprenticeshipKey}/startDateChange/pending/approve")]
     public async Task<ActionResult> ApprovePendingStartDateChange(Guid apprenticeshipKey, [FromBody] ApproveStartDateChangeRequest request)
     {
-        await _apiClient.Patch(new PatchApproveApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.UserId));
+        var response = await _apiClient.PatchWithResponseCode<ApproveApprenticeshipStartDateChangeRequest>(new PatchApproveApprenticeshipStartDateChangeRequest(apprenticeshipKey, request.UserId));
+        if (!ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode))
+        {
+            var errorMessage = string.IsNullOrWhiteSpace(response.ErrorContent) ? response.Body : response.ErrorContent;
+            _logger.LogError($"Error attempting to approve apprenticeship start date change. {response.StatusCode} returned from inner api with reason: {errorMessage}");
+            return BadRequest();
+        }
+
+        var changeOfStartDateApprovedNotificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(changeOfStartDateApprovedNotificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send approval of start date Notification(s) to the related party(ies)");
+            return BadRequest();
+        }
         return Ok();
     }
 
@@ -296,27 +314,61 @@ public class ApprenticeshipController : ControllerBase
     {
         var response = await _apiClient.PostWithResponseCode<object>(new PostFreezePaymentsRequest(apprenticeshipKey, request.Reason), false);
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok();
+            _logger.LogError("Error attempting to freeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
+            return BadRequest();
         }
 
-        _logger.LogError("Error attempting to freeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
-        return BadRequest();
+        var notificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(notificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send freeze apprenticeship payments Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok();
     }
 
     [HttpPost]
     [Route("{apprenticeshipKey}/unfreeze")]
     public async Task<ActionResult> UnfreezeApprenticeshipPayments(Guid apprenticeshipKey)
     {
-        var response = await _apiClient.PostWithResponseCode<object>(new PostUnfreezePaymentsRequest(apprenticeshipKey), false);
+        var request = new PostUnfreezePaymentsRequest(apprenticeshipKey);
+        var response = await _apiClient.PostWithResponseCode<object>(request, false);
 
-        if (string.IsNullOrEmpty(response.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            return Ok();
+            _logger.LogError("Error attempting to unfreeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
+            return BadRequest();
         }
 
-        _logger.LogError("Error attempting to unfreeze apprenticeship {apprenticeshipKey} payments. {statusCode} returned from inner api. {message}", apprenticeshipKey, response.StatusCode, response.ErrorContent);
-        return BadRequest();
+        var notificationCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(notificationCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send unfreeze apprenticeship payments Notification(s) to the related part(ies)");
+            return BadRequest();
+        }
+
+        return Ok();
+    }
+
+    [HttpPost]
+    [Route("{apprenticeshipKey}/handleWithdrawalNotifications")]
+    public async Task<ActionResult> HandleWithdrawalNotifications(Guid apprenticeshipKey, [FromBody] HandleWithdrawalNotificationsRequest request)
+    {
+        var apprenticeshipWithdrawnCommand = request.ToNotificationCommand(apprenticeshipKey);
+        var notificationResponse = await _mediator.Send(apprenticeshipWithdrawnCommand);
+
+        if (!notificationResponse.Success)
+        {
+            _logger.LogError("Error attempting to send apprenticeship withdrawn Notification(s) to the related party(ies)");
+            return BadRequest();
+        }
+        return Ok();
     }
 }

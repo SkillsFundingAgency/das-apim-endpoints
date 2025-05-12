@@ -1,5 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -31,6 +32,9 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("closingDate")] 
         public DateTime ClosingDate { get; set; }
 
+        [JsonPropertyName("startDate")]
+        public DateTime StartDate { get; set; }
+
         [JsonPropertyName("employerName")] 
         public string EmployerName { get; set; }
 
@@ -39,7 +43,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         [JsonPropertyName("postedDate")] 
         public DateTime PostedDate { get; set; }
-
+        
         [JsonPropertyName("title")] 
         public string Title { get; set; }
 
@@ -56,8 +60,29 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public int WageType { get; set; }
         [JsonPropertyName("wageText")]
         public string WageText { get; set; }
-        [JsonPropertyName("address")] 
+        [JsonPropertyName("over25NationalMinimumWage")]
+        public decimal? Over25NationalMinimumWage { get; set; }
+        [JsonPropertyName("between21AndUnder25NationalMinimumWage")]
+        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+        [JsonPropertyName("between18AndUnder21NationalMinimumWage")]
+        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+        [JsonPropertyName("under18NationalMinimumWage")]
+        public decimal? Under18NationalMinimumWage { get; set; }
+        [JsonPropertyName("apprenticeMinimumWage")]
+        public decimal? ApprenticeMinimumWage { get; set; }
+        [JsonPropertyName("address")]
         public Address Address { get; set; }
+
+        [JsonPropertyName("otherAddresses")] 
+        public List<Address>? OtherAddresses { get; set; } = [];
+        [JsonPropertyName("isPrimaryLocation")]
+        public bool IsPrimaryLocation { get; set; }
+
+        [JsonPropertyName("employmentLocationInformation")]
+        public string? EmploymentLocationInformation { get; set; }
+        
+        [JsonPropertyName("availableWhere"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+        public AvailableWhere? EmployerLocationOption { get; set; }
 
         [JsonPropertyName("distance")] 
         public decimal? Distance { get; set; }
@@ -80,26 +105,14 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string? AdditionalTrainingDescription { get; set; }
         public bool IsSavedVacancy { get; set; } = false;
 
+        [JsonPropertyName("vacancySource")] 
+        public VacancyDataSource VacancySource { get; set; }
+
         public class CandidateApplication
         {
             public string Status { get; set; }
         }
     }
-
-    public class Address
-    {
-        [JsonPropertyName("addressLine1")]
-        public string AddressLine1 { get; set; }
-        [JsonPropertyName("addressLine2")]
-        public string AddressLine2 { get; set; }
-        [JsonPropertyName("addressLine3")]
-        public string AddressLine3 { get; set; }
-        [JsonPropertyName("addressLine4")]
-        public string AddressLine4 { get; set; }
-        [JsonPropertyName("postcode")]
-        public string Postcode { get; set; }
-    }
-
     public class Location
     {
         [JsonPropertyName("lat")]
@@ -107,5 +120,4 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonPropertyName("lon")]
         public double? Lon { get; set; }
     }
-
 }

@@ -1,12 +1,7 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;
-using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;
 using System.Threading;
@@ -19,17 +14,21 @@ public class WhenGettingSearchResults
 {
     [Test, MoqAutoData]
     public async Task Then_The_Query_Response_Is_Returned(
+        Guid candidateId,
         GetSearchApprenticeshipsModel model,
         SearchApprenticeshipsResult result,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
     {
+        model.CandidateId = candidateId.ToString();
+        model.LevelIds = ["1", "2", "3"];
+        model.RouteIds = ["1", "2", "3"];
         model.Sort = VacancySort.DistanceAsc;
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
-            c.SelectedRouteIds.Equals(model.RouteIds) &&
-            c.Location.Equals(model.Location) &&
-            c.Distance == model.Distance &&
-            c.SearchTerm == model.SearchTerm),
+                    c.CandidateId.Equals(candidateId) &&
+                    c.Location.Equals(model.Location) &&
+                    c.Distance == model.Distance &&
+                    c.SearchTerm == model.SearchTerm),
                 CancellationToken.None))
             .ReturnsAsync(result);
 
@@ -41,7 +40,7 @@ public class WhenGettingSearchResults
         actualModel.Should().BeEquivalentTo((SearchApprenticeshipsApiResponse)result);
 
         mediator.Verify(m => m.Send(It.Is<SearchApprenticeshipsQuery>(c =>
-                c.SelectedRouteIds.Equals(model.RouteIds) &&
+                c.CandidateId.Equals(candidateId) &&
                 c.Location.Equals(model.Location) &&
                 c.Distance == model.Distance &&
                 c.Sort == VacancySort.DistanceAsc),
@@ -55,9 +54,11 @@ public class WhenGettingSearchResults
         [Frozen] Mock<IMediator> mediator,
         [Greedy] Api.Controllers.SearchApprenticeshipsController controller)
     {
+        model.CandidateId = null;
         model.Sort = VacancySort.DistanceAsc;
+        model.LevelIds = ["1", "2", "3"];
+        model.RouteIds = ["1", "2", "3"];
         mediator.Setup(x => x.Send(It.Is<SearchApprenticeshipsQuery>(c =>
-                c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
                 c.Distance == model.Distance &&
                 c.SearchTerm == whatSearchTerm),
@@ -70,7 +71,6 @@ public class WhenGettingSearchResults
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
 
         mediator.Verify(m => m.Send(It.Is<SearchApprenticeshipsQuery>(c =>
-                c.SelectedRouteIds.Equals(model.RouteIds) &&
                 c.Location.Equals(model.Location) &&
                 c.Distance == model.Distance && 
                 c.Sort == VacancySort.DistanceAsc),

@@ -5,7 +5,7 @@ namespace SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 
 public class SubmitApplicationEmail : EmailTemplateArguments
 {
-    public SubmitApplicationEmail(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string city, string postcode, string applicationUrl)
+    public SubmitApplicationEmail(string templateId,string recipientEmail, string firstName, string vacancy, string employer, string location, string applicationUrl)
     {
         TemplateId = templateId;
         RecipientAddress = recipientEmail;
@@ -14,8 +14,7 @@ public class SubmitApplicationEmail : EmailTemplateArguments
             {"firstName", firstName },
             {"vacancy", vacancy },
             {"employer", employer },
-            {"city", city },
-            {"postcode", postcode },
+            {"location", location },
             {"yourApplicationsURL", applicationUrl }
         };
     }

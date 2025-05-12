@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
+using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeshipDetails;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Models;
+using SFA.DAS.ApprenticeApp.Telemetry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +18,14 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     public class KsbProgressController : ControllerBase
     {
         private readonly IMediator _mediator;
-        
-        public KsbProgressController(IMediator mediator)
-            => _mediator = mediator;
+        private readonly IApprenticeAppMetrics _apprenticeAppMetrics;
+       
+        public KsbProgressController(IMediator mediator, IApprenticeAppMetrics metrics)
+        {
+            _mediator = mediator;
+            _apprenticeAppMetrics = metrics;
+        }
 
-        
         [HttpPost("/apprentices/{apprenticeId}/ksbs")]
         public async Task<IActionResult> AddUpdateKsbProgress(Guid apprenticeId, ApprenticeKsbProgressData data)
         {
@@ -33,7 +38,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
                 Data = data
             });
-
+            _apprenticeAppMetrics.IncreaseKSBInProgress(apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId, data.KsbKey);
             return Ok();
         }
 
@@ -51,7 +56,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 KsbProgressId = ksbProgressId,
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId
             });
-
             return Ok();
         }
 
@@ -61,13 +65,12 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId });
             if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
                 return Ok();
-
             var queryResult = await _mediator.Send(new GetKsbsByApprenticeshipIdAndGuidListQuery
             {
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
                 Guids = guids
             });
-
+            _apprenticeAppMetrics.IncreaseKSBsViews((apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId));
             return Ok(queryResult.KSBProgresses);
         }
 
@@ -79,16 +82,19 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
                 return Ok();
 
+            var apprenticeshipDetailsResult = await _mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
+            if (apprenticeshipDetailsResult == null)
+                return Ok();
+
             var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
             {
                 Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId,
-                Option = "core" //to be updated when commitments api added
+                Option = apprenticeshipDetailsResult.Option == null ? "core" : apprenticeshipDetailsResult.Option
             });
 
             if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
             {
                 var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
-
                 var apprenticeKsbs = new List<ApprenticeKsb>();
                 foreach (var ksb in ksbQueryResult.KsbsResult.Ksbs)
                 {
@@ -107,7 +113,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                     }
                     apprenticeKsbs.Add(apprenticeKsb);
                 }
-
+                _apprenticeAppMetrics.IncreaseKSBsViews(apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId);
                 return Ok(apprenticeKsbs);
             }
             return Ok();
@@ -125,7 +131,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId,
                 TaskId = taskId
             });
-
             return Ok(queryResult.KSBProgress);
         }
 
@@ -137,10 +142,15 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
                 return Ok();
 
+            var apprenticeshipDetailsResult = await _mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
+            if (apprenticeshipDetailsResult == null)
+                return Ok();
+
+
             var ksbQueryResult = await _mediator.Send(new GetStandardOptionKsbsQuery
             {
                 Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId,
-                Option = "core"
+                Option = apprenticeshipDetailsResult.Option == null ? "core" : apprenticeshipDetailsResult.Option
             });
 
             if (ksbQueryResult.KsbsResult != null && ksbQueryResult.KsbsResult.Ksbs.Count > 0)
@@ -148,23 +158,23 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 var ksbProgressResult = await _mediator.Send(new GetKsbsByApprenticeshipIdQuery { ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId });
 
                 var ksb = ksbQueryResult.KsbsResult.Ksbs.Where(k => k.Id == ksbId).FirstOrDefault();
-                if(ksb != null)
+                if (ksb != null)
+                {
+                    var apprenticeKsb = new ApprenticeKsb()
                     {
-                        var apprenticeKsb = new ApprenticeKsb()
-                        {
-                            Id = ksb.Id,
-                            Key = ksb.Key,
-                            Detail = ksb.Detail,
-                            Type = ksb.Type
-                        };
+                        Id = ksb.Id,
+                        Key = ksb.Key,
+                        Detail = ksb.Detail,
+                        Type = ksb.Type
+                    };
 
-                        var ksbProgress = ksbProgressResult.KSBProgresses.FirstOrDefault(x => x.KSBId == ksb.Id);
-                        if (ksbProgress != null)
-                        {
-                            apprenticeKsb.Progress = ksbProgress;
-                        }
-                        return Ok(apprenticeKsb);
+                    var ksbProgress = ksbProgressResult.KSBProgresses.FirstOrDefault(x => x.KSBId == ksb.Id);
+                    if (ksbProgress != null)
+                    {
+                        apprenticeKsb.Progress = ksbProgress;
                     }
+                    return Ok(apprenticeKsb);
+                }
             }
             return Ok();
         }

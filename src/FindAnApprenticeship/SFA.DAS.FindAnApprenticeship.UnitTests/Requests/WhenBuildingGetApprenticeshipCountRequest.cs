@@ -1,6 +1,4 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests
@@ -8,19 +6,40 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests
     public class WhenBuildingGetApprenticeshipCountRequest
     {
         [Test, AutoData]
-        public void Then_The_Request_Url_Is_Correctly_Built(double lat, double lon, List<string> categories, int distance, string whatSearchTerm)
+        public void Then_The_Request_Url_Is_Correctly_Built(double lat,
+            double lon,
+            int distance,
+            VacancySort sort,
+            WageType wageType,
+            string whatSearchTerm,
+            int pageNumber,
+            int pageSize,
+            List<string> categories,
+            List<int> levels,
+            bool disabilityConfident,
+            List<VacancyDataSource> dataSources,
+            bool? excludeNational)
         {
-            var actual = new GetApprenticeshipCountRequest();
+            // arrange
+            var expectedUrl = $"/api/vacancies/count?lat={lat}" +
+                              $"&lon={lon}" +
+                              $"&distanceInMiles={distance}" +
+                              $"&pageNumber={pageNumber}" +
+                              $"&pageSize={pageSize}" +
+                              $"&categories={string.Join("&categories=", categories)}" +
+                              $"&levels={string.Join("&levels=", levels)}" +
+                              $"&searchTerm={whatSearchTerm}" +
+                              $"&disabilityConfident={disabilityConfident}" +
+                              $"&wageType={wageType}" +
+                              $"&dataSources={string.Join("&dataSources=", dataSources)}" +
+                              $"&excludeNational={excludeNational}";
+            
+            // act
+            var actual = new GetApprenticeshipCountRequest(lat, lon, distance, whatSearchTerm, pageNumber, pageSize, categories, levels, wageType, disabilityConfident, dataSources, excludeNational);
 
-            actual.GetUrl.Should().Be($"/api/vacancies/count");
-        }
-
-        [Test, AutoData]
-        public void When_Categories_Are_Null_Or_Empty_Then_The_Request_Url_Is_Correctly_Built(double lat, double lon, int distance, string whatSearchTerm)
-        {
-            var actual = new GetApprenticeshipCountRequest();
-
-            actual.GetUrl.Should().Be($"/api/vacancies/count");
+            // assert
+            actual.GetUrl.Should().Be(expectedUrl);
+            actual.Version.Should().Be("2.0");
         }
     }
 }

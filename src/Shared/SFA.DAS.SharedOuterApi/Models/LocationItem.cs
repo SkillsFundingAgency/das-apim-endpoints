@@ -1,16 +1,27 @@
-﻿namespace SFA.DAS.SharedOuterApi.Models
+﻿namespace SFA.DAS.SharedOuterApi.Models;
+public record LocationItem(string Name, double[] GeoPoint, string Country)
 {
-    public class LocationItem
+    public decimal? Latitude
     {
-        public string Name { get ;}
-        public double[] GeoPoint { get ;}
-        public string Country { get ; set ; }
-
-        public LocationItem (string name, double[] locationGeoPoint, string country)
+        get
         {
-            Name  = name;
-            GeoPoint = locationGeoPoint;
-            Country = country;
+            if (GeoPoint?.Length > 0 && decimal.TryParse(GeoPoint[0].ToString(), out var latitude))
+            {
+                return latitude;
+            }
+            return null;
+        }
+    }
+
+    public decimal? Longitude
+    {
+        get
+        {
+            if (GeoPoint?.Length > 1 && decimal.TryParse(GeoPoint[1].ToString(), out var longitude))
+            {
+                return longitude;
+            }
+            return null;
         }
     }
 }

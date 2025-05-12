@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
@@ -9,6 +8,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apprenticeships.Api.AppStart;
 using SFA.DAS.Apprenticeships.Application.TrainingCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Apprenticeships.Api;
@@ -47,6 +47,7 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
         services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetStandardQuery).Assembly));
         services.AddServiceRegistration(_configuration);
 
@@ -108,6 +109,6 @@ public class Startup
 
     public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
     {
-        serviceProvider.StartNServiceBus(_configuration, EndpointName).GetAwaiter().GetResult();
+        Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
     }
 }

@@ -8,7 +8,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates;
 public class WhenBuildingSendVacancyClosedEarlyTemplate
 {
     [Test, AutoData]
-    public void Then_The_Values_Are_Set_Correctly(string templateId,string recipientEmail, string firstName, string vacancy, string vacancyUrl, string employer, string city, string postcode, DateTime dateApplicationStarted, string settingsUrl)
+    public void Then_The_Values_Are_Set_Correctly(string templateId,string recipientEmail, string firstName, string vacancy, string vacancyUrl, string employer, string location, DateTime dateApplicationStarted, string settingsUrl)
     {
         var expectedTokens = new Dictionary<string, string>
         {
@@ -16,13 +16,12 @@ public class WhenBuildingSendVacancyClosedEarlyTemplate
             {"vacancy", vacancy },
             {"vacancyUrl", vacancyUrl },
             {"employer", employer },
-            {"city", city },
-            {"postcode", postcode },
+            {"location", location },
             {"dateApplicationStarted", dateApplicationStarted.ToString("d MMM yyyy") },
             {"settingsUrl", settingsUrl }
         };
 
-        var actual = new SendVacancyClosedEarlyTemplate(templateId, recipientEmail, firstName, vacancy, vacancyUrl, employer,city,postcode, dateApplicationStarted, settingsUrl);
+        var actual = new SendVacancyClosedEarlyTemplate(templateId, recipientEmail, firstName, vacancy, vacancyUrl, employer,location, dateApplicationStarted, settingsUrl);
 
         actual.TemplateId.Should().Be(templateId);
         actual.Tokens.Should().BeEquivalentTo(expectedTokens);

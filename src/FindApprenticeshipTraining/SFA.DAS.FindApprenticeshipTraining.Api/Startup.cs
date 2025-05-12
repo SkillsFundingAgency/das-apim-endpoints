@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Configuration;
@@ -9,14 +8,14 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
-using SFA.DAS.FindApprenticeshipTraining.Application.TrainingCourses.Queries.GetTrainingCoursesList;
+using SFA.DAS.FindApprenticeshipTraining.Api.HealthCheck;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.FindApprenticeshipTraining.Api.HealthCheck;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api
 {
@@ -38,6 +37,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
 
             services.AddConfigurationOptions(_configuration);
 
+            services
+                .AddLogging()
+                .AddTelemetryRegistration(_configuration.BuildSharedConfiguration())
+                .AddApplicationInsightsTelemetry();
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -51,7 +55,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetTrainingCoursesListQuery).Assembly));
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetCoursesQuery).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -87,10 +91,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api
                     .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<ShortlistApiHealthCheck>("Shortlist API health check")
-                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription);
+                    .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription)
+                    .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription);
             }
-
-            services.AddApplicationInsightsTelemetry();
 
             services.AddSwaggerGen(c =>
             {

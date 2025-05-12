@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddHttpClient();
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
@@ -28,6 +28,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
         services.AddTransient<INotificationService, NotificationService>();
+        services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
         services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
         return services;
     }

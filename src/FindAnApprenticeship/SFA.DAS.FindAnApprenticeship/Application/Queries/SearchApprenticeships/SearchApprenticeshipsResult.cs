@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -18,6 +19,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships
         public string? VacancyReference { get; set; }
         public List<GetCourseLevelsListItem> Levels { get; set; }
         public long TotalFound { get; set; }
+        public long TotalWageTypeVacanciesCount { get; init; }
         public bool DisabilityConfident { get; set; }
+        public int SavedSearchesCount { get; init; }
+        public bool SearchAlreadySaved { get; init; }
+        public DateTime? CandidateDateOfBirth { get; set; }
     }
 }

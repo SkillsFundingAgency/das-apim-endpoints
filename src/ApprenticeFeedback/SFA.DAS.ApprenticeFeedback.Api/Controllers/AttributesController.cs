@@ -49,7 +49,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAttributesQuery() { AttributeType = "ExitSurvey_v2" });
+                var result = await _mediator.Send(new GetAttributesQuery() { AttributeType = "ExitSurvey_v3" });
 
                 if (result.Attributes?.Count == 0)
                 {

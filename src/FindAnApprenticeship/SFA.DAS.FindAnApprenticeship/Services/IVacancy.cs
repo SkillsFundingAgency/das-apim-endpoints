@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Services;
 
@@ -17,4 +20,10 @@ public interface IVacancy
     string Postcode { get; }
     bool IsExternalVacancy { get; }
     string ExternalVacancyUrl { get; }
+    VacancyDataSource VacancySource { get; }
+
+    public Address? Address { get; }
+    public List<Address>? OtherAddresses { get; } 
+    public string? EmploymentLocationInformation { get; }
+    public AvailableWhere? EmployerLocationOption { get; }
 }

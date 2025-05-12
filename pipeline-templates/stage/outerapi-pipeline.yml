@@ -2,11 +2,15 @@ parameters:
   OuterApiName:
   SandboxEnabled: $False
   AddXForwardedAuthorization: $False
+  CheckClientCert: $False
+  MandateCheckClientCert: $False
   SharedOuterApiProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj'
   SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj'
   AdditionalProjectPathToInclude: ''
   AdditionalTestProjectPathToInclude: ''
   ConfigurationSecrets: {}
+  useProductAppInsights: ''
+  AzureArtifactsFeed: ''
 
 stages:
 - stage: Build
@@ -26,6 +30,7 @@ stages:
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
+      AzureArtifactsFeed: ${{ parameters.AzureArtifactsFeed }}
 
 - stage: Deploy_AT
   dependsOn: Build
@@ -56,6 +61,9 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
+      MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
 - stage: Deploy_TEST
   dependsOn: Build
@@ -64,6 +72,7 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
+  - group: TEST das-apim-endpoints-LearnerData
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -86,6 +95,9 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
+      MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
 - stage: Deploy_TEST2
   dependsOn: Build
@@ -116,6 +128,9 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
+      MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
 - stage: Deploy_PP
   dependsOn: Build
@@ -146,6 +161,9 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
+      MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
 - stage: Deploy_PROD
   dependsOn: Build
@@ -175,6 +193,9 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
+      MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
 - stage: Deploy_MO
   dependsOn: Build
@@ -204,6 +225,9 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
+      MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
 - stage: Deploy_DEMO
   dependsOn: Build
@@ -234,3 +258,6 @@ stages:
       ApplicationIdentifierUri: $(${{ parameters.OuterApiName }}OuterApiIdentifierUri)
       SandboxEnabled: ${{ parameters.SandboxEnabled }}
       AddXForwardedAuthorization: ${{ parameters.AddXForwardedAuthorization }}
+      useProductAppInsights: ${{ parameters.useProductAppInsights }}
+      CheckClientCert: ${{ parameters.CheckClientCert }}
+      MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}

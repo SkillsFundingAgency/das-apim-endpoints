@@ -2,14 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.AddDetails;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.Address;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.CheckAnswers;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.ManuallyEnteredAddress;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.MigrateData;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.PhoneNumber;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.CheckAnswers;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.CreateAccount.PhoneNumber;
@@ -21,13 +19,16 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePostcodeAddre
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetCandidatePreferences;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetDateOfBirth;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetSettings;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.MigrateData;
 using System;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteSavedSearch;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearch;
+using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearches;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
@@ -414,46 +415,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
         }
 		
-		[HttpGet, Route("migrate")]
-        public async Task<IActionResult> MigrateDataTransfer([FromQuery] string emailAddress, [FromQuery] Guid candidateId)
-        {
-            try
-            {
-                var result = await _mediator.Send(new MigrateDataQuery
-                {
-                    EmailAddress = emailAddress,
-                    CandidateId = candidateId
-                });
-
-                return Ok((GetMigrateDataTransferApiResponse)result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Get Migrate data transfer : An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
-
-        [HttpPost, Route("{candidateId}/migrate")]
-        public async Task<IActionResult> MigrateDataTransfer([FromRoute] Guid candidateId, [FromBody] PostMigrateDataTransferApiRequest request)
-        {
-            try
-            {
-                var result = await _mediator.Send(new MigrateDataCommand
-                {
-                    CandidateId = candidateId,
-                    EmailAddress = request.EmailAddress
-                });
-
-                return Ok(result);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Post Migrate data transfer: An error occurred");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
-
         [HttpGet("{candidateId}/account-deletion")]
         public async Task<IActionResult> AccountDeletion([FromRoute] Guid candidateId)
         {
@@ -488,6 +449,60 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "User Account Deletion : An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{candidateId:guid}/saved-searches")]
+        [ProducesResponseType<GetCandidateSavedSearchesQueryResult>((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> GetUserSavedSearches([FromRoute] Guid candidateId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidateSavedSearchesQuery(candidateId), cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get User Saved Searches: An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{candidateId:guid}/saved-searches/{id:guid}")]
+        [ProducesResponseType<GetCandidateSavedSearchQueryResult>((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> GetUserSavedSearch([FromRoute] Guid candidateId, [FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCandidateSavedSearchQuery(candidateId, id), cancellationToken);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Get User Saved Search: An error occurred");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+        
+        [HttpPost]
+        [Route("{candidateId:guid}/saved-searches/{id:guid}/delete")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
+        public async Task<IActionResult> DeleteUserSavedSearch([FromRoute] Guid candidateId, [FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _mediator.Send(new DeleteSavedSearchCommand(candidateId, id), cancellationToken);
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Delete Saved Search: An error occurred");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

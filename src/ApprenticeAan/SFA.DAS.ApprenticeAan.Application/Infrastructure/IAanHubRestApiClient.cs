@@ -6,10 +6,14 @@ using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents
 using SFA.DAS.ApprenticeAan.Application.Infrastructure.Configuration;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Apprentices;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Attendances;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.CalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.MemberProfiles;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Members;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.Notifications;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Settings.Requests;
+using SFA.DAS.ApprenticeAan.Application.InnerApi.Settings.Responses;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;
+using SFA.DAS.ApprenticeAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 using SFA.DAS.ApprenticeAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMember;
 using SFA.DAS.ApprenticeAan.Application.Members.Queries.GetMembers;
@@ -45,7 +49,7 @@ public interface IAanHubRestApiClient : IHealthChecker
         CancellationToken cancellationToken);
 
     [Get("calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+    Task<GetCalendarEventsApiResponse> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
     [Get("calendarEvents/{calendarEventId}")]
     [AllowAnyStatusCode]
@@ -105,4 +109,10 @@ public interface IAanHubRestApiClient : IHealthChecker
 
     [Get("/leavingReasons")]
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);
+
+    [Get("/MemberNotificationSettings/{memberId}")]
+    Task<GetNotificationSettingsApiResponse> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
+
+    [Post("/MemberNotificationSettings/{memberId}")]
+    Task UpdateMemberNotificationSettings([Path] Guid memberId, [Body] PostNotificationSettingsApiRequest request, CancellationToken cancellationToken);
 }

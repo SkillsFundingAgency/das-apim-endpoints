@@ -61,13 +61,53 @@
         },
         "logAnalyticsWorkspaceName": {
             "type": "string"
+        },
+        "applicationInsightsConnectionString": {
+            "type": "securestring",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Shared application insights connection string retrieved from the get-product-app-insights step"
+            }
+        },
+        "applicationInsightsResourceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Shared application insights resource ID retrieved from the get-product-app-insights step"
+            }
+        },
+        "alertActionGroupResourceId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Alert group resource ID found in the management resources variable groups"
+            }
+        },
+        "enableFailedRequestAlert": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enables alerting on app insights failed requests"
+            }
+        },
+        "productShortName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "preProdAlertActionGroupResourceId": {
+            "type": "string"
+        },
+        "deployPrivateLinkedScopedResource": {
+            "type": "bool"
         }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]"
+        "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]",
+        "alertActionGroupResourceId": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
+        "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]"
 
     },
     "resources": [
@@ -120,6 +160,31 @@
             }
         },
         {
+            "condition": "[parameters('deployPrivateLinkedScopedResource')]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(parameters('appServiceName'), '-private-link-scoped-')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'private-linked-scoped-resource.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "privateLinkScopeName": {
+                        "value": "[variables('privateLinkScopeName')]"
+                    },
+                    "scopedResourceName": {
+                        "value": "[parameters('appServiceName')]"
+                    },
+                    "scopedResourceId": {
+                        "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.AppInsightsResourceId.value]"
+                    }
+                }
+            }
+        },
+        {
             "apiVersion": "2022-09-01",
             "name": "[concat('api-app-service-', parameters('appServiceName'))]",
             "type": "Microsoft.Resources/deployments",
@@ -143,44 +208,44 @@
                     },
                     "appServiceAppSettings": {
                         "value": {
-                          "array": [
-                            {
-                              "name": "Environment",
-                              "value": "[parameters('environmentName')]"
-                            },
-                            {
-                              "name": "ConfigNames",
-                              "value": "[parameters('configNames')]"
-                            },
-                            {
-                              "name": "LoggingRedisConnectionString",
-                              "value": "[parameters('loggingRedisConnectionString')]"
-                            },
-                            {
-                              "name": "LoggingRedisKey",
-                              "value": "[parameters('loggingRedisKey')]"
-                            },
-                            {
-                              "name": "EnvironmentName",
-                              "value": "[parameters('environmentName')]"
-                            },
-                            {
-                                "name": "ResourceEnvironmentName",
-                                "value": "[parameters('resourceEnvironmentName')]"
-                            },
-                            {
-                              "name": "ConfigurationStorageConnectionString",
-                              "value": "[parameters('configurationStorageConnectionString')]"
-                            },
-                            {
-                              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                              "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.ConnectionString.value]"
-                            },
-                            {
-                              "name": "WEBSITE_LOAD_USER_PROFILE",
-                              "value": "1"
-                            }
-                          ]
+                            "array": [
+                                {
+                                    "name": "Environment",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "ConfigNames",
+                                    "value": "[parameters('configNames')]"
+                                },
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
+                                },
+                                {
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "ResourceEnvironmentName",
+                                    "value": "[parameters('resourceEnvironmentName')]"
+                                },
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
+                                },
+                                {
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[if(greater(length(parameters('applicationInsightsConnectionString')), 0), parameters('applicationInsightsConnectionString'), reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.ConnectionString.value)]"
+                                },
+                                {
+                                    "name": "WEBSITE_LOAD_USER_PROFILE",
+                                    "value": "1"
+                                }
+                            ]
                         }
                     },
                     "customHostName": {
@@ -242,6 +307,31 @@
                     },
                     "resourceName": {
                         "value": "[parameters('sharedServiceBusName')]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[and( equals(parameters('enableFailedRequestAlert'), true()), greater(length(parameters('applicationInsightsResourceId')), 0) )]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat('application-insights-', parameters('appServiceName'), '-alert-')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights-failed-requests-alert.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceName": {
+                        "value": "[parameters('appServiceName')]"
+                    },
+                    "applicationInsightsResourceId": {
+                        "value": "[parameters('applicationInsightsResourceId')]"
+                    },
+                    "alertActionGroupResourceId": {
+                        "value": "[variables('alertActionGroupResourceId')]"
                     }
                 }
             }

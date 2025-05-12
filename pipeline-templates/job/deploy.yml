@@ -18,6 +18,9 @@ parameters:
   ApplicationIdentifierUri:
   SandboxEnabled: $False
   AddXForwardedAuthorization: $False
+  useProductAppInsights:
+  CheckClientCert: $False
+  MandateCheckClientCert: $False
 
 jobs:
 - deployment: DeployInfrastructure
@@ -41,17 +44,38 @@ jobs:
             EnvironmentId: $(Environment.Id)
             PipelineName: $(Build.DefinitionName)
             RunId: $(Build.BuildId)
-        - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
-          parameters:
-            Location: $(ResourceGroupLocation)
-            ServiceConnection: ${{ parameters.ServiceConnection }}
-            SubscriptionId: $(SubscriptionId)
-            TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
-            ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
-            IsMultiRepoCheckout: true
-            TemplateSecrets:
-              LoggingRedisConnectionString: $(LoggingRedisConnectionString)
-              ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        - ${{ if eq(parameters.useProductAppInsights, 'True') }}:
+          - template: azure-pipelines-templates/deploy/step/get-product-app-insights.yml@das-platform-building-blocks
+            parameters:
+              ServiceConnection: ${{ parameters.ServiceConnection }}
+              AppInsightsResourceGroup: $(SharedEnvResourceGroup)
+              AppInsightsName: $(ProductAppInsightsName)
+              IsMultiRepoCheckout: true
+        - ${{ if ne(parameters.useProductAppInsights, 'True') }}:
+          - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
+            parameters:
+              Location: $(ResourceGroupLocation)
+              ServiceConnection: ${{ parameters.ServiceConnection }}
+              SubscriptionId: $(SubscriptionId)
+              TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+              ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+              IsMultiRepoCheckout: true
+              TemplateSecrets:
+                LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+                ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+        - ${{ if eq(parameters.useProductAppInsights, 'True') }}:
+          - template: azure-pipelines-templates/deploy/step/arm-deploy.yml@das-platform-building-blocks
+            parameters:
+              Location: $(ResourceGroupLocation)
+              ServiceConnection: ${{ parameters.ServiceConnection }}
+              SubscriptionId: $(SubscriptionId)
+              TemplatePath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.json
+              ParametersPath: $(Pipeline.Workspace)/ApimEndpointsArtifacts/azure/template.parameters.json
+              IsMultiRepoCheckout: true
+              TemplateSecrets:
+                LoggingRedisConnectionString: $(LoggingRedisConnectionString)
+                ConfigurationStorageConnectionString: $(ConfigurationStorageConnectionString)
+                applicationInsightsConnectionString: $(applicationInsightsConnectionString)
         - template: azure-pipelines-templates/deploy/step/generate-config.yml@das-platform-building-blocks
           parameters:
             EnvironmentName: $(EnvironmentName)
@@ -91,6 +115,10 @@ jobs:
               -ApplicationIdentifierUri ${{ parameters.ApplicationIdentifierUri }} `
               -SandboxEnabled ${{ parameters.SandboxEnabled }} `
               -AddXForwardedAuthorization ${{ parameters.AddXForwardedAuthorization }} `
+              -CheckClientCert ${{ parameters.CheckClientCert }} `
+              -MandateCheckClientCert ${{ parameters.MandateCheckClientCert }} `
+              -ApimKeyVaultUri $(ApimKeyVaultUri) `
+              -ApimKeyVaultClientCertName $(ApimKeyVaultClientCertName) `
               -Verbose
             azurePowerShellVersion: LatestVersion
             pwsh: true

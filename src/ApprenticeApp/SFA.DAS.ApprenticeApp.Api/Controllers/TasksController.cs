@@ -1,9 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands;
+using SFA.DAS.ApprenticeApp.Application.Commands.Tasks;
+using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeshipDetails;
 using SFA.DAS.ApprenticeApp.Application.Queries.CourseOptionKsbs;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
+using SFA.DAS.ApprenticeApp.Application.Queries.Tasks;
 using SFA.DAS.ApprenticeApp.Models;
 using System;
 using System.Collections.Generic;
@@ -20,7 +23,6 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         public TasksController(IMediator mediator)
             => _mediator = mediator;
 
-        
         [HttpGet("/apprentices/{apprenticeId}/progress/taskCategories")]
         public async Task<IActionResult> GetTaskCategories(Guid apprenticeId)
         {
@@ -127,68 +129,97 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok();
         }
         
-        //Build viewmodel data for pwa
         [HttpGet("/apprentices/{apprenticeId}/progress/taskCategories/tasks/{taskId}/ksbs")]
         public async Task<IActionResult> GetTaskViewData(Guid apprenticeId, int taskId)
         {
-            var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId }); ;
+            var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId });
             if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
                 return Ok();
+            
             var apprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId;
-
-            var taskResult = await _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
-            if (taskResult.Tasks == null)
-                return NotFound();
-
-            var categoriesResult = await _mediator.Send(new GetTaskCategoriesQuery { ApprenticeshipId = apprenticeshipId });
-
-            if (categoriesResult.TaskCategories == null)
-                return NotFound();
-
-            var ksbResult = await _mediator.Send(new GetStandardOptionKsbsQuery { Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId, Option = "core" });
-
-            if (ksbResult.KsbsResult == null)
-                return NotFound();
-
-            var ksbProgressResult = await _mediator.Send(new GetKsbProgressForTaskQuery
-                {
-                    ApprenticeshipId = apprenticeshipId,
-                    TaskId = taskId
+            
+            // Start all independent parallel tasks
+            var taskTask = _mediator.Send(new GetTaskByTaskIdQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
+            var categoriesTask = _mediator.Send(new GetTaskCategoriesQuery { ApprenticeshipId = apprenticeshipId });
+            var apprenticeshipDetailsTask = _mediator.Send(new GetApprenticeshipQuery { ApprenticeshipId = apprenticeshipId });
+            var ksbProgressTask = _mediator.Send(new GetKsbProgressForTaskQuery { ApprenticeshipId = apprenticeshipId, TaskId = taskId });
+            
+            await Task.WhenAll(taskTask, categoriesTask, apprenticeshipDetailsTask, ksbProgressTask);
+            
+            // Process results
+            var taskResult = await taskTask;
+            if (taskResult.Tasks == null) return NotFound();
+            
+            var categoriesResult = await categoriesTask;
+            if (categoriesResult.TaskCategories == null) return NotFound();
+            
+            var apprenticeshipDetailsResult = await apprenticeshipDetailsTask;
+            if (apprenticeshipDetailsResult == null) return Ok();
+            
+            // Get dependent data
+            var ksbResult = await _mediator.Send(new GetStandardOptionKsbsQuery
+            {
+                Id = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.StandardUId,
+                Option = apprenticeshipDetailsResult.Option ?? "core"
             });
-
+            
+            if (ksbResult.KsbsResult?.Ksbs == null) return NotFound();
+            
+            // Create dictionary for faster lookups
+            var ksbsDictionary = ksbResult.KsbsResult.Ksbs.ToDictionary(k => k.Id);
+            var ksbProgressResult = await ksbProgressTask;
+            
+            // Process KSB data
             var ksbData = new List<ApprenticeKsbData>();
-            if (ksbProgressResult.KSBProgress != null)
-            { 
-                foreach(var ksbProgress in ksbProgressResult.KSBProgress)
+            foreach (var ksbProgress in ksbProgressResult.KSBProgress)
+            {
+                if (!ksbsDictionary.TryGetValue(ksbProgress.KSBId, out var ksb))
+                    return NotFound();
+                    
+                ksbData.Add(new ApprenticeKsbData
                 {
-                    var ksb = ksbResult.KsbsResult.Ksbs.First(x => x.Id == ksbProgress.KSBId);
-                    if (ksb != null)
-                    {
-                        var apprenticeKsb = new ApprenticeKsbData()
-                        {
-                            ApprenticeshipId = ksbProgress.ApprenticeshipId,
-                            KsbProgressId = ksbProgress.KsbProgressId,
-                            KSBId = ksbProgress.KSBId,
-                            KsbKey = ksb.Key,
-                            CurrentStatus = ksbProgress.CurrentStatus,
-                            Detail = ksb.Detail
-                        };
-                        ksbData.Add(apprenticeKsb);
-                    }
-                    else
-                    {
-                        return NotFound();
-                    }
-                }
+                    ApprenticeshipId = ksbProgress.ApprenticeshipId,
+                    KsbProgressId = ksbProgress.KsbProgressId,
+                    KSBId = ksbProgress.KSBId,
+                    KsbKey = ksb.Key,
+                    CurrentStatus = ksbProgress.CurrentStatus,
+                    Detail = ksb.Detail
+                });
             }
-            var getTaskViewDataResult = new ApprenticeTaskModelData()
+            
+            return Ok(new ApprenticeTaskModelData
             {
                 Task = taskResult.Tasks.Tasks.FirstOrDefault(),
                 KSBProgress = ksbData,
                 TaskCategories = categoriesResult.TaskCategories
-            };
+            });
+        }        
 
-            return Ok(getTaskViewDataResult);
+        [HttpGet("/apprentices/{apprenticeId}/progress/tasks/taskReminders")]
+        public async Task<IActionResult> GetTaskReminders(Guid apprenticeId)
+        {
+            var apprenticeDetailsResult = await _mediator.Send(new GetApprenticeDetailsQuery { ApprenticeId = apprenticeId }); ;
+            if (apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship == null)
+                return Ok();
+
+            var taskRemindersResult = await _mediator.Send(new GetTaskRemindersByApprenticeshipIdQuery
+            {
+                ApprenticeshipId = apprenticeDetailsResult.ApprenticeDetails.MyApprenticeship.ApprenticeshipId
+            });
+
+            return Ok(taskRemindersResult.TaskReminders);
+        }
+
+        [HttpPost("/apprentices/{apprenticeId}/progress/tasks/taskReminders/{taskId}/{statusId}")]
+        public async Task<IActionResult> UpdateTaskReminder(Guid apprenticeId, int taskId, int statusId)
+        {
+            await _mediator.Send(new UpdateApprenticeTaskReminderCommand
+            {
+                TaskId = taskId,
+                StatusId = statusId
+            });
+
+            return Ok();
         }
     }
 }

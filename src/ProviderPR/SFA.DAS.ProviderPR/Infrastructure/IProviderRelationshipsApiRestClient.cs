@@ -9,12 +9,8 @@ namespace SFA.DAS.ProviderPR.Infrastructure;
 
 public interface IProviderRelationshipsApiRestClient
 {
-    [Get("/health")]
-    [AllowAnyStatusCode]
-    Task<HttpResponseMessage> GetHealth(CancellationToken cancellationToken);
-
     [Get("providers/{ukprn}/relationships")]
-    Task<GetProviderRelationshipsResponse> GetProviderRelationships([Path] long ukprn, [RawQueryString] string queryString, CancellationToken cancellationToken);
+    Task<Response<GetProviderRelationshipsResponse>> GetProviderRelationships([Path] long ukprn, [QueryMap] IDictionary<string, string> request, CancellationToken cancellationToken);
 
     [Post("requests/addaccount")]
     Task<AddAccountRequestCommandResult> CreateAddAccountRequest([Body] AddAccountRequestCommand command, CancellationToken cancellationToken);
@@ -38,6 +34,10 @@ public interface IProviderRelationshipsApiRestClient
     [Get("requests")]
     [AllowAnyStatusCode]
     Task<Response<GetRequestByUkprnAndPayeResponse?>> GetRequestByUkprnAndPaye([Query] long ukprn, [Query] string paye, CancellationToken cancellationToken);
+
+    [Get("requests")]
+    [AllowAnyStatusCode]
+    Task<Response<GetRequestByUkprnAndAccountLegalEntityIdResponse?>> GetRequestByUkprnAndAccountLegalEntityId([Query] long ukprn, [Query] long accountLegalEntityId, CancellationToken cancellationToken);
 
     [Get("requests")]
     [AllowAnyStatusCode]

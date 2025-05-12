@@ -12,8 +12,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
-using SFA.DAS.EmployerFeedback.Application.AccountUsers.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerFeedback.Api
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
             
             services.Configure<RouteOptions>(options =>
@@ -69,7 +69,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                      .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription);
             }
             
-            services.AddApplicationInsightsTelemetry();
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>
             {

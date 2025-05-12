@@ -1,9 +1,11 @@
+using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
@@ -43,7 +45,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
                 };
             }
             
-            vacancyResponseTask.Result.VacancyUrl = vacancyResponseTask.Result.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyResponseTask.Result.VacancyReference}";
+            vacancyResponseTask.Result.VacancyUrl = $"{_vacanciesConfiguration.FindAnApprenticeshipBaseUrl}/apprenticeship/reference/{vacancyResponseTask.Result.VacancyReference.TrimVacancyReference()}";
 
             if (vacancyResponseTask.Result.StandardLarsCode != null)
             {

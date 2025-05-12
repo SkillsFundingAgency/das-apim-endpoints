@@ -27,10 +27,18 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/2.2.0
+    ref: refs/tags/2.2.18
     endpoint: SkillsFundingAgency
 steps:
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
       SonarCloud: false
       ContinueOnVulnerablePackageScanError: true
+      TargetProjects: |
+        src/Earnings/**/*.csproj
+        src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj
+        src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
+      UnitTestProjects: |
+        src/Earnings/**/*UnitTests.csproj
+        src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj
+      AzureArtifactsFeed: dct-pkg

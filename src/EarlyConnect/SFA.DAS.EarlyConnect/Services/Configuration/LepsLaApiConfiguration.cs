@@ -6,7 +6,6 @@ namespace SFA.DAS.EarlyConnect.Services.Configuration
     {
         public string Url { get; set; }
         public string Identifier { get; set; }
-        public string KeyVaultIdentifier { get; set; }
-        public string CertificateName { get; set; }
+        public string ApiKey { get; set; }
     }
 }

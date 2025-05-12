@@ -4,17 +4,20 @@ using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.InnerApi.Notifications;
+using SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMember;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;
 using SFA.DAS.EmployerAan.Application.Profiles.Queries.GetProfilesByUserType;
 using SFA.DAS.EmployerAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.EmployerAan.InnerApi.Attendances;
+using SFA.DAS.EmployerAan.InnerApi.CalendarEvents;
 using SFA.DAS.EmployerAan.InnerApi.LeavingReasons;
 using SFA.DAS.EmployerAan.InnerApi.MemberProfiles;
 using SFA.DAS.EmployerAan.InnerApi.Members;
 using SFA.DAS.EmployerAan.InnerApi.Members.PostMemberLeaving;
 using SFA.DAS.EmployerAan.InnerApi.Notifications.Responses;
+using SFA.DAS.EmployerAan.InnerApi.Settings;
 using SFA.DAS.EmployerAan.Models;
 
 namespace SFA.DAS.EmployerAan.Infrastructure;
@@ -33,7 +36,7 @@ public interface IAanHubRestApiClient : IHealthChecker
     Task<List<Calendar>> GetCalendars(CancellationToken cancellationToken);
 
     [Get("/calendarEvents")]
-    Task<GetCalendarEventsQueryResult> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
+    Task<GetCalendarEventsApiResponse> GetCalendarEvents([Header(Constants.ApiHeaders.RequestedByMemberIdHeader)] Guid requestedByMemberId, [QueryMap] IDictionary<string, string[]> parameters, CancellationToken cancellationToken);
 
     [Get("/employers/{userRef}")]
     [AllowAnyStatusCode]
@@ -104,4 +107,10 @@ public interface IAanHubRestApiClient : IHealthChecker
 
     [Get("/leavingReasons")]
     Task<List<LeavingCategory>> GetLeavingReasons(CancellationToken cancellationToken);
+
+    [Get("/MemberNotificationSettings/{memberId}")]
+    Task<GetNotificationSettingsApiResponse> GetMemberNotificationSettings([Path] Guid memberId, CancellationToken cancellationToken);
+
+    [Post("/MemberNotificationSettings/{memberId}")]
+    Task UpdateMemberNotificationSettings([Path] Guid memberId, [Body] PostNotificationSettingsApiRequest request, CancellationToken cancellationToken);
 }

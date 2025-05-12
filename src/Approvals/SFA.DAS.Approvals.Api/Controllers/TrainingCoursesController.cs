@@ -1,38 +1,32 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
+using SFA.DAS.Approvals.Application.Courses.Queries;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class TrainingCoursesController : ControllerBase
+    public class TrainingCoursesController(
+        ILogger<TrainingCoursesController> logger,
+        IMediator mediator)
+        : ControllerBase
     {
-        private readonly ILogger<TrainingCoursesController> _logger;
-        private readonly IMediator _mediator;
-
-        public TrainingCoursesController(
-            ILogger<TrainingCoursesController> logger,
-            IMediator mediator)
-        {
-            _logger = logger;
-            _mediator = mediator;
-        }
-        
         [HttpGet]
         [Route("standards")]
         public async Task<IActionResult> GetStandards()
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetStandardsQuery());
+                var queryResult = await mediator.Send(new GetStandardsQuery());
                 
-                var model = new GetStandardsListResponse()
+                var model = new GetStandardsListResponse
                 {
                     Standards = queryResult.Standards.Select(c=>(GetStandardResponse)c).ToList()
                 };
@@ -41,7 +35,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get list of standards");
+                logger.LogError(e, "Error attempting to get list of standards");
                 return BadRequest();
             }
         }
@@ -52,7 +46,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetFrameworksQuery());
+                var queryResult = await mediator.Send(new GetFrameworksQuery());
                 
                 var model = new GetFrameworksListResponse
                 {
@@ -63,7 +57,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e,"Error attempting to get list of frameworks");
+                logger.LogError(e,"Error attempting to get list of frameworks");
                 return BadRequest();
             }
         }
@@ -74,7 +68,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetStandardQuery(courseCode));
+                var queryResult = await mediator.Send(new GetStandardQuery(courseCode));
 
                 if (queryResult == null)
                 {
@@ -86,8 +80,30 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get list of standards");
+                logger.LogError(e, "Error attempting to get list of standards");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{courseCode}/funding-band")]
+        public async Task<IActionResult> GetFundingBand(string courseCode, [FromQuery] DateTime? startDate)
+        {
+            try
+            {
+                logger.LogInformation("Getting Funding Band details for course {courseId} with start date of {startDate}", courseCode, startDate);
+                var result = await mediator.Send(new GetFundingBandQuery { CourseCode = courseCode, StartDate = startDate });
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error gettingFunding Band details {courseId}", courseCode);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

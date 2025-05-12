@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -12,8 +11,8 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.PublicSectorReporting.Api.AppStart;
-using SFA.DAS.PublicSectorReporting.Application.AccountUsers.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.PublicSectorReporting.Api
@@ -49,7 +48,7 @@ namespace SFA.DAS.PublicSectorReporting.Api
 
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddServiceRegistration();
-            
+
             services.Configure<RouteOptions>(options =>
                 {
                     options.LowercaseUrls = true;
@@ -68,8 +67,8 @@ namespace SFA.DAS.PublicSectorReporting.Api
                 services.AddHealthChecks()
                      .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription);
             }
-            
-            services.AddApplicationInsightsTelemetry();
+
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddSwaggerGen(c =>
             {
@@ -79,7 +78,7 @@ namespace SFA.DAS.PublicSectorReporting.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -91,7 +90,7 @@ namespace SFA.DAS.PublicSectorReporting.Api
             {
                 app.UseHealthChecks();
             }
-            
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -99,7 +98,7 @@ namespace SFA.DAS.PublicSectorReporting.Api
                     name: "default",
                     pattern: "api/{controller=Account}/{action=index}/{id?}");
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

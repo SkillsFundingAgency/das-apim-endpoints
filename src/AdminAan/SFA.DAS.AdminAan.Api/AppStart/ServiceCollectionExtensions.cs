@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.AdminAan.Api.HealthCheck;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
@@ -7,7 +8,13 @@ using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.AdminAan.Api.AppStart;
 
@@ -38,11 +45,33 @@ public static class ServiceCollectionExtensions
 
         services.AddHttpClient();
         AddAanHubApiClient(services, configuration);
-        AddReferenceDataApiClient(services, configuration);
+        AddEducationalOrganisationApiClient(services, configuration);
         AddLocationApiClient(services, configuration);
         AddCommitmentsV2ApiClient(services, configuration);
         AddCoursesApiClient(services, configuration);
         AddApprenticeAccountsApiClient(services, configuration);
+
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<ILocationLookupService, LocationLookupService>();
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
+        
+        if (configuration.IsLocalOrDev())
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            var aanConfig = configuration.GetSection(nameof(AdminAanConfiguration)).Get<AdminAanConfiguration>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = aanConfig.ApimEndpointsRedisConnectionString;
+            });
+        }
 
         return services;
     }
@@ -52,22 +81,22 @@ public static class ServiceCollectionExtensions
         services.AddHealthChecks()
             .AddCheck<AanHubApiHealthCheck>(AanHubApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
             .AddCheck<CommitmentsV2InnerApiHealthCheck>(CommitmentsV2InnerApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
             .AddCheck<ApprenticeAccountsApiHealthCheck>(ApprenticeAccountsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
             .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
-            .AddCheck<ReferenceDataApiHealthCheck>(ReferenceDataApiHealthCheck.HealthCheckResultDescription,
+                tags: [Ready])
+            .AddCheck<EducationalOrganisationApiHealthCheck>(EducationalOrganisationApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready })
+                tags: [Ready])
             .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { Ready });
+                tags: [Ready]);
 
         return services;
     }
@@ -80,13 +109,11 @@ public static class ServiceCollectionExtensions
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
     }
-    private static void AddReferenceDataApiClient(IServiceCollection services, IConfigurationRoot configuration)
+    private static void AddEducationalOrganisationApiClient(IServiceCollection services, IConfigurationRoot configuration)
     {
-        var apiConfig = GetApiConfiguration(configuration, "ReferenceDataApiConfiguration");
-
-        services
-            .AddRestEaseClient<IReferenceDataApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+        services.Configure<EducationalOrganisationApiConfiguration>(configuration.GetSection(nameof(EducationalOrganisationApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EducationalOrganisationApiConfiguration>>().Value);
+        services.AddTransient<IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration>, EducationalOrganisationApiClient>();
     }
 
     private static void AddLocationApiClient(IServiceCollection services, IConfiguration configuration)

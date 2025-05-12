@@ -1,4 +1,9 @@
-﻿namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Text.Json.Serialization;
+
+namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 public class GetLiveVacanciesApiResponse
 {
     public IEnumerable<LiveVacancy> Vacancies { get; set; } = null!;
@@ -23,6 +28,36 @@ public class LiveVacancy
     public string? ProviderContactPhone { get; set; }
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
+    public List<Address>? EmployerLocations { get; set; } = [];
+    [JsonPropertyName("employerLocationOption"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+    public AvailableWhere? EmployerLocationOption { get; set; }
+    public string? EmployerLocationInformation { get; set; }
+
+    public Address? Address
+    {
+        get
+        {
+            return EmployerLocationOption switch
+            {
+                AvailableWhere.OneLocation or AvailableWhere.MultipleLocations => EmployerLocations?.FirstOrDefault(),
+                AvailableWhere.AcrossEngland => null,
+                _ => EmployerLocation
+            };
+        }
+    }
+
+    public List<Address>? OtherAddresses
+    {
+        get
+        {
+            if (EmployerLocationOption is not AvailableWhere.MultipleLocations) return null;
+            var otherAddresses = EmployerLocations?
+                .DistinctBy(x => x.ToSingleLineAddress())
+                .ToList();
+            return otherAddresses;
+        }
+    }
+
     public string? EmployerName { get; set; }
     public string? EmployerWebsiteUrl { get; set; }
     public bool IsAnonymous { get; set; } 
@@ -56,17 +91,6 @@ public class TrainingProvider
 {
     public string Name { get; set; } = null!;
     public long Ukprn { get; set; }
-}
-
-public class Address
-{
-    public string? AddressLine1 { get; set; }
-    public string? AddressLine2 { get; set; }
-    public string? AddressLine3 { get; set; }
-    public string? AddressLine4 { get; set; }
-    public string? Postcode { get; set; }
-    public double Latitude { get; set; }
-    public double Longitude { get; set; }
 }
 
 public class Wage

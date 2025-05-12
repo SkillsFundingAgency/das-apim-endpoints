@@ -1,6 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -10,6 +15,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 
         public class ApprenticeshipVacancy : IVacancy
         {
+            private List<Address> _otherAddresses;
             public string VacancyReference { get; set; }
             public string EmployerName { get; set; }
             public string Title { get; set; }
@@ -26,19 +32,30 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
                 !string.IsNullOrEmpty(Address?.AddressLine1) ? Address.AddressLine1 :
                 string.Empty;
             public string Postcode => Address?.Postcode ?? string.Empty;
-            public Address Address { get; set; }
             public string ApplicationUrl { get; set; }
             public string ExternalVacancyUrl => ApplicationUrl;
-            public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
-        }
+            public VacancyDataSource VacancySource { get; set; }
+            public Address Address { get; set; }
 
-        public class Address
-        {
-            public string AddressLine1 { get; set; }
-            public string AddressLine2 { get; set; }
-            public string AddressLine3 { get; set; }
-            public string AddressLine4 { get; set; }
-            public string Postcode { get; set; }
+            public List<Address>? OtherAddresses
+            {
+                get
+                {
+                    if (EmployerLocationOption is not AvailableWhere.MultipleLocations)
+                    {
+                        return null;
+                    }
+                    return _otherAddresses
+                        .DistinctBy(x => x.ToSingleLineAddress())
+                        .ToList();
+                }
+                set => _otherAddresses = value;
+            }
+
+            public string EmploymentLocationInformation { get; set; }
+            [JsonPropertyName("availableWhere"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+            public AvailableWhere? EmployerLocationOption { get; set; }
+            public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         }
     }
 }

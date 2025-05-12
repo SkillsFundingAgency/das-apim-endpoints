@@ -124,6 +124,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                         Id = c.Id,
                         Name = c.Name,
                         AdditionalInformation = c.AdditionalInformation,
+                        QualificationOrder = c.QualificationOrder,
                         IsPredicted = c.IsPredicted,
                         IsDeleted = c.IsDeleted
                     }).ToList(),
@@ -166,7 +167,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
                     QualificationReference = qualificationReferenceId
                 });
 
-                if (multipleQuery is null) return NotFound();
+                if (multipleQuery == null || multipleQuery.Qualifications.Count == 0) return NotFound();
 
                 return Ok((GetDeleteQualificationsApiResponse)multipleQuery);
             }

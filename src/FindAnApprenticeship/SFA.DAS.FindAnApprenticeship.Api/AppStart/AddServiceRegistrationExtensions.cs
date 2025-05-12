@@ -2,7 +2,6 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.FindAnApprenticeship.Api.Telemetry;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.NServiceBus.Services;
@@ -19,11 +18,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
-            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
-            services.AddTransient<IFindApprenticeshipLegacyApiClient<FindApprenticeshipLegacyApiConfiguration>, FindApprenticeshipLegacyApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
@@ -32,11 +30,9 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IVacancyService, VacancyService>();
-            services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
 			services.AddSingleton<IDateTimeService>(new DateTimeService());
             services.AddTransient<INotificationService, NotificationService>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
-            services.AddTransient<ILegacyApplicationMigrationService, LegacyApplicationMigrationService>();
             services.AddTransient<ITotalPositionsAvailableService, TotalPositionsAvailableService>();
         }
     }

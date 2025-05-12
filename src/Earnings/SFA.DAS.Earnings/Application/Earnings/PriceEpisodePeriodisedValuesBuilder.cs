@@ -1,4 +1,5 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using Microsoft.Azure.Amqp.Framing;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
@@ -25,9 +26,9 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
 
-    public static PriceEpisodePeriodisedValues BuildPriceEpisodeInstalmentsThisPeriodValues(Apprenticeship earningsApprenticeship, short academicYear)
+    public static PriceEpisodePeriodisedValues BuildPriceEpisodeInstalmentsThisPeriodValues(JoinedPriceEpisode joinedPriceEpisode, short academicYear)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        var instalments = GetInstalmentsForAcademicYear(joinedPriceEpisode, academicYear);
 
         return new PriceEpisodePeriodisedValues
         {
@@ -47,14 +48,14 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
 
-    public static PriceEpisodePeriodisedValues BuildInstallmentAmountValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName)
+    public static PriceEpisodePeriodisedValues BuildInstallmentAmountValues(JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName)
     {
-        return BuildCoInvestmentValues(earningsApprenticeship, academicYear, attributeName, 1);
+        return BuildCoInvestmentValues(joinedPriceEpisode, academicYear, attributeName, 1);
     }
 
-    public static PriceEpisodePeriodisedValues BuildCoInvestmentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, decimal multiplier)
+    public static PriceEpisodePeriodisedValues BuildCoInvestmentValues(JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, decimal multiplier)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        var instalments = GetInstalmentsForAcademicYear(joinedPriceEpisode, academicYear);
 
         return new PriceEpisodePeriodisedValues
         {
@@ -73,12 +74,46 @@ public static class PriceEpisodePeriodisedValuesBuilder
             Period12 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * multiplier).GetValueOrDefault()
         };
     }
-
-    private static List<Instalment> GetInstalmentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear)
+    
+    public static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
-        return earningsApprenticeship.Episodes
-            .SelectMany(episode => episode.Instalments)
+        var additionalPayments = GetAdditionalPayments(joinedPriceEpisode, additionalPaymentType);
+
+        var nthPayment = additionalPayments
+            .OrderBy(i => i.AcademicYear)
+            .ThenBy(i => i.DeliveryPeriod)
+            .Skip(n - 1)
+            .FirstOrDefault();
+
+        return new PriceEpisodePeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 1 ? nthPayment.Amount : 0,
+            Period2 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 2 ? nthPayment.Amount : 0,
+            Period3 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 3 ? nthPayment.Amount : 0,
+            Period4 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 4 ? nthPayment.Amount : 0,
+            Period5 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 5 ? nthPayment.Amount : 0,
+            Period6 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 6 ? nthPayment.Amount : 0,
+            Period7 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 7 ? nthPayment.Amount : 0,
+            Period8 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 8 ? nthPayment.Amount : 0,
+            Period9 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 9 ? nthPayment.Amount : 0,
+            Period10 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 10 ? nthPayment.Amount : 0,
+            Period11 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 11 ? nthPayment.Amount : 0,
+            Period12 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 12 ? nthPayment.Amount : 0
+        };
+    }
+
+    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedPriceEpisode joinedPriceEpisode, short academicYear)
+    {
+        return joinedPriceEpisode.Instalments
             .Where(i => i.AcademicYear == academicYear)
+            .ToList();
+    }
+
+    private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedPriceEpisode joinedPriceEpisode, string additionalPaymentType)
+    {
+        return joinedPriceEpisode.AdditionalPayments
+            .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
     }
 }

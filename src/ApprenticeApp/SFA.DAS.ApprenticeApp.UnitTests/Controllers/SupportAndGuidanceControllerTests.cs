@@ -88,6 +88,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
             var id = Guid.NewGuid();
             var articleIdentifier = "1234";
+            var articleTitle = "title";
             var request = new ApprenticeArticleRequest() { IsSaved = true, LikeStatus = true };
 
             controller.ControllerContext = new ControllerContext
@@ -95,7 +96,26 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
                 HttpContext = httpContext
             };
 
-            var result = await controller.AddUpdateApprenticeArticle(id, articleIdentifier, request) as OkResult;
+            var result = await controller.AddUpdateApprenticeArticle(id, articleIdentifier, articleTitle, request) as OkResult;
+            result.Should().BeOfType(typeof(OkResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Remove_Apprentice_Article_Test(
+            [Greedy] SupportAndGuidanceController controller)
+        {
+            var httpContext = new DefaultHttpContext();
+
+            var id = Guid.NewGuid();
+            var articleIdentifier = "1234";
+            var request = new ApprenticeArticleRequest() { IsSaved = true, LikeStatus = true };
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            var result = await controller.RemoveApprenticeArticle(id, articleIdentifier, request) as OkResult;
             result.Should().BeOfType(typeof(OkResult));
         }
     }

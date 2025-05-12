@@ -10,10 +10,13 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerAan.Api.HealthCheck;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
+using SFA.DAS.EmployerAan.Configuration;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -39,17 +42,40 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
     {
         services.AddHttpClient();
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetEmployerMemberQuery).Assembly));
-        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
+        services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
+        services.AddTransient<ILocationLookupService, LocationLookupService>();
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
 
         AddAanHubApiClient(services, configuration);
         AddCommitmentsV2ApiClient(services, configuration);
         AddApprenticeAccountsApiClient(services, configuration);
         AddCoursesApiClient(services, configuration);
+
+        if (configuration.IsLocalOrDev())
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            var aanConfig = configuration.GetSection(nameof(EmployerAanConfiguration)).Get<EmployerAanConfiguration>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = aanConfig.ApimEndpointsRedisConnectionString;
+            });
+        }
+
         return services;
     }
 

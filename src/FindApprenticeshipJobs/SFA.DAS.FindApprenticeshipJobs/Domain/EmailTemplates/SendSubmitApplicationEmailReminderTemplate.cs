@@ -4,7 +4,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 
 public class SendSubmitApplicationEmailReminderTemplate : EmailTemplateArguments
 {
-    public SendSubmitApplicationEmailReminderTemplate(string templateId,string recipientEmail, string firstName, int daysRemaining, string vacancy, string vacancyUrl,string employer, string city, string postcode, string continueApplicationUrl, DateTime closingDate, string settingsUrl)
+    public SendSubmitApplicationEmailReminderTemplate(string templateId,string recipientEmail, string firstName, int daysRemaining, string vacancy, string vacancyUrl,string employer, string location, string continueApplicationUrl, DateTime closingDate, string settingsUrl)
     {
         TemplateId = templateId;
         RecipientAddress = recipientEmail;
@@ -15,9 +15,8 @@ public class SendSubmitApplicationEmailReminderTemplate : EmailTemplateArguments
             {"vacancy", vacancy },
             {"vacancyUrl", vacancyUrl },
             {"employer", employer },
-            {"city", city },
-            {"postcode", postcode },
-            {"closingDate", closingDate.ToString("d MMM yyyy") },
+            {"location", location },
+            {"closingDate", closingDate.ToString("dddd d MMMM yyyy") },
             {"continueApplicationLink", continueApplicationUrl },
             {"settingsUrl", settingsUrl }
         };
