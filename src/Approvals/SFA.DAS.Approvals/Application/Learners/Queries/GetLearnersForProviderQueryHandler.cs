@@ -25,10 +25,15 @@ public class GetLearnersForProviderQueryHandler(
     public async Task<GetLearnersForProviderQueryResult> Handle(GetLearnersForProviderQuery request,
         CancellationToken cancellationToken)
     {
-
-        var (learnerData, standards) = await GetCourseAndLearnerData(request);
         long accountLegalEntityId = 0;
         string employerName = null;
+
+        var learnerDataTask = GetLearnerData(request);
+        var standardsTask = GetStandardsData();
+
+        await Task.WhenAll(learnerDataTask, standardsTask);
+        var learnerData = await learnerDataTask;
+        var standards = await standardsTask;
 
         if (request.CohortId.HasValue)
         {
@@ -71,12 +76,11 @@ public class GetLearnersForProviderQueryHandler(
         };
     }
 
-    private async Task<(GetLearnersForProviderResponse, GetStandardsListResponse)> GetCourseAndLearnerData(
-        GetLearnersForProviderQuery request)
+    private async Task<GetLearnersForProviderResponse> GetLearnerData(GetLearnersForProviderQuery request)
     {
+        logger.LogInformation("Getting Learner Data for Provider {ProviderId}", request.ProviderId);
 
-        logger.LogInformation("Getting Learner Data for Provider {0}", request.ProviderId);
-        var learnerDataResponseTask = learnerDataClient.GetWithResponseCode<GetLearnersForProviderResponse>(
+        var response = await learnerDataClient.GetWithResponseCode<GetLearnersForProviderResponse>(
             new GetLearnersForProviderRequest(
                 request.ProviderId,
                 2425,
@@ -87,24 +91,26 @@ public class GetLearnersForProviderQueryHandler(
                 request.PageSize
             ));
 
-        logger.LogInformation("Getting All Courses");
-        var standardsTask = coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetStandardsExportRequest());
-
-        await Task.WhenAll(learnerDataResponseTask, standardsTask);
-
-        var learnerDataResponse = await learnerDataResponseTask;
-        var standardsResponse = await standardsTask;
-
-        if (!string.IsNullOrEmpty(learnerDataResponse.ErrorContent))
+        if (!string.IsNullOrEmpty(response.ErrorContent))
         {
-            throw new ApplicationException($"Getting Learner Data Failed, Status Code {learnerDataResponse.StatusCode} Error : {learnerDataResponse.ErrorContent}");
+            throw new ApplicationException($"Getting Learner Data Failed, Status Code {response.StatusCode} Error : {response.ErrorContent}");
         }
 
-        if (!string.IsNullOrEmpty(standardsResponse.ErrorContent))
-        {
-            throw new ApplicationException($"Getting all coursed Failed. Status Code {standardsResponse.StatusCode} Error : {standardsResponse.ErrorContent}");
-        }
-
-        return (learnerDataResponse.Body, standardsResponse.Body);
+        return response.Body;
     }
+
+    private async Task<GetStandardsListResponse> GetStandardsData()
+    {
+        logger.LogInformation("Getting All Courses");
+
+        var response = await coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetStandardsExportRequest());
+
+        if (!string.IsNullOrEmpty(response.ErrorContent))
+        {
+            throw new ApplicationException($"Getting all courses Failed. Status Code {response.StatusCode} Error : {response.ErrorContent}");
+        }
+
+        return response.Body;
+    }
+
 }
