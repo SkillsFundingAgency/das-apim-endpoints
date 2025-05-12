@@ -140,5 +140,6 @@ public class EarningsFM36Constants
     {
         public const string ProviderIncentive = "ProviderIncentive";
         public const string EmployerIncentive = "EmployerIncentive";
+        public const string LearningSupport = "LearningSupport";
     }
 }
