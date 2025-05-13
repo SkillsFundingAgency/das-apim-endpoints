@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 public class GetEmployerAccountsByNameResponse

@@ -12,13 +12,12 @@ using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
-using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
-using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccounts;
 using SFA.DAS.ToolsSupport.Application.Queries.GetPayeSchemeLevyDeclarations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetTeamMembers;
+using SFA.DAS.ToolsSupport.Application.Queries.SearchEmployerAccounts;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
 
@@ -336,13 +335,13 @@ public class EmployerAccountsControllerTests
     [Test, MoqAutoData]
     public async Task Then_Gets_EmployerAccounts_By_EmployerName_From_Mediator(
         string employerName,
-        GetEmployerAccountsQueryResult mediatorResult,
+        SearchEmployerAccountsQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] EmployerAccountsController controller)
     {
         mockMediator
             .Setup(mediator => mediator.Send(
-                It.Is<GetEmployerAccountsQuery>(x => x.EmployerName == employerName),
+                It.Is<SearchEmployerAccountsQuery>(x => x.EmployerName == employerName),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(mediatorResult);
 
