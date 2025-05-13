@@ -23,7 +23,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Learners.Queries;
 public class WhenGettingLearnersForProvider
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Api_Is_Called_And_Both_Clients_Return_Responses_The_result_Is_Returned(
+    public async Task Then_The_Api_Is_Called_With_LegalEntityId_And_Clients_Return_Responses_The_result_Is_Returned(
         GetLearnersForProviderQuery query,
         GetLearnersForProviderRequest learnersRequest,
         GetLearnersForProviderResponse learnersResponse,
@@ -39,6 +39,7 @@ public class WhenGettingLearnersForProvider
         [Greedy] GetLearnersForProviderQueryHandler handler
     )
     {
+        query.CohortId = null;
         GetLearnersForProviderRequest input;
         learnerDataClient.Setup(x =>
                 x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
@@ -67,6 +68,52 @@ public class WhenGettingLearnersForProvider
         actual.Learners.Should().BeEquivalentTo(learners);
     }
 
+    [Test, MoqAutoData]
+    public async Task Then_The_Api_Is_Called_With_CohortId_And_Clients_Return_Responses_The_result_Is_Returned(
+    GetLearnersForProviderQuery query,
+    GetLearnersForProviderRequest learnersRequest,
+    GetLearnersForProviderResponse learnersResponse,
+    GetCohortRequest cohortRequest,
+    GetCohortResponse cohortResponse,
+    GetStandardsExportRequest coursesRequest,
+    GetStandardsListResponse coursesResponse,
+    List<LearnerSummary> learners,
+    [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+    [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+    [Frozen] Mock<IMapLearnerRecords> mapper,
+    [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> courseClient,
+    [Greedy] GetLearnersForProviderQueryHandler handler
+)
+    {
+        query.AccountLegalEntityId = null;
+        GetLearnersForProviderRequest input;
+        learnerDataClient.Setup(x =>
+                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+            .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x =>
+                x.GetWithResponseCode<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCohortResponse>(cohortResponse, HttpStatusCode.OK, null));
+
+        courseClient.Setup(x => x.GetWithResponseCode<GetStandardsListResponse>(It.IsAny<GetStandardsExportRequest>()))
+            .ReturnsAsync(new ApiResponse<GetStandardsListResponse>(coursesResponse, HttpStatusCode.OK, null));
+
+
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetStandardsListItem>>())).ReturnsAsync(learners);
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.Should().NotBeNull();
+        actual.AccountLegalEntityId.Should().Be(cohortResponse.AccountLegalEntityId);
+        actual.EmployerName.Should().Be(cohortResponse.LegalEntityName);
+        actual.LastSubmissionDate.Should().Be(learnersResponse.LastSubmissionDate);
+        actual.Page.Should().Be(learnersResponse.Page);
+        actual.PageSize.Should().Be(learnersResponse.PageSize);
+        actual.Total.Should().Be(learnersResponse.TotalItems);
+        actual.TotalPages.Should().Be(learnersResponse.TotalPages);
+        actual.Learners.Should().BeEquivalentTo(learners);
+    }
+    
     [Test, MoqAutoData]
     public async Task Then_The_Api_Is_Called_And_learnerData_Clients_fails(
         GetLearnersForProviderQuery query,
@@ -121,7 +168,7 @@ public class WhenGettingLearnersForProvider
         [Greedy] GetLearnersForProviderQueryHandler handler
     )
     {
-        GetLearnersForProviderRequest input;
+        query.CohortId = null;
         learnerDataClient.Setup(x =>
                 x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
@@ -139,6 +186,43 @@ public class WhenGettingLearnersForProvider
         var result = async () => await handler.Handle(query, CancellationToken.None);
 
         await result.Should().ThrowAsync<ApplicationException>().WithMessage("*ALE failed");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Api_Is_Called_And_cohortClient_fails(
+        GetLearnersForProviderQuery query,
+        GetLearnersForProviderRequest learnersRequest,
+        GetLearnersForProviderResponse learnersResponse,
+        GetCohortRequest cohortRequest,
+        GetCohortResponse cohortResponse,
+        GetStandardsExportRequest coursesRequest,
+        GetStandardsListResponse coursesResponse,
+        List<LearnerSummary> learners,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IMapLearnerRecords> mapper,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> courseClient,
+        [Greedy] GetLearnersForProviderQueryHandler handler
+    )
+    {
+        query.AccountLegalEntityId = null;
+        learnerDataClient.Setup(x =>
+                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+            .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x =>
+                x.GetWithResponseCode<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCohortResponse>(cohortResponse,
+                HttpStatusCode.InternalServerError, "Cohort failed"));
+
+        courseClient.Setup(x => x.GetWithResponseCode<GetStandardsListResponse>(It.IsAny<GetStandardsExportRequest>()))
+            .ReturnsAsync(new ApiResponse<GetStandardsListResponse>(coursesResponse, HttpStatusCode.OK, null));
+
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetStandardsListItem>>())).ReturnsAsync(learners);
+
+        var result = async () => await handler.Handle(query, CancellationToken.None);
+
+        await result.Should().ThrowAsync<ApplicationException>().WithMessage("*Cohort failed");
     }
 
     [Test, MoqAutoData]
