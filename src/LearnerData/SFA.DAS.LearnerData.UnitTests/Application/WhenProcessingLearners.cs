@@ -28,7 +28,7 @@ public class WhenProcessingLearners
     [Test, MoqAutoData]
     public async Task Then_call_is_successful_and_request_fields_maps_to_event(
         Guid correlationId,
-        DateTime recievedOn,
+        DateTime receivedOn,
         int academicYear,
         LearnerDataRequest request,
         [Frozen] Mock<ILogger<ProcessLearnersCommandHandler>> mockLogger,
@@ -45,11 +45,32 @@ public class WhenProcessingLearners
         await sut.Handle(
             new ProcessLearnersCommand
             {
-                CorrelationId = correlationId, ReceivedOn = recievedOn, AcademicYear = academicYear,
+                CorrelationId = correlationId, ReceivedOn = receivedOn, AcademicYear = academicYear,
                 Learners = [request]
             }, CancellationToken.None);
 
-        @event.Should().BeEquivalentTo(request);
+        @event.Should().BeEquivalentTo(new
+        {
+            request.ULN,
+            request.UKPRN,
+            request.FirstName,
+            request.LastName,
+            Email = request.LearnerEmail,
+            DoB = request.DateOfBirth,
+            request.StartDate,
+            request.PlannedEndDate,
+            request.PercentageLearningToBeDelivered,
+            request.EpaoPrice,
+            request.TrainingPrice,
+            request.AgreementId,
+            request.IsFlexiJob,
+            PlannedOTJTrainingHours = request.PlannedOTJTrainingHours ?? 0,
+            request.StandardCode,
+            CorrelationId = correlationId,
+            ReceivedDate = receivedOn,
+            AcademicYear = academicYear,
+            request.ConsumerReference
+        });
     }
 
     [Test, MoqAutoData]

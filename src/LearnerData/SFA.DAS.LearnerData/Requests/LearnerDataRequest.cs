@@ -6,8 +6,8 @@ public class LearnerDataRequest
     public long UKPRN { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
-    public string? Email { get; set; }
-    public DateTime DoB { get; set; }
+    public string? LearnerEmail { get; set; }
+    public DateTime DateOfBirth { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime PlannedEndDate { get; set; }
     public int? PercentageLearningToBeDelivered { get; set; }
