@@ -4,6 +4,8 @@ using SFA.DAS.LearnerData.Application;
 using SFA.DAS.LearnerData.Requests;
 using System.Net;
 using SFA.DAS.LearnerData.Responses;
+using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace SFA.DAS.LearnerData.Api.Controllers
 {
@@ -13,12 +15,12 @@ namespace SFA.DAS.LearnerData.Api.Controllers
     {
         [HttpPut]
         [Route("/provider/{ukprn}/academicyears/{academicyear}/learners")]
-        public async Task<IActionResult> Post([FromRoute]long ukprn, [FromRoute] int academicyear,  [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
+        public async Task<IActionResult> Put([FromRoute]long ukprn, [FromRoute] int academicyear,  [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
         {
-            var errors = ValidateLearnerData(ukprn, dataRequests);
-            if (errors.Any())
+            var validationResults = ValidateUkPrnMatches(ukprn, dataRequests).ToList();
+            if(validationResults.Any())
             {
-                return new BadRequestObjectResult(new ErrorResponse { Errors = errors });
+                return BadRequest(validationResults);
             }
 
             try
@@ -34,70 +36,17 @@ namespace SFA.DAS.LearnerData.Api.Controllers
             }
         }
 
-        private IEnumerable<Error> ValidateLearnerData(long ukprn, IEnumerable<LearnerDataRequest> dataRequests)
+        private IEnumerable<ValidationResult> ValidateUkPrnMatches(long ukprn, IEnumerable<LearnerDataRequest> dataRequests)
         {
             if (dataRequests.Any(x => x.UKPRN != ukprn))
             {
-                yield return new Error
-                {
-                    Code = "UKPRN",
-                    Message = $"Learner data contains different UKPRN to {ukprn}"
-                };
+                yield return new ValidationResult($"Learner data contains different UKPRN to {ukprn}", new List<string> { "UKPRN" } );
             }
+        }
 
-            if (dataRequests.Any(x => x.ULN <= 1000000000 || x.ULN >= 9999999999))
-            {
-                yield return new Error
-                {
-                    Code = "ULN",
-                    Message = "Learner data contains incorrect ULNs"
-                };
-            }
+        private IEnumerable<Error> ValidateLearnerData(long ukprn, IEnumerable<LearnerDataRequest> dataRequests)
+        {
 
-            if (dataRequests.Any(x => x.UKPRN < 10000000 || x.UKPRN > 99999999))
-            {
-                yield return new Error
-                {
-                    Code = "UKPRN",
-                    Message = "Learner data contains incorrect UKPRNs"
-                };
-            }
-
-            if (dataRequests.Any(x => x.ConsumerReference.Length > 100))
-            {
-                yield return new Error
-                {
-                    Code = "ConsumerReference",
-                    Message = "Learner data contains incorrect ConsumerReference (>100 chars)"
-                };
-            }
-
-            if (dataRequests.Any(x => string.IsNullOrWhiteSpace(x.FirstName) || string.IsNullOrWhiteSpace(x.LastName)))
-            {
-                yield return new Error
-                {
-                    Code = "Name",
-                    Message = "Learner data contains blank name fields"
-                };
-            }
-
-            if (dataRequests.Any(x => string.IsNullOrWhiteSpace(x.FirstName) || string.IsNullOrWhiteSpace(x.LastName)))
-            {
-                yield return new Error
-                {
-                    Code = "Name",
-                    Message = "Learner data contains blank names"
-                };
-            }
-
-            if (dataRequests.Any(x => x.EpaoPrice < 0))
-            {
-                yield return new Error
-                {
-                    Code = "EpaoPrice",
-                    Message = "Learner data contains a negative EpaoPrice"
-                };
-            }
 
             if (dataRequests.Any(x => x.TrainingPrice < 0))
             {
