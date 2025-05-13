@@ -27,9 +27,9 @@ public class SearchEmployerAccountsQueryHandler(IInternalApiClient<AccountsConfi
         else if (!string.IsNullOrWhiteSpace(request.EmployerName))
         {
             var results = await client.Get<GetEmployerAccountsByNameResponse>(new GetEmployerAccountsByNameRequest(request.EmployerName));
-            if (results?.Accounts != null)
+            if (results?.EmployerAccounts != null)
             {
-                response.EmployerAccounts = results.Accounts.ConvertAll(acc => (EmployerAccount)acc);
+                response.EmployerAccounts = results.EmployerAccounts.ConvertAll(acc => (EmployerAccount)acc);
             }
         }
         

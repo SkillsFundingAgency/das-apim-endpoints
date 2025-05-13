@@ -2,7 +2,7 @@ namespace SFA.DAS.ToolsSupport.InnerApi.Responses;
 
 public class GetEmployerAccountsByNameResponse
 {
-    public List<EmployerAccountByName> Accounts { get; set; } = new();
+    public List<EmployerAccountByName> EmployerAccounts { get; set; } = new();
 }
 
 public class EmployerAccountByName
