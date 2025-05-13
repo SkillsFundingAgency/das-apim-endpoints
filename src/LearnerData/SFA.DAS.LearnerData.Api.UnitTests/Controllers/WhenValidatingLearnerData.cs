@@ -65,10 +65,10 @@ public class WhenValidatingLearnerData
     public void And_EmailAddress_Is_Invalid()
     {
         var learner = CreateValidLearnerDataRequest();
-        learner.Email = "NotValids.com";
+        learner.LearnerEmail = "NotValids.com";
         var validationResults = RunValidation(learner);
         validationResults.Any().Should().BeTrue();
-        validationResults.First().MemberNames.Should().Contain("Email");
+        validationResults.First().MemberNames.Should().Contain("LearnerEmail");
     }
 
     [Test]
@@ -123,8 +123,8 @@ public class WhenValidatingLearnerData
             UKPRN = 12345678,
             FirstName = "First",
             LastName = "Last",
-            Email = "Email@abcd.com",
-            DoB = new DateTime(2000, 02, 01),
+            LearnerEmail = "Email@abcd.com",
+            DateOfBirth = new DateTime(2000, 02, 01),
             StartDate = new DateTime(2025, 02, 01),
             PlannedEndDate = new DateTime(2027, 02, 01),
             PercentageLearningToBeDelivered = null,

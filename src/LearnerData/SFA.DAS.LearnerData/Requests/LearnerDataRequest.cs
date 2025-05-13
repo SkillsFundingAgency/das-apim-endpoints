@@ -14,10 +14,10 @@ public class LearnerDataRequest : IValidatableObject
     public string LastName { get; set; }
 
     [EmailAddress]
-    public string? Email { get; set; }
+    public string? LearnerEmail { get; set; }
 
     [DataType(DataType.Date)]
-    public DateTime DoB { get; set; }
+    public DateTime DateOfBirth { get; set; }
 
     [DataType(DataType.Date)]
     public DateTime StartDate { get; set; }

@@ -94,5 +94,4 @@ public class WhenReceivingLearnerData
         result.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         mockMediator.Verify(x => x.Send(It.IsAny<ProcessLearnersCommand>(), It.IsAny<CancellationToken>()), Times.Once);
     }
-
 }
