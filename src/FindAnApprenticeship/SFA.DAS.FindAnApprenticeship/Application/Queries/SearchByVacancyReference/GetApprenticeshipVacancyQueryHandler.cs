@@ -65,7 +65,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     new GetCandidateApiRequest(request.CandidateId.Value.ToString()));
 
                 var savedVacancy = candidateApiClient.Get<GetSavedVacancyApiResponse>(
-                    new GetSavedVacancyApiRequest(request.CandidateId.Value, vacancyReference));
+                    new GetSavedVacancyApiRequest(request.CandidateId.Value, null, vacancyReference));
 
                 await Task.WhenAll(application, candidate, savedVacancy);
 
