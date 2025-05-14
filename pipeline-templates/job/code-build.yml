@@ -9,7 +9,7 @@ parameters:
 jobs:
 - job: CodeBuild
   pool:
-    name: DAS - APIM Continuous Integration Beta
+    name: DAS - Continuous Integration Beta
   variables:
   - group: ESFA - SonarCloud
   - name: buildConfiguration
