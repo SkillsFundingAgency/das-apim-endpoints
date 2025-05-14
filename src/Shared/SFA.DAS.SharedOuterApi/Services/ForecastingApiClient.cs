@@ -51,6 +51,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _client.Delete(request);
         }
 
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            return _client.DeleteWithResponseCode<TResponse>(request, includeResponse);
+        }
+
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             return _client.Patch(request);
