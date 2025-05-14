@@ -113,7 +113,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                         It.Is<GetCandidateApiRequest>(c=>c.GetUrl == expectedGetCandidateAddressRequest.GetUrl)))
                 .ReturnsAsync(candidateApiResponse);
 
-            var expectedGetSavedVacancyApiRequest = new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.TrimVacancyReference());
+            var expectedGetSavedVacancyApiRequest = new GetSavedVacancyApiRequest(query.CandidateId.Value, null, query.VacancyReference.TrimVacancyReference());
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetSavedVacancyApiResponse>(
