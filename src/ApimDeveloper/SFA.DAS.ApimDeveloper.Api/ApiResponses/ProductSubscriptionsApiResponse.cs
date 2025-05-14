@@ -38,7 +38,7 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
                 DisplayName = source.DisplayName,
                 Description = source.Description,
                 Key = subscriptions.FirstOrDefault(c=>c.Name.Equals(source.Id))?.Key ?? "",
-                Versions = source.Documents.Select(c=>c.Key).Where(c=>c != source.Name).ToList()
+                Versions = source.Documents.Select(c=>c.Key).Where(c=>c != source.Name.ToLower()).ToList()
             };
         }
     }
