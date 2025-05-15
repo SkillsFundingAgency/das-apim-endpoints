@@ -4,13 +4,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;
 
-namespace SFA.DAS.ToolsSupport.Application.Queries;
-public class GetEmployerAccountsQueryHandler(IInternalApiClient<AccountsConfiguration> client)
-    : IRequestHandler<GetEmployerAccountsQuery, GetEmployerAccountsQueryResult>
+namespace SFA.DAS.ToolsSupport.Application.Queries.SearchEmployerAccounts;
+public class SearchEmployerAccountsQueryHandler(IInternalApiClient<AccountsConfiguration> client)
+    : IRequestHandler<SearchEmployerAccountsQuery, SearchEmployerAccountsQueryResult>
 {
-    public async Task<GetEmployerAccountsQueryResult> Handle(GetEmployerAccountsQuery request, CancellationToken cancellationToken)
+    public async Task<SearchEmployerAccountsQueryResult> Handle(SearchEmployerAccountsQuery request, CancellationToken cancellationToken)
     {
-        var response = new GetEmployerAccountsQueryResult();
+        var response = new SearchEmployerAccountsQueryResult();
 
         if (request.AccountId != null)
         {
@@ -24,17 +24,26 @@ public class GetEmployerAccountsQueryHandler(IInternalApiClient<AccountsConfigur
                 await AddAccountDetails(payeDetail.AccountId, response);
             }
         }
+        else if (!string.IsNullOrWhiteSpace(request.EmployerName))
+        {
+            var results = await client.Get<GetEmployerAccountsByNameResponse>(new GetEmployerAccountsByNameRequest(request.EmployerName));
+            if (results?.EmployerAccounts != null)
+            {
+                response.EmployerAccounts = results.EmployerAccounts.ConvertAll(acc => (EmployerAccount)acc);
+            }
+        }
+        
         return response;
     }
 
-    private async Task AddAccountDetails(long accountId, GetEmployerAccountsQueryResult response)
+    private async Task AddAccountDetails(long accountId, SearchEmployerAccountsQueryResult response)
     {
         var account = await client.Get<GetEmployerAccountByIdResponse>(
             new GetEmployerAccountByIdRequest(accountId));
 
         if (account != null)
         {
-            response.Accounts.Add(new EmployerAccount
+            response.EmployerAccounts.Add(new EmployerAccount
             {
                 AccountId = account.AccountId,
                 DasAccountName = account.DasAccountName,

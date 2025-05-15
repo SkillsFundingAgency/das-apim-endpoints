@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -54,6 +53,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         public Task Delete(IDeleteApiRequest request)
         {
             return _client.Delete(request);
+        }
+
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            return _client.DeleteWithResponseCode<TResponse>(request, includeResponse);
         }
 
         public Task Patch<TData>(IPatchApiRequest<TData> request)

@@ -51,6 +51,11 @@ public class RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiCli
         await apiClient.Delete(request);
     }
 
+    public async Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+    {
+        throw new NotImplementedException();
+    }
+
     public Task Patch<TData>(IPatchApiRequest<TData> request)
     {
         throw new System.NotImplementedException();
