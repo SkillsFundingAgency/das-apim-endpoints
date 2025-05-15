@@ -234,29 +234,4 @@ public class JoinedAdditionalPayment
     public decimal Amount { get; set; }
     public string AdditionalPaymentType { get; set; }
     public DateTime DueDate { get; set; }
-
-    public DateTime DateTime => GetDateTime();
-
-    private DateTime GetDateTime()
-    {
-        var calendarYear = ToCalendarYear(AcademicYear, DeliveryPeriod);
-        var calendarMonth = ToCalendarMonth(DeliveryPeriod);
-        return new DateTime(calendarYear, calendarMonth, 1);
-    }
-
-    private short ToCalendarYear(short academicYear, byte deliveryPeriod)
-    {
-        if (deliveryPeriod >= 6)
-            return short.Parse($"20{academicYear.ToString().Substring(2, 2)}");
-        else
-            return short.Parse($"20{academicYear.ToString().Substring(0, 2)}");
-    }
-
-    private byte ToCalendarMonth(byte deliveryPeriod)
-    {
-        if (deliveryPeriod >= 6)
-            return (byte)(deliveryPeriod - 5);
-        else
-            return (byte)(deliveryPeriod + 7);
-    }
 }
