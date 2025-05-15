@@ -36,14 +36,11 @@ public class ShortlistsController(IMediator _mediator) : ControllerBase
 
     [HttpDelete]
     [Route("{id}")]
-    [ProducesResponseType(StatusCodes.Status202Accepted)]
+    [ProducesResponseType(StatusCodes.Status202Accepted, Type = typeof(DeleteShortlistItemCommandResult))]
     public async Task<IActionResult> DeleteShortlistItemForUser(Guid id)
     {
-        await _mediator.Send(new DeleteShortlistItemCommand
-        {
-            ShortlistId = id
-        });
-        return Accepted();
+        var result = await _mediator.Send(new DeleteShortlistItemCommand(id));
+        return Accepted(result);
     }
 
     [HttpGet]

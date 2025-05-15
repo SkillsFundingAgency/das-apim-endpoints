@@ -1,10 +1,10 @@
-﻿using SFA.DAS.LevyTransferMatching.Configuration;
+﻿using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
+using SFA.DAS.LevyTransferMatching.Configuration;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.LevyTransferMatching.Clients
 {
@@ -88,6 +88,11 @@ namespace SFA.DAS.LevyTransferMatching.Clients
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
         {
             throw new System.NotImplementedException();
         }

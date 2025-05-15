@@ -20,12 +20,16 @@ public class WhenCallingDeleteShortlistUserItem
     [Test, MoqAutoData]
     public async Task Then_Deletes_Shortlist_Item_For_User_From_Mediator(
         Guid id,
+        DeleteShortlistItemCommandResult expected,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] ShortlistsController controller)
     {
+        mockMediator.Setup(mediator => mediator.Send(It.IsAny<DeleteShortlistItemCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(expected);
         var controllerResult = await controller.DeleteShortlistItemForUser(id) as ObjectResult;
 
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
+        controllerResult.As<AcceptedResult>().Value.Should().Be(expected);
         mockMediator.Verify(mediator => mediator.Send(It.Is<DeleteShortlistItemCommand>(command => command.ShortlistId == id), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
