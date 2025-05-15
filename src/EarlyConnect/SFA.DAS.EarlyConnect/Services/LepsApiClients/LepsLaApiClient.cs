@@ -1,12 +1,12 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
-using System.Net.Http.Headers;
+using SFA.DAS.EarlyConnect.Services.Interfaces;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -133,6 +133,11 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
         {
             throw new NotImplementedException();
         }

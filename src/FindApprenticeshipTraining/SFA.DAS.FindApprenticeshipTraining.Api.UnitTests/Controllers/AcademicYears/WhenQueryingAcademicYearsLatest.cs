@@ -1,4 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -6,17 +10,13 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.AcademicYears.Queries.GetLatest;
-using SFA.DAS.Testing.AutoFixture;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.AcademicYears;
 public sealed class WhenQueryingAcademicYearsLatest
 {
 
     [Test]
-    [MoqAutoData]
+    [AutoData]
     public async Task GetLatestAcademicYears_CallsMediator_ReturnsAcademicYearsLatest(
         GetAcademicYearsLatestQueryResult expectedResult
     )

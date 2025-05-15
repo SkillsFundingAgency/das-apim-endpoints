@@ -118,7 +118,6 @@ public static class Startup
             //Use URL segment versioning, header versioning, or query string versioning
             options.ApiVersionReader = ApiVersionReader.Combine(
                 new UrlSegmentApiVersionReader(),
-                new QueryStringApiVersionReader("api-version"),
                 new HeaderApiVersionReader("X-Version"),
                 new MediaTypeApiVersionReader("ver"));
         })

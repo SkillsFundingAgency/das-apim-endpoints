@@ -26,6 +26,7 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
         public string DisplayName { get ; set ; }
         public string Name { get ; set ; }
         public string Key { get; set; }
+        public List<string> Versions { get; set; }
 
 
         public static ProductSubscriptionApiResponseItem Map(GetAvailableApiProductItem source, IEnumerable<GetApiProductSubscriptionsResponseItem> subscriptions)
@@ -36,7 +37,8 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
                 Name = source.Name,
                 DisplayName = source.DisplayName,
                 Description = source.Description,
-                Key = subscriptions.FirstOrDefault(c=>c.Name.Equals(source.Id))?.Key ?? ""
+                Key = subscriptions.FirstOrDefault(c=>c.Name.Equals(source.Id))?.Key ?? "",
+                Versions = source.Documents.Select(c=>c.Key).Where(c=>c != source.Name.ToLower()).ToList()
             };
         }
     }
