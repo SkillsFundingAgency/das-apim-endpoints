@@ -214,8 +214,8 @@ public class JoinedPriceEpisode
         }).ToList();
 
         return allAdditionalPayments.Where(x => 
-                x.DateTime >= apprenticeshipEpisodePrice.StartDate && 
-                x.DateTime <= apprenticeshipEpisodePrice.EndDate).ToList();
+                x.DueDate >= apprenticeshipEpisodePrice.StartDate && 
+                x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
     }
 }
 

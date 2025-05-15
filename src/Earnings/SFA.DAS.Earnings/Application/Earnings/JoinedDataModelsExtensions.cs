@@ -152,9 +152,12 @@ internal static class JoinedDataModelsExtensions
     {
         var daysInLearning = joinedEarningsApprenticeship.DaysInLearning();
         var firstAdditionalPaymentDate = joinedEarningsApprenticeship.Episodes
-            .SelectMany(x => x.AdditionalPayments).MinBy(x => x.DueDate)?.DueDate;
+            .SelectMany(x => x.AdditionalPayments)
+            //todo: filter for incentives only, and add a covering unit test
+            .MinBy(x => x.DueDate)?.DueDate;
         var secondAdditionalPaymentDate = joinedEarningsApprenticeship.Episodes
             .SelectMany(x => x.AdditionalPayments)
+            //todo: filter for incentives only, and add a covering unit test
             .DistinctBy(x => x.DueDate)
             .OrderBy(x => x.DueDate)
             .Skip(1)

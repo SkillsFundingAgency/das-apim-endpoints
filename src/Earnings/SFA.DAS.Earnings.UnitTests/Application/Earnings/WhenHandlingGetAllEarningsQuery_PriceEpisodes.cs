@@ -2,6 +2,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.Application.Extensions;
+using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
 using static SFA.DAS.Earnings.Application.Earnings.EarningsFM36Constants;
 
@@ -266,7 +267,6 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         }
     }
 
-
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
     public async Task ThenReturnsExpectedPriceEpisodeLSFCashPeriodisedValuesForEachApprenticeshipPriceEpisode(TestScenario scenario)
@@ -296,6 +296,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 .AdditionalPayments.Where(x =>
                     x.AdditionalPaymentType == EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport &&
                 x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .Where(x => x.DueDate >= episodePrice.Price.StartDate && x.DueDate <= episodePrice.Price.EndDate)
             .ToList();
 
             var result = actualPriceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.PriceEpisodeLSFCash);
