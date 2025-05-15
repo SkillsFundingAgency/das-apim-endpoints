@@ -16,5 +16,4 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
         public long AccountLegalEntityId { get; set; }
         public string DasAccountId { get; set; }
     }
-    
 }
