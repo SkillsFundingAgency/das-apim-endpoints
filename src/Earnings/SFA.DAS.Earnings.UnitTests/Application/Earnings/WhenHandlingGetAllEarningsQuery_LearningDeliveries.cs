@@ -60,7 +60,9 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         learningDelivery.LearningDeliveryValues.CombinedAdjProp.Should().Be(1);
         learningDelivery.LearningDeliveryValues.Completed.Should().BeFalse();
         var firstAdditionalPaymentDueDate =
-            earningEpisode.AdditionalPayments.OrderBy(x => x.DueDate).First().DueDate;
+            earningEpisode.AdditionalPayments
+                .Where(x => AdditionalPaymentsTypes.Incentives.Contains(x.AdditionalPaymentType))
+                .OrderBy(x => x.DueDate).First().DueDate;
         var expectedFirstIncentiveThresholdDate =
             firstAdditionalPaymentDueDate >= apprenticeship.StartDate &&
             firstAdditionalPaymentDueDate <= apprenticeship.PlannedEndDate
@@ -103,6 +105,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
         var secondAdditionalPaymentDueDate =
             earningEpisode.AdditionalPayments
+                .Where(x => AdditionalPaymentsTypes.Incentives.Contains(x.AdditionalPaymentType))
                 .DistinctBy(x => x.DueDate)
                 .OrderBy(x => x.DueDate)
                 .Skip(1)
