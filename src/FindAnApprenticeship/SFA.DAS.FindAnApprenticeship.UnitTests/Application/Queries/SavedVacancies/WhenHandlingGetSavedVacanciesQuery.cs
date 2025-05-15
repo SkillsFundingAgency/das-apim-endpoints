@@ -4,6 +4,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SavedVacancies
@@ -39,13 +40,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SavedVacanc
 
             var savedVacancyList = savedVacanciesApiResponse.SavedVacancies;
 
-            var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference}").ToList();
+            var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference.TrimVacancyReference()}").ToList();
+            var vacancyIds = savedVacancyList.Select(x => $"{x.Id}").ToList();
 
             vacancyService
                 .Setup(x => x.GetVacancies(vacancyReferences))
                 .ReturnsAsync(vacancies);
 
-            foreach (var expectedGetApplicationByReferenceApiRequest in vacancyReferences.Select(vacancyReference => new GetApplicationByReferenceApiRequest(query.CandidateId, vacancyReference)))
+            foreach (var expectedGetApplicationByReferenceApiRequest in vacancyIds.Select(vacancyId => new GetApplicationByReferenceApiRequest(query.CandidateId, vacancyId)))
             {
                 candidateApiClient
                     .Setup(client =>
@@ -61,6 +63,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SavedVacanc
             result.SavedVacancies.Should().BeEquivalentTo(savedVacanciesApiResponse.SavedVacancies, options => options
                 .Excluding(x => x.CandidateId)
                 .Excluding(x => x.CreatedOn)
+                .Excluding(x => x.VacancyId)
             );
         }
 
@@ -91,13 +94,14 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SavedVacanc
 
             var savedVacancyList = savedVacanciesApiResponse.SavedVacancies;
 
-            var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference}").ToList();
+            var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference.TrimVacancyReference()}").ToList();
+            var vacancyIds = savedVacancyList.Select(x => $"{x.Id}").ToList();
 
             vacancyService
                 .Setup(x => x.GetVacancies(vacancyReferences))
                 .ReturnsAsync(vacancies);
 
-            foreach (var expectedGetApplicationByReferenceApiRequest in vacancyReferences.Select(vacancyReference => new GetApplicationByReferenceApiRequest(query.CandidateId, vacancyReference)))
+            foreach (var expectedGetApplicationByReferenceApiRequest in vacancyIds.Select(vacancyId => new GetApplicationByReferenceApiRequest(query.CandidateId, vacancyId)))
             {
                 candidateApiClient
                     .Setup(client =>
@@ -113,9 +117,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SavedVacanc
             result.SavedVacancies.Should().BeEquivalentTo(savedVacanciesApiResponse.SavedVacancies, options => options
                 .Excluding(x => x.CandidateId)
                 .Excluding(x => x.CreatedOn)
+                .Excluding(x => x.VacancyId)
             );
 
-            result.SavedVacancies.ForEach(x => x.ApplicationStatus.Should().BeEmpty());
+            result.SavedVacancies.ForEach(x => x.ApplicationStatus.Should().BeNullOrEmpty());
         }
 
         [Test, MoqAutoData]
