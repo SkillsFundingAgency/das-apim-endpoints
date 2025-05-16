@@ -1,6 +1,10 @@
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
+using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.Application.Extensions;
+using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
+using static SFA.DAS.Earnings.Application.Earnings.EarningsFM36Constants;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -255,13 +259,60 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "PriceEpisodeLevyNonPayInd" && x.AllValuesAreSetToZero());
             actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
-                .Contain(x => x.AttributeName == "PriceEpisodeLSFCash" && x.AllValuesAreSetToZero());
-            actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "PriceEpisodeSecondDisadvantagePayment" && x.AllValuesAreSetToZero());
             actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "PriceEpisodeLearnerAdditionalPayment" && x.AllValuesAreSetToZero());
             actualPriceEpisode.PriceEpisodePeriodisedValues.Should()
                 .Contain(x => x.AttributeName == "PriceEpisodeESFAContribPct" && x.AllValuesAreSetTo(0.95m));
+        }
+    }
+
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    public async Task ThenReturnsExpectedPriceEpisodeLSFCashPeriodisedValuesForEachApprenticeshipPriceEpisode(TestScenario scenario)
+    {
+        // Arrange
+        var testFixture = new GetAllEarningsQueryTestFixture(scenario);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        testFixture.Result.Should().NotBeNull();
+
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
+
+        foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
+        {
+            var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+                x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+            actualPriceEpisode.Should().NotBeNull();
+
+            var expectedLearningSupport = testFixture.EarningsResponse.First()
+                .Episodes.First()
+                .AdditionalPayments.Where(x =>
+                    x.AdditionalPaymentType == EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport &&
+                x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .Where(x => x.DueDate >= episodePrice.Price.StartDate && x.DueDate <= episodePrice.Price.EndDate)
+            .ToList();
+
+            var result = actualPriceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.PriceEpisodeLSFCash);
+            result.Should().NotBeNull();
+            result.Period1.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 1)?.Amount ?? 0);
+            result.Period2.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 2)?.Amount ?? 0);
+            result.Period3.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 3)?.Amount ?? 0);
+            result.Period4.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 4)?.Amount ?? 0);
+            result.Period5.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 5)?.Amount ?? 0);
+            result.Period6.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 6)?.Amount ?? 0);
+            result.Period7.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 7)?.Amount ?? 0);
+            result.Period8.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 8)?.Amount ?? 0);
+            result.Period9.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 9)?.Amount ?? 0);
+            result.Period10.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 10)?.Amount ?? 0);
+            result.Period11.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 11)?.Amount ?? 0);
+            result.Period12.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 12)?.Amount ?? 0);
         }
     }
 
