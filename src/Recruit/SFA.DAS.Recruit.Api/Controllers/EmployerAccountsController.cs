@@ -8,11 +8,7 @@ using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Recruit.Application.Queries.GetAllAccountLegalEntities;
-using System.Net;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -57,29 +53,6 @@ namespace SFA.DAS.Recruit.Api.Controllers
             {
                 logger.LogError(e, "Error getting account legal entities for account");
                 return BadRequest();
-            }
-        }
-
-        [HttpGet]
-        [Route("getAllLegalEntities")]
-        public async Task<IActionResult> GetAllAccountLegalEntities(
-            [FromRoute, Required] long accountId,
-            [FromQuery] int pageNumber = 1,
-            [FromQuery] int pageSize = 10,
-            [FromQuery] string sortColumn = "Name",
-            [FromQuery] bool isAscending = false, 
-            CancellationToken token = default)
-        {
-            try
-            {
-                var queryResult = await mediator.Send(new GetAllAccountLegalEntitiesQuery(accountId, pageNumber, pageSize, sortColumn, isAscending), token);
-
-                return Ok(queryResult);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error getting all legal entities for account");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
 

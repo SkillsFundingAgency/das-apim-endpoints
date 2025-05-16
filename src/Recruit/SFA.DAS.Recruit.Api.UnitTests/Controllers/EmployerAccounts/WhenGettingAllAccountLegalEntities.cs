@@ -4,6 +4,7 @@ using SFA.DAS.Recruit.Application.Queries.GetAllAccountLegalEntities;
 using System;
 using System.Net;
 using System.Threading;
+using SFA.DAS.Recruit.Api.Models;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
 {
@@ -12,26 +13,22 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
-            long accountId,
-            int pageNumber,
-            int pageSize,
-            string sortColumn,
-            bool isAscending,
+            GetAllLegalEntitiesRequest request,
             GetAllAccountLegalEntitiesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerAccountsController controller)
+            [Greedy] AccountLegalEntitiesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetAllAccountLegalEntitiesQuery>(c => c.AccountId.Equals(accountId) 
-                                                                && c.PageNumber.Equals(pageNumber)
-                                                                && c.PageSize.Equals(pageSize)
-                                                                && c.SortColumn.Equals(sortColumn)
-                                                                && c.IsAscending.Equals(isAscending)),
+                    It.Is<GetAllAccountLegalEntitiesQuery>(c => c.SearchTerm == request.SearchTerm && c.AccountIds == request.AccountIds
+                                                                && c.PageNumber == request.PageNumber
+                                                                && c.PageSize == request.PageSize
+                                                                && c.SortColumn == request.SortColumn
+                                                                && c.IsAscending == request.IsAscending),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAllAccountLegalEntities(accountId, pageNumber, pageSize, sortColumn, isAscending) as ObjectResult;
+            var controllerResult = await controller.GetAllAccountLegalEntities(request) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -43,26 +40,22 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            long accountId,
-            int pageNumber,
-            int pageSize,
-            string sortColumn,
-            bool isAscending,
+            GetAllLegalEntitiesRequest request,
             GetAllAccountLegalEntitiesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] EmployerAccountsController controller)
+            [Greedy] AccountLegalEntitiesController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetAllAccountLegalEntitiesQuery>(c => c.AccountId.Equals(accountId)
-                                                                && c.PageNumber.Equals(pageNumber)
-                                                                && c.PageSize.Equals(pageSize)
-                                                                && c.SortColumn.Equals(sortColumn)
-                                                                && c.IsAscending.Equals(isAscending)),
+                    It.Is<GetAllAccountLegalEntitiesQuery>(c => c.SearchTerm == request.SearchTerm && c.AccountIds == request.AccountIds
+                        && c.PageNumber == request.PageNumber
+                        && c.PageSize == request.PageSize
+                        && c.SortColumn == request.SortColumn
+                        && c.IsAscending == request.IsAscending),
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetAllAccountLegalEntities(accountId, pageNumber, pageSize, sortColumn, isAscending) as StatusCodeResult;
+            var controllerResult = await controller.GetAllAccountLegalEntities(request) as StatusCodeResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

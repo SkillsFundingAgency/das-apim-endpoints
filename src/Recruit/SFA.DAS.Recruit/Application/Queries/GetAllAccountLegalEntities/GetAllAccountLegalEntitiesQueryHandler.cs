@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetAllAccountLegalEntities
 {
@@ -14,10 +15,20 @@ namespace SFA.DAS.Recruit.Application.Queries.GetAllAccountLegalEntities
         public async Task<GetAllAccountLegalEntitiesQueryResult> Handle(GetAllAccountLegalEntitiesQuery request, CancellationToken cancellationToken)
         {
             var response =
-                await apiClient.Get<GetAllAccountLegalEntitiesApiResponse>(
-                    new GetAllAccountLegalEntitiesApiRequest(request.AccountId, request.PageNumber, request.PageSize, request.SortColumn, request.IsAscending));
+                await apiClient.PostWithResponseCode<GetAllAccountLegalEntitiesApiResponse>(
+                    new GetAllAccountLegalEntitiesApiRequest(new GetAllAccountLegalEntitiesApiRequest.GetAllAccountLegalEntitiesApiRequestData
+                    {
+                        SearchTerm = request.SearchTerm,
+                        AccountIds = request.AccountIds,
+                        PageNumber = request.PageNumber,
+                        PageSize = request.PageSize,
+                        SortColumn = request.SortColumn,
+                        IsAscending = request.IsAscending
+                    }));
 
-            return response;
+            response.EnsureSuccessStatusCode();
+
+            return response.Body;
         }
     }
 }
