@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Web;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using System.Collections.Generic;
+using System.Web;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {
@@ -15,6 +14,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
             int pageSize,
             string accountPublicHashedId,
             string accountLegalEntityPublicHashedId,
+            string employerName,
             int? ukprn,
             List<int> standardLarsCode,
             bool? nationwideOnly,
@@ -28,9 +28,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             accountLegalEntityPublicHashedId = $"{accountLegalEntityPublicHashedId} %£$^ {accountLegalEntityPublicHashedId}";
             
-            var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, routes, postedInLastNumberOfDays, additionalDataSources, sort);
+            var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, employerName, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, routes, postedInLastNumberOfDays, additionalDataSources, sort);
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={string.Join("&standardLarsCode=",standardLarsCode)}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&categories={string.Join("&categories=",routes)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}&additionalDataSources={string.Join("&additionalDataSources=",additionalDataSources)}");
+            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={string.Join("&standardLarsCode=",standardLarsCode)}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&categories={string.Join("&categories=",routes)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}&additionalDataSources={string.Join("&additionalDataSources=",additionalDataSources)}&employerName={HttpUtility.UrlEncode(employerName)}");
             actual.Version.Should().Be("2.0");
 		}
 

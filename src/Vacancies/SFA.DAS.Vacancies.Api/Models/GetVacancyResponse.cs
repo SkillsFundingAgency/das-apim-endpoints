@@ -2,11 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
-    public class GetVacancyResponse : GetVacanciesListResponseItem
+    public record GetVacancyResponse : GetVacanciesListResponseItem
     {
         /// <summary>
         /// A description of the company the apprentice will work at. Will be less than or equal to 4000 characters.
@@ -71,7 +73,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Title = source.Vacancy.Title,
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 Ukprn = int.Parse(source.Vacancy.Ukprn),
-                VacancyReference = source.Vacancy.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.Replace("VAC",""),
+                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Nhs) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.TrimVacancyReference(),
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Wage = source.Vacancy,
             };

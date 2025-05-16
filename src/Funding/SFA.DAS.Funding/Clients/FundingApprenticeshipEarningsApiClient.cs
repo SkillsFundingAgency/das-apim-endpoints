@@ -90,5 +90,10 @@ namespace SFA.DAS.Funding.Clients
         {
             throw new System.NotImplementedException();
         }
+
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

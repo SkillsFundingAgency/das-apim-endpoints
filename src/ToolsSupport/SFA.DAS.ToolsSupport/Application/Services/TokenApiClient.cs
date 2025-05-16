@@ -82,4 +82,9 @@ public class TokenApiClient(IInternalApiClient<TokenServiceApiConfiguration> cli
     {
         throw new System.NotImplementedException();
     }
+
+    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+    {
+        throw new NotImplementedException();
+    }
 }
