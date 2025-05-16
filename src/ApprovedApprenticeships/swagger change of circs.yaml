@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: Approved Training external API for consumption from an authenticated consumer
-  description: 'This service will provide a contract to the Data Collections team for consumption of approved training'
+  title: Approved Learning external API for consumption from an authenticated consumer
+  description: 'This service will provide a contract to the Data Collections team for consumption of approved Learning'
 paths:
   /info:
     get:
@@ -14,6 +14,7 @@ paths:
           $ref: '#/components/responses/infoResponse'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'   
+  
   /health:
     get:
       description: The system is fully ready to accept requests and all the dependencies are healthy
@@ -27,24 +28,9 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
 
-  /providers/{ukprn}/academicyears/{academicyear}/training:
-    put:
-      summary: Updates the details of a list of approved training records
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      requestBody:
-        $ref: '#/components/requestBodies/trainingUpdateRequest'
-      responses:
-        '201':
-          $ref: '#/components/responses/acceptedResponse'
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '401':
-          $ref: '#/components/responses/unauthorized'         
-  
-  /providers/{ukprn}/academicyears/{academicyear}/trainingIdentifiers/{trainingIdentifier}:
-    delete:
-      summary: Deletes a training record identified by this request for this provider
+  /providers/{ukprn}/academicyears/{academicyear}/Learning:
+    post:
+      summary: Create a new record in the AS service due to no match
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -60,19 +46,79 @@ paths:
           example: 2425
           schema:
             type: integer
-        - name: trainingIdentifier
+      requestBody:
+        $ref: '#/components/requestBodies/learningRecordRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'  
+  
+  /providers/{ukprn}/academicyears/{academicyear}/Learning/{learningKey}:
+    delete:
+      summary: Deletes a Learning record identified by this request for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
           in: path
           required: true
-          description: The training identifier for the learner being requested
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: learningKey
+          in: path
+          required: true
+          description: The internal key for this learner on the AS
           schema:
             type: string
       responses:
         '201':
           $ref: '#/components/responses/acceptedResponse'
-        
-  /providers/{ukprn}/academicyears/{academicyear}/trainingIdentifiers:
+    put:
+      summary: Updates the details of a list of approved Learning records
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: learningKey
+          in: path
+          required: true
+          description: The internal key for this learner on the AS
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/learningRecordRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'         
+          
+  /providers/{ukprn}/academicyears/{academicyear}/LearningIdentifiers:
     get:
-      summary: Returns a paged list of trainingIdentifiers for this provider
+      summary: Returns a paged list of LearningIdentifiers for this provider
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -103,7 +149,7 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/pagedTrainingIdentifiersResponse'  
+          $ref: '#/components/responses/pagedLearningIdentifiersResponse'  
     
 components:  
   securitySchemes:
@@ -117,7 +163,7 @@ components:
       schema:
         type: string
         format: url
-        example: /providers/234324/leaners/24321432
+        example: /providers/234324/learners/24321432
     X-RateLimit-Limit:
       description: The maximum number of requests allowed in a time window
       schema:
@@ -140,8 +186,8 @@ components:
         example: 60
 
   requestBodies:
-    trainingUpdateRequest:
-      description: Details of an updated training
+    learningRecordRequest:
+      description: Details of an updated Learning
       required: true
       content:
         application/json:
@@ -149,13 +195,12 @@ components:
             type: array 
             items:
               oneOf:
-              - $ref: "#/components/schemas/apprenticeshipTraining"
-              - $ref: "#/components/schemas/shortApprenticeshipTraining"
-              - $ref: "#/components/schemas/foundationApprenticeshipTraining"
-
+              - $ref: "#/components/schemas/apprenticeshipLearning"
+              - $ref: "#/components/schemas/shortApprenticeshipLearning"
+              - $ref: "#/components/schemas/foundationApprenticeshipLearning"
   responses:
-    pagedTrainingIdentifiersResponse:
-      description: A paged training response
+    pagedLearningIdentifiersResponse:
+      description: A paged Learning response
       headers:
         Link:
           description: Pagination links (next, prev)
@@ -168,7 +213,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedTrainingIdentifiers'
+              $ref: '#/components/schemas/pagedLearningIdentifiers'
 
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
@@ -228,7 +273,7 @@ components:
         text/plain:
           schema:
             type: string
-            example: Leaner data APIM for the training service - Version 3.0.2
+            example: Leaner data APIM for the Learning service - Version 3.0.2
             
   schemas:
     error:
@@ -242,13 +287,13 @@ components:
         - code
         - message
     
-    pagedTrainingIdentifiers:
+    pagedLearningIdentifiers:
       type: object
       properties:
-        training:
+        Learning:
           type: array
           items:
-              $ref: '#/components/schemas/trainingIdentifier'
+              $ref: '#/components/schemas/LearningIdentifier'
         total:
           type: integer
           minimum: 0
@@ -281,10 +326,10 @@ components:
         result: 
           type: string    
 
-    trainingIdentifier:
+    LearningIdentifier:
       type: object
       properties:
-        trainingKey:
+        LearningKey:
           type: string
           format: uuid
         ukprn:
@@ -297,7 +342,6 @@ components:
           type: integer
 
     # common CoC header
-    
     header:
       type: object
       properties:
@@ -311,7 +355,7 @@ components:
         standardCode:
           type: integer
         #########################################
-        trainingType:
+        LearningType:
           type: string
           enum:
           - apprenticeship
@@ -321,12 +365,10 @@ components:
           - HTC
         consumerReference:
           type: string
-        fundingModel:
-          type: string
           
     # apprenticeship, short apprenticeship and foundation apprenticeship
     
-    apprenticeshipTraining:
+    apprenticeshipLearning:
       type: object
       properties:
         header:
@@ -395,20 +437,20 @@ components:
           properties:
             epaoCost:
               type: integer
-            trainingCost:
+            LearningCost:
               type: integer
             reduction4Rpl:
               type: integer
           
-    foundationApprenticeshipTraining:
+    foundationApprenticeshipLearning:
       description: This is the exact copy of a normal apprenticeship
       allOf:
-      - $ref: "#/components/schemas/apprenticeshipTraining"
+      - $ref: "#/components/schemas/apprenticeshipLearning"
   
-    shortApprenticeshipTraining:
+    shortApprenticeshipLearning:
       description: This is the exact copy of a normal apprenticeship
       allOf:
-      - $ref: "#/components/schemas/apprenticeshipTraining"
+      - $ref: "#/components/schemas/apprenticeshipLearning"
    
         
 security:
