@@ -71,7 +71,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                     Uln = request.Uln,
                     UserInfo = request.UserInfo,
                     UserId = request.UserId,
-                    RequestingParty = request.RequestingParty
+                    RequestingParty = request.RequestingParty,
+                    LearnerDataId = request.LearnerDataId
                 };
                 var response = await _apiClient.PostWithResponseCode<AddDraftApprenticeshipResponse>(
                     new PostAddDraftApprenticeshipRequest(request.CohortId, addDraftApprenticeshipRequest));

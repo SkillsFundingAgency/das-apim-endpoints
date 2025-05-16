@@ -75,7 +75,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                     TransferSenderId = request.TransferSenderId,
                     Uln = request.Uln,
                     UserInfo = request.UserInfo,
-                    RequestingParty = request.RequestingParty
+                    RequestingParty = request.RequestingParty,
+                    LearnerDataId = request.LearnerDataId
                 };
 
                 var createCohortResponse =
