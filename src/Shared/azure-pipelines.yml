@@ -19,7 +19,7 @@ pr:
       - Directory.Packages.props
 
 pool:
-  name: DAS - Continuous Integration Agents
+  name: DAS - APIM Continuous Integration Agents
 
 resources:
   repositories:
