@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Vacancies.Api.Controllers
 {
     [ApiVersion("1")]
+    [ApiVersion("2")]
     [ApiController]
     [Route("[controller]/")]
     public class AccountLegalEntitiesController(IMediator mediator, ILogger<AccountLegalEntitiesController> logger)
