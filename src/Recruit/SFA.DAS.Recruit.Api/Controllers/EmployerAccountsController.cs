@@ -6,7 +6,6 @@ using SFA.DAS.Recruit.Application.Queries.GetAccount;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
-using SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
