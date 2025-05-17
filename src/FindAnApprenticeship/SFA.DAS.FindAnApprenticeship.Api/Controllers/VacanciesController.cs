@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies;
-using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
