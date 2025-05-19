@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply;
 
 public class ApplyCommandResponse
 {

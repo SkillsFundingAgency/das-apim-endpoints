@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -11,7 +10,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
+namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply;
 
 public class ApplyCommandHandler(
     IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
