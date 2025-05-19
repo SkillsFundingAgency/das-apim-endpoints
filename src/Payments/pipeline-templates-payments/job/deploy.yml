@@ -23,7 +23,7 @@ jobs:
 - deployment: DeployInfrastructureNew
   condition: eq( variables.platformBuildBlockVersion, 'refs/tags/2.2.0')
   pool:
-    name: DAS - Continuous Deployment Agents
+    name: DAS - APIM Continuous Deployment Agents
   environment: ${{ parameters.Environment }}
   workspace:
     clean: all

@@ -102,7 +102,6 @@ public class GetLearnersForProviderQueryHandler(
     private async Task<GetStandardsListResponse> GetStandardsData()
     {
         logger.LogInformation("Getting All Courses");
-
         var response = await coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetStandardsExportRequest());
 
         if (!string.IsNullOrEmpty(response.ErrorContent))

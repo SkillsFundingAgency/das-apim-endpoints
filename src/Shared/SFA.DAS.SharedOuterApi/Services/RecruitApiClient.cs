@@ -8,28 +8,22 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services;
 
-public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
+public class RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiClient)
+    : IRecruitApiClient<RecruitApiConfiguration>
 {
-    private readonly IInternalApiClient<RecruitApiConfiguration> _apiClient;
-
-    public RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiClient)
-    {
-        _apiClient = apiClient;
-    }
-
     public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        return _apiClient.Get<TResponse>(request);
+        return apiClient.Get<TResponse>(request);
     }
 
     public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
     {
-        return _apiClient.GetResponseCode(request);
+        return apiClient.GetResponseCode(request);
     }
 
     public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
     {
-        return _apiClient.GetWithResponseCode<TResponse>(request);
+        return apiClient.GetWithResponseCode<TResponse>(request);
     }
 
     public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
@@ -52,14 +46,14 @@ public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
         throw new System.NotImplementedException();
     }
 
-    public Task Delete(IDeleteApiRequest request)
+    public async Task Delete(IDeleteApiRequest request)
     {
-        throw new System.NotImplementedException();
+        await apiClient.Delete(request);
     }
 
-    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+    public async Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
     {
-        return _apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
+        throw new NotImplementedException();
     }
 
     public Task Patch<TData>(IPatchApiRequest<TData> request)
@@ -69,27 +63,26 @@ public class RecruitApiClient : IRecruitApiClient<RecruitApiConfiguration>
 
     public Task Put(IPutApiRequest request)
     {
-        throw new System.NotImplementedException();
+        return apiClient.Put(request);
     }
 
     public Task Put<TData>(IPutApiRequest<TData> request)
     {
-        throw new System.NotImplementedException();
+        return apiClient.Put(request);
     }
 
     public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
     {
-        return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
+        return apiClient.PostWithResponseCode<TResponse>(request);
     }
 
     public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
     {
-        throw new System.NotImplementedException();
+        return apiClient.PatchWithResponseCode<TData>(request);
     }
-
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
     {
-        throw new System.NotImplementedException();
+        return apiClient.PutWithResponseCode<TResponse>(request);
     }
 
     public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
