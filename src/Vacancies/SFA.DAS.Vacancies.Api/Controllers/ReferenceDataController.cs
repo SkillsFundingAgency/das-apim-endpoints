@@ -12,6 +12,7 @@ using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 namespace SFA.DAS.Vacancies.Api.Controllers
 {
     [ApiVersion("1")]
+    [ApiVersion("2")]
     [ApiController]
     [Route("[controller]/")]
     public class ReferenceDataController(IMediator mediator, ILogger<ReferenceDataController> logger)
