@@ -51,6 +51,11 @@ public class RecruitApiV2Client(IInternalApiClient<RecruitApiV2Configuration> ap
             throw new NotImplementedException();
         }
 
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            throw new NotImplementedException();
+        }
+
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             throw new NotImplementedException();
