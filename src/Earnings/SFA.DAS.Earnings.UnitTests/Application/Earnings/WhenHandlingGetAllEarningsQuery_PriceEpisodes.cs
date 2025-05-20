@@ -581,6 +581,13 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
 
         foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
         {
+            var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+
+            var allIncentives = earningEpisode.AdditionalPayments
+                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                    .Where(x => x.AdditionalPaymentType == incentiveType)
+                    .OrderBy(x => x.DueDate).ToList();
+
             var fm36Learner = testFixture.Result.FM36Learners
                 .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
 
@@ -591,13 +598,9 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
                 var actualPriceEpisode = actualPriceEpisodeList.FirstOrDefault();
                 actualPriceEpisode.Should().NotBeNull();
 
-                var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
-                var expectedAdditionalPayment = earningEpisode.AdditionalPayments
-                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear) && x.AdditionalPaymentType == incentiveType)
-                    .Where(x => x.DueDate >= episodePrice.Price.StartDate && x.DueDate <= episodePrice.Price.EndDate)
-                    .OrderBy(x => x.DueDate)
+                var expectedAdditionalPayment = allIncentives
                     .Skip(paymentNumber - 1)
-                    .FirstOrDefault();
+                    .FirstOrDefault(x => x.DueDate >= episodePrice.Price.StartDate && x.DueDate <= episodePrice.Price.EndDate);
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == attributeName);
                 result.Should().NotBeNull();
