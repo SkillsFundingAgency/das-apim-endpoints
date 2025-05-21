@@ -4,17 +4,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -108,7 +104,6 @@ public class GetLearnersForProviderQueryHandler(
     {
         logger.LogInformation("Getting All Courses");
 
-        //var response = await coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetStandardsExportRequest());
         var response = await commitmentsClient.GetWithResponseCode<GetAllStandardsResponse>(new GetAllStandardsRequest());
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
