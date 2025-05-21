@@ -8,11 +8,9 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
         [AfterTestRun()]
         public static void CleanUp()
         {
-            MockServers.InnerApi?.Dispose();
-            MockServers.AccountsApi?.Dispose();
-            MockServers.CommitmentsV2InnerApi?.Dispose();
-            MockServers.FinanceApi?.Dispose();
-            MockServers.EmploymentCheckApi?.Dispose();
+            MockServers.EarningsApi?.Dispose();
+            MockServers.ApprenticeshipsApi?.Dispose();
+            MockServers.CollectionCalendarApi?.Dispose();
 
             OuterApi.Factory?.Dispose();
             OuterApi.Client?.Dispose();
@@ -20,10 +18,9 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
             OuterApi.Factory = null;
             OuterApi.Client = null;
 
-            MockServers.InnerApi = null;
-            MockServers.AccountsApi = null;
-            MockServers.CommitmentsV2InnerApi = null;
-            MockServers.FinanceApi = null;
+            MockServers.EarningsApi = null;
+            MockServers.ApprenticeshipsApi = null;
+            MockServers.CollectionCalendarApi = null;
         }
     }
 }

@@ -4,65 +4,41 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests
 {
     public static class MockServers
     {
-        public static MockApi InnerApi { get; set; }
-        public static MockApi AccountsApi { get; set; }
-        public static MockApi CommitmentsV2InnerApi { get; set; }
-        public static MockApi FinanceApi { get; set; }
-        public static MockApi EmploymentCheckApi { get; set; }
+        public static MockApi EarningsApi { get; set; }
+        public static MockApi ApprenticeshipsApi { get; set; }
+        public static MockApi CollectionCalendarApi { get; set; }
     }
-
 
     public class TestContext : IDisposable
     {
-        public MockApi InnerApi
+        public MockApi EarningsApi
         {
-            get => MockServers.InnerApi;
+            get => MockServers.EarningsApi;
             set
             {
-                MockServers.InnerApi = value;
+                MockServers.EarningsApi = value;
                 CleanUpOuterApi();
             }
         }
 
-        public MockApi CommitmentsV2InnerApi
+        public MockApi ApprenticeshipsApi
         {
-            get => MockServers.CommitmentsV2InnerApi;
+            get => MockServers.ApprenticeshipsApi;
             set { 
-                MockServers.CommitmentsV2InnerApi = value;
+                MockServers.ApprenticeshipsApi = value;
                 CleanUpOuterApi();
             }
         }
 
-        public MockApi FinanceApi
+        public MockApi CollectionCalendarApi
         {
-            get => MockServers.FinanceApi;
+            get => MockServers.CollectionCalendarApi;
             set
             {
-                MockServers.FinanceApi = value;
+                MockServers.CollectionCalendarApi = value;
                 CleanUpOuterApi();
             }
         }
-
-        public MockApi AccountsApi
-        {
-            get => MockServers.AccountsApi;
-            set
-            {
-                MockServers.AccountsApi = value;
-                CleanUpOuterApi();
-            }
-        }
-
-        public MockApi EmploymentCheckApi
-        {
-            get => MockServers.EmploymentCheckApi;
-            set
-            {
-                MockServers.EmploymentCheckApi = value;
-                CleanUpOuterApi();
-            }
-        }
-
         public HttpClient OuterApiClient { get; set; }
 
         private bool _isDisposed;
@@ -79,11 +55,9 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests
 
             if (disposing)
             {
-                InnerApi?.Reset();
-                CommitmentsV2InnerApi?.Reset();
-                FinanceApi?.Reset();
-                AccountsApi?.Reset();
-                EmploymentCheckApi?.Reset();
+                EarningsApi?.Reset();
+                ApprenticeshipsApi?.Reset();
+                CollectionCalendarApi?.Reset();
             }
 
             _isDisposed = true;

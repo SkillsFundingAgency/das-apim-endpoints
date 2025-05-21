@@ -24,13 +24,9 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
                 var config = new Dictionary<string, string>
                 {
                     {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
-                    {"EmployerIncentivesInnerApi:url", _context?.InnerApi?.BaseAddress + "/"},
-                    {"CommitmentsV2InnerApi:url", _context?.CommitmentsV2InnerApi?.BaseAddress + "/"},
-                    {"CustomerEngagementFinanceApi:url", _context?.FinanceApi?.BaseAddress + "/"},
-                    {"CustomerEngagementFinanceApi:companyName", _context?.FinanceApi?.CompanyName},
-                    {"CustomerEngagementFinanceApi:apiVersion", _context?.FinanceApi?.ApiVersion},
-                    {"AccountsInnerApi:url", _context?.AccountsApi?.BaseAddress + "/"},
-                    {"EmploymentCheckInnerApi:url", _context?.EmploymentCheckApi?.BaseAddress + "/"},
+                    {"EarningsApiConfiguration:url", _context?.EarningsApi?.BaseAddress + "/"},
+                    {"ApprenticeshipsApiConfiguration:url", _context?.ApprenticeshipsApi?.BaseAddress + "/"},
+                    {"CollectionCalendarApiConfiguration:url", _context?.CollectionCalendarApi?.BaseAddress + "/"},
                     {"AzureAD:tenant", ""},
                     {"AzureAD:identifier", ""}
                 };
