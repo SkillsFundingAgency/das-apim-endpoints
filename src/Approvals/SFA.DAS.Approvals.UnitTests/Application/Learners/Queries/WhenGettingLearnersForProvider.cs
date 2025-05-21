@@ -8,6 +8,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Learners.Queries;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -53,7 +55,7 @@ public class WhenGettingLearnersForProvider
             .ReturnsAsync(new ApiResponse<GetStandardsListResponse>(coursesResponse, HttpStatusCode.OK, null));
 
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetStandardsListItem>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -99,7 +101,7 @@ public class WhenGettingLearnersForProvider
             .ReturnsAsync(new ApiResponse<GetStandardsListResponse>(coursesResponse, HttpStatusCode.OK, null));
 
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetStandardsListItem>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
