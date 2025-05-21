@@ -592,14 +592,21 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
 
             foreach (var episodePrice in testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(apprenticeship.Episodes))
             {
-                var actualPriceEpisodeList = fm36Learner.PriceEpisodes.Where(x =>
-                    x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
-                var actualPriceEpisode = actualPriceEpisodeList.FirstOrDefault();
+                var actualPriceEpisode = fm36Learner.PriceEpisodes
+                    .FirstOrDefault(x => x.PriceEpisodeValues.EpisodeStartDate == episodePrice.Price.StartDate);
+
                 actualPriceEpisode.Should().NotBeNull();
 
                 var expectedAdditionalPayment = allIncentives
                     .Skip(paymentNumber - 1)
-                    .FirstOrDefault(x => x.DueDate >= episodePrice.Price.StartDate && x.DueDate <= episodePrice.Price.EndDate);
+                    .FirstOrDefault();
+
+                if (expectedAdditionalPayment != null &&
+                    (expectedAdditionalPayment.DueDate < episodePrice.Price.StartDate ||
+                     expectedAdditionalPayment.DueDate > episodePrice.Price.EndDate))
+                {
+                        expectedAdditionalPayment = null;
+                }
 
                 var result = actualPriceEpisode.PriceEpisodePeriodisedValues.SingleOrDefault(x => x.AttributeName == attributeName);
                 result.Should().NotBeNull();

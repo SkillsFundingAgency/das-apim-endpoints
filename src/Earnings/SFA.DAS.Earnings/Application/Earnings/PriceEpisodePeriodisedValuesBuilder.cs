@@ -103,11 +103,17 @@ public static class PriceEpisodePeriodisedValuesBuilder
         var allAdditionalPayments = joinedApprenticeship.Episodes.SelectMany(x =>
             x.AdditionalPayments.Where(y => y.AdditionalPaymentType == additionalPaymentType))
             .OrderBy(i => i.AcademicYear)
-            .ThenBy(i => i.DeliveryPeriod);
+            .ThenBy(i => i.DeliveryPeriod)
+            .ToList();
 
         var nthPayment = allAdditionalPayments
             .Skip(n - 1)
-            .FirstOrDefault(x => x.DueDate >= joinedPriceEpisode.StartDate && x.DueDate <= joinedPriceEpisode.EndDate);
+            .FirstOrDefault();
+
+        if (nthPayment != null && (nthPayment.DueDate < joinedPriceEpisode.StartDate || nthPayment.DueDate > joinedPriceEpisode.EndDate))
+        {
+            nthPayment = null;
+        }
 
         return new PriceEpisodePeriodisedValues
         {
