@@ -28,6 +28,8 @@ namespace SFA.DAS.Assessors.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("Locations index called");
+
                 var queryResponse = await _mediator.Send(new GetAddressesQuery(query));
 
                 if (queryResponse.AddressesResponse == null || !queryResponse.AddressesResponse.Addresses.Any())
