@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using System.Diagnostics.CodeAnalysis;
 
@@ -20,7 +19,6 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 {
                     webBuilder.UseStartup<Startup>();
                 })
-                .UseNLog()
                 .UseNServiceBusContainer();
 
     }

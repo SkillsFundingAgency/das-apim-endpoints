@@ -125,6 +125,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("GetProviderPhoneNumbers call initiated");
                 var result = await _mediator.Send(new GetProviderPhoneNumbersQuery()
                 {
                     Ukprn = ukprn
