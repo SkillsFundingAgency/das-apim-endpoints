@@ -1,4 +1,5 @@
-﻿using SFA.DAS.FindAnApprenticeship.Application.Commands.Vacancies;
+﻿using System.Net;
+using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
@@ -7,7 +8,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 

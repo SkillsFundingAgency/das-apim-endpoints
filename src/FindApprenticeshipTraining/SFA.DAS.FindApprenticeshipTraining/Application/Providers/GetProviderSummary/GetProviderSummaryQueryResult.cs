@@ -8,7 +8,7 @@ public class GetProviderSummaryQueryResult
 {
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }
-    public ProviderAddressModel ProviderAddress { get; set; }
+    public ProviderAddressDetails ProviderAddress { get; set; }
     public ContactDetails Contact { get; set; }
 
     public ProviderQarModel Qar { get; set; }
@@ -44,4 +44,30 @@ public class EndpointAssessmentsDetails
 {
     public DateTime? EarliestAssessment { get; set; }
     public int EndpointAssessmentCount { get; set; }
+}
+
+public class ProviderAddressDetails
+{
+    public string AddressLine1 { get; set; }
+    public string AddressLine2 { get; set; }
+    public string AddressLine3 { get; set; }
+    public string AddressLine4 { get; set; }
+    public string Town { get; set; }
+    public string Postcode { get; set; }
+
+    public static implicit operator ProviderAddressDetails(ProviderAddressModel source)
+    {
+        if (source == null)
+            return null;
+
+        return new ProviderAddressDetails
+        {
+            AddressLine1 = source.AddressLine1,
+            AddressLine2 = source.AddressLine2,
+            AddressLine3 = source.AddressLine3,
+            AddressLine4 = source.AddressLine4,
+            Postcode = source.Postcode,
+            Town = source.Town
+        };
+    }
 }

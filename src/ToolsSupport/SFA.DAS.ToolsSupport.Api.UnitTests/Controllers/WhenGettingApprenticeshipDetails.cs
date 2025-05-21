@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;

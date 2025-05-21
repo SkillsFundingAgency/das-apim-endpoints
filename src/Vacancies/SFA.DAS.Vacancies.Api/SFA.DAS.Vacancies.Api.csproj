@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+	    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
 	    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
 	    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
 		<PackageReference Include="MediatR" />

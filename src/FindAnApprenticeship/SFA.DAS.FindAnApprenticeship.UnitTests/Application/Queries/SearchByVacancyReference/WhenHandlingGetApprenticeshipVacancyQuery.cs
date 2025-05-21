@@ -44,25 +44,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => 
-                options
-                    .Excluding(x => x.Application)
-                    .Excluding(x => x.ClosingDate)
-                    .Excluding(x => x.ClosedDate)
-                    .Excluding(x => x.ExternalVacancyUrl)
-                    .Excluding(x => x.IsExternalVacancy)
-                    .Excluding(x => x.City)
-                    .Excluding(x => x.Postcode)
-                    .Excluding(x => x.ApplicationUrl)
-                    .Excluding(x => x.IsSavedVacancy)
-                    .Excluding(x => x.VacancySource)
-                    .Excluding(x => x.IsPrimaryLocation)
-                    .Excluding(x => x.Over25NationalMinimumWage)
-                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
-                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
-                    .Excluding(x => x.Under18NationalMinimumWage)
-                    .Excluding(x => x.ApprenticeMinimumWage)
-                );
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
@@ -113,7 +95,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                         It.Is<GetCandidateApiRequest>(c=>c.GetUrl == expectedGetCandidateAddressRequest.GetUrl)))
                 .ReturnsAsync(candidateApiResponse);
 
-            var expectedGetSavedVacancyApiRequest = new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.TrimVacancyReference());
+            var expectedGetSavedVacancyApiRequest = new GetSavedVacancyApiRequest(query.CandidateId.Value, null, query.VacancyReference.TrimVacancyReference());
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetSavedVacancyApiResponse>(
@@ -124,20 +106,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
-                    .Excluding(x => x.Application)
-                    .Excluding(x => x.ClosingDate)
-                    .Excluding(x => x.ClosedDate)
-                    .Excluding(x => x.ExternalVacancyUrl)
-                    .Excluding(x => x.IsExternalVacancy)
-                    .Excluding(x => x.City)
-                    .Excluding(x => x.Postcode)
-                    .Excluding(x => x.ApplicationUrl)
-                    .Excluding(x => x.IsSavedVacancy)
-                    .Excluding(x => x.VacancySource)
-                    .Excluding(x => x.IsPrimaryLocation)
-                );
-
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().NotBeNull();
@@ -184,25 +153,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options =>
-                options
-                    .Excluding(x => x.Application)
-                    .Excluding(x => x.ClosingDate)
-                    .Excluding(x => x.ClosedDate)
-                    .Excluding(x => x.ExternalVacancyUrl)
-                    .Excluding(x => x.IsExternalVacancy)
-                    .Excluding(x => x.City)
-                    .Excluding(x => x.Postcode)
-                    .Excluding(x => x.ApplicationUrl)
-                    .Excluding(x => x.IsSavedVacancy)
-                    .Excluding(x => x.VacancySource)
-                    .Excluding(x => x.IsPrimaryLocation)
-                    .Excluding(x => x.Over25NationalMinimumWage)
-                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
-                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
-                    .Excluding(x => x.Under18NationalMinimumWage)
-                    .Excluding(x => x.ApprenticeMinimumWage)
-                );
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();

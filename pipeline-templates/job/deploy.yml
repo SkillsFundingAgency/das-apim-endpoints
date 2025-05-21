@@ -25,7 +25,7 @@ parameters:
 jobs:
 - deployment: DeployInfrastructure
   pool:
-    name: DAS - Continuous Deployment Agents
+    name: DAS - APIM Continuous Deployment Agents
   environment: ${{ parameters.Environment }}
   workspace:
     clean: all
