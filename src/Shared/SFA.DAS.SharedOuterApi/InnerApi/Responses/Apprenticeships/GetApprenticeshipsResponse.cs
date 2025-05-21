@@ -7,9 +7,6 @@ public class GetApprenticeshipsResponse
 {
     public long Ukprn { get; set; }
     public List<Apprenticeship> Apprenticeships { get; set; }
-
-    public Apprenticeship SimpleApprenticeship { get; set; }
-    public Apprenticeship ApprenticeshipWithAPriceChange { get; set; }
 }
 
 public class Apprenticeship
@@ -20,6 +17,7 @@ public class Apprenticeship
     public DateTime PlannedEndDate { get; set; }
     public List<Episode> Episodes { get; set; }
     public int AgeAtStartOfApprenticeship { get; set; }
+    public DateTime? WithdrawnDate { get; set; }
 }
 
 public class Episode
@@ -31,6 +29,7 @@ public class Episode
 
 public class EpisodePrice
 {
+    public Guid Key { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public decimal? TrainingPrice { get; set; }

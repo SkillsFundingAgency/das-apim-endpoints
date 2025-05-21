@@ -106,9 +106,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
 
         public string ApplicationUrl { get; set; }
         public string ApplicationInstructions { get; set; }
-
         public VacancyDataSource VacancySource { get; set; }
-        
+        public decimal? ApprenticeMinimumWage { get; set; }
+        public decimal? Over25NationalMinimumWage { get; set; }
+        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
+        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
+        public decimal? Under18NationalMinimumWage { get; set; }
+        public DateTime? CandidateDateOfBirth { get; set; }
+
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
             return new GetApprenticeshipVacancyApiResponse
@@ -186,6 +191,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 WageType = source.ApprenticeshipVacancy.WageType,
                 WageUnit = source.ApprenticeshipVacancy.WageUnit,
                 WorkingWeek = source.ApprenticeshipVacancy.WorkingWeek,
+                Under18NationalMinimumWage = source.ApprenticeshipVacancy.Under18NationalMinimumWage,
+                Between18AndUnder21NationalMinimumWage = source.ApprenticeshipVacancy.Between18AndUnder21NationalMinimumWage,
+                Between21AndUnder25NationalMinimumWage = source.ApprenticeshipVacancy.Between21AndUnder25NationalMinimumWage,
+                Over25NationalMinimumWage = source.ApprenticeshipVacancy.Over25NationalMinimumWage,
+                ApprenticeMinimumWage = source.ApprenticeshipVacancy.ApprenticeMinimumWage,
+                CandidateDateOfBirth = source.CandidateDateOfBirth
             };
         }
     }
@@ -216,6 +227,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string AddressLine3 { get; init; }
         public string AddressLine4 { get; init; }
         public string Postcode { get; init; }
+        public double? Latitude { get; init; }
+        public double? Longitude { get; init; }
 
         public static implicit operator AddressApiResponse(Address source)
         {
@@ -231,6 +244,8 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 AddressLine3 = source.AddressLine3,
                 AddressLine4 = source.AddressLine4,
                 Postcode = source.Postcode,
+                Latitude = source.Latitude,
+                Longitude = source.Longitude,
             };
         }
     }

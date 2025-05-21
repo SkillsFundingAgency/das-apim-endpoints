@@ -8,6 +8,7 @@
 
     public List<Question> Questions { get; set; }
 
+
     public class Question
     {
         public Guid Id { get; set; }
@@ -86,7 +87,6 @@
 
     public class FileUploadOptions
     {
-        public int? MaxSize { get; set; }
         public string? FileNamePrefix { get; set; }
         public int? NumberOfFiles { get; set; }
     }

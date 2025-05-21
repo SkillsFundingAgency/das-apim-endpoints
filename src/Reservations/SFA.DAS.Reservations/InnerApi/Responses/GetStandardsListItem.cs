@@ -9,5 +9,6 @@ namespace SFA.DAS.Reservations.InnerApi.Responses
         public string Title { get; set; }
         public int Level { get; set; }
         public DateTime EffectiveTo { get; set; }
+        public string ApprenticeshipType { get; set; }
     }
 }

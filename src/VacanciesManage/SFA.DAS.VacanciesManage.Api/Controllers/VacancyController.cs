@@ -66,13 +66,13 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                 var postVacancyRequestData = (PostVacancyRequestData)request;
                 postVacancyRequestData.OwnerType = (OwnerType)account.AccountType;
                 postVacancyRequestData.AccountType = account.AccountType;
-
                 var contactDetails = new ContactDetails
                 {
                     Email = request.SubmitterContactDetails.Email,
                     Name = request.SubmitterContactDetails.Name,
                     Phone = request.SubmitterContactDetails.Phone,
                 };
+                
                 switch (account.AccountType)
                 {
                     case AccountType.Provider:
@@ -97,10 +97,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
             }
             catch (HttpRequestContentException e)
             {
-                var content = e.ErrorContent
-                    .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
-                    .Replace(@"EmployerName""",@"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase);
-                
+                var content = ReverseMapFieldNamesForErrors(request, e.ErrorContent);
                 return StatusCode((int) e.StatusCode, content);
             }
             catch (SecurityException)
@@ -112,6 +109,26 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                 _logger.LogError(e, "Error creating vacancy");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
+        }
+
+        private static string ReverseMapFieldNamesForErrors(CreateVacancyRequest request, string content)
+        {
+            var result = content
+                .Replace("ProgrammeId", "standardLarsCode", StringComparison.CurrentCultureIgnoreCase)
+                .Replace(@"EmployerName""", @"alternativeEmployerName""", StringComparison.CurrentCultureIgnoreCase)
+                .Replace(".Country", ".postcode", StringComparison.CurrentCultureIgnoreCase)
+                .Replace("Country must be England", "Postcode must be in England", StringComparison.CurrentCultureIgnoreCase)
+                .Replace("EmployerLocationInformation", "recruitingNationallyDetails", StringComparison.CurrentCultureIgnoreCase);
+            
+            if (request.Address is not null)
+            {
+                return result
+                    .Replace("Addresses[0]", "address", StringComparison.CurrentCultureIgnoreCase)
+                    .Replace("Address", "address", StringComparison.CurrentCultureIgnoreCase);
+            }
+            
+            return result
+                .Replace("Addresses", "multipleAddresses", StringComparison.CurrentCultureIgnoreCase);
         }
     }
 }

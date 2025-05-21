@@ -59,6 +59,11 @@ public class PensionRegulatorApiClient : IPensionRegulatorApiClient<PensionRegul
         throw new NotImplementedException();
     }
 
+    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+    {
+        return _apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
+    }
+
     public Task Patch<TData>(IPatchApiRequest<TData> request)
     {
         throw new NotImplementedException();

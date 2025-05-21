@@ -1,9 +1,11 @@
-﻿using System.Globalization;
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
+using SFA.DAS.SharedOuterApi.Extensions;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
-using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
@@ -22,22 +24,32 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             string? location,
             List<string?>? categories,
             List<string?>? levels,
-            bool? disabilityConfident)
+            bool? disabilityConfident,
+            bool? excludeNational)
         {
             var sb = new StringBuilder();
 
             sb.AppendLine();
             if (!string.IsNullOrEmpty(searchTerm)) sb.AppendLine($"What: {searchTerm}");
-
+            
             var locationText = location?.Trim() switch
             {
                 "" => "Where: All of England",
-                not null when distance is >1 => $"Where: {location} (within {distance} miles)",
+                not null when distance is > 1 => $"Where: {location} (within {distance} miles)",
                 not null when distance is 1 => $"Where: {location} (within 1 mile)",
                 not null => $"Where: {location} (Across England)",
                 null => "Where: All of England"
             };
-            sb.AppendLine(locationText);
+
+            if (distance != null && excludeNational != null && excludeNational.Value)
+            {
+                sb.AppendLine($"{locationText} - hide companies recruiting nationally");
+            }
+            else
+            {
+                sb.AppendLine(locationText);                
+            }
+            
             
             if (categories is { Count: > 0 }) sb.AppendLine($"Categories: {string.Join(", ", categories)}");
             if (levels is { Count: > 0 }) sb.AppendLine($"Apprenticeship levels: {string.Join(", ", levels)}");
@@ -53,7 +65,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             string? location,
             List<string>? categoryIds,
             List<string>? levelCodes,
-            bool? disabilityConfident)
+            bool? disabilityConfident,
+            bool? excludeNational)
         {
             var queryParameters = string.Empty;
 
@@ -63,6 +76,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             if (categoryIds is { Count: > 0 }) queryParameters += "&routeIds=" + string.Join("&routeIds=", categoryIds);
             if (levelCodes is { Count: > 0 }) queryParameters += "&levelIds=" + string.Join("&levelIds=", levelCodes);
             if (disabilityConfident != null && disabilityConfident.Value) queryParameters += "&DisabilityConfident=true";
+            if (excludeNational != null && excludeNational.Value) queryParameters += "&excludeNational=true";
 
             return queryParameters;
         }
@@ -78,16 +92,21 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
             {
                 string? trainingCourseText;
                 string? wageText;
-                var employmentWorkLocation = vacancy.EmployerLocationOption switch
+                
+                var employmentWorkLocation = vacancy.EmploymentLocationOption switch
                 {
-                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(vacancy.EmployerLocations),
-                    AvailableWhere.AcrossEngland => "Recruiting nationally",
+                    AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
+                    AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocations(
+                        vacancy.OtherAddresses is { Count: > 0 }
+                        ? new List<Address> { vacancy.EmployerLocation! }.Concat(vacancy.OtherAddresses).ToList()
+                        : [ vacancy.EmployerLocation! ]),
+                    AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation),
                     _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.EmployerLocation)
                 };
 
                 sb.AppendLine();
 
-                if (vacancy.VacancySource != null && vacancy.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase))
+                if (vacancy.VacancySource != null && vacancy.VacancySource.Equals(nameof(VacancyDataSource.Nhs), StringComparison.CurrentCultureIgnoreCase))
                 {
                     sb.AppendLine($"#[{vacancy.Title} (from NHS Jobs)]({environmentHelper.VacancyDetailsUrl.Replace("{vacancy-reference}", vacancy.VacancyReference)})");
                     trainingCourseText = "See more details on NHS Jobs";
@@ -116,6 +135,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates
 
                 }
 
+                if (vacancy.VacancySource != null
+                    && !string.IsNullOrEmpty(vacancy.StartDate)
+                    && vacancy.VacancySource.Equals(nameof(VacancyDataSource.Raa), StringComparison.CurrentCultureIgnoreCase))
+                {
+                    sb.AppendLine($"* Start date: {vacancy.StartDate}");
+                }
                 sb.AppendLine($"* Training course: {trainingCourseText}");
                 sb.AppendLine($"* Wage: {wageText}");
 

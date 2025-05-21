@@ -33,8 +33,10 @@ namespace SFA.DAS.Approvals.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
-            services.AddHttpContextAccessor();            
-            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddHttpContextAccessor();
+            
+            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
@@ -65,6 +67,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
             services.AddTransient<IAutoReservationsService, AutoReservationsService>();
+            services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
             services.AddServiceParameters();
         }
     }

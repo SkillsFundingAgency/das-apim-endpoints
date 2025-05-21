@@ -9,17 +9,13 @@ public class EarningsFM36Constants
     public const int AimSeqNumber = 1;
 
     //LearningDeliveryValues
-    public const int ActualDaysIL = 0;
     public static DateTime ApplicCompDate = new DateTime(9999, 9, 9);
     public const int CombinedAdjProp = 1;
     public const bool Completed = false;
-    public const bool FundStart = true;
     public const int LDApplic1618FrameworkUpliftTotalActEarnings = 0;
     public const string LearnAimRef = "ZPROG001";
     public const int LearnDelApplicDisadvAmount = 0;
-    public const int LearnDelApplicEmp1618Incentive = 0;
     public const int LearnDelApplicProv1618FrameworkUplift = 0;
-    public const int LearnDelApplicProv1618Incentive = 0;
     public const int LearnDelDisadAmount = 0;
     public const bool LearnDelEligDisadvPayment = false;
     public static int? LearnDelEmpIdFirstAdditionalPaymentThreshold = null;
@@ -31,8 +27,6 @@ public class EarningsFM36Constants
     public static int? OutstandNumOnProgInstalm = null;
     public const int ProgType = 25;
     public static int? PwayCode = null;
-    public static DateTime? SecondIncentiveThresholdDate = null;
-    public const int ThresholdDays = 42;
     public const decimal LearnDelApplicCareLeaverIncentive = 0;
     public const int LearnDelHistDaysCareLeavers = 0;
     public const int LearnDelAccDaysILCareLeavers = 0;
@@ -140,5 +134,14 @@ public class EarningsFM36Constants
         public const string PriceEpisodeProgFundIndMinCoInvest = "PriceEpisodeProgFundIndMinCoInvest";
         public const string PriceEpisodeTotProgFunding = "PriceEpisodeTotProgFunding";
         public const string PriceEpisodeESFAContribPct = "PriceEpisodeESFAContribPct";
+    }
+
+    public static class AdditionalPaymentsTypes
+    {
+        public const string ProviderIncentive = "ProviderIncentive";
+        public const string EmployerIncentive = "EmployerIncentive";
+        public const string LearningSupport = "LearningSupport";
+
+        public static List<string> Incentives => [ProviderIncentive, EmployerIncentive];
     }
 }

@@ -44,6 +44,12 @@ public class ForecastingApiClient(IInternalApiClient<ForecastingApiConfiguration
         return client.Delete(request);
     }
 
+    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request,
+        bool includeResponse = false)
+    {
+        return client.DeleteWithResponseCode<TResponse>(request, includeResponse);
+    }
+
     public Task Patch<TData>(IPatchApiRequest<TData> request)
     {
         return client.Patch(request);

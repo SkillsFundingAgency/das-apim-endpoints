@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Requests
@@ -37,6 +38,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public string TrainingDescription { get ; set ; }
         [JsonPropertyName("address")]
         public PostVacancyAddressData Address { get; set; }
+        [JsonPropertyName("addresses")]
+        public List<PostVacancyAddressData> Addresses { get; set; }
         [JsonPropertyName("wage")]
         public PostCreateVacancyWageData Wage { get; set; }
         [JsonPropertyName("skills")]
@@ -75,6 +78,10 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public string AdditionalQuestion2 { get; set; }
         [JsonPropertyName("additionalTrainingDescription")]
         public string AdditionalTrainingDescription { get; set; }
+        [JsonPropertyName("employerLocationInformation")]
+        public string EmployerLocationInformation { get; set; }
+        [JsonPropertyName("employerLocationOption")]
+        public AvailableWhere? EmployerLocationOption { get; set; }
     }
     
     public class PostVacancyUserData
@@ -163,7 +170,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         FixedWage,
         NationalMinimumWageForApprentices,
         NationalMinimumWage,        
-        Unspecified
+        Unspecified,
+        CompetitiveSalary
     }
     
     public enum DurationUnit

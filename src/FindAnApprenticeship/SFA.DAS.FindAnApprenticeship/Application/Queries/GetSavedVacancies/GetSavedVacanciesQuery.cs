@@ -9,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -26,6 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
         public class SavedVacancy
         {
             public Guid Id { get; set; }
+            public string? VacancyId { get; set; }
             public string Title { get; set; }
             public string VacancyReference { get; set; }
             public string EmployerName { get; set; }
@@ -52,26 +54,30 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetSavedVacancies
                 await candidateApiClient.Get<GetSavedVacanciesApiResponse>(
                     new GetSavedVacanciesApiRequest(request.CandidateId));
 
-            var savedVacancyList = savedVacanciesResponse.SavedVacancies;
+            var savedVacancyList = savedVacanciesResponse.SavedVacancies
+                .GroupBy(x => x.VacancyReference.TrimVacancyReference())
+                .Select(g => g.OrderByDescending(x => x.CreatedOn).First())
+                .ToList();
 
             if (savedVacancyList.Count == 0) { return new GetSavedVacanciesQueryResult(); }
 
-            var vacancyReferences = savedVacancyList.Select(x => $"{x.VacancyReference}").ToList();
+            var vacancyReferences = savedVacancyList
+                .Select(x => x.VacancyReference.TrimVacancyReference())
+                .ToList();
             var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
             var result = new GetSavedVacanciesQueryResult();
 
             foreach (var application in savedVacancyList)
             {
-                var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.Replace("VAC", string.Empty) == application.VacancyReference);
+                var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.TrimVacancyReference() == application.VacancyReference);
 
                 if (vacancy == null) continue;
 
-                var vacancyReference =
-                    application.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+                var vacancyReference = application.VacancyReference;
 
                 var applicationResult = await candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
-                    new GetApplicationByReferenceApiRequest(request.CandidateId, vacancyReference));
+                    new GetApplicationByReferenceApiRequest(request.CandidateId, application.VacancyReference));
 
                 result.SavedVacancies.Add(new GetSavedVacanciesQueryResult.SavedVacancy
                 {

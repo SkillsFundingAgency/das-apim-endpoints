@@ -2,17 +2,18 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Routes;
 using SFA.DAS.Aodp.Application.Queries.FormBuilder.Routes;
+using SFA.DAS.AODP.Api;
 
 namespace SFA.DAS.Aodp.Api.Controllers.FormBuilder;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RoutesController : Controller
+public class RoutesController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ILogger<RoutesController> _logger;
 
-    public RoutesController(IMediator mediator, ILogger<RoutesController> logger)
+    public RoutesController(IMediator mediator, ILogger<RoutesController> logger) : base(mediator, logger)
     {
         _mediator = mediator;
         _logger = logger;
@@ -27,12 +28,8 @@ public class RoutesController : Controller
         {
             FormVersionId = formVersionId
         };
-        var response = await _mediator.Send(query);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-        return StatusCode(StatusCodes.Status500InternalServerError);
+
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/routes/forms/{formVersionId}")]
@@ -44,13 +41,8 @@ public class RoutesController : Controller
         {
             FormVersionId = formVersionId
         };
-        var response = await _mediator.Send(query);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
 
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/routes/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/available-questions")]
@@ -62,13 +54,8 @@ public class RoutesController : Controller
         {
             PageId = pageId
         };
-        var response = await _mediator.Send(query);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
 
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/routes/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}")]
@@ -82,13 +69,7 @@ public class RoutesController : Controller
             FormVersionId = formVersionId
         };
 
-        var response = await _mediator.Send(query);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
-
-        return StatusCode(StatusCodes.Status500InternalServerError);
+        return await SendRequestAsync(query);
     }
 
     [HttpPut("/api/routes/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}")]
@@ -96,12 +77,20 @@ public class RoutesController : Controller
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> ConfigureRoutingForQuestion(ConfigureRoutingForQuestionCommand command)
     {
-        var response = await _mediator.Send(command);
-        if (response.Success)
-        {
-            return Ok(response.Value);
-        }
+        return await SendRequestAsync(command);
+    }
 
-        return StatusCode(StatusCodes.Status500InternalServerError);
+    [HttpDelete("/api/routes/forms/{formVersionId}/sections/{sectionId}/pages/{pageId}/questions/{questionId}")]
+    [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> DeleteRouteAsync(Guid formVersionId, Guid sectionId, Guid pageId, Guid questionId)
+    {
+        return await SendRequestAsync(new DeleteRouteCommand()
+        {
+            FormVersionId = formVersionId,
+            SectionId = sectionId,
+            PageId = pageId,
+            QuestionId = questionId
+        });
     }
 }

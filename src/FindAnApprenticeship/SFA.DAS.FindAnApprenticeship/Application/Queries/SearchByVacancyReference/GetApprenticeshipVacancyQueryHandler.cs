@@ -11,6 +11,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
@@ -49,23 +50,24 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             GetApprenticeshipVacancyQueryResult.CandidateApplication candidateApplicationDetails = null;
             string candidatePostcode = null;
+            DateTime? candidateDateOfBirth = null;
             var isSavedVacancy = false;
 
             if (request.CandidateId.HasValue)
             {
                 var vacancyReference =
-                    request.VacancyReference.Replace("VAC", "", StringComparison.CurrentCultureIgnoreCase);
+                    request.VacancyReference.TrimVacancyReference();
 
                 var application = candidateApiClient.Get<GetApplicationByReferenceApiResponse>(
                     new GetApplicationByReferenceApiRequest(request.CandidateId.Value, vacancyReference));
 
-                var candidateAddress = candidateApiClient.Get<GetCandidateAddressApiResponse>(
-                    new GetCandidateAddressApiRequest(request.CandidateId.Value));
+                var candidate = candidateApiClient.Get<GetCandidateApiResponse>(
+                    new GetCandidateApiRequest(request.CandidateId.Value.ToString()));
 
                 var savedVacancy = candidateApiClient.Get<GetSavedVacancyApiResponse>(
-                    new GetSavedVacancyApiRequest(request.CandidateId.Value, vacancyReference));
+                    new GetSavedVacancyApiRequest(request.CandidateId.Value, null, vacancyReference));
 
-                await Task.WhenAll(application, candidateAddress, savedVacancy);
+                await Task.WhenAll(application, candidate, savedVacancy);
 
                 if (application.Result != null)
                 {
@@ -78,9 +80,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     };
                 }
 
-                if (candidateAddress.Result != null)
+                if (candidate.Result != null)
                 {
-                    candidatePostcode = candidateAddress.Result.Postcode;
+                    candidatePostcode = candidate.Result.Address.Postcode;
+                    candidateDateOfBirth = candidate.Result.DateOfBirth;
                 }
 
                 if (savedVacancy.Result != null)
@@ -96,6 +99,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                 Levels = courseLevels.Levels.ToList(),
                 Application = candidateApplicationDetails,
                 CandidatePostcode = candidatePostcode,
+                CandidateDateOfBirth = candidateDateOfBirth,
                 IsSavedVacancy = isSavedVacancy
             };
         }

@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 {
@@ -19,6 +21,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         [JsonPropertyName("closingDate")]
         public DateTime ClosingDate { get; set; }
 
+        [JsonPropertyName("startDate")]
+        public DateTime StartDate { get; set; }
+
         [JsonPropertyName("employerName")]
         public string EmployerName { get; set; }
        
@@ -38,7 +43,17 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
         public int WageType { get; set; }
 
         [JsonPropertyName("address")]
-        public VacancyAddress VacancyAddress { get; set; }
+        public Address Address { get; set; }
+
+        [JsonPropertyName("isPrimaryLocation")]
+        public bool IsPrimaryLocation { get; set; }
+        [JsonPropertyName("otherAddresses")]
+        public List<Address>? OtherAddresses { get; set; }
+        [JsonPropertyName("employmentLocationInformation")]
+        public string? EmploymentLocationInformation { get; set; }
+
+        [JsonPropertyName("availableWhere"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+        public AvailableWhere? EmploymentLocationOption { get; set; }
 
         [JsonPropertyName("distance")]
         public decimal? Distance { get; set; }
@@ -51,19 +66,5 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
       
         [JsonPropertyName("vacancySource")]
         public string VacancySource { get; set; }
-    }
-
-    public class VacancyAddress
-    {
-        [JsonPropertyName("addressLine1")]
-        public string AddressLine1 { get; set; }
-        [JsonPropertyName("addressLine2")]
-        public string AddressLine2 { get; set; }
-        [JsonPropertyName("addressLine3")]
-        public string AddressLine3 { get; set; }
-        [JsonPropertyName("addressLine4")]
-        public string AddressLine4 { get; set; }
-        [JsonPropertyName("postcode")]
-        public string Postcode { get; set; }
     }
 }

@@ -45,9 +45,10 @@ public class WhenMappingGetApplicationResponseToPostSubmitApplicationRequestData
             Subject = c.Subject,
             Grade = c.Grade,
             IsPredicted = c.IsPredicted,
+            QualificationOrder = c.QualificationOrder,
             QualificationType = c.QualificationReference.Name,
             AdditionalInformation = c.AdditionalInformation
-        }).ToList());
+        }).OrderBy(fil => fil.QualificationOrder).ToList());
         actual.FirstName.Should().Be(source.Candidate.FirstName);
         actual.LastName.Should().Be(source.Candidate.LastName);
         actual.AddressLine1.Should().Be(source.Candidate.Address.AddressLine1);

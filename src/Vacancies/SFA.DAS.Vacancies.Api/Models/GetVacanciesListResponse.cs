@@ -24,9 +24,9 @@ namespace SFA.DAS.Vacancies.Api.Models
                 TotalPages = source.TotalPages
             };
         }
-
     }
-    public class GetVacanciesListResponseItem
+    
+    public record GetVacanciesListResponseItem
     {
         /// <summary>
         /// The title for the apprenticeship vacancy. Will be less than or equal to 100 characters.
@@ -67,7 +67,17 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         /// <example>21 months</example>
         public string ExpectedDuration { get ; set ; }
+        
+        // Note: this documentation will appear once OpenApi 3.1 is supported.
+        /// <summary>
+        /// The address of where the apprentice will work. If the apprenticeship is available at just one location, you’ll get just an address. If the address is available at more than one location, you’ll get an address and otherAddresses.
+        /// </summary>
         public GetVacancyAddressItem Address { get; set; }
+        
+        /// <summary>
+        /// If the apprenticeship is available at more than one location, there will be up to 9 otherAddresses. The API will also give you separate vacancies where each location is the set address and location with a corresponding distance.
+        /// </summary>
+        public List<GetVacancyAddressItem> OtherAddresses { get; set; }
         public VacancyLocation Location { get; set; }
         /// <summary>
         /// If you provide a `lat` and `lon` for a location when using `GET list of vacancies` or `GET vacancy by reference number`, this will be the distance between the apprenticeship and your defined location. Will be in miles.
@@ -119,8 +129,6 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         public string VacancyReference { get; set; }
         public  bool IsNationalVacancy { get; set; }
-
-        
         
         public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
         {
@@ -143,7 +151,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Course = source,
                 Wage = source,
                 Distance = source.Distance,
-                Address = source,
+                Address = GetVacancyAddressItem.From(source.Address),
+                OtherAddresses = source.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 EmployerContactEmail = source.EmployerContactEmail,
                 EmployerContactName = source.EmployerContactName,

@@ -18,17 +18,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient();
-            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
             services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
             services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
             services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
+            services.AddTransient<IRecruitApiClient<RecruitApiV2Configuration>, RecruitApiV2Client>();
             services.AddTransient<ILocationLookupService, LocationLookupService>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
-            services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IVacancyService, VacancyService>();
 			services.AddSingleton<IDateTimeService>(new DateTimeService());
             services.AddTransient<INotificationService, NotificationService>();
