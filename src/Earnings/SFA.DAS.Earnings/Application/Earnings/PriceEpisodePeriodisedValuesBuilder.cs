@@ -100,21 +100,14 @@ public static class PriceEpisodePeriodisedValuesBuilder
     
     public static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship joinedApprenticeship, JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
-        //Take account of additional payments from previous episodes when skipping
-        var previousAdditionalPayments = joinedApprenticeship.Episodes
-            .Where(x => x.EndDate <= joinedPriceEpisode.StartDate)
-            .SelectMany(x => x.AdditionalPayments)
-            .Where(x => x.AdditionalPaymentType == additionalPaymentType)
-            .ToList();
-        n -= previousAdditionalPayments.Count();
-
-        var additionalPayments = GetAdditionalPayments(joinedPriceEpisode, additionalPaymentType);
-
-        var nthPayment = additionalPayments
+        var allAdditionalPayments = joinedApprenticeship.Episodes.SelectMany(x =>
+            x.AdditionalPayments.Where(y => y.AdditionalPaymentType == additionalPaymentType))
             .OrderBy(i => i.AcademicYear)
-            .ThenBy(i => i.DeliveryPeriod)
+            .ThenBy(i => i.DeliveryPeriod);
+
+        var nthPayment = allAdditionalPayments
             .Skip(n - 1)
-            .FirstOrDefault();
+            .FirstOrDefault(x => x.DueDate >= joinedPriceEpisode.StartDate && x.DueDate <= joinedPriceEpisode.EndDate);
 
         return new PriceEpisodePeriodisedValues
         {

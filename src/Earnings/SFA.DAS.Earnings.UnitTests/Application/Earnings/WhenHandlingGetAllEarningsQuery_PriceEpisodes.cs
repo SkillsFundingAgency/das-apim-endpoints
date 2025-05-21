@@ -584,7 +584,6 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 
             var allIncentives = earningEpisode.AdditionalPayments
-                    .Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
                     .Where(x => x.AdditionalPaymentType == incentiveType)
                     .OrderBy(x => x.DueDate).ToList();
 
