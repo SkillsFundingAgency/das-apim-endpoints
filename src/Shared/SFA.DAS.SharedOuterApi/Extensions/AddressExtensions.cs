@@ -25,7 +25,14 @@ public static class AddressExtensions
         
         return lines.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim();
     }
-    
+
+    public static List<Address> OrderByCity(this List<Address> addresses)
+    {
+        return addresses
+            .OrderBy(a => a.GetCity())
+            .ToList();
+    }
+
     public static string? ToSingleLineAddress(this Address? address)
     {
         if (address is null)
