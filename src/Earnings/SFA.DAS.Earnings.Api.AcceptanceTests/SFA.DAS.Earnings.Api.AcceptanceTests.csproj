@@ -28,4 +28,8 @@
     <ProjectReference Include="..\SFA.DAS.Earnings.Api\SFA.DAS.Earnings.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\" />
+  </ItemGroup>
+
 </Project>
