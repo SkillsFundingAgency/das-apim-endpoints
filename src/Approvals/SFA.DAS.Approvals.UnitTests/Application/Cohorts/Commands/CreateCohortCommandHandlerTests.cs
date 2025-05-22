@@ -68,7 +68,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
                             ((CreateCohortRequest)r.Data).TransferSenderId == _request.TransferSenderId &&
                             ((CreateCohortRequest)r.Data).Uln == _request.Uln &&
                             ((CreateCohortRequest)r.Data).UserInfo == _request.UserInfo &&
-                            ((CreateCohortRequest)r.Data).RequestingParty == _request.RequestingParty
+                            ((CreateCohortRequest)r.Data).RequestingParty == _request.RequestingParty &&
+                            ((CreateCohortRequest)r.Data).LearnerDataId == _request.LearnerDataId
                         ), true
                 )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(expectedResponse, HttpStatusCode.OK, string.Empty));
 
