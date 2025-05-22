@@ -383,24 +383,53 @@ components:
             dob:
               type: string
               format: date
-            careleaver:
-              type: boolean
-              
+            email:
+              type: string
+            care:
+              type: object
+              properties:
+                careleaver:
+                  type: boolean
+                hasEhcp:
+                  type: boolean
+                employerConsent:
+                  type: boolean
         delivery:
           type: object
           properties:
-            agreementId:
-              type: string
-            startDate:
-              type: string
-              format: date
-            expectedEndDate:
-              type: string
-              format: date
-            OffTheJobHours:
-              type: integer
-            percentageOfLearningLeft:
-              type: integer
+            onProgramme:
+              type: object
+              properties:
+                learnerRef:
+                  type: string
+                agreementId:
+                  type: string
+                startDate:
+                  type: string
+                  format: date
+                expectedEndDate:
+                  type: string
+                  format: date
+                OffTheJobHours:
+                  type: integer
+                percentageOfLearningLeft:
+                  type: integer
+                trainingType:
+                  type: string
+                costs:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      trainingPrice:
+                        type: number
+                      epaoPrice:
+                        type: number
+                      fromDate:
+                        type: string
+                        format: date
+                      reduction4Rpl:
+                        type: integer
             englishAndMaths:
               type: array
               items:
@@ -415,7 +444,18 @@ components:
                   courseCode:
                     type: integer
                   amount:
-                    type: integer    
+                    type: integer
+            learningSupport:
+              type: array
+              items:
+                type: object
+                properties:
+                  from:
+                    type: string
+                    format: date
+                  to:
+                    type: string
+                    format: date
         status:
           type: object
           properties:
@@ -432,15 +472,7 @@ components:
               format: date
             reason:
               type: string
-        costs:
-          type: object
-          properties:
-            epaoCost:
-              type: integer
-            LearningCost:
-              type: integer
-            reduction4Rpl:
-              type: integer
+
           
     foundationApprenticeshipLearning:
       description: This is the exact copy of a normal apprenticeship
