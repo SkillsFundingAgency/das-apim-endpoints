@@ -3,22 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
-
-  <ItemGroup>
-      <Content Remove="nlog.Debug.config" />
-      <Content Remove="nlog.Release.config" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <None Include="nlog.Debug.config">
-        <IsTransformFile>true</IsTransformFile>
-        <DependentUpon>nlog.config</DependentUpon>
-      </None>
-      <None Include="nlog.Release.config">
-        <IsTransformFile>true</IsTransformFile>
-        <DependentUpon>nlog.config</DependentUpon>
-      </None>
-    </ItemGroup>
     
     <ItemGroup>
         <PackageReference Include="MediatR" />
@@ -28,9 +12,7 @@
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
         <PackageReference Include="Microsoft.Extensions.Options" />
-        <PackageReference Include="NLog.Web.AspNetCore" />
         <PackageReference Include="SFA.DAS.Api.Common" />
-        <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
         <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
         <PackageReference Include="Swashbuckle.AspNetCore" />
     </ItemGroup>
@@ -42,10 +24,6 @@
         </Content>
         <Content Update="appsettings.Development.json">
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-        </Content>
-        <Content Update="nlog.config">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <TransformOnBuild>true</TransformOnBuild>
         </Content>
     </ItemGroup>
 
