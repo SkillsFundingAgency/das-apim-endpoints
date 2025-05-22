@@ -1,8 +1,8 @@
 ﻿Feature: HealthCheck
 
-I want the HealthCheck feature to accurately report the status of its dependencies
+I want the HealthCheck feature to reflect the status of the service dependencies
 
-Scenario Outline: Api reports its status
+Scenario Outline: HealthCheck endpoint reports status of service
 	Given the Earnings Inner Api is <EarningsInner>
 	And the Apprenticeships Inner Api is <ApprenticeshipsInner>
 	And the Collection Calendar Api is <CollectionCalendarInner>
