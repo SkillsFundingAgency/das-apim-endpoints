@@ -1,6 +1,4 @@
 ﻿using FluentAssertions;
-using System;
-using System.Collections.Generic;
 using System.Net;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
@@ -19,8 +17,8 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
             _context = context;
         }
 
-        [Given(@"the Earnings Inner Api is (.*)")]
-        public void GivenTheEmployerIncentivesInnerApiIs(string status)
+        [Given(@"the Earnings Inner Api status is (.*)")]
+        public void GivenTheEmployerIncentivesInnerApiIs(HttpStatusCode status)
         {
             _context.EarningsApi.MockServer
                 .Given(
@@ -28,13 +26,13 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
-                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                        .WithStatusCode(status)
                 );
         }
 
 
-        [Given(@"the Apprenticeships Inner Api is (.*)")]
-        public void GivenTheApprenticeshipsInnerApiIs(string status)
+        [Given(@"the Apprenticeships Inner Api status is (.*)")]
+        public void GivenTheApprenticeshipsInnerApiIs(HttpStatusCode status)
         {
             _context.ApprenticeshipsApi.MockServer
                 .Given(
@@ -42,13 +40,13 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
-                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                        .WithStatusCode(status)
                 );
         }
 
 
-        [Given(@"the Collection Calendar Api is (.*)")]
-        public void GivenTheCollectionCalendarApiIs(string status)
+        [Given(@"the Collection Calendar Api status is (.*)")]
+        public void GivenTheCollectionCalendarApiIs(HttpStatusCode status)
         {
             _context.CollectionCalendarApi.MockServer
                 .Given(
@@ -56,7 +54,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
-                        .WithStatusCode((int)StatusCodeFromDescription(status))
+                        .WithStatusCode(status)
                 );
         }
 
@@ -77,17 +75,6 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
             {
                 _response.IsSuccessStatusCode.Should().BeFalse();
             }
-        }
-
-        public HttpStatusCode StatusCodeFromDescription(string status)
-            =>
-                (status == "Ok")
-                    ? HttpStatusCode.OK
-                    : HttpStatusCode.InternalServerError;
-
-        public class HealthResponse
-        {
-            public string Status { get; set; }
         }
     }
 }
