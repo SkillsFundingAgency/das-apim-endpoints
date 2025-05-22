@@ -98,15 +98,22 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
     
-    public static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
+    public static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship joinedApprenticeship, JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
-        var additionalPayments = GetAdditionalPayments(joinedPriceEpisode, additionalPaymentType);
-
-        var nthPayment = additionalPayments
+        var allAdditionalPayments = joinedApprenticeship.Episodes.SelectMany(x =>
+            x.AdditionalPayments.Where(y => y.AdditionalPaymentType == additionalPaymentType))
             .OrderBy(i => i.AcademicYear)
             .ThenBy(i => i.DeliveryPeriod)
+            .ToList();
+
+        var nthPayment = allAdditionalPayments
             .Skip(n - 1)
             .FirstOrDefault();
+
+        if (nthPayment != null && (nthPayment.DueDate < joinedPriceEpisode.StartDate || nthPayment.DueDate > joinedPriceEpisode.EndDate))
+        {
+            nthPayment = null;
+        }
 
         return new PriceEpisodePeriodisedValues
         {

@@ -20,12 +20,14 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeCompletionPayment, 0),
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstDisadvantagePayment, 0),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstEmp1618Pay,
                 EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive, 
                 1),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstProv1618Pay,
@@ -35,12 +37,14 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodePeriodisedValuesBuilder.BuildAdditionalPaymentPerPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(),EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLSFCash, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport),
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondDisadvantagePayment, 0),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondEmp1618Pay,
                 EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive,
                 2),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondProv1618Pay,
