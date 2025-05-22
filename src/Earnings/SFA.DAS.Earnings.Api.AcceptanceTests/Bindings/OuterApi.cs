@@ -19,6 +19,8 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
         [BeforeScenario()]
         public void Initialise()
         {
+            Console.WriteLine("Initialising...");
+
             if (Client == null)
             {
                 var config = new Dictionary<string, string>

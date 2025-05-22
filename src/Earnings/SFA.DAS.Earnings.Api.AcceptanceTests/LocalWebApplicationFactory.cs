@@ -14,6 +14,8 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests
         }
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            Console.WriteLine("Configuring web host...");
+
             builder.ConfigureAppConfiguration(a =>
             {
                 a.AddInMemoryCollection(_config);
