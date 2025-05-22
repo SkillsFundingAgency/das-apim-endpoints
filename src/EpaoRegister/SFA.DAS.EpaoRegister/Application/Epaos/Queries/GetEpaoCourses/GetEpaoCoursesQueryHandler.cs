@@ -55,6 +55,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 
             var matchingCourses = activeCourses.Standards
                 .Where(c => epaoStandardCodes.Contains(c.LarsCode))
+                .OrderBy(o => o.LarsCode)
                 .ToList();
 
             return new GetEpaoCoursesResult
