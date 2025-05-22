@@ -4,6 +4,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -17,7 +18,7 @@ public class WhenMappingLearnerRecords
     [Test, MoqAutoData]
     public async Task Then_It_Maps_The_Main_Fields_Correctly(
         LearnerDataRecord inputDataRecord,
-        List<GetStandardsListItem> standards,
+        List<GetAllStandardsResponse.TrainingProgramme> standards,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApi,
         [Greedy] MapLearnerRecords sut
     )
@@ -33,17 +34,17 @@ public class WhenMappingLearnerRecords
     [Test, MoqAutoData]
     public async Task Then_It_Maps_The_Course_Field_Correctly(
         LearnerDataRecord[] inputDataRecords,
-        List<GetStandardsListItem> courses,
+        List<GetAllStandardsResponse.TrainingProgramme> courses,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApi,
         [Greedy] MapLearnerRecords sut
     )
     {
-        courses[0].LarsCode = inputDataRecords[0].StandardCode;
-        courses[1].LarsCode = inputDataRecords[1].StandardCode;
+        courses[0].CourseCode = inputDataRecords[0].StandardCode.ToString();
+        courses[1].CourseCode = inputDataRecords[1].StandardCode.ToString();
 
         var result = await sut.Map(inputDataRecords, courses);
 
-        result[0].Course.Should().Be(courses[0].Title);
-        result[1].Course.Should().Be(courses[1].Title);
+        result[0].Course.Should().Be(courses[0].Name);
+        result[1].Course.Should().Be(courses[1].Name);
     }
 }
