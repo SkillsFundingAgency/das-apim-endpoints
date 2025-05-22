@@ -345,16 +345,10 @@ components:
     header:
       type: object
       properties:
-        ######## This is the natural key ########
-        uln:
-          type: string
         ukprn:
           type: string
         academicYear:
           type: integer
-        standardCode:
-          type: integer
-        #########################################
         LearningType:
           type: string
           enum:
@@ -376,6 +370,8 @@ components:
         learner:
           type: object
           properties:
+            uln:
+              type: string
             firstname:
               type: string
             lastname:
@@ -400,6 +396,8 @@ components:
             onProgramme:
               type: object
               properties:
+                standardCode:
+                  type: integer
                 learnerRef:
                   type: string
                 agreementId:
@@ -414,8 +412,6 @@ components:
                   type: integer
                 percentageOfLearningLeft:
                   type: integer
-                trainingType:
-                  type: string
                 costs:
                   type: array
                   items:
@@ -442,8 +438,6 @@ components:
                     type: string
                     format: date
                   courseCode:
-                    type: integer
-                  amount:
                     type: integer
             learningSupport:
               type: array
