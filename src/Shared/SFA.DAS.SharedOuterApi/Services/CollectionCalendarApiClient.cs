@@ -23,7 +23,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
 		public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
 		{
-			throw new NotImplementedException();
+			return _apiClient.GetResponseCode(request);
 		}
 
 		public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
