@@ -14,22 +14,18 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
 {
     public class GetEpaoCoursesQueryHandler : IRequestHandler<GetEpaoCoursesQuery, GetEpaoCoursesResult>
     {
-        private const int ExpirationInHours = 6;
         private readonly IValidator<GetEpaoCoursesQuery> _validator;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly ICacheStorageService _cacheStorageService;
 
         public GetEpaoCoursesQueryHandler(
             IValidator<GetEpaoCoursesQuery> validator,
             IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient,
-            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-            ICacheStorageService cacheStorageService)
+            ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
         {
             _validator = validator;
             _assessorsApiClient = assessorsApiClient;
             _coursesApiClient = coursesApiClient;
-            _cacheStorageService = cacheStorageService;
         }
 
         public async Task<GetEpaoCoursesResult> Handle(GetEpaoCoursesQuery request, CancellationToken cancellationToken)
@@ -41,8 +37,7 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
             }
 
             var epaoCourses = (await _assessorsApiClient.GetAll<GetEpaoCoursesListItem>(
-                new GetEpaoCoursesRequest(request.EpaoId)))
-                ?.ToList();
+                new GetEpaoCoursesRequest(request.EpaoId)))?.ToList();
 
             if (epaoCourses == null || epaoCourses.Count == 0)
             {
@@ -53,18 +48,16 @@ namespace SFA.DAS.EpaoRegister.Application.Epaos.Queries.GetEpaoCourses
                 };
             }
 
-            var matchingCourses = new List<GetStandardResponse>();
-            foreach (var epaoCoursesListItem in epaoCourses)
-            {
-                var course =
-                    await _coursesApiClient.Get<GetStandardResponse>(
-                        new GetStandardRequest(epaoCoursesListItem.StandardCode));
-                if (course != null)
-                {
-                    matchingCourses.Add(course);    
-                }
-            }
-            
+            var activeCourses = await _coursesApiClient.Get<GetStandardsListResponse>(
+                new GetActiveStandardsListRequest());
+
+            var epaoStandardCodes = epaoCourses.Select(c => c.StandardCode).ToHashSet();
+
+            var matchingCourses = activeCourses.Standards
+                .Where(c => epaoStandardCodes.Contains(c.LarsCode))
+                .OrderBy(o => o.LarsCode)
+                .ToList();
+
             return new GetEpaoCoursesResult
             {
                 EpaoId = request.EpaoId,
