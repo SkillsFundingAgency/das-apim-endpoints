@@ -19,7 +19,8 @@ public class WhenGettingLearnersForProvider
     [Test, MoqAutoData]
     public async Task Then_Get_Returns_Learners_From_Mediator(
         long providerId,
-        long accountLegalEntityId,
+        long? accountLegalEntityId,
+        long? cohortId,
         string searchTerm,
         string sortColumn,
         bool sortDescending,
@@ -44,7 +45,7 @@ public class WhenGettingLearnersForProvider
             })
             .ReturnsAsync(mediatorResult);
 
-        var controllerResult = await controller.Get(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDescending, page, pageSize) as ObjectResult;
+        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pageSize) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -56,7 +57,8 @@ public class WhenGettingLearnersForProvider
     [Test, MoqAutoData]
     public async Task And_Exception_Then_Returns_InternalServerError(
         long providerId,
-        long accountLegalEntityId,
+        long? accountLegalEntityId,
+        long? cohortId,
         string searchTerm,
         string sortColumn,
         bool sortDescending,
@@ -71,7 +73,7 @@ public class WhenGettingLearnersForProvider
                 It.IsAny<CancellationToken>()))
             .Throws<InvalidOperationException>();
 
-        var controllerResult = await controller.Get(providerId, accountLegalEntityId, searchTerm, sortColumn, sortDescending, page, pagesize) as StatusCodeResult;
+        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pagesize) as StatusCodeResult;
 
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
