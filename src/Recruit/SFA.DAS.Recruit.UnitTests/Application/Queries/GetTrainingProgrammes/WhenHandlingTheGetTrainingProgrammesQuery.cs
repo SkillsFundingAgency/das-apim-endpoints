@@ -26,6 +26,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetTrainingProgrammesQueryHandler handler)
         {
+            query.IncludeFoundationApprenticeships = false;
             foreach (var framework in apiResponse.Frameworks)
             {
                 framework.Level = (int) ApprenticeshipLevel.Advanced;
@@ -90,7 +91,6 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockApiClient,
             GetTrainingProgrammesQueryHandler handler)
         {
-            
             foreach (var standard in apprenticeshipStandards)
             {
                 standard.Level = (int) ApprenticeshipLevel.Advanced;
@@ -116,7 +116,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.TrainingProgrammes.Should().BeEquivalentTo(apiResponse.Standards.Select(item => (TrainingProgramme)item));
+            result.TrainingProgrammes.Where(c=>c.Id != "1392").Should().BeEquivalentTo(apiResponse.Standards.Select(item => (TrainingProgramme)item));
         }
     }
 }

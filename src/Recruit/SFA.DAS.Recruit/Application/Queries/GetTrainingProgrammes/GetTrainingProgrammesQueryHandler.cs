@@ -33,6 +33,26 @@ namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes
             trainingProgrammes.AddRange(standardsTask.Result.Standards?
                 .Where(c=>request.IncludeFoundationApprenticeships || c.ApprenticeshipType.Equals("Apprenticeship", StringComparison.CurrentCultureIgnoreCase))
                 .Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
+
+            if (request.IncludeFoundationApprenticeships)
+            {
+                trainingProgrammes.Add(new TrainingProgramme
+                {
+                    ApprenticeshipLevel = ApprenticeshipLevel.Intermediate,
+                    ApprenticeshipType = TrainingType.Foundation,
+                    Duration = 9,
+                    EducationLevelNumber = 2,
+                    EffectiveFrom = new DateTime(2025,03,01),
+                    EffectiveTo = null,
+                    FrameworkCode = 0,
+                    Id = "1392",
+                    IsActive = true,
+                    LastDateStarts = null,
+                    SectorCode = 46,
+                    Ssa1 = 0,
+                    Title = "Assistant Electrician (OUTER)"
+                });
+            }
             
             return new GetTrainingProgrammesQueryResult
             {
