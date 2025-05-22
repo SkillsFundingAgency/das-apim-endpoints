@@ -26,7 +26,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Extensions
                         TrainingCode = "test",
                         Prices = apprenticeshipModel.PriceEpisodes.Select(x => new EpisodePrice
                         {
-                            Key = Guid.NewGuid(),
+                            Key = x.Key,
                             StartDate = x.StartDate,
                             EndDate = x.EndDate,
                             EndPointAssessmentPrice = 1000,
@@ -47,7 +47,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Extensions
                     {
                         Instalments = apprenticeshipModel.Instalments.Select(x => new SharedOuterApi.InnerApi.Responses.Earnings.Instalment
                         {
-                            EpisodePriceKey = apprenticeship.Episodes.First().Prices.First().Key, //todo: improve this
+                            EpisodePriceKey = apprenticeshipModel.PriceEpisodes.Single(y => y.PriceEpisodeId == x.PriceEpisodeId).Key,
                             AcademicYear = x.AcademicYear,
                             DeliveryPeriod = x.DeliveryPeriod,
                             Amount = x.Amount

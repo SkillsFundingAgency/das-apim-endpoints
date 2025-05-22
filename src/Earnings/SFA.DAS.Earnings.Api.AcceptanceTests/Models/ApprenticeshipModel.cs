@@ -17,12 +17,15 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Models
 
     public class PriceEpisode
     {
+        public int PriceEpisodeId { get; set; }
+        public Guid Key { get; set; } = Guid.NewGuid();
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
     }
 
     public class Instalment
     {
+        public int PriceEpisodeId { get; set; }
         public short AcademicYear { get; set; }
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }

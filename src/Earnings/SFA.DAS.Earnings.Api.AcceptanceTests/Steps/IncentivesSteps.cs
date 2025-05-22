@@ -80,8 +80,6 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
                         .WithBodyAsJson(apiResponses.EarningsInnerApiResponse)
                 );
 
-
-
             _response = await _testContext.OuterApiClient.GetAsync($"/learners/10005077/{academicYear}/{deliveryPeriod}");
 
             var contentString = await _response.Content.ReadAsStringAsync();
@@ -96,22 +94,15 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
 
             var learner = _generatedFm36Learners.First();
 
-            var priceEpisode = learner.PriceEpisodes.First(); //todo: get the one indicated in the table
-
             foreach (var expectation in expected)
             {
+                var priceEpisode = learner.PriceEpisodes[expectation.Episode];
+
                 var actual =
                     priceEpisode.PriceEpisodePeriodisedValues.Single(x => x.AttributeName == expectation.Attribute);
 
-                //.....
-
                 actual.GetPeriodValue(expectation.Period).Should().Be(expectation.Value);
             }
-
-            //todo: assertions here
-
-
         }
-
     }
 }
