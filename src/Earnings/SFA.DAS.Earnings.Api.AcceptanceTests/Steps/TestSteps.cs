@@ -63,13 +63,20 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
         [When(@"I request the service status")]
         public async Task WhenIRequestServiceStatus()
         {
-            _response = await _context.OuterApiClient.GetAsync($"/ping");
+            _response = await _context.OuterApiClient.GetAsync($"/health");
         }
 
         [Then(@"the result should be (.*)")]
-        public void ThenTheResultShouldBe(HttpStatusCode status)
+        public void ThenTheResultShouldBe(string status)
         {
-            _response.StatusCode.Should().Be(status);
+            if (status == "Healthy")
+            {
+                _response.IsSuccessStatusCode.Should().BeTrue();
+            }
+            else
+            {
+                _response.IsSuccessStatusCode.Should().BeFalse();
+            }
         }
 
         public HttpStatusCode StatusCodeFromDescription(string status)
