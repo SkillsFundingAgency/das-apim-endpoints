@@ -22,6 +22,8 @@ Scenario: Incentives in a single-year apprenticeship
 	| 0       | PriceEpisodeFirstProv1618Pay  | 3      | 500   |
 	| 0       | PriceEpisodeSecondEmp1618Pay  | 12     | 500   |
 	| 0       | PriceEpisodeSecondProv1618Pay | 12     | 500   |
+	And all other PriceEpisodeFirstEmp1618Pay values are 0
+	And all other PriceEpisodeSecondEmp1618Pay values are 0
 
 Scenario: Incentives in an apprenticeship with a price change
 	Given the following price episodes
@@ -45,6 +47,8 @@ Scenario: Incentives in an apprenticeship with a price change
 	| 0       | PriceEpisodeFirstProv1618Pay  | 3      | 500   |
 	| 1       | PriceEpisodeSecondEmp1618Pay  | 12     | 500   |
 	| 1       | PriceEpisodeSecondProv1618Pay | 12     | 500   |
+	And all other PriceEpisodeFirstEmp1618Pay values are 0
+	And all other PriceEpisodeSecondEmp1618Pay values are 0
 
 Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	Given the following price episodes
@@ -66,8 +70,12 @@ Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	| Episode | Attribute                    | Period | Value |
 	| 0       | PriceEpisodeFirstEmp1618Pay  | 10     | 500   |
 	| 0       | PriceEpisodeFirstProv1618Pay | 10     | 500   |
+	And all other PriceEpisodeFirstEmp1618Pay values are 0
+	And all other PriceEpisodeSecondEmp1618Pay values are 0
 	When the FM36 block is retrieved for Academic Year 2526 Delivery Period 1
 	Then the Price Episode Periodised Values are as follows:
 	| Episode | Attribute                     | Period | Value |
 	| 1       | PriceEpisodeSecondEmp1618Pay  | 7      | 500   |
 	| 1       | PriceEpisodeSecondProv1618Pay | 7      | 500   |
+	And all other PriceEpisodeFirstEmp1618Pay values are 0
+	And all other PriceEpisodeSecondEmp1618Pay values are 0

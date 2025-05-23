@@ -20,8 +20,6 @@ Given the following price episodes
 	| Episode | Attribute           | AcademicYear | Period | Value |
 	| 0       | PriceEpisodeLSFCash | 2425         | 1      | 150   |
 	| 0       | PriceEpisodeLSFCash | 2425         | 2      | 150   |
-	| 0       | PriceEpisodeLSFCash | 2425         | 3      | 0     |
-	| 0       | PriceEpisodeLSFCash | 2425         | 4      | 0     |
-	| 0       | PriceEpisodeLSFCash | 2425         | 5      | 0     |
 	| 0       | PriceEpisodeLSFCash | 2425         | 6      | 150   |
 	| 0       | PriceEpisodeLSFCash | 2425         | 7      | 150   |
+	And all other PriceEpisodeLSFCash values are 0
