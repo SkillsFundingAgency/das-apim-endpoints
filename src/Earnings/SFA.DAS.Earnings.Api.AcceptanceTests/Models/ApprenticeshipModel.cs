@@ -39,7 +39,7 @@
         public decimal Amount { get; set; }
     }
 
-    public class PriceEpisodePeriodisedValuesModel
+    public class PeriodisedValuesModel
     {
         public int Episode { get; set; }
         public string Attribute { get; set; }

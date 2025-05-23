@@ -17,9 +17,16 @@ Given the following price episodes
 	| LearningSupport | 2425         | 7              | 30-Nov-2024 | 150    |
 	When the FM36 block is retrieved for Academic Year 2425 Delivery Period 1
 	Then the Price Episode Periodised Values are as follows:
-	| Episode | Attribute           | AcademicYear | Period | Value |
-	| 0       | PriceEpisodeLSFCash | 2425         | 1      | 150   |
-	| 0       | PriceEpisodeLSFCash | 2425         | 2      | 150   |
-	| 0       | PriceEpisodeLSFCash | 2425         | 6      | 150   |
-	| 0       | PriceEpisodeLSFCash | 2425         | 7      | 150   |
-	And all other PriceEpisodeLSFCash values are 0
+	| Episode | Attribute           | Period | Value |
+	| 0       | PriceEpisodeLSFCash | 1      | 150   |
+	| 0       | PriceEpisodeLSFCash | 2      | 150   |
+	| 0       | PriceEpisodeLSFCash | 6      | 150   |
+	| 0       | PriceEpisodeLSFCash | 7      | 150   |
+	And all other Price Episode PriceEpisodeLSFCash values are 0
+	And the Learning Delivery Periodised Values are as follows:
+	| Episode | Attribute         | Period | Value |
+	| 0       | LearnSuppFundCash | 1      | 150   |
+	| 0       | LearnSuppFundCash | 2      | 150   |
+	| 0       | LearnSuppFundCash | 6      | 150   |
+	| 0       | LearnSuppFundCash | 7      | 150   |
+	And all other Learning Delivery LearnSuppFundCash values are 0

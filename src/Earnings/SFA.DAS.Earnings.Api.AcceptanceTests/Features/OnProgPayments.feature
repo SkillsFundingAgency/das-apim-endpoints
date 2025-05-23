@@ -23,5 +23,5 @@ Given the following price episodes
 	| 0       | PriceEpisodeOnProgPayment | 4      | 600   |
 	| 0       | PriceEpisodeOnProgPayment | 5      | 600   |
 	| 0       | PriceEpisodeOnProgPayment | 6      | 600   |
-	And all other PriceEpisodeOnProgPayment values are 0
+	And all other Price Episode PriceEpisodeOnProgPayment values are 0
 
