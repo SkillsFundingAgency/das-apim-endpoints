@@ -4,6 +4,7 @@ using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
@@ -125,6 +126,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string? AdditionalTrainingDescription { get; set; }
         public long? AccountId { get; set; }
         public long? AccountLegalEntityId { get; set; } 
+        [JsonPropertyName("apprenticeshipType")]
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
     }
 
     public class VacancyQualification

@@ -1,3 +1,4 @@
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
@@ -60,5 +61,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
         public string? AdditionalQuestion2 { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
         public string? SearchTags { get; set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; }
     }
 }

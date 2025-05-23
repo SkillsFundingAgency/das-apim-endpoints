@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
@@ -79,6 +80,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string CourseRoute { get; set; }
 
         public string ApprenticeshipLevel { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
         public string WageText { get; set; }
         public bool IsDisabilityConfident { get; set; }
         public double? Lon { get; set; }
@@ -88,52 +90,51 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public string? AdditionalTrainingDescription { get; set; }
         public bool IsSavedVacancy { get; set; } = false;
         public VacancyDataSource VacancySource { get; set; }
-
         public CandidateApplicationDetails? Application { get; set; }
-
         public string ApplicationUrl { get; set; }
         public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
         {
             return new GetVacanciesListResponseItem
             {
-                Id = source.Id,
-                ClosingDate = source.ClosingDate,
-                StartDate = source.StartDate,
-                EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
-                PostedDate = source.PostedDate,
-                Title = source.Title,
-                VacancyReference = source.VacancyReference,
-                Distance = source.Distance,
-                ApprenticeshipLevel = source.ApprenticeshipLevel,
-                CourseTitle = source.CourseTitle,
-                CourseId = source.CourseId,
-                WageType = source.WageType,
-                WageAmount = source.WageAmount,
-                ApprenticeMinimumWage = source.ApprenticeMinimumWage,
-                Under18NationalMinimumWage = source.Under18NationalMinimumWage,
-                Over25NationalMinimumWage = source.Over25NationalMinimumWage,
-                Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
-                Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
-                WageText = source.WageText,
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                 AddressLine1 = source.Address?.AddressLine1,
                 AddressLine2 = source.Address?.AddressLine2,
                 AddressLine3 = source.Address?.AddressLine3,
                 AddressLine4 = source.Address?.AddressLine4,
-                EmploymentLocationInformation = source.EmploymentLocationInformation,
-                OtherAddresses = source.OtherAddresses?.Select(GetVacanciesListAddressItem.From).ToList(),
-                IsPrimaryLocation = source.IsPrimaryLocation,
-                PostCode = source.Address?.Postcode,
-                CourseRoute = source.CourseRoute,
-                CourseLevel = source.CourseLevel,
-                IsDisabilityConfident = source.IsDisabilityConfident,
                 Application = source.Application,
+                ApplicationUrl = source.ApplicationUrl,
+                ApprenticeMinimumWage = source.ApprenticeMinimumWage,
+                ApprenticeshipLevel = source.ApprenticeshipLevel,
+                ApprenticeshipType = source.ApprenticeshipType,
+                Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
+                Between21AndUnder25NationalMinimumWage = source.Between21AndUnder25NationalMinimumWage,
+                ClosingDate = source.ClosingDate,
+                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
+                CourseId = source.CourseId,
+                CourseLevel = source.CourseLevel,
+                CourseRoute = source.CourseRoute,
+                CourseTitle = source.CourseTitle,
+                Distance = source.Distance,
+                EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
+                Id = source.Id,
+                IsDisabilityConfident = source.IsDisabilityConfident,
+                IsPrimaryLocation = source.IsPrimaryLocation,
+                IsSavedVacancy = source.IsSavedVacancy,
                 Lat = source.Location?.Lat,
                 Lon = source.Location?.Lon,
-                ApplicationUrl = source.ApplicationUrl,
-                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
-                IsSavedVacancy = source.IsSavedVacancy,
+                OtherAddresses = source.OtherAddresses?.Select(GetVacanciesListAddressItem.From).ToList(),
+                Over25NationalMinimumWage = source.Over25NationalMinimumWage,
+                PostCode = source.Address?.Postcode,
+                PostedDate = source.PostedDate,
+                StartDate = source.StartDate,
+                Title = source.Title,
+                Under18NationalMinimumWage = source.Under18NationalMinimumWage,
+                VacancyReference = source.VacancyReference,
                 VacancySource = source.VacancySource,
+                WageAmount = source.WageAmount,
+                WageText = source.WageText,
+                WageType = source.WageType,
             };
         }
     }
