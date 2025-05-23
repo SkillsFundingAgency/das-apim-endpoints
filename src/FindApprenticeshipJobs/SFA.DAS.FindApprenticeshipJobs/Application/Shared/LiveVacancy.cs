@@ -1,4 +1,4 @@
-using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
