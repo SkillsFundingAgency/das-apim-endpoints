@@ -2,6 +2,13 @@
 {
     public class ApprenticeshipModel
     {
+        public ApprenticeshipModel()
+        {
+            PriceEpisodes = new List<PriceEpisodeModel>();
+            AdditionalPayments = new List<AdditionalPaymentModel>();
+            Instalments = new List<InstalmentModel>();
+        }
+
         public List<PriceEpisodeModel> PriceEpisodes { get; set; }
         public List<AdditionalPaymentModel> AdditionalPayments { get; set; }
         public List<InstalmentModel> Instalments { get; set; }
