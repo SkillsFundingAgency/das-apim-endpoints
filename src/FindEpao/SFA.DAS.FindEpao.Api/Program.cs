@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.FindEpao.Api
 {
@@ -15,9 +14,8 @@ namespace SFA.DAS.FindEpao.Api
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseApplicationInsights()
-                        .UseStartup<Startup>()
-                        .UseNLog();
+                    webBuilder
+                        .UseStartup<Startup>();
                 });
     }
 }
