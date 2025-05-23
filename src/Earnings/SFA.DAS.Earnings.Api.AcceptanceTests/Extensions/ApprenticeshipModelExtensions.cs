@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.Earnings.Api.AcceptanceTests.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
 
@@ -13,7 +12,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Extensions
             var apprenticeship = new Apprenticeship
             {
                 Key = Guid.NewGuid(),
-                AgeAtStartOfApprenticeship = apprenticeshipModel.Age,
+                AgeAtStartOfApprenticeship = 18,
                 StartDate = apprenticeshipModel.PriceEpisodes.Min(x => x.StartDate),
                 PlannedEndDate = apprenticeshipModel.PriceEpisodes.Max(x => x.EndDate),
                 WithdrawnDate = null,
@@ -38,7 +37,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Extensions
                 ]
             };
 
-            var earnings = new SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
+            var earnings = new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
             {
                 Key = apprenticeship.Key,
                 Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>()

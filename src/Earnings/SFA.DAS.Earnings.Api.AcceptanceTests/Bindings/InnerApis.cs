@@ -1,53 +1,53 @@
 ﻿using TechTalk.SpecFlow;
 
-namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
+namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings;
+
+[Binding]
+
+public class InnerApis(TestContext context)
 {
-    [Binding]
-    
-    public class InnerApis(TestContext context)
+    public static HttpClient Client { get; set; }
+    public static LocalWebApplicationFactory<Startup> Factory { get; set; }
+
+    [BeforeScenario(Order = 1)]
+    public void Initialise()
     {
-        public static HttpClient Client { get; set; }
-        public static LocalWebApplicationFactory<Startup> Factory { get; set; }
+        NUnit.Framework.TestContext.WriteLine("Initialising inner apis...");
 
-        [BeforeScenario(Order = 1)]
-        public void Initialise()
+        if (context.EarningsApi == null)
         {
-            NUnit.Framework.TestContext.WriteLine("Initialising inner apis...");
-
-            if (context.EarningsApi == null)
-            {
-                context.EarningsApi = new MockApi();
-            }
-
-            if (context.ApprenticeshipsApi == null)
-            {
-                context.ApprenticeshipsApi = new MockApi();
-            }
-
-            if(context.CollectionCalendarApi == null)
-            {
-                context.CollectionCalendarApi = new MockApi();
-            }
-
-            NUnit.Framework.TestContext.WriteLine("Initialising outer api...");
-            if (Client == null)
-            {
-                var config = new Dictionary<string, string>
-                {
-                    {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
-                    {"EarningsApiConfiguration:url", context?.EarningsApi?.BaseAddress + "/"},
-                    {"ApprenticeshipsApiConfiguration:url", context?.ApprenticeshipsApi?.BaseAddress + "/"},
-                    {"CollectionCalendarApiConfiguration:url", context?.CollectionCalendarApi?.BaseAddress + "/"},
-                    {"AzureAD:tenant", ""},
-                    {"AzureAD:identifier", ""}
-                };
-
-
-                Factory = new LocalWebApplicationFactory<Startup>(config);
-                Client = Factory.CreateClient();
-            }
-
-            context.OuterApiClient = Client;
+            context.EarningsApi = new MockApi();
         }
+
+        if (context.ApprenticeshipsApi == null)
+        {
+            context.ApprenticeshipsApi = new MockApi();
+        }
+
+        if(context.CollectionCalendarApi == null)
+        {
+            context.CollectionCalendarApi = new MockApi();
+        }
+
+        NUnit.Framework.TestContext.WriteLine("Initialising outer api...");
+        if (Client == null)
+        {
+            var config = new Dictionary<string, string>
+            {
+                {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
+                {"EarningsApiConfiguration:url", context?.EarningsApi?.BaseAddress + "/"},
+                {"ApprenticeshipsApiConfiguration:url", context?.ApprenticeshipsApi?.BaseAddress + "/"},
+                {"CollectionCalendarApiConfiguration:url", context?.CollectionCalendarApi?.BaseAddress + "/"},
+                {"AzureAD:tenant", ""},
+                {"AzureAD:identifier", ""}
+            };
+
+
+            Factory = new LocalWebApplicationFactory<Startup>(config);
+            Client = Factory.CreateClient();
+        }
+
+        context.OuterApiClient = Client;
     }
 }
+

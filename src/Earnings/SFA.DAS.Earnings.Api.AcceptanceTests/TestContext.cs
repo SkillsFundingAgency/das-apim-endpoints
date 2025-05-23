@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.Earnings.Api.AcceptanceTests.Bindings;
-using SFA.DAS.Earnings.Api.AcceptanceTests.Models;
 
 namespace SFA.DAS.Earnings.Api.AcceptanceTests
 {
@@ -12,8 +11,6 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests
 
     public class TestContext : IDisposable
     {
-        public ApprenticeshipModel Apprenticeship { get; set; } = new ApprenticeshipModel();
-
         public MockApi EarningsApi
         {
             get => MockServers.EarningsApi;

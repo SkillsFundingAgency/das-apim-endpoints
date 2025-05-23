@@ -1,21 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.Earnings.Api.AcceptanceTests.Models
+﻿namespace SFA.DAS.Earnings.Api.AcceptanceTests.Models
 {
     public class ApprenticeshipModel
     {
-        public int Age { get; set; }
-
-        public List<PriceEpisode> PriceEpisodes { get; set; }
-        public List<AdditionalPayment> AdditionalPayments { get; set; }
-        public List<Instalment> Instalments { get; set; }
+        public List<PriceEpisodeModel> PriceEpisodes { get; set; }
+        public List<AdditionalPaymentModel> AdditionalPayments { get; set; }
+        public List<InstalmentModel> Instalments { get; set; }
     }
 
-    public class PriceEpisode
+    public class PriceEpisodeModel
     {
         public int PriceEpisodeId { get; set; }
         public Guid Key { get; set; } = Guid.NewGuid();
@@ -23,7 +15,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Models
         public DateTime EndDate { get; set; }
     }
 
-    public class Instalment
+    public class InstalmentModel
     {
         public int PriceEpisodeId { get; set; }
         public short AcademicYear { get; set; }
@@ -31,7 +23,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Models
         public decimal Amount { get; set; }
     }
 
-    public class AdditionalPayment
+    public class AdditionalPaymentModel
     {
         public string Type { get; set; }
         public short AcademicYear { get; set; }
@@ -40,11 +32,10 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Models
         public decimal Amount { get; set; }
     }
 
-    public class PriceEpisodePeriodisedValues
+    public class PriceEpisodePeriodisedValuesModel
     {
         public int Episode { get; set; }
         public string Attribute { get; set; }
-        public int AcademicYear { get; set; }
         public int Period { get; set; }
         public decimal Value { get; set; }
 
