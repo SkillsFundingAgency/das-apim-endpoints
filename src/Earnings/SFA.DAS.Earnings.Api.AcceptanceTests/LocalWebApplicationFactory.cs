@@ -2,25 +2,24 @@
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 
-namespace SFA.DAS.Earnings.Api.AcceptanceTests
+namespace SFA.DAS.Earnings.Api.AcceptanceTests;
+
+public class LocalWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint> where TEntryPoint : class
 {
-    public class LocalWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint> where TEntryPoint : class
+    private readonly Dictionary<string, string> _config;
+
+    public LocalWebApplicationFactory(Dictionary<string, string> config)
     {
-        private readonly Dictionary<string, string> _config;
+        _config = config;
+    }
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        Console.WriteLine("Configuring web host...");
 
-        public LocalWebApplicationFactory(Dictionary<string, string> config)
+        builder.ConfigureAppConfiguration(a =>
         {
-            _config = config;
-        }
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            Console.WriteLine("Configuring web host...");
-
-            builder.ConfigureAppConfiguration(a =>
-            {
-                a.AddInMemoryCollection(_config);
-            });
-            builder.UseEnvironment("Development");
-        }
+            a.AddInMemoryCollection(_config);
+        });
+        builder.UseEnvironment("Development");
     }
 }

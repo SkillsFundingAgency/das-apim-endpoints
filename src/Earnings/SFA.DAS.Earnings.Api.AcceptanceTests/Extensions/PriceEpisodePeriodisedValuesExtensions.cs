@@ -6,45 +6,41 @@ public static class PriceEpisodePeriodisedValuesExtensions
 {
     public static decimal? GetPeriodValue(this PriceEpisodePeriodisedValues item, int period)
     {
-        switch (period)
+        return period switch
         {
-            case 1: return item.Period1;
-            case 2: return item.Period2;
-            case 3: return item.Period3;
-            case 4: return item.Period4;
-            case 5: return item.Period5;
-            case 6: return item.Period6;
-            case 7: return item.Period7;
-            case 8: return item.Period8;
-            case 9: return item.Period9;
-            case 10: return item.Period10;
-            case 11: return item.Period11;
-            case 12: return item.Period12;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(period), "Period must be between 1 and 12");
-        }
+            1 => item.Period1,
+            2 => item.Period2,
+            3 => item.Period3,
+            4 => item.Period4,
+            5 => item.Period5,
+            6 => item.Period6,
+            7 => item.Period7,
+            8 => item.Period8,
+            9 => item.Period9,
+            10 => item.Period10,
+            11 => item.Period11,
+            12 => item.Period12,
+            _ => throw new ArgumentOutOfRangeException(nameof(period), "Period must be between 1 and 12")
+        };
     }
 
     public static decimal? GetPeriodValue(this LearningDeliveryPeriodisedValues item, int period)
     {
-        switch (period)
+        return period switch
         {
-            case 1: return item.Period1;
-            case 2: return item.Period2;
-            case 3: return item.Period3;
-            case 4: return item.Period4;
-            case 5: return item.Period5;
-            case 6: return item.Period6;
-            case 7: return item.Period7;
-            case 8: return item.Period8;
-            case 9: return item.Period9;
-            case 10: return item.Period10;
-            case 11: return item.Period11;
-            case 12: return item.Period12;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(period), "Period must be between 1 and 12");
-        }
+            1 => item.Period1,
+            2 => item.Period2,
+            3 => item.Period3,
+            4 => item.Period4,
+            5 => item.Period5,
+            6 => item.Period6,
+            7 => item.Period7,
+            8 => item.Period8,
+            9 => item.Period9,
+            10 => item.Period10,
+            11 => item.Period11,
+            12 => item.Period12,
+            _ => throw new ArgumentOutOfRangeException(nameof(period), "Period must be between 1 and 12")
+        };
     }
-
-
 }
