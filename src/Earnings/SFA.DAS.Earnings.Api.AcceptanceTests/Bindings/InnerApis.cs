@@ -12,7 +12,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
         [BeforeScenario(Order = 1)]
         public void Initialise()
         {
-            Console.WriteLine("Initialising inner apis...");
+            NUnit.Framework.TestContext.WriteLine("Initialising inner apis...");
 
             if (context.EarningsApi == null)
             {
@@ -29,7 +29,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
                 context.CollectionCalendarApi = new MockApi();
             }
 
-            Console.WriteLine("Initialising outer api...");
+            NUnit.Framework.TestContext.WriteLine("Initialising outer api...");
             if (Client == null)
             {
                 var config = new Dictionary<string, string>

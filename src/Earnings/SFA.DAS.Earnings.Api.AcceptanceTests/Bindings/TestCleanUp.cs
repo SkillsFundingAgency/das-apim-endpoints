@@ -8,7 +8,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
         [AfterTestRun()]
         public static void CleanUp()
         {
-            Console.WriteLine("Cleaning up...");
+            NUnit.Framework.TestContext.WriteLine("Cleaning up...");
 
             MockServers.EarningsApi?.Dispose();
             MockServers.ApprenticeshipsApi?.Dispose();

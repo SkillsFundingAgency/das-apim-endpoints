@@ -19,7 +19,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Bindings
         [BeforeScenario()]
         public void Initialise()
         {
-            Console.WriteLine("Initialising...");
+            NUnit.Framework.TestContext.WriteLine("Initialising...");
 
             if (Client == null)
             {

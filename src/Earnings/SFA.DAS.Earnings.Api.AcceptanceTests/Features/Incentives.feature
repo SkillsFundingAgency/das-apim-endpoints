@@ -24,7 +24,6 @@ Scenario: Incentives in a single-year apprenticeship
 	| 0       | PriceEpisodeSecondEmp1618Pay  | 2425         | 12     | 500   |
 	| 0       | PriceEpisodeSecondProv1618Pay | 2425         | 12     | 500   |
 
-	
 Scenario: Incentives in an apprenticeship with a price change
 	Given an apprentice aged 18 at the start of the apprenticeship
 	And the following price episodes
@@ -49,7 +48,6 @@ Scenario: Incentives in an apprenticeship with a price change
 	| 1       | PriceEpisodeSecondEmp1618Pay  | 2425         | 12     | 500   |
 	| 1       | PriceEpisodeSecondProv1618Pay | 2425         | 12     | 500   |
 
-		
 Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	Given an apprentice aged 18 at the start of the apprenticeship
 	And the following price episodes
@@ -76,4 +74,3 @@ Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	| Episode | Attribute                     | AcademicYear | Period | Value |
 	| 1       | PriceEpisodeSecondEmp1618Pay  | 2526         | 7      | 500   |
 	| 1       | PriceEpisodeSecondProv1618Pay | 2526         | 7      | 500   |
-

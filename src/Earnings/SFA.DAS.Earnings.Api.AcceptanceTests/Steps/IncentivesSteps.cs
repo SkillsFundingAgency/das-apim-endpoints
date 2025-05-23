@@ -81,8 +81,14 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Steps
                 );
 
             _response = await _testContext.OuterApiClient.GetAsync($"/learners/10005077/{academicYear}/{deliveryPeriod}");
-
             var contentString = await _response.Content.ReadAsStringAsync();
+
+            if (!_response.IsSuccessStatusCode)
+            {
+                NUnit.Framework.TestContext.WriteLine($"Outer api GET fm36 failed: {_response.StatusCode}");
+                NUnit.Framework.TestContext.WriteLine($"Response body: {contentString}");
+            }
+            
             _generatedFm36Learners = JsonConvert.DeserializeObject<List<FM36Learner>>(contentString).ToList();
 
         }
