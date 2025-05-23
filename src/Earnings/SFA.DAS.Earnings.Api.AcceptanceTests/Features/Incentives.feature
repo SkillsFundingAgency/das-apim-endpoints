@@ -24,6 +24,16 @@ Scenario: Incentives in a single-year apprenticeship
 	| 0       | PriceEpisodeSecondProv1618Pay | 12     | 500   |
 	And all other Price Episode PriceEpisodeFirstEmp1618Pay values are 0
 	And all other Price Episode PriceEpisodeSecondEmp1618Pay values are 0
+	And the Learning Delivery Periodised Values are as follows:
+	| Episode | Attribute                 | Period | Value |
+	| 0       | LearnDelFirstEmp1618Pay   | 3      | 500   |
+	| 0       | LearnDelFirstProv1618Pay  | 3      | 500   |
+	| 0       | LearnDelSecondEmp1618Pay  | 12     | 500   |
+	| 0       | LearnDelSecondProv1618Pay | 12     | 500   |
+	And all other Learning Delivery LearnDelFirstEmp1618Pay values are 0
+	And all other Learning Delivery LearnDelFirstProv1618Pay values are 0
+	And all other Learning Delivery LearnDelSecondEmp1618Pay values are 0
+	And all other Learning Delivery LearnDelSecondProv1618Pay values are 0
 
 Scenario: Incentives in an apprenticeship with a price change
 	Given the following price episodes
@@ -49,6 +59,16 @@ Scenario: Incentives in an apprenticeship with a price change
 	| 1       | PriceEpisodeSecondProv1618Pay | 12     | 500   |
 	And all other Price Episode PriceEpisodeFirstEmp1618Pay values are 0
 	And all other Price Episode PriceEpisodeSecondEmp1618Pay values are 0
+	And the Learning Delivery Periodised Values are as follows:
+	| Episode | Attribute                 | Period | Value |
+	| 0       | LearnDelFirstEmp1618Pay   | 3      | 500   |
+	| 0       | LearnDelFirstProv1618Pay  | 3      | 500   |
+	| 0       | LearnDelSecondEmp1618Pay  | 12     | 500   |
+	| 0       | LearnDelSecondProv1618Pay | 12     | 500   |
+	And all other Learning Delivery LearnDelFirstEmp1618Pay values are 0
+	And all other Learning Delivery LearnDelFirstProv1618Pay values are 0
+	And all other Learning Delivery LearnDelSecondEmp1618Pay values are 0
+	And all other Learning Delivery LearnDelSecondProv1618Pay values are 0
 
 Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	Given the following price episodes
@@ -72,6 +92,12 @@ Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	| 0       | PriceEpisodeFirstProv1618Pay | 10     | 500   |
 	And all other Price Episode PriceEpisodeFirstEmp1618Pay values are 0
 	And all other Price Episode PriceEpisodeSecondEmp1618Pay values are 0
+	And the Learning Delivery Periodised Values are as follows:
+	| Episode | Attribute                | Period | Value |
+	| 0       | LearnDelFirstEmp1618Pay  | 10     | 500   |
+	| 0       | LearnDelFirstProv1618Pay | 10     | 500   |
+	And all other Learning Delivery LearnDelFirstEmp1618Pay values are 0
+	And all other Learning Delivery LearnDelFirstProv1618Pay values are 0
 	When the FM36 block is retrieved for Academic Year 2526 Delivery Period 1
 	Then the Price Episode Periodised Values are as follows:
 	| Episode | Attribute                     | Period | Value |
@@ -79,3 +105,9 @@ Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	| 1       | PriceEpisodeSecondProv1618Pay | 7      | 500   |
 	And all other Price Episode PriceEpisodeFirstEmp1618Pay values are 0
 	And all other Price Episode PriceEpisodeSecondEmp1618Pay values are 0
+	And the Learning Delivery Periodised Values are as follows:
+	| Episode | Attribute                | Period | Value |
+	| 0       | LearnDelSecondEmp1618Pay  | 7     | 500   |
+	| 0       | LearnDelSecondProv1618Pay | 7     | 500   |
+	And all other Learning Delivery LearnDelSecondEmp1618Pay values are 0
+	And all other Learning Delivery LearnDelSecondProv1618Pay values are 0
