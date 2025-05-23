@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: Approved Learning external API for consumption from an authenticated consumer
-  description: 'This service will provide a contract to the Data Collections team for consumption of approved Learning'
+  title: Approved Training external API for consumption from an authenticated consumer
+  description: 'This service will provide a contract to the Data Collections team for consumption of approved training'
 paths:
   /info:
     get:
@@ -14,7 +14,6 @@ paths:
           $ref: '#/components/responses/infoResponse'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'   
-  
   /health:
     get:
       description: The system is fully ready to accept requests and all the dependencies are healthy
@@ -28,63 +27,9 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
 
-  /providers/{ukprn}/academicyears/{academicyear}/Learning:
-    post:
-      summary: Create a new record in the AS service due to no match
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          example: 2425
-          schema:
-            type: integer
-      requestBody:
-        $ref: '#/components/requestBodies/learningRecordRequest'
-      responses:
-        '201':
-          $ref: '#/components/responses/acceptedResponse'
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '401':
-          $ref: '#/components/responses/unauthorized'  
-  
-  /providers/{ukprn}/academicyears/{academicyear}/Learning/{learningKey}:
-    delete:
-      summary: Deletes a Learning record identified by this request for this provider
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          example: 2425
-          schema:
-            type: integer
-        - name: learningKey
-          in: path
-          required: true
-          description: The internal key for this learner on the AS
-          schema:
-            type: string
-      responses:
-        '201':
-          $ref: '#/components/responses/acceptedResponse'
+  /providers/{ukprn}/academicyears/{academicyear}/training:
     put:
-      summary: Updates the details of a list of approved Learning records
+      summary: Updates the details of a list of approved training records
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -100,14 +45,8 @@ paths:
           example: 2425
           schema:
             type: integer
-        - name: learningKey
-          in: path
-          required: true
-          description: The internal key for this learner on the AS
-          schema:
-            type: string
       requestBody:
-        $ref: '#/components/requestBodies/learningRecordRequest'
+        $ref: '#/components/requestBodies/trainingUpdateRequest'
       responses:
         '201':
           $ref: '#/components/responses/acceptedResponse'
@@ -115,10 +54,38 @@ paths:
           $ref: '#/components/responses/badRequest'
         '401':
           $ref: '#/components/responses/unauthorized'         
-          
-  /providers/{ukprn}/academicyears/{academicyear}/LearningIdentifiers:
+  
+  /providers/{ukprn}/academicyears/{academicyear}/trainingIdentifiers/{trainingIdentifier}:
+    delete:
+      summary: Deletes a training record identified by this request for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: trainingIdentifier
+          in: path
+          required: true
+          description: The training identifier for the learner being requested
+          schema:
+            type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+        
+  /providers/{ukprn}/academicyears/{academicyear}/trainingIdentifiers:
     get:
-      summary: Returns a paged list of LearningIdentifiers for this provider
+      summary: Returns a paged list of trainingIdentifiers for this provider
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -149,7 +116,7 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/pagedLearningIdentifiersResponse'  
+          $ref: '#/components/responses/pagedTrainingIdentifiersResponse'  
     
 components:  
   securitySchemes:
@@ -163,7 +130,7 @@ components:
       schema:
         type: string
         format: url
-        example: /providers/234324/learners/24321432
+        example: /providers/234324/leaners/24321432
     X-RateLimit-Limit:
       description: The maximum number of requests allowed in a time window
       schema:
@@ -186,8 +153,8 @@ components:
         example: 60
 
   requestBodies:
-    learningRecordRequest:
-      description: Details of an updated Learning
+    trainingUpdateRequest:
+      description: Details of an updated training
       required: true
       content:
         application/json:
@@ -195,12 +162,13 @@ components:
             type: array 
             items:
               oneOf:
-              - $ref: "#/components/schemas/apprenticeshipLearning"
-              - $ref: "#/components/schemas/shortApprenticeshipLearning"
-              - $ref: "#/components/schemas/foundationApprenticeshipLearning"
+              - $ref: "#/components/schemas/apprenticeshipTraining"
+              - $ref: "#/components/schemas/shortApprenticeshipTraining"
+              - $ref: "#/components/schemas/foundationApprenticeshipTraining"
+
   responses:
-    pagedLearningIdentifiersResponse:
-      description: A paged Learning response
+    pagedTrainingIdentifiersResponse:
+      description: A paged training response
       headers:
         Link:
           description: Pagination links (next, prev)
@@ -213,7 +181,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedLearningIdentifiers'
+              $ref: '#/components/schemas/pagedTrainingIdentifiers'
 
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
@@ -273,7 +241,7 @@ components:
         text/plain:
           schema:
             type: string
-            example: Leaner data APIM for the Learning service - Version 3.0.2
+            example: Leaner data APIM for the training service - Version 3.0.2
             
   schemas:
     error:
@@ -287,13 +255,13 @@ components:
         - code
         - message
     
-    pagedLearningIdentifiers:
+    pagedTrainingIdentifiers:
       type: object
       properties:
-        Learning:
+        training:
           type: array
           items:
-              $ref: '#/components/schemas/LearningIdentifier'
+              $ref: '#/components/schemas/trainingIdentifier'
         total:
           type: integer
           minimum: 0
@@ -326,10 +294,10 @@ components:
         result: 
           type: string    
 
-    LearningIdentifier:
+    trainingIdentifier:
       type: object
       properties:
-        LearningKey:
+        trainingKey:
           type: string
           format: uuid
         ukprn:
@@ -342,14 +310,21 @@ components:
           type: integer
 
     # common CoC header
+    
     header:
       type: object
       properties:
+        ######## This is the natural key ########
+        uln:
+          type: string
         ukprn:
           type: string
         academicYear:
           type: integer
-        LearningType:
+        standardCode:
+          type: integer
+        #########################################
+        trainingType:
           type: string
           enum:
           - apprenticeship
@@ -359,10 +334,12 @@ components:
           - HTC
         consumerReference:
           type: string
+        fundingModel:
+          type: string
           
     # apprenticeship, short apprenticeship and foundation apprenticeship
     
-    apprenticeshipLearning:
+    apprenticeshipTraining:
       type: object
       properties:
         header:
@@ -370,8 +347,6 @@ components:
         learner:
           type: object
           properties:
-            uln:
-              type: string
             firstname:
               type: string
             lastname:
@@ -379,53 +354,24 @@ components:
             dob:
               type: string
               format: date
-            email:
-              type: string
-            care:
-              type: object
-              properties:
-                careleaver:
-                  type: boolean
-                hasEhcp:
-                  type: boolean
-                employerConsent:
-                  type: boolean
+            careleaver:
+              type: boolean
+              
         delivery:
           type: object
           properties:
-            onProgramme:
-              type: object
-              properties:
-                standardCode:
-                  type: integer
-                learnerRef:
-                  type: string
-                agreementId:
-                  type: string
-                startDate:
-                  type: string
-                  format: date
-                expectedEndDate:
-                  type: string
-                  format: date
-                OffTheJobHours:
-                  type: integer
-                percentageOfLearningLeft:
-                  type: integer
-                costs:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      trainingPrice:
-                        type: number
-                      epaoPrice:
-                        type: number
-                      fromDate:
-                        type: string
-                        format: date
-                      reduction4Rpl:
-                        type: integer
+            agreementId:
+              type: string
+            startDate:
+              type: string
+              format: date
+            expectedEndDate:
+              type: string
+              format: date
+            OffTheJobHours:
+              type: integer
+            percentageOfLearningLeft:
+              type: integer
             englishAndMaths:
               type: array
               items:
@@ -439,17 +385,8 @@ components:
                     format: date
                   courseCode:
                     type: integer
-            learningSupport:
-              type: array
-              items:
-                type: object
-                properties:
-                  from:
-                    type: string
-                    format: date
-                  to:
-                    type: string
-                    format: date
+                  amount:
+                    type: integer    
         status:
           type: object
           properties:
@@ -466,17 +403,25 @@ components:
               format: date
             reason:
               type: string
-
+        costs:
+          type: object
+          properties:
+            epaoCost:
+              type: integer
+            trainingCost:
+              type: integer
+            reduction4Rpl:
+              type: integer
           
-    foundationApprenticeshipLearning:
+    foundationApprenticeshipTraining:
       description: This is the exact copy of a normal apprenticeship
       allOf:
-      - $ref: "#/components/schemas/apprenticeshipLearning"
+      - $ref: "#/components/schemas/apprenticeshipTraining"
   
-    shortApprenticeshipLearning:
+    shortApprenticeshipTraining:
       description: This is the exact copy of a normal apprenticeship
       allOf:
-      - $ref: "#/components/schemas/apprenticeshipLearning"
+      - $ref: "#/components/schemas/apprenticeshipTraining"
    
         
 security:
