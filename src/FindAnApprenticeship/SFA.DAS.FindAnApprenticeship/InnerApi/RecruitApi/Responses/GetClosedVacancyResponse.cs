@@ -5,8 +5,10 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
+using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 
@@ -93,6 +95,7 @@ public class GetClosedVacancyResponse: IVacancy
     public string TrainingDescription { get; set; }
     public VacancyLocationType VacancyLocationType { get; set; }
     public Wage Wage { get; set; }
+    public ApprenticeshipTypes ApprenticeshipType { get; init; }
 
     public class TrainingProviderDetails
     {
