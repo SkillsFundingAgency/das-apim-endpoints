@@ -358,6 +358,7 @@ components:
           - Bootcamp
           - HTC
         consumerReference:
+          description: A reference the consumer can set. This will aid remediation under production errors and should not be used as a system identifier 
           type: string
           
     # apprenticeship, short apprenticeship and foundation apprenticeship
