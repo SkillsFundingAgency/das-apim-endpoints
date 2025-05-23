@@ -34,6 +34,8 @@ namespace SFA.DAS.FindEpao.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("GetList called");
+
                 var queryResult = await _mediator.Send(new GetCourseListQuery());
                 
                 var model = new GetCourseListResponse
