@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Earnings.Api.AcceptanceTests.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
 
@@ -44,6 +45,7 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Extensions
                 {
                     new SharedOuterApi.InnerApi.Responses.Earnings.Episode
                     {
+                        Key = Guid.NewGuid(),
                         Instalments = apprenticeshipModel.Instalments.Select(x => new SharedOuterApi.InnerApi.Responses.Earnings.Instalment
                         {
                             EpisodePriceKey = apprenticeshipModel.PriceEpisodes.Single(y => y.PriceEpisodeId == x.PriceEpisodeId).Key,
@@ -65,6 +67,26 @@ namespace SFA.DAS.Earnings.Api.AcceptanceTests.Extensions
                 FundingLineType = "test",
                 Ukprn = 10005077
             };
+
+            //For readability, tests need not describe instalments where they are not relevant to the test
+            //However, FM36 block generation requires each price episode to have at least one instalment in order to join episodes
+            //So, we can auto-generate if instalment information is missing
+            foreach (var episode in earnings.Episodes)
+            {
+                if (!episode.Instalments.Any())
+                {
+                    foreach (var price in apprenticeship.Episodes.SelectMany(apprenticeshipEpisode => apprenticeshipEpisode.Prices))
+                    {
+                        episode.Instalments.Add(new Instalment
+                        {
+                            Amount = 0,
+                            AcademicYear = 0,
+                            DeliveryPeriod = 0,
+                            EpisodePriceKey = price.Key
+                        });
+                    }
+                }
+            }
 
             return new InnerApiResponses
             {

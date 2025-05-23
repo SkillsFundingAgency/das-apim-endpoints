@@ -3,12 +3,9 @@
 I want Learning Support earnings to show in the FM36 periodised values under PriceEpisodeLSFCash
 
 Scenario: Learning Support
-Given the following price episodes
+	Given the following price episodes
 	| PriceEpisodeId | StartDate  | EndDate    |
 	| 1              | 2024-08-01 | 2025-07-31 |
-	And the following instalments:
-	| PriceEpisodeId | AcademicYear | DeliveryPeriod | Amount |
-	| 1              | 2425         | 1              | 1500   |
 	And the following additional payments:
 	| Type            | AcademicYear | DeliveryPeriod | DueDate     | Amount |
 	| LearningSupport | 2425         | 1              | 31-Aug-2024 | 150    |

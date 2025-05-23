@@ -6,9 +6,6 @@ Scenario: Incentives in a single-year apprenticeship
 	Given the following price episodes
 	| PriceEpisodeId | StartDate  | EndDate    |
 	| 1              | 2024-08-01 | 2025-07-31 |
-	And the following instalments:
-	| PriceEpisodeId | AcademicYear | DeliveryPeriod | Amount |
-	| 1              | 2425         | 1              | 1500   |
 	And the following additional payments:
 	| Type              | AcademicYear | DeliveryPeriod | DueDate     | Amount |
 	| EmployerIncentive | 2425         | 3              | 29-Oct-2024 | 500    |
@@ -40,10 +37,6 @@ Scenario: Incentives in an apprenticeship with a price change
 	| PriceEpisodeId | StartDate  | EndDate    |
 	| 1              | 2024-08-01 | 2025-01-14 |
 	| 2              | 2025-01-15 | 2025-07-31 |
-	And the following instalments:
-	| PriceEpisodeId | AcademicYear | DeliveryPeriod | Amount |
-	| 1              | 2425         | 1              | 1500   |
-	| 2              | 2425         | 6              | 2000   |
 	And the following additional payments:
 	| Type              | AcademicYear | DeliveryPeriod | DueDate     | Amount |
 	| EmployerIncentive | 2425         | 3              | 29-Oct-2024 | 500    |
@@ -75,10 +68,6 @@ Scenario: Incentives in a multi-academic-year apprenticeship with a price change
 	| PriceEpisodeId | StartDate  | EndDate    |
 	| 1              | 2025-03-01 | 2025-11-30 |
 	| 2              | 2025-12-01 | 2026-02-28 |
-	And the following instalments:
-	| PriceEpisodeId | AcademicYear | DeliveryPeriod | Amount |
-	| 1              | 2425         | 10             | 1500   |
-	| 2              | 2526         | 7              | 2000   |
 	And the following additional payments:
 	| Type              | AcademicYear | DeliveryPeriod | DueDate     | Amount |
 	| EmployerIncentive | 2425         | 10             | 31-May-2025 | 500    |
