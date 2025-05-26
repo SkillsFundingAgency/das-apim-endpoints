@@ -13,14 +13,11 @@ namespace SFA.DAS.Recruit.Domain
     }
     public class Location
     {
-        public List<Address>? Addresses { get; set; } = [];
-        public short EmployerLocationOption { get; set; }
-
+        public List<Address>? Addresses { get; set; }
     }
     public class Address
     {
         public string FullAddress { get; init; }
-        public bool IsSelected { get; init; }
         public short AddressOrder { get; init; }
     }
 }

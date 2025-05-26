@@ -14,10 +14,10 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Candidates.Queries
     {
         [Test, MoqAutoData]
         public async Task Handle_ValidRequest_ReturnsExpectedResult(
-            GetApplicationsByIdQueryHandler handler,
             GetApplicationsByIdQuery query,
             GetAllApplicationsByIdApiResponse response,
-            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient)
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            [Greedy] GetApplicationsByIdQueryHandler handler)
         {
             // Arrange
             var expectedPostUrl = new GetAllApplicationsByIdApiRequest(new GetAllApplicationsByIdApiRequestData
@@ -25,13 +25,16 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Candidates.Queries
                 ApplicationIds = query.ApplicationIds,
                 IncludeDetails = query.IncludeDetails
             });
+
+            var apiResponse =
+                new ApiResponse<GetAllApplicationsByIdApiResponse>(response, HttpStatusCode.OK, string.Empty);
+
             candidateApiClient.Setup(x => x.PostWithResponseCode<GetAllApplicationsByIdApiResponse>(
                     It.Is<GetAllApplicationsByIdApiRequest>(r =>
                         r.PostUrl == expectedPostUrl.PostUrl && r.Payload == expectedPostUrl.Payload),
                     true))
+                .ReturnsAsync(apiResponse);
 
-                .ReturnsAsync(new ApiResponse<GetAllApplicationsByIdApiResponse>(response, HttpStatusCode.OK, string.Empty));
-            
             // Act
             var result = await handler.Handle(query, CancellationToken.None);
             
