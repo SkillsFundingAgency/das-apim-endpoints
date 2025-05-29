@@ -88,8 +88,8 @@ namespace SFA.DAS.EpaoRegister.Api
                     .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription);
             }
-            
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>
             {
@@ -111,7 +111,7 @@ namespace SFA.DAS.EpaoRegister.Api
             {
                 app.UseHealthChecks();
             }
-            
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -119,7 +119,7 @@ namespace SFA.DAS.EpaoRegister.Api
                     name: "default",
                     pattern: "api/{controller=Epaos}/{action=index}/{id?}");
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
