@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 using SFA.DAS.Vacancies.InnerApi.Responses;
 
@@ -23,6 +24,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public string Route { get ; set ; }
+        public string ApprenticeshipType { get; set; }
 
 
         public static implicit operator GetTrainingCoursesListResponseItem(GetStandardsListItem source)
@@ -31,7 +33,8 @@ namespace SFA.DAS.Vacancies.Api.Models
             {
                 LarsCode = source.LarsCode,
                 Title = $"{source.Title} (level {source.Level})",
-                Route = source.Route
+                Route = source.Route,
+                ApprenticeshipType = source.ApprenticeshipType
             };
         }
     }
