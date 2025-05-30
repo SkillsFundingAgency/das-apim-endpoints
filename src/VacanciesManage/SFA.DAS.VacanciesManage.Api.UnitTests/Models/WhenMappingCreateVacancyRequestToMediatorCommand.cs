@@ -19,6 +19,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
                 .Excluding(c => c.Address)
                 .Excluding(c => c.MultipleAddresses)
                 .Excluding(c => c.RecruitingNationally)
+                .Excluding(c => c.Type)
                 .WithMapping("RecruitingNationallyDetails", "EmployerLocationInformation");
         }
 

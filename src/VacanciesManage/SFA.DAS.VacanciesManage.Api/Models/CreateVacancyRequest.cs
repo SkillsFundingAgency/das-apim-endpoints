@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
-using SFA.DAS.VacanciesManage.Api.Common;
 
 namespace SFA.DAS.VacanciesManage.Api.Models
 {
