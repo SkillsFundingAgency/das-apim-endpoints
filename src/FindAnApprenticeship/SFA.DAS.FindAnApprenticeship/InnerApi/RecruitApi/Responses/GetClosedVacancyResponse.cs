@@ -20,7 +20,7 @@ public class GetClosedVacancyResponse: IVacancy
     public string Title { get; set; }
     public DateTime ClosingDate { get; set; }
     public string ProgrammeId { get; set; }
-    public int CourseId => Convert.ToInt32(ProgrammeId);
+    public int CourseId => Int32.TryParse(ProgrammeId, out var result) ? result : -1;
     public Address EmployerLocation { get; set; }
     public List<Address>? EmployerLocations { get; set; }
     public Address? Address {
