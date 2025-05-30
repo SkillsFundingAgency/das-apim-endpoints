@@ -5,6 +5,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
     public class AddressItem
     {
         public string Uprn { get; set; }
+        public string? OrganisationName { get; set; }
+
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string Town { get; set; }
@@ -13,10 +15,11 @@ namespace SFA.DAS.RoatpCourseManagement.Application.AddressLookup.Queries
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
 
-        public static implicit operator AddressItem(GetAddressesListItem source) => 
+        public static implicit operator AddressItem(GetAddressesListItem source) =>
             new AddressItem
             {
                 Uprn = source.Uprn,
+                OrganisationName = source.Organisation,
                 AddressLine1 = source.AddressLine1,
                 AddressLine2 = source.AddressLine2,
                 Town = source.PostTown,
