@@ -9,5 +9,6 @@
         public int SuccessfulApplications { get; set; }
         public int UnsuccessfulApplications { get; set; }
         public int EmployerReviewedApplications { get; set; }
+        public bool HasNoApplications { get; set; }
     }
 }
