@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
+using SFA.DAS.Approvals.InnerApi.TrainingTypesApi;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.Approvals.Api.AppStart;
@@ -59,5 +60,7 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<FinanceApiConfiguration>>().Value);
         services.Configure<LearnerDataInnerApiConfiguration>(configuration.GetSection("LearnerDataInnerApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerDataInnerApiConfiguration>>().Value);
+        services.Configure<TrainingTypesApiConfiguration>(configuration.GetSection("TrainingTypesApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingTypesApiConfiguration>>().Value);
     }
 }
