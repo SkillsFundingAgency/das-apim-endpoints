@@ -30,5 +30,6 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public bool? IsOnFlexiPaymentPilot { get; set; }
         public int? TrainingPrice { get; set; }
         public int? EndPointAssessmentPrice { get; set; }
+        public long? LearnerDataId { get; set; }
     }
 }
