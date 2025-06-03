@@ -70,8 +70,8 @@ builder.Services.AddConfigurationOptions(configuration);
 
 if (configuration["Environment"] != "DEV")
 {
-    builder.Services.AddHealthChecks()
-        .AddCheck<ApprenticeshipsApiHealthCheck>(ApprenticeshipsApiHealthCheck.HealthCheckResultDescription);
+    builder.Services.AddHealthChecks();
+        //.AddCheck<ApprenticeshipsApiHealthCheck>(ApprenticeshipsApiHealthCheck.HealthCheckResultDescription);
 }
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetApprenticeshipsQueryHandler).Assembly));
