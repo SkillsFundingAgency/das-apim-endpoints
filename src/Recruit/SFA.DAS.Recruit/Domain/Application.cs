@@ -19,5 +19,6 @@ namespace SFA.DAS.Recruit.Domain
     {
         public string FullAddress { get; init; }
         public short AddressOrder { get; init; }
+        public bool IsSelected { get; init; }
     }
 }
