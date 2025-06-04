@@ -37,6 +37,8 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
+builder.Services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
 builder.Services.AddHealthChecks().AddCheck<RoatpV2ApiHealthCheck>(nameof(RoatpV2ApiHealthCheck));
 
 builder.Services.AddServiceHealthChecks();
