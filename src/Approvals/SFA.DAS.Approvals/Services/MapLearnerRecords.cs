@@ -3,18 +3,19 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Learners.Queries;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Services;
 
 public interface IMapLearnerRecords
 {
-    Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> learner, List<GetStandardsListItem> list);
+    Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> data, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes);
 }
 
 public class MapLearnerRecords(ILogger<IMapLearnerRecords> logger) : IMapLearnerRecords
 {
-    public async Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> learners, List<GetStandardsListItem> list)
+    public async Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> learners, List<GetAllStandardsResponse.TrainingProgramme> list)
     {
         logger.LogInformation("Getting all Courses, to match with Learner Records");
         var learnerSummaries = new List<LearnerSummary>();
@@ -28,7 +29,7 @@ public class MapLearnerRecords(ILogger<IMapLearnerRecords> logger) : IMapLearner
                 FirstName = learner.FirstName,
                 LastName = learner.LastName,
                 Uln = learner.Uln,
-                Course = list.FirstOrDefault(x => x.LarsCode == learner.StandardCode)?.Title
+                Course = list.FirstOrDefault(x => x.CourseCode == learner.StandardCode.ToString())?.Name
             });
         }
 

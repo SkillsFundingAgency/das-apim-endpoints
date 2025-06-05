@@ -216,6 +216,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 UserId = request.UserId,
                 CohortId = cohortId,
                 RequestingParty = request.RequestingParty,
+                LearnerDataId = request.LearnerDataId
             };
 
             var result = await mediator.Send(command);
