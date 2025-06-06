@@ -18,7 +18,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
             GetApplicationReviewsCountByUkprnQuery query,
             List<ApplicationReviewStats> apiResponse,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-            GetApplicationReviewsCountByUkprnQueryHandler handler)
+            [Greedy] GetApplicationReviewsCountByUkprnQueryHandler handler)
         {
             //Arrange
             var expectedGetUrl = new GetApplicationReviewsCountByUkprnApiRequest(query.Ukprn, query.VacancyReferences);
@@ -38,7 +38,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
         public async Task Then_The_Query_Is_Handled_And_Null_Returned(
             GetApplicationReviewsCountByUkprnQuery query,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-            GetApplicationReviewsCountByUkprnQueryHandler handler)
+            [Greedy] GetApplicationReviewsCountByUkprnQueryHandler handler)
         {
             //Arrange
             var expectedGetUrl = new GetApplicationReviewsCountByUkprnApiRequest(query.Ukprn, query.VacancyReferences);

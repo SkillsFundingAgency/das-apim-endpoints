@@ -1,4 +1,5 @@
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplication;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ public record GetApplicationViewApiResponse
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
+    public EmploymentLocationSection? EmploymentLocation { get; set; }
     public string ApplicationStatus { get; set; }
     public DateTime? WithdrawnDate { get; set; }
     public DateTime? MigrationDate { get; set; }
@@ -38,6 +40,7 @@ public record GetApplicationViewApiResponse
             ApplicationStatus = source.ApplicationStatus,
             WithdrawnDate = source.WithdrawnDate,
             MigrationDate = source.MigrationDate,
+            EmploymentLocation = source.EmploymentLocation,
         };
     }
 
@@ -54,6 +57,21 @@ public record GetApplicationViewApiResponse
             {
                 Title = source.Title,
                 EmployerName = source.EmployerName
+            };
+        }
+    }
+
+    public record EmploymentLocationSection : LocationDto
+    {
+        public static implicit operator EmploymentLocationSection(GetApplicationViewQueryResult.EmploymentLocationSection? source)
+        {
+            if (source is null) return null;
+            return new EmploymentLocationSection
+            {
+                Id = source.Id,
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
+                Addresses = source.Addresses,
+                EmployerLocationOption = source.EmployerLocationOption,
             };
         }
     }

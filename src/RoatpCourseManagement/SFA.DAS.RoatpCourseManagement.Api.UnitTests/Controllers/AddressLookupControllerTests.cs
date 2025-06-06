@@ -26,7 +26,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [Test]
         public async Task GetAddresses_InvalidPostcode_ReturnsBadRequest()
         {
-            _mediator.Setup(m => m.Send(It.IsAny<AddresssLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((AddresssLookupQueryResult) null);
+            _mediator.Setup(m => m.Send(It.IsAny<AddresssLookupQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((AddresssLookupQueryResult)null);
 
             var result = await _sut.GetAddresses("rubbish");
 

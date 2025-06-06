@@ -19,8 +19,7 @@ public record CreateApplicationReviewRequestData(
     long VacancyReference,
     string VacancyTitle,
     string? AdditionalQuestion1,
-    string? AdditionalQuestion2
-)
+    string? AdditionalQuestion2)
 {
     public ApplicationReviewStatus Status { get; } = ApplicationReviewStatus.New; // required
 }

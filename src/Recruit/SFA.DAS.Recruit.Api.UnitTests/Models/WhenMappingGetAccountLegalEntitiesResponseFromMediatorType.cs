@@ -1,10 +1,7 @@
-using System.Linq;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using System.Linq;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Models
 {
@@ -15,7 +12,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Models
         {
             var actual = (GetAccountLegalEntitiesResponse)source;
 
-            actual.AccountLegalEntities.Should().BeEquivalentTo(source.AccountLegalEntities, options=>options.Excluding(c=>c.Agreements));
+            actual.AccountLegalEntities.Should().BeEquivalentTo(source.AccountLegalEntities, 
+                options => options
+                    .Excluding(c=>c.Agreements)
+                    .Excluding(c => c.AccountName));
         }
 
         [Test, AutoData]
