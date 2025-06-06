@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
-using NLog.Web;
 using SFA.DAS.RoatpProviderModeration.Api.AppStart;
 using SFA.DAS.RoatpProviderModeration.Api.HealthCheck;
 using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
@@ -9,8 +8,6 @@ using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.WebHost.UseNLog();
 
 // Add services to the container.
 
@@ -39,6 +36,8 @@ builder.Services
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
+
+builder.Services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 builder.Services.AddHealthChecks().AddCheck<RoatpV2ApiHealthCheck>(nameof(RoatpV2ApiHealthCheck));
 
