@@ -19,7 +19,8 @@ public record CreateApplicationReviewRequestData(
     long VacancyReference,
     string VacancyTitle,
     string? AdditionalQuestion1,
-    string? AdditionalQuestion2
+    string? AdditionalQuestion2,
+    DateTime SubmittedDate
 )
 {
     public ApplicationReviewStatus Status { get; } = ApplicationReviewStatus.New; // required

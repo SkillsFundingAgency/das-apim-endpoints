@@ -65,8 +65,10 @@ public class SubmitApplicationCommandHandler(
             vacancy.VacancyReference.ConvertVacancyReferenceToLong(),
             vacancy.Title,
             vacancy.AdditionalQuestion1,
-            vacancy.AdditionalQuestion2);
-        await recruitApiV2Client.PutWithResponseCode<NullResponse>(new CreateApplicationReviewRequest(application.Id, createApplicationReviewRequestData));
+            vacancy.AdditionalQuestion2,
+            DateTime.UtcNow);
+        //TODO to be re-enabled
+        //await recruitApiV2Client.PutWithResponseCode<NullResponse>(new CreateApplicationReviewRequest(application.Id, createApplicationReviewRequestData));
         
         var email = new SubmitApplicationEmail(
             helper.SubmitApplicationEmailTemplateId,

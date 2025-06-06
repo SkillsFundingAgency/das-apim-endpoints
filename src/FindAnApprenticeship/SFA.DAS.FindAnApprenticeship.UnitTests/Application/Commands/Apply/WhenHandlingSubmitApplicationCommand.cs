@@ -75,19 +75,20 @@ public class WhenHandlingSubmitApplicationCommand
             && ((PostSubmitApplicationRequestData)c.Data).VacancyReference == vacancyReference
             ), false), Times.Once);
         
-        recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()), Times.Once);
-        recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<CreateApplicationReviewRequest>(r => 
-            r.Data.Equals(new CreateApplicationReviewRequestData(
-                vacancyResponse.AccountId!.Value,
-                vacancyResponse.AccountLegalEntityId!.Value,
-                applicationApiResponse.Id,
-                applicationApiResponse.CandidateId,
-                ukprn,
-                999999999,
-                vacancyResponse.Title,
-                vacancyResponse.AdditionalQuestion1,
-                vacancyResponse.AdditionalQuestion2))
-            )), Times.Once);
+        //recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()), Times.Once);
+        // recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<CreateApplicationReviewRequest>(r => 
+        //     r.Data.Equals(new CreateApplicationReviewRequestData(
+        //         vacancyResponse.AccountId!.Value,
+        //         vacancyResponse.AccountLegalEntityId!.Value,
+        //         applicationApiResponse.Id,
+        //         applicationApiResponse.CandidateId,
+        //         ukprn,
+        //         999999999,
+        //         vacancyResponse.Title,
+        //         vacancyResponse.AdditionalQuestion1,
+        //         vacancyResponse.AdditionalQuestion2,
+        //         ))
+        //     )), Times.Once);
         
         metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Once);
         
