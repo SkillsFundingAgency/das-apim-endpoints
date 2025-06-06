@@ -65,7 +65,8 @@ public class SubmitApplicationCommandHandler(
             vacancy.VacancyReference.ConvertVacancyReferenceToLong(),
             vacancy.Title,
             vacancy.AdditionalQuestion1,
-            vacancy.AdditionalQuestion2);
+            vacancy.AdditionalQuestion2,
+            DateTime.UtcNow);
         await recruitApiV2Client.PutWithResponseCode<NullResponse>(new CreateApplicationReviewRequest(application.Id, createApplicationReviewRequestData));
         
         var email = new SubmitApplicationEmail(
