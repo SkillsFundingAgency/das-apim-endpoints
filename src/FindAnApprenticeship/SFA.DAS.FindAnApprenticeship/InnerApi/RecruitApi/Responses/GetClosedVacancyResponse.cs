@@ -132,5 +132,5 @@ public class Wage
 
 public class GetClosedVacanciesByReferenceResponse
 {
-    public List<GetClosedVacancyResponse> Vacancies { get; set; }
+    public List<GetClosedVacancyResponse> Vacancies { get; set; } = [];
 }

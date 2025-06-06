@@ -3,7 +3,9 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
+using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
@@ -30,5 +32,6 @@ public class GetApplicationsQueryResult
         public List<Address> OtherAddresses { get; set; } = [];
         public string? EmploymentLocationInformation { get; set; }
         public AvailableWhere? EmployerLocationOption { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
     }
 }

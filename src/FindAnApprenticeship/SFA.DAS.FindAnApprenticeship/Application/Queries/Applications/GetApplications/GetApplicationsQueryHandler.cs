@@ -27,8 +27,8 @@ public class GetApplicationsQueryHandler(
         var totalApplicationCount = applicationsTask.Result.Applications.Count;
         var applicationList = applicationsTask.Result.Applications.Where(x =>
             x.Status == request.Status.ToString()
-            || (request.Status == ApplicationStatus.Submitted && x.Status == ApplicationStatus.Withdrawn.ToString())
-            || (request.Status == ApplicationStatus.Draft && x.Status == ApplicationStatus.Expired.ToString())
+            || (request.Status == ApplicationStatus.Submitted && x.Status == nameof(ApplicationStatus.Withdrawn))
+            || (request.Status == ApplicationStatus.Draft && x.Status == nameof(ApplicationStatus.Expired))
             ).ToList();
 
         if (totalApplicationCount == 0 || applicationList.Count == 0)
@@ -45,8 +45,8 @@ public class GetApplicationsQueryHandler(
         foreach (var application in applicationList)
         {
             var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.TrimVacancyReference() == application.VacancyReference);
-            
-            if(vacancy is null) continue;
+
+            if (vacancy is null) continue;
 
             TryParse<ApplicationStatus>(application.Status, out var status);
             result.Applications.Add(new GetApplicationsQueryResult.Application
@@ -67,6 +67,7 @@ public class GetApplicationsQueryHandler(
                 EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
                 EmployerLocationOption = vacancy.EmployerLocationOption,
                 OtherAddresses = vacancy.OtherAddresses?.ToList(),
+                ApprenticeshipType = vacancy.ApprenticeshipType,
             });
         }
 
