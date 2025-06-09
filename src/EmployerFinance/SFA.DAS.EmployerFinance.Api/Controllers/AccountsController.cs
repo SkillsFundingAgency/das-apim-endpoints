@@ -7,59 +7,49 @@ using SFA.DAS.EmployerFinance.Api.Models.Accounts;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountMinimumSignedAgreementVersion;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetAccountTeamMembersWhichReceiveNotifications;
 
-namespace SFA.DAS.EmployerFinance.Api.Controllers
+namespace SFA.DAS.EmployerFinance.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class AccountsController(IMediator mediator, ILogger<TransfersController> logger) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class AccountsController : ControllerBase
+    [HttpGet]
+    [Route("{accountId}/users/which-receive-notifications")]
+    public async Task<IActionResult> GetAccountTeamMembersWhichReceiveNotifications(long accountId)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<TransfersController> _logger;
-
-        public AccountsController(IMediator mediator, ILogger<TransfersController> logger)
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var result = await mediator.Send(new GetAccountTeamMembersWhichReceiveNotificationsQuery()
+            {
+                AccountId = accountId,
+            });
+
+            return Ok((GetAccountTeamMembersWhichReceiveNotificationsResponse)(result));
         }
-
-        [HttpGet]
-        [Route("{accountId}/users/which-receive-notifications")]
-        public async Task<IActionResult> GetAccountTeamMembersWhichReceiveNotifications(long accountId)
+        catch (Exception e)
         {
-            try
-            {
-                var result = await _mediator.Send(new GetAccountTeamMembersWhichReceiveNotificationsQuery()
-                {
-                    AccountId = accountId,
-                });
-
-                return Ok((GetAccountTeamMembersWhichReceiveNotificationsResponse)(result));
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error getting account team members which receive notifications");
-                return BadRequest();
-            }
+            logger.LogError(e, "Error getting account team members which receive notifications");
+            return BadRequest();
         }
+    }
 
-        [HttpGet]
-        [Route("{accountId}/minimum-signed-agreement-version")]
-        public async Task<IActionResult> GetAccountMinimumSignedAgreementVersion(long accountId)
+    [HttpGet]
+    [Route("{accountId}/minimum-signed-agreement-version")]
+    public async Task<IActionResult> GetAccountMinimumSignedAgreementVersion(long accountId)
+    {
+        try
         {
-            try
+            var result = await mediator.Send(new GetAccountMinimumSignedAgreementVersionQuery()
             {
-                var result = await _mediator.Send(new GetAccountMinimumSignedAgreementVersionQuery()
-                {
-                    AccountId = accountId,
-                });
+                AccountId = accountId,
+            });
 
-                return Ok(new GetAccountMinimumSignedAgreementVersionResponse { MinimumSignedAgreementVersion = result.MinimumSignedAgreementVersion });
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error getting account minimum signed agreement version");
-                return BadRequest();
-            }
+            return Ok(new GetAccountMinimumSignedAgreementVersionResponse { MinimumSignedAgreementVersion = result.MinimumSignedAgreementVersion });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting account minimum signed agreement version");
+            return BadRequest();
         }
     }
 }

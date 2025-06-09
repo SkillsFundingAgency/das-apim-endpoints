@@ -1,5 +1,4 @@
-﻿using System.Reflection.Metadata.Ecma335;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Earnings.Helpers;
