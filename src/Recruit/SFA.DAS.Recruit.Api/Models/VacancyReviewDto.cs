@@ -44,7 +44,7 @@ public class VacancyReviewDto
             VacancyTitle =  source.VacancyTitle,
             CreatedDate = source.CreatedDate,
             SlaDeadLine = source.SlaDeadLine,
-            ReviewedDate = source.ReviewedDate!.Value,
+            ReviewedDate = source.ReviewedDate,
             Status = source.Status,
             SubmissionCount = source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUserEmail,
@@ -57,7 +57,8 @@ public class VacancyReviewDto
             AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators,
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
-            VacancySnapshot = source.VacancySnapshot
+            VacancySnapshot = source.VacancySnapshot,
+            OwnerType = source.OwnerType
         };
     }
 
@@ -69,7 +70,7 @@ public class VacancyReviewDto
             VacancyTitle =  source.VacancyTitle,
             CreatedDate = source.CreatedDate,
             SlaDeadLine = source.SlaDeadLine,
-            ReviewedDate = source.ReviewedDate!.Value,
+            ReviewedDate = source.ReviewedDate,
             Status = source.Status,
             SubmissionCount = source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUserEmail,

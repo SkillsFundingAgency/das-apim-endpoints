@@ -24,4 +24,5 @@ public class GetVacancyReviewResponse
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
+    public string OwnerType { get; set; }
 }
