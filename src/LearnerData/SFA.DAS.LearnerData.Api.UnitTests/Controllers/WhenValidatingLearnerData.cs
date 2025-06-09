@@ -210,7 +210,6 @@ public class WhenValidatingLearnerData
             { "ukprn", _ukprn.ToString()},
             { "academicyear", _academicYear.ToString()}
         };
-        //mockHttpContext.Request.Headers["Authorization"] = "Bearer fake-token";
         mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(mockHttpContext);
 
         var mockServiceProvider = new Mock<IServiceProvider>();
