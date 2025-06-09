@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using FluentAssertions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
 
@@ -7,6 +10,16 @@ namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
 public class WhenValidatingLearnerData
 {
+    private long _ukprn;
+    private int _academicYear;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _ukprn = 10001234;
+        _academicYear = 2425;
+    }
+
     [Test]
     public void And_when_AreAllValid_Then_No_Errors_returned()
     {
@@ -24,6 +37,44 @@ public class WhenValidatingLearnerData
         validationResults.Any().Should().BeTrue();
         validationResults.First().ErrorMessage.Should().Be($"Learner data contains incorrect ULN {learner.ULN}");
         validationResults.First().MemberNames.Should().Contain("ULN");
+    }
+
+    [TestCase(-1)]
+    [TestCase(9999999)]
+    [TestCase(1000000000)]
+    public void And_UKPRN_Is_OutOfRange(int ukprn)
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.UKPRN = ukprn;
+        _ukprn = ukprn;
+        var validationResults = RunValidation(learner);
+        validationResults.Any().Should().BeTrue();
+        validationResults.First().ErrorMessage.Should().Be($"Learner data contains incorrect UKPRN {learner.UKPRN}");
+        validationResults.First().MemberNames.Should().Contain("UKPRN");
+    }
+
+    [Test]
+    public void And_when_UKPRN_Does_Not_Match_Url()
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.UKPRN = 12345678;
+        _ukprn = 10001234;
+        var validationResults = RunValidation(learner);
+        validationResults.Any().Should().BeTrue();
+        validationResults.First().ErrorMessage.Should().Be($"Learner data contains different UKPRN to {_ukprn}");
+        validationResults.First().MemberNames.Should().Contain("UKPRN");
+    }
+
+    [Test]
+    public void And_when_StartDate_Is_Not_In_AcademicYear()
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.StartDate = DateTime.Today; 
+        _academicYear = 2324;
+        var validationResults = RunValidation(learner);
+        validationResults.Any().Should().BeTrue();
+        validationResults.First().ErrorMessage.Should().Be($"Learner data contains a StartDate {learner.StartDate} that is not in the academic year {_academicYear}");
+        validationResults.First().MemberNames.Should().Contain("StartDate");
     }
 
     [Test]
@@ -120,7 +171,7 @@ public class WhenValidatingLearnerData
         return new LearnerDataRequest
         {
             ULN = 1234567890,
-            UKPRN = 12345678,
+            UKPRN = _ukprn,
             FirstName = "First",
             LastName = "Last",
             LearnerEmail = "Email@abcd.com",
@@ -141,10 +192,31 @@ public class WhenValidatingLearnerData
     private List<ValidationResult> RunValidation(LearnerDataRequest learner)
     {
         var validationResults = new List<ValidationResult>();
-        var validationContext = new ValidationContext(learner);
+        var mockServiceProvider = GetMockServiceProvider();
+        var validationContext = new ValidationContext(learner, mockServiceProvider, items: null);
 
         Validator.TryValidateObject(learner, validationContext, validationResults, true);
 
         return validationResults;
+    }
+
+    private IServiceProvider GetMockServiceProvider()
+    {
+        var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+
+        var mockHttpContext = new DefaultHttpContext();
+        mockHttpContext.Request.RouteValues = new RouteValueDictionary
+        {
+            { "ukprn", _ukprn.ToString()},
+            { "academicyear", _academicYear.ToString()}
+        };
+        //mockHttpContext.Request.Headers["Authorization"] = "Bearer fake-token";
+        mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(mockHttpContext);
+
+        var mockServiceProvider = new Mock<IServiceProvider>();
+        mockServiceProvider.Setup(_ => _.GetService(typeof(IHttpContextAccessor)))
+            .Returns(mockHttpContextAccessor.Object);
+
+        return mockServiceProvider.Object;
     }
 }

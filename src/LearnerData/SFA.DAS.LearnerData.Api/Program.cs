@@ -70,6 +70,7 @@ builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
