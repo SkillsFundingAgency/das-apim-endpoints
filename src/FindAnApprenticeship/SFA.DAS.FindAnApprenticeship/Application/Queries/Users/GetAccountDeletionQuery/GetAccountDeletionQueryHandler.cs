@@ -25,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
                 CandidateApiClient.Get<GetApplicationsApiResponse>(new GetApplicationsApiRequest(request.CandidateId));
 
             var applicationList = applicationsTask.Result.Applications.Where(x =>
-                    x.Status == nameof(ApplicationStatus.Submitted))
+                    x.Status == ApplicationStatus.Submitted.ToString())
                 .ToList();
 
             var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();

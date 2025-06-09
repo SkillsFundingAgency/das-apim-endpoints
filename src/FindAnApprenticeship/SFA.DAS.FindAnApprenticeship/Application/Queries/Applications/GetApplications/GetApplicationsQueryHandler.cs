@@ -27,8 +27,8 @@ public class GetApplicationsQueryHandler(
         var totalApplicationCount = applicationsTask.Result.Applications.Count;
         var applicationList = applicationsTask.Result.Applications.Where(x =>
             x.Status == request.Status.ToString()
-            || (request.Status == ApplicationStatus.Submitted && x.Status == nameof(ApplicationStatus.Withdrawn))
-            || (request.Status == ApplicationStatus.Draft && x.Status == nameof(ApplicationStatus.Expired))
+            || (request.Status == ApplicationStatus.Submitted && x.Status == ApplicationStatus.Withdrawn.ToString())
+            || (request.Status == ApplicationStatus.Draft && x.Status == ApplicationStatus.Expired.ToString())
             ).ToList();
 
         if (totalApplicationCount == 0 || applicationList.Count == 0)
