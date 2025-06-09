@@ -13,5 +13,6 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Responses
         public string Title { get; set; }
         public int Level { get; set; }
         public string Route { get; set; }
+        public string ApprenticeshipType { get; set; }
     }
 }
