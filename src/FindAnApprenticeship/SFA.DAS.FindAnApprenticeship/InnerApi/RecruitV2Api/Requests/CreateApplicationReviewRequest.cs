@@ -20,7 +20,7 @@ public record CreateApplicationReviewRequestData(
     string VacancyTitle,
     string? AdditionalQuestion1,
     string? AdditionalQuestion2,
-    DateTime SubmittedDate
+    DateTime MigrationDate
 )
 {
     public ApplicationReviewStatus Status { get; } = ApplicationReviewStatus.New; // required

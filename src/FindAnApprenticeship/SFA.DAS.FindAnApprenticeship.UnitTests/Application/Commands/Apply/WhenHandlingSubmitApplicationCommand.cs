@@ -75,20 +75,19 @@ public class WhenHandlingSubmitApplicationCommand
             && ((PostSubmitApplicationRequestData)c.Data).VacancyReference == vacancyReference
             ), false), Times.Once);
         
-        //recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()), Times.Once);
-        // recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<CreateApplicationReviewRequest>(r => 
-        //     r.Data.Equals(new CreateApplicationReviewRequestData(
-        //         vacancyResponse.AccountId!.Value,
-        //         vacancyResponse.AccountLegalEntityId!.Value,
-        //         applicationApiResponse.Id,
-        //         applicationApiResponse.CandidateId,
-        //         ukprn,
-        //         999999999,
-        //         vacancyResponse.Title,
-        //         vacancyResponse.AdditionalQuestion1,
-        //         vacancyResponse.AdditionalQuestion2,
-        //         ))
-        //     )), Times.Once);
+        recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()), Times.Once);
+         recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<CreateApplicationReviewRequest>(r =>
+             ((CreateApplicationReviewRequestData)r.Data).CandidateId == applicationApiResponse.CandidateId 
+             && ((CreateApplicationReviewRequestData)r.Data).ApplicationId == applicationApiResponse.Id 
+             && ((CreateApplicationReviewRequestData)r.Data).AccountId == vacancyResponse.AccountId 
+             && ((CreateApplicationReviewRequestData)r.Data).AccountLegalEntityId == vacancyResponse.AccountLegalEntityId 
+             && ((CreateApplicationReviewRequestData)r.Data).Ukprn == ukprn  
+             && ((CreateApplicationReviewRequestData)r.Data).VacancyReference == 999999999  
+             && ((CreateApplicationReviewRequestData)r.Data).VacancyTitle == vacancyResponse.Title  
+             && ((CreateApplicationReviewRequestData)r.Data).AdditionalQuestion1 == vacancyResponse.AdditionalQuestion1  
+             && ((CreateApplicationReviewRequestData)r.Data).AdditionalQuestion2 == vacancyResponse.AdditionalQuestion2  
+             && ((CreateApplicationReviewRequestData)r.Data).MigrationDate.Date == DateTime.UtcNow.Date   
+             )), Times.Once);
         
         metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Once);
         
