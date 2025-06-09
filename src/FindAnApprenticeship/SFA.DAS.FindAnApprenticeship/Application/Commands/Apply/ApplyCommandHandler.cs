@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply;
 
@@ -58,7 +59,7 @@ public class ApplyCommandHandler(
                     {
                         Id = Guid.NewGuid(),
                         IsSelected = false,
-                        FullAddress = a.ToSingleLineAddress(),
+                        FullAddress = JsonConvert.SerializeObject(a),
                         AddressOrder = (short)(index + 1)
                     }).ToList()
                 }
