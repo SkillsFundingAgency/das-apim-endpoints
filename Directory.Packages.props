@@ -103,6 +103,6 @@
     <PackageVersion Include="Polly" Version="8.5.2" />
     <PackageVersion Include="Polly.Extensions.Http" Version="3.0.0" />
     <PackageVersion Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
-    <PackageVersion Include="SFA.DAS.AcademicYearService" Version="17.1.147-prerelease-8" />
+    <PackageVersion Include="SFA.DAS.AcademicYearService" Version="17.1.147" />
   </ItemGroup>
 </Project>
