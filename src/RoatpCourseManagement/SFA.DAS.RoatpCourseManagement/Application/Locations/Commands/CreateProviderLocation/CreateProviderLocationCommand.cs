@@ -15,8 +15,5 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.CreatePro
         public string County { get; set; }
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
-        public string Email { get; set; }
-        public string Website { get; set; }
-        public string Phone { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.ApprenticeFeedback.Api
 {
@@ -16,7 +15,6 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                })
-                .UseNLog();
+                });
     }
 }

@@ -6,26 +6,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="nlog.Debug.config" />
-    <Content Remove="nlog.Release.config" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="nlog.Debug.config">
-      <DependentUpon>nlog.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
-    <None Include="nlog.Release.config">
-      <DependentUpon>nlog.config</DependentUpon>
-      <IsTransformFile>true</IsTransformFile>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-    <PackageReference Include="NLog.Web.AspNetCore" />
-    <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
@@ -33,13 +15,5 @@
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj" />
     <ProjectReference Include="..\SFA.DAS.ApprenticeFeedback\SFA.DAS.ApprenticeFeedback.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="nlog.config">
-      <TransformOnBuild>true</TransformOnBuild>
-    </Content>
-  </ItemGroup>
-
-
 
 </Project>
