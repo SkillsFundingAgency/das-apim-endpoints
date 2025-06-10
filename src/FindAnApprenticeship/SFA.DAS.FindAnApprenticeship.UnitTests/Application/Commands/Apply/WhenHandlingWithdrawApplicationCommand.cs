@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 
@@ -40,6 +41,7 @@ public class WhenHandlingWithdrawApplicationCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         [Frozen] Mock<IVacancyService> vacancyService,
@@ -67,6 +69,8 @@ public class WhenHandlingWithdrawApplicationCommand
         recruitApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+        recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
 
@@ -95,6 +99,15 @@ public class WhenHandlingWithdrawApplicationCommand
                 && c.Tokens["location"] == $"{expectedAddress}"
             )
         ), Times.Once);
+        recruitApiClientv2.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+            c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.Data.Operations[0].path == "/WithdrawnDate" &&
+            DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date &&
+            c.Data.Operations[1].path == "/Status" &&
+            c.Data.Operations[1].value.ToString() == Enum.GetName(ApplicationStatus.Withdrawn) &&
+            c.Data.Operations[2].path == "/StatusUpdatedDate" &&
+            DateTime.Parse(c.Data.Operations[2].value.ToString()!).Date == DateTime.UtcNow.Date
+        )), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -214,6 +227,7 @@ public class WhenHandlingWithdrawApplicationCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetClosedVacancyResponse closedVacancyResponse,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         [Frozen] Mock<IVacancyService> vacancyService,
@@ -239,7 +253,8 @@ public class WhenHandlingWithdrawApplicationCommand
         recruitApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
-        
+        recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
@@ -281,6 +296,7 @@ public class WhenHandlingWithdrawApplicationCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetClosedVacancyResponse closedVacancyResponse,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         [Frozen] Mock<IVacancyService> vacancyService,
@@ -303,7 +319,8 @@ public class WhenHandlingWithdrawApplicationCommand
         recruitApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
-
+        recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
@@ -344,6 +361,7 @@ public class WhenHandlingWithdrawApplicationCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetClosedVacancyResponse closedVacancyResponse,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         [Frozen] Mock<IVacancyService> vacancyService,
@@ -373,7 +391,8 @@ public class WhenHandlingWithdrawApplicationCommand
         recruitApiClient
             .Setup(x => x.PostWithResponseCode<NullResponse>(
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
-
+        recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
