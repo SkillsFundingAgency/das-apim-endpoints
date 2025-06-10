@@ -9,5 +9,5 @@ public class GetProviderSummaryRequest : IGetApiRequest
         Ukprn = ukprn;
     }
 
-    public string GetUrl => $"api/Providers/{Ukprn}";
+    public string GetUrl => $"api/providers/{Ukprn}/summary";
 }

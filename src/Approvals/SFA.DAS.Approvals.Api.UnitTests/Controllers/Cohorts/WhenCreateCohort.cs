@@ -62,8 +62,9 @@ public class WhenCreateCohort
             y.TransferSenderId == _request.TransferSenderId &&
             y.Uln == _request.Uln &&
             y.UserInfo == _request.UserInfo &&
-            y.RequestingParty == _request.RequestingParty
-        ), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResult);
+            y.RequestingParty == _request.RequestingParty && 
+            y.LearnerDataId == _request.LearnerDataId
+            ), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResult);
 
         var result = await _controller.Create(_request);
 

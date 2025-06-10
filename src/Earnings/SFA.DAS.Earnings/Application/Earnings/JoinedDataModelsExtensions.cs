@@ -20,27 +20,31 @@ internal static class JoinedDataModelsExtensions
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeCompletionPayment, 0),
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstDisadvantagePayment, 0),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstEmp1618Pay,
                 EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive, 
                 1),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstProv1618Pay,
                 EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive,
                 1),
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLevyNonPayInd, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLSFCash, 0),
+            PriceEpisodePeriodisedValuesBuilder.BuildAdditionalPaymentPerPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(),EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLSFCash, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport),
             PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondDisadvantagePayment, 0),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondEmp1618Pay,
                 EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive,
                 2),
             PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondProv1618Pay,
@@ -152,9 +156,10 @@ internal static class JoinedDataModelsExtensions
     {
         var daysInLearning = joinedEarningsApprenticeship.DaysInLearning();
         var firstAdditionalPaymentDate = joinedEarningsApprenticeship.Episodes
-            .SelectMany(x => x.AdditionalPayments).MinBy(x => x.DueDate)?.DueDate;
+            .SelectMany(x => x.AdditionalPayments.Where(p => p.IsIncentive()))
+            .MinBy(x => x.DueDate)?.DueDate;
         var secondAdditionalPaymentDate = joinedEarningsApprenticeship.Episodes
-            .SelectMany(x => x.AdditionalPayments)
+            .SelectMany(x => x.AdditionalPayments.Where(p => p.IsIncentive()))
             .DistinctBy(x => x.DueDate)
             .OrderBy(x => x.DueDate)
             .Skip(1)
@@ -237,8 +242,8 @@ internal static class JoinedDataModelsExtensions
                 LearningDeliveryPeriodisedValuesBuilder.BuildNthIncentivePaymentValues(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondProv1618Pay, "ProviderIncentive", 2),
                 LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSEMContWaiver, 0),
                 LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelESFAContribPct, 0.95m),
-                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, 0),
-                LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, 0),
+                LearningDeliveryPeriodisedValuesBuilder.BuildAdditionalPaymentPerPeriodIndicators(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport),
+                LearningDeliveryPeriodisedValuesBuilder.BuildAdditionalPaymentPerPeriodValues(joinedEarningsApprenticeship, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport),
                 LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, 0),
                 LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, 0),
                 LearningDeliveryPeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0),
