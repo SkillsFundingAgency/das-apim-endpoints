@@ -66,6 +66,7 @@ public class SubmitApplicationCommandHandler(
             vacancy.Title,
             vacancy.AdditionalQuestion1,
             vacancy.AdditionalQuestion2,
+            DateTime.UtcNow,
             DateTime.UtcNow);
         
         await recruitApiV2Client.PutWithResponseCode<NullResponse>(new CreateApplicationReviewRequest(application.Id, createApplicationReviewRequestData));

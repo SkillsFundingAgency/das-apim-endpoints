@@ -87,6 +87,7 @@ public class WhenHandlingSubmitApplicationCommand
              && ((CreateApplicationReviewRequestData)r.Data).AdditionalQuestion1 == vacancyResponse.AdditionalQuestion1  
              && ((CreateApplicationReviewRequestData)r.Data).AdditionalQuestion2 == vacancyResponse.AdditionalQuestion2  
              && ((CreateApplicationReviewRequestData)r.Data).MigrationDate.Date == DateTime.UtcNow.Date   
+             && ((CreateApplicationReviewRequestData)r.Data).SubmittedDate.Date == DateTime.UtcNow.Date   
              )), Times.Once);
         
         metricsService.Verify(x => x.IncreaseVacancySubmitted(It.IsAny<string>(), 1), Times.Once);
