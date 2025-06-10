@@ -15,9 +15,8 @@ public record PatchRecruitApplicationReviewApiRequest(
 }
 public record ApplicationReview
 {
-    public DateTime WithdrawnDate { get; set; }
+    public DateTime? WithdrawnDate { get; set; }
     public string Status { get; set; }
-    public DateTime StatusUpdatedDate { get; set; }
-    public Guid ApplicationId { get; set; }
+    public DateTime? StatusUpdatedDate { get; set; }
     public Guid Id { get; set; }
 }
