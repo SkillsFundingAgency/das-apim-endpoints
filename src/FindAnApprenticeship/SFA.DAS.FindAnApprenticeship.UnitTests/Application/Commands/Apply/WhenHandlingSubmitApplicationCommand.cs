@@ -73,6 +73,7 @@ public class WhenHandlingSubmitApplicationCommand
         recruitApiClient.Verify(x => x.PostWithResponseCode<NullResponse>(It.Is<PostSubmitApplicationRequest>(c =>
             c.PostUrl.Contains(request.CandidateId.ToString())
             && ((PostSubmitApplicationRequestData)c.Data).VacancyReference == vacancyReference
+            && ((PostSubmitApplicationRequestData)c.Data).MigrationDate.Date == DateTime.UtcNow.Date
             ), false), Times.Once);
         
         recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()), Times.Once);
@@ -86,7 +87,6 @@ public class WhenHandlingSubmitApplicationCommand
              && ((CreateApplicationReviewRequestData)r.Data).VacancyTitle == vacancyResponse.Title  
              && ((CreateApplicationReviewRequestData)r.Data).AdditionalQuestion1 == vacancyResponse.AdditionalQuestion1  
              && ((CreateApplicationReviewRequestData)r.Data).AdditionalQuestion2 == vacancyResponse.AdditionalQuestion2  
-             && ((CreateApplicationReviewRequestData)r.Data).MigrationDate.Date == DateTime.UtcNow.Date   
              && ((CreateApplicationReviewRequestData)r.Data).SubmittedDate.Date == DateTime.UtcNow.Date   
              )), Times.Once);
         
