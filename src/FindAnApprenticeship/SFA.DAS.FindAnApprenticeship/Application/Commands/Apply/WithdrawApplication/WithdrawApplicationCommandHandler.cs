@@ -16,6 +16,7 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
@@ -23,6 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplic
 public class WithdrawApplicationCommandHandler(
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, 
     IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client,
     INotificationService notificationService,
     IVacancyService vacancyService,
     EmailEnvironmentHelper emailEnvironmentHelper) : IRequestHandler<WithdrawApplicationCommand, bool>
@@ -44,7 +46,13 @@ public class WithdrawApplicationCommandHandler(
         {
             return false;
         }
-
+        
+        var jsonPatchApplicationReviewDocument = new JsonPatchDocument<ApplicationReview>();
+        jsonPatchApplicationReviewDocument.Replace(x => x.WithdrawnDate, DateTime.UtcNow);
+        jsonPatchApplicationReviewDocument.Replace(x => x.Status, Enum.GetName(ApplicationStatus.Withdrawn));
+        jsonPatchApplicationReviewDocument.Replace(x => x.StatusUpdatedDate, DateTime.UtcNow);
+        var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewApiRequest(request.ApplicationId, jsonPatchApplicationReviewDocument);
+        
         var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Withdrawn);
 
@@ -57,7 +65,8 @@ public class WithdrawApplicationCommandHandler(
 
         await Task.WhenAll(
             candidateApiClient.PatchWithResponseCode(patchRequest),
-            notificationService.Send(new SendEmailCommand(withDrawnApplicationEmail.TemplateId, withDrawnApplicationEmail.RecipientAddress, withDrawnApplicationEmail.Tokens))
+            notificationService.Send(new SendEmailCommand(withDrawnApplicationEmail.TemplateId, withDrawnApplicationEmail.RecipientAddress, withDrawnApplicationEmail.Tokens)),
+            recruitApiV2Client.PatchWithResponseCode(patchApplicationReviewApiRequest)
         );
 
         return true;
