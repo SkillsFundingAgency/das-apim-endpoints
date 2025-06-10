@@ -1,7 +1,8 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
-using SFA.DAS.SharedOuterApi.Extensions;
+﻿using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Domain;
+using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 public class GetLiveVacanciesApiResponse
@@ -85,6 +86,7 @@ public class LiveVacancy
     public string? AdditionalQuestion1 { get; set; }
     public string? AdditionalQuestion2 { get; set; }
     public string? AdditionalTrainingDescription { get; set; }
+    public ApprenticeshipTypes? ApprenticeshipType { get; set; }
 }
 
 public class TrainingProvider

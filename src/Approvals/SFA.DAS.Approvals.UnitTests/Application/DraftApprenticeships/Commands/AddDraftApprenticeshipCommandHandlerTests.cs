@@ -71,7 +71,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                             ((AddDraftApprenticeshipRequest)r.Data).Uln == _request.Uln &&
                             ((AddDraftApprenticeshipRequest)r.Data).UserInfo == _request.UserInfo &&
                             ((AddDraftApprenticeshipRequest)r.Data).UserId == _request.UserId &&
-                            ((AddDraftApprenticeshipRequest)r.Data).RequestingParty == _request.RequestingParty
+                            ((AddDraftApprenticeshipRequest)r.Data).RequestingParty == _request.RequestingParty &&
+                            ((AddDraftApprenticeshipRequest)r.Data).LearnerDataId == _request.LearnerDataId
                         ), true
                 )).ReturnsAsync(new ApiResponse<AddDraftApprenticeshipResponse>(expectedResponse, HttpStatusCode.OK, string.Empty));
 
