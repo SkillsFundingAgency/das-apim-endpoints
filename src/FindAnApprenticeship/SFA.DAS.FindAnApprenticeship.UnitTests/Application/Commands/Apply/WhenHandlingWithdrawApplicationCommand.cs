@@ -40,6 +40,7 @@ public class WhenHandlingWithdrawApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
+        ApplicationReview applicationReview,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -71,6 +72,8 @@ public class WhenHandlingWithdrawApplicationCommand
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
             .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
+        recruitApiClientv2.Setup(x => x.GetWithResponseCode<ApplicationReview>(It.Is<GetApplicationReviewByApplicationIdRequest>(c=>c.GetUrl.Contains(request.ApplicationId.ToString()))))
+            .ReturnsAsync(new ApiResponse<ApplicationReview>(applicationReview, HttpStatusCode.OK, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
 
@@ -100,7 +103,7 @@ public class WhenHandlingWithdrawApplicationCommand
             )
         ), Times.Once);
         recruitApiClientv2.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
-            c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.PatchUrl.Contains(applicationReview.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
             c.Data.Operations[0].path == "/WithdrawnDate" &&
             DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date &&
             c.Data.Operations[1].path == "/Status" &&
@@ -226,6 +229,7 @@ public class WhenHandlingWithdrawApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetClosedVacancyResponse closedVacancyResponse,
+        ApplicationReview applicationReview,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -255,6 +259,8 @@ public class WhenHandlingWithdrawApplicationCommand
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
             .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
+        recruitApiClientv2.Setup(x => x.GetWithResponseCode<ApplicationReview>(It.Is<GetApplicationReviewByApplicationIdRequest>(c=>c.GetUrl.Contains(request.ApplicationId.ToString()))))
+            .ReturnsAsync(new ApiResponse<ApplicationReview>(applicationReview, HttpStatusCode.OK, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
@@ -284,6 +290,15 @@ public class WhenHandlingWithdrawApplicationCommand
                 && c.Tokens["location"] == $"{expectedAddress}"
             )
         ), Times.Once);
+        recruitApiClientv2.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+                    c.PatchUrl.Contains(applicationReview.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/WithdrawnDate" &&
+                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date &&
+                    c.Data.Operations[1].path == "/Status" &&
+                    c.Data.Operations[1].value.ToString() == Enum.GetName(ApplicationStatus.Withdrawn) &&
+                    c.Data.Operations[2].path == "/StatusUpdatedDate" &&
+                    DateTime.Parse(c.Data.Operations[2].value.ToString()!).Date == DateTime.UtcNow.Date
+                )), Times.Once);
     }
 
     [Test]
@@ -295,6 +310,7 @@ public class WhenHandlingWithdrawApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetClosedVacancyResponse closedVacancyResponse,
+        ApplicationReview applicationReview,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -321,6 +337,8 @@ public class WhenHandlingWithdrawApplicationCommand
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
             .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
+        recruitApiClientv2.Setup(x => x.GetWithResponseCode<ApplicationReview>(It.Is<GetApplicationReviewByApplicationIdRequest>(c=>c.GetUrl.Contains(request.ApplicationId.ToString()))))
+            .ReturnsAsync(new ApiResponse<ApplicationReview>(applicationReview, HttpStatusCode.OK, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
@@ -360,6 +378,7 @@ public class WhenHandlingWithdrawApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetClosedVacancyResponse closedVacancyResponse,
+        ApplicationReview applicationReview,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClientv2,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
@@ -393,10 +412,12 @@ public class WhenHandlingWithdrawApplicationCommand
                 It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         recruitApiClientv2.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
             .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, null));
+        recruitApiClientv2.Setup(x => x.GetWithResponseCode<ApplicationReview>(It.Is<GetApplicationReviewByApplicationIdRequest>(c=>c.GetUrl.Contains(request.ApplicationId.ToString()))))
+            .ReturnsAsync(new ApiResponse<ApplicationReview>(applicationReview, HttpStatusCode.OK, null));
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
         vacancyService.Setup(x => x.GetClosedVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(closedVacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, true)).Returns(expectedAddress);
-
+        
         var actual = await handler.Handle(request, CancellationToken.None);
 
         actual.Should().BeTrue();
@@ -422,5 +443,14 @@ public class WhenHandlingWithdrawApplicationCommand
                 && c.Tokens["location"] == $"{expectedAddress}"
             )
         ), Times.Once);
+        recruitApiClientv2.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+            c.PatchUrl.Contains(applicationReview.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+            c.Data.Operations[0].path == "/WithdrawnDate" &&
+            DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date &&
+            c.Data.Operations[1].path == "/Status" &&
+            c.Data.Operations[1].value.ToString() == Enum.GetName(ApplicationStatus.Withdrawn) &&
+            c.Data.Operations[2].path == "/StatusUpdatedDate" &&
+            DateTime.Parse(c.Data.Operations[2].value.ToString()!).Date == DateTime.UtcNow.Date
+        )), Times.Once);
     }
 }
