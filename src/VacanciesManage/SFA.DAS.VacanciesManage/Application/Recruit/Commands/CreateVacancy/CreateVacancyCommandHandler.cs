@@ -54,7 +54,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             var standard = standardsTask.Standards.FirstOrDefault(c =>
                 c.LarsCode.ToString() == request.PostVacancyRequestData.ProgrammeId);
 
-            if (standard.ApprenticeshipType == "Foundation")
+            if (string.Equals(standard.ApprenticeshipType, "Foundation", StringComparison.CurrentCultureIgnoreCase))
             {
                 request.PostVacancyRequestData.Skills = [];
                 request.PostVacancyRequestData.Qualifications = [];
