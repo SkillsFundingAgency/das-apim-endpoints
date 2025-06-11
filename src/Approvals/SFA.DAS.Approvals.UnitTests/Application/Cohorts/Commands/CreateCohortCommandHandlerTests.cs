@@ -123,7 +123,9 @@ public class CreateCohortCommandHandlerTests
                     ((CreateCohortRequest)r.Data).Uln == request.Uln &&
                     ((CreateCohortRequest)r.Data).UserInfo == request.UserInfo &&
                     ((CreateCohortRequest)r.Data).RequestingParty == request.RequestingParty &&
-                    ((CreateCohortRequest)r.Data).LearnerDataId == request.LearnerDataId
+                    ((CreateCohortRequest)r.Data).LearnerDataId == request.LearnerDataId &&
+                    ((CreateCohortRequest)r.Data).MinimumAgeAtApprenticeshipStart == learnerAgeResponse.MinimumAge &&
+                    ((CreateCohortRequest)r.Data).MaximumAgeAtApprenticeshipStart == learnerAgeResponse.MaximumAge
                 ), true
             )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(expectedResponse, HttpStatusCode.OK, string.Empty))
             .Verifiable();

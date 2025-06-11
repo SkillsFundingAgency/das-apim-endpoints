@@ -89,6 +89,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                     IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
                     IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
                     LearnerDataId = request.LearnerDataId,
+                    MinimumAgeAtApprenticeshipStart = learnerAge.MinimumAge,
                     MaximumAgeAtApprenticeshipStart = learnerAge.MaximumAge,
                     UserInfo = request.UserInfo,
                     RequestingParty = request.RequestingParty
