@@ -34,7 +34,7 @@ namespace SFA.DAS.AparRegister.Api.Controllers
         [ProducesResponseType(typeof(ProvidersApiResponse), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> GetProviders()
         {
-            _logger.LogInformation("Getting Providers TEST TEST TEST");
+            _logger.LogInformation("Getting Providers");
             try
             {
                 var result = await _mediator.Send(new GetProvidersQuery());
