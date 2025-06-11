@@ -15,7 +15,10 @@ public record PatchRecruitApplicationReviewApiRequest(
 }
 public abstract record ApplicationReview
 {
-    public string CandidateFeedback { get; set; }
+    public bool HasEverBeenEmployerInterviewing { get; set; }
+    public DateTime? DateSharedWithEmployer { get; set; }
+    public DateTime? StatusUpdatedDate { get; set; }
+    public string? EmployerFeedback { get; set; }
     public string Status { get; set; }
-    public DateTime StatusUpdatedDate { get; set; }
+    public string? TemporaryReviewStatus { get; set; }
 }
