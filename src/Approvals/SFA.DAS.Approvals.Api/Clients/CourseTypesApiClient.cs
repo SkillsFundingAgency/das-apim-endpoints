@@ -1,15 +1,15 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Approvals.Api.Clients
 {
-    public class TrainingTypesApiClient(IInternalApiClient<TrainingTypesApiConfiguration> apiClient)
-        : ITrainingTypesApiClient
+    public class CourseTypesApiClient(IInternalApiClient<CourseTypesApiConfiguration> apiClient)
+        : ICourseTypesApiClient
     {
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {

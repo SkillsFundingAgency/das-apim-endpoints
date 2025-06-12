@@ -1,4 +1,4 @@
-namespace SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Responses
+namespace SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses
 {
     public class GetRecognitionOfPriorLearningResponse
     {
