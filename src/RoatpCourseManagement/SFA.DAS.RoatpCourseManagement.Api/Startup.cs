@@ -77,6 +77,8 @@ namespace SFA.DAS.RoatpCourseManagement.Api
 
             services.AddApplicationInsightsTelemetry();
 
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "RoatpCourseManagementOuterApi", Version = "v1" });
