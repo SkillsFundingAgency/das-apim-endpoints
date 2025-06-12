@@ -7,9 +7,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailab
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public static implicit operator AvailableCourseModel  (GetStandardResponse source) 
-            => new AvailableCourseModel 
-            { 
+        public static implicit operator AvailableCourseModel(GetStandardResponse source)
+            => new AvailableCourseModel
+            {
                 LarsCode = source.LarsCode,
                 Title = source.Title,
                 Level = source.Level

@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse
 {
-    public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQuery,GetProviderCourseResult>
+    public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQuery, GetProviderCourseResult>
     {
         private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
         private readonly ILogger<GetProviderCourseQueryHandler> _logger;
 
-        public GetProviderCourseQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,ILogger<GetProviderCourseQueryHandler> logger)
+        public GetProviderCourseQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILogger<GetProviderCourseQueryHandler> logger)
         {
             _coursesApiClient = coursesApiClient;
             _courseManagementApiClient = courseManagementApiClient;
@@ -66,7 +66,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 IfateReferenceNumber = standard.IfateReferenceNumber,
                 CourseName = standard.Title,
                 Level = standard.Level,
-                Version = standard.Version,
+                ApprenticeshipType = standard.ApprenticeshipType,
                 RegulatorName = standard.ApprovalBody,
                 Sector = standard.Route,
                 StandardInfoUrl = course.StandardInfoUrl,
