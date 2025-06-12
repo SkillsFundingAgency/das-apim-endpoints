@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests
 {
