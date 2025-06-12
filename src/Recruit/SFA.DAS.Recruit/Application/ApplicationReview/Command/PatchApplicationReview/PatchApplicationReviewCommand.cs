@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using MediatR;
 
 namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview

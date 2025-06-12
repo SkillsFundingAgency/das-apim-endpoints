@@ -33,8 +33,14 @@ namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command
                     c.Data.Operations[1].path == "/HasEverBeenEmployerInterviewing" &&
                     c.Data.Operations[1].value.ToString() == request.HasEverBeenEmployerInterviewing.ToString() &&
 
-                    c.Data.Operations[2].path == "/EmployerFeedback" &&
-                    c.Data.Operations[2].value.ToString() == request.EmployerFeedback
+                    c.Data.Operations[3].path == "/EmployerFeedback" &&
+                    c.Data.Operations[3].value.ToString() == request.EmployerFeedback &&
+
+                    c.Data.Operations[4].path == "/TemporaryReviewStatus" &&
+                    c.Data.Operations[4].value.ToString() == request.TemporaryReviewStatus && 
+                    
+                    c.Data.Operations[5].path == "/DateSharedWithEmployer" &&
+                    c.Data.Operations[5].value.ToString() == request.DateSharedWithEmployer!.Value.ToString()
                 )), Times.Once
             );
         }
@@ -51,7 +57,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command
                 .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
                 .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.BadRequest, string.Empty));
 
-            Func<Task> act = async () => { await handler.Handle(request, CancellationToken.None); };
+            var act = async () => { await handler.Handle(request, CancellationToken.None); };
             await act.Should().ThrowAsync<ArgumentException>();
         }
     }
