@@ -1,150 +1,296 @@
 ﻿using System;
-using AutoFixture;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
-using System.Threading.Tasks;
-using System.Threading;
-using FluentAssertions;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands
+namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands;
+
+[TestFixture]
+public class CreateCohortCommandHandlerTests
 {
-    [TestFixture]
-    public class CreateCohortCommandHandlerTests
+    private const string ApprenticeshipType = "Foundation";
+    private const int MaximumAge = 25;
+
+    [Test, MoqAutoData]
+    public async Task Handle_WhenNoReservationId_ButTransferSender_ShouldNotAutoReserve(
+        CreateCohortCommand request,
+        CreateCohortCommandHandler handler)
     {
-        private CreateCohortCommandHandler _handler;
-        private CreateCohortCommand _request;
-        private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
-        private Mock<IAutoReservationsService> _autoReservationService;
-        private Fixture _fixture;
+        // Arrange
+        request.ReservationId = null;
 
-        [SetUp]
-        public void Setup()
-        {
-            _fixture = new Fixture();
-            _request = _fixture.Create<CreateCohortCommand>();
+        // Act
+        var act = () => handler.Handle(request, CancellationToken.None);
 
-            _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-            _autoReservationService = new Mock<IAutoReservationsService>();
+        // Assert
+        act.Should().ThrowAsync<ApplicationException>()
+            .WithMessage("When creating a auto reservation, the TransferSenderId must be null");
+    }
 
-            _handler = new CreateCohortCommandHandler(_commitmentsApiClient.Object, _autoReservationService.Object);
-        }
+    [Test, MoqAutoData]
+    public async Task Handle_WhenNoReservationId_AndNoTransferSender_ShouldAutoReserve(
+        [Frozen] Mock<IAutoReservationsService> autoReservationsService,
+        CreateCohortCommand request,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
+        request.ReservationId = null;
+        request.TransferSenderId = null;
 
-        [Test]
-        public async Task Handle_Cohort_Created()
-        {
-            var expectedResponse = _fixture.Create<CreateCohortResponse>();
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
-                    It.Is<PostCreateCohortRequest>(r =>
-                            ((CreateCohortRequest)r.Data).AccountId == _request.AccountId &&
-                            ((CreateCohortRequest)r.Data).AccountLegalEntityId == _request.AccountLegalEntityId &&
-                            ((CreateCohortRequest)r.Data).ActualStartDate == _request.ActualStartDate &&
-                            ((CreateCohortRequest)r.Data).Cost == _request.Cost &&
-                            ((CreateCohortRequest)r.Data).TrainingPrice == _request.TrainingPrice &&
-                            ((CreateCohortRequest)r.Data).EndPointAssessmentPrice == _request.EndPointAssessmentPrice &&
-                            ((CreateCohortRequest)r.Data).CourseCode == _request.CourseCode &&
-                            ((CreateCohortRequest)r.Data).DateOfBirth == _request.DateOfBirth &&
-                            ((CreateCohortRequest)r.Data).DeliveryModel == _request.DeliveryModel &&
-                            ((CreateCohortRequest)r.Data).Email == _request.Email &&
-                            ((CreateCohortRequest)r.Data).EmploymentEndDate == _request.EmploymentEndDate &&
-                            ((CreateCohortRequest)r.Data).EmploymentPrice == _request.EmploymentPrice &&
-                            ((CreateCohortRequest)r.Data).EndDate == _request.EndDate &&
-                            ((CreateCohortRequest)r.Data).FirstName == _request.FirstName &&
-                            ((CreateCohortRequest)r.Data).IgnoreStartDateOverlap == _request.IgnoreStartDateOverlap &&
-                            ((CreateCohortRequest)r.Data).IsOnFlexiPaymentPilot == _request.IsOnFlexiPaymentPilot &&
-                            ((CreateCohortRequest)r.Data).LastName == _request.LastName &&
-                            ((CreateCohortRequest)r.Data).OriginatorReference == _request.OriginatorReference &&
-                            ((CreateCohortRequest)r.Data).PledgeApplicationId == _request.PledgeApplicationId &&
-                            ((CreateCohortRequest)r.Data).ProviderId == _request.ProviderId &&
-                            ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId &&
-                            ((CreateCohortRequest)r.Data).StartDate == _request.StartDate &&
-                            ((CreateCohortRequest)r.Data).TransferSenderId == _request.TransferSenderId &&
-                            ((CreateCohortRequest)r.Data).Uln == _request.Uln &&
-                            ((CreateCohortRequest)r.Data).UserInfo == _request.UserInfo &&
-                            ((CreateCohortRequest)r.Data).RequestingParty == _request.RequestingParty &&
-                            ((CreateCohortRequest)r.Data).LearnerDataId == _request.LearnerDataId
-                        ), true
-                )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(expectedResponse, HttpStatusCode.OK, string.Empty));
+        // Act
+        _ = handler.Handle(request, CancellationToken.None);
 
-            var response = await _handler.Handle(_request, CancellationToken.None);
+        // Assert
+        autoReservationsService
+            .Verify(x => x.CreateReservation(It.Is<AutoReservation>(a => a.AccountId == request.AccountId
+                                                                         && a.AccountLegalEntityId ==
+                                                                         request.AccountLegalEntityId
+                                                                         && a.CourseCode == request.CourseCode
+                                                                         && a.StartDate == request.StartDate
+                                                                         && a.UserInfo == request.UserInfo)));
+    }
 
-            response.Should().BeEquivalentTo(expectedResponse);
-        }
+    [Test, MoqAutoData]
+    public async Task Handle_WhenReservationId__ShouldNotAutoReserve(
+        [Frozen] Mock<IAutoReservationsService> autoReservationsService,
+        CreateCohortCommand request,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
 
-        [Test]
-        public async Task Handle_AutoReservation_Creation_When_No_ReservationID_In_Request()
-        {
-            var reservationId = Guid.NewGuid();
-            _request.ReservationId = null;
-            _request.TransferSenderId = null;
+        // Act
+        _ = handler.Handle(request, CancellationToken.None);
 
-            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
-                .ReturnsAsync(reservationId);
+        // Assert
+        autoReservationsService.VerifyNoOtherCalls();
+    }
 
-            var expectedResponse = _fixture.Create<CreateCohortResponse>();
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
-                    It.Is<PostCreateCohortRequest>(r =>
-                            ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
-                        ), true
-                )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(expectedResponse, HttpStatusCode.OK, string.Empty));
+    [Test, MoqAutoData]
+    public async Task Handle_WhenHandled_ShouldCreateCohort(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        CreateCohortResponse expectedResponse,
+        GetLearnerAgeResponse learnerAgeResponse,
+        CreateCohortCommand request,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
+        learnerAgeResponse.MaximumAge = MaximumAge;
+        courseTypesApiClient
+            .Setup(x => x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()))
+            .ReturnsAsync(learnerAgeResponse);
 
-            var response = await _handler.Handle(_request, CancellationToken.None);
-
-            response.Should().BeEquivalentTo(expectedResponse);
-        }
-
-        [Test]
-        public async Task Delete_Reservation_When_No_ReservationID_In_Request()
-        {
-            var reservationId = Guid.NewGuid();
-            _request.ReservationId = null;
-            _request.TransferSenderId = null;
-
-            _autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
-                .ReturnsAsync(reservationId);
-
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+        commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
                 It.Is<PostCreateCohortRequest>(r =>
-                    ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
+                    ((CreateCohortRequest)r.Data).AccountId == request.AccountId &&
+                    ((CreateCohortRequest)r.Data).AccountLegalEntityId == request.AccountLegalEntityId &&
+                    ((CreateCohortRequest)r.Data).ActualStartDate == request.ActualStartDate &&
+                    ((CreateCohortRequest)r.Data).Cost == request.Cost &&
+                    ((CreateCohortRequest)r.Data).TrainingPrice == request.TrainingPrice &&
+                    ((CreateCohortRequest)r.Data).EndPointAssessmentPrice == request.EndPointAssessmentPrice &&
+                    ((CreateCohortRequest)r.Data).CourseCode == request.CourseCode &&
+                    ((CreateCohortRequest)r.Data).DateOfBirth == request.DateOfBirth &&
+                    ((CreateCohortRequest)r.Data).DeliveryModel == request.DeliveryModel &&
+                    ((CreateCohortRequest)r.Data).Email == request.Email &&
+                    ((CreateCohortRequest)r.Data).EmploymentEndDate == request.EmploymentEndDate &&
+                    ((CreateCohortRequest)r.Data).EmploymentPrice == request.EmploymentPrice &&
+                    ((CreateCohortRequest)r.Data).EndDate == request.EndDate &&
+                    ((CreateCohortRequest)r.Data).FirstName == request.FirstName &&
+                    ((CreateCohortRequest)r.Data).IgnoreStartDateOverlap == request.IgnoreStartDateOverlap &&
+                    ((CreateCohortRequest)r.Data).IsOnFlexiPaymentPilot == request.IsOnFlexiPaymentPilot &&
+                    ((CreateCohortRequest)r.Data).LastName == request.LastName &&
+                    ((CreateCohortRequest)r.Data).OriginatorReference == request.OriginatorReference &&
+                    ((CreateCohortRequest)r.Data).PledgeApplicationId == request.PledgeApplicationId &&
+                    ((CreateCohortRequest)r.Data).ProviderId == request.ProviderId &&
+                    ((CreateCohortRequest)r.Data).ReservationId == request.ReservationId &&
+                    ((CreateCohortRequest)r.Data).StartDate == request.StartDate &&
+                    ((CreateCohortRequest)r.Data).TransferSenderId == request.TransferSenderId &&
+                    ((CreateCohortRequest)r.Data).Uln == request.Uln &&
+                    ((CreateCohortRequest)r.Data).UserInfo == request.UserInfo &&
+                    ((CreateCohortRequest)r.Data).RequestingParty == request.RequestingParty &&
+                    ((CreateCohortRequest)r.Data).LearnerDataId == request.LearnerDataId &&
+                    ((CreateCohortRequest)r.Data).MinimumAgeAtApprenticeshipStart == learnerAgeResponse.MinimumAge &&
+                    ((CreateCohortRequest)r.Data).MaximumAgeAtApprenticeshipStart == learnerAgeResponse.MaximumAge
                 ), true
-            )).ThrowsAsync(new Exception("Some Error"));
+            )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(expectedResponse, HttpStatusCode.OK, string.Empty))
+            .Verifiable();
 
-            var act = async () => await _handler.Handle(_request, CancellationToken.None);
-            await act.Should().ThrowAsync<Exception>();
-            _autoReservationService.Verify(x=>x.DeleteReservation(reservationId));
-        }
+        // Act
+        var result = await handler.Handle(request, CancellationToken.None);
 
-        [Test]
-        public async Task Does_Not_Create_Or_Delete_Reservation_When_ReservationID_In_Request()
-        {
-            _commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
-                It.Is<PostCreateCohortRequest>(r =>
-                    ((CreateCohortRequest)r.Data).ReservationId == _request.ReservationId
-                ), true
-            )).ThrowsAsync(new Exception("Some Error"));
+        // Assert
+        commitmentsApiClient.Verify();
+        result.Should().NotBeNull();
+        result.CohortId.Should().Be(expectedResponse.CohortId);
+        result.CohortReference.Should().Be(expectedResponse.CohortReference);
+    }
 
-            var act = async () => await _handler.Handle(_request, CancellationToken.None);
-            await act.Should().ThrowAsync<Exception>();
-            _autoReservationService.Verify(x => x.DeleteReservation(It.IsAny<Guid>()), Times.Never);
-            _autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Never);
-        }
+    [Test, MoqAutoData]
+    public async Task Handle_WhenNoStandardDetails_DoNotCreateCohort(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        CreateCohortCommand request,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
+        coursesApiClient
+            .Setup(x => x.Get<GetStandardsListItem>(
+                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
+            .ReturnsAsync((GetStandardsListItem)null)
+            .Verifiable();
 
-        [Test]
-        public async Task Throw_ApplicationException_When_No_ReservationID_In_Request_But_TransferSenderId_Is_Present()
-        {
-            _request.ReservationId = null;
+        // Act
+        var act = () => handler.Handle(request, CancellationToken.None);
 
-            var act = async () => await _handler.Handle(_request, CancellationToken.None);
-            act.Should().ThrowAsync<ApplicationException>().WithMessage("When creating a auto reservation, the TransferSenderId must be null");
-            _autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Never);
-        }
+        // Assert
+        act.Should().ThrowAsync<Exception>().WithMessage($"Standard not found for course ID {request.CourseCode}");
+        coursesApiClient.Verify();
+        courseTypesApiClient.VerifyNoOtherCalls();
+        commitmentsApiClient.VerifyNoOtherCalls();
+    }
 
+    [Test, MoqAutoData]
+    public async Task Handle_WhenNoCourseType_DoNotCreateCohort(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        GetStandardsListItem standardResponse,
+        CreateCohortCommand request,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
+        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        coursesApiClient
+            .Setup(x => x.Get<GetStandardsListItem>(
+                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
+            .ReturnsAsync(standardResponse)
+            .Verifiable();
+
+        courseTypesApiClient
+            .Setup(x => x.Get<GetLearnerAgeResponse>(
+                It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(ApprenticeshipType))))
+            .ReturnsAsync((GetLearnerAgeResponse)null)
+            .Verifiable();
+
+        // Act
+        var act = () => handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        act.Should().ThrowAsync<Exception>()
+            .WithMessage($"Learner age rules not found for apprenticeship type {ApprenticeshipType}");
+        coursesApiClient.Verify();
+        courseTypesApiClient.Verify();
+        commitmentsApiClient.VerifyNoOtherCalls();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_WhenHandled_ShouldGetCourse(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        GetStandardsListItem standardResponse,
+        CreateCohortCommand request,
+        CreateCohortResponse createCohortResponse,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
+        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        coursesApiClient
+            .Setup(x => x.Get<GetStandardsListItem>(
+                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
+            .ReturnsAsync(standardResponse)
+            .Verifiable();
+
+        commitmentsApiClient
+            .Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.IsAny<PostCreateCohortRequest>(), true))
+            .ReturnsAsync(new ApiResponse<CreateCohortResponse>(createCohortResponse, HttpStatusCode.OK, string.Empty))
+            .Verifiable();
+
+        // Act
+        _ = await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        coursesApiClient.Verify();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_WhenHandled_ShouldGetLearnerAgeRules(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        GetStandardsListItem standardResponse,
+        GetLearnerAgeResponse getLearnerAgeResponse,
+        CreateCohortCommand request,
+        CreateCohortResponse createCohortResponse,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
+        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        coursesApiClient
+            .Setup(x => x.Get<GetStandardsListItem>(
+                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
+            .ReturnsAsync(standardResponse)
+            .Verifiable();
+
+        commitmentsApiClient
+            .Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.IsAny<PostCreateCohortRequest>(), true))
+            .ReturnsAsync(new ApiResponse<CreateCohortResponse>(createCohortResponse, HttpStatusCode.OK, string.Empty))
+            .Verifiable();
+
+        courseTypesApiClient
+            .Setup(x => x.Get<GetLearnerAgeResponse>(
+                It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(ApprenticeshipType))))
+            .ReturnsAsync(getLearnerAgeResponse)
+            .Verifiable();
+
+        // Act
+        _ = await handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        coursesApiClient.Verify();
+        courseTypesApiClient.Verify();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_WhenCohortCreationFails_ShouldDeleteReservation(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<IAutoReservationsService> autoReservationsService,
+        CreateCohortCommand request,
+        Guid reservationId,
+        CreateCohortCommandHandler handler)
+    {
+        // Arrange
+        request.ReservationId = Guid.Empty;
+        request.TransferSenderId = null;
+        autoReservationsService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
+            .ReturnsAsync(reservationId);
+
+        commitmentsApiClient.Setup(x =>
+                x.PostWithResponseCode<CreateCohortResponse>(It.IsAny<PostCreateCohortRequest>(), true))
+            .ThrowsAsync(new Exception("Failed to create cohort"));
+
+        // Act
+        var action = () => handler.Handle(request, CancellationToken.None);
+
+        await action.Should().ThrowAsync<Exception>();
+        autoReservationsService.Verify(x => x.DeleteReservation(reservationId), Times.Once);
     }
 }
