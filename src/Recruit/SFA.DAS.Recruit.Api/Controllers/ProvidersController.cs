@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -82,6 +83,9 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             try
             {
+                logger.LogTrace("GetApplicationReviewCount endpoint called for the ukprn : {ukprn}", ukprn);
+                logger.LogTrace("GetApplicationReviewCount endpoint called for the payload : {payload}", JsonConvert.SerializeObject(vacancyReferences));
+
                 var queryResult = await mediator.Send(new GetApplicationReviewsCountByUkprnQuery(ukprn, vacancyReferences));
 
                 return Ok(queryResult);
