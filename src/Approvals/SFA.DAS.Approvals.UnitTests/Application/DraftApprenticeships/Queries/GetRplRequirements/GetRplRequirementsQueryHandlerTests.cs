@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequirements;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Requests;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.UnitTests.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -22,7 +22,7 @@ public class GetRplRequirementsQueryHandlerTests
 {
     private GetRplRequirementsQueryHandler _handler;
     private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
-    private Mock<ITrainingTypesApiClient> _trainingTypesApiClient;
+    private Mock<ICourseTypesApiClient> _courseTypesApiClient;
     private Mock<ILogger<GetRplRequirementsQueryHandler>> _logger;
     private GetRplRequirementsQuery _query;
     private GetStandardsListItem _standardResponse;
@@ -43,15 +43,15 @@ public class GetRplRequirementsQueryHandlerTests
                     It.Is<GetStandardDetailsByIdRequest>(r => r.Id == _query.CourseId)))
             .ReturnsAsync(_standardResponse);
 
-        _trainingTypesApiClient = new Mock<ITrainingTypesApiClient>();
-        _trainingTypesApiClient.Setup(x =>
+        _courseTypesApiClient = new Mock<ICourseTypesApiClient>();
+        _courseTypesApiClient.Setup(x =>
                 x.Get<GetRecognitionOfPriorLearningResponse>(
-                    It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl == $"api/trainingtypes/{_standardResponse.ApprenticeshipType}/features/rpl")))
+                    It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl == $"api/coursetypes/{_standardResponse.ApprenticeshipType}/features/rpl")))
             .ReturnsAsync(_rplResponse);
 
         _logger = new Mock<ILogger<GetRplRequirementsQueryHandler>>();
 
-        _handler = new GetRplRequirementsQueryHandler(_coursesApiClient.Object, _trainingTypesApiClient.Object, _logger.Object);
+        _handler = new GetRplRequirementsQueryHandler(_coursesApiClient.Object, _courseTypesApiClient.Object, _logger.Object);
     }
 
     [Test]
@@ -89,9 +89,9 @@ public class GetRplRequirementsQueryHandlerTests
     public async Task Handle_Returns_Null_When_Rpl_Data_Not_Found()
     {
         // Arrange
-        _trainingTypesApiClient.Setup(x =>
+        _courseTypesApiClient.Setup(x =>
                 x.Get<GetRecognitionOfPriorLearningResponse>(
-                    It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl == $"api/trainingtypes/{_standardResponse.ApprenticeshipType}/features/rpl")))
+                    It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl == $"api/coursetypes/{_standardResponse.ApprenticeshipType}/features/rpl")))
             .ReturnsAsync((GetRecognitionOfPriorLearningResponse)null);
 
         // Act

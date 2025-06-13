@@ -1,8 +1,8 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Approvals.InnerApi.TrainingTypesApi
+namespace SFA.DAS.Approvals.InnerApi.CourseTypesApi
 {
-    public class TrainingTypesApiConfiguration : IInternalApiConfiguration
+    public class CourseTypesApiConfiguration : IInternalApiConfiguration
     {
         public string Url { get; set; }
         public string Identifier { get; set; }

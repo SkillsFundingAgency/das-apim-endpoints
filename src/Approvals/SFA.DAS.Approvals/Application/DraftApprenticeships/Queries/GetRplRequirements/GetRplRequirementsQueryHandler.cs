@@ -2,10 +2,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Requests;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -14,7 +14,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequi
 {
     public class GetRplRequirementsQueryHandler(
         ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-        ITrainingTypesApiClient trainingTypesApiClient,
+        ICourseTypesApiClient courseTypesApiClient,
         ILogger<GetRplRequirementsQueryHandler> logger)
         : IRequestHandler<GetRplRequirementsQuery, GetRplRequirementsResult>
     {
@@ -28,7 +28,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequi
                 return null;
             }
             
-            var rplRequirements = await trainingTypesApiClient.Get<GetRecognitionOfPriorLearningResponse>(new GetRecognitionOfPriorLearningRequest(standard.ApprenticeshipType));
+            var rplRequirements = await courseTypesApiClient.Get<GetRecognitionOfPriorLearningResponse>(new GetRecognitionOfPriorLearningRequest(standard.ApprenticeshipType));
 
             if (rplRequirements == null)
             {
