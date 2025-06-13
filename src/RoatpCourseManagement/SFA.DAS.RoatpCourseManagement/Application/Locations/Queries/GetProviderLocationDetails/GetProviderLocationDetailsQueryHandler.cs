@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 using System.Threading;
@@ -25,6 +26,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProvide
             {
                 return null;
             }
+
+            response.EnsureSuccessStatusCode();
 
             return new GetProviderLocationDetailsQueryResult() { ProviderLocation = response.Body };
         }

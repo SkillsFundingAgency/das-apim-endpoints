@@ -51,12 +51,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
                 return NotFound();
             }
 
-            if (result.ProviderLocation == null)
-            {
-                _logger.LogInformation("Provider Location Details not found for {ukprn} and {id}", ukprn, id);
-                return BadRequest();
-            }
-
             _logger.LogInformation($"Found provider location details for ukprn: {ukprn} and {id}");
             return Ok(result.ProviderLocation);
         }

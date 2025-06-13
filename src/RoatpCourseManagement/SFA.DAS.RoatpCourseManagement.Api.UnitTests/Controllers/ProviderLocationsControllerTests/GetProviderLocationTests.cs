@@ -30,21 +30,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
 
             var okResult = response as OkObjectResult;
             okResult.Should().NotBeNull();
-            okResult.Value.Should().BeEquivalentTo(result.ProviderLocation);
-        }
-
-        [Test, MoqAutoData]
-        public async Task GetProviderLocation_ReturnsWithNullProvider_Location_Returns_BadRequest(
-            int ukprn,
-            Guid id,
-            [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] GetProviderLocationsController sut)
-        {
-            mediatorMock.Setup(m => m.Send(It.Is<GetProviderLocationDetailsQuery>(c => c.GetUrl.Equals(new GetProviderLocationDetailsQuery(ukprn, id).GetUrl)), It.IsAny<CancellationToken>())).ReturnsAsync(new GetProviderLocationDetailsQueryResult());
-
-            var response = await sut.GetProviderLocation(ukprn, id);
-
-            (response as BadRequestResult).Should().NotBeNull();
+            okResult!.Value.Should().BeEquivalentTo(result.ProviderLocation);
         }
 
         [Test, MoqAutoData]

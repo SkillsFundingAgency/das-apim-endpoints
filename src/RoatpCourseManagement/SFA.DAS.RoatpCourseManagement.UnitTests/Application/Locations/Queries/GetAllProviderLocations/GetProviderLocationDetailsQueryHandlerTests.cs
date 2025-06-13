@@ -5,9 +5,11 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,7 +50,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Locations.Queries.
         }
 
         [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_400_Returns_Body_With_ProvideLocation_Null(
+        public async Task Handle_CallsInnerApi_Throws_Exception(
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
             GetProviderLocationDetailsQuery query,
             GetProviderLocationDetailsQueryHandler sut)
@@ -57,9 +59,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Locations.Queries.
             apiClientMock.Setup(c => c.GetWithResponseCode<ProviderLocationModel>(It.Is<GetProviderLocationDetailsQuery>(q => q == query)))
                 .ReturnsAsync(new ApiResponse<ProviderLocationModel>(null, HttpStatusCode.BadRequest, ""));
 
-            var result = await sut.Handle(query, new CancellationToken());
-            result.Should().NotBeNull();
-            result.ProviderLocation.Should().BeNull();
+            Func<Task> action = () => sut.Handle(query, new CancellationToken());
+
+            await action.Should().ThrowAsync<ApiResponseException>();
         }
     }
 }
