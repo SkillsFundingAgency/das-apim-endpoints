@@ -7,10 +7,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Requests;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -83,7 +83,7 @@ public class CreateCohortCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenHandled_ShouldCreateCohort(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ITrainingTypesApiClient> trainingTypesApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
         CreateCohortResponse expectedResponse,
         GetLearnerAgeResponse learnerAgeResponse,
         CreateCohortCommand request,
@@ -91,7 +91,7 @@ public class CreateCohortCommandHandlerTests
     {
         // Arrange
         learnerAgeResponse.MaximumAge = MaximumAge;
-        trainingTypesApiClient
+        courseTypesApiClient
             .Setup(x => x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()))
             .ReturnsAsync(learnerAgeResponse);
 
@@ -143,7 +143,7 @@ public class CreateCohortCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenNoStandardDetails_DoNotCreateCohort(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ITrainingTypesApiClient> trainingTypesApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
         CreateCohortCommand request,
         CreateCohortCommandHandler handler)
@@ -161,14 +161,14 @@ public class CreateCohortCommandHandlerTests
         // Assert
         act.Should().ThrowAsync<Exception>().WithMessage($"Standard not found for course ID {request.CourseCode}");
         coursesApiClient.Verify();
-        trainingTypesApiClient.VerifyNoOtherCalls();
+        courseTypesApiClient.VerifyNoOtherCalls();
         commitmentsApiClient.VerifyNoOtherCalls();
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenNoTrainingType_DoNotCreateCohort(
+    public async Task Handle_WhenNoCourseType_DoNotCreateCohort(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ITrainingTypesApiClient> trainingTypesApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
         GetStandardsListItem standardResponse,
         CreateCohortCommand request,
@@ -182,7 +182,7 @@ public class CreateCohortCommandHandlerTests
             .ReturnsAsync(standardResponse)
             .Verifiable();
 
-        trainingTypesApiClient
+        courseTypesApiClient
             .Setup(x => x.Get<GetLearnerAgeResponse>(
                 It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(ApprenticeshipType))))
             .ReturnsAsync((GetLearnerAgeResponse)null)
@@ -195,14 +195,14 @@ public class CreateCohortCommandHandlerTests
         act.Should().ThrowAsync<Exception>()
             .WithMessage($"Learner age rules not found for apprenticeship type {ApprenticeshipType}");
         coursesApiClient.Verify();
-        trainingTypesApiClient.Verify();
+        courseTypesApiClient.Verify();
         commitmentsApiClient.VerifyNoOtherCalls();
     }
 
     [Test, MoqAutoData]
     public async Task Handle_WhenHandled_ShouldGetCourse(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ITrainingTypesApiClient> trainingTypesApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
         GetStandardsListItem standardResponse,
         CreateCohortCommand request,
@@ -233,7 +233,7 @@ public class CreateCohortCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenHandled_ShouldGetLearnerAgeRules(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ITrainingTypesApiClient> trainingTypesApiClient,
+        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
         GetStandardsListItem standardResponse,
         GetLearnerAgeResponse getLearnerAgeResponse,
@@ -255,7 +255,7 @@ public class CreateCohortCommandHandlerTests
             .ReturnsAsync(new ApiResponse<CreateCohortResponse>(createCohortResponse, HttpStatusCode.OK, string.Empty))
             .Verifiable();
 
-        trainingTypesApiClient
+        courseTypesApiClient
             .Setup(x => x.Get<GetLearnerAgeResponse>(
                 It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(ApprenticeshipType))))
             .ReturnsAsync(getLearnerAgeResponse)
@@ -266,7 +266,7 @@ public class CreateCohortCommandHandlerTests
 
         // Assert
         coursesApiClient.Verify();
-        trainingTypesApiClient.Verify();
+        courseTypesApiClient.Verify();
     }
 
     [Test, MoqAutoData]

@@ -3,10 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Requests;
-using SFA.DAS.Approvals.InnerApi.TrainingTypesApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -18,7 +18,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
         IAutoReservationsService autoReservationService,
         ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-        ITrainingTypesApiClient trainingTypesApiClient,
+        ICourseTypesApiClient courseTypesApiClient,
         ILogger<CreateCohortCommandHandler> logger)
         : IRequestHandler<CreateCohortCommand, CreateCohortResult>
     {
@@ -54,7 +54,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                     throw new Exception($"Standard not found for course ID {request.CourseCode}");
                 }
                 
-                var learnerAge = await trainingTypesApiClient.Get<GetLearnerAgeResponse>(new GetLearnerAgeRequest(standard.ApprenticeshipType));
+                var learnerAge = await courseTypesApiClient.Get<GetLearnerAgeResponse>(new GetLearnerAgeRequest(standard.ApprenticeshipType));
 
                 if (learnerAge == null)
                 {
