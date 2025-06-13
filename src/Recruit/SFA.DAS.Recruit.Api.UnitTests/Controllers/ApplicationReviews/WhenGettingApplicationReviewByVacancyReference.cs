@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
-using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReference;
 using System;
 using System.Net;
 using System.Threading;
@@ -9,34 +9,30 @@ using System.Threading;
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.ApplicationReviews
 {
     [TestFixture]
-    public class WhenPostingApplicationReview
+    public class WhenGettingApplicationReviewByVacancyReference
     {
         [Test, MoqAutoData]
-        public async Task Then_Post_From_Mediator(
-            Guid applicationId,
-            PostApplicationReviewApiRequest request,
+        public async Task Then_Gets_Account_From_Mediator(
+            long vacancyReference,
+            GetApplicationReviewsByVacancyReferenceQueryResult mediatorResponse,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApplicationReviewsController controller)
         {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetApplicationReviewsByVacancyReferenceQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResponse);
 
-            var actual = await controller.UpdateApplicationReview(applicationId, request) as NoContentResult;
-
+            var actual = await controller.GetApplicationReviewsByVacancyReference(vacancyReference, CancellationToken.None) as OkObjectResult;
             actual.Should().NotBeNull();
-            mockMediator.Verify(x => x.Send(It.Is<PatchApplicationReviewCommand>(
-                c =>
-                    c.Id == applicationId
-                    && c.Status == request.Status
-                    && c.DateSharedWithEmployer == request.DateSharedWithEmployer
-                    && c.TemporaryReviewStatus == request.TemporaryReviewStatus
-                    && c.HasEverBeenEmployerInterviewing == request.HasEverBeenEmployerInterviewing
-                    && c.EmployerFeedback == request.EmployerFeedback
-            ), CancellationToken.None), Times.Once);
+            mockMediator.Verify(x => x.Send(It.Is<GetApplicationReviewsByVacancyReferenceQuery>(
+                c => c.VacancyReference == vacancyReference), CancellationToken.None), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            Guid applicationId,
-            PostApplicationReviewApiRequest request,
+            long vacancyReference,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] ApplicationReviewsController controller)
         {
@@ -46,7 +42,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.ApplicationReviews
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var actual = await controller.UpdateApplicationReview(applicationId, request) as StatusCodeResult;
+            var actual = await controller.GetApplicationReviewsByVacancyReference(vacancyReference, CancellationToken.None) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
