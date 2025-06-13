@@ -40,7 +40,9 @@ namespace SFA.DAS.Recruit.Domain
 
         public static implicit operator TrainingProgramme(GetStandardsListItem source)
         {
-            var apprenticeshipType = source.ApprenticeshipType.Contains("foundation", StringComparison.CurrentCultureIgnoreCase) ? TrainingType.Foundation : TrainingType.Standard;
+            var apprenticeshipType = !string.IsNullOrEmpty(source.ApprenticeshipType) && source.ApprenticeshipType.Contains("foundation", StringComparison.CurrentCultureIgnoreCase) 
+                ? TrainingType.Foundation 
+                : TrainingType.Standard;
             
             return new TrainingProgramme
             {
