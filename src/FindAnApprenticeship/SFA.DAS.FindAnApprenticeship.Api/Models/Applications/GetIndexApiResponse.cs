@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 using SFA.DAS.SharedOuterApi.Domain;
-using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
