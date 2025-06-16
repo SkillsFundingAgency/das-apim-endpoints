@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class ApplicationReviewsController(IMediator mediator,
         ILogger<ApplicationReviewsController> logger) : ControllerBase
