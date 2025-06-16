@@ -54,18 +54,19 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Application
 
                 expectedResult.SubmittedApplications.Add(new GetAccountDeletionQueryResult.Application
                 {
+                    Address = vacancy?.Address,
+                    ApprenticeshipType = vacancy.ApprenticeshipType,
+                    ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
+                    CreatedDate = application.CreatedDate,
+                    EmployerLocationOption = vacancy?.EmployerLocationOption,
+                    EmployerName = vacancy.EmployerName,
+                    EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
                     Id = application.Id,
+                    OtherAddresses = vacancy?.OtherAddresses,
+                    Status = Enum.Parse<ApplicationStatus>(application.Status),
+                    SubmittedDate = application.SubmittedDate,
                     Title = vacancy.Title,
                     VacancyReference = vacancy.VacancyReference,
-                    EmployerName = vacancy.EmployerName,
-                    CreatedDate = application.CreatedDate,
-                    ClosingDate = vacancy.ClosedDate ?? vacancy.ClosingDate,
-                    SubmittedDate = application.SubmittedDate,
-                    Address = vacancy?.Address,
-                    OtherAddresses = vacancy?.OtherAddresses,
-                    EmployerLocationOption = vacancy?.EmployerLocationOption,
-                    EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
-                    Status = Enum.Parse<ApplicationStatus>(application.Status)
                 });
             }
 
