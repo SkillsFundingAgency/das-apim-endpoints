@@ -18,4 +18,8 @@
     <Folder Include="Application\Queries\GetApplicationReviewsByVacancyReference\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Application\VacancyReview\Queries\" />
+  </ItemGroup>
+
 </Project>
