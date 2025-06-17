@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using Moq;
@@ -6,6 +7,7 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -20,6 +22,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
           ValidateBulkUploadRecordsCommand query,
           [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
           [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
+          [Frozen] Mock<IAddCourseTypeDataToCsvService> addCourseTypeDataToCsvService,
+          List<BulkUploadAddDraftApprenticeshipExtendedRequest> csvRecordsExtendedRequests,
           ValidateBulkUploadRecordsCommandHandler handler
           )
         {
@@ -28,10 +32,15 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
             var reservationValidationResult = new BulkReservationValidationResults();
             var reservationApiResponse = new ApiResponse<BulkReservationValidationResults>(reservationValidationResult, System.Net.HttpStatusCode.OK, "");
             reservationApiClient.Setup(x => x.PostWithResponseCode<BulkReservationValidationResults>(It.IsAny<PostValidateReservationRequest>(), true)).ReturnsAsync(() => reservationApiResponse);
+            addCourseTypeDataToCsvService.Setup(x => x.PopulateWithCourseTypeData(query.CsvRecords)).ReturnsAsync(csvRecordsExtendedRequests);
 
             apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateBulkUploadRequest>(), true)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);
+
             Assert.That(actual, Is.Not.Null);
+            apiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<PostValidateBulkUploadRequest>(r =>
+                ((BulkUploadValidateApiRequest)r.Data).CsvRecords == csvRecordsExtendedRequests
+            ), true), Times.Once);
         }
     }
 }
