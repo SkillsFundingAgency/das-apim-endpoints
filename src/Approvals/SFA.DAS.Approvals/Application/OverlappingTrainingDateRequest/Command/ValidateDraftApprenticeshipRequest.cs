@@ -1,6 +1,6 @@
-﻿using SFA.DAS.Approvals.InnerApi;
+﻿using System;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using System;
 
 namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command
 {

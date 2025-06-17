@@ -44,7 +44,6 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 new GetStandardRequest(request.CourseId));
 
             await Task.WhenAll(epaosTask, courseTask);
-            _logger.LogDebug($"Found [{epaosTask.Result.Count()}] EPAOs for Course Id:[{request.CourseId}].");
             
             var filteredEpaos = epaosTask.Result
                 .Where(_courseEpaoIsValidFilterService.IsValidCourseEpao)
@@ -70,8 +69,6 @@ namespace SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpaos
                 }
             }
 
-            _logger.LogDebug($"Found [{filteredEpaos.Count}] EPAOs for Course Id:[{request.CourseId}] after filtering.");
-            
             return new GetCourseEpaosResult
             {
                 Epaos = filteredEpaos.Where(x => x.CourseEpaoDetails.StandardVersions.Length > 0)
