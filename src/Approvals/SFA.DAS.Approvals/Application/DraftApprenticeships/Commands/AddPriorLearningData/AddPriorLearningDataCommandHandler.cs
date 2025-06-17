@@ -9,15 +9,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData
 {
-    public class AddPriorLearningDataCommandHandler : IRequestHandler<AddPriorLearningDataCommand, AddPriorLearningDataCommandResult>
+    public class AddPriorLearningDataCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        : IRequestHandler<AddPriorLearningDataCommand, AddPriorLearningDataCommandResult>
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        
-        public AddPriorLearningDataCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
-        {
-            _apiClient = apiClient;
-        }
-
         public async Task<AddPriorLearningDataCommandResult> Handle(AddPriorLearningDataCommand request, CancellationToken cancellationToken)
         {
             var addPriorLearningRequest = new AddPriorLearningDataRequest
@@ -28,12 +22,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLe
                 DurationReducedBy = request.DurationReducedBy,
                 PriceReducedBy = request.PriceReducedBy
             };
-            var result = await _apiClient.PostWithResponseCode<AddPriorLearningDataResponse>(new PostAddPriorLearningDataRequest(request.CohortId, request.DraftApprenticeshipId, addPriorLearningRequest), false);
+            var result = await apiClient.PostWithResponseCode<AddPriorLearningDataResponse>(new PostAddPriorLearningDataRequest(request.CohortId, request.DraftApprenticeshipId, addPriorLearningRequest), false);
 
             result.EnsureSuccessStatusCode();
 
-            var apprenticeship = _apiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
-            var priorLearningSummary = _apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, request.DraftApprenticeshipId));
+            var apprenticeship = apiClient.Get<GetDraftApprenticeshipResponse>(new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
+            var priorLearningSummary = apiClient.Get<GetPriorLearningSummaryResponse>(new GetPriorLearningSummaryRequest(request.CohortId, request.DraftApprenticeshipId));
             await Task.WhenAll(apprenticeship, priorLearningSummary);
 
             return new AddPriorLearningDataCommandResult
