@@ -21,9 +21,9 @@ public class GetApprenticeshipsQueryHandlerTests
 
         query.AcademicYear = 2425;
 
-        var expectedUrl = $"/{query.Ukprn}/academicyears/{query.AcademicYear}/apprenticeships?page={query.Page}&pageSize={query.PageSize}";
+        var expectedUrl = $"/{query.Ukprn}/academicyears/{query.AcademicYear}/learnings?page={query.Page}&pageSize={query.PageSize}";
 
-        apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllApprenticeshipsRequest>(c => c.GetUrl == expectedUrl)))
+        apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllLearningsRequest>(c => c.GetUrl == expectedUrl)))
             .ReturnsAsync(apiResponse);
 
         var actual = await sut.Handle(query, It.IsAny<CancellationToken>());

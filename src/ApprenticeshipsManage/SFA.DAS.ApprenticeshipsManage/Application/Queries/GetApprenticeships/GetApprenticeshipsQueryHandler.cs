@@ -15,7 +15,7 @@ public class GetApprenticeshipsQueryHandler(
         apprenticeshipApiClient.GenerateServiceToken("ApprenticeshipsManage");
 
         var applicationsResponse = await apprenticeshipApiClient.Get<PagedApprenticeshipsResponse>(
-            new GetAllApprenticeshipsRequest(
+            new GetAllLearningsRequest(
                 request.Ukprn,
                 request.AcademicYear,
                 request.Page,
