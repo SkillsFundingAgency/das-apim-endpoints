@@ -19,7 +19,7 @@ namespace SFA.DAS.Funding.Application.Services
 
         public async Task<ApprenticeshipsDto> GetAll(long ukprn)
         {
-            var response = await _client.GetAll<ApprenticeshipDto>(new GetApprenticeshipsRequest(ukprn));
+            var response = await _client.GetAll<LearningDto>(new GetLearningsRequest(ukprn));
 
             return new ApprenticeshipsDto() { Apprenticeships = response.ToList()};
         }

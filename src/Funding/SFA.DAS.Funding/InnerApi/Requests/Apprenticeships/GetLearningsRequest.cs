@@ -2,15 +2,15 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Funding.InnerApi.Requests.Apprenticeships
 {
-    public class GetApprenticeshipsRequest : IGetAllApiRequest
+    public class GetLearningsRequest : IGetAllApiRequest
     {
         private readonly long _ukprn;
 
-        public GetApprenticeshipsRequest(long ukprn)
+        public GetLearningsRequest(long ukprn)
         {
             _ukprn = ukprn;
         }
 
-        public string GetAllUrl => $"{_ukprn}/apprenticeships";
+        public string GetAllUrl => $"{_ukprn}/learnings";
     }
 }
