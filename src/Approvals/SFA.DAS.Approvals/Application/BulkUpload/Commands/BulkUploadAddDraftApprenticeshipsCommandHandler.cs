@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -19,12 +20,18 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
         private readonly IReservationApiClient<ReservationApiConfiguration> _reservationApiClient;
         private readonly IMediator _mediator;
+        private readonly IAddCourseTypeDataToCsvService _courseTypesToCsvService;
 
-        public BulkUploadAddDraftApprenticeshipsCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IReservationApiClient<ReservationApiConfiguration> reservationApiClient, IMediator mediator)
+        public BulkUploadAddDraftApprenticeshipsCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, 
+            IReservationApiClient<ReservationApiConfiguration> reservationApiClient, 
+            IMediator mediator,
+            IAddCourseTypeDataToCsvService courseTypesToCsvService = null
+            )
         {
             _apiClient = apiClient;
             _reservationApiClient = reservationApiClient;
             _mediator = mediator;
+            _courseTypesToCsvService = courseTypesToCsvService;
         }
 
         public async Task<GetBulkUploadAddDraftApprenticeshipsResult> Handle(BulkUploadAddDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
@@ -35,7 +42,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
             var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
             {
-                BulkUploadDraftApprenticeships = command.BulkUploadAddDraftApprenticeships,
+                BulkUploadDraftApprenticeships = await _courseTypesToCsvService.PopulateWithCourseTypeData(command.BulkUploadAddDraftApprenticeships.ToList()),
                 ProviderId = command.ProviderId,
                 LogId = command.FileUploadLogId,
                 UserInfo = command.UserInfo
