@@ -5,11 +5,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 
 public class GetPendingStartDateChangeRequest : IGetApiRequest
 {
-    public GetPendingStartDateChangeRequest(Guid apprenticeshipKey)
+    public GetPendingStartDateChangeRequest(Guid learningKey)
     {
-        ApprenticeshipKey = apprenticeshipKey;
+        LearningKey = learningKey;
     }
 
-    public Guid ApprenticeshipKey { get; }
-    public string GetUrl => $"{ApprenticeshipKey}/startDateChange/pending";
+    public Guid LearningKey { get; }
+    public string GetUrl => $"{LearningKey}/startDateChange/pending";
 }

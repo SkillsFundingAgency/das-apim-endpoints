@@ -5,11 +5,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 
 public class GetLearnerStatusRequest : IGetApiRequest
 {
-    public GetLearnerStatusRequest(Guid apprenticeshipKey)
+    public GetLearnerStatusRequest(Guid learningKey)
     {
-        ApprenticeshipKey = apprenticeshipKey;
+        LearningKey = learningKey;
     }
 
-    public Guid ApprenticeshipKey { get; }
-    public string GetUrl => $"{ApprenticeshipKey}/LearnerStatus";
+    public Guid LearningKey { get; }
+    public string GetUrl => $"{LearningKey}/LearnerStatus";
 }

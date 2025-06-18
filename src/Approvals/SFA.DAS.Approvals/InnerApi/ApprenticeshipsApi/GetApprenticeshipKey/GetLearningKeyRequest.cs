@@ -2,11 +2,11 @@
 
 namespace SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey
 {
-	public class GetApprenticeshipKeyRequest : IGetApiRequest
+	public class GetLearningKeyRequest : IGetApiRequest
 	{
 		public readonly long ApprenticeshipId;
 
-		public GetApprenticeshipKeyRequest(long apprenticeshipId)
+		public GetLearningKeyRequest(long apprenticeshipId)
 		{
 			ApprenticeshipId = apprenticeshipId;
 		}
