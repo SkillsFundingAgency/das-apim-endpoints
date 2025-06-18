@@ -7,15 +7,15 @@ namespace SFA.DAS.Earnings.UnitTests.Application.Extensions;
 
 public static class ApprenticeshipExtensions
 {
-    public static Guid GetEpisodePriceKey(this Apprenticeship apprenticeship, short academicYear, byte deliveryPeriod)
+    public static Guid GetEpisodePriceKey(this Learning learning, short academicYear, byte deliveryPeriod)
     {
-        var prices = apprenticeship.Episodes.SelectMany(e => e.Prices).ToList();
+        var prices = learning.Episodes.SelectMany(e => e.Prices).ToList();
         var searchDateTime = academicYear.GetDateTime(deliveryPeriod).AddDays(14);
         var price = prices.FirstOrDefault(p => p.StartDate <= searchDateTime && p.EndDate >= searchDateTime);
         return price?.Key ?? Guid.Empty;
     }
 
-    public static void SetWithdrawalDate(this Apprenticeship apprenticeship, WithdrawalDate withdrawalDate)
+    public static void SetWithdrawalDate(this Learning learning, WithdrawalDate withdrawalDate)
     {
         var qualifyingPeriod = SharedOuterApi.Common.Constants.QualifyingPeriod;
 
@@ -24,10 +24,10 @@ public static class ApprenticeshipExtensions
             case WithdrawalDate.None:
                 break;
             case WithdrawalDate.DuringQualifyingPeriod:
-                apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod - 1);
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod - 1);
                 break;
             case WithdrawalDate.AfterQualifyingPeriod:
-                apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod + 1);
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod + 1);
                 break;
             default:
                 throw new InvalidEnumArgumentException();

@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.Earnings.Api.AcceptanceTests.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
 
 namespace SFA.DAS.Earnings.Api.AcceptanceTests.Extensions;
@@ -10,7 +9,7 @@ public static class ApprenticeshipModelExtensions
 {
     public static InnerApiResponses GetInnerApiResponses(this ApprenticeshipModel apprenticeshipModel)
     {
-        var apprenticeship = new Apprenticeship
+        var learning = new Learning
         {
             Key = Guid.NewGuid(),
             AgeAtStartOfApprenticeship = 18,
@@ -40,7 +39,7 @@ public static class ApprenticeshipModelExtensions
 
         var earnings = new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
         {
-            Key = apprenticeship.Key,
+            Key = learning.Key,
             Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>()
             {
                 new SharedOuterApi.InnerApi.Responses.Earnings.Episode
@@ -75,7 +74,7 @@ public static class ApprenticeshipModelExtensions
         {
             if (!episode.Instalments.Any())
             {
-                foreach (var price in apprenticeship.Episodes.SelectMany(apprenticeshipEpisode => apprenticeshipEpisode.Prices))
+                foreach (var price in learning.Episodes.SelectMany(apprenticeshipEpisode => apprenticeshipEpisode.Prices))
                 {
                     episode.Instalments.Add(new Instalment
                     {
@@ -90,10 +89,10 @@ public static class ApprenticeshipModelExtensions
 
         return new InnerApiResponses
         {
-            ApprenticeshipsInnerApiResponse = new GetApprenticeshipsResponse
+            LearningsInnerApiResponse = new GetLearningsResponse
             {
                 Ukprn = 10005077,
-                Apprenticeships = [apprenticeship]
+                Learnings = [learning]
             },
             EarningsInnerApiResponse = [earnings]
         };

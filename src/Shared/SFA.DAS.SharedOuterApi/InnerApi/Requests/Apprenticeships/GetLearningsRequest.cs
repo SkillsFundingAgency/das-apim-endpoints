@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 
-public class GetApprenticeshipsRequest : IGetApiRequest
+public class GetLearningsRequest : IGetApiRequest
 {
     public long Ukprn { get; set; }
     public int CollectionYear { get; set; }

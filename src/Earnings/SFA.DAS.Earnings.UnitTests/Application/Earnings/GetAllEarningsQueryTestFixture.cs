@@ -22,7 +22,7 @@ public class GetAllEarningsQueryTestFixture
     public long Ukprn;
     public byte CollectionPeriod;
     public int CollectionYear;
-    public GetApprenticeshipsResponse ApprenticeshipsResponse;
+    public GetLearningsResponse LearningsResponse;
     public GetFm36DataResponse EarningsResponse;
     public GetAcademicYearsResponse CollectionCalendarResponse;
     public Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> MockApprenticeshipsApiClient;
@@ -47,17 +47,17 @@ public class GetAllEarningsQueryTestFixture
         var dataGenerator = new MockDataGenerator.MockDataGenerator();
         dataGenerator.GenerateData(scenario);
 
-        ApprenticeshipsResponse = dataGenerator.GetApprenticeshipsResponse;
+        LearningsResponse = dataGenerator.GetLearningsResponse;
         EarningsResponse = dataGenerator.GetFm36DataResponse;
 
-        CollectionCalendarResponse = BuildCollectionCalendarResponse(ApprenticeshipsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, ApprenticeshipsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+        CollectionCalendarResponse = BuildCollectionCalendarResponse(LearningsResponse);
+        SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
         _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetAllEarningsQueryHandler>>());
         _query = new GetAllEarningsQuery(Ukprn, CollectionYear, CollectionPeriod);
     }
 
-    public GetAcademicYearsResponse BuildCollectionCalendarResponse(GetApprenticeshipsResponse apprenticeshipsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
+    public GetAcademicYearsResponse BuildCollectionCalendarResponse(GetLearningsResponse learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
     {
         return new GetAcademicYearsResponse
         {
@@ -70,15 +70,15 @@ public class GetAllEarningsQueryTestFixture
     public void SetupMocks(
         long ukprn,
         Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
-        GetApprenticeshipsResponse apprenticeshipsResponse,
+        GetLearningsResponse learningsResponse,
         Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
         GetFm36DataResponse earningsResponse,
         Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
         GetAcademicYearsResponse collectionCalendarResponse)
     {
         mockApprenticeshipsApiClient
-            .Setup(x => x.Get<GetApprenticeshipsResponse>(It.Is<GetApprenticeshipsRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(apprenticeshipsResponse);
+            .Setup(x => x.Get<GetLearningsResponse>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
+            .ReturnsAsync(learningsResponse);
 
         mockEarningsApiClient
             .Setup(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == ukprn)))

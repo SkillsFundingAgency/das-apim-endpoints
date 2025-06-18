@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 
-public class GetApprenticeshipsResponse
+public class GetLearningsResponse
 {
     public long Ukprn { get; set; }
-    public List<Apprenticeship> Apprenticeships { get; set; }
+    public List<Learning> Learnings { get; set; }
 }
 
-public class Apprenticeship
+public class Learning
 {
     public Guid Key { get; set; }
     public string Uln { get; set; }
