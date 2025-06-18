@@ -29,7 +29,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
     {
         protected ILogger<ExtendedNotificationService> _logger;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
-        private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
+        private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _learningApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
         private readonly IProviderAccountApiClient<ProviderAccountApiConfiguration> _providerAccountApiClient;
         private readonly IEncodingService _encodingService;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         public ExtendedNotificationService(
             ILogger<ExtendedNotificationService> logger,
             IAccountsApiClient<AccountsConfiguration> accountsApiClient,
-            IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
+            IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
             IEncodingService encodingService,
             INotificationService notificationService,
@@ -46,7 +46,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         {
             _logger = logger;
             _accountsApiClient = accountsApiClient;
-            _apprenticeshipsApiClient = apprenticeshipsApiClient;
+            _learningApiClient = learningApiClient;
             _apiCommitmentsClient = apiCommitmentsClient;
             _encodingService = encodingService;
             _notificationService = notificationService;
@@ -58,10 +58,10 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         /// </summary>
         public async Task<GetCurrentPartyIdsResponse> GetCurrentPartyIds(Guid apprenticeshipKey)
         {
-            var partyIds = await _apprenticeshipsApiClient.Get<GetCurrentPartyIdsResponse>(new GetCurrentPartyIdsRequest { ApprenticeshipKey = apprenticeshipKey });
+            var partyIds = await _learningApiClient.Get<GetCurrentPartyIdsResponse>(new GetCurrentPartyIdsRequest { LearningKey = apprenticeshipKey });
             if(partyIds == null)
             {
-                throw new Exception($"No response returned from ApprenticeshipInnerApi for apprenticeship key {apprenticeshipKey} for the {nameof(GetCurrentPartyIdsRequest)}");
+                throw new Exception($"No response returned from Learning inner api for learning key {apprenticeshipKey} for the {nameof(GetCurrentPartyIdsRequest)}");
             }
             return partyIds;
         }

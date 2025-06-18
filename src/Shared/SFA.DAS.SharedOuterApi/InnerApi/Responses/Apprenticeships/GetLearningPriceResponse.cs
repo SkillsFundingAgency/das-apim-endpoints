@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships
 {
-    public class GetApprenticeshipPriceResponse
+    public class GetLearningPriceResponse
     {
         public Guid ApprenticeshipKey { get; set; }
         public int FundingBandMaximum { get; set; }

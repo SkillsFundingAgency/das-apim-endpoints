@@ -160,7 +160,7 @@ namespace SFA.DAS.Apprenticeships.Stubs
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetApprenticeshipPriceResponse>())));
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetLearningPriceResponse>())));
 
             _fakeApprenticeshipsApi.Given(
                     Request.Create().WithPath($"/*/startDate")
@@ -169,7 +169,7 @@ namespace SFA.DAS.Apprenticeships.Stubs
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetApprenticeshipStartDateResponse>())));
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetLearningStartDateResponse>())));
 
             _fakeApprenticeshipsApi.Given(
                     Request.Create().WithPath($"/*/priceHistory").UsingPost()

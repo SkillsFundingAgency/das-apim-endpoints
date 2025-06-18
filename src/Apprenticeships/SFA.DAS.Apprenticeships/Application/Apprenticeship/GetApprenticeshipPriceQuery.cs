@@ -25,29 +25,29 @@ public class GetApprenticeshipPriceQuery : IRequest<ApprenticeshipPriceResponse?
 public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprenticeshipPriceQuery, ApprenticeshipPriceResponse?>
 {
 	private readonly ILogger<GetApprenticeshipPriceQueryHandler> _logger;
-	private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
+	private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _learningApiClient;
 	private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 	private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
 	public GetApprenticeshipPriceQueryHandler(
 		ILogger<GetApprenticeshipPriceQueryHandler> logger,
-		IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
+		IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
 		ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
 		ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
 	{
 		_logger = logger;
-		_apprenticeshipsApiClient = apprenticeshipsApiClient;
+		_learningApiClient = learningApiClient;
 		_apiCommitmentsClient = apiCommitmentsClient;
 		_collectionCalendarApiClient = collectionCalendarApiClient;
 	}
 
 	public async Task<ApprenticeshipPriceResponse?> Handle(GetApprenticeshipPriceQuery request, CancellationToken cancellationToken)
 	{
-		var apprenticePriceInnerModel = await _apprenticeshipsApiClient.Get<GetApprenticeshipPriceResponse>(new GetApprenticeshipPriceRequest { ApprenticeshipKey = request.ApprenticeshipKey });
+		var apprenticePriceInnerModel = await _learningApiClient.Get<GetLearningPriceResponse>(new GetLearningPriceRequest { LearningKey = request.ApprenticeshipKey });
 
 		if (apprenticePriceInnerModel == null)
 		{
-			_logger.LogWarning($"No ApprenticeshipPrice returned from innerApi for apprenticeshipKey:{request.ApprenticeshipKey}");
+			_logger.LogWarning($"No LearningPrice returned from innerApi for learning key:{request.ApprenticeshipKey}");
 			return null;
 		}
 
@@ -73,7 +73,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 		return apprenticeshipPriceOuterModel;
 	}
 
-	private async Task<string?> GetEmployerName(GetApprenticeshipPriceResponse apprenticePriceInnerModel)
+	private async Task<string?> GetEmployerName(GetLearningPriceResponse apprenticePriceInnerModel)
 	{
 		if (!apprenticePriceInnerModel.AccountLegalEntityId.HasValue)
 		{
@@ -92,7 +92,7 @@ public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprentices
 		return employer.LegalEntityName;
 	}
 
-	private async Task<string?> GetProviderName(GetApprenticeshipPriceResponse apprenticePriceInnerModel)
+	private async Task<string?> GetProviderName(GetLearningPriceResponse apprenticePriceInnerModel)
 	{
 		if (apprenticePriceInnerModel.UKPRN < 1)
 		{

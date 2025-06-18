@@ -37,7 +37,7 @@ public class WhenGettingApprenticeshipStartDate
     DateTime _dateOfBirth;
     DateTime _effectiveFrom;
     DateTime _effectiveTo;
-    private GetApprenticeshipStartDateResponse _expectedInnerApiResponse = null!;
+    private GetLearningStartDateResponse _expectedInnerApiResponse = null!;
 
     public WhenGettingApprenticeshipStartDate()
     {
@@ -73,10 +73,10 @@ public class WhenGettingApprenticeshipStartDate
             }
         };
 
-        _expectedInnerApiResponse = new GetApprenticeshipStartDateResponse
+        _expectedInnerApiResponse = new GetLearningStartDateResponse
         {
             AccountLegalEntityId = 1,
-            ApprenticeshipKey = _expectedResponse.ApprenticeshipKey,
+            LearningKey = _expectedResponse.ApprenticeshipKey,
             ActualStartDate = _expectedResponse.ActualStartDate,
             PlannedEndDate = _expectedResponse.PlannedEndDate,
             UKPRN = 123,
@@ -86,7 +86,7 @@ public class WhenGettingApprenticeshipStartDate
             SimplifiedPaymentsMinimumStartDate = new DateTime(2024, 10, 1)
         };
 
-        _mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipStartDateResponse>(It.IsAny<GetApprenticeshipStartDateRequest>()))
+        _mockApprenticeshipsApiClient.Setup(x => x.Get<GetLearningStartDateResponse>(It.IsAny<GetLearningStartDateRequest>()))
         .ReturnsAsync(_expectedInnerApiResponse);
 
         _mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))

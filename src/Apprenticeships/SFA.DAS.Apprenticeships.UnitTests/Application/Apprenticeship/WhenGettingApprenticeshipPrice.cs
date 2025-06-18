@@ -35,8 +35,8 @@ public class WhenGettingApprenticeshipPrice
 		Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient)
 	{
 		//  Arrange
-		mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipPriceResponse>(It.IsAny<GetApprenticeshipPriceRequest>()))
-			.ReturnsAsync(new GetApprenticeshipPriceResponse
+		mockApprenticeshipsApiClient.Setup(x => x.Get<GetLearningPriceResponse>(It.IsAny<GetLearningPriceRequest>()))
+			.ReturnsAsync(new GetLearningPriceResponse
 			{
 				AccountLegalEntityId = 1,
 				ApprenticeshipKey = expectedResponse.ApprenticeshipKey,
