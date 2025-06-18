@@ -9,7 +9,6 @@ using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
-using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models
 {

@@ -61,6 +61,10 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
         {
             VacancyReference = vacancy.VacancyReference,
             VacancyTitle = vacancy.Title,
+            ApprenticeshipType = vacancy.ApprenticeshipType,
+            Address = vacancy.Address,
+            OtherAddresses = vacancy.OtherAddresses,
+            EmployerLocationOption = vacancy.EmployerLocationOption,
             EmployerName = vacancy.EmployerName,
             ClosingDate = vacancy.ClosingDate,
             IsMigrated = application.MigrationDate.HasValue,

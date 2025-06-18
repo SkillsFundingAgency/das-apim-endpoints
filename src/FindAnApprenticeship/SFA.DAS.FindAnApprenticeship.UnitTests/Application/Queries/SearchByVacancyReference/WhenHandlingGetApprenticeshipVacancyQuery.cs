@@ -29,6 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             // Arrange
             query.CandidateId = null;
             vacancy.ClosedDate = null;
+            vacancy.IsClosed = false;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(
                     It.Is<GetStandardRequest>(c => c.StandardId.Equals(vacancy.CourseId))))
@@ -69,6 +70,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
         {
             // Arrange
             vacancy.ClosedDate = null;
+            vacancy.IsClosed = false;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(
                     It.Is<GetStandardRequest>(c => c.StandardId.Equals(vacancy.CourseId))))
@@ -133,6 +135,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             // Arrange
             query.CandidateId = null;
             vacancy.ClosedDate = null;
+            vacancy.IsClosed = false;
             vacancy.VacancySource = VacancyDataSource.Raa;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(

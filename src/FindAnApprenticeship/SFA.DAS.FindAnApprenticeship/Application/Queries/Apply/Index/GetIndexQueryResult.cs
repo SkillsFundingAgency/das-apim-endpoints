@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 
@@ -6,6 +9,10 @@ public class GetIndexQueryResult
 {
     public string VacancyReference { get; set; }
     public string VacancyTitle { get; set; }
+    public required ApprenticeshipTypes ApprenticeshipType { get; set; }
+    public Address? Address { get; set; }
+    public List<Address>? OtherAddresses { get; set; }
+    public AvailableWhere? EmployerLocationOption { get; set; }
     public string EmployerName { get; set; }
     public DateTime ClosingDate { get; set; }
     public bool IsMigrated { get; set; }

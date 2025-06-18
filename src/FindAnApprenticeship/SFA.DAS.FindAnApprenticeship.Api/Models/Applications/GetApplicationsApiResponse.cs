@@ -5,7 +5,6 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplicati
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
-using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 

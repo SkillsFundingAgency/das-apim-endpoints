@@ -3,7 +3,6 @@ using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
-using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 

@@ -70,6 +70,9 @@ public class WhenHandlingGetIndexQuery
         result.PreviousApplication.EmployerName.Should().Be(previousVacancyApiResponse.EmployerName);
         result.PreviousApplication.VacancyTitle.Should().Be(previousVacancyApiResponse.Title);
         result.PreviousApplication.SubmissionDate.Should().Be(previousApplicationApiResponse.SubmittedDate);
+        result.EmployerLocationOption.Should().Be(vacancyApiResponse.EmployerLocationOption);
+        result.Address.Should().BeEquivalentTo(vacancyApiResponse.Address);
+        result.OtherAddresses.Should().BeEquivalentTo(vacancyApiResponse.OtherAddresses);
     }
     [Test, MoqAutoData]
     public async Task Then_If_The_Previous_Vacancy_Is_Not_Found_Then_Null_Returned_In_Response(
