@@ -33,8 +33,10 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("GetEpaos called");
+
                 var queryResult = await _mediator.Send(new GetEpaosQuery());
-                
+
                 var model = (GetEpaosApiModel)queryResult;
                 model?.BuildLinks(Url);
 
@@ -53,9 +55,9 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetEpaoQuery {EpaoId = epaoId});
+                var queryResult = await _mediator.Send(new GetEpaoQuery { EpaoId = epaoId });
 
-                var model = (GetEpaoApiModel) queryResult?.Epao;
+                var model = (GetEpaoApiModel)queryResult?.Epao;
                 model?.BuildLinks(Url);
 
                 return Ok(model);
@@ -83,9 +85,9 @@ namespace SFA.DAS.EpaoRegister.Api.Controllers
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetEpaoCoursesQuery {EpaoId = epaoId});
+                var queryResult = await _mediator.Send(new GetEpaoCoursesQuery { EpaoId = epaoId });
 
-                var model = (GetEpaoCoursesApiModel) queryResult;
+                var model = (GetEpaoCoursesApiModel)queryResult;
                 model?.BuildLinks(Url);
 
                 return Ok(model);

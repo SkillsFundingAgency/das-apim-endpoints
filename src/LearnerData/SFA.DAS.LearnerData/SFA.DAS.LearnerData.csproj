@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" />
     <PackageReference Include="MediatR" />
+    <PackageReference Include="SFA.DAS.AcademicYearService" />
   </ItemGroup>
 
   <ItemGroup>

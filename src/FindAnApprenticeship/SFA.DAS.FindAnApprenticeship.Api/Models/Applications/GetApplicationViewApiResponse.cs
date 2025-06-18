@@ -1,4 +1,5 @@
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplication;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using System;
 using System.Collections.Generic;
@@ -8,16 +9,17 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public record GetApplicationViewApiResponse
 {
-    public VacancyDetailsSection VacancyDetails { get; set; }
+    public AboutYouSection AboutYou { get; set; }
+    public ApplicationQuestionsSection ApplicationQuestions { get; set; }
+    public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     public bool IsDisabilityConfident { get; set; }
     public CandidateDetailsSection Candidate { get; set; }
-    public AboutYouSection AboutYou { get; set; }
-    public EducationHistorySection EducationHistory { get; set; }
-    public WorkHistorySection WorkHistory { get; set; }
-    public ApplicationQuestionsSection ApplicationQuestions { get; set; }
-    public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
+    public EducationHistorySection EducationHistory { get; set; }
+    public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
+    public VacancyDetailsSection VacancyDetails { get; set; }
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
+    public WorkHistorySection WorkHistory { get; set; }
     public EmploymentLocationSection? EmploymentLocation { get; set; }
     public string ApplicationStatus { get; set; }
     public DateTime? WithdrawnDate { get; set; }
@@ -40,6 +42,7 @@ public record GetApplicationViewApiResponse
             ApplicationStatus = source.ApplicationStatus,
             WithdrawnDate = source.WithdrawnDate,
             MigrationDate = source.MigrationDate,
+            ApprenticeshipType = source.ApprenticeshipType,
             EmploymentLocation = source.EmploymentLocation,
         };
     }

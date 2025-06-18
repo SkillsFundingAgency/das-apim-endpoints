@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
+using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {
@@ -55,6 +57,8 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
             public string EmploymentLocationInformation { get; set; }
             [JsonPropertyName("availableWhere"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
             public AvailableWhere? EmployerLocationOption { get; set; }
+
+            public ApprenticeshipTypes ApprenticeshipType { get; set; }
             public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         }
     }
