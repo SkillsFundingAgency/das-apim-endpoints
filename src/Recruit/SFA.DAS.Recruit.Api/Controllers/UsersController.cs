@@ -45,7 +45,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         }
 
         [HttpPost]
-        [Route("{userId}")]
+        [Route("{id}")]
         public async Task<IActionResult> UpsertUser([FromRoute] Guid id, [FromBody]UserDto userDto)
         {
             try
