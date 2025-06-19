@@ -2,7 +2,7 @@ using System;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests;
+namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 
 public record PatchRecruitApplicationReviewApiRequest(
     Guid ApplicationId,
@@ -13,12 +13,10 @@ public record PatchRecruitApplicationReviewApiRequest(
 
     public string PatchUrl => $"api/applicationReviews/{ApplicationId}";
 }
-public abstract record ApplicationReview
+public record ApplicationReview
 {
-    public bool HasEverBeenEmployerInterviewing { get; set; }
-    public DateTime? DateSharedWithEmployer { get; set; }
+    public DateTime? WithdrawnDate { get; set; }
+    public string Status { get; set; }
     public DateTime? StatusUpdatedDate { get; set; }
-    public string? EmployerFeedback { get; set; }
-    public string? Status { get; set; }
-    public string? TemporaryReviewStatus { get; set; }
+    public Guid Id { get; set; }
 }
