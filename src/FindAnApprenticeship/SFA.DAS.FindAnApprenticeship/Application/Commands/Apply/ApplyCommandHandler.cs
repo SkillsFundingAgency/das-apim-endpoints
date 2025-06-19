@@ -29,8 +29,9 @@ public class ApplyCommandHandler(
 
         var putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
-            CandidateId = request.CandidateId,
             AdditionalQuestions = additionalQuestions,
+            ApprenticeshipType = result.ApprenticeshipType,
+            CandidateId = request.CandidateId,
             IsAdditionalQuestion1Complete = string.IsNullOrEmpty(result.AdditionalQuestion1) ? (short)4 : (short)0,
             IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
             IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 : (short)4

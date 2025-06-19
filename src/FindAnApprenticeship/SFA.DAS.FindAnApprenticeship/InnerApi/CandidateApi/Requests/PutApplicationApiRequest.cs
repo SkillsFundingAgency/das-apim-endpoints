@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
@@ -13,7 +14,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
         {
             _vacancyReference = vacancyReference;
             Data = data;
-        }
+        }   
 
         public string PutUrl => $"api/applications/{_vacancyReference}";
         
@@ -24,7 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
             public short IsAdditionalQuestion1Complete { get; set; }
             public short IsAdditionalQuestion2Complete { get; set; }
             public short IsDisabilityConfidenceComplete { get; set; }
-            
+            public ApprenticeshipTypes ApprenticeshipType { get; set; }
         }
     }
 }
