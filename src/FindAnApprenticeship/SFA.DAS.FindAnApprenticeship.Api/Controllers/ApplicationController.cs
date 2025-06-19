@@ -25,23 +25,14 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
 {
     [ApiController]
     [Route("[controller]s/{applicationId}")]
-    public class ApplicationController : Controller
+    public class ApplicationController(IMediator mediator, ILogger<ApplicationController> logger) : Controller
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<ApplicationController> _logger;
-
-        public ApplicationController(IMediator mediator, ILogger<ApplicationController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
         [HttpGet]
         public async Task<IActionResult> Index([FromRoute] Guid applicationId, [FromQuery] Guid candidateId)
         {
             try
             {
-                var result = await _mediator.Send(new GetIndexQuery
+                var result = await mediator.Send(new GetIndexQuery
                 { CandidateId = candidateId, ApplicationId = applicationId });
 
                 if (result == null) return NotFound();
@@ -50,7 +41,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting application index {applicationId}", applicationId);
+                logger.LogError(e, $"Error getting application index {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -60,7 +51,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetApplicationQuery
+                var result = await mediator.Send(new GetApplicationQuery
                     { CandidateId = candidateId, ApplicationId = applicationId });
 
                 if (result == null) return NotFound();
@@ -69,7 +60,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting GetApplicationDetails {applicationId}", applicationId);
+                logger.LogError(e, $"Error getting GetApplicationDetails {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -79,7 +70,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetApplicationViewQuery
+                var result = await mediator.Send(new GetApplicationViewQuery
                 { CandidateId = candidateId, ApplicationId = applicationId });
 
                 if (result == null) return NotFound();
@@ -88,7 +79,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting GetApplication {applicationId}", applicationId);
+                logger.LogError(e, "Error getting GetApplication {Id}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -103,7 +94,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             [FromBody] UpdateApplicationStatusModel request,
             CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new PatchApplicationStatusCommand
+            var result = await mediator.Send(new PatchApplicationStatusCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
@@ -128,7 +119,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             [FromBody] UpdateApplicationWorkHistoryModel request,
             CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new PatchApplicationWorkHistoryCommand
+            var result = await mediator.Send(new PatchApplicationWorkHistoryCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
@@ -153,7 +144,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             [FromBody] UpdateApplicationTrainingCoursesModel request,
             CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new PatchApplicationTrainingCoursesCommand
+            var result = await mediator.Send(new PatchApplicationTrainingCoursesCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
@@ -178,7 +169,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             [FromBody] UpdateVolunteeringAndWorkExperienceModel request,
             CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new PatchApplicationVolunteeringAndWorkExperienceCommand
+            var result = await mediator.Send(new PatchApplicationVolunteeringAndWorkExperienceCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
@@ -203,7 +194,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             [FromBody] UpdateDisabilityConfidenceModel request,
             CancellationToken cancellationToken)
         {
-            var result = await _mediator.Send(new PatchApplicationDisabilityConfidenceCommand
+            var result = await mediator.Send(new PatchApplicationDisabilityConfidenceCommand
             {
                 ApplicationId = applicationId,
                 CandidateId = candidateId,
@@ -227,7 +218,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new SubmitApplicationCommand
+                await mediator.Send(new SubmitApplicationCommand
                 {
                     ApplicationId = applicationId,
                     CandidateId = candidateId
@@ -237,7 +228,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error submitting submitted {applicationId}", applicationId);
+                logger.LogError(ex, $"Error submitting submitted {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
             
@@ -248,7 +239,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetApplicationSubmittedQuery
+                var result = await mediator.Send(new GetApplicationSubmittedQuery
                 {
                     ApplicationId = applicationId,
                     CandidateId = candidateId
@@ -260,7 +251,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error getting application submitted {applicationId}", applicationId);
+                logger.LogError(ex, $"Error getting application submitted {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -270,7 +261,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new WithdrawApplicationQuery
+                var result = await mediator.Send(new WithdrawApplicationQuery
                     { ApplicationId = applicationId, CandidateId = candidateId });
 
                 if (result == null || result.ApplicationId == Guid.Empty)
@@ -282,7 +273,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error getting withdrawn application {applicationId}", applicationId);
+                logger.LogError(e, $"Error getting withdrawn application {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
@@ -292,7 +283,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new WithdrawApplicationCommand
+                await mediator.Send(new WithdrawApplicationCommand
                 {
                     ApplicationId = applicationId,
                     CandidateId = candidateId
@@ -301,7 +292,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error posting withdrawn application {applicationId}", applicationId);
+                logger.LogError(e, $"Error posting withdrawn application {applicationId}", applicationId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

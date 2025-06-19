@@ -3,24 +3,27 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application;
 using SFA.DAS.LearnerData.Requests;
 using System.Net;
+using FluentValidation;
+using FluentValidation.Results;
 using SFA.DAS.LearnerData.Responses;
-using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class LearnersController(IMediator mediator, ILogger<LearnersController> logger) : ControllerBase
+public class LearnersController(IMediator mediator, IValidator<IEnumerable<LearnerDataRequest>> validator, ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpPut]
     [Route("/provider/{ukprn}/academicyears/{academicyear}/learners")]
     public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
         [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
     {
-        var validationResults = ValidateUkPrnMatches(ukprn, dataRequests).ToList();
-        if (validationResults.Any())
+
+        var validatorResult = await validator.ValidateAsync(dataRequests);
+
+        if (!validatorResult.IsValid)
         {
-            return BadRequest(validationResults);
+            return BuildErrorResponse(validatorResult.Errors);
         }
 
         try
@@ -40,12 +43,13 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         }
     }
 
-    private IEnumerable<ValidationResult> ValidateUkPrnMatches(long ukprn, IEnumerable<LearnerDataRequest> dataRequests)
+    private IActionResult BuildErrorResponse(List<ValidationFailure> errors)
     {
-        if (dataRequests.Any(x => x.UKPRN != ukprn))
+        foreach (var error in errors)
         {
-            yield return new ValidationResult($"Learner data contains different UKPRN to {ukprn}",
-                new List<string> {"UKPRN"});
+            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
         }
+        return BadRequest(ModelState);
+
     }
 }

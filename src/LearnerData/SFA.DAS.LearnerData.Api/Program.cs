@@ -10,6 +10,10 @@ using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.LearnerData.Api.AppStart;
 using System.Net;
 using Azure.Identity;
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Validators;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -70,7 +74,12 @@ builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks();
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IValidator<IEnumerable<LearnerDataRequest>>, BulkLearnerDataRequestsValidator>();
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
