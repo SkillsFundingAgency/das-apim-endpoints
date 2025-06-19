@@ -46,7 +46,7 @@ public class WhenGettingPendingStartDateChange
 
         _mockApprenticeshipsApiClient.Setup(x =>
                 x.Get<GetPendingStartDateChangeApiResponse>(
-                    It.Is<GetPendingStartDateChangeRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+                    It.Is<GetPendingStartDateChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(_apiResponse);
         _mockCommitmentsApiClient.Setup(x => x.Get<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
             .ReturnsAsync(_providerResponse);
