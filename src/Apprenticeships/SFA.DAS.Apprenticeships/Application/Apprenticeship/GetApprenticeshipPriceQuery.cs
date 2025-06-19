@@ -25,13 +25,13 @@ public class GetApprenticeshipPriceQuery : IRequest<ApprenticeshipPriceResponse?
 public class GetApprenticeshipPriceQueryHandler : IRequestHandler<GetApprenticeshipPriceQuery, ApprenticeshipPriceResponse?>
 {
 	private readonly ILogger<GetApprenticeshipPriceQueryHandler> _logger;
-	private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _learningApiClient;
+	private readonly ILearningApiClient<ApprenticeshipsApiConfiguration> _learningApiClient;
 	private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 	private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
 	public GetApprenticeshipPriceQueryHandler(
 		ILogger<GetApprenticeshipPriceQueryHandler> logger,
-		IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
+		ILearningApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
 		ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
 		ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
 	{

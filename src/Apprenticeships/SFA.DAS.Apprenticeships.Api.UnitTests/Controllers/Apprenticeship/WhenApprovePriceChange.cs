@@ -25,7 +25,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 public class WhenApprovePriceChange
 {
     private readonly Fixture _fixture;
-    private readonly Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
+    private readonly Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
     private readonly ILogger<ApprenticeshipController> _mockedLogger;
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _mockedCommitmentsV2ApiClient;
     private readonly Mock<IMediator> _mockMediator;
@@ -33,7 +33,7 @@ public class WhenApprovePriceChange
     public WhenApprovePriceChange()
     {
         _fixture = new Fixture();
-        _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
         _mockedLogger = Mock.Of<ILogger<ApprenticeshipController>>();
         _mockedCommitmentsV2ApiClient = Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();

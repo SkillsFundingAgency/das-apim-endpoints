@@ -9,7 +9,7 @@ public class ApprenticeshipsApiHealthCheck : ApiHealthCheck<ApprenticeshipsApiCo
     public static readonly string HealthCheckDescription = "Apprenticeships API";
     public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
 
-    public ApprenticeshipsApiHealthCheck(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> client, ILogger<ApprenticeshipsApiHealthCheck> logger)
+    public ApprenticeshipsApiHealthCheck(ILearningApiClient<ApprenticeshipsApiConfiguration> client, ILogger<ApprenticeshipsApiHealthCheck> logger)
         : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
     {
     }

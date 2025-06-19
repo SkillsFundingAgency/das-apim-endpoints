@@ -33,7 +33,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IDeliveryModelService deliveryModelService,
     ServiceParameters serviceParameters,
-    IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
+    ILearningApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
     ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
     : IRequestHandler<GetManageApprenticeshipDetailsQuery, GetManageApprenticeshipDetailsQueryResult>
 {

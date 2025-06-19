@@ -18,7 +18,7 @@ public static class ServiceCollectionExtensions
 
         services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
 
-        services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
+        services.AddTransient<ILearningApiClient<ApprenticeshipsApiConfiguration>, LearningApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.AddScoped<IPagedLinkHeaderService, PagedLinkHeaderService>();
 

@@ -23,20 +23,20 @@ public class WhenFreezePayments
 {
     private readonly Fixture _fixture;
     private readonly Mock<ILogger<ApprenticeshipController>> _mockLogger;
-    private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
+    private Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
     private Mock<IMediator> _mockMediator;
 
     public WhenFreezePayments()
     {
         _fixture = new Fixture();
         _mockLogger = new Mock<ILogger<ApprenticeshipController>>();
-        _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
     }
 
     [SetUp]
     public void Arrange()
     {
-        _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();
     }
 

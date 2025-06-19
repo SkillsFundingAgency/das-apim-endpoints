@@ -30,7 +30,7 @@ public class WhenGettingApprenticeshipPrice
     [Test, MoqAutoData]
 	public async Task Then_Gets_ApprenticeshipPrice_From_ApiClient(
 		ApprenticeshipPriceResponse expectedResponse,
-		Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
+		Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
 		Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> mockCommitmentsV2ApiApiClient,
 		Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient)
 	{

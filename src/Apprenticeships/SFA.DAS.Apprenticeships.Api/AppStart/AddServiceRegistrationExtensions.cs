@@ -25,7 +25,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
-        services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
+        services.AddTransient<ILearningApiClient<ApprenticeshipsApiConfiguration>, LearningApiClient>();
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();

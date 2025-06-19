@@ -16,7 +16,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
     public class WhenCancellingPendingPriceChange
     {
 
-	    private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
+	    private Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
 	    private ApprenticeshipController _sut = null!;
         private Fixture _fixture = null!;
 
@@ -25,7 +25,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 	    {
             _fixture = new Fixture();
 
-		    _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+		    _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
             _sut = new ApprenticeshipController(Mock.Of<ILogger<ApprenticeshipController>>(), _mockApprenticeshipsApiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), Mock.Of<IMediator>());
 	    }
 

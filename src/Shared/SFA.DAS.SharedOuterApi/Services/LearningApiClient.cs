@@ -10,11 +10,11 @@ using SFA.DAS.SharedOuterApi.Models;
 namespace SFA.DAS.SharedOuterApi.Services
 {
     [ExcludeFromCodeCoverage]
-    public class ApprenticeshipsApiClient : IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>
+    public class LearningApiClient : ILearningApiClient<ApprenticeshipsApiConfiguration>
     {
         private readonly ITokenPassThroughInternalApiClient<ApprenticeshipsApiConfiguration> _apiClient;
 
-        public ApprenticeshipsApiClient(ITokenPassThroughInternalApiClient<ApprenticeshipsApiConfiguration> apiClient)
+        public LearningApiClient(ITokenPassThroughInternalApiClient<ApprenticeshipsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
