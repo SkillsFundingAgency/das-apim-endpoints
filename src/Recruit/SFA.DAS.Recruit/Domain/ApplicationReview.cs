@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SFA.DAS.Recruit.InnerApi.Responses
+namespace SFA.DAS.Recruit.Domain
 {
     public record ApplicationReview
     {
@@ -21,10 +21,11 @@ namespace SFA.DAS.Recruit.InnerApi.Responses
         public long VacancyReference { get; set; }
         public string Status { get; set; }
         public string VacancyTitle { get; set; }
-        public string? AdditionalQuestion1 { get; set; }
-        public string? AdditionalQuestion2 { get; set; }
-        public string? CandidateFeedback { get; set; }
-        public string? EmployerFeedback { get; set; }
-        public string? TemporaryReviewStatus { get; set; }
+        public string AdditionalQuestion1 { get; set; }
+        public string AdditionalQuestion2 { get; set; }
+        public string CandidateFeedback { get; set; }
+        public string EmployerFeedback { get; set; }
+        public string TemporaryReviewStatus { get; set; }
+        public Application Application { get; set; }
     }
 }
