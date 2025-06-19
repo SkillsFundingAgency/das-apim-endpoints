@@ -6,8 +6,8 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
 
     public class BulkUploadAddDraftApprenticeshipExtendedRequest : BulkUploadAddDraftApprenticeshipRequest
     {
-        public int? MinimumAgeAtApprenticeshipStart { get; set; }
-        public int? MaximumAgeAtApprenticeshipStart { get; set; }
+        public int MinimumAgeAtApprenticeshipStart { get; set; }
+        public int MaximumAgeAtApprenticeshipStart { get; set; }
     }
 
     public class BulkUploadAddDraftApprenticeshipRequest

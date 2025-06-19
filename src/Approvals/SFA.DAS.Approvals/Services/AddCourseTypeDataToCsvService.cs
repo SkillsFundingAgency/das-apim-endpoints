@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -6,6 +7,10 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Services;
 
@@ -16,6 +21,7 @@ public interface IAddCourseTypeDataToCsvService
 
 public class AddCourseTypeDataToCsvService(
     ICourseTypesApiClient courseTypesApiClient,
+    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
     IMapper mapper,
     ILogger<AddCourseTypeDataToCsvService> logger)
     : IAddCourseTypeDataToCsvService
@@ -52,13 +58,19 @@ public class AddCourseTypeDataToCsvService(
         if (courseTypeData == null)
         {
             logger.LogInformation($"Fetching course type data for course code {courseCode}");
-            var response = await courseTypesApiClient.GetWithResponseCode<GetLearnerAgeResponse>(new GetLearnerAgeRequest(courseCode));
+            var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
+            if (standard == null)
+                throw new Exception($"Standard for {courseCode} was not found");
+
+            var learnerAgeRange = await courseTypesApiClient.Get<GetLearnerAgeResponse>(new GetLearnerAgeRequest(standard.ApprenticeshipType));
+            if (learnerAgeRange == null)
+                throw new Exception($"Learner Age Response for {standard.ApprenticeshipType} was not found");
 
             courseTypeData = new CourseTypeData
             {
                 CourseCode = courseCode,
-                MinimumAgeAtApprenticeshipStart = response.Body.MinimumAge,
-                MaximumAgeAtApprenticeshipStart = response.Body.MaximumAge
+                MinimumAgeAtApprenticeshipStart = learnerAgeRange.MinimumAge,
+                MaximumAgeAtApprenticeshipStart = learnerAgeRange.MaximumAge
             };
             _courseTypeData.Add(courseTypeData);
         };
@@ -68,7 +80,7 @@ public class AddCourseTypeDataToCsvService(
     public class CourseTypeData
     {
         public string CourseCode { get; set; }
-        public int? MinimumAgeAtApprenticeshipStart { get; set; }
-        public int? MaximumAgeAtApprenticeshipStart { get; set; }
+        public int MinimumAgeAtApprenticeshipStart { get; set; }
+        public int MaximumAgeAtApprenticeshipStart { get; set; }
     }
 }
