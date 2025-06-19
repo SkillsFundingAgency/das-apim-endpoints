@@ -2,12 +2,14 @@
 {
     public record ApplicationReviewStats
     {
-        public long VacancyReference { get; set; }
-        public int Applications { get; set; }
-        public int NewApplications { get; set; }
-        public int SharedApplications { get; set; }
-        public int SuccessfulApplications { get; set; }
-        public int UnsuccessfulApplications { get; set; }
-        public int EmployerReviewedApplications { get; set; }
+        public long VacancyReference { get; set; } = 0;
+        public int Applications { get; set; } = 0;
+        public int NewApplications { get; set; } = 0;
+        public int SharedApplications { get; set; } = 0;
+        public int AllSharedApplications { get; set; } = 0;
+        public int SuccessfulApplications { get; set; } = 0;
+        public int UnsuccessfulApplications { get; set; } = 0;
+        public int EmployerReviewedApplications { get; set; } = 0;
+        public bool HasNoApplications { get; set; } = false;
     }
 }

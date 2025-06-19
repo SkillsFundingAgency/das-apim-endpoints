@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
-using SFA.DAS.Recruit.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Net;
