@@ -32,7 +32,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
             var reservationValidationResult = new BulkReservationValidationResults();
             var reservationApiResponse = new ApiResponse<BulkReservationValidationResults>(reservationValidationResult, System.Net.HttpStatusCode.OK, "");
             reservationApiClient.Setup(x => x.PostWithResponseCode<BulkReservationValidationResults>(It.IsAny<PostValidateReservationRequest>(), true)).ReturnsAsync(() => reservationApiResponse);
-            addCourseTypeDataToCsvService.Setup(x => x.PopulateWithCourseTypeData(query.CsvRecords)).ReturnsAsync(csvRecordsExtendedRequests);
+            addCourseTypeDataToCsvService.Setup(x => x.MapAndAddCourseTypeData(query.CsvRecords)).ReturnsAsync(csvRecordsExtendedRequests);
 
             apiClient.Setup(x => x.PostWithResponseCode<object>(It.IsAny<PostValidateBulkUploadRequest>(), true)).ReturnsAsync(response);
             var actual = await handler.Handle(query, CancellationToken.None);

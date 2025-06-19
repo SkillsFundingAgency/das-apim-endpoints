@@ -48,7 +48,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
             BulkUploadValidateApiRequest bulkUploadValidateApiRequest = new BulkUploadValidateApiRequest
             {
-                CsvRecords = await courseTypesToCsvService.PopulateWithCourseTypeData(command.CsvRecords),
+                CsvRecords = await courseTypesToCsvService.MapAndAddCourseTypeData(command.CsvRecords),
                 ProviderId = command.ProviderId,
                 LogId = command.FileUploadLogId,
                 UserInfo = command.UserInfo,

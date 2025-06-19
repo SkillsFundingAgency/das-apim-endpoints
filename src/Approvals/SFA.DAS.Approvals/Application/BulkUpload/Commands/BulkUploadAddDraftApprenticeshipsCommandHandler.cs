@@ -42,7 +42,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
             var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
             {
-                BulkUploadDraftApprenticeships = await _courseTypesToCsvService.PopulateWithCourseTypeData(command.BulkUploadAddDraftApprenticeships.ToList()),
+                BulkUploadDraftApprenticeships = await _courseTypesToCsvService.MapAndAddCourseTypeData(command.BulkUploadAddDraftApprenticeships.ToList()),
                 ProviderId = command.ProviderId,
                 LogId = command.FileUploadLogId,
                 UserInfo = command.UserInfo

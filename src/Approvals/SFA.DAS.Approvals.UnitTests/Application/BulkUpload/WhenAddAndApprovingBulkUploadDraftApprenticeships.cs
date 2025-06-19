@@ -32,7 +32,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
        )
         {
             var apiResponse = new ApiResponse<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(response, System.Net.HttpStatusCode.Created, string.Empty);
-            addCourseTypeDataToCsvService.Setup(x => x.PopulateWithCourseTypeData(command.BulkUploadAddAndApproveDraftApprenticeships.ToList())).ReturnsAsync(csvRecordsExtendedRequests);
+            addCourseTypeDataToCsvService.Setup(x => x.MapAndAddCourseTypeData(command.BulkUploadAddAndApproveDraftApprenticeships.ToList())).ReturnsAsync(csvRecordsExtendedRequests);
 
 
             apiClient.Setup(x => x.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>

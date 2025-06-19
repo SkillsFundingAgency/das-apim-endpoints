@@ -39,7 +39,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
                                                             && (x.Data as BulkUploadAddDraftApprenticeshipsRequest).LogId == command.FileUploadLogId
                 ), true)).ReturnsAsync(apiResponse);
 
-            addCourseTypeDataToCsvService.Setup(x => x.PopulateWithCourseTypeData(command.BulkUploadAddDraftApprenticeships.ToList())).ReturnsAsync(csvRecordsExtendedRequests);
+            addCourseTypeDataToCsvService.Setup(x => x.MapAndAddCourseTypeData(command.BulkUploadAddDraftApprenticeships.ToList())).ReturnsAsync(csvRecordsExtendedRequests);
 
             var result = new BulkCreateReservationsWithNonLevyResult();
             foreach (var draftApprenticeship in command.BulkUploadAddDraftApprenticeships)

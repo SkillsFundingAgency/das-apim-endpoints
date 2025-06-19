@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using AutoMapper;
@@ -16,7 +14,6 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Services;
@@ -36,7 +33,7 @@ public class WhenAddingExtendedPropertiesToCsvRecords
         mapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipExtendedRequest>(It.IsAny<BulkUploadAddDraftApprenticeshipRequest>())).
             Returns(mappedRecord);
 
-        var result = await sut.PopulateWithCourseTypeData(csvRecords);
+        var result = await sut.MapAndAddCourseTypeData(csvRecords);
         result.FirstOrDefault().Should().BeEquivalentTo(mappedRecord);
     }
 
@@ -57,7 +54,7 @@ public class WhenAddingExtendedPropertiesToCsvRecords
         mapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipExtendedRequest>(It.IsAny<BulkUploadAddDraftApprenticeshipRequest>())).
             Returns(mappedRecord);
 
-        var result = await sut.PopulateWithCourseTypeData(new List<BulkUploadAddDraftApprenticeshipRequest> { csvRecord });
+        var result = await sut.MapAndAddCourseTypeData(new List<BulkUploadAddDraftApprenticeshipRequest> { csvRecord });
         result.FirstOrDefault().Should().BeEquivalentTo(mappedRecord);
         result[0].MinimumAgeAtApprenticeshipStart.Should().Be(apiResponse.MinimumAge);
         result[0].MaximumAgeAtApprenticeshipStart.Should().Be(apiResponse.MaximumAge);
@@ -80,7 +77,7 @@ public class WhenAddingExtendedPropertiesToCsvRecords
         mapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipExtendedRequest>(It.IsAny<BulkUploadAddDraftApprenticeshipRequest>())).
             Returns(mappedRecord);
 
-        var result = await sut.PopulateWithCourseTypeData(csvRecords);
+        var result = await sut.MapAndAddCourseTypeData(csvRecords);
         courseTypesApi.Verify(x=>x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()), Times.Once);
         coursesApiClient.Verify(x=>x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Once);
     }
@@ -99,6 +96,8 @@ public class WhenAddingExtendedPropertiesToCsvRecords
     {
         csvRecords.ForEach(x => x.CourseCode = "ABCDE");
         mappedRecord.CourseCode = null;
+        mappedRecord.MinimumAgeAtApprenticeshipStart = null;
+        mappedRecord.MaximumAgeAtApprenticeshipStart = null;
 
         coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
             .ReturnsAsync(course);
@@ -109,8 +108,9 @@ public class WhenAddingExtendedPropertiesToCsvRecords
         mapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipExtendedRequest>(It.IsAny<BulkUploadAddDraftApprenticeshipRequest>())).
             Returns(mappedRecord);
 
-        var act = async () => await sut.PopulateWithCourseTypeData(csvRecords);
-        await act.Should().ThrowAsync<Exception>().WithMessage($"Learner Age response for {course.ApprenticeshipType} was not found");
+        var result = await sut.MapAndAddCourseTypeData(csvRecords);
+        result.First().MinimumAgeAtApprenticeshipStart.Should().BeNull();
+        result.First().MaximumAgeAtApprenticeshipStart.Should().BeNull();
         courseTypesApi.Verify(x => x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()), Times.Once);
         coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Once);
     }
@@ -129,6 +129,8 @@ public class WhenAddingExtendedPropertiesToCsvRecords
     {
         csvRecords.ForEach(x => x.CourseCode = "ABCDE");
         mappedRecord.CourseCode = null;
+        mappedRecord.MinimumAgeAtApprenticeshipStart = null;
+        mappedRecord.MaximumAgeAtApprenticeshipStart = null;
 
         coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
             .ReturnsAsync((GetStandardsListItem)null);
@@ -136,9 +138,10 @@ public class WhenAddingExtendedPropertiesToCsvRecords
         mapper.Setup(x => x.Map<BulkUploadAddDraftApprenticeshipExtendedRequest>(It.IsAny<BulkUploadAddDraftApprenticeshipRequest>())).
             Returns(mappedRecord);
 
-        var act = async () => await sut.PopulateWithCourseTypeData(csvRecords);
-        await act.Should().ThrowAsync<Exception>().WithMessage($"Standard for ABCDE was not found");
+        var result = await sut.MapAndAddCourseTypeData(csvRecords);
+        result.First().MinimumAgeAtApprenticeshipStart.Should().BeNull();
+        result.First().MaximumAgeAtApprenticeshipStart.Should().BeNull();
         courseTypesApi.Verify(x => x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()), Times.Never);
-        coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Once);
+        coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Exactly(3));
     }
 }
