@@ -14,3 +14,15 @@ public class WhenBuildingPutCreateVacancyReviewRequest
         actual.Data.Should().BeEquivalentTo(data);
     }
 }
+
+public class WhenBuildingPutUserRequest
+{
+    [Test, AutoData]
+    public void Then_The_Url_And_Date_Are_Constructed_And_Sent(UserDto data, Guid id)
+    {
+        var actual = new PutUserRequest(id, data);
+        
+        actual.PutUrl.Should().Be($"api/user/{id}");
+        actual.Data.Should().BeEquivalentTo(data);
+    }
+}
