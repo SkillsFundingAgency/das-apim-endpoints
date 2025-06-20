@@ -50,6 +50,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.VacancyReference)
                 .Excluding(item => item.VacancySource)
                 .Excluding(item => item.Location)
+                .Excluding(c => c.ApprenticeshipType)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());

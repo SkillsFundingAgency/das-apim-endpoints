@@ -28,6 +28,9 @@ public class GetVacanciesListItem
     [JsonPropertyName("apprenticeshipLevel")]
     public string ApprenticeshipLevel { get; set; }
 
+    [JsonPropertyName("apprenticeshipType")]
+    public string ApprenticeshipType { get; set; }
+
     [JsonPropertyName("category")]
     public string Category { get; set; }
 
