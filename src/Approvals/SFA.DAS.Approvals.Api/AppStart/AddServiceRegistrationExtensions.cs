@@ -69,6 +69,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
             services.AddTransient<IAutoReservationsService, AutoReservationsService>();
             services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
+            services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();
             services.AddServiceParameters();
         }
     }

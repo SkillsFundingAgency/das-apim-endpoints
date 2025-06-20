@@ -8,7 +8,7 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
     {
         public long ProviderId { get; set; }
         public long? LogId { get; set; }
-        public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> CsvRecords { get; set; }
+        public IEnumerable<BulkUploadAddDraftApprenticeshipExtendedRequest> CsvRecords { get; set; }
         public BulkReservationValidationResults BulkReservationValidationResults { get; set; }
         public ProviderStandardsData ProviderStandardsData { get; set; }
     }
