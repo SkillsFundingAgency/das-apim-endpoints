@@ -1,8 +1,7 @@
-namespace SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses
+namespace SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
+
+public class GetRecognitionOfPriorLearningResponse
 {
-    public class GetRecognitionOfPriorLearningResponse
-    {
-        public bool IsRequired { get; set; }
-        public int OffTheJobTrainingMinimumHours { get; set; } = 278;
-    }
-} 
+    public bool IsRequired { get; set; }
+    public int? OffTheJobTrainingMinimumHours { get; set; }
+}

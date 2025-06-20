@@ -49,7 +49,7 @@ public class AddPriorLearningDataCommandHandler(
             IsDurationReducedByRpl = request.IsDurationReducedByRpl,
             DurationReducedBy = request.DurationReducedBy,
             PriceReducedBy = request.PriceReducedBy,
-            MinimumOffTheJobTrainingHoursRequired = priorLearningResponse.OffTheJobTrainingMinimumHours
+            MinimumOffTheJobTrainingHoursRequired = priorLearningResponse.OffTheJobTrainingMinimumHours ?? 0
         };
         var result = await apiClient.PostWithResponseCode<AddPriorLearningDataResponse>(new PostAddPriorLearningDataRequest(request.CohortId, request.DraftApprenticeshipId, addPriorLearningRequest), false);
 
