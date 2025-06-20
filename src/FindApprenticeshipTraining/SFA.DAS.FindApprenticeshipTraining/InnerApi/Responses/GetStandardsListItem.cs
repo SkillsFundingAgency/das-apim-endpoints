@@ -1,3 +1,4 @@
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using System.Collections.Generic;
 
@@ -29,6 +30,7 @@ public class GetStandardsListItem : StandardApiResponseBase
     public List<string> Skills { get; set; }
     public bool CoreAndOptions { get; set; }
     public List<string> CoreDuties { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
 
     private List<string> GetCoreSkillsCount()
     {

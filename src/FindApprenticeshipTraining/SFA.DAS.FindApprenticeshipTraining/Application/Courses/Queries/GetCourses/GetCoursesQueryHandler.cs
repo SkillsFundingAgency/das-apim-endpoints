@@ -37,7 +37,8 @@ public sealed class GetCoursesQueryHandler(
                     Keyword = query.Keyword ?? string.Empty,
                     OrderBy = query.OrderBy,
                     RouteIds = query.RouteIds,
-                    Levels = query.Levels
+                    Levels = query.Levels,
+                    ApprenticeshipType = query.ApprenticeshipType
                 }
         );
 

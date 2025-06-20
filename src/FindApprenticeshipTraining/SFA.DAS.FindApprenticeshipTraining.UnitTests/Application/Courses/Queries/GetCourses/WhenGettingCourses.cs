@@ -3,6 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
@@ -29,6 +30,7 @@ public sealed class WhenGettingCourses
         LocationItem locationItem,
         GetStandardsListResponse coursesResponse,
         GetCourseTrainingProvidersCountResponse roatpResponse,
+        ApprenticeshipType apprenticeshipType,
         CancellationToken cancellationToken
     )
     {
@@ -38,7 +40,8 @@ public sealed class WhenGettingCourses
             RouteIds = [1],
             Levels = [2],
             Distance = 40,
-            Location = "SW1"
+            Location = "SW1",
+            ApprenticeshipType = apprenticeshipType.ToString()
         };
 
         coursesApiClient
@@ -47,7 +50,8 @@ public sealed class WhenGettingCourses
                     a.Keyword.Equals(query.Keyword) &&
                     a.OrderBy.Equals(query.OrderBy) &&
                     a.Levels.SequenceEqual(query.Levels) &&
-                    a.RouteIds.SequenceEqual(query.RouteIds)
+                    a.RouteIds.SequenceEqual(query.RouteIds) &&
+                    a.ApprenticeshipType.Equals(query.ApprenticeshipType)
                 )
              ))
             .ReturnsAsync(
@@ -79,7 +83,8 @@ public sealed class WhenGettingCourses
                     r.Keyword == (query.Keyword ?? string.Empty) &&
                     r.OrderBy == query.OrderBy &&
                     r.RouteIds == query.RouteIds &&
-                    r.Levels == query.Levels)
+                    r.Levels == query.Levels &&
+                    r.ApprenticeshipType == query.ApprenticeshipType)
                 ),
                 Times.Once
         );
