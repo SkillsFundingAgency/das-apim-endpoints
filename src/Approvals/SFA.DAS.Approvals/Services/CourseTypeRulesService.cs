@@ -18,21 +18,8 @@ namespace SFA.DAS.Approvals.Services
     {
         public async Task<CourseTypeRulesResult> GetCourseTypeRulesAsync(string courseCode)
         {
-            var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
-            
-            if (standard == null)
-            {
-                logger.LogError("Standard not found for course ID {CourseId}", courseCode);
-                throw new Exception($"Standard not found for course ID {courseCode}");
-            }
-            
-            var learnerAge = await courseTypesApiClient.Get<GetLearnerAgeResponse>(new GetLearnerAgeRequest(standard.ApprenticeshipType));
-
-            if (learnerAge == null)
-            {
-                logger.LogError("Learner age rules not found for apprenticeship type {ApprenticeshipType}", standard.ApprenticeshipType);
-                throw new Exception($"Learner age rules not found for apprenticeship type {standard.ApprenticeshipType}");
-            }
+            var standard = await GetStandardAsync(courseCode);
+            var learnerAge = await GetLearnerAgeRulesAsync(standard.ApprenticeshipType);
 
             return new CourseTypeRulesResult
             {
@@ -43,6 +30,18 @@ namespace SFA.DAS.Approvals.Services
 
         public async Task<RplRulesResult> GetRplRulesAsync(string courseCode)
         {
+            var standard = await GetStandardAsync(courseCode);
+            var rplRules = await GetRplRulesInternalAsync(standard.ApprenticeshipType);
+
+            return new RplRulesResult
+            {
+                Standard = standard,
+                RplRules = rplRules
+            };
+        }
+
+        private async Task<GetStandardsListItem> GetStandardAsync(string courseCode)
+        {
             var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
             
             if (standard == null)
@@ -50,20 +49,36 @@ namespace SFA.DAS.Approvals.Services
                 logger.LogError("Standard not found for course ID {CourseId}", courseCode);
                 throw new Exception($"Standard not found for course ID {courseCode}");
             }
-            
-            var rplRules = await courseTypesApiClient.Get<GetRecognitionOfPriorLearningResponse>(new GetRecognitionOfPriorLearningRequest(standard.ApprenticeshipType));
 
-            if (rplRules == null)
+            return standard;
+        }
+
+        private async Task<GetLearnerAgeResponse> GetLearnerAgeRulesAsync(string apprenticeshipType)
+        {
+            var request = new GetLearnerAgeRequest(apprenticeshipType);
+            var response = await courseTypesApiClient.Get<GetLearnerAgeResponse>(request);
+
+            if (response == null)
             {
-                logger.LogError("RPL rules not found for apprenticeship type {ApprenticeshipType}", standard.ApprenticeshipType);
-                throw new Exception($"RPL rules not found for apprenticeship type {standard.ApprenticeshipType}");
+                logger.LogError("Learner age rules not found for apprenticeship type {ApprenticeshipType}", apprenticeshipType);
+                throw new Exception($"Learner age rules not found for apprenticeship type {apprenticeshipType}");
             }
 
-            return new RplRulesResult
+            return response;
+        }
+
+        private async Task<GetRecognitionOfPriorLearningResponse> GetRplRulesInternalAsync(string apprenticeshipType)
+        {
+            var request = new GetRecognitionOfPriorLearningRequest(apprenticeshipType);
+            var response = await courseTypesApiClient.Get<GetRecognitionOfPriorLearningResponse>(request);
+
+            if (response == null)
             {
-                Standard = standard,
-                RplRules = rplRules
-            };
+                logger.LogError("RPL rules not found for apprenticeship type {ApprenticeshipType}", apprenticeshipType);
+                throw new Exception($"RPL rules not found for apprenticeship type {apprenticeshipType}");
+            }
+
+            return response;
         }
     }
 } 
