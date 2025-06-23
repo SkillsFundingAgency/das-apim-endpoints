@@ -7,13 +7,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftApprenticeship;
-using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -26,8 +24,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         [Test, MoqAutoData]
         public async Task Handle_Cohort_Created(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+            [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
             GetStandardsListItem standardResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
@@ -41,17 +38,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.Get<GetCohortResponse>(It.Is<GetCohortRequest>(p => p.CohortId == request.CohortId)))
                 .ReturnsAsync(cohort);
 
-            coursesApiClient
-                .Setup(x => x.Get<GetStandardsListItem>(
-                    It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-                .ReturnsAsync(standardResponse)
-                .Verifiable();
-
-            courseTypesApiClient
-                .Setup(x => x.Get<GetLearnerAgeResponse>(
-                    It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(standardResponse.ApprenticeshipType))))
-                .ReturnsAsync(learnerAgeResponse)
-                .Verifiable();
+            courseTypeRulesService
+                .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+                .ReturnsAsync(new CourseTypeRulesResult
+                {
+                    Standard = standardResponse,
+                    LearnerAgeRules = learnerAgeResponse
+                });
 
             commitmentsApiClient.Setup(x => x.PostWithResponseCode<AddDraftApprenticeshipResponse>(
                     It.Is<PostAddDraftApprenticeshipRequest>(r =>
@@ -89,16 +82,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
 
             // Assert
             response.Should().BeEquivalentTo(expectedResponse);
-            coursesApiClient.Verify();
-            courseTypesApiClient.Verify();
+            courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Handle_AutoReservation_Creation_When_No_ReservationID_In_Request(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+            [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
             GetStandardsListItem standardResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
@@ -116,17 +107,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .ReturnsAsync(cohort)
                 .Verifiable();
 
-            coursesApiClient
-                .Setup(x => x.Get<GetStandardsListItem>(
-                    It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-                .ReturnsAsync(standardResponse)
-                .Verifiable();
-
-            courseTypesApiClient
-                .Setup(x => x.Get<GetLearnerAgeResponse>(
-                    It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(standardResponse.ApprenticeshipType))))
-                .ReturnsAsync(learnerAgeResponse)
-                .Verifiable();
+            courseTypeRulesService
+                .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+                .ReturnsAsync(new CourseTypeRulesResult
+                {
+                    Standard = standardResponse,
+                    LearnerAgeRules = learnerAgeResponse
+                });
 
             autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
                 .ReturnsAsync(reservationId);
@@ -145,16 +132,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             result.DraftApprenticeshipId.Should().Be(0);
             autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Once);
             commitmentsApiClient.Verify();
-            coursesApiClient.Verify();
-            courseTypesApiClient.Verify();
+            courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Throw_ApplicationException_When_No_ReservationID_In_Request_But_TransferSenderId_Is_Present(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+            [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
             GetStandardsListItem standardResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
@@ -168,10 +153,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             commitmentsApiClient.Setup(x => x.Get<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
                 .ReturnsAsync(cohort)
                 .Verifiable();
-            coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-                .ReturnsAsync(standardResponse);
-            courseTypesApiClient.Setup(x => x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()))
-                .ReturnsAsync(learnerAgeResponse);
+            courseTypeRulesService
+                .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+                .ReturnsAsync(new CourseTypeRulesResult
+                {
+                    Standard = standardResponse,
+                    LearnerAgeRules = learnerAgeResponse
+                });
 
             // Act
             var act = () => handler.Handle(request, CancellationToken.None);
@@ -186,8 +174,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         public async Task Delete_Reservation_When_No_ReservationID_In_Request(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+            [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
             GetStandardsListItem standardResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
@@ -204,17 +191,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.Get<GetCohortResponse>(It.Is<GetCohortRequest>(p => p.CohortId == request.CohortId)))
                 .ReturnsAsync(cohort);
 
-            coursesApiClient
-                .Setup(x => x.Get<GetStandardsListItem>(
-                    It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-                .ReturnsAsync(standardResponse)
-                .Verifiable();
-
-            courseTypesApiClient
-                .Setup(x => x.Get<GetLearnerAgeResponse>(
-                    It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(standardResponse.ApprenticeshipType))))
-                .ReturnsAsync(learnerAgeResponse)
-                .Verifiable();
+            courseTypeRulesService
+                .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+                .ReturnsAsync(new CourseTypeRulesResult
+                {
+                    Standard = standardResponse,
+                    LearnerAgeRules = learnerAgeResponse
+                });
 
             autoReservationService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
                 .ReturnsAsync(reservationId);
@@ -231,16 +214,14 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             // Assert
             await act.Should().ThrowAsync<Exception>().WithMessage("When creating an auto reservation, the TransferSenderId must not present");
             autoReservationService.Verify(x=>x.DeleteReservation(It.IsAny<Guid>()), Times.Once);
-            coursesApiClient.Verify();
-            courseTypesApiClient.Verify();
+            courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Does_Not_Create_Or_Delete_Reservation_When_ReservationID_In_Request(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+            [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
             GetStandardsListItem standardResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
@@ -254,17 +235,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.Get<GetCohortResponse>(It.Is<GetCohortRequest>(p => p.CohortId == request.CohortId)))
                 .ReturnsAsync(cohort);
 
-            coursesApiClient
-                .Setup(x => x.Get<GetStandardsListItem>(
-                    It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-                .ReturnsAsync(standardResponse)
-                .Verifiable();
-
-            courseTypesApiClient
-                .Setup(x => x.Get<GetLearnerAgeResponse>(
-                    It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(standardResponse.ApprenticeshipType))))
-                .ReturnsAsync(learnerAgeResponse)
-                .Verifiable();
+            courseTypeRulesService
+                .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+                .ReturnsAsync(new CourseTypeRulesResult
+                {
+                    Standard = standardResponse,
+                    LearnerAgeRules = learnerAgeResponse
+                });
 
             commitmentsApiClient.Setup(x => x.PostWithResponseCode<AddDraftApprenticeshipResponse>(
                 It.Is<PostAddDraftApprenticeshipRequest>(r =>
@@ -279,14 +256,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             await act.Should().ThrowAsync<Exception>().WithMessage("Some error");
             autoReservationService.Verify(x => x.DeleteReservation(It.IsAny<Guid>()), Times.Never);
             autoReservationService.Verify(x => x.CreateReservation(It.IsAny<AutoReservation>()), Times.Never);
-            coursesApiClient.Verify();
-            courseTypesApiClient.Verify();
+            courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Handle_WhenNoStandardDetails_DoNotCreateDraftApprenticeship(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+            [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
             AddDraftApprenticeshipCommand request,
             GetCohortResponse cohort,
             AddDraftApprenticeshipCommandHandler handler)
@@ -296,8 +272,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             commitmentsApiClient.Setup(x => x.Get<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
                 .ReturnsAsync(cohort)
                 .Verifiable();
-            coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-                .ReturnsAsync((GetStandardsListItem)null);
+            courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+                .ThrowsAsync(new Exception($"Standard not found for course ID {request.CourseCode}"));
 
             // Act
             var act = () => handler.Handle(request, CancellationToken.None);
@@ -311,8 +287,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         [Test, MoqAutoData]
         public async Task Handle_WhenNoLearnerAgeRules_DoNotCreateDraftApprenticeship(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-            [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+            [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
             GetStandardsListItem standardResponse,
             AddDraftApprenticeshipCommand request,
             GetCohortResponse cohort,
@@ -324,10 +299,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             commitmentsApiClient.Setup(x => x.Get<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
                 .ReturnsAsync(cohort)
                 .Verifiable();
-            coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-                .ReturnsAsync(standardResponse);
-            courseTypesApiClient.Setup(x => x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()))
-                .ReturnsAsync((GetLearnerAgeResponse)null);
+            courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+                .ThrowsAsync(new Exception("Learner age rules not found for apprenticeship type Standard"));
 
             // Act
             var act = () => handler.Handle(request, CancellationToken.None);
