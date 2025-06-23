@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -14,8 +13,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
     public class CreateCohortCommandHandler(
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
         IAutoReservationsService autoReservationService,
-        ICourseTypeRulesService courseTypeRulesService,
-        ILogger<CreateCohortCommandHandler> logger)
+        ICourseTypeRulesService courseTypeRulesService)
         : IRequestHandler<CreateCohortCommand, CreateCohortResult>
     {
         public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)

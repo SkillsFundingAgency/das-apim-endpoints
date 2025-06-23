@@ -8,13 +8,11 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData;
-using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -27,8 +25,7 @@ public class AddPriorLearningDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_When_All_Data_Valid_Returns_Success(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         [Frozen] Mock<ILogger<AddPriorLearningDataCommandHandler>> logger,
         GetDraftApprenticeshipResponse apprenticeship,
         GetStandardsListItem standardResponse,
@@ -51,16 +48,13 @@ public class AddPriorLearningDataCommandHandlerTests
             .ReturnsAsync(apprenticeship)
             .Verifiable();
 
-        coursesApiClient
-            .Setup(x => x.Get<GetStandardsListItem>(
-                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(apprenticeship.CourseCode))))
-            .ReturnsAsync(standardResponse)
-            .Verifiable();
-
-        courseTypesApiClient
-            .Setup(x => x.Get<GetRecognitionOfPriorLearningResponse>(
-                It.Is<GetRecognitionOfPriorLearningRequest>(x => x.GetUrl.Contains(standardResponse.ApprenticeshipType))))
-            .ReturnsAsync(priorLearningResponse)
+        courseTypeRulesService
+            .Setup(x => x.GetRplRulesAsync(apprenticeship.CourseCode))
+            .ReturnsAsync(new RplRulesResult
+            {
+                Standard = standardResponse,
+                RplRules = priorLearningResponse
+            })
             .Verifiable();
 
         commitmentsApiClient
@@ -92,15 +86,13 @@ public class AddPriorLearningDataCommandHandlerTests
         response.HasStandardOptions.Should().Be(apprenticeship.HasStandardOptions);
         response.RplPriceReductionError.Should().Be(priorLearningSummary.RplPriceReductionError);
         commitmentsApiClient.Verify();
-        coursesApiClient.Verify();
-        courseTypesApiClient.Verify();
+        courseTypeRulesService.Verify();
     }
 
     [Test, MoqAutoData]
     public async Task Handle_When_Standard_Not_Found_Throws_Exception(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         [Frozen] Mock<ILogger<AddPriorLearningDataCommandHandler>> logger,
         GetDraftApprenticeshipResponse apprenticeship,
         AddPriorLearningDataCommand request,
@@ -115,10 +107,9 @@ public class AddPriorLearningDataCommandHandlerTests
             .ReturnsAsync(apprenticeship)
             .Verifiable();
 
-        coursesApiClient
-            .Setup(x => x.Get<GetStandardsListItem>(
-                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(apprenticeship.CourseCode))))
-            .ReturnsAsync((GetStandardsListItem)null)
+        courseTypeRulesService
+            .Setup(x => x.GetRplRulesAsync(apprenticeship.CourseCode))
+            .ThrowsAsync(new Exception($"Standard not found for course ID {apprenticeship.CourseCode}"))
             .Verifiable();
 
         // Act
@@ -127,12 +118,6 @@ public class AddPriorLearningDataCommandHandlerTests
         // Assert
         await act.Should().ThrowAsync<Exception>()
             .WithMessage($"Standard not found for course ID {apprenticeship.CourseCode}");
-        logger.Verify(x => x.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((o, t) => o.ToString().Contains($"Standard not found for course ID {apprenticeship.CourseCode}")),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
         commitmentsApiClient.Verify();
         commitmentsApiClient.VerifyNoOtherCalls();
     }
@@ -140,8 +125,7 @@ public class AddPriorLearningDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_When_RPL_Rules_Not_Found_Throws_Exception(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         [Frozen] Mock<ILogger<AddPriorLearningDataCommandHandler>> logger,
         GetDraftApprenticeshipResponse apprenticeship,
         GetStandardsListItem standardResponse,
@@ -158,16 +142,9 @@ public class AddPriorLearningDataCommandHandlerTests
             .ReturnsAsync(apprenticeship)
             .Verifiable();
 
-        coursesApiClient
-            .Setup(x => x.Get<GetStandardsListItem>(
-                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(apprenticeship.CourseCode))))
-            .ReturnsAsync(standardResponse)
-            .Verifiable();
-
-        courseTypesApiClient
-            .Setup(x => x.Get<GetRecognitionOfPriorLearningResponse>(
-                It.Is<GetRecognitionOfPriorLearningRequest>(x => x.GetUrl.Contains(standardResponse.ApprenticeshipType))))
-            .ReturnsAsync((GetRecognitionOfPriorLearningResponse)null)
+        courseTypeRulesService
+            .Setup(x => x.GetRplRulesAsync(apprenticeship.CourseCode))
+            .ThrowsAsync(new Exception($"RPL rules not found for apprenticeship type {standardResponse.ApprenticeshipType}"))
             .Verifiable();
 
         // Act
@@ -176,12 +153,6 @@ public class AddPriorLearningDataCommandHandlerTests
         // Assert
         await act.Should().ThrowAsync<Exception>()
             .WithMessage($"RPL rules not found for apprenticeship type {standardResponse.ApprenticeshipType}");
-        logger.Verify(x => x.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((o, t) => o.ToString().Contains($"RPL rules not found for apprenticeship type {standardResponse.ApprenticeshipType}")),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception, string>>()), Times.Once);
         commitmentsApiClient.Verify();
         commitmentsApiClient.VerifyNoOtherCalls();
     }

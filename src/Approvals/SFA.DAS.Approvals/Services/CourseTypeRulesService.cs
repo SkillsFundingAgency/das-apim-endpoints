@@ -40,5 +40,30 @@ namespace SFA.DAS.Approvals.Services
                 LearnerAgeRules = learnerAge
             };
         }
+
+        public async Task<RplRulesResult> GetRplRulesAsync(string courseCode)
+        {
+            var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
+            
+            if (standard == null)
+            {
+                logger.LogError("Standard not found for course ID {CourseId}", courseCode);
+                throw new Exception($"Standard not found for course ID {courseCode}");
+            }
+            
+            var rplRules = await courseTypesApiClient.Get<GetRecognitionOfPriorLearningResponse>(new GetRecognitionOfPriorLearningRequest(standard.ApprenticeshipType));
+
+            if (rplRules == null)
+            {
+                logger.LogError("RPL rules not found for apprenticeship type {ApprenticeshipType}", standard.ApprenticeshipType);
+                throw new Exception($"RPL rules not found for apprenticeship type {standard.ApprenticeshipType}");
+            }
+
+            return new RplRulesResult
+            {
+                Standard = standard,
+                RplRules = rplRules
+            };
+        }
     }
 } 
