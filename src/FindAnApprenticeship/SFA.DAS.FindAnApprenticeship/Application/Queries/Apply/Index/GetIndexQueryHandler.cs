@@ -1,50 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 
-public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryResult>
+public class GetIndexQueryHandler(
+    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
+    IVacancyService vacancyService)
+    : IRequestHandler<GetIndexQuery, GetIndexQueryResult>
 {
-    private readonly IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> _findApprenticeshipApiClient;
-    private readonly ICandidateApiClient<CandidateApiConfiguration> _candidateApiClient;
-    private readonly IVacancyService _vacancyService;
-
-    public GetIndexQueryHandler(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient, ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, IVacancyService vacancyService)
-    {
-        _findApprenticeshipApiClient = findApprenticeshipApiClient;
-        _candidateApiClient = candidateApiClient;
-        _vacancyService = vacancyService;
-    }
-
     public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
     {
-        var application = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
+        var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
         if (application == null || application.Status != ApplicationStatus.Draft) return null;
 
-        var vacancy = await _findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(new GetVacancyRequest(application.VacancyReference));
-        if(vacancy == null) return null;
+        var vacancy = await vacancyService.GetVacancy(application.VacancyReference)
+                      ?? await vacancyService.GetClosedVacancy(application.VacancyReference);
+
+        if (vacancy is null) return null;
 
         GetApplicationApiResponse previousApplication = null;
         GetApprenticeshipVacancyQueryResult.Vacancy previousVacancy = null;
         if (application.PreviousAnswersSourceId.HasValue)
         {
-            previousApplication = await _candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, application.PreviousAnswersSourceId.Value, false));
+            previousApplication = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, application.PreviousAnswersSourceId.Value, false));
             if (previousApplication != null)
             {
-                var previousVacancyFromApi = await _vacancyService.GetVacancy(previousApplication.VacancyReference);
+                var previousVacancyFromApi = await vacancyService.GetVacancy(previousApplication.VacancyReference);
                 if (previousVacancyFromApi != null)
                 {
                     previousVacancy = GetApprenticeshipVacancyQueryResult.Vacancy.FromIVacancy(previousVacancyFromApi);
@@ -63,6 +56,7 @@ public class GetIndexQueryHandler : IRequestHandler<GetIndexQuery,GetIndexQueryR
             VacancyTitle = vacancy.Title,
             EmployerName = vacancy.EmployerName,
             ClosingDate = vacancy.ClosingDate,
+            ClosedDate = vacancy.ClosedDate,
             IsMigrated = application.MigrationDate.HasValue,
             IsDisabilityConfident = vacancy.IsDisabilityConfident,
             IsApplicationComplete = application.ApplicationAllSectionStatus.Equals("Completed", StringComparison.CurrentCultureIgnoreCase),
