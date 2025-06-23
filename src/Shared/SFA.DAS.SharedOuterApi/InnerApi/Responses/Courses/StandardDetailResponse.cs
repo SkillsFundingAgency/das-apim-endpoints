@@ -23,7 +23,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
         public string TrailBlazerContact { get; set; }
         public string TypicalJobTitles { get; set; }
         public List<string> Skills { get; set; }
+        public string ApprenticeshipType { get; set; }
         public List<KsbResponse> Ksbs { get; set; }
+        public List<RelatedOccupationResponse> RelatedOccupations { get; set; }
         public string StandardPageUrl { get; set; }
         public string IntegratedDegree { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }

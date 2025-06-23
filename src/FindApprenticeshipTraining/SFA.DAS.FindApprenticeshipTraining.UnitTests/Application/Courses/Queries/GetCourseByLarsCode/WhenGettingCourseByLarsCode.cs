@@ -45,13 +45,16 @@ public sealed class WhenGettingCourseByLarsCode
     [MoqAutoData]
     public async Task Handle_Returns_Correct_CourseDetails(GetCourseByLarsCodeQuery query)
     {
+        string apprenticeshipType = "FoundationApprenticeship";
+
         var standardDetailResponse = new StandardDetailResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding>
             {
                 new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, Duration = 12 },
                 new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, Duration = 18 }
-            }
+            },
+            ApprenticeshipType = apprenticeshipType
         };
 
         var courseProvidersResponse = new GetCourseTrainingProvidersCountResponse
@@ -96,6 +99,7 @@ public sealed class WhenGettingCourseByLarsCode
             Assert.That(sut, Is.Not.Null);
             Assert.That(sut.MaxFunding, Is.EqualTo(6000));
             Assert.That(sut.TypicalDuration, Is.EqualTo(18));
+            Assert.That(sut.ApprenticeshipType, Is.EqualTo(apprenticeshipType));
             Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(10));
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(20));
         });
@@ -176,7 +180,7 @@ public sealed class WhenGettingCourseByLarsCode
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_Returns_Ksbs(GetCourseByLarsCodeQuery query)
+    public async Task Handler_Returns_Ksbs(GetCourseByLarsCodeQuery query)
     {
         var ksbType = "Knowledge";
         var ksbId = Guid.NewGuid();
@@ -238,6 +242,68 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
+
+    [Test]
+    [MoqAutoData]
+    public async Task Handler_Returns_RelatedOccupations(GetCourseByLarsCodeQuery query)
+    {
+        var relatedOccupationsTitle1 = "Plumbing and heating technician";
+        var relatedOccupationsLevel1 = 2;
+        var relatedOccupationsTitle2 = "Refrigeration technician";
+        var relatedOccupationsLevel2 = 2;
+
+        var standardDetailResponse = new StandardDetailResponse
+        {
+            ApprenticeshipFunding = new List<ApprenticeshipFunding>
+            {
+                new() { MaxEmployerLevyCap = 7000, Duration = 24 }
+            },
+            RelatedOccupations = new List<RelatedOccupationResponse>
+           {
+               new() { Title = relatedOccupationsTitle1, Level = relatedOccupationsLevel1},
+               new() { Title = relatedOccupationsTitle2, Level = relatedOccupationsLevel2}
+           }
+        };
+
+        _coursesApiClientMock
+            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
+                It.Is<GetStandardDetailsByIdRequest>(a =>
+                    a.Id.Equals(query.LarsCode.ToString())
+                )
+            ))
+            .ReturnsAsync(
+                new ApiResponse<StandardDetailResponse>(
+                    standardDetailResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    new GetCourseTrainingProvidersCountResponse(),
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.RelatedOccupations.Count, Is.EqualTo(2));
+            Assert.That(sut.RelatedOccupations[0].Title, Is.EqualTo(relatedOccupationsTitle1));
+            Assert.That(sut.RelatedOccupations[1].Title, Is.EqualTo(relatedOccupationsTitle2));
+            Assert.That(sut.RelatedOccupations[0].Level, Is.EqualTo(relatedOccupationsLevel1));
+            Assert.That(sut.RelatedOccupations[1].Level, Is.EqualTo(relatedOccupationsLevel2));
+        });
+    }
 
     [Test]
     [MoqAutoData]
