@@ -28,12 +28,10 @@ public class VacancyReviewDto
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
     public long AccountLegalEntityId { get; set; }
-
     public string OwnerType { get; set; }
-
     public long AccountId { get; set; }
-
     public long Ukprn { get; set; }
+    public DateTime? VacancyClosingDate { get; set; }
 
     public static explicit operator VacancyReviewDto(GetVacancyReviewResponse source)
     {
@@ -58,7 +56,8 @@ public class VacancyReviewDto
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = source.VacancySnapshot,
-            OwnerType = source.OwnerType
+            OwnerType = source.OwnerType,
+            VacancyClosingDate = source.VacancyClosingDate
         };
     }
 
@@ -87,7 +86,8 @@ public class VacancyReviewDto
             Ukprn = source.Ukprn,
             AccountId = source.AccountId,
             OwnerType = source.OwnerType,
-            AccountLegalEntityId = source.AccountLegalEntityId
+            AccountLegalEntityId = source.AccountLegalEntityId,
+            VacancyClosingDate = source.VacancyClosingDate
         };
     }
 }

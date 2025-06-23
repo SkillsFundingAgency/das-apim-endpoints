@@ -34,4 +34,5 @@ public class VacancyReviewDto
     public long AccountId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string OwnerType { get; set; }
+    public DateTime? VacancyClosingDate { get; set; }
 }
