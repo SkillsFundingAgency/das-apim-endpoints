@@ -21,7 +21,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             Guid expectedResponse,
 			Mock<ILogger<ApprenticeshipController>> mockLogger,
 			Mock<IMediator> mockMediator,
-			Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient)
+			Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient)
         {
             //  Arrange
             mockApprenticeshipsApiClient.Setup(x => x.Get<Guid>(It.IsAny<GetApprenticeshipKeyRequest>()))

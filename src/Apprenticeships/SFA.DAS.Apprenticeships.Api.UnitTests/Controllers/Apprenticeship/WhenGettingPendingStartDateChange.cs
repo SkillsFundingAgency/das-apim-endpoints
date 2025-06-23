@@ -22,7 +22,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 #pragma warning disable CS8618
 public class WhenGettingPendingStartDateChange
 {
-    private Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _mockApprenticeshipsApiClient;
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _mockCommitmentsApiClient;
     private ApprenticeshipController _sut;
     private Fixture _fixture;
@@ -36,7 +36,7 @@ public class WhenGettingPendingStartDateChange
     {
         _fixture = new Fixture();
 
-        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockCommitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
         _apprenticeshipKey = _fixture.Create<Guid>();

@@ -32,7 +32,7 @@ public class OuterApi
             {
                 {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
                 {"EarningsApiConfiguration:url", _context?.EarningsApi?.BaseAddress + "/"},
-                {"ApprenticeshipsApiConfiguration:url", _context?.ApprenticeshipsApi?.BaseAddress + "/"},
+                {"LearningApiConfiguration:url", _context?.ApprenticeshipsApi?.BaseAddress + "/"},
                 {"ApprenticeshipsApiConfiguration:BearerTokenSigningKey", "local_test_outer_api_client_bearer_token_signing_key"},
                 {"CollectionCalendarApiConfiguration:url", _context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},

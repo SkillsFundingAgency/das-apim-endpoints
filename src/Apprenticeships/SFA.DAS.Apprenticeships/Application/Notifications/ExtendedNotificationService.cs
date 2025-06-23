@@ -29,7 +29,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
     {
         protected ILogger<ExtendedNotificationService> _logger;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
-        private readonly ILearningApiClient<ApprenticeshipsApiConfiguration> _learningApiClient;
+        private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
         private readonly IProviderAccountApiClient<ProviderAccountApiConfiguration> _providerAccountApiClient;
         private readonly IEncodingService _encodingService;
@@ -38,7 +38,7 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
         public ExtendedNotificationService(
             ILogger<ExtendedNotificationService> logger,
             IAccountsApiClient<AccountsConfiguration> accountsApiClient,
-            ILearningApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
+            ILearningApiClient<LearningApiConfiguration> learningApiClient,
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
             IEncodingService encodingService,
             INotificationService notificationService,

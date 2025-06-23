@@ -22,14 +22,14 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers;
 [Route("[controller]")]
 public class ApprenticeshipController : ControllerBase
 {
-    private readonly ILearningApiClient<ApprenticeshipsApiConfiguration> _apiClient;
+    private readonly ILearningApiClient<LearningApiConfiguration> _apiClient;
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
     private readonly IMediator _mediator;
     private readonly ILogger<ApprenticeshipController> _logger;
 
     public ApprenticeshipController(
         ILogger<ApprenticeshipController> logger,
-        ILearningApiClient<ApprenticeshipsApiConfiguration> apiClient,
+        ILearningApiClient<LearningApiConfiguration> apiClient,
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
         IMediator mediator)
     {

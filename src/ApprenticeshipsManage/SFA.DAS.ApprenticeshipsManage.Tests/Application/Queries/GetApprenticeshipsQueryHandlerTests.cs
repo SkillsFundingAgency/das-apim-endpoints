@@ -15,7 +15,7 @@ public class GetApprenticeshipsQueryHandlerTests
     public async Task Then_Gets_Users_With_Matching_Emails(
         GetApprenticeshipsQuery query,
         PagedApprenticeshipsResponse apiResponse,
-        [Frozen] Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> apiClient,
+        [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> apiClient,
         GetApprenticeshipsQueryHandler sut)
     {
 

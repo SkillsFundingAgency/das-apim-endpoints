@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 namespace SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
 
 public class GetApprenticeshipsQueryHandler(
-    ILearningApiClient<ApprenticeshipsApiConfiguration> apprenticeshipApiClient)
+    ILearningApiClient<LearningApiConfiguration> apprenticeshipApiClient)
     : IRequestHandler<GetApprenticeshipsQuery, GetApprenticeshipsQueryResult>
 {
     public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)

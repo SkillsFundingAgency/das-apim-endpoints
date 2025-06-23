@@ -36,12 +36,12 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 {
     const int SimplificationEarningsPlatform = 2;
 
-    private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _learningApiClient;
+    private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
     private readonly ILogger<GetAllEarningsQueryHandler> _logger;
 
-    public GetAllEarningsQueryHandler(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
+    public GetAllEarningsQueryHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
         ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
         ILogger<GetAllEarningsQueryHandler> logger)

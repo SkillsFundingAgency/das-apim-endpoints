@@ -23,7 +23,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 public class WhenCreateApprenticeshipPriceHistory
 {
     private readonly Fixture _fixture;
-    private readonly Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
+    private readonly Mock<ILearningApiClient<LearningApiConfiguration>> _mockApiClient;
     private readonly ILogger<ApprenticeshipController> _mockedLogger;
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _mockedCommitmentsV2ApiClient;
     private readonly Mock<IMediator> _mockMediator;
@@ -31,7 +31,7 @@ public class WhenCreateApprenticeshipPriceHistory
     public WhenCreateApprenticeshipPriceHistory()
     {
 		_fixture = new Fixture();
-        _mockApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockedLogger = Mock.Of<ILogger<ApprenticeshipController>>();
         _mockedCommitmentsV2ApiClient = Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();

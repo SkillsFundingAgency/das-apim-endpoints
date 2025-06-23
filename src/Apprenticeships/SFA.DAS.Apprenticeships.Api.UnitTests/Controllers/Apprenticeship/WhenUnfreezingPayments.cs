@@ -21,7 +21,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 #pragma warning disable CS8618
 public class WhenUnfreezingPayments
 {
-    private Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _mockApprenticeshipsApiClient = null!;
     private Mock<IMediator> _mockMediator = null!;
     private ApprenticeshipController _sut = null!;
     private Fixture _fixture = null!;
@@ -30,7 +30,7 @@ public class WhenUnfreezingPayments
     public void SetUp()
     {
         _fixture = new Fixture();
-        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();
     }
 

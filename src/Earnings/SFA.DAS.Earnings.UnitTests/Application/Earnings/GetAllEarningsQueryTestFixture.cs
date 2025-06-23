@@ -25,7 +25,7 @@ public class GetAllEarningsQueryTestFixture
     public GetLearningsResponse LearningsResponse;
     public GetFm36DataResponse EarningsResponse;
     public GetAcademicYearsResponse CollectionCalendarResponse;
-    public Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> MockApprenticeshipsApiClient;
+    public Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
     public Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
     public Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
     public GetAllEarningsQueryResult Result;
@@ -36,7 +36,7 @@ public class GetAllEarningsQueryTestFixture
     public GetAllEarningsQueryTestFixture(TestScenario scenario)
     {
         // Arrange
-        MockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        MockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
@@ -69,7 +69,7 @@ public class GetAllEarningsQueryTestFixture
 
     public void SetupMocks(
         long ukprn,
-        Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
+        Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient,
         GetLearningsResponse learningsResponse,
         Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
         GetFm36DataResponse earningsResponse,

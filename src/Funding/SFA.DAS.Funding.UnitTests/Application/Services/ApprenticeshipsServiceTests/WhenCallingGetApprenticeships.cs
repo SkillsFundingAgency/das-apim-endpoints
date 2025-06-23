@@ -19,7 +19,7 @@ namespace SFA.DAS.Funding.UnitTests.Application.Services.ApprenticeshipsServiceT
         public async Task Then_The_Api_Is_Called_Returning_The_Apprenticeships(
             long ukprn,
             IEnumerable<LearningDto> apiResponse,
-            [Frozen] Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> client,
+            [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> client,
             ApprenticeshipsService service
         )
         {

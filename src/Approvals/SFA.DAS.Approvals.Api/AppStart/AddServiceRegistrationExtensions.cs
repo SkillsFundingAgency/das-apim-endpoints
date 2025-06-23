@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             services.AddTransient<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>, ProviderCoursesApiClient>();
             services.AddTransient<IProviderPaymentEventsApiClient<ProviderEventsConfiguration>, ProviderPaymentEventsApiClient>();
             services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
-            services.AddTransient<ILearningApiClient<ApprenticeshipsApiConfiguration>, LearningApiClient>();
+            services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
             services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
             services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
             services.AddTransient<ICourseTypesApiClient, CourseTypesApiClient>();

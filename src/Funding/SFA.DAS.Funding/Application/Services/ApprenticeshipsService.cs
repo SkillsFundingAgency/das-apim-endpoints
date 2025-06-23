@@ -10,9 +10,9 @@ namespace SFA.DAS.Funding.Application.Services
 {
     public class ApprenticeshipsService : IApprenticeshipsService
     {
-        private readonly ILearningApiClient<ApprenticeshipsApiConfiguration> _client;
+        private readonly ILearningApiClient<LearningApiConfiguration> _client;
 
-        public ApprenticeshipsService(ILearningApiClient<ApprenticeshipsApiConfiguration> client)
+        public ApprenticeshipsService(ILearningApiClient<LearningApiConfiguration> client)
         {
             _client = client;
         }

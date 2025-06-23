@@ -32,7 +32,7 @@ public class WhenCreateApprenticeshipStartDateChange
     public async Task ThenCreatesApprenticeshipStartDateChangeUsingApiClient()
     {
         // Arrange
-        var apiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        var apiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         var logger = new Mock<ILogger<ApprenticeshipController>>();
         var mediator = new Mock<IMediator>();
         var sut = new ApprenticeshipController(logger.Object, apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mediator.Object);
@@ -59,7 +59,7 @@ public class WhenCreateApprenticeshipStartDateChange
     public async Task IfRequestFailsReturnsBadRequest()
     {
         // Arrange
-        var apiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        var apiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         var logger = new Mock<ILogger<ApprenticeshipController>>();
         var mediator = new Mock<IMediator>();
         var sut = new ApprenticeshipController(logger.Object, apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mediator.Object);
@@ -83,7 +83,7 @@ public class WhenCreateApprenticeshipStartDateChange
     public async Task IfSendNotificationFailsReturnsBadRequest()
     {
         // Arrange
-        var apiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        var apiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         var logger = new Mock<ILogger<ApprenticeshipController>>();
         var mediator = new Mock<IMediator>();
         var sut = new ApprenticeshipController(logger.Object, apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mediator.Object);

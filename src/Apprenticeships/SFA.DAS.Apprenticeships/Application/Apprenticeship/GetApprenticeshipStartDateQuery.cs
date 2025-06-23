@@ -26,13 +26,13 @@ public class GetApprenticeshipStartDateQuery : IRequest<ApprenticeshipStartDateR
 public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprenticeshipStartDateQuery, ApprenticeshipStartDateResponse?>
 {
 	private readonly ILogger<GetApprenticeshipStartDateQueryHandler> _logger;
-	private readonly ILearningApiClient<ApprenticeshipsApiConfiguration> _learningApiClient;
+	private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
 	private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 	private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
     public GetApprenticeshipStartDateQueryHandler(
 		ILogger<GetApprenticeshipStartDateQueryHandler> logger,
-		ILearningApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
+		ILearningApiClient<LearningApiConfiguration> learningApiClient,
 		ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
 		ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
 	{

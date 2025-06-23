@@ -22,7 +22,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
     public class WhenGettingPendingPriceChange
     {
         #pragma warning disable CS8618
-        private Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient;
+        private Mock<ILearningApiClient<LearningApiConfiguration>> _mockApprenticeshipsApiClient;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _mockCommitmentsApiClient;
 	    private ApprenticeshipController _sut;
         private Fixture _fixture;
@@ -36,7 +36,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
 	    {
             _fixture = new Fixture();
 
-		    _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+		    _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
             _mockCommitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
             _apprenticeshipKey = _fixture.Create<Guid>();

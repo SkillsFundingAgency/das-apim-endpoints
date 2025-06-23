@@ -38,7 +38,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
     private Mock<IDeliveryModelService> _deliveryModelService;
     private ServiceParameters _serviceParameters;
-    private Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _apprenticeshipsApiClient;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _apprenticeshipsApiClient;
     private Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _collectionCalendarApiClient;
 
     private GetApprenticeshipResponse _apprenticeship;
@@ -129,7 +129,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
 
         _serviceParameters = new ServiceParameters(Party.Employer, 123);
 
-        _apprenticeshipsApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        _apprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
 
         _apprenticeshipKey = Guid.NewGuid();
         _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetLearningKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(_apprenticeshipKey, HttpStatusCode.OK, string.Empty));

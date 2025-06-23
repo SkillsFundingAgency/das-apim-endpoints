@@ -23,7 +23,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Apprenticeship;
 public class WhenGettingApprenticeshipStartDate
 {
 	private readonly Mock<ILogger<GetApprenticeshipStartDateQueryHandler>> _mocklogger;
-    private readonly Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient;
+    private readonly Mock<ILearningApiClient<LearningApiConfiguration>> _mockApprenticeshipsApiClient;
     private readonly Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _mockCommitmentsV2ApiApiClient;
     private readonly Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _mockCollectionCalendarApiClient;
     private readonly Fixture _fixture;
@@ -42,7 +42,7 @@ public class WhenGettingApprenticeshipStartDate
     public WhenGettingApprenticeshipStartDate()
     {
 		_mocklogger = new Mock<ILogger<GetApprenticeshipStartDateQueryHandler>>();
-        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockCommitmentsV2ApiApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
         _mockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
         _fixture = new Fixture();
