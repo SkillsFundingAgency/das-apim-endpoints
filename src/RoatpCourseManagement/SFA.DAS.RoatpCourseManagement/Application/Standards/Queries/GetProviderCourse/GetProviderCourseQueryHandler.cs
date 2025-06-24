@@ -66,6 +66,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 IfateReferenceNumber = standard.IfateReferenceNumber,
                 CourseName = standard.Title,
                 Level = standard.Level,
+                Version = standard.Version,
                 ApprenticeshipType = standard.ApprenticeshipType,
                 RegulatorName = standard.ApprovalBody,
                 Sector = standard.Route,
