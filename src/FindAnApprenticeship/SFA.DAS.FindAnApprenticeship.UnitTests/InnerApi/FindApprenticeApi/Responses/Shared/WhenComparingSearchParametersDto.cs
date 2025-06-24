@@ -15,6 +15,12 @@ public class WhenComparingSearchParametersDto
         new object[] { new SearchParametersDto(null, null, null, false, false, null, "London", null, null), new SearchParametersDto(null, null, null, false, false, null, "London", null, null) },
         new object[] { new SearchParametersDto(null, null, null, false, false, null, null, "1.0", null), new SearchParametersDto(null, null, null, false, false, null, null, "1.0", null) },
         new object[] { new SearchParametersDto(null, null, null, false, false, null, null, null, "1.0"), new SearchParametersDto(null, null, null, false, false, null, null, null, "1.0") },
+        new object[] { new SearchParametersDto(null, [], null, false, false, null, null, null, null), new SearchParametersDto(null, null, null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, [], null, false, false, null, null, null, null), new SearchParametersDto(null, [], null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, null, null), new SearchParametersDto(null, [], null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, [], null, null, null), new SearchParametersDto(null, null, null, false, false, null, null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, [], null, null, null), new SearchParametersDto(null, null, null, false, false, [], null, null, null) },
+        new object[] { new SearchParametersDto(null, null, null, false, false, null, null, null, null), new SearchParametersDto(null, null, null, false, false, [], null, null, null) }
     ];
     
     [TestCaseSource(nameof(EqualTestCases))]
@@ -25,6 +31,17 @@ public class WhenComparingSearchParametersDto
         
         // assert
         result.Should().BeTrue();
+    }
+    
+    [TestCaseSource(nameof(EqualTestCases))]
+    public void Then_Hashcodes_Should_Match(SearchParametersDto left, SearchParametersDto right)
+    {
+        // act
+        var leftHash = left.GetHashCode();
+        var rightHash = right.GetHashCode();
+        
+        // assert
+        leftHash.Should().Be(rightHash);
     }
     
     private static readonly object?[] NotEqualTestCases =
