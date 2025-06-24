@@ -12,19 +12,12 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class ValidateBulkUploadRecordsCommandHandler : IRequestHandler<ValidateBulkUploadRecordsCommand, Unit>
+    public class ValidateBulkUploadRecordsCommandHandler(
+        ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
+        IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
+        IProviderStandardsService providerStandardsService)
+        : IRequestHandler<ValidateBulkUploadRecordsCommand, Unit>
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IReservationApiClient<ReservationApiConfiguration> _reservationApiClient;
-        private readonly IProviderStandardsService _providerStandardsService;
-
-        public ValidateBulkUploadRecordsCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IReservationApiClient<ReservationApiConfiguration> reservationApiClient, IProviderStandardsService providerStandardsService)
-        {
-            _apiClient = apiClient;
-            _reservationApiClient = reservationApiClient;
-            _providerStandardsService = providerStandardsService;
-        }
-
         public async Task<Unit> Handle(ValidateBulkUploadRecordsCommand command, CancellationToken cancellationToken)
         {
             var reservationRequests = command.CsvRecords.Select(response =>
@@ -43,10 +36,10 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
             }).ToList();
             var reservationValidationResult =
-                await _reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
+                await reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
                     new PostValidateReservationRequest(command.ProviderId, reservationRequests));
 
-            var providerStandardResults = await _providerStandardsService.GetStandardsData(command.ProviderId);
+            var providerStandardResults = await providerStandardsService.GetStandardsData(command.ProviderId);
 
             // If any errors this call will throw a bulkupload domain exception, which is handled through middleware.
 
@@ -65,7 +58,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                 bulkUploadValidateApiRequest.ProviderStandardsData.Standards = null;
             }
 
-            await _apiClient.PostWithResponseCode<object>(
+            await apiClient.PostWithResponseCode<object>(
                 new PostValidateBulkUploadRequest(command.ProviderId, bulkUploadValidateApiRequest));
             return Unit.Value;
         }
