@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -8,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -22,16 +24,20 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
         public async Task Then_The_Api_Is_Called_And_Apprenticeships_Are_Added_And_Approved(
        BulkUploadAddAndApproveDraftApprenticeshipsCommand command,
        BulkUploadAddAndApproveDraftApprenticeshipsResponse response,
+       List<BulkUploadAddDraftApprenticeshipExtendedRequest> csvRecordsExtendedRequests,
        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
+       [Frozen] Mock<IAddCourseTypeDataToCsvService> addCourseTypeDataToCsvService,
        BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler handler
        )
         {
             var apiResponse = new ApiResponse<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(response, System.Net.HttpStatusCode.Created, string.Empty);
+            addCourseTypeDataToCsvService.Setup(x => x.MapAndAddCourseTypeData(command.BulkUploadAddAndApproveDraftApprenticeships.ToList())).ReturnsAsync(csvRecordsExtendedRequests);
+
 
             apiClient.Setup(x => x.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>
                 (It.Is<PostAddAndApproveDraftApprenticeshipsRequest>(
-                    x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddAndApproveDraftApprenticeshipsRequest).BulkUploadAddAndApproveDraftApprenticeships == command.BulkUploadAddAndApproveDraftApprenticeships
+                    x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddAndApproveDraftApprenticeshipsRequest).BulkUploadAddAndApproveDraftApprenticeships == csvRecordsExtendedRequests
                                                             && (x.Data as BulkUploadAddAndApproveDraftApprenticeshipsRequest).LogId == command.FileUploadLogId
                 ), true)).ReturnsAsync(apiResponse);
 
