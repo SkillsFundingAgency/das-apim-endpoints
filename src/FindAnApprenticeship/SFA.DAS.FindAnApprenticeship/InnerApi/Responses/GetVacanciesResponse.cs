@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using SFA.DAS.SharedOuterApi.Domain;
-using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 

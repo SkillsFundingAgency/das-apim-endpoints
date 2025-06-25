@@ -9,6 +9,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
         public string CourseName { get; set; }
         public int Level { get; set; }
         public string IfateReferenceNumber { get; set; }
+        public string Version { get; set; }
         public ApprenticeshipType ApprenticeshipType { get; set; }
         public string RegulatorName { get; set; }
         public int LarsCode { get; set; }
