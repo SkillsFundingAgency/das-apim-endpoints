@@ -19,11 +19,13 @@ namespace SFA.DAS.FindAnApprenticeship.Domain.Models
         public SectionStatus AdditionalQuestion2Status { get; set; }
         public SectionStatus AdditionalQuestion1Status { get; set; }
         public SectionStatus InterestsStatus { get; set; }
+        public SectionStatus EmploymentLocationStatus { get; set; }
         public SectionStatus EducationHistorySectionStatus { get; set; }
         public SectionStatus WorkHistorySectionStatus { get; set; }
         public SectionStatus ApplicationQuestionsSectionStatus { get; set; }
         public SectionStatus InterviewAdjustmentsSectionStatus { get; set; }
         public SectionStatus DisabilityConfidenceSectionStatus { get; set; }
+        public SectionStatus EmploymentLocationSectionStatus { get; set; }
         public string WhatIsYourInterest { get; set; }
         public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
         public string Strengths { get; set; }
