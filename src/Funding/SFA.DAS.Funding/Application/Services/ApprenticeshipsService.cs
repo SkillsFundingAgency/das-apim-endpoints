@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.Funding.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.Funding.InnerApi.Requests.Learning;
 using SFA.DAS.Funding.InnerApi.Responses;
 using SFA.DAS.Funding.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;

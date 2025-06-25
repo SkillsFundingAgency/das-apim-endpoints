@@ -1,6 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 public class WhenBuildingGetAllApprenticeshipsForAcademicYear

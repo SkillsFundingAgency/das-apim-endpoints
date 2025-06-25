@@ -1,7 +1,7 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.Funding.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.Funding.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.Funding.UnitTests.InnerApi.Requests.Apprenticeships
 {

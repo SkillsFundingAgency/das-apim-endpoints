@@ -6,7 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;

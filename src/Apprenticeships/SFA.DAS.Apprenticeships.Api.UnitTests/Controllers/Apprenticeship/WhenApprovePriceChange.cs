@@ -9,15 +9,15 @@ using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using InnerApiRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchApproveApprenticeshipPriceChangeRequest;
-using InnerApiResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.PatchApproveApprenticeshipPriceChangeResponse;
+using InnerApiRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning.PatchApproveApprenticeshipPriceChangeRequest;
+using InnerApiResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.PatchApproveApprenticeshipPriceChangeResponse;
 using OuterApiRequest = SFA.DAS.Apprenticeships.Api.Models.ApprovePriceChangeRequest;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;

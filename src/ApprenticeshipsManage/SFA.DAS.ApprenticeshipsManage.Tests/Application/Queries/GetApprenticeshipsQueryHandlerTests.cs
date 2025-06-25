@@ -4,7 +4,7 @@ using Moq;
 using SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
 using SFA.DAS.ApprenticeshipsManage.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

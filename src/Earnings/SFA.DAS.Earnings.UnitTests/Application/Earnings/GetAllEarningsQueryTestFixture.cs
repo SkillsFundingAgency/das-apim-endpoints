@@ -3,15 +3,15 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
+using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 

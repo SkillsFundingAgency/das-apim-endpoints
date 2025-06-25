@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeshipsManage.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;

@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
-using SFA.DAS.Earnings.UnitTests.Application.Earnings;
 using SFA.DAS.Earnings.UnitTests.Application.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
@@ -65,7 +64,7 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
                     Key = Guid.NewGuid(),
                     Episodes =
                     [
-                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode
+                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode
                         {
                             Key = Guid.NewGuid(),
                             TrainingCode = $"{Fixture.Create<int>()}    ",
@@ -144,9 +143,9 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
                 {
                     Uln = Fixture.Create<int>().ToString(),
                     Key = Guid.NewGuid(),
-                    Episodes = new List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode>
+                    Episodes = new List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode>
                     {
-                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode
+                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode
                         {
                             Key = Guid.NewGuid(),
                             TrainingCode = $"{Fixture.Create<int>()}    ",

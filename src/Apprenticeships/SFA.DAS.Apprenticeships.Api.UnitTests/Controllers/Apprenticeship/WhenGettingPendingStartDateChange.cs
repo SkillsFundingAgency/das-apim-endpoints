@@ -12,8 +12,8 @@ using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using GetProviderResponse = SFA.DAS.Apprenticeships.Api.Models.GetProviderResponse;
 

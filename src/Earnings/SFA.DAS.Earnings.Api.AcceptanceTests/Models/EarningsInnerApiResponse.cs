@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
 namespace SFA.DAS.Earnings.Api.AcceptanceTests.Models;
 

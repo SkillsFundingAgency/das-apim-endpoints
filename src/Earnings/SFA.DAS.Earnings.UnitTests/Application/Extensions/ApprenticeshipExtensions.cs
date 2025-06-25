@@ -1,7 +1,7 @@
 using System.ComponentModel;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Extensions;
 

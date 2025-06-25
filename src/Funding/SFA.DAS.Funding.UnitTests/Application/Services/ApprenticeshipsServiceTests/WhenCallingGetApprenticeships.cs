@@ -5,7 +5,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Funding.Application.Services;
-using SFA.DAS.Funding.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.Funding.InnerApi.Requests.Learning;
 using SFA.DAS.Funding.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;

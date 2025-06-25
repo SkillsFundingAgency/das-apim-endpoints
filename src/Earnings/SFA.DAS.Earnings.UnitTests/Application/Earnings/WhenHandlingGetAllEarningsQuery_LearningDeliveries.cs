@@ -3,7 +3,7 @@ using FluentAssertions;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using static SFA.DAS.Earnings.Application.Earnings.EarningsFM36Constants;
 
