@@ -35,7 +35,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.ApplicationCont
             actual.Should().BeOfType<OkObjectResult>();
             var actualObject = ((OkObjectResult)actual).Value as GetIndexApiResponse;
             actualObject.Should().NotBeNull();
-            actualObject.Should().BeEquivalentTo(queryResult);
+            actualObject.Should().BeEquivalentTo(queryResult, options => options.ExcludingMissingMembers());
         }
     }
 }

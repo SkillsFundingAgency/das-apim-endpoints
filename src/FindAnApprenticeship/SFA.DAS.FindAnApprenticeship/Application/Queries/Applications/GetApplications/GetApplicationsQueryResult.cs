@@ -1,18 +1,14 @@
 ﻿using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
-using AvailableWhere = SFA.DAS.FindAnApprenticeship.Domain.Models.AvailableWhere;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 
 public class GetApplicationsQueryResult
 {
     public List<Application> Applications { get; set; } = [];
-
 
     public class Application
     {
