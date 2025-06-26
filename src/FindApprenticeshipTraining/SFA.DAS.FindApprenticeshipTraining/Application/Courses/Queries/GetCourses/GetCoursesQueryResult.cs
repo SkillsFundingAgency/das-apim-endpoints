@@ -29,6 +29,7 @@ public sealed class StandardModel
     public int RouteCode { get; set; }
     public int MaxFunding { get; set; }
     public int TypicalDuration { get; set; }
+    public string ApprenticeshipType { get; set; }
 
     public static StandardModel CreateFrom(
         GetStandardsListItem source,
@@ -52,6 +53,7 @@ public sealed class StandardModel
             Route = source.Route,
             RouteCode = source.RouteCode,
             MaxFunding = source.MaxFunding,
-            TypicalDuration = source.TypicalDuration
+            TypicalDuration = source.TypicalDuration,
+            ApprenticeshipType = source.ApprenticeshipType.ToString()
         };
 }

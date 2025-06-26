@@ -54,11 +54,11 @@ public class CandidateApplicationStatusCommandHandler(
         jsonPatchDocument.Replace(x => x.Status, applicationStatus);
         var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
 
-        var jsonPatchApplicationReviewDocument = new JsonPatchDocument<ApplicationReview>();
+        var jsonPatchApplicationReviewDocument = new JsonPatchDocument<ApplicationReviewStatusData>();
         jsonPatchApplicationReviewDocument.Replace(x => x.CandidateFeedback, request.Feedback);
         jsonPatchApplicationReviewDocument.Replace(x => x.Status, Enum.GetName(applicationStatus));
         jsonPatchApplicationReviewDocument.Replace(x => x.StatusUpdatedDate, DateTime.UtcNow);
-        var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewApiRequest(request.ApplicationId, jsonPatchApplicationReviewDocument);
+        var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewStatusApiRequest(request.ApplicationId, jsonPatchApplicationReviewDocument);
         
         SendEmailCommand sendEmailCommand;
         if (applicationStatus == ApplicationStatus.Successful)

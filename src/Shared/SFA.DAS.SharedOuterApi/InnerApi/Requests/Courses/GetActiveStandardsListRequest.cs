@@ -8,6 +8,7 @@ public class GetActiveStandardsListRequest : IGetApiRequest
 {
     public List<int> RouteIds { get; set; } = [];
     public List<int> Levels { get; set; } = [];
+    public string ApprenticeshipType { get; set; }
     public string Keyword { get; set; } = string.Empty;
     public CoursesOrderBy OrderBy { get; set; } = CoursesOrderBy.Score;
 
@@ -38,6 +39,11 @@ public class GetActiveStandardsListRequest : IGetApiRequest
             {
                 queryParams.Add($"levels={level}");
             }
+        }
+
+        if (!string.IsNullOrWhiteSpace(ApprenticeshipType))
+        {
+            queryParams.Add($"apprenticeshipType={ApprenticeshipType}");
         }
 
         queryParams.Add("filter=Active");
