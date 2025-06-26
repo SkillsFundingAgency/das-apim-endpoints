@@ -77,7 +77,6 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         var currentDate = DateTime.Today;
 
         var funding = apprenticeshipFundings
-            .OrderByDescending(c => c.EffectiveFrom)
             .FirstOrDefault(c =>
                 c.EffectiveFrom.Date <= currentDate
                 && (c.EffectiveTo == null || c.EffectiveTo.Value.Date >= currentDate));

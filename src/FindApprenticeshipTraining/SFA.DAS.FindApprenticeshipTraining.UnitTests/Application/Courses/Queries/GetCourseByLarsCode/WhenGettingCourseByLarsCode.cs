@@ -3,6 +3,7 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
@@ -26,6 +27,7 @@ public sealed class WhenGettingCourseByLarsCode
     private Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpCourseManagementApiClientMock;
     private Mock<ICachedLocationLookupService> _cachedLocationLookupService;
     private GetCourseByLarsCodeQueryHandler _handler;
+
 
     [SetUp]
     public void Setup()
@@ -258,10 +260,10 @@ public sealed class WhenGettingCourseByLarsCode
             {
                 new() { MaxEmployerLevyCap = 7000, Duration = 24 }
             },
-            RelatedOccupations = new List<RelatedOccupationResponse>
+            RelatedOccupations = new List<RelatedOccupation>
            {
-               new() { Title = relatedOccupationsTitle1, Level = relatedOccupationsLevel1},
-               new() { Title = relatedOccupationsTitle2, Level = relatedOccupationsLevel2}
+               new(relatedOccupationsTitle1, relatedOccupationsLevel1),
+               new(relatedOccupationsTitle2,relatedOccupationsLevel2)
            }
         };
 
@@ -534,7 +536,7 @@ public sealed class WhenGettingCourseByLarsCode
 
 
     [Test]
-    public async Task Handle_No_Apprenticeship_Funding_Returns_Zero_IncentivePayment()
+    public async Task Handle_Returns_Zero_IncentivePayment_When_No_Apprenticeship_Funding()
     {
         var larsCode = 123;
 
@@ -586,6 +588,79 @@ public sealed class WhenGettingCourseByLarsCode
         {
             Assert.That(sut, Is.Not.Null);
             Assert.That(sut.IncentivePayment, Is.EqualTo(0));
+        });
+    }
+
+    [TestCase(null, null, null, 0)]
+    [TestCase(null, 2, 3, 5)]
+    [TestCase(1, null, 3, 4)]
+    [TestCase(1, 2, null, 3)]
+    [TestCase(null, null, 3, 3)]
+    [TestCase(null, 2, null, 2)]
+    [TestCase(1, null, null, 1)]
+    [TestCase(1, 2, 3, 6)]
+
+    public async Task Handle_Returns_Expected_IncentivePayment_When_3_Payments_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
+    {
+        var larsCode = 123;
+
+        GetCourseByLarsCodeQuery query = new GetCourseByLarsCodeQuery { LarsCode = larsCode };
+
+        var standardDetailResponse = new StandardDetailResponse
+        {
+            ApprenticeshipFunding = new List<ApprenticeshipFunding>
+            {
+                new()
+                {
+                    FoundationAppFirstEmpPayment = firstPayment,
+                    FoundationAppSecondEmpPayment = secondPayment,
+                    FoundationAppThirdEmpPayment = thirdPayment,
+                    EffectiveFrom = DateTime.Today
+                }
+            }
+        };
+
+        var courseProvidersResponse = new GetCourseTrainingProvidersCountResponse
+        {
+            Courses = new List<CourseTrainingProviderCountModel>
+            {
+                new()
+                {
+                    ProvidersCount = 10,
+                    TotalProvidersCount = 20
+                }
+            }
+        };
+
+        _coursesApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<StandardDetailResponse>(
+                    It.Is<GetStandardDetailsByIdRequest>(a =>
+                        a.Id.Equals(query.LarsCode.ToString())
+                    )
+                )
+            )
+            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>())
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    courseProvidersResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut, Is.Not.Null);
+            Assert.That(sut.IncentivePayment, Is.EqualTo(expectedIncentivePayment));
         });
     }
 }

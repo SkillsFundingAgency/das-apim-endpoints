@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+﻿using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using System.Collections.Generic;
 using System.Linq;
 
