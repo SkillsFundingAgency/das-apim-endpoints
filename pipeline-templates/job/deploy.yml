@@ -33,6 +33,7 @@ jobs:
     AppServiceName: ${{ parameters.AppServiceName }}
     AppServicePlanName: ${{ parameters.AppServicePlanName }}
     CustomHostName: ${{ parameters.CustomHostName }}
+    ApimEndpointsSubnetResourceId:  ${{ parameters.ApimEndpointsSubnetResourceId }}
     AppServiceKeyVaultCertificateName: ${{ parameters.AppServiceKeyVaultCertificateName }}
     ConfigNames: ${{ parameters.ConfigNames }}
   strategy:
