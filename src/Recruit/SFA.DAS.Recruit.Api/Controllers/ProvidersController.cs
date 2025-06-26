@@ -9,8 +9,12 @@ using SFA.DAS.Recruit.Application.Queries.GetProviders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
+using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByUkprn;
+using SFA.DAS.Recruit.Enums;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -73,6 +77,30 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Error getting employer dashboard stats");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("dashboard/vacancies")]
+        public async Task<IActionResult> GetDashboardVacanciesCount([FromRoute] int ukprn,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 25,
+            [FromQuery] string sortColumn = "CreatedDate",
+            [FromQuery] bool isAscending = false,
+            [FromQuery] ApplicationReviewStatus status = ApplicationReviewStatus.New,
+            CancellationToken token = default
+        )
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetDashboardVacanciesCountByUkprnQuery(ukprn, pageNumber, pageSize, sortColumn, isAscending, status), token);
+
+                return Ok(queryResult);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting provider dashboard vacancy count");
                 return BadRequest();
             }
         }

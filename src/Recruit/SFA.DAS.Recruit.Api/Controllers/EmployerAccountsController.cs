@@ -6,8 +6,12 @@ using SFA.DAS.Recruit.Application.Queries.GetAccount;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
+using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
+using SFA.DAS.Recruit.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.Controllers
@@ -69,6 +73,30 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Error getting employer dashboard stats");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("dashboard/vacancies")]
+        public async Task<IActionResult> GetDashboardVacanciesCount([FromRoute] long accountId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 25,
+            [FromQuery] string sortColumn = "CreatedDate",
+            [FromQuery] bool isAscending = false,
+            [FromQuery] ApplicationReviewStatus status = ApplicationReviewStatus.New,
+            CancellationToken token = default
+            )
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetDashboardVacanciesCountByAccountIdQuery(accountId, pageNumber, pageSize, sortColumn, isAscending, status), token);
+
+                return Ok(queryResult);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting employer dashboard vacancy count");
                 return BadRequest();
             }
         }
