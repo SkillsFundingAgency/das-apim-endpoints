@@ -10,7 +10,6 @@ using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
 using SFA.DAS.Recruit.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -84,7 +83,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             [FromQuery] int pageSize = 25,
             [FromQuery] string sortColumn = "CreatedDate",
             [FromQuery] bool isAscending = false,
-            [FromQuery] ApplicationReviewStatus status = ApplicationReviewStatus.New,
+            [FromQuery] List<ApplicationReviewStatus> status = null,
             CancellationToken token = default
             )
         {

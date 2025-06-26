@@ -3,6 +3,7 @@ using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByUkprn;
 using SFA.DAS.Recruit.Enums;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 
@@ -17,7 +18,7 @@ public class WhenGettingDashboardVacanciesCountByUkprn
         int pageSize,
         string sortColumn,
         bool isAscending,
-        ApplicationReviewStatus status,
+        List<ApplicationReviewStatus> status,
         GetDashboardVacanciesCountByUkprnQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] ProvidersController controller)
@@ -50,7 +51,7 @@ public class WhenGettingDashboardVacanciesCountByUkprn
         int pageSize,
         string sortColumn,
         bool isAscending,
-        ApplicationReviewStatus status,
+        List<ApplicationReviewStatus> status,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] ProvidersController controller)
     {

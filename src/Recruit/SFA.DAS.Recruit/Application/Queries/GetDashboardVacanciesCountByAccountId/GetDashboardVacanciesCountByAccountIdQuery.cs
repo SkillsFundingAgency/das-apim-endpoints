@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 using SFA.DAS.Recruit.Enums;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
@@ -8,4 +9,4 @@ public record GetDashboardVacanciesCountByAccountIdQuery(long AccountId,
     int PageSize = 25,
     string SortColumn = "CreatedDate",
     bool IsAscending = false,
-    ApplicationReviewStatus Status = ApplicationReviewStatus.New) : IRequest<GetDashboardVacanciesCountByAccountIdQueryResult>;
+    List<ApplicationReviewStatus> Status = null) : IRequest<GetDashboardVacanciesCountByAccountIdQueryResult>;

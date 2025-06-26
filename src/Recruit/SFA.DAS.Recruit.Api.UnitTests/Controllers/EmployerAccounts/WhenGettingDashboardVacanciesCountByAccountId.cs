@@ -3,6 +3,7 @@ using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
 using SFA.DAS.Recruit.Enums;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 
@@ -17,7 +18,7 @@ public class WhenGettingDashboardVacanciesCountByAccountId
         int pageSize,
         string sortColumn,
         bool isAscending,
-        ApplicationReviewStatus status,
+        List<ApplicationReviewStatus> status,
         GetDashboardVacanciesCountByAccountIdQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] EmployerAccountsController controller)
@@ -50,7 +51,7 @@ public class WhenGettingDashboardVacanciesCountByAccountId
         int pageSize,
         string sortColumn,
         bool isAscending,
-        ApplicationReviewStatus status,
+        List<ApplicationReviewStatus> status,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] EmployerAccountsController controller)
     {

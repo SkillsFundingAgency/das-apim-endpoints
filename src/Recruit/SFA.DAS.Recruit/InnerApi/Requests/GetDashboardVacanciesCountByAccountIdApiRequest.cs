@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Recruit.Enums;
+﻿using System.Collections.Generic;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Recruit.InnerApi.Requests
@@ -9,9 +10,9 @@ namespace SFA.DAS.Recruit.InnerApi.Requests
         int PageSize = 25,
         string SortColumn = "CreatedDate",
         bool IsAscending = false,
-        ApplicationReviewStatus Status = ApplicationReviewStatus.New) : IGetApiRequest
+        List<ApplicationReviewStatus>? Status = null) : IGetApiRequest
     {
         public string GetUrl =>
-            $"api/employer/{AccountId}/applicationReviews/dashboard/vacancies?pageNumber={PageNumber}&pageSize={PageSize}&sortColumn={SortColumn}&isAscending={IsAscending}&status={Status}";
+            $"api/employer/{AccountId}/applicationReviews/dashboard/vacancies?pageNumber={PageNumber}&pageSize={PageSize}&sortColumn={SortColumn}&isAscending={IsAscending}&status={string.Join("&status=",Status) }";
     }
 }
