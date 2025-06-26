@@ -45,7 +45,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("{ukprn:int}")]
-        public async Task<IActionResult> GetProvider(int ukprn)
+        public async Task<IActionResult> GetProvider([FromRoute]int ukprn)
         {
             try
             {
@@ -81,7 +81,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         }
 
         [HttpGet]
-        [Route("dashboard/vacancies")]
+        [Route("dashboard/{ukprn:int}/vacancies")]
         public async Task<IActionResult> GetDashboardVacanciesCount([FromRoute] int ukprn,
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 25,
