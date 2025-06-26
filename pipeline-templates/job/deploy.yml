@@ -31,6 +31,7 @@ jobs:
     clean: all
   variables:
     AppServiceName: ${{ parameters.AppServiceName }}
+    AppServicePlanName: ${{ parameters.AppServicePlanName }}
     CustomHostName: ${{ parameters.CustomHostName }}
     AppServiceKeyVaultCertificateName: ${{ parameters.AppServiceKeyVaultCertificateName }}
     ConfigNames: ${{ parameters.ConfigNames }}
