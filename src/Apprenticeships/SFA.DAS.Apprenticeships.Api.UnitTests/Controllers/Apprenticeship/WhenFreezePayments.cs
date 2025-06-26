@@ -13,7 +13,7 @@ using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -23,20 +23,20 @@ public class WhenFreezePayments
 {
     private readonly Fixture _fixture;
     private readonly Mock<ILogger<ApprenticeshipController>> _mockLogger;
-    private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _mockApiClient;
     private Mock<IMediator> _mockMediator;
 
     public WhenFreezePayments()
     {
         _fixture = new Fixture();
         _mockLogger = new Mock<ILogger<ApprenticeshipController>>();
-        _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
     }
 
     [SetUp]
     public void Arrange()
     {
-        _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();
     }
 

@@ -4,7 +4,7 @@ using Moq;
 using SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
 using SFA.DAS.ApprenticeshipsManage.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -15,15 +15,15 @@ public class GetApprenticeshipsQueryHandlerTests
     public async Task Then_Gets_Users_With_Matching_Emails(
         GetApprenticeshipsQuery query,
         PagedApprenticeshipsResponse apiResponse,
-        [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> apiClient,
+        [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> apiClient,
         GetApprenticeshipsQueryHandler sut)
     {
 
         query.AcademicYear = 2425;
 
-        var expectedUrl = $"/{query.Ukprn}/academicyears/{query.AcademicYear}/apprenticeships?page={query.Page}&pageSize={query.PageSize}";
+        var expectedUrl = $"/{query.Ukprn}/academicyears/{query.AcademicYear}/learnings?page={query.Page}&pageSize={query.PageSize}";
 
-        apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllApprenticeshipsRequest>(c => c.GetUrl == expectedUrl)))
+        apiClient.Setup(client => client.Get<PagedApprenticeshipsResponse>(It.Is<GetAllLearningsRequest>(c => c.GetUrl == expectedUrl)))
             .ReturnsAsync(apiResponse);
 
         var actual = await sut.Handle(query, It.IsAny<CancellationToken>());

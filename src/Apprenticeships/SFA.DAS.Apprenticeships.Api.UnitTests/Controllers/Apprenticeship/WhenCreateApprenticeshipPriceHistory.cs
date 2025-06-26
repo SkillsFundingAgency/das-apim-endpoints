@@ -13,8 +13,8 @@ using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -23,7 +23,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 public class WhenCreateApprenticeshipPriceHistory
 {
     private readonly Fixture _fixture;
-    private readonly Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
+    private readonly Mock<ILearningApiClient<LearningApiConfiguration>> _mockApiClient;
     private readonly ILogger<ApprenticeshipController> _mockedLogger;
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _mockedCommitmentsV2ApiClient;
     private readonly Mock<IMediator> _mockMediator;
@@ -31,7 +31,7 @@ public class WhenCreateApprenticeshipPriceHistory
     public WhenCreateApprenticeshipPriceHistory()
     {
 		_fixture = new Fixture();
-        _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockedLogger = Mock.Of<ILogger<ApprenticeshipController>>();
         _mockedCommitmentsV2ApiClient = Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();

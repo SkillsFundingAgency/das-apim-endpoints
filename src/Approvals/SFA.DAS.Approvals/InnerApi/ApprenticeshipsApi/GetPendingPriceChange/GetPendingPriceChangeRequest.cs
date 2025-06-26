@@ -5,13 +5,13 @@ namespace SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange
 {
 	public class GetPendingPriceChangeRequest : IGetApiRequest
 	{
-		public readonly Guid ApprenticeshipKey;
+		public readonly Guid LearningKey;
 
-		public GetPendingPriceChangeRequest(Guid apprenticeshipKey)
+		public GetPendingPriceChangeRequest(Guid learningKey)
 		{
-			ApprenticeshipKey = apprenticeshipKey;
+			LearningKey = learningKey;
 		}
 
-		public string GetUrl => $"{ApprenticeshipKey}/priceHistory/pending";
+		public string GetUrl => $"{LearningKey}/priceHistory/pending";
 	}
 }

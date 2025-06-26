@@ -52,8 +52,8 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
         services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection("ProviderCoursesApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
-        services.Configure<ApprenticeshipsApiConfiguration>(configuration.GetSection("ApprenticeshipsApiConfiguration"));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>().Value);
+        services.Configure<LearningApiConfiguration>(configuration.GetSection("LearningApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LearningApiConfiguration>>().Value);
         services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection("CollectionCalendarApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>().Value);
         services.Configure<FinanceApiConfiguration>(configuration.GetSection("FinanceApiConfiguration"));

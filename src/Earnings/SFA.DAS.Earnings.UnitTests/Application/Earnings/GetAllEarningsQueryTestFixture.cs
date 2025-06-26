@@ -3,15 +3,15 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
+using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -22,10 +22,10 @@ public class GetAllEarningsQueryTestFixture
     public long Ukprn;
     public byte CollectionPeriod;
     public int CollectionYear;
-    public GetApprenticeshipsResponse ApprenticeshipsResponse;
+    public GetLearningsResponse LearningsResponse;
     public GetFm36DataResponse EarningsResponse;
     public GetAcademicYearsResponse CollectionCalendarResponse;
-    public Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> MockApprenticeshipsApiClient;
+    public Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
     public Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
     public Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
     public GetAllEarningsQueryResult Result;
@@ -36,7 +36,7 @@ public class GetAllEarningsQueryTestFixture
     public GetAllEarningsQueryTestFixture(TestScenario scenario)
     {
         // Arrange
-        MockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        MockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
@@ -47,17 +47,17 @@ public class GetAllEarningsQueryTestFixture
         var dataGenerator = new MockDataGenerator.MockDataGenerator();
         dataGenerator.GenerateData(scenario);
 
-        ApprenticeshipsResponse = dataGenerator.GetApprenticeshipsResponse;
+        LearningsResponse = dataGenerator.GetLearningsResponse;
         EarningsResponse = dataGenerator.GetFm36DataResponse;
 
-        CollectionCalendarResponse = BuildCollectionCalendarResponse(ApprenticeshipsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, ApprenticeshipsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+        CollectionCalendarResponse = BuildCollectionCalendarResponse(LearningsResponse);
+        SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
         _handler = new GetAllEarningsQueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetAllEarningsQueryHandler>>());
         _query = new GetAllEarningsQuery(Ukprn, CollectionYear, CollectionPeriod);
     }
 
-    public GetAcademicYearsResponse BuildCollectionCalendarResponse(GetApprenticeshipsResponse apprenticeshipsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
+    public GetAcademicYearsResponse BuildCollectionCalendarResponse(GetLearningsResponse learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
     {
         return new GetAcademicYearsResponse
         {
@@ -69,16 +69,16 @@ public class GetAllEarningsQueryTestFixture
 
     public void SetupMocks(
         long ukprn,
-        Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient,
-        GetApprenticeshipsResponse apprenticeshipsResponse,
+        Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient,
+        GetLearningsResponse learningsResponse,
         Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
         GetFm36DataResponse earningsResponse,
         Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
         GetAcademicYearsResponse collectionCalendarResponse)
     {
         mockApprenticeshipsApiClient
-            .Setup(x => x.Get<GetApprenticeshipsResponse>(It.Is<GetApprenticeshipsRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(apprenticeshipsResponse);
+            .Setup(x => x.Get<GetLearningsResponse>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
+            .ReturnsAsync(learningsResponse);
 
         mockEarningsApiClient
             .Setup(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == ukprn)))

@@ -50,7 +50,7 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(apiResponses.ApprenticeshipsInnerApiResponse)
+                    .WithBodyAsJson(apiResponses.LearningsInnerApiResponse)
             );
 
         testContext.EarningsApi.MockServer

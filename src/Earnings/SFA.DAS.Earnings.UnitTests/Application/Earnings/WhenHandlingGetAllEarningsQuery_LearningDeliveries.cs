@@ -3,7 +3,7 @@ using FluentAssertions;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using static SFA.DAS.Earnings.Application.Earnings.EarningsFM36Constants;
 
@@ -23,8 +23,8 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        testFixture.Result.FM36Learners.Length.Should().Be(testFixture.ApprenticeshipsResponse.Apprenticeships.Count);
-        testFixture.Result.FM36Learners.SelectMany(learner => learner.LearningDeliveries).Count().Should().Be(testFixture.ApprenticeshipsResponse.Apprenticeships.Count);
+        testFixture.Result.FM36Learners.Length.Should().Be(testFixture.LearningsResponse.Learnings.Count);
+        testFixture.Result.FM36Learners.SelectMany(learner => learner.LearningDeliveries).Count().Should().Be(testFixture.LearningsResponse.Learnings.Count);
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -40,7 +40,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
 
         var expectedPriceEpisodeStartDate = apprenticeship.StartDate > testFixture.CollectionCalendarResponse.StartDate ? apprenticeship.StartDate : testFixture.CollectionCalendarResponse.StartDate;
         var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : testFixture.CollectionCalendarResponse.EndDate;
@@ -141,7 +141,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
 
         var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
@@ -184,7 +184,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         await testFixture.CallSubjectUnderTest();
 
         //Assert
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
 
         var expectedLearningSupport = testFixture.EarningsResponse.First()
@@ -236,7 +236,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
@@ -274,7 +274,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
 
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
@@ -312,7 +312,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
 
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
@@ -353,7 +353,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
@@ -394,7 +394,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
@@ -432,7 +432,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         var earningsApprenticeship = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
 
         var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
@@ -458,7 +458,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
@@ -503,7 +503,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
 
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
@@ -548,7 +548,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
             
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
@@ -594,7 +594,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
         var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
@@ -632,7 +632,7 @@ public class WhenHandlingGetAllEarningsQuery_LearningDeliveries
     {
         // Arrange
         var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.SimpleApprenticeship);
-        testFixture.ApprenticeshipsResponse.Apprenticeships.First().SetWithdrawalDate(withdrawalDate);
+        testFixture.LearningsResponse.Learnings.First().SetWithdrawalDate(withdrawalDate);
 
         // Act
         await testFixture.CallSubjectUnderTest();

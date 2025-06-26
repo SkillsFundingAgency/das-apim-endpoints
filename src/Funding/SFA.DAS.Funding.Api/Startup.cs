@@ -38,10 +38,10 @@ namespace SFA.DAS.Funding.Api
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<FundingApprenticeshipEarningsConfiguration>(_configuration.GetSection("FundingApprenticeshipEarningsInnerApi"));
-            services.Configure<ApprenticeshipsApiConfiguration>(_configuration.GetSection("ApprenticeshipsInnerApi"));
+            services.Configure<LearningApiConfiguration>(_configuration.GetSection("ApprenticeshipsInnerApi"));
             services.Configure<RoatpV2ApiConfiguration>(_configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FundingApprenticeshipEarningsConfiguration>>().Value);
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LearningApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
 
             if (!_configuration.IsLocalOrDev())

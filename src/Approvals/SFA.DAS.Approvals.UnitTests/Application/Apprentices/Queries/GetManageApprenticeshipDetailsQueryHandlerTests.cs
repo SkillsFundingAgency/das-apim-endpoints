@@ -11,20 +11,20 @@ using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Exceptions;
+using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
 using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using GetApprenticeshipKeyRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey.GetApprenticeshipKeyRequest;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 using GetPendingPriceChangeRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange.GetPendingPriceChangeRequest;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
@@ -38,7 +38,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
     private Mock<IDeliveryModelService> _deliveryModelService;
     private ServiceParameters _serviceParameters;
-    private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _apprenticeshipsApiClient;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _apprenticeshipsApiClient;
     private Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _collectionCalendarApiClient;
 
     private GetApprenticeshipResponse _apprenticeship;
@@ -129,21 +129,21 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
 
         _serviceParameters = new ServiceParameters(Party.Employer, 123);
 
-        _apprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _apprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
 
         _apprenticeshipKey = Guid.NewGuid();
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(_apprenticeshipKey, HttpStatusCode.OK, string.Empty));
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetLearningKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(_apprenticeshipKey, HttpStatusCode.OK, string.Empty));
 
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
 
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetPendingStartDateChangeApiResponse>(_pendingStartDateChangeResponse, HttpStatusCode.OK, string.Empty));
 
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(_paymentStatusResponse, HttpStatusCode.OK, string.Empty));
 
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetLearnerStatusResponse>(It.Is<GetLearnerStatusRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetLearnerStatusResponse>(It.Is<GetLearnerStatusRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetLearnerStatusResponse>(_learnerStatusResponse, HttpStatusCode.OK, string.Empty));
 
         _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
@@ -526,7 +526,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     {
         _pendingPriceChangeResponse = null;
         
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
         
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
@@ -539,7 +539,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     {
         _pendingStartDateChangeResponse = null;
         
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetPendingStartDateChangeApiResponse>(_pendingStartDateChangeResponse, HttpStatusCode.OK, string.Empty));
         
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
@@ -552,7 +552,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     {
         _paymentStatusResponse = null;
         
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.ApprenticeshipKey == _apprenticeshipKey)))
+        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.LearningKey == _apprenticeshipKey)))
             .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(_paymentStatusResponse, HttpStatusCode.OK, string.Empty));
         
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
@@ -584,7 +584,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
 
         _apprenticeshipsApiClient.Verify(
             x => x.GetWithResponseCode<Guid>(
-                It.Is<GetApprenticeshipKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)), Times.Never);
+                It.Is<GetLearningKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)), Times.Never);
 
         _apprenticeshipsApiClient.Verify(
             x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(
