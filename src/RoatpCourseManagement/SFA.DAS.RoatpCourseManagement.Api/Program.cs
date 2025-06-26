@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {
@@ -16,8 +15,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder
-                        .UseStartup<Startup>()
-                        .UseNLog(); 
+                        .UseStartup<Startup>();
                 });
     }
 }
