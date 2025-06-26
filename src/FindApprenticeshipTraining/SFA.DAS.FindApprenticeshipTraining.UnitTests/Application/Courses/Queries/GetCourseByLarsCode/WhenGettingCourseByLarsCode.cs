@@ -1,4 +1,11 @@
-﻿using Moq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 using SFA.DAS.FindApprenticeshipTraining.Services;
@@ -12,12 +19,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -441,65 +442,25 @@ public sealed class WhenGettingCourseByLarsCode
         ), Times.Once);
     }
 
-
-    [TestCase(-1, 1, 1, null, 6)]
-    [TestCase(-1, 1, 1, 2, 6)]
-    [TestCase(1, null, -1, 1, 15)]
-    [TestCase(1, 2, -1, 1, 15)]
-    [TestCase(1, 2, 2, 5, 0)]
-    [TestCase(-10, -5, -20, -15, 0)]
-    public async Task Handle_Returns_Correct_IncentivePayment(int firstStartDateIncrement, int? firstEndDateIncrement,
-                                                                 int secondStartDateIncrement, int? secondEndDateIncrement,
-                                                                int expectedIncentivePayment)
+    [Test, AutoData]
+    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_No_End_Date(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
-        int larsCode = 111;
-        int firstPayment1 = 1;
-        int firstPayment2 = 2;
-        int firstPayment3 = 3;
-        int secondPayment1 = 4;
-        int secondPayment2 = 5;
-        int secondPayment3 = 6;
-
-        DateTime? firstEffectiveTo = null;
-        if (firstEndDateIncrement != null) firstEffectiveTo = DateTime.Today.AddDays(firstEndDateIncrement.Value);
-        DateTime? secondEffectiveTo = null;
-        if (secondEndDateIncrement != null) secondEffectiveTo = DateTime.Today.AddDays(secondEndDateIncrement.Value);
-
-
-        GetCourseByLarsCodeQuery query = new GetCourseByLarsCodeQuery { LarsCode = larsCode };
-
-        var standardDetailResponse = new StandardDetailResponse
+        ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
         {
-            ApprenticeshipFunding = new List<ApprenticeshipFunding>
-            {
-                new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, Duration = 12,
-                    EffectiveFrom = DateTime.Today.AddDays(firstStartDateIncrement),
-                    EffectiveTo = firstEffectiveTo,
-                    FoundationAppFirstEmpPayment = firstPayment1,
-                    FoundationAppSecondEmpPayment = firstPayment2,
-                    FoundationAppThirdEmpPayment = firstPayment3,
-                },
-                new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, Duration = 12,
-                    EffectiveFrom = DateTime.Today.AddDays(secondStartDateIncrement),
-                    EffectiveTo = secondEffectiveTo,
-                    FoundationAppFirstEmpPayment = secondPayment1,
-                    FoundationAppSecondEmpPayment = secondPayment2,
-                    FoundationAppThirdEmpPayment = secondPayment3,
-                },
-            }
+            FoundationAppFirstEmpPayment = 1000,
+            FoundationAppSecondEmpPayment = 2000,
+            FoundationAppThirdEmpPayment = 3000,
+            EffectiveFrom = DateTime.Today
         };
-
-        var courseProvidersResponse = new GetCourseTrainingProvidersCountResponse
+        ApprenticeshipFunding oldFundingRecord = new()
         {
-            Courses = new List<CourseTrainingProviderCountModel>
-            {
-                new()
-                {
-                    ProvidersCount = 10,
-                    TotalProvidersCount = 20
-                }
-            }
+            FoundationAppFirstEmpPayment = 10,
+            FoundationAppSecondEmpPayment = 20,
+            FoundationAppThirdEmpPayment = 30,
+            EffectiveFrom = DateTime.Today.AddMonths(-10),
+            EffectiveTo = activeFundingRecordWithNoEndDate.EffectiveFrom.AddDays(-1)
         };
+        standardDetailResponse.ApprenticeshipFunding = [activeFundingRecordWithNoEndDate, oldFundingRecord];
 
         _coursesApiClientMock
             .Setup(x =>
@@ -529,11 +490,69 @@ public sealed class WhenGettingCourseByLarsCode
         Assert.Multiple(() =>
         {
             Assert.That(sut, Is.Not.Null);
-            Assert.That(sut.IncentivePayment, Is.EqualTo(expectedIncentivePayment));
+            Assert.That(sut.IncentivePayment, Is.EqualTo(6000));
         });
-
     }
 
+    [Test, AutoData]
+    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_End_Date_In_Future(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    {
+        ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
+        {
+            FoundationAppFirstEmpPayment = 1000,
+            FoundationAppSecondEmpPayment = 2000,
+            FoundationAppThirdEmpPayment = 3000,
+            EffectiveFrom = DateTime.Today,
+            EffectiveTo = DateTime.Today.AddDays(10)
+        };
+        ApprenticeshipFunding oldFundingRecord = new()
+        {
+            FoundationAppFirstEmpPayment = 10,
+            FoundationAppSecondEmpPayment = 20,
+            FoundationAppThirdEmpPayment = 30,
+            EffectiveFrom = DateTime.Today.AddMonths(-10),
+            EffectiveTo = DateTime.Today.AddDays(-1)
+        };
+        ApprenticeshipFunding futureFundingRecord = new()
+        {
+            FoundationAppFirstEmpPayment = 1,
+            FoundationAppSecondEmpPayment = 2,
+            FoundationAppThirdEmpPayment = 3,
+            EffectiveFrom = oldFundingRecord.EffectiveTo.GetValueOrDefault().AddDays(1)
+        };
+        standardDetailResponse.ApprenticeshipFunding = [oldFundingRecord, activeFundingRecordWithNoEndDate, futureFundingRecord];
+
+        _coursesApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<StandardDetailResponse>(
+                    It.Is<GetStandardDetailsByIdRequest>(a =>
+                        a.Id.Equals(query.LarsCode.ToString())
+                    )
+                )
+            )
+            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>())
+                )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    courseProvidersResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut, Is.Not.Null);
+            Assert.That(sut.IncentivePayment, Is.EqualTo(6000));
+        });
+    }
 
     [Test]
     public async Task Handle_Returns_Zero_IncentivePayment_When_No_Apprenticeship_Funding()
