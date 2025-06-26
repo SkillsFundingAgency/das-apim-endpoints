@@ -11,6 +11,7 @@ namespace SFA.DAS.Recruit.InnerApi.Requests
         bool IsAscending = false,
         ApplicationReviewStatus Status = ApplicationReviewStatus.New) : IGetApiRequest
     {
-        public string GetUrl => $"api/employer/{AccountId}/applicationReviews/dashboard/vacancies";
+        public string GetUrl =>
+            $"api/employer/{AccountId}/applicationReviews/dashboard/vacancies?pageNumber={PageNumber}&pageSize={PageSize}&sortColumn={SortColumn}&isAscending={IsAscending}&status={Status}";
     }
 }

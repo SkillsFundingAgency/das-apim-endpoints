@@ -16,7 +16,7 @@ public record GetDashboardVacanciesCountByUkprnQueryResult
 
     public static implicit operator GetDashboardVacanciesCountByUkprnQueryResult(GetDashboardVacanciesCountApiResponse source)
     {
-        if (source.Info == null || source.Items == null)
+        if (source?.Info == null || source.Items == null)
         {
             return new GetDashboardVacanciesCountByUkprnQueryResult
             {
@@ -26,7 +26,7 @@ public record GetDashboardVacanciesCountByUkprnQueryResult
                 TotalPages = 0,
                 HasPreviousPage = false,
                 HasNextPage = false,
-                Items = new List<VacancyCount>()
+                Items = []
             };
         }
         return new GetDashboardVacanciesCountByUkprnQueryResult

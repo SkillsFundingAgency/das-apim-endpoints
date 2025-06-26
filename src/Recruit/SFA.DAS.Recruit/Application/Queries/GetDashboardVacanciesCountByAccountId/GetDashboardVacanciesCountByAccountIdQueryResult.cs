@@ -16,7 +16,7 @@ public record GetDashboardVacanciesCountByAccountIdQueryResult
 
     public static implicit operator GetDashboardVacanciesCountByAccountIdQueryResult(GetDashboardVacanciesCountApiResponse source)
     {
-        if (source.Info == null || source.Items == null)
+        if ( source?.Info == null || source.Items == null)
         {
             return new GetDashboardVacanciesCountByAccountIdQueryResult
             {
@@ -26,7 +26,7 @@ public record GetDashboardVacanciesCountByAccountIdQueryResult
                 TotalPages = 0,
                 HasPreviousPage = false,
                 HasNextPage = false,
-                Items = new List<VacancyCount>()
+                Items = []
             };
         }
         return new GetDashboardVacanciesCountByAccountIdQueryResult
