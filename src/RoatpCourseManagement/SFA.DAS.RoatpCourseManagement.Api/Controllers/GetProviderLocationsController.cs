@@ -44,11 +44,13 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             _logger.LogInformation("Request received for get provider location details for ukprn: {ukprn} and {id}", ukprn, id);
             var query = new GetProviderLocationDetailsQuery(ukprn, id);
             var result = await _mediator.Send(query);
-            if (result.ProviderLocation == null)
+
+            if (result == null)
             {
-                _logger.LogInformation("Provider Location Details not found for {ukprn} and {id}", ukprn, id);
-                return BadRequest();
+                _logger.LogInformation("Provider Location Details not found for {ukprn} and navigation id {id}", ukprn, id);
+                return NotFound();
             }
+
             _logger.LogInformation($"Found provider location details for ukprn: {ukprn} and {id}");
             return Ok(result.ProviderLocation);
         }

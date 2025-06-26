@@ -1,8 +1,8 @@
+using SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
@@ -18,6 +18,7 @@ public class GetWithdrawnApplicationApiResponse
     public List<Address>? OtherAddresses { get; set; } = [];
     public string? EmploymentLocationInformation { get; set; }
     public AvailableWhere? EmployerLocationOption { get; set; }
+    public ApprenticeshipTypes ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
 
     public static implicit operator GetWithdrawnApplicationApiResponse(WithdrawApplicationQueryResult source)
     {
@@ -33,6 +34,7 @@ public class GetWithdrawnApplicationApiResponse
             OtherAddresses = source.OtherAddresses,
             EmployerLocationOption = source.EmployerLocationOption,
             EmploymentLocationInformation = source.EmploymentLocationInformation,
+            ApprenticeshipType = source.ApprenticeshipType ?? ApprenticeshipTypes.Standard
         };
     }
 }
