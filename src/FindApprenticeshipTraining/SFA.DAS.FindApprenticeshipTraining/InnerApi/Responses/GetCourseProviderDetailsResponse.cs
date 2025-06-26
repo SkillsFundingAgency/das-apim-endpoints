@@ -17,4 +17,6 @@ public sealed class GetCourseProviderDetailsResponse
     public ReviewModel Reviews { get; set; }
     public IEnumerable<LocationModel> Locations { get; set; } = [];
     public Guid? ShortlistId { get; set; }
+    public bool IsRegulatedForProvider { get; set; }
+    public bool IsApprovedByRegulator { get; set; }
 }

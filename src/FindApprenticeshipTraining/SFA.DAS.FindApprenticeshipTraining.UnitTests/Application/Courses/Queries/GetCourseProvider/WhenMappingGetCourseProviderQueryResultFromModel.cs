@@ -45,6 +45,8 @@ public sealed class WhenMappingGetCourseProviderQueryResultFromModel
             Assert.That(sut.Reviews.ApprenticeRating, Is.EqualTo(response.Reviews.ApprenticeRating));
             Assert.That(sut.ShortlistId, Is.EqualTo(response.ShortlistId));
             Assert.That(sut.Locations, Is.EquivalentTo(response.Locations));
+            Assert.That(sut.IsRegulatedForProvider, Is.EqualTo(response.IsRegulatedForProvider));
+            Assert.That(sut.IsApprovedByRegulator, Is.EqualTo(response.IsApprovedByRegulator));
         });
     }
 }

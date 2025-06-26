@@ -7,6 +7,9 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCoursePr
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using OpenTelemetry.Trace;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 
@@ -34,7 +37,7 @@ public sealed class WhenCallingGetCourseProvider
                 ),
                 It.IsAny<CancellationToken>()
             ))
-            .ReturnsAsync(new GetCourseProviderQueryResult());
+            .ReturnsAsync(new GetCourseProviderQueryResult{IsRegulatedForProvider = false});
 
         await sut.GetCourseProvider(larsCode, ukprn, request, CancellationToken.None);
 
@@ -50,5 +53,24 @@ public sealed class WhenCallingGetCourseProvider
             ),
             Times.Once
         );
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task And_Response_Is_Unapproved_Regulated_Course_Then_Returns_Not_Found(
+        GetCourseProviderRequest request,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] CoursesController sut)
+    {
+        mockMediator.Setup(x => x.Send(
+            It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(
+            new GetCourseProviderQueryResult { IsApprovedByRegulator = false, IsRegulatedForProvider = true });
+
+        var result = await sut.GetCourseProvider(1, 1, new GetCourseProviderRequest(), CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+        var notFoundResult = result as NotFoundResult;
+        notFoundResult.Should().NotBeNull();
+        notFoundResult.StatusCode.Should().Be(404);
     }
 }

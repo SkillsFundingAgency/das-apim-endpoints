@@ -108,6 +108,9 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
             cancellationToken
         );
 
+        if (result.IsRegulatedForProvider && !result.IsApprovedByRegulator)
+            return NotFound();
+
         return Ok(result);
     }
 }

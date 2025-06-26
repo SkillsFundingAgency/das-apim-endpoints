@@ -23,6 +23,8 @@ public sealed class GetCourseProviderQueryResult
     public EndpointAssessmentModel EndpointAssessments { get; set; }
     public int TotalProvidersCount { get; set; }
     public Guid? ShortlistId { get; set; }
+    public bool IsRegulatedForProvider { get; set; }
+    public bool IsApprovedByRegulator { get; set; }
 
     public static implicit operator GetCourseProviderQueryResult(GetCourseProviderDetailsResponse source)
     {
@@ -39,7 +41,9 @@ public sealed class GetCourseProviderQueryResult
             Qar = source.QAR,
             Reviews = source.Reviews,
             ShortlistId = source.ShortlistId,
-            Locations = source.Locations
+            Locations = source.Locations,
+            IsRegulatedForProvider = source.IsRegulatedForProvider,
+            IsApprovedByRegulator = source.IsApprovedByRegulator
         };
     }
 }
