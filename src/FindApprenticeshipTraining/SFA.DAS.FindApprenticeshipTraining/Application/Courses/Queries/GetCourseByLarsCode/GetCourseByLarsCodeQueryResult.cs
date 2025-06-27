@@ -1,4 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+﻿using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -19,14 +22,15 @@ public sealed class GetCourseByLarsCodeQueryResult
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public string[] Skills { get; set; }
-    public string[] Knowledge { get; set; }
-    public string[] Behaviours { get; set; }
+    public List<Ksb> Ksbs { get; set; }
+    public string ApprenticeshipType { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public int IncentivePayment { get; set; }
 
     public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailResponse source)
     {
-        return new() 
-        { 
+        return new()
+        {
             StandardUId = source.StandardUId,
             IFateReferenceNumber = source.IfateReferenceNumber,
             LarsCode = source.LarsCode,
@@ -38,6 +42,9 @@ public sealed class GetCourseByLarsCodeQueryResult
             RouteCode = source.RouteCode,
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
+            ApprenticeshipType = source.ApprenticeshipType,
+            Ksbs = source.Ksbs == null ? new List<Ksb>() : source.Ksbs.Select(c => (Ksb)c).ToList(),
+            RelatedOccupations = source.RelatedOccupations == null ? new List<RelatedOccupation>() : source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }
 }

@@ -9,6 +9,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,9 +23,6 @@ public sealed class GetCourseByLarsCodeQueryHandler(
     ICachedLocationLookupService _cachedLocationLookupService
 ) : IRequestHandler<GetCourseByLarsCodeQuery, GetCourseByLarsCodeQueryResult>
 {
-    public const string KsbsSkillsType = "Skill";
-    public const string KsbsKnowledgeType = "Knowledge";
-    public const string KsbsBehaviorType = "Behaviour";
 
     public async Task<GetCourseByLarsCodeQueryResult> Handle(GetCourseByLarsCodeQuery query, CancellationToken cancellationToken)
     {
@@ -55,9 +54,9 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 
-        CourseTrainingProviderCountModel trainingCourseCountDetails = 
+        CourseTrainingProviderCountModel trainingCourseCountDetails =
             courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ?
-                courseTrainingProvidersCountResponse.Body.Courses[0] : 
+                courseTrainingProvidersCountResponse.Body.Courses[0] :
                 null;
 
         GetCourseByLarsCodeQueryResult result = standardDetails;
@@ -67,12 +66,25 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         result.ProvidersCountWithinDistance = trainingCourseCountDetails?.ProvidersCount ?? 0;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
-
-        result.Skills = standardDetails.Ksbs.Where(a => a.Type == KsbsSkillsType).Select(a => a.Description).ToArray();
-        result.Knowledge = standardDetails.Ksbs.Where(a => a.Type == KsbsKnowledgeType).Select(a => a.Description).ToArray();
-        result.Behaviours = standardDetails.Ksbs.Where(a => a.Type == KsbsBehaviorType).Select(a => a.Description).ToArray();
-
+        result.IncentivePayment = CalculateIncentivePayment(standardDetails.ApprenticeshipFunding);
         return result;
     }
-}
 
+    private static int CalculateIncentivePayment(List<ApprenticeshipFunding> apprenticeshipFundings)
+    {
+        if (apprenticeshipFundings == null || apprenticeshipFundings.Count == 0) return 0;
+
+        var currentDate = DateTime.Today;
+
+        var funding = apprenticeshipFundings
+            .FirstOrDefault(c =>
+                c.EffectiveFrom.Date <= currentDate
+                && (c.EffectiveTo == null || c.EffectiveTo.Value.Date >= currentDate));
+
+        if (funding == null) return 0;
+
+        return (funding.FoundationAppFirstEmpPayment ?? 0)
+            + (funding.FoundationAppSecondEmpPayment ?? 0)
+            + (funding.FoundationAppThirdEmpPayment ?? 0);
+    }
+}
