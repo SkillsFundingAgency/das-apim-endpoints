@@ -7,13 +7,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
-using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -83,7 +81,7 @@ public class CreateCohortCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Handle_WhenHandled_ShouldCreateCohort(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         CreateCohortResponse expectedResponse,
         GetLearnerAgeResponse learnerAgeResponse,
         CreateCohortCommand request,
@@ -91,9 +89,13 @@ public class CreateCohortCommandHandlerTests
     {
         // Arrange
         learnerAgeResponse.MaximumAge = MaximumAge;
-        courseTypesApiClient
-            .Setup(x => x.Get<GetLearnerAgeResponse>(It.IsAny<GetLearnerAgeRequest>()))
-            .ReturnsAsync(learnerAgeResponse);
+        courseTypeRulesService
+            .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ReturnsAsync(new CourseTypeRulesResult
+            {
+                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                LearnerAgeRules = learnerAgeResponse
+            });
 
         commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
                 It.Is<PostCreateCohortRequest>(r =>
@@ -138,55 +140,43 @@ public class CreateCohortCommandHandlerTests
         result.Should().NotBeNull();
         result.CohortId.Should().Be(expectedResponse.CohortId);
         result.CohortReference.Should().Be(expectedResponse.CohortReference);
+        courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Handle_WhenNoStandardDetails_DoNotCreateCohort(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         CreateCohortCommand request,
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        coursesApiClient
-            .Setup(x => x.Get<GetStandardsListItem>(
-                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-            .ReturnsAsync((GetStandardsListItem)null)
-            .Verifiable();
+        courseTypeRulesService
+            .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ThrowsAsync(new Exception($"Standard not found for course ID {request.CourseCode}"));
 
         // Act
         var act = () => handler.Handle(request, CancellationToken.None);
 
         // Assert
         act.Should().ThrowAsync<Exception>().WithMessage($"Standard not found for course ID {request.CourseCode}");
-        coursesApiClient.Verify();
-        courseTypesApiClient.VerifyNoOtherCalls();
+        courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         commitmentsApiClient.VerifyNoOtherCalls();
     }
 
     [Test, MoqAutoData]
     public async Task Handle_WhenNoCourseType_DoNotCreateCohort(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         GetStandardsListItem standardResponse,
         CreateCohortCommand request,
         CreateCohortCommandHandler handler)
     {
         // Arrange
         standardResponse.ApprenticeshipType = ApprenticeshipType;
-        coursesApiClient
-            .Setup(x => x.Get<GetStandardsListItem>(
-                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-            .ReturnsAsync(standardResponse)
-            .Verifiable();
-
-        courseTypesApiClient
-            .Setup(x => x.Get<GetLearnerAgeResponse>(
-                It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(ApprenticeshipType))))
-            .ReturnsAsync((GetLearnerAgeResponse)null)
-            .Verifiable();
+        courseTypeRulesService
+            .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ThrowsAsync(new Exception($"Learner age rules not found for apprenticeship type {ApprenticeshipType}"));
 
         // Act
         var act = () => handler.Handle(request, CancellationToken.None);
@@ -194,16 +184,14 @@ public class CreateCohortCommandHandlerTests
         // Assert
         act.Should().ThrowAsync<Exception>()
             .WithMessage($"Learner age rules not found for apprenticeship type {ApprenticeshipType}");
-        coursesApiClient.Verify();
-        courseTypesApiClient.Verify();
+        courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         commitmentsApiClient.VerifyNoOtherCalls();
     }
 
     [Test, MoqAutoData]
     public async Task Handle_WhenHandled_ShouldGetCourse(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         GetStandardsListItem standardResponse,
         CreateCohortCommand request,
         CreateCohortResponse createCohortResponse,
@@ -211,30 +199,33 @@ public class CreateCohortCommandHandlerTests
     {
         // Arrange
         standardResponse.ApprenticeshipType = ApprenticeshipType;
-        coursesApiClient
-            .Setup(x => x.Get<GetStandardsListItem>(
-                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-            .ReturnsAsync(standardResponse)
-            .Verifiable();
+        courseTypeRulesService
+            .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ReturnsAsync(new CourseTypeRulesResult
+            {
+                Standard = standardResponse,
+                LearnerAgeRules = new GetLearnerAgeResponse()
+            });
 
-        commitmentsApiClient
-            .Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
-                It.IsAny<PostCreateCohortRequest>(), true))
-            .ReturnsAsync(new ApiResponse<CreateCohortResponse>(createCohortResponse, HttpStatusCode.OK, string.Empty))
+        commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.Is<PostCreateCohortRequest>(r =>
+                    ((CreateCohortRequest)r.Data).CourseCode == request.CourseCode
+                ), true
+            )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(createCohortResponse, HttpStatusCode.OK, string.Empty))
             .Verifiable();
 
         // Act
-        _ = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        coursesApiClient.Verify();
+        commitmentsApiClient.Verify();
+        courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Handle_WhenHandled_ShouldGetLearnerAgeRules(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
-        [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         GetStandardsListItem standardResponse,
         GetLearnerAgeResponse getLearnerAgeResponse,
         CreateCohortCommand request,
@@ -243,54 +234,64 @@ public class CreateCohortCommandHandlerTests
     {
         // Arrange
         standardResponse.ApprenticeshipType = ApprenticeshipType;
-        coursesApiClient
-            .Setup(x => x.Get<GetStandardsListItem>(
-                It.Is<GetStandardDetailsByIdRequest>(x => x.GetUrl.Contains(request.CourseCode))))
-            .ReturnsAsync(standardResponse)
-            .Verifiable();
+        courseTypeRulesService
+            .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ReturnsAsync(new CourseTypeRulesResult
+            {
+                Standard = standardResponse,
+                LearnerAgeRules = getLearnerAgeResponse
+            });
 
-        commitmentsApiClient
-            .Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
-                It.IsAny<PostCreateCohortRequest>(), true))
-            .ReturnsAsync(new ApiResponse<CreateCohortResponse>(createCohortResponse, HttpStatusCode.OK, string.Empty))
-            .Verifiable();
-
-        courseTypesApiClient
-            .Setup(x => x.Get<GetLearnerAgeResponse>(
-                It.Is<GetLearnerAgeRequest>(x => x.GetUrl.Contains(ApprenticeshipType))))
-            .ReturnsAsync(getLearnerAgeResponse)
+        commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.Is<PostCreateCohortRequest>(r =>
+                    ((CreateCohortRequest)r.Data).MinimumAgeAtApprenticeshipStart == getLearnerAgeResponse.MinimumAge &&
+                    ((CreateCohortRequest)r.Data).MaximumAgeAtApprenticeshipStart == getLearnerAgeResponse.MaximumAge
+                ), true
+            )).ReturnsAsync(new ApiResponse<CreateCohortResponse>(createCohortResponse, HttpStatusCode.OK, string.Empty))
             .Verifiable();
 
         // Act
-        _ = await handler.Handle(request, CancellationToken.None);
+        var result = await handler.Handle(request, CancellationToken.None);
 
         // Assert
-        coursesApiClient.Verify();
-        courseTypesApiClient.Verify();
+        commitmentsApiClient.Verify();
+        courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
     }
 
     [Test, MoqAutoData]
     public async Task Handle_WhenCohortCreationFails_ShouldDeleteReservation(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
         [Frozen] Mock<IAutoReservationsService> autoReservationsService,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         CreateCohortCommand request,
         Guid reservationId,
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        request.ReservationId = Guid.Empty;
+        request.ReservationId = null;
         request.TransferSenderId = null;
+
+        courseTypeRulesService
+            .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ReturnsAsync(new CourseTypeRulesResult
+            {
+                Standard = new GetStandardsListItem(),
+                LearnerAgeRules = new GetLearnerAgeResponse()
+            });
+
         autoReservationsService.Setup(x => x.CreateReservation(It.IsAny<AutoReservation>()))
             .ReturnsAsync(reservationId);
 
-        commitmentsApiClient.Setup(x =>
-                x.PostWithResponseCode<CreateCohortResponse>(It.IsAny<PostCreateCohortRequest>(), true))
-            .ThrowsAsync(new Exception("Failed to create cohort"));
+        commitmentsApiClient.Setup(x => x.PostWithResponseCode<CreateCohortResponse>(
+                It.IsAny<PostCreateCohortRequest>(), true
+            )).ThrowsAsync(new Exception("Some error"));
 
         // Act
-        var action = () => handler.Handle(request, CancellationToken.None);
+        var act = () => handler.Handle(request, CancellationToken.None);
 
-        await action.Should().ThrowAsync<Exception>();
+        // Assert
+        await act.Should().ThrowAsync<Exception>().WithMessage("Some error");
         autoReservationsService.Verify(x => x.DeleteReservation(reservationId), Times.Once);
+        courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
     }
 }

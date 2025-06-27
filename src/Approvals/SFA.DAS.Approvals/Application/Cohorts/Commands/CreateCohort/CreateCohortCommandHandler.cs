@@ -2,14 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
-using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
@@ -17,9 +13,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
     public class CreateCohortCommandHandler(
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
         IAutoReservationsService autoReservationService,
-        ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-        ICourseTypesApiClient courseTypesApiClient,
-        ILogger<CreateCohortCommandHandler> logger)
+        ICourseTypeRulesService courseTypeRulesService)
         : IRequestHandler<CreateCohortCommand, CreateCohortResult>
     {
         public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
@@ -46,21 +40,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
 
             try
             {
-                var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(request.CourseCode));
-                
-                if (standard == null)
-                {
-                    logger.LogError("Standard not found for course ID {CourseId}", request.CourseCode);
-                    throw new Exception($"Standard not found for course ID {request.CourseCode}");
-                }
-                
-                var learnerAge = await courseTypesApiClient.Get<GetLearnerAgeResponse>(new GetLearnerAgeRequest(standard.ApprenticeshipType));
-
-                if (learnerAge == null)
-                {
-                    logger.LogError("Learner age rules not found for apprenticeship type {ApprenticeshipType}", standard.ApprenticeshipType);
-                    throw new Exception($"Learner age rules not found for apprenticeship type {standard.ApprenticeshipType}");
-                }
+                var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(request.CourseCode);
 
                 var createCohortRequest = new CreateCohortRequest
                 {
@@ -89,8 +69,8 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
                     IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
                     IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
                     LearnerDataId = request.LearnerDataId,
-                    MinimumAgeAtApprenticeshipStart = learnerAge.MinimumAge,
-                    MaximumAgeAtApprenticeshipStart = learnerAge.MaximumAge,
+                    MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
+                    MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
                     UserInfo = request.UserInfo,
                     RequestingParty = request.RequestingParty
                 };
