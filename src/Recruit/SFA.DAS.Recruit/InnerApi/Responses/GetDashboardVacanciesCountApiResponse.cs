@@ -24,6 +24,7 @@ public record GetDashboardVacanciesCountApiResponse
         public int VacancyReference { get; set; } = 0;
         public int NewApplications { get; set; } = 0;
         public int Applications { get; set; } = 0;
+        public int Shared { get; set; } = 0;
         public int AllSharedApplications { get; set; } = 0;
     }
 }

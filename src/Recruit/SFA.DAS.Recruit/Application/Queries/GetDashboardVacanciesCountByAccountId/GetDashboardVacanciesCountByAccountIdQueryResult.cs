@@ -42,6 +42,7 @@ public record GetDashboardVacanciesCountByAccountIdQueryResult
                 VacancyReference = i.VacancyReference,
                 NewApplications = i.NewApplications,
                 Applications = i.Applications,
+                Shared = i.Shared,
                 AllSharedApplications = i.AllSharedApplications
             }).ToList()
         };
@@ -52,6 +53,7 @@ public record GetDashboardVacanciesCountByAccountIdQueryResult
         public long VacancyReference { get; init; } = 0;
         public int NewApplications { get; init; } = 0;
         public int Applications { get; init; } = 0;
+        public int Shared { get; set; } = 0;
         public int AllSharedApplications { get; set; } = 0;
     }
 }
