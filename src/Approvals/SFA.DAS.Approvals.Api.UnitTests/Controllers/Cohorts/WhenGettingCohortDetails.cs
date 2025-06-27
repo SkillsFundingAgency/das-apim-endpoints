@@ -84,4 +84,19 @@ public class WhenGettingCohortDetails
         var comparisonResult = compare.Compare(_queryResult.ApprenticeshipEmailOverlaps.Last(), objectResult.ApprenticeshipEmailOverlaps.Last());
         Assert.That(comparisonResult.AreEqual, Is.True);
     }
+
+    [Test]
+    public async Task GetCohortDetailsResponseWithCorrectlyMappedHasFoundationApprenticeshipsIsReturned()
+    {
+        // Arrange
+        _queryResult.HasFoundationApprenticeships = true;
+
+        // Act
+        var result = await _controller.GetCohortDetails(_cohortId);
+
+        // Assert
+        var okObjectResult = (OkObjectResult)result;
+        var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
+        Assert.That(objectResult.HasFoundationApprenticeships, Is.EqualTo(_queryResult.HasFoundationApprenticeships));
+    }
 }
