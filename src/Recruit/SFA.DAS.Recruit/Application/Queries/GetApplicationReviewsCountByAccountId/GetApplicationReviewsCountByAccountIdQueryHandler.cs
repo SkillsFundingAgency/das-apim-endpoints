@@ -16,7 +16,7 @@ namespace SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccoun
         public async Task<GetApplicationReviewsCountByAccountIdQueryResult> Handle(GetApplicationReviewsCountByAccountIdQuery request, CancellationToken cancellationToken)
         {
             var response = await recruitApiClient.PostWithResponseCode<List<ApplicationReviewStats>>(
-                new GetApplicationReviewsCountByAccountIdApiRequest(request.AccountId, request.VacancyReferences));
+                new GetApplicationReviewsCountByAccountIdApiRequest(request.AccountId, request.VacancyReferences, request.ApplicationSharedFilteringStatus));
 
             return new GetApplicationReviewsCountByAccountIdQueryResult
             {
