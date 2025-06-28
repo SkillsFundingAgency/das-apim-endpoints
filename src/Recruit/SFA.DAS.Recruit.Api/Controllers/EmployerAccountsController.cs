@@ -102,11 +102,11 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpPost]
         [Route("count")]
-        public async Task<IActionResult> GetApplicationReviewsCount([FromRoute] long accountId, [FromBody] List<long> vacancyReferences)
+        public async Task<IActionResult> GetApplicationReviewsCount([FromRoute] long accountId, [FromQuery]string applicationSharedFilteringStatus, [FromBody] List<long> vacancyReferences)
         {
             try
             {
-                var queryResult = await mediator.Send(new GetApplicationReviewsCountByAccountIdQuery(accountId, vacancyReferences));
+                var queryResult = await mediator.Send(new GetApplicationReviewsCountByAccountIdQuery(accountId, vacancyReferences,applicationSharedFilteringStatus));
 
                 return Ok(queryResult);
             }
