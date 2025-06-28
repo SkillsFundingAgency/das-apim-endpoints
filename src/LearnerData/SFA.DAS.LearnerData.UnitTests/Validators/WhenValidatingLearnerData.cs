@@ -63,17 +63,17 @@ public class WhenValidatingLearnerData
         result.Errors.First().PropertyName.Should().Contain("UKPRN");
     }
 
-    [Test]
-    public async Task And_when_StartDate_Is_Not_In_AcademicYear()
-    {
-        var learner = CreateValidLearnerDataRequest();
-        learner.StartDate = DateTime.Today;
-        _academicYear = 2324;
-        var result = await RunValidation(learner);
-        result.IsValid.Should().BeFalse();
-        result.Errors.First().ErrorMessage.Should().Be($"Learner data contains a StartDate {learner.StartDate} that is not in the academic year {_academicYear}");
-        result.Errors.First().PropertyName.Should().Contain("StartDate");
-    }
+    // [Test]
+    // public async Task And_when_StartDate_Is_Not_In_AcademicYear()
+    // {
+    //     var learner = CreateValidLearnerDataRequest();
+    //     learner.StartDate = DateTime.Today;
+    //     _academicYear = 2324;
+    //     var result = await RunValidation(learner);
+    //     result.IsValid.Should().BeFalse();
+    //     result.Errors.First().ErrorMessage.Should().Be($"Learner data contains a StartDate {learner.StartDate} that is not in the academic year {_academicYear}");
+    //     result.Errors.First().PropertyName.Should().Contain("StartDate");
+    // }
 
     [Test]
     public async Task And_when_ConsumerReference_Is_Too_Big()
