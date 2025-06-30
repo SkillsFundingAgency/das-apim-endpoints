@@ -47,5 +47,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
         public int VersionMajor { get; set; }
         public int VersionMinor { get; set; }
         public bool EpaoMustBeApprovedByRegulatorBody { get; set; }
+        public string ApprenticeshipType { get; set; }
     }
 }

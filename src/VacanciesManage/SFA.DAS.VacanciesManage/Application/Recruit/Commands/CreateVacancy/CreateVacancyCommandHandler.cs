@@ -54,10 +54,15 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             var standard = standardsTask.Standards.FirstOrDefault(c =>
                 c.LarsCode.ToString() == request.PostVacancyRequestData.ProgrammeId);
 
-            if (string.Equals(standard.ApprenticeshipType, "Foundation", StringComparison.CurrentCultureIgnoreCase))
+            if (!string.IsNullOrEmpty(standard.ApprenticeshipType)
+                && standard.ApprenticeshipType.IndexOf("Foundation", StringComparison.CurrentCultureIgnoreCase) >= 0)
             {
                 request.PostVacancyRequestData.Skills = [];
                 request.PostVacancyRequestData.Qualifications = [];
+            }
+            else if (standard == null)
+            {
+                throw new InvalidOperationException($"Standard with ProgrammeId '{request.PostVacancyRequestData.ProgrammeId}' not found.");
             }
 
             IPostApiRequest apiRequest;
