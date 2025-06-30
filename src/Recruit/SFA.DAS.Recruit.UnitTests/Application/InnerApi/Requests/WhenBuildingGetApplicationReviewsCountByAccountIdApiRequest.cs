@@ -13,7 +13,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests
             var actual = new GetApplicationReviewsCountByAccountIdApiRequest(accountId, vacancyReferences, applicationSharedFilteringStatus);
 
             //Assert
-            actual.PostUrl.Should().Be($"api/employer/{accountId}/applicationReviews/count?=applicationSharedFilteringStatus={applicationSharedFilteringStatus}");
+            actual.PostUrl.Should().Be($"api/employer/{accountId}/applicationReviews/count?applicationSharedFilteringStatus={applicationSharedFilteringStatus}");
         }
     }
 }
