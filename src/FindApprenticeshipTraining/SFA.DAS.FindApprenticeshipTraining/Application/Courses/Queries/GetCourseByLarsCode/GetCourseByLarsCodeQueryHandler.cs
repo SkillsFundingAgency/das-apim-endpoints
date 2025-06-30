@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -9,11 +12,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -37,7 +35,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         StandardDetailResponse standardDetails = coursesApiStandardResponse.Body;
 
         ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding?.Count > 0 ?
-            standardDetails.ApprenticeshipFunding[standardDetails.ApprenticeshipFunding.Count - 1] :
+            standardDetails.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() :
         null;
 
         LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
@@ -66,25 +64,16 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         result.ProvidersCountWithinDistance = trainingCourseCountDetails?.ProvidersCount ?? 0;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
-        result.IncentivePayment = CalculateIncentivePayment(standardDetails.ApprenticeshipFunding);
+        result.IncentivePayment = CalculateIncentivePayment(apprenticeshipFunding);
         return result;
     }
 
-    private static int CalculateIncentivePayment(List<ApprenticeshipFunding> apprenticeshipFundings)
+    private static int CalculateIncentivePayment(ApprenticeshipFunding apprenticeshipFunding)
     {
-        if (apprenticeshipFundings == null || apprenticeshipFundings.Count == 0) return 0;
+        if (apprenticeshipFunding == null) return 0;
 
-        var currentDate = DateTime.Today;
-
-        var funding = apprenticeshipFundings
-            .FirstOrDefault(c =>
-                c.EffectiveFrom.Date <= currentDate
-                && (c.EffectiveTo == null || c.EffectiveTo.Value.Date >= currentDate));
-
-        if (funding == null) return 0;
-
-        return (funding.FoundationAppFirstEmpPayment ?? 0)
-            + (funding.FoundationAppSecondEmpPayment ?? 0)
-            + (funding.FoundationAppThirdEmpPayment ?? 0);
+        return (apprenticeshipFunding.FoundationAppFirstEmpPayment ?? 0)
+            + (apprenticeshipFunding.FoundationAppSecondEmpPayment ?? 0)
+            + (apprenticeshipFunding.FoundationAppThirdEmpPayment ?? 0);
     }
 }
