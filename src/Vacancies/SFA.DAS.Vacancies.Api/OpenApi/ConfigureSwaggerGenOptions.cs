@@ -13,21 +13,20 @@ namespace SFA.DAS.Vacancies.Api.OpenApi
             foreach (var description in provider.ApiVersionDescriptions)
             {
                 // add swagger doc for each api version
-                const string swaggerV1Endpoint = "/swagger/v1/swagger.json";
 
                 var openApiInfo = new OpenApiInfo
                 {
-                    Title = "Display advert API",
-                    Description = $"""
-                                  <p>The new API version (version 2) lets you display apprenticeships that are available in more than one location.</p>
-                                   
-                                  <p>You must update to this new version by DD Month YYYY. Read more about changing the version you use in the Versioning section of this page.</p>
-                                   
-                                  <p>If you need to check your current implementation, you can view the old documentation for Display advert API (<a href='{swaggerV1Endpoint}'>version 1</a>).</p>
+                    Title = $"Display Advert API",
+                    Description = """
+                                  Get and display adverts from Find an apprenticeship. 
+                                  **Note.** It is not recommended to use The Display Advert API directly from a browser and as such we have not enabled CORS for this API.  Instead, we recommend you call the API intermittently to retrieve the latest vacancies, store those vacancies in your own data store, and then change your website to read those vacancies from your own data store.
                                   """,
-                    Version = description.ApiVersion.ToString(),
-
+                    Version = description.ApiVersion.ToString()
                 };
+                if (description.IsDeprecated)
+                {
+                    openApiInfo.Description += "This API version has been deprecated.";
+                }
                 options.SwaggerDoc(description.GroupName, openApiInfo);
             }
         }
