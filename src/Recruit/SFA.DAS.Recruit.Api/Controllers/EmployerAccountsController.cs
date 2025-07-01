@@ -6,8 +6,11 @@ using SFA.DAS.Recruit.Application.Queries.GetAccount;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
 using SFA.DAS.Recruit.Application.Queries.GetApplicationReviewsCountByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
+using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
+using SFA.DAS.Recruit.Enums;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.Controllers
@@ -73,13 +76,37 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("count")]
-        public async Task<IActionResult> GetApplicationReviewsCount([FromRoute] long accountId, [FromBody] List<long> vacancyReferences)
+        [HttpGet]
+        [Route("dashboard/vacancies")]
+        public async Task<IActionResult> GetDashboardVacanciesCount([FromRoute] long accountId,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 25,
+            [FromQuery] string sortColumn = "CreatedDate",
+            [FromQuery] bool isAscending = false,
+            [FromQuery] List<ApplicationReviewStatus> status = null,
+            CancellationToken token = default
+            )
         {
             try
             {
-                var queryResult = await mediator.Send(new GetApplicationReviewsCountByAccountIdQuery(accountId, vacancyReferences));
+                var queryResult = await mediator.Send(new GetDashboardVacanciesCountByAccountIdQuery(accountId, pageNumber, pageSize, sortColumn, isAscending, status), token);
+
+                return Ok(queryResult);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting employer dashboard vacancy count");
+                return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("count")]
+        public async Task<IActionResult> GetApplicationReviewsCount([FromRoute] long accountId, [FromQuery]string applicationSharedFilteringStatus, [FromBody] List<long> vacancyReferences)
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetApplicationReviewsCountByAccountIdQuery(accountId, vacancyReferences,applicationSharedFilteringStatus));
 
                 return Ok(queryResult);
             }
