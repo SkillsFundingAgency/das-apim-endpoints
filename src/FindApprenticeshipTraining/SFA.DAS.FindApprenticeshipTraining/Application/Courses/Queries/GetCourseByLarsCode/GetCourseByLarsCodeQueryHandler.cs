@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -9,9 +12,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -21,9 +21,6 @@ public sealed class GetCourseByLarsCodeQueryHandler(
     ICachedLocationLookupService _cachedLocationLookupService
 ) : IRequestHandler<GetCourseByLarsCodeQuery, GetCourseByLarsCodeQueryResult>
 {
-    public const string KsbsSkillsType = "Skill";
-    public const string KsbsKnowledgeType = "Knowledge";
-    public const string KsbsBehaviorType = "Behaviour";
 
     public async Task<GetCourseByLarsCodeQueryResult> Handle(GetCourseByLarsCodeQuery query, CancellationToken cancellationToken)
     {
@@ -38,7 +35,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         StandardDetailResponse standardDetails = coursesApiStandardResponse.Body;
 
         ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding?.Count > 0 ?
-            standardDetails.ApprenticeshipFunding[standardDetails.ApprenticeshipFunding.Count - 1] :
+            standardDetails.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() :
         null;
 
         LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
@@ -55,9 +52,9 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 
-        CourseTrainingProviderCountModel trainingCourseCountDetails = 
+        CourseTrainingProviderCountModel trainingCourseCountDetails =
             courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ?
-                courseTrainingProvidersCountResponse.Body.Courses[0] : 
+                courseTrainingProvidersCountResponse.Body.Courses[0] :
                 null;
 
         GetCourseByLarsCodeQueryResult result = standardDetails;
@@ -67,12 +64,16 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         result.ProvidersCountWithinDistance = trainingCourseCountDetails?.ProvidersCount ?? 0;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
-
-        result.Skills = standardDetails.Ksbs.Where(a => a.Type == KsbsSkillsType).Select(a => a.Description).ToArray();
-        result.Knowledge = standardDetails.Ksbs.Where(a => a.Type == KsbsKnowledgeType).Select(a => a.Description).ToArray();
-        result.Behaviours = standardDetails.Ksbs.Where(a => a.Type == KsbsBehaviorType).Select(a => a.Description).ToArray();
-
+        result.IncentivePayment = CalculateIncentivePayment(apprenticeshipFunding);
         return result;
     }
-}
 
+    private static int CalculateIncentivePayment(ApprenticeshipFunding apprenticeshipFunding)
+    {
+        if (apprenticeshipFunding == null) return 0;
+
+        return (apprenticeshipFunding.FoundationAppFirstEmpPayment ?? 0)
+            + (apprenticeshipFunding.FoundationAppSecondEmpPayment ?? 0)
+            + (apprenticeshipFunding.FoundationAppThirdEmpPayment ?? 0);
+    }
+}

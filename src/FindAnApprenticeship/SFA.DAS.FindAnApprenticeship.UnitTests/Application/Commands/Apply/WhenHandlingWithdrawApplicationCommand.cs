@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
