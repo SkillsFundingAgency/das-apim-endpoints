@@ -100,8 +100,6 @@ public sealed class WhenGettingCourseByLarsCode
         Assert.Multiple(() =>
         {
             Assert.That(sut, Is.Not.Null);
-            Assert.That(sut.MaxFunding, Is.EqualTo(6000));
-            Assert.That(sut.TypicalDuration, Is.EqualTo(18));
             Assert.That(sut.ApprenticeshipType, Is.EqualTo(apprenticeshipType));
             Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(10));
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(20));
@@ -440,6 +438,74 @@ public sealed class WhenGettingCourseByLarsCode
         _cachedLocationLookupService.Verify(x =>
             x.GetCachedLocationInformation(query.Location, false
         ), Times.Once);
+    }
+
+    [Test, AutoData]
+    public async Task Handle_Gets_Funding_Data_From_Latest_Record(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    {
+        ApprenticeshipFunding futureFundingRecord = new()
+        {
+            MaxEmployerLevyCap = 10000,
+            Duration = 18,
+            FoundationAppFirstEmpPayment = 1000,
+            FoundationAppSecondEmpPayment = 2000,
+            FoundationAppThirdEmpPayment = 3000,
+            EffectiveFrom = DateTime.Today.AddMonths(1)
+        };
+
+        ApprenticeshipFunding activeFundingRecord = new()
+        {
+            MaxEmployerLevyCap = 5000,
+            Duration = 17,
+            FoundationAppFirstEmpPayment = 100,
+            FoundationAppSecondEmpPayment = 200,
+            FoundationAppThirdEmpPayment = 300,
+            EffectiveFrom = DateTime.Today,
+            EffectiveTo = futureFundingRecord.EffectiveFrom.AddDays(-1)
+        };
+        ApprenticeshipFunding oldFundingRecord = new()
+        {
+            MaxEmployerLevyCap = 4000,
+            Duration = 16,
+            FoundationAppFirstEmpPayment = 10,
+            FoundationAppSecondEmpPayment = 20,
+            FoundationAppThirdEmpPayment = 30,
+            EffectiveFrom = DateTime.Today.AddMonths(-10),
+            EffectiveTo = activeFundingRecord.EffectiveFrom.AddDays(-1)
+        };
+        standardDetailResponse.ApprenticeshipFunding = [activeFundingRecord, futureFundingRecord, oldFundingRecord];
+
+        _coursesApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<StandardDetailResponse>(
+                    It.Is<GetStandardDetailsByIdRequest>(a =>
+                        a.Id.Equals(query.LarsCode.ToString())
+                    )
+                )
+            )
+            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>())
+                )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    courseProvidersResponse,
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+        var sut = await _handler.Handle(query, CancellationToken.None);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut, Is.Not.Null);
+            Assert.That(sut.IncentivePayment, Is.EqualTo(6000));
+            Assert.That(sut.MaxFunding, Is.EqualTo(10000));
+            Assert.That(sut.TypicalDuration, Is.EqualTo(18));
+        });
     }
 
     [Test, AutoData]
