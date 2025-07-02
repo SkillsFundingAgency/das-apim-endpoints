@@ -9,6 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewById;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -32,6 +33,30 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Error getting application reviews");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("{id:guid}")]
+        public async Task<IActionResult> Get(
+            [FromRoute, Required] Guid id,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetApplicationReviewByIdQuery(id), token);
+
+                if (result.ApplicationReview == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting application review by id");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
