@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.SharedOuterApi.Domain;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
@@ -23,7 +24,9 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
         public string TrailBlazerContact { get; set; }
         public string TypicalJobTitles { get; set; }
         public List<string> Skills { get; set; }
+        public string ApprenticeshipType { get; set; }
         public List<KsbResponse> Ksbs { get; set; }
+        public List<RelatedOccupation> RelatedOccupations { get; set; }
         public string StandardPageUrl { get; set; }
         public string IntegratedDegree { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
