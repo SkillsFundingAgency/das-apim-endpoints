@@ -10,7 +10,7 @@ using ApplicationReview = SFA.DAS.Recruit.Domain.ApplicationReview;
 namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Queries
 {
     [TestFixture]
-    public class WhenHandingGetApplicationReviewsByVacancyReferenceCommand
+    public class WhenHandingGetApplicationReviewsByVacancyReferenceQuery
     {
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Data_Returned(
