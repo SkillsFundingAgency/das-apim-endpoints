@@ -19,7 +19,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         ILogger<ApplicationReviewsController> logger) : ControllerBase
     {
         [HttpGet]
-        [Route("{vacancyReference:long}")]
+        [Route("vacancyReference/{vacancyReference:long}")]
         public async Task<IActionResult> GetApplicationReviewsByVacancyReference(
             [FromRoute, Required] long vacancyReference,
             CancellationToken token = default)
