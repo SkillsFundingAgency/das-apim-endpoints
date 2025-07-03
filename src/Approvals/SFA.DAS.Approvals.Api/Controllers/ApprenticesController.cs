@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
@@ -214,6 +215,43 @@ public class ApprenticesController(
             logger.LogError(e, $"Error in GetApprenticeship {apprenticeshipId}");
             return BadRequest();
         }
+    }
+
+    [HttpPut]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> EditApprenticeship(long providerId, long apprenticeshipId,
+        [FromBody] EditApprenticeshipRequest request)
+    {
+        var command = new EditApprenticeshipCommand
+        {
+            ApprenticeshipId = apprenticeshipId,
+            EmployerAccountId = request.EmployerAccountId,
+            ProviderId = providerId,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            DateOfBirth = request.DateOfBirth,
+            ULN = request.ULN,
+            CourseCode = request.CourseCode,
+            Version = request.Version,
+            Option = request.Option,
+            Cost = request.Cost,
+            EmployerReference = request.EmployerReference,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            DeliveryModel = request.DeliveryModel,
+            ProviderReference = request.ProviderReference,
+            EmploymentEndDate = request.EmploymentEndDate,
+            EmploymentPrice = request.EmploymentPrice
+        };
+
+        var result = await mediator.Send(command);
+
+        return Ok(new EditApprenticeshipResponse
+        {
+            ApprenticeshipId = result.ApprenticeshipId,
+            HasOptions = result.HasOptions
+        });
     }
 
     [HttpGet]

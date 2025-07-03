@@ -43,7 +43,7 @@ public class UpdateDraftApprenticeshipCommandHandler(
             UserInfo = request.UserInfo,
             RequestingParty = request.RequestingParty,
             MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
-            MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
+            MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge
         };
 
         await commitmentsApiClient.PutWithResponseCode<NullResponse>(
