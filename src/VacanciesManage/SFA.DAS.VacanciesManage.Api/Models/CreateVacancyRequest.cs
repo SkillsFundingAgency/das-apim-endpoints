@@ -1,10 +1,11 @@
+using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
 
 namespace SFA.DAS.VacanciesManage.Api.Models
 {
@@ -38,7 +39,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                     break;
             }
             
-            return new PostVacancyRequestData
+            var postVacancy = new PostVacancyRequestData
             {
                 AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
@@ -61,9 +62,9 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 NumberOfPositions = source.NumberOfPositions,
                 OutcomeDescription = source.OutcomeDescription,
                 ProgrammeId = source.ProgrammeId,
-                Qualifications = source.Qualifications.Select(c=>(PostCreateVacancyQualificationData)c).ToList(),
+                Qualifications = new List<PostCreateVacancyQualificationData>(),
                 ShortDescription = source.ShortDescription,
-                Skills = source.Skills,
+                Skills = new List<string>(),
                 StartDate = source.StartDate,
                 ThingsToConsider = source.ThingsToConsider,
                 Title = source.Title,
@@ -71,6 +72,20 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 User = Map(source.SubmitterContactDetails, source.ContractingParties),
                 Wage = source.Wage,
             };
+
+            if (source.Type != ApprenticeshipTypes.FoundationApprenticeship)
+            {
+                if (source.Qualifications == null || !source.Qualifications.Any())
+                    throw new ArgumentException("Qualifications are required for this Type of apprenticeship.");
+
+                if (source.Skills == null || !source.Skills.Any())
+                    throw new ArgumentException("Skills are required for this Type of apprenticeship.");
+
+                postVacancy.Qualifications = source.Qualifications.Select(c => (PostCreateVacancyQualificationData)c).ToList();
+                postVacancy.Skills = source.Skills.ToList();
+            }
+
+            return postVacancy;
         }
 
         /// <summary>
@@ -194,7 +209,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// Will either be `apprenticeshipStandard` or `foundationApprenticeship`.
         /// </summary>
         [JsonPropertyName("apprenticeshipType")]
-        public string Type { get; set; }
+        public ApprenticeshipTypes Type { get; set; }
         /// <summary>
         /// Select if you do not wish your company name to be listed on the advert. This could mean fewer people view your advert.
         /// </summary>

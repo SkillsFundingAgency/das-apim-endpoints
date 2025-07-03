@@ -9,7 +9,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
     {
         public AboutYouSection AboutYou { get; set; }
         public ApplicationQuestionsSection ApplicationQuestions { get; set; }
-        public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.ApprenticeshipStandard;
         public bool IsDisabilityConfident { get; set; }
         public Candidate CandidateDetails { get; set; }
         public DateTime? MigrationDate { get; set; }

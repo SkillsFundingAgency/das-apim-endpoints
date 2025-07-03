@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -54,15 +55,17 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             var standard = standardsTask.Standards.FirstOrDefault(c =>
                 c.LarsCode.ToString() == request.PostVacancyRequestData.ProgrammeId);
 
-            if (!string.IsNullOrEmpty(standard.ApprenticeshipType)
-                && standard.ApprenticeshipType.IndexOf("Foundation", StringComparison.CurrentCultureIgnoreCase) >= 0)
-            {
-                request.PostVacancyRequestData.Skills = [];
-                request.PostVacancyRequestData.Qualifications = [];
-            }
-            else if (standard == null)
+            if (standard == null)
             {
                 throw new InvalidOperationException($"Standard with ProgrammeId '{request.PostVacancyRequestData.ProgrammeId}' not found.");
+            }
+
+            var standardApprenticeshipType = standard.ApprenticeshipType.Contains("Foundation", StringComparison.CurrentCultureIgnoreCase) ? 
+                ApprenticeshipTypes.FoundationApprenticeship : ApprenticeshipTypes.ApprenticeshipStandard;
+
+            if(request.PostVacancyRequestData.Type != standardApprenticeshipType)
+            {
+                throw new ArgumentException($"Apprenticeship Type does not match the definition for ProgrammeId '{request.PostVacancyRequestData.ProgrammeId}'");
             }
 
             IPostApiRequest apiRequest;

@@ -5,6 +5,8 @@ using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using System;
+using System.Collections.Generic;
 using WageType = SFA.DAS.VacanciesManage.Api.Models.WageType;
 
 namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
@@ -111,6 +113,79 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             actual.Address.Should().BeNull();
             actual.Addresses.Should().BeNull();
             actual.EmployerLocationOption.Should().Be(AvailableWhere.AcrossEngland);
+        }
+
+        [Test, AutoData]
+        public void Then_Skills_And_Qualifications_Can_Be_Empty_For_Foundation_Apprenticeships(CreateVacancyRequest source)
+        {
+            // arrange
+            source.Type = ApprenticeshipTypes.FoundationApprenticeship;
+            source.Skills = new List<string>();
+            source.Qualifications = new List<CreateVacancyQualification>();
+
+            // act
+            var actual = (PostVacancyRequestData)source;
+
+            // assert
+            actual.Should().BeEquivalentTo(source, WithCorrectiveMapping);
+            actual.Skills.Should().BeEmpty();
+            actual.Qualifications.Should().BeEmpty();
+        }
+
+        [Test, AutoData]
+        public void Then_Throws_When_Skills_Are_Not_Provided_For_Non_Foundation_Apprenticeships(CreateVacancyRequest source)
+        {
+            // arrange
+            source.Type = ApprenticeshipTypes.ApprenticeshipStandard; // Non-Foundation type
+            source.Skills = new List<string>();
+            source.Qualifications = new List<CreateVacancyQualification>
+            {
+                new CreateVacancyQualification { QualificationType = "GCSE", Subject = "Maths", Grade = "A", Weighting = Api.Models.QualificationWeighting.Essential }
+            };
+
+            // act
+            Action act = () => _ = (PostVacancyRequestData)source;
+
+            // assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Skills are required for this Type of apprenticeship.");
+        }
+
+        [Test, AutoData]
+        public void Then_Throws_When_Qualifications_Are_Null_For_Non_Foundation_Apprenticeships(CreateVacancyRequest source)
+        {
+            // arrange
+            source.Type = ApprenticeshipTypes.ApprenticeshipStandard; // Non-Foundation type
+            source.Skills = new List<string> { "Teamwork" };
+            source.Qualifications = null;
+
+            // act
+            Action act = () => _ = (PostVacancyRequestData)source;
+
+            // assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Qualifications are required for this Type of apprenticeship.");
+        }
+
+        [Test, AutoData]
+        public void Then_Skills_And_Qualifications_Are_Mapped_For_Non_Foundation_Apprenticeships(CreateVacancyRequest source)
+        {
+            // arrange
+            source.Type = ApprenticeshipTypes.ApprenticeshipStandard; // Non-Foundation type
+            source.Skills = new List<string> { "Teamwork", "Communication" };
+            source.Qualifications = new List<CreateVacancyQualification>
+            {
+                new CreateVacancyQualification { QualificationType = "GCSE", Subject = "Maths", Grade = "A", Weighting = Api.Models.QualificationWeighting.Essential }
+            };
+
+            // act
+            var actual = (PostVacancyRequestData)source;
+
+            // assert
+            actual.Should().BeEquivalentTo(source, WithCorrectiveMapping);
+            actual.Skills.Should().BeEquivalentTo(source.Skills);
+            actual.Qualifications.Should().BeEquivalentTo(source.Qualifications, options => options
+                .ComparingByMembers<PostCreateVacancyQualificationData>());
         }
     }
 }

@@ -49,7 +49,7 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         [JsonPropertyName("anonymousReason")]
         public string AnonymousReason { get ; set ; }
         [JsonPropertyName("apprenticeshipType")]
-        public string Type { get; set; }
+        public ApprenticeshipTypes Type { get; set; }
         [JsonPropertyName("qualifications")]
         public List<PostCreateVacancyQualificationData> Qualifications { get; set; }
         [JsonPropertyName("applicationInstructions")]
