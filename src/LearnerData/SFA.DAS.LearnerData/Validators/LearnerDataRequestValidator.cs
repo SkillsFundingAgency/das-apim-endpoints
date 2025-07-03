@@ -1,6 +1,5 @@
 ﻿using FluentValidation;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.AcademicYearService;
 
 namespace SFA.DAS.LearnerData.Validators;
 
@@ -8,8 +7,9 @@ public class LearnerDataRequestValidator : AbstractValidator<LearnerDataRequest>
 {
     public LearnerDataRequestValidator(long providerId, int academicYear)
     {
-        RuleFor(model => model.StartDate).Must(startdate => startdate.IsInAcademicYear(academicYear))
-            .WithMessage(model => $"Learner data contains a StartDate {model.StartDate} that is not in the academic year {academicYear}");
+        // Commenting until agreed move forwards: https://skillsfundingagency.atlassian.net/browse/APPMAN-1697
+        // RuleFor(model => model.StartDate).Must(startdate => startdate.IsInAcademicYear(academicYear))
+        //     .WithMessage(model => $"Learner data contains a StartDate {model.StartDate} that is not in the academic year {academicYear}");
 
         RuleFor(model => model.ULN).Must(uln => uln > 1000000000 || uln > 9999999999)
             .WithMessage(model => $"Learner data contains incorrect ULN {model.ULN}");

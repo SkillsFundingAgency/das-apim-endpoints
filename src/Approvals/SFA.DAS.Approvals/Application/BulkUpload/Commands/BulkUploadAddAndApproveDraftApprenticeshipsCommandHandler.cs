@@ -12,19 +12,13 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {
-    public class BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler : IRequestHandler<BulkUploadAddAndApproveDraftApprenticeshipsCommand, BulkUploadAddAndApproveDraftApprenticeshipsResult>
+    public class BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler(
+        ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
+        IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
+        IMediator mediator)
+        : IRequestHandler<BulkUploadAddAndApproveDraftApprenticeshipsCommand,
+            BulkUploadAddAndApproveDraftApprenticeshipsResult>
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IReservationApiClient<ReservationApiConfiguration> _reservationApiClient;
-        private readonly IMediator _mediator;
-
-        public BulkUploadAddAndApproveDraftApprenticeshipsCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IReservationApiClient<ReservationApiConfiguration> reservationApiClient, IMediator mediator)
-        {
-            _apiClient = apiClient;
-            _reservationApiClient = reservationApiClient;
-            _mediator = mediator;
-        }
-
         public async Task<BulkUploadAddAndApproveDraftApprenticeshipsResult> Handle(BulkUploadAddAndApproveDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
         {
             await Validate(command, cancellationToken);
@@ -39,7 +33,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                 UserInfo = command.UserInfo
             };
 
-            var result = await _apiClient.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(
+            var result = await apiClient.PostWithResponseCode<BulkUploadAddAndApproveDraftApprenticeshipsResponse>(
                 new PostAddAndApproveDraftApprenticeshipsRequest(command.ProviderId, dataToSend));
 
             result.EnsureSuccessStatusCode();
@@ -59,7 +53,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                 UserInfo = command.UserInfo
             };
 
-            await _mediator.Send(validateCmd, cancellationToken);
+            await mediator.Send(validateCmd, cancellationToken);
         }
 
         private void MergeReservationWithDraftApprenticeships(IEnumerable<BulkUploadAddDraftApprenticeshipRequest> bulkUploadAddDraftApprenticeships, ApiResponse<BulkCreateReservationsWithNonLevyResult> reservationResult)
@@ -77,7 +71,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
                 return result;
             }).ToList();
 
-            var reservationResult = await _reservationApiClient.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(new PostBulkCreateReservationRequest(command.ProviderId, reservationRequests));
+            var reservationResult = await reservationApiClient.PostWithResponseCode<BulkCreateReservationsWithNonLevyResult>(new PostBulkCreateReservationRequest(command.ProviderId, reservationRequests));
             reservationResult.EnsureSuccessStatusCode();
             return reservationResult;
         }

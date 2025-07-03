@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Azure.Amqp.Framing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.SelectDirectTransferConnection.Queries;

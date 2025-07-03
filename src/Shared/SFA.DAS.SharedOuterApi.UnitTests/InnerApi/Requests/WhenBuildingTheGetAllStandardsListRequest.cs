@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
@@ -44,5 +45,16 @@ public class WhenBuildingTheGetAllStandardsListRequest
         };
 
         Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?routeIds=1&routeIds=2&filter=Active&orderby=Score"));
+    }
+
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed_With_ApprenticeshipType(ApprenticeshipType type)
+    {
+        var _sut = new GetActiveStandardsListRequest
+        {
+            ApprenticeshipType = type.ToString()
+        };
+
+        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/standards?apprenticeshipType={type.ToString()}&filter=Active&orderby=Score"));
     }
 }
