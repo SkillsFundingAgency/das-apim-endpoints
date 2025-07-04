@@ -33,7 +33,9 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         public string ApplicationUrl { get; set; }
         /// <summary>
-        /// If the apprenticeship is available at more than one location, there will be up to 9 otherAddresses. The API will also give you separate vacancies where each location is the set address and location with a corresponding distance.
+        /// The address of where the apprentice will work.
+        /// If the address is available at more than one location, you'll get an address and otherAddresses.If you included a lat and long when requesting, these will be returned in order of distance.
+        /// If isNationalVacancy is true, there will be no address provided. 
         /// </summary>
         public List<GetVacancyAddressItem> Addresses { get; set; }
 
@@ -44,6 +46,10 @@ namespace SFA.DAS.Vacancies.Api.Models
 
         public static implicit operator GetVacanciesListResponseItemV2(GetVacanciesListItem source)
         {
+            var isRecruitNationally = source.VacancyLocationType != null &&
+                                      source.VacancyLocationType.Equals("National",
+                                          StringComparison.CurrentCultureIgnoreCase);
+
             return new GetVacanciesListResponseItemV2
             {
                 ClosingDate = source.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
@@ -51,7 +57,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 HoursPerWeek = source.HoursPerWeek,
                 IsDisabilityConfident = source.IsDisabilityConfident,
-                IsNationalVacancy = source.VacancyLocationType != null && source.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase),
+                IsNationalVacancy = isRecruitNationally,
+                IsNationalVacancyDetails = isRecruitNationally ? source.EmploymentLocationInformation : string.Empty,
                 NumberOfPositions = source.NumberOfPositions,
                 PostedDate = source.PostedDate,
                 ProviderName = source.ProviderName,

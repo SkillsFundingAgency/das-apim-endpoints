@@ -135,7 +135,10 @@ public class GetVacanciesListItem
         
     [JsonPropertyName("otherAddresses")]
     public List<Address>? OtherAddresses { get; set; }
-        
+
+    [JsonPropertyName("employmentLocationInformation")]
+    public string EmploymentLocationInformation { get; set; }
+
     [JsonPropertyName("distance")]
     public decimal? Distance { get; set; }
         

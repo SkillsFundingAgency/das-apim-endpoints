@@ -39,6 +39,11 @@ namespace SFA.DAS.Vacancies.Api.Models
             {
                 return null;
             }
+
+            var isRecruitNationally = source.Vacancy.VacancyLocationType != null &&
+                                      source.Vacancy.VacancyLocationType.Equals("National",
+                                          StringComparison.CurrentCultureIgnoreCase);
+
             return new GetVacancyResponse
             {
                 AdditionalTrainingDescription = source.Vacancy.AdditionalTrainingDescription,
@@ -59,7 +64,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 FullDescription = source.Vacancy.LongDescription,
                 HoursPerWeek = source.Vacancy.HoursPerWeek,
                 IsDisabilityConfident = source.Vacancy.IsDisabilityConfident,
-                IsNationalVacancy = source.Vacancy.VacancyLocationType?.Equals("National", StringComparison.CurrentCultureIgnoreCase) ?? false,
+                IsNationalVacancy = isRecruitNationally,
+                IsNationalVacancyDetails = isRecruitNationally ? source.Vacancy.EmploymentLocationInformation : string.Empty,
                 Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation { Lat = source.Vacancy.Location.Lat, Lon = source.Vacancy.Location.Lon } : null,
                 NumberOfPositions = source.Vacancy.NumberOfPositions,
                 OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
