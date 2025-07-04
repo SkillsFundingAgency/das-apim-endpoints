@@ -63,7 +63,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             var standardApprenticeshipType = standard.ApprenticeshipType.Contains("Foundation", StringComparison.CurrentCultureIgnoreCase) ? 
                 ApprenticeshipTypes.FoundationApprenticeship : ApprenticeshipTypes.ApprenticeshipStandard;
 
-            if(request.PostVacancyRequestData.Type != standardApprenticeshipType)
+            if(request.PostVacancyRequestData.ApprenticeshipType != standardApprenticeshipType)
             {
                 throw new ArgumentException($"Apprenticeship Type does not match the definition for ProgrammeId '{request.PostVacancyRequestData.ProgrammeId}'");
             }

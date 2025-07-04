@@ -50,6 +50,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 ApplicationInstructions = source.ApplicationInstructions,
                 ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
                 ApplicationUrl = source.ApplicationUrl,
+                ApprenticeshipType = source.ApprenticeshipType,
                 ClosingDate = source.ClosingDate,
                 Description = source.Description,
                 DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
@@ -73,7 +74,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 Wage = source.Wage,
             };
 
-            if (source.Type != ApprenticeshipTypes.FoundationApprenticeship)
+            if (source.ApprenticeshipType != ApprenticeshipTypes.FoundationApprenticeship)
             {
                 if (source.Qualifications == null || !source.Qualifications.Any())
                     throw new ArgumentException("Qualifications are required for this Type of apprenticeship.");
@@ -209,7 +210,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// Will either be `apprenticeshipStandard` or `foundationApprenticeship`.
         /// </summary>
         [JsonPropertyName("apprenticeshipType")]
-        public ApprenticeshipTypes Type { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
         /// <summary>
         /// Select if you do not wish your company name to be listed on the advert. This could mean fewer people view your advert.
         /// </summary>
