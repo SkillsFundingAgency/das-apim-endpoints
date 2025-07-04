@@ -5,6 +5,6 @@ namespace SFA.DAS.SharedOuterApi.Domain;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ApprenticeshipTypes
 {
-    Standard,
-    Foundation,
+    ApprenticeshipStandard,
+    FoundationApprenticeship,
 }
