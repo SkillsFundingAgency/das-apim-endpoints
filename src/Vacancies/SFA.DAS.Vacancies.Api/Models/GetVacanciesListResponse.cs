@@ -134,9 +134,19 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// If the apprenticeship is available to applicants across the entirety of England. For example, if the apprenticeship is available in many locations across England, remote working or provides live-in accommodation. When isNationalVacancy is true, there will be no address. When true, there will be isNationalVacancyDetails.
         /// </summary>
         public bool IsNationalVacancy { get; set; }
-        
+
+        /// <summary>
+        /// Only provided when isNationalVacancy is true. Includes details about why an apprenticeship is recruiting nationally and where an apprentice will work. 
+        /// </summary>
+        [MaxLength(500)]
+        public string IsNationalVacancyDetails { get; set; }
+
         public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
         {
+            var isRecruitNationally = source.VacancyLocationType != null &&
+                                      source.VacancyLocationType.Equals("National",
+                                          StringComparison.CurrentCultureIgnoreCase);
+
             return new GetVacanciesListResponseItem
             {
                 ClosingDate = source.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
@@ -144,7 +154,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 HoursPerWeek = source.HoursPerWeek,
                 IsDisabilityConfident = source.IsDisabilityConfident,
-                IsNationalVacancy = source.VacancyLocationType != null && source.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase),
+                IsNationalVacancy = isRecruitNationally,
+                IsNationalVacancyDetails = isRecruitNationally ? source.EmploymentLocationInformation : string.Empty,
                 NumberOfPositions = source.NumberOfPositions,
                 PostedDate = source.PostedDate,
                 ProviderName = source.ProviderName,
