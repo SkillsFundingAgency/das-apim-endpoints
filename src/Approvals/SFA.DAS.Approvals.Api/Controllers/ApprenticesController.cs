@@ -219,13 +219,14 @@ public class ApprenticesController(
 
     [HttpPut]
     [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
-    public async Task<IActionResult> EditApprenticeship(long providerId, long apprenticeshipId,
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> EditApprenticeship(long? providerId, long? accountId, long apprenticeshipId,
         [FromBody] EditApprenticeshipRequest request)
     {
         var command = new EditApprenticeshipCommand
         {
             ApprenticeshipId = apprenticeshipId,
-            EmployerAccountId = request.EmployerAccountId,
+            EmployerAccountId = request.EmployerAccountId ?? accountId,
             ProviderId = providerId,
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -250,7 +251,9 @@ public class ApprenticesController(
         return Ok(new EditApprenticeshipResponse
         {
             ApprenticeshipId = result.ApprenticeshipId,
-            HasOptions = result.HasOptions
+            HasOptions = result.HasOptions,
+            Version = result.Version,
+            CourseOrStartDateChange =  result.CourseOrStartDateChanged
         });
     }
 

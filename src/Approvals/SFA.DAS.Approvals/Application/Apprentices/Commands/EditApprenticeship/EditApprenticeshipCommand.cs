@@ -7,7 +7,7 @@ public class EditApprenticeshipCommand : IRequest<EditApprenticeshipResult>
 {
     public long ApprenticeshipId { get; set; }
     public long? EmployerAccountId { get; set; }
-    public long ProviderId { get; set; }
+    public long? ProviderId { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public decimal? Cost { get; set; }
@@ -24,4 +24,7 @@ public class EditApprenticeshipCommand : IRequest<EditApprenticeshipResult>
     public string Version { get; set; }
     public string Option { get; set; }
     public int? EmploymentPrice { get; set; }
+    
+    public bool IsProviderContext => ProviderId.HasValue;
+    public bool IsEmployerContext => EmployerAccountId.HasValue && !ProviderId.HasValue;
 }

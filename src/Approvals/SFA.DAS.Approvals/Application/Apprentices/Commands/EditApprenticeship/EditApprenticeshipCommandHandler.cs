@@ -93,7 +93,9 @@ public class EditApprenticeshipCommandHandler(
         return new EditApprenticeshipResult
         {
             ApprenticeshipId = command.ApprenticeshipId,
-            HasOptions = hasOptions
+            HasOptions = hasOptions,
+            Version = versionToValidate,
+            CourseOrStartDateChanged = triggerCalculate
         };
     }
 }
