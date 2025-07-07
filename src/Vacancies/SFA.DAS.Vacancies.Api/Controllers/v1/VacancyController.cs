@@ -18,6 +18,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers.v1;
 
 [ApiController]
 [ApiVersion("1", Deprecated = true)]
+[Obsolete("This endpoint is deprecated, use v2 instead")]
 public class VacancyController(IMediator mediator, ILogger<VacancyController> logger, IMetrics metrics)
     : ControllerBase
 {
