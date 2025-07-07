@@ -11,12 +11,12 @@ public class LearnerDataRequestValidator : AbstractValidator<LearnerDataRequest>
         // RuleFor(model => model.StartDate).Must(startdate => startdate.IsInAcademicYear(academicYear))
         //     .WithMessage(model => $"Learner data contains a StartDate {model.StartDate} that is not in the academic year {academicYear}");
 
-        RuleFor(model => model.ULN).Must(uln => uln > 1000000000 || uln > 9999999999)
+        RuleFor(model => model.ULN).Must(uln => uln is > 1000000000 or > 9999999999)
             .WithMessage(model => $"Learner data contains incorrect ULN {model.ULN}");
 
         RuleFor(model => model.UKPRN).Must(ukprn => providerId == ukprn)
             .WithMessage($"Learner data contains different UKPRN to {providerId}");
-        RuleFor(model => model.UKPRN).Must(ukprn => ukprn > 10000000 && ukprn < 9999999999)
+        RuleFor(model => model.UKPRN).Must(ukprn => ukprn is > 10000000 and < 9999999999)
             .WithMessage(model => $"Learner data contains incorrect UKPRN {model.UKPRN}");
 
         RuleFor(model => model.EpaoPrice).GreaterThanOrEqualTo(0)
