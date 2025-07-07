@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -17,7 +18,8 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
     public class BulkUploadAddDraftApprenticeshipsCommandHandler(
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
         IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
-        IMediator mediator)
+        IMediator mediator,
+        IAddCourseTypeDataToCsvService courseTypesToCsvService = null)
         : IRequestHandler<BulkUploadAddDraftApprenticeshipsCommand, GetBulkUploadAddDraftApprenticeshipsResult>
     {
         public async Task<GetBulkUploadAddDraftApprenticeshipsResult> Handle(BulkUploadAddDraftApprenticeshipsCommand command, CancellationToken cancellationToken)
@@ -28,7 +30,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 
             var dataToSend = new BulkUploadAddDraftApprenticeshipsRequest
             {
-                BulkUploadDraftApprenticeships = command.BulkUploadAddDraftApprenticeships,
+                BulkUploadDraftApprenticeships = await courseTypesToCsvService.MapAndAddCourseTypeData(command.BulkUploadAddDraftApprenticeships.ToList()),
                 ProviderId = command.ProviderId,
                 LogId = command.FileUploadLogId,
                 UserInfo = command.UserInfo
