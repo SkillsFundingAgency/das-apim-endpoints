@@ -31,10 +31,29 @@ public class LearnerDataRequestValidator : AbstractValidator<LearnerDataRequest>
         RuleFor(model => model.StandardCode).GreaterThanOrEqualTo(0)
             .WithMessage(model => $"Learner data contains a negative StandardCode {model.StandardCode}");
 
-        RuleFor(model => model.ConsumerReference).MaximumLength(100);
+        RuleFor(model => model.ConsumerReference)
+            .MaximumLength(100)
+            .WithMessage("ConsumerReference cannot be more then 100 characters long");
 
-        RuleFor(model => model.FirstName).NotEmpty();
-        RuleFor(model => model.LastName).NotEmpty();
-        RuleFor(model => model.LearnerEmail).EmailAddress().When(model=> model.LearnerEmail != null);
+        RuleFor(model => model.FirstName)
+            .NotEmpty()
+            .WithMessage("FirstName is required")
+            .MaximumLength(100)
+            .WithMessage("FirstName cannot be more then 100 characters long");
+
+        RuleFor(model => model.LastName)
+            .NotEmpty()
+            .WithMessage("LastName is required")
+            .MaximumLength(100)
+            .WithMessage("LastName cannot be more then 100 characters long");
+
+        RuleFor(model => model.LearnerEmail)
+            .MaximumLength(200)
+            .WithMessage("Email cannot be more then 200 characters long")
+            .EmailAddress().When(model => !string.IsNullOrEmpty(model.LearnerEmail));
+
+        RuleFor(model => model.AgreementId)
+            .MaximumLength(20)
+            .WithMessage("AgreementId cannot be more then 20 characters long");
     }
 }
