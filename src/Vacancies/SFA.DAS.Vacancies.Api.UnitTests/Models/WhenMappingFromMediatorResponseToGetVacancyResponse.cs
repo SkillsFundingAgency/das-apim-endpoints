@@ -12,6 +12,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
     public class WhenMappingFromMediatorResponseToGetVacancyResponse
     {
         [Test, AutoData]
+
         public void Then_The_Fields_Are_Mapped(GetVacancyQueryResult source, int ukprn)
         {
             source.Vacancy.Ukprn = ukprn.ToString();
@@ -51,6 +52,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.VacancyReference)
                 .Excluding(item => item.VacancySource)
                 .Excluding(item => item.ApplicationUrl)
+                .Excluding(item => item.EmploymentLocationInformation)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -67,6 +69,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.Ukprn.Should().Be(ukprn);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
             actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
+            actual.IsNationalVacancy.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase));
+            actual.IsNationalVacancyDetails.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase) ? source.Vacancy.EmploymentLocationInformation : string.Empty);
         }
 
         [Test, AutoData]
@@ -87,10 +91,13 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.ClosingDate)
                 .Excluding(item => item.VacancyReference)
+                .Excluding(item => item.EmploymentLocationInformation)
             );
             actual.EmployerName.Should().Be(source.Vacancy.AnonymousEmployerName);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
             actual.Location.Should().BeNull();
+            actual.IsNationalVacancy.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase));
+            actual.IsNationalVacancyDetails.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase) ? source.Vacancy.EmploymentLocationInformation : string.Empty);
         }
 
         [Test, AutoData]
