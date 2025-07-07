@@ -26,6 +26,8 @@ public class WhenValidatingBulkUpload
         [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
         [Frozen] Mock<IProviderStandardsService> providerStandardsService,
         [Frozen] Mock<IBulkCourseMetadataService> bulkCourseMetadataService,
+        [Frozen] Mock<IAddCourseTypeDataToCsvService> addCourseTypeDataToCsvService,
+        List<BulkUploadAddDraftApprenticeshipExtendedRequest> csvRecordsExtendedRequests,
         ValidateBulkUploadRecordsCommandHandler handler
     )
     {
@@ -34,6 +36,7 @@ public class WhenValidatingBulkUpload
         var reservationValidationResult = new BulkReservationValidationResults();
         var reservationApiResponse = new ApiResponse<BulkReservationValidationResults>(reservationValidationResult, System.Net.HttpStatusCode.OK, "");
         reservationApiClient.Setup(x => x.PostWithResponseCode<BulkReservationValidationResults>(It.IsAny<PostValidateReservationRequest>(), true)).ReturnsAsync(() => reservationApiResponse);
+        addCourseTypeDataToCsvService.Setup(x => x.MapAndAddCourseTypeData(query.CsvRecords)).ReturnsAsync(csvRecordsExtendedRequests);
 
         var providerStandardsData = new ProviderStandardsData();
         providerStandardsService.Setup(x => x.GetStandardsData(query.ProviderId)).ReturnsAsync(providerStandardsData);
@@ -50,6 +53,7 @@ public class WhenValidatingBulkUpload
         bulkCourseMetadataService.Verify(x => x.GetOtjTrainingHoursForBulkUploadAsync(It.IsAny<IEnumerable<string>>()), Times.Once);
             
         apiClient.Verify(x => x.PostWithResponseCode<object>(It.Is<PostValidateBulkUploadRequest>(r => 
-            ((BulkUploadValidateApiRequest)r.Data).OtjTrainingHours == otjTrainingHours), true), Times.Once);
+            ((BulkUploadValidateApiRequest)r.Data).OtjTrainingHours == otjTrainingHours &&
+            ((BulkUploadValidateApiRequest)r.Data).CsvRecords == csvRecordsExtendedRequests), true), Times.Once);
     }
 }

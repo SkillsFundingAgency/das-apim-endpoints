@@ -8,7 +8,7 @@ public class BulkUploadValidateApiRequest : SaveDataRequest
 {
     public long ProviderId { get; set; }
     public long? LogId { get; set; }
-    public IEnumerable<BulkUploadAddDraftApprenticeshipRequest> CsvRecords { get; set; }
+    public IEnumerable<BulkUploadAddDraftApprenticeshipExtendedRequest> CsvRecords { get; set; }
     public BulkReservationValidationResults BulkReservationValidationResults { get; set; }
     public ProviderStandardsData ProviderStandardsData { get; set; }
     public Dictionary<string, int?> OtjTrainingHours { get; set; }
