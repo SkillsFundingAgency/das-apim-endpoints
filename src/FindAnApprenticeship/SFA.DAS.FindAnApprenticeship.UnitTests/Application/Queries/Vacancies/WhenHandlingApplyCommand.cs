@@ -27,7 +27,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
             var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
             { CandidateId = query.CandidateId };
             var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.TrimVacancyReference(), expectedPutData);
-            faaApiResponse.ApprenticeshipType = ApprenticeshipTypes.FoundationApprenticeship;
+            faaApiResponse.ApprenticeshipType = ApprenticeshipTypes.Foundation;
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
             faaApiResponse.IsDisabilityConfident = true;

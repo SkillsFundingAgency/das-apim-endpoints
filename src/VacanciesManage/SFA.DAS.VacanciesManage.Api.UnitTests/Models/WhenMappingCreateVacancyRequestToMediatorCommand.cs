@@ -119,7 +119,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
         public void Then_Skills_And_Qualifications_Can_Be_Empty_For_Foundation_Apprenticeships(CreateVacancyRequest source)
         {
             // arrange
-            source.ApprenticeshipType = ApprenticeshipTypes.FoundationApprenticeship;
+            source.ApprenticeshipType = ApprenticeshipTypes.Foundation;
             source.Skills = new List<string>();
             source.Qualifications = new List<CreateVacancyQualification>();
 
@@ -136,7 +136,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
         public void Then_Throws_When_Skills_Are_Not_Provided_For_Non_Foundation_Apprenticeships(CreateVacancyRequest source)
         {
             // arrange
-            source.ApprenticeshipType = ApprenticeshipTypes.ApprenticeshipStandard; // Non-Foundation type
+            source.ApprenticeshipType = ApprenticeshipTypes.Standard; // Non-Foundation type
             source.Skills = new List<string>();
             source.Qualifications = new List<CreateVacancyQualification>
             {
@@ -155,7 +155,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
         public void Then_Throws_When_Qualifications_Are_Null_For_Non_Foundation_Apprenticeships(CreateVacancyRequest source)
         {
             // arrange
-            source.ApprenticeshipType = ApprenticeshipTypes.ApprenticeshipStandard; // Non-Foundation type
+            source.ApprenticeshipType = ApprenticeshipTypes.Standard; // Non-Foundation type
             source.Skills = new List<string> { "Teamwork" };
             source.Qualifications = null;
 
@@ -171,7 +171,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
         public void Then_Skills_And_Qualifications_Are_Mapped_For_Non_Foundation_Apprenticeships(CreateVacancyRequest source)
         {
             // arrange
-            source.ApprenticeshipType = ApprenticeshipTypes.ApprenticeshipStandard; // Non-Foundation type
+            source.ApprenticeshipType = ApprenticeshipTypes.Standard; // Non-Foundation type
             source.Skills = new List<string> { "Teamwork", "Communication" };
             source.Qualifications = new List<CreateVacancyQualification>
             {

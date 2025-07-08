@@ -18,7 +18,7 @@ public class GetWithdrawnApplicationApiResponse
     public List<Address>? OtherAddresses { get; set; } = [];
     public string? EmploymentLocationInformation { get; set; }
     public AvailableWhere? EmployerLocationOption { get; set; }
-    public ApprenticeshipTypes ApprenticeshipType { get; set; } = ApprenticeshipTypes.ApprenticeshipStandard;
+    public ApprenticeshipTypes ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
 
     public static implicit operator GetWithdrawnApplicationApiResponse(WithdrawApplicationQueryResult source)
     {
@@ -34,7 +34,7 @@ public class GetWithdrawnApplicationApiResponse
             OtherAddresses = source.OtherAddresses,
             EmployerLocationOption = source.EmployerLocationOption,
             EmploymentLocationInformation = source.EmploymentLocationInformation,
-            ApprenticeshipType = source.ApprenticeshipType ?? ApprenticeshipTypes.ApprenticeshipStandard
+            ApprenticeshipType = source.ApprenticeshipType ?? ApprenticeshipTypes.Standard
         };
     }
 }

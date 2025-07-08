@@ -74,7 +74,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 Wage = source.Wage,
             };
 
-            if (source.ApprenticeshipType != ApprenticeshipTypes.FoundationApprenticeship)
+            if (source.ApprenticeshipType != ApprenticeshipTypes.Foundation)
             {
                 if (source.Qualifications == null || !source.Qualifications.Any())
                     throw new ArgumentException("Qualifications are required for this Type of apprenticeship.");

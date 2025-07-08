@@ -61,7 +61,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             }
 
             var standardApprenticeshipType = standard.ApprenticeshipType.Contains("Foundation", StringComparison.CurrentCultureIgnoreCase) ? 
-                ApprenticeshipTypes.FoundationApprenticeship : ApprenticeshipTypes.ApprenticeshipStandard;
+                ApprenticeshipTypes.Foundation : ApprenticeshipTypes.Standard;
 
             if(request.PostVacancyRequestData.ApprenticeshipType != standardApprenticeshipType)
             {
