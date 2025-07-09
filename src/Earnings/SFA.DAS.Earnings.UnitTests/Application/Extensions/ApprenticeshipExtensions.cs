@@ -19,6 +19,18 @@ public static class ApprenticeshipExtensions
     {
         var qualifyingPeriod = SharedOuterApi.Common.Constants.QualifyingPeriod;
 
+        EpisodePrice? nextPriceEpisode = null;
+        if(withdrawalDate == WithdrawalDate.AfterNextPriceEpisodeStart || withdrawalDate == WithdrawalDate.BeforeNextPriceEpisodeStart)
+        {
+            nextPriceEpisode = apprenticeship.Episodes
+                .SelectMany(e => e.Prices)
+                .OrderBy(p => p.StartDate)
+                .ElementAtOrDefault(1);
+
+            if (nextPriceEpisode == null)
+                throw new InvalidOperationException($"No next price episode found, this is required when setting a withdrawl date for {withdrawalDate}");
+        }
+
         switch (withdrawalDate)
         {
             case WithdrawalDate.None:
@@ -29,6 +41,14 @@ public static class ApprenticeshipExtensions
                 break;
             case WithdrawalDate.AfterQualifyingPeriod:
                 apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod + 1);
+                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                break;
+            case WithdrawalDate.BeforeNextPriceEpisodeStart:
+                apprenticeship.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(-5);
+                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                break;
+            case WithdrawalDate.AfterNextPriceEpisodeStart:
+                apprenticeship.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(5);
                 apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
                 break;
             default:
