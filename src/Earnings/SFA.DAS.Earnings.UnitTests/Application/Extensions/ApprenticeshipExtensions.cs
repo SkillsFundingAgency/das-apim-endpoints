@@ -15,7 +15,7 @@ public static class ApprenticeshipExtensions
         return price?.Key ?? Guid.Empty;
     }
 
-    public static void SetWithdrawalDate(this Apprenticeship apprenticeship, WithdrawalDate withdrawalDate)
+    public static DateTime? SetWithdrawalDate(this Apprenticeship apprenticeship, WithdrawalDate withdrawalDate)
     {
         var qualifyingPeriod = SharedOuterApi.Common.Constants.QualifyingPeriod;
 
@@ -25,12 +25,16 @@ public static class ApprenticeshipExtensions
                 break;
             case WithdrawalDate.DuringQualifyingPeriod:
                 apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod - 1);
+                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
                 break;
             case WithdrawalDate.AfterQualifyingPeriod:
                 apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod + 1);
+                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
                 break;
             default:
                 throw new InvalidEnumArgumentException();
         }
+
+        return apprenticeship.WithdrawnDate;
     }
 }

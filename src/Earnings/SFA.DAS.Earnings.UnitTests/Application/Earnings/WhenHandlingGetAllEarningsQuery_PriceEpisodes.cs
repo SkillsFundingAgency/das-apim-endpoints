@@ -625,4 +625,33 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             }
         }
     }
+
+    [TestCase(WithdrawalDate.None)]
+    [TestCase(WithdrawalDate.AfterQualifyingPeriod)]
+    [TestCase(WithdrawalDate.DuringQualifyingPeriod)]
+    public async Task ThenPriceEpisodeActualEndDateMatchesExpectations(WithdrawalDate withdrawalDate)
+    {
+        // Arrange
+        var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.SimpleApprenticeship);
+        testFixture.ApprenticeshipsResponse.Apprenticeships.First().SetWithdrawalDate(withdrawalDate);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        testFixture.Result.Should().NotBeNull();
+
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(testFixture.ApprenticeshipsResponse.Apprenticeships.First().Uln));
+
+        var expectedPriceEpisodesSplitByAcademicYear =
+            testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(testFixture.ApprenticeshipsResponse.Apprenticeships.First().Episodes).ToList();
+
+        var episodePrice = expectedPriceEpisodesSplitByAcademicYear.First().Price;
+
+        var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+            x.PriceEpisodeValues.EpisodeStartDate == episodePrice.StartDate);
+
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().Be(episodePrice.EndDate);
+    }
 }
