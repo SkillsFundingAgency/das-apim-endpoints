@@ -1,6 +1,6 @@
-﻿using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.FindAnApprenticeship.Services;
+﻿using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 

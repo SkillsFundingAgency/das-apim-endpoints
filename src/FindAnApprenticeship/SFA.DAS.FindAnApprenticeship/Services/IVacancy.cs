@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Services;
@@ -26,4 +27,5 @@ public interface IVacancy
     public List<Address>? OtherAddresses { get; } 
     public string? EmploymentLocationInformation { get; }
     public AvailableWhere? EmployerLocationOption { get; }
+    public ApprenticeshipTypes ApprenticeshipType { get; }
 }
