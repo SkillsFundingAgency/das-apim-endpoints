@@ -13,7 +13,6 @@ namespace SFA.DAS.SharedOuterApi.Models
         public string Title { get; set; }
         public int Level { get; set; }
         public string Route { get; set; }
-        public string ApprenticeshipType { get; set; }
         public IEnumerable<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
 
         public static explicit operator Standard(InnerApi.Responses.Courses.StandardDetailResponse source)
@@ -28,7 +27,6 @@ namespace SFA.DAS.SharedOuterApi.Models
                 Title = source.Title,
                 Level = source.Level,
                 Route = source.Route,
-                ApprenticeshipType = source.ApprenticeshipType,
                 ApprenticeshipFunding = source.ApprenticeshipFunding
             };
         }

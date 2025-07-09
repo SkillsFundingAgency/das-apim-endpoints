@@ -39,7 +39,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                     break;
             }
             
-            var postVacancy = new PostVacancyRequestData
+            return new PostVacancyRequestData
             {
                 AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
                 AdditionalQuestion1 = source.AdditionalQuestion1,
@@ -72,8 +72,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 User = Map(source.SubmitterContactDetails, source.ContractingParties),
                 Wage = source.Wage,
             };
-
-            return postVacancy;
         }
 
         /// <summary>
