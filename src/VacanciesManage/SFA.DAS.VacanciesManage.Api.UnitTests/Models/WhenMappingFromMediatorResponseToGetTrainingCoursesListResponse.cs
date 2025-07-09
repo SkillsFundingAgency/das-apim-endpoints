@@ -21,7 +21,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             actual.TrainingCourses.Select(c => c.Title).ToList().Should()
                 .BeEquivalentTo(source.TrainingCourses.Select(c => $"{c.Title} (level {c.Level})").ToList());
             actual.TrainingCourses.Select(c => c.ApprenticeshipType).ToList().Should()
-                .BeEquivalentTo(source.TrainingCourses.Select(c => c.ApprenticeshipType).ToList());
+                .BeEquivalentTo(source.TrainingCourses.Select(c => c.ApprenticeshipType.ToString()).ToList());
         }
     }
 }

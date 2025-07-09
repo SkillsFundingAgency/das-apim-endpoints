@@ -32,7 +32,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 LarsCode = source.LarsCode,
                 Title = $"{source.Title} (level {source.Level})",
                 Route = source.Route,
-                ApprenticeshipType = source.ApprenticeshipType
+                ApprenticeshipType = source.ApprenticeshipType.ToString()
             };
         }
     }

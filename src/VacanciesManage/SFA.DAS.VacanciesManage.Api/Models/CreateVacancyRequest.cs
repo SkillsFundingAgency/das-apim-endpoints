@@ -50,7 +50,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 ApplicationInstructions = source.ApplicationInstructions,
                 ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
                 ApplicationUrl = source.ApplicationUrl,
-                ApprenticeshipType = source.ApprenticeshipType,
                 ClosingDate = source.ClosingDate,
                 Description = source.Description,
                 DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
@@ -63,9 +62,9 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 NumberOfPositions = source.NumberOfPositions,
                 OutcomeDescription = source.OutcomeDescription,
                 ProgrammeId = source.ProgrammeId,
-                Qualifications = new List<PostCreateVacancyQualificationData>(),
+                Qualifications = source.Qualifications.Select(c => (PostCreateVacancyQualificationData)c).ToList(),
                 ShortDescription = source.ShortDescription,
-                Skills = new List<string>(),
+                Skills = source.Skills.ToList(),
                 StartDate = source.StartDate,
                 ThingsToConsider = source.ThingsToConsider,
                 Title = source.Title,
@@ -73,18 +72,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 User = Map(source.SubmitterContactDetails, source.ContractingParties),
                 Wage = source.Wage,
             };
-
-            if (source.ApprenticeshipType != ApprenticeshipTypes.Foundation)
-            {
-                if (source.Qualifications == null || !source.Qualifications.Any())
-                    throw new ArgumentException("Qualifications are required for this Type of apprenticeship.");
-
-                if (source.Skills == null || !source.Skills.Any())
-                    throw new ArgumentException("Skills are required for this Type of apprenticeship.");
-
-                postVacancy.Qualifications = source.Qualifications.Select(c => (PostCreateVacancyQualificationData)c).ToList();
-                postVacancy.Skills = source.Skills.ToList();
-            }
 
             return postVacancy;
         }
@@ -206,11 +193,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [JsonPropertyName("standardLarsCode")]
         [Required]
         public string ProgrammeId { get ; set ; }
-        /// <summary>
-        /// Will either be `apprenticeshipStandard` or `foundationApprenticeship`.
-        /// </summary>
-        [JsonPropertyName("apprenticeshipType")]
-        public ApprenticeshipTypes ApprenticeshipType { get; set; }
         /// <summary>
         /// Select if you do not wish your company name to be listed on the advert. This could mean fewer people view your advert.
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -48,8 +49,6 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public EmployerNameOption EmployerNameOption { get ; set ; }
         [JsonPropertyName("anonymousReason")]
         public string AnonymousReason { get ; set ; }
-        [JsonPropertyName("apprenticeshipType")]
-        public ApprenticeshipTypes ApprenticeshipType { get; set; }
         [JsonPropertyName("qualifications")]
         public List<PostCreateVacancyQualificationData> Qualifications { get; set; }
         [JsonPropertyName("applicationInstructions")]
@@ -84,6 +83,8 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Requests
         public string EmployerLocationInformation { get; set; }
         [JsonPropertyName("employerLocationOption")]
         public AvailableWhere? EmployerLocationOption { get; set; }
+        [JsonPropertyName("apprenticeshipType")]
+        public string ApprenticeshipType { get; set; }
     }
     
     public class PostVacancyUserData

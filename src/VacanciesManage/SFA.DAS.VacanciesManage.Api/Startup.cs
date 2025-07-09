@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -9,7 +8,6 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.VacanciesManage.Api.AppStart;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
@@ -62,7 +60,6 @@ namespace SFA.DAS.VacanciesManage.Api
                 .AddJsonOptions(options =>
                 {
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                    options.JsonSerializerOptions.Converters.Add(new ApprenticeshipTypeConverter());
                     options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 });
 
