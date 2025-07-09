@@ -1,16 +1,10 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions.Execution;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmitted;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplicationSubmitted;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply;
 public class WhenHandlingGetApplicationSubmittedQuery
@@ -21,12 +15,11 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationApiResponse application,
         GetApprenticeshipVacancyItemResponse vacancy,
         GetAboutYouItemApiResponse aboutYou,
-        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        [Frozen] Mock<IVacancyService> vacancyService,
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
         var expectedAboutYouRequest = new GetAboutYouItemApiRequest(query.CandidateId);
 
         candidateApiClient
@@ -34,15 +27,12 @@ public class WhenHandlingGetApplicationSubmittedQuery
                 It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
             .ReturnsAsync(application);
 
-        findApprenticeshipApiClient
-            .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
-                It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
-            .ReturnsAsync(vacancy);
-
         candidateApiClient
             .Setup(client => client.Get<GetAboutYouItemApiResponse>(
                 It.Is<GetAboutYouItemApiRequest>(r => r.GetUrl == expectedAboutYouRequest.GetUrl)))
             .ReturnsAsync(aboutYou);
+
+        vacancyService.Setup(x => x.GetVacancy(application.VacancyReference)).ReturnsAsync(vacancy);
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -51,10 +41,12 @@ public class WhenHandlingGetApplicationSubmittedQuery
             result.Should().NotBeNull();
             result.Should().BeOfType<GetApplicationSubmittedQueryResult>();
             candidateApiClient.Verify(p => p.Get<GetApplicationApiResponse>(It.Is<GetApplicationApiRequest>(x => x.GetUrl == expectedGetApplicationRequest.GetUrl)), Times.Once);
-            findApprenticeshipApiClient.Verify(p => p.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(x => x.GetUrl == expectedGetVacancyRequest.GetUrl)), Times.Once);
+            vacancyService.Verify(p => p.GetVacancy(application.VacancyReference), Times.Once);
             result.EmployerName.Should().BeEquivalentTo(vacancy.EmployerName);
             result.VacancyTitle.Should().BeEquivalentTo(vacancy.Title);
             result.HasAnsweredEqualityQuestions.Should().Be(aboutYou.AboutYou != null);
+            result.ClosedDate.Should().Be(vacancy.ClosedDate);
+            result.ClosingDate.Should().Be(vacancy.ClosingDate);
         }
     }
 
@@ -64,23 +56,16 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationApiResponse application,
         GetApprenticeshipVacancyItemResponse vacancy,
         GetAboutYouItemApiResponse aboutYou,
-        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
         var expectedAboutYouRequest = new GetAboutYouItemApiRequest(query.CandidateId);
 
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
             .ReturnsAsync(application);
-
-        findApprenticeshipApiClient
-            .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
-                It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
-            .ReturnsAsync(vacancy);
 
         aboutYou.AboutYou = null;
         candidateApiClient
@@ -98,22 +83,14 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationSubmittedQuery query,
         GetApplicationApiResponse application,
         GetApprenticeshipVacancyItemResponse vacancy,
-        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
-
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
                 .Returns(Task.FromResult<GetApplicationApiResponse>(null!));
-
-        findApprenticeshipApiClient
-            .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
-                It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
-                .ReturnsAsync(vacancy);
 
         Func<Task> result = () => handler.Handle(query, CancellationToken.None);
 
@@ -125,22 +102,17 @@ public class WhenHandlingGetApplicationSubmittedQuery
         GetApplicationSubmittedQuery query,
         GetApplicationApiResponse application,
         GetApprenticeshipVacancyItemResponse vacancy,
-        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+        [Frozen] Mock<IVacancyService> vacancyService,
         GetApplicationSubmittedQueryHandler handler)
     {
         var expectedGetApplicationRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, false);
-        var expectedGetVacancyRequest = new GetVacancyRequest(application.VacancyReference.ToString());
-
         candidateApiClient
             .Setup(client => client.Get<GetApplicationApiResponse>(
                 It.Is<GetApplicationApiRequest>(r => r.GetUrl == expectedGetApplicationRequest.GetUrl)))
                 .ReturnsAsync(application);
 
-        findApprenticeshipApiClient
-            .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(
-                It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetVacancyRequest.GetUrl)))
-            .Returns(Task.FromResult<GetApprenticeshipVacancyItemResponse>(null!));
+        vacancyService.Setup(x => x.GetVacancy(application.VacancyReference)).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
 
         Func<Task> result = () => handler.Handle(query, CancellationToken.None);
 

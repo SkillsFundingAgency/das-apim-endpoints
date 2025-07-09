@@ -14,6 +14,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public ApprenticeshipTypes ApprenticeshipType { get; set; }
         public string EmployerName { get; set; }
         public DateTime ClosingDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
         public bool IsMigrated { get; set; }
         public bool IsDisabilityConfident { get; set; }
         public bool IsApplicationComplete { get; set; }
@@ -119,6 +120,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 ApprenticeshipType = source.ApprenticeshipType,
                 EmployerName = source.EmployerName,
                 ClosingDate = source.ClosingDate,
+                ClosedDate = source.ClosedDate,
                 IsMigrated = source.IsMigrated,
                 IsDisabilityConfident = source.IsDisabilityConfident,
                 IsApplicationComplete = source.IsApplicationComplete,
