@@ -15,6 +15,9 @@ public static class ApprenticeshipExtensions
         return price?.Key ?? Guid.Empty;
     }
 
+    /// <summary>
+    /// Sets the withdrawal date for an apprenticeship based on the specified withdrawal date type and returns the date that has been set
+    /// </summary>
     public static DateTime? SetWithdrawalDate(this Apprenticeship apprenticeship, WithdrawalDate withdrawalDate)
     {
         var qualifyingPeriod = SharedOuterApi.Common.Constants.QualifyingPeriod;
