@@ -9,10 +9,10 @@ using SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.DeleteProvide
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
-[Route("providers/{ukprn}/locations/{id}/delete")]
+[Route("providers/{ukprn}/locations/{id}")]
 public class ProviderLocationDeleteController(ILogger<ProviderLocationDeleteController> logger, IMediator mediator) : ControllerBase
 {
-    [HttpPost]
+    [HttpDelete]
     public async Task<IActionResult> DeleteProviderLocation([FromRoute] int ukprn, [FromRoute] Guid id, DeleteProviderLocationCommand command)
     {
         logger.LogInformation("Outer API: Request received to delete provider location for ukprn: {ukprn} id: {id} by UserId: {userId}", ukprn, id, command.UserId);
