@@ -50,7 +50,7 @@ public class LearnerDataRequestValidator : AbstractValidator<LearnerDataRequest>
         RuleFor(model => model.LearnerEmail)
             .MaximumLength(200)
             .WithMessage("Email cannot be more then 200 characters long")
-            .EmailAddress().When(model => !string.IsNullOrEmpty(model.LearnerEmail));
+            .EmailAddress().When(model => model.LearnerEmail != null);
 
         RuleFor(model => model.AgreementId)
             .MaximumLength(20)
