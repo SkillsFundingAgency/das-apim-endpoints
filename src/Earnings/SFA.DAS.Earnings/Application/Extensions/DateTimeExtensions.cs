@@ -76,4 +76,43 @@ public static class DateTimeExtensions
         else
             return (byte)(deliveryPeriod + 7);
     }
+
+    /// <summary>
+    /// Returns the later of the two specified <see cref="DateTime"/> values.
+    /// </summary>
+    public static DateTime LatestOf(this DateTime first, DateTime second)
+    {
+        return first > second ? first : second;
+    }
+
+    /// <summary>
+    /// Returns the earlier of the two specified <see cref="DateTime"/> values.
+    /// </summary>
+    public static DateTime EarliestOf(this DateTime first, DateTime second)
+    {
+        return first < second ? first : second;
+    }
+
+    /// <summary>
+    /// Returns the later of the two specified <see cref="DateTime"/> values.
+    /// </summary>
+    public static DateTime? LatestOf(this DateTime? first, DateTime? second)
+    {
+        if (first == null && second == null) return null;
+        if (first == null) return second;
+        if (second == null) return first;
+
+        return first.Value.LatestOf(second.Value);
+    }
+
+    /// <summary>
+    /// Returns the earlier of the two specified <see cref="DateTime"/> values.
+    /// </summary>
+    public static DateTime? EarliestOf(this DateTime? first, DateTime? second)
+    {
+        if (first == null && second == null) return null;
+        if (first == null) return second;
+        if (second == null) return first;
+        return first.Value.EarliestOf(second.Value);
+    }
 }

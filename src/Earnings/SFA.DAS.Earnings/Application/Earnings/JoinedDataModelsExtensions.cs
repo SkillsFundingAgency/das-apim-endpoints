@@ -2,6 +2,8 @@
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using static System.Net.Mime.MediaTypeNames;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
 
@@ -76,7 +78,7 @@ internal static class JoinedDataModelsExtensions
 
         return new PriceEpisodeValues
         {
-            EpisodeStartDate = joinedPriceEpisode.StartDate,
+            EpisodeStartDate = joinedPriceEpisode.StartDate.LatestOf(currentAcademicYear.StartDate),
 
             TNP1 = joinedPriceEpisode.TrainingPrice,
             TNP2 = joinedPriceEpisode.EndPointAssessmentPrice,
@@ -93,7 +95,11 @@ internal static class JoinedDataModelsExtensions
 
             PriceEpisodeUpperBandLimit = joinedPriceEpisode.FundingBandMaximum,
             PriceEpisodePlannedEndDate = joinedEarningsApprenticeship.PlannedEndDate,
-            PriceEpisodeActualEndDate = hasSubsequentPriceEpisodes ? joinedPriceEpisode.EndDate : null,
+
+
+            PriceEpisodeActualEndDate = joinedEarningsApprenticeship.GetActualEndDate(joinedPriceEpisode, hasSubsequentPriceEpisodes),
+
+
             PriceEpisodeTotalTNPPrice = joinedPriceEpisode.TotalPrice,
             PriceEpisodeUpperLimitAdjustment = EarningsFM36Constants.PriceEpisodeUpperLimitAdjustment,
             
@@ -150,6 +156,18 @@ internal static class JoinedDataModelsExtensions
         };
     }
     
+    private static DateTime? GetActualEndDate(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode, bool hasSubsequentPriceEpisodes)
+    {
+        if(hasSubsequentPriceEpisodes)
+        {
+            var dayBeforeNextPEStartDate = joinedEarningsApprenticeship.GetNextPriceEpisode(currentPriceEpisode)?.StartDate.AddDays(-1);
+            return currentPriceEpisode.ActualEndDate.EarliestOf(dayBeforeNextPEStartDate);
+        }
+
+        return currentPriceEpisode.ActualEndDate;
+
+    }
+
     internal static LearningDeliveryValues GetLearningDelivery(
         this JoinedEarningsApprenticeship joinedEarningsApprenticeship, 
         GetAcademicYearsResponse currentAcademicYear)
@@ -369,5 +387,13 @@ internal static class JoinedDataModelsExtensions
 
         return previousYearEarnings.GetValueOrDefault() + currentYearEarnings.GetValueOrDefault();
 
+    }
+
+    private static JoinedPriceEpisode? GetNextPriceEpisode(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode)
+    {
+        return joinedEarningsApprenticeship.Episodes
+            .Where(x => x.EpisodePriceKey != currentPriceEpisode.EpisodePriceKey)
+            .OrderBy(x => x.StartDate)
+            .FirstOrDefault(x => x.StartDate > currentPriceEpisode.StartDate);
     }
 }
