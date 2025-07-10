@@ -24,7 +24,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// <example>Creative and design</example>
         public string Route { get; set; }
         /// <summary>
-        /// Will either be `apprenticeshipStandard` or `foundationApprenticeship`.
+        /// Will either be `apprenticeship` or `foundationApprenticeship`.
         /// </summary>
         public string Type { get; set; }
 
