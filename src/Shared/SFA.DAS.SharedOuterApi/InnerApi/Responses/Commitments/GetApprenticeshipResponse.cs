@@ -26,7 +26,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public DateTime? DateOfBirth { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public string EmployerReference { get; set; }
         public string ProviderReference { get; set; }
         public short Status { get; set; }
