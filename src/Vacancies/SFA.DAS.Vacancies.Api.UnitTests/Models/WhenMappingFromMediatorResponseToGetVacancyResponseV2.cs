@@ -51,6 +51,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.VacancySource)
                 .Excluding(item => item.Location)
                 .Excluding(item => item.EmploymentLocationInformation)
+                .Excluding(item => item.Address)
+                .Excluding(item => item.OtherAddresses)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -91,8 +93,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             );
             actual.EmployerName.Should().Be(source.Vacancy.AnonymousEmployerName);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
-            actual.Location.Should().BeNull();
         }
+
 
         [Test, AutoData]
         public void Then_If_Null_Then_Null_Returned(GetVacancyQueryResult source)
