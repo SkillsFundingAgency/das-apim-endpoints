@@ -77,8 +77,8 @@ namespace SFA.DAS.Campaign.Api.Models
                 SubCategory = source.SubCategory,
                 Location = new VacancyLocation
                 {
-                    Lat = source.Location.Lat,
-                    Lon = source.Location.Lon
+                    Lat = source.Location?.Lat ?? 0,
+                    Lon = source.Location?.Lon ?? 0
                 },
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 VacancyReference = source.VacancyReference,
