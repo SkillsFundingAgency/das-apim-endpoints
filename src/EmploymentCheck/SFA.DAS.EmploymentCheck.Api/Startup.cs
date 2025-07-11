@@ -36,11 +36,10 @@ namespace SFA.DAS.EmploymentCheck.Api
             services
                 .AddOptions()
                 .AddSingleton(_env)
-                .AddNLog()
                 .Configure<EmploymentCheckConfiguration>(_configuration.GetSection("EmploymentCheckInnerApi"))
                 .AddSingleton(cfg => cfg.GetService<IOptions<EmploymentCheckConfiguration>>().Value)
             ;
-           
+
             if (!_configuration.IsLocalOrDev())
             {
                 var azureAdConfiguration = _configuration
@@ -72,10 +71,7 @@ namespace SFA.DAS.EmploymentCheck.Api
                 {
                     options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
                 });
-
-
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
-
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmploymentCheckOuterApi", Version = "v1" });
