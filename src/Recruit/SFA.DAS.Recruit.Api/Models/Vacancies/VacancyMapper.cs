@@ -1,0 +1,170 @@
+﻿using SFA.DAS.Encoding;
+using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
+using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
+using SFA.DAS.Recruit.Domain.Vacancy;
+using SFA.DAS.Recruit.InnerApi.Responses;
+
+namespace SFA.DAS.Recruit.Api.Models.Vacancies;
+
+public class VacancyMapper(IEncodingService encodingService)
+{
+    public InnerApi.Requests.PutVacancyRequestData ToInnerDto(PostVacancyRequest vacancy)
+    {
+        return new InnerApi.Requests.PutVacancyRequestData
+        {
+            AccountId = vacancy.AccountId,
+            AccountLegalEntityId = vacancy.AccountLegalEntityId,
+            AdditionalQuestion1 = vacancy.AdditionalQuestion1,
+            AdditionalQuestion2 = vacancy.AdditionalQuestion2,
+            AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription,
+            AnonymousReason = vacancy.AnonymousReason,
+            ApplicationInstructions = vacancy.ApplicationInstructions,
+            ApplicationMethod = vacancy.ApplicationMethod,
+            ApplicationUrl = vacancy.ApplicationUrl,
+            ApprenticeshipType = vacancy.ApprenticeshipType,
+            ApprovedDate = vacancy.ApprovedDate,
+            ClosedDate = vacancy.ClosedDate,
+            ClosingDate = vacancy.ClosingDate,
+            ClosureReason = vacancy.ClosureReason,
+            Contact = vacancy.Contact,
+            CreatedDate = vacancy.CreatedDate,
+            DeletedDate = vacancy.DeletedDate,
+            Description = vacancy.Description,
+            DisabilityConfident = vacancy.DisabilityConfident,
+            EmployerDescription = vacancy.EmployerDescription,
+            EmployerLocationInformation = vacancy.EmployerLocationInformation,
+            EmployerLocationOption = vacancy.EmployerLocationOption,
+            EmployerLocations = vacancy.EmployerLocations,
+            EmployerName = vacancy.EmployerName,
+            EmployerNameOption = vacancy.EmployerNameOption,
+            EmployerRejectedReason = vacancy.EmployerRejectedReason,
+            EmployerReviewFieldIndicators = vacancy.EmployerReviewFieldIndicators,
+            EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
+            GeoCodeMethod = vacancy.GeoCodeMethod,
+            HasChosenProviderContactDetails = vacancy.HasChosenProviderContactDetails,
+            HasOptedToAddQualifications = vacancy.HasOptedToAddQualifications,
+            HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions,
+            LastUpdatedDate = vacancy.LastUpdatedDate,
+            LegalEntityName = vacancy.LegalEntityName,
+            LiveDate = vacancy.LiveDate,
+            NumberOfPositions = vacancy.NumberOfPositions,
+            OutcomeDescription = vacancy.OutcomeDescription,
+            OwnerType = vacancy.OwnerType,
+            ProgrammeId = vacancy.ProgrammeId,
+            ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators,
+            Qualifications = vacancy.Qualifications,
+            ReviewCount = vacancy.ReviewCount,
+            ReviewDate = vacancy.ReviewDate,
+            ShortDescription = vacancy.ShortDescription,
+            Skills = vacancy.Skills,
+            SourceOrigin = vacancy.SourceOrigin,
+            SourceType = vacancy.SourceType,
+            SourceVacancyReference = vacancy.SourceVacancyReference,
+            StartDate = vacancy.StartDate,
+            Status = vacancy.Status,
+            SubmittedByUserId = vacancy.SubmittedByUserId,
+            SubmittedDate = vacancy.SubmittedDate,
+            ThingsToConsider = vacancy.ThingsToConsider,
+            Title = vacancy.Title,
+            TrainingDescription = vacancy.TrainingDescription,
+            TrainingProvider = vacancy.TrainingProvider,
+            TransferInfo = vacancy.TransferInfo,
+            VacancyReference = vacancy.VacancyReference,
+            Wage = vacancy.Wage,
+        };
+    }
+
+    public PostVacancyResponse ToOuterDto(PutVacancyResponse result)
+    {
+        return new PostVacancyResponse
+        {
+            AccountLegalEntityPublicHashedId = result.AccountLegalEntityId.HasValue ? encodingService.Encode(result.AccountLegalEntityId.Value, EncodingType.PublicAccountLegalEntityId) : null,
+            AdditionalQuestion1 = result.AdditionalQuestion1,
+            AdditionalQuestion2 = result.AdditionalQuestion2,
+            AdditionalTrainingDescription = result.AdditionalTrainingDescription,
+            AnonymousReason = result.AnonymousReason,
+            ApplicationInstructions = result.ApplicationInstructions,
+            ApplicationMethod = result.ApplicationMethod,
+            ApplicationUrl = result.ApplicationUrl,
+            ApprenticeshipType = result.ApprenticeshipType,
+            ApprovedDate = result.ApprovedDate,
+            ClosedDate = result.ClosedDate,
+            ClosingDate = result.ClosingDate,
+            ClosureReason = result.ClosureReason,
+            CreatedDate = result.CreatedDate,
+            DeletedDate = result.DeletedDate,
+            Description = result.Description,
+            DisabilityConfident = result.DisabilityConfident is null ? null : result.DisabilityConfident!.Value ? DisabilityConfident.Yes : DisabilityConfident.No,
+            EmployerAccountId = result.AccountId.HasValue ? encodingService.Encode(result.AccountId.Value, EncodingType.AccountId) : null,
+            EmployerContact = MapContactDetail(OwnerType.Employer ,result),
+            EmployerDescription = result.EmployerDescription,
+            EmployerLocationInformation = result.EmployerLocationInformation,
+            EmployerLocationOption = result.EmployerLocationOption,
+            EmployerLocations = result.EmployerLocations,
+            EmployerName = result.EmployerName,
+            EmployerNameOption = result.EmployerNameOption,
+            EmployerRejectedReason = result.EmployerRejectedReason,
+            EmployerReviewFieldIndicators = result.EmployerReviewFieldIndicators,
+            EmployerWebsiteUrl = result.EmployerWebsiteUrl,
+            GeoCodeMethod = result.GeoCodeMethod,
+            HasChosenProviderContactDetails = result.HasChosenProviderContactDetails,
+            HasOptedToAddQualifications = result.HasOptedToAddQualifications,
+            HasSubmittedAdditionalQuestions = result.HasSubmittedAdditionalQuestions,
+            Id = result.Id,
+            LastUpdatedDate = result.LastUpdatedDate,
+            LegalEntityName = result.LegalEntityName,
+            LiveDate = result.LiveDate,
+            NumberOfPositions = result.NumberOfPositions,
+            OutcomeDescription = result.OutcomeDescription,
+            OwnerType = result.OwnerType!.Value,
+            ProgrammeId = result.ProgrammeId,
+            ProviderContact = MapContactDetail(OwnerType.Provider ,result),
+            ProviderReviewFieldIndicators = result.ProviderReviewFieldIndicators,
+            Qualifications = result.Qualifications,
+            ReviewCount = result.ReviewCount,
+            ReviewDate = result.ReviewDate,
+            ShortDescription = result.ShortDescription,
+            Skills = result.Skills,
+            SourceOrigin = result.SourceOrigin,
+            SourceType = result.SourceType,
+            SourceVacancyReference = result.SourceVacancyReference,
+            StartDate = result.StartDate,
+            Status = result.Status,
+            SubmittedByUser = MapSubmittedByUser(result.SubmittedByUserId),
+            SubmittedDate = result.SubmittedDate,
+            ThingsToConsider = result.ThingsToConsider,
+            Title = result.Title,
+            TrainingDescription = result.TrainingDescription,
+            TrainingProvider = result.TrainingProvider,
+            TransferInfo = result.TransferInfo,
+            VacancyReference = result.VacancyReference,
+            Wage = result.Wage,
+        };
+        
+        ContactDetail? MapContactDetail(OwnerType propType, PutVacancyResponse vacancy)
+        {
+            ContactDetail? contactDetail = null;
+            if (vacancy.Contact is not null)
+            {
+                contactDetail = new ContactDetail
+                {
+                    Email = vacancy.Contact.Email,
+                    Name = vacancy.Contact.Name,
+                    Phone = vacancy.Contact.Phone,
+                };
+            }
+
+            return propType == vacancy.OwnerType ? contactDetail : null;
+        }
+        
+        VacancyUser MapSubmittedByUser(string userId)
+        {
+            return string.IsNullOrWhiteSpace(userId)
+                ? null
+                : new VacancyUser
+                {
+                    UserId = userId
+                };
+        }
+    }
+}
