@@ -113,5 +113,20 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             actual.Addresses.Should().BeNull();
             actual.EmployerLocationOption.Should().Be(AvailableWhere.AcrossEngland);
         }
+        
+        [Test, AutoData]
+        public void Then_If_Foundation_And_No_Skills_Or_Qualifications_Set_To_Empty_List(CreateVacancyRequest source)
+        {
+            // arrange
+            source.Qualifications = null;
+            source.Skills = null;
+            
+            // act
+            var actual = (PostVacancyRequestData) source;
+            
+            // assert
+            actual.Skills.Should().BeEmpty();
+            actual.Qualifications.Should().BeEmpty();
+        }
     }
 }
