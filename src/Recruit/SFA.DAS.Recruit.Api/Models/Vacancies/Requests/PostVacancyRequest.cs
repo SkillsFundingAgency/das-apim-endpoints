@@ -7,7 +7,6 @@ namespace SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 
 public class PostVacancyRequest
 {
-    public Guid Id { get; init; }
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
     public required VacancyStatus Status { get; init; }

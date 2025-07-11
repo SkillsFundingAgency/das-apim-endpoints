@@ -1,12 +1,10 @@
-﻿using SFA.DAS.Encoding;
-using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
+﻿using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
-using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Api.Models.Vacancies;
 
-public class VacancyMapper(IEncodingService encodingService)
+public class VacancyMapper()
 {
     public InnerApi.Requests.PutVacancyRequestData ToInnerDto(PostVacancyRequest vacancy)
     {
@@ -78,7 +76,8 @@ public class VacancyMapper(IEncodingService encodingService)
     {
         return new PostVacancyResponse
         {
-            AccountLegalEntityPublicHashedId = result.AccountLegalEntityId.HasValue ? encodingService.Encode(result.AccountLegalEntityId.Value, EncodingType.PublicAccountLegalEntityId) : null,
+            AccountId = result.AccountId,
+            AccountLegalEntityId = result.AccountLegalEntityId,
             AdditionalQuestion1 = result.AdditionalQuestion1,
             AdditionalQuestion2 = result.AdditionalQuestion2,
             AdditionalTrainingDescription = result.AdditionalTrainingDescription,
@@ -91,12 +90,11 @@ public class VacancyMapper(IEncodingService encodingService)
             ClosedDate = result.ClosedDate,
             ClosingDate = result.ClosingDate,
             ClosureReason = result.ClosureReason,
+            Contact = result.Contact,
             CreatedDate = result.CreatedDate,
             DeletedDate = result.DeletedDate,
             Description = result.Description,
-            DisabilityConfident = result.DisabilityConfident is null ? null : result.DisabilityConfident!.Value ? DisabilityConfident.Yes : DisabilityConfident.No,
-            EmployerAccountId = result.AccountId.HasValue ? encodingService.Encode(result.AccountId.Value, EncodingType.AccountId) : null,
-            EmployerContact = MapContactDetail(OwnerType.Employer ,result),
+            DisabilityConfident = result.DisabilityConfident,
             EmployerDescription = result.EmployerDescription,
             EmployerLocationInformation = result.EmployerLocationInformation,
             EmployerLocationOption = result.EmployerLocationOption,
@@ -118,7 +116,6 @@ public class VacancyMapper(IEncodingService encodingService)
             OutcomeDescription = result.OutcomeDescription,
             OwnerType = result.OwnerType!.Value,
             ProgrammeId = result.ProgrammeId,
-            ProviderContact = MapContactDetail(OwnerType.Provider ,result),
             ProviderReviewFieldIndicators = result.ProviderReviewFieldIndicators,
             Qualifications = result.Qualifications,
             ReviewCount = result.ReviewCount,
@@ -130,7 +127,6 @@ public class VacancyMapper(IEncodingService encodingService)
             SourceVacancyReference = result.SourceVacancyReference,
             StartDate = result.StartDate,
             Status = result.Status,
-            SubmittedByUser = MapSubmittedByUser(result.SubmittedByUserId),
             SubmittedDate = result.SubmittedDate,
             ThingsToConsider = result.ThingsToConsider,
             Title = result.Title,
@@ -140,31 +136,5 @@ public class VacancyMapper(IEncodingService encodingService)
             VacancyReference = result.VacancyReference,
             Wage = result.Wage,
         };
-        
-        ContactDetail? MapContactDetail(OwnerType propType, PutVacancyResponse vacancy)
-        {
-            ContactDetail? contactDetail = null;
-            if (vacancy.Contact is not null)
-            {
-                contactDetail = new ContactDetail
-                {
-                    Email = vacancy.Contact.Email,
-                    Name = vacancy.Contact.Name,
-                    Phone = vacancy.Contact.Phone,
-                };
-            }
-
-            return propType == vacancy.OwnerType ? contactDetail : null;
-        }
-        
-        VacancyUser MapSubmittedByUser(string userId)
-        {
-            return string.IsNullOrWhiteSpace(userId)
-                ? null
-                : new VacancyUser
-                {
-                    UserId = userId
-                };
-        }
     }
 }

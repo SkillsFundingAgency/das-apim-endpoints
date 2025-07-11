@@ -71,12 +71,6 @@ public static class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitOuterApi", Version = "v1" });
         });
-        
-        // Configure the DAS Encoding service
-        var dasEncodingConfig = new EncodingConfig { Encodings = [] };
-        configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
-        services.AddSingleton(dasEncodingConfig);
-        services.AddSingleton<IEncodingService, EncodingService>();
     }
     
     public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)

@@ -64,7 +64,7 @@ public class PutVacancyResponse
     public bool? HasSubmittedAdditionalQuestions { get; init; }
     public bool? HasChosenProviderContactDetails { get; init; }
     public bool? HasOptedToAddQualifications { get; init; }
-    public List<EmployerReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
-    public List<ProviderReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
+    public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
+    public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
 }
