@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi;
+using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.Approvals.Api.AppStart;
@@ -56,5 +58,9 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>().Value);
         services.Configure<FinanceApiConfiguration>(configuration.GetSection("FinanceApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<FinanceApiConfiguration>>().Value);
+        services.Configure<LearnerDataInnerApiConfiguration>(configuration.GetSection("LearnerDataInnerApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerDataInnerApiConfiguration>>().Value);
+        services.Configure<CourseTypesApiConfiguration>(configuration.GetSection("CourseTypesApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CourseTypesApiConfiguration>>().Value);
     }
 }

@@ -115,6 +115,7 @@ public class JoinedPriceEpisode
     /// Denotes an episode terminated by an "artificial" academic year-end boundary
     /// </summary>
     public bool IsTerminatedByAcademicYearEnd { get; set; }
+    public Guid EpisodePriceKey { get; set; }
 
     public JoinedPriceEpisode()
     {
@@ -130,6 +131,7 @@ public class JoinedPriceEpisode
     /// <param name="academicYear"></param>
     public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
     {
+        EpisodePriceKey = apprenticeshipEpisodePrice.Key;
         TrainingCode = apprenticeshipEpisode.TrainingCode;
         StartDate = apprenticeshipEpisodePrice.StartDate;
         EndDate = apprenticeshipEpisodePrice.EndDate;
@@ -147,7 +149,9 @@ public class JoinedPriceEpisode
     /// This constructor creates a new JoinedPriceEpisode based on an existing JoinedPriceEpisode, but sets the StartDate and EndDate and 
     /// only includes Instalments and AdditionalPayments for that academic year (excluding instalments that "overlap" other academic years)
     /// </summary>
-    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear, bool isTerminatedByAcademicYearEnd){
+    public JoinedPriceEpisode(JoinedPriceEpisode existingEpisode, DateTime newStartDate, DateTime newEndDate, short academicYear, bool isTerminatedByAcademicYearEnd)
+    {
+        EpisodePriceKey = existingEpisode.EpisodePriceKey;
         StartDate = newStartDate;
         EndDate = newEndDate;
         TrainingCode = existingEpisode.TrainingCode;
@@ -210,8 +214,8 @@ public class JoinedPriceEpisode
         }).ToList();
 
         return allAdditionalPayments.Where(x => 
-                x.DateTime >= apprenticeshipEpisodePrice.StartDate && 
-                x.DateTime <= apprenticeshipEpisodePrice.EndDate).ToList();
+                x.DueDate >= apprenticeshipEpisodePrice.StartDate && 
+                x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
     }
 }
 
@@ -230,29 +234,4 @@ public class JoinedAdditionalPayment
     public decimal Amount { get; set; }
     public string AdditionalPaymentType { get; set; }
     public DateTime DueDate { get; set; }
-
-    public DateTime DateTime => GetDateTime();
-
-    private DateTime GetDateTime()
-    {
-        var calendarYear = ToCalendarYear(AcademicYear, DeliveryPeriod);
-        var calendarMonth = ToCalendarMonth(DeliveryPeriod);
-        return new DateTime(calendarYear, calendarMonth, 1);
-    }
-
-    private short ToCalendarYear(short academicYear, byte deliveryPeriod)
-    {
-        if (deliveryPeriod >= 6)
-            return short.Parse($"20{academicYear.ToString().Substring(2, 2)}");
-        else
-            return short.Parse($"20{academicYear.ToString().Substring(0, 2)}");
-    }
-
-    private byte ToCalendarMonth(byte deliveryPeriod)
-    {
-        if (deliveryPeriod >= 6)
-            return (byte)(deliveryPeriod - 5);
-        else
-            return (byte)(deliveryPeriod + 7);
-    }
 }

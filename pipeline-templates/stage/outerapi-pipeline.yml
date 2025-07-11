@@ -50,6 +50,8 @@ stages:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
+      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
@@ -72,6 +74,7 @@ stages:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
   - group: TEST das-apim-endpoints
+  - group: TEST das-apim-endpoints-LearnerData
   jobs:
   - template: ../../pipeline-templates/job/deploy.yml
     parameters:
@@ -83,6 +86,8 @@ stages:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
+      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
@@ -116,6 +121,8 @@ stages:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
+      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
@@ -149,6 +156,8 @@ stages:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
+      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
@@ -181,6 +190,8 @@ stages:
       ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
+      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
@@ -213,6 +224,8 @@ stages:
       ConfigurationSecrets: ${{ parameters.ConfigurationSecrets }}
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
+      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
@@ -246,6 +259,8 @@ stages:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
+      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
+      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)

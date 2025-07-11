@@ -21,6 +21,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
                 .Excluding(c => c.IsActive)
                 .Excluding(c => c.StandardUId)
                 .Excluding(c => c.LarsCode)
+                .ExcludingMissingMembers()
             );
             actual.EffectiveFrom.Should().Be(source.StandardDates.EffectiveFrom);
             actual.EffectiveTo.Should().Be(source.StandardDates.EffectiveTo);

@@ -9,6 +9,7 @@ using Microsoft.OpenApi.Extensions;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -115,6 +116,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             public string ApplicationUrl { get; set; }
             public string ApplicationInstructions { get; set; }
             public VacancyDataSource VacancySource { get; set; }
+            public ApprenticeshipTypes ApprenticeshipType { get; init; }
 
             public static Vacancy FromIVacancy(IVacancy source, GetStandardsListItemResponse courseResult = null)
             {
@@ -142,6 +144,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     ApplicationInstructions = source.ApplicationInstructions,
                     ApplicationUrl = source.ApplicationUrl,
                     ApprenticeshipLevel = GetApprenticeshipLevel(courseResult?.Level),
+                    ApprenticeshipType = source.ApprenticeshipType,
                     ClosingDate = source.ClosedDate ?? source.ClosingDate,
                     CourseId = source.CourseId,
                     CourseLevel = courseResult?.Level.ToString(),
@@ -225,6 +228,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     ApplicationInstructions = source.ApplicationInstructions,
                     ApplicationUrl = source.ApplicationUrl,
                     ApprenticeshipLevel = source.ApprenticeshipLevel,
+                    ApprenticeshipType = source.ApprenticeshipType,
                     Category = source.Category,
                     CategoryCode = source.CategoryCode,
                     ClosingDate = source.ClosingDate,

@@ -1,63 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
+﻿using AutoFixture.NUnit3;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
+public class WhenBuildingTheGetAllStandardsListRequest
 {
-    public class WhenBuildingTheGetAllStandardsListRequest
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed_As_Default()
     {
-        [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed(
-            List<Guid> routeIds,
-            List<int> levels)
-        {
-            
-            var actual = new GetActiveStandardsListRequest
-            {
-                RouteIds = routeIds,
-                Levels = levels
-            };
+        var _sut = new GetActiveStandardsListRequest();
 
-            actual.GetUrl.Should()
-                .Be($"api/courses/standards?filter=Active&routeIds=" + string.Join("&routeIds=",routeIds) + "&levels=" + string.Join("&levels=", levels));
-        }
-        [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds_And_Levels(
-        )
-        {
-            var actual = new GetActiveStandardsListRequest();
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?filter=Active&orderby=Score"));
+    }
 
-            actual.GetUrl.Should()
-                .Be($"api/courses/standards?filter=Active");
-        }
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed_With_Keyword()
+    {
+        var _sut = new GetActiveStandardsListRequest
+        {
+            Keyword = "Construction"
+        };
 
-        [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed_Without_RouteIds(
-            List<int> levels)
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?keyword=Construction&filter=Active&orderby=Score"));
+    }
+
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed_With_Levels()
+    {
+        var _sut = new GetActiveStandardsListRequest
         {
-            var actual = new GetActiveStandardsListRequest
-            {
-                Levels = levels
-            };
-            
-            actual.GetUrl.Should()
-                .Be($"api/courses/standards?filter=Active&levels=" + string.Join("&levels=", levels));
-        }
-        
-        [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed_Without_Levels(
-            List<Guid> routeIds)
+            Levels = [1, 2]
+        };
+
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?levels=1&levels=2&filter=Active&orderby=Score"));
+    }
+
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed_With_Route_Ids()
+    {
+        var _sut = new GetActiveStandardsListRequest
         {
-            var actual = new GetActiveStandardsListRequest
-            { 
-                RouteIds = routeIds
-            };
-            
-            actual.GetUrl.Should()
-                .Be($"api/courses/standards?filter=Active&routeIds=" + string.Join("&routeIds=", routeIds));
-        }
+            RouteIds = [1, 2]
+        };
+
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?routeIds=1&routeIds=2&filter=Active&orderby=Score"));
+    }
+
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed_With_ApprenticeshipType(ApprenticeshipType type)
+    {
+        var _sut = new GetActiveStandardsListRequest
+        {
+            ApprenticeshipType = type.ToString()
+        };
+
+        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/standards?apprenticeshipType={type.ToString()}&filter=Active&orderby=Score"));
     }
 }

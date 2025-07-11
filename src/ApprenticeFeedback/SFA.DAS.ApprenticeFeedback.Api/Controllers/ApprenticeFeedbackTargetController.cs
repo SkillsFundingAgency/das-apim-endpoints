@@ -34,6 +34,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("Getting feedback targets for update");
                 var result = await _mediator.Send(new GetFeedbackTargetsForUpdateQuery() { BatchSize = batchSize });
                 return Ok(result.FeedbackTargetsForUpdate);
             }

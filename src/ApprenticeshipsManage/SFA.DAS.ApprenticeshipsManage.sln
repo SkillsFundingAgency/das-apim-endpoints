@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeshipsManage", "SFA.DAS.ApprenticeshipsManage\SFA.DAS.ApprenticeshipsManage.csproj", "{AFD471D2-8EBB-460F-8203-1DCBF665AE9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeshipsManage.Api", "SFA.DAS.ApprenticeshipsManage.Api\SFA.DAS.ApprenticeshipsManage.Api.csproj", "{3E8DF6C5-5EE5-4CBD-89C0-C1D5EF6181AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeshipsManage.Api.Tests", "SFA.DAS.ApprenticeshipsManage.Api.Tests\SFA.DAS.ApprenticeshipsManage.Api.Tests.csproj", "{8F6CF408-4CB8-427A-90F4-3C48BED7D838}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ApprenticeshipsManage.Tests", "SFA.DAS.ApprenticeshipsManage.Tests\SFA.DAS.ApprenticeshipsManage.Tests.csproj", "{2E9948A8-B5EA-4F68-9761-62EDCAB35F8D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{3B60ED84-4425-43E2-8B89-163B7C907160}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFD471D2-8EBB-460F-8203-1DCBF665AE9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD471D2-8EBB-460F-8203-1DCBF665AE9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD471D2-8EBB-460F-8203-1DCBF665AE9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD471D2-8EBB-460F-8203-1DCBF665AE9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E8DF6C5-5EE5-4CBD-89C0-C1D5EF6181AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E8DF6C5-5EE5-4CBD-89C0-C1D5EF6181AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E8DF6C5-5EE5-4CBD-89C0-C1D5EF6181AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E8DF6C5-5EE5-4CBD-89C0-C1D5EF6181AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F6CF408-4CB8-427A-90F4-3C48BED7D838}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F6CF408-4CB8-427A-90F4-3C48BED7D838}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F6CF408-4CB8-427A-90F4-3C48BED7D838}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F6CF408-4CB8-427A-90F4-3C48BED7D838}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E9948A8-B5EA-4F68-9761-62EDCAB35F8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E9948A8-B5EA-4F68-9761-62EDCAB35F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E9948A8-B5EA-4F68-9761-62EDCAB35F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E9948A8-B5EA-4F68-9761-62EDCAB35F8D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B60ED84-4425-43E2-8B89-163B7C907160}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B60ED84-4425-43E2-8B89-163B7C907160}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B60ED84-4425-43E2-8B89-163B7C907160}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B60ED84-4425-43E2-8B89-163B7C907160}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

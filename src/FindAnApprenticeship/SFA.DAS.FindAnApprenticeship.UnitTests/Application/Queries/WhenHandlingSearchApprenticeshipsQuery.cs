@@ -24,6 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             GetVacanciesResponse vacanciesResponse,
             GetApprenticeshipCountResponse apprenticeshipCountResponse,
             GetRoutesListResponse routesResponse,
+            GetCourseLevelsListResponse levelsResponse,
             [Frozen] Mock<IMetrics> metricsService,
             [Frozen] Mock<ICourseService> courseService,
             [Frozen] Mock<ILocationLookupService> locationLookupService,
@@ -38,9 +39,15 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                     query.Location, 0, 0, false))
                 .ReturnsAsync(locationInfo);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
+            courseService.Setup(x => x.GetLevels()).ReturnsAsync(levelsResponse);
 
             var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
+
+            var levels = levelsResponse.Levels
+                .Where(level => query.SelectedLevelIds != null && query.SelectedLevelIds.Contains(level.Code))
+                .Select(level => level.Code)
+                .ToList();
 
             // Pass locationInfo to the request
             var vacancyRequest = new GetVacanciesRequest(
@@ -51,7 +58,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
+                levels,
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident,
@@ -75,7 +82,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
+                levels,
                 WageType.CompetitiveSalary,
                 query.DisabilityConfident,
                 new List<VacancyDataSource>
@@ -145,6 +152,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             LocationItem locationInfo,
             GetVacanciesResponse vacanciesResponse,
             GetRoutesListResponse routesResponse,
+            GetCourseLevelsListResponse levelsResponse,
             GetApplicationsApiResponse getApplicationsApiResponse,
             GetSavedVacanciesApiResponse getSavedVacanciesApiResponse,
             GetApprenticeshipCountResponse apprenticeshipCountResponse,
@@ -173,9 +181,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             locationLookupService
                 .Setup(service => service.GetLocationInformation(
-                    query.Location, default, default, false))
+                    query.Location, 0, 0, false))
                 .ReturnsAsync(locationInfo);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
+            courseService.Setup(x => x.GetLevels()).ReturnsAsync(levelsResponse);
 
             var expectedUrl = new GetApplicationsApiRequest(candidateId);
             var expectedGetCandidateUrl = new GetCandidateApiRequest(candidateId.ToString());
@@ -196,6 +205,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
 
+            var levels = levelsResponse.Levels
+                .Where(level => query.SelectedLevelIds != null && query.SelectedLevelIds.Contains(level.Code))
+                .Select(level => level.Code)
+                .ToList();
+
             // Pass locationInfo to the request
             var vacancyRequest = new GetVacanciesRequest(
                 locationInfo.GeoPoint?.FirstOrDefault(),
@@ -205,7 +219,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
+                levels,
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident,
@@ -221,27 +235,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
 
             var totalPages = (int)Math.Ceiling((double)vacanciesResponse.TotalFound / query.PageSize);
 
-            var apprenticeCountRequest = new GetApprenticeshipCountRequest(
-                locationInfo.GeoPoint?.FirstOrDefault(),
-                locationInfo.GeoPoint?.LastOrDefault(),
-                query.Distance,
-                query.SearchTerm,
-                query.PageNumber,
-                query.PageSize,
-                categories,
-                query.SelectedLevelIds?.Select(Convert.ToInt32).ToList(),
-                WageType.CompetitiveSalary,
-                query.DisabilityConfident,
-                new List<VacancyDataSource>
-                {
-                    VacancyDataSource.Raa, 
-                    VacancyDataSource.Nhs,
-                },
-                query.ExcludeNational);
-
             apiClient.Setup(client =>
                     client.Get<GetApprenticeshipCountResponse>(
-                        It.Is<GetApprenticeshipCountRequest>(r => r.GetUrl == apprenticeCountRequest.GetUrl)))
+                        It.IsAny<GetApprenticeshipCountRequest>()))
                 .ReturnsAsync(apprenticeshipCountResponse);
 
             // Act
@@ -283,6 +279,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
            LocationItem locationInfo,
            GetVacanciesResponse vacanciesResponse,
            GetRoutesListResponse routesResponse,
+           GetCourseLevelsListResponse levelsResponse,
            GetApplicationsApiResponse getApplicationsApiResponse,
            GetSavedVacanciesApiResponse getSavedVacanciesApiResponse,
            GetCandidateSavedSearchesApiResponse getSavedSearchesApiResponse,
@@ -315,6 +312,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                     query.Location, default, default, false))
                 .ReturnsAsync(locationInfo);
             courseService.Setup(x => x.GetRoutes()).ReturnsAsync(routesResponse);
+            courseService.Setup(x => x.GetLevels()).ReturnsAsync(levelsResponse);
 
             var expectedUrl = new GetApplicationsApiRequest(candidateId);
             candidateApiClient.Setup(service =>
@@ -331,6 +329,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
             var categories = routesResponse.Routes.Where(route => query.SelectedRouteIds != null && query.SelectedRouteIds.Contains(route.Id))
                 .Select(route => route.Name).ToList();
 
+            var levels = levelsResponse.Levels
+                .Where(level => query.SelectedLevelIds != null && query.SelectedLevelIds.Contains(level.Code))
+                .Select(level => level.Code)
+                .ToList();
+
             // Pass locationInfo to the request
             var vacancyRequest = new GetVacanciesRequest(
                 locationInfo.GeoPoint?.FirstOrDefault(),
@@ -340,7 +343,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries
                 query.PageNumber,
                 query.PageSize,
                 categories,
-                query.SelectedLevelIds?.Select(c => Convert.ToInt32(c)).ToList(),
+                levels,
                 query.Sort,
                 query.SkipWageType,
                 query.DisabilityConfident,

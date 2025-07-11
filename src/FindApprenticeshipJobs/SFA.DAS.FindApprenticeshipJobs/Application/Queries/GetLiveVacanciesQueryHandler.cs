@@ -18,11 +18,7 @@ public class GetLiveVacanciesQueryHandler(
         var standardsTask = courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
         await Task.WhenAll(vacanciesResponseTask, standardsTask);
-
         var vacanciesResponse = vacanciesResponseTask.Result;
-        var standards = standardsTask.Result;
-        
-        vacanciesResponse.Body.Vacancies = RemoveTraineeships(vacanciesResponse.Body);
 
         return new GetLiveVacanciesQueryResult
         {
@@ -31,14 +27,7 @@ public class GetLiveVacanciesQueryHandler(
             TotalLiveVacanciesReturned = vacanciesResponse.Body.TotalLiveVacanciesReturned,
             TotalLiveVacancies = vacanciesResponse.Body.TotalLiveVacancies,
             TotalPages = vacanciesResponse.Body.TotalPages,
-            Vacancies = vacanciesResponse.Body.Vacancies.Select(x => liveVacancyMapper.Map(x, standards))
+            Vacancies = vacanciesResponse.Body.Vacancies.Select(x => liveVacancyMapper.Map(x, standardsTask.Result))
         };
-    }
-
-    private static IEnumerable<LiveVacancy> RemoveTraineeships(GetLiveVacanciesApiResponse response)
-    {
-        return response.Vacancies.Select(x => x)
-            .Where(x => x.VacancyType is null or VacancyType.Apprenticeship)
-            .ToList();
     }
 }

@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -14,6 +13,7 @@ using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 
 
@@ -77,7 +77,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api
                 options.LowercaseQueryStrings = true;
             }).AddMvc();
 
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>
             {
