@@ -8,7 +8,7 @@ public class WhenBuildingGetApplicationByIdApiRequest
     public void Then_The_GetUrl_Is_Correct(Guid applicationId, Guid candidateId)
     {
         // Arrange
-        var expectedUrl = $"api/candidates/{candidateId}/applications/{applicationId}";
+        var expectedUrl = $"api/candidates/{candidateId}/applications/{applicationId}?includeDetail=true";
         // Act
         var request = new SFA.DAS.Recruit.InnerApi.Requests.GetApplicationByIdApiRequest(applicationId, candidateId);
         // Assert

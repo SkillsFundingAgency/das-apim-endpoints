@@ -11,4 +11,7 @@ public record Candidate
     public string? LastName { get; set; }
     public string? FirstName { get; set; }
     public string? MiddleNames { get; set; }
+    public string? PhoneNumber { get; set; }
+
+    public Address? Address { get; set; }
 }
