@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using SFA.DAS.SharedOuterApi.Domain;
 using System;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
         public VacancyDetailsSection VacancyDetails { get; set; }
         public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
         public WorkHistorySection WorkHistory { get; set; }
+        public EmploymentLocationSection? EmploymentLocation { get; set; }
 
         public record VacancyDetailsSection
         {
@@ -168,6 +170,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
                     };
                 }
             }
+        }
+
+        public record EmploymentLocationSection : LocationDto
+        {
+
         }
 
         public record ApplicationQuestionsSection
