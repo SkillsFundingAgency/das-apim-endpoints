@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.Apprenticeships.Api.Models;
-using PostCreateApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PostCreateApprenticeshipPriceChangeRequest;
-using PatchApproveApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchApproveApprenticeshipPriceChangeRequest;
-using PatchRejectApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchRejectApprenticeshipPriceChangeRequest;
+using PostCreateApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning.PostCreateApprenticeshipPriceChangeRequest;
+using PatchApproveApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning.PatchApproveApprenticeshipPriceChangeRequest;
+using PatchRejectApprenticeshipPriceChangeRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning.PatchRejectApprenticeshipPriceChangeRequest;
 
 namespace SFA.DAS.Apprenticeships.Api.Extensions;
 

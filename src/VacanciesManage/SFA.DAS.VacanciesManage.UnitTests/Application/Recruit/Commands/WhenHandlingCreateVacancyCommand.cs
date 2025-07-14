@@ -1,9 +1,3 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -17,6 +11,16 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using SFA.DAS.VacanciesManage.InnerApi.Responses;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Security;
+using System.Threading;
+using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Common;
+
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 {
     public class WhenHandlingCreateVacancyCommand
@@ -28,12 +32,31 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             AccountLegalEntityItem accountLegalEntityItem,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<ICourseService> courseServiceMock,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.AccountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
             command.PostVacancyRequestData.OwnerType = OwnerType.Employer;
             command.IsSandbox = false;
+            var expectedLarsCode = 123;
+            command.PostVacancyRequestData.ProgrammeId = expectedLarsCode.ToString();
+
+            var matchingStandard = new GetStandardsListItem
+            {
+                LarsCode = expectedLarsCode,
+                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+            };
+
+            var getStandardsResponse = new GetStandardsListResponse
+            {
+                Standards = new List<GetStandardsListItem> { matchingStandard }
+            };
+
+            courseServiceMock
+                .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(getStandardsResponse);
+
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<long?>(
@@ -57,6 +80,66 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             mockRecruitApiClient.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostValidateVacancyRequest>(), true),
                 Times.Never);
         }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Command_Is_Handled_With_Skills_And_Qualifications_Cleared_For_Foundation(
+            long responseValue,
+            CreateVacancyCommand command,
+            AccountLegalEntityItem accountLegalEntityItem,
+            [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<ICourseService> courseServiceMock,
+            CreateVacancyCommandHandler handler)
+        {
+            //Arrange
+            command.AccountIdentifier = new AccountIdentifier("Employer-ABC123-Product");
+            command.PostVacancyRequestData.OwnerType = OwnerType.Employer;
+            command.IsSandbox = false;
+            var expectedLarsCode = 123;
+            command.PostVacancyRequestData.ProgrammeId = expectedLarsCode.ToString();
+
+            var matchingStandard = new GetStandardsListItem
+            {
+                LarsCode = expectedLarsCode,
+                ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship
+            };
+
+            var getStandardsResponse = new GetStandardsListResponse
+            {
+                Standards = new List<GetStandardsListItem> { matchingStandard }
+            };
+
+            courseServiceMock
+                .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(getStandardsResponse);
+
+            var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
+            mockRecruitApiClient.Setup(x =>
+                x.PostWithResponseCode<long?>(
+                    It.Is<PostVacancyRequest>(c =>
+                        c.PostUrl.Contains($"{command.Id.ToString()}?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail=")
+                        && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
+                        && ((PostVacancyRequestData)c.Data).LegalEntityName.Equals(accountLegalEntityItem.Name)
+                        && ((PostVacancyRequestData)c.Data).EmployerAccountId.Equals(command.PostVacancyRequestData.EmployerAccountId)
+                        && ((PostVacancyRequestData)c.Data).Skills.Count.Equals(0)
+                        && ((PostVacancyRequestData)c.Data).Qualifications.Count.Equals(0)
+                        ), true))
+                .ReturnsAsync(apiResponse);
+            accountLegalEntityPermissionService
+                .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
+                    command.PostVacancyRequestData.AccountLegalEntityPublicHashedId))
+                .ReturnsAsync(accountLegalEntityItem);
+
+            //Act
+            var result = await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            result.VacancyReference.Should().Be(apiResponse.Body.ToString());
+            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostValidateVacancyRequest>(), true),
+                Times.Never);
+        }
+        
+        
         [Test, MoqAutoData]
         public async Task Then_The_Command_Is_Handled_With_Account_Info_looked_Up_For_Provider_And_Api_Called_With_Response(
             int accountIdentifierId,
@@ -65,11 +148,31 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             AccountLegalEntityItem accountLegalEntityItem,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<ICourseService> courseServiceMock,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.AccountIdentifier = new AccountIdentifier($"Provider-{accountIdentifierId}-Product");
             command.IsSandbox = false;
+
+            var expectedLarsCode = 123;
+            command.PostVacancyRequestData.ProgrammeId = expectedLarsCode.ToString();
+
+            var matchingStandard = new GetStandardsListItem
+            {
+                LarsCode = expectedLarsCode,
+                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+            };
+
+            var getStandardsResponse = new GetStandardsListResponse
+            {
+                Standards = new List<GetStandardsListItem> { matchingStandard }
+            };
+
+            courseServiceMock
+                .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(getStandardsResponse);
+
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<long?>(
@@ -102,12 +205,30 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             AccountLegalEntityItem accountLegalEntityItem,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<ICourseService> courseServiceMock,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.PostVacancyRequestData.EmployerNameOption = EmployerNameOption.RegisteredName;
             command.AccountIdentifier = new AccountIdentifier($"Provider-{accountIdentifierId}-Product");
             command.IsSandbox = false;
+            var expectedLarsCode = 123;
+            command.PostVacancyRequestData.ProgrammeId = expectedLarsCode.ToString();
+
+            var matchingStandard = new GetStandardsListItem
+            {
+                LarsCode = expectedLarsCode,
+                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+            };
+
+            var getStandardsResponse = new GetStandardsListResponse
+            {
+                Standards = new List<GetStandardsListItem> { matchingStandard }
+            };
+
+            courseServiceMock
+                .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(getStandardsResponse);
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                     x.PostWithResponseCode<long?>(
@@ -136,10 +257,28 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             long responseValue,
             CreateVacancyCommand command,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<ICourseService> courseServiceMock,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.IsSandbox = true;
+            var expectedLarsCode = 123;
+            command.PostVacancyRequestData.ProgrammeId = expectedLarsCode.ToString();
+
+            var matchingStandard = new GetStandardsListItem
+            {
+                LarsCode = expectedLarsCode,
+                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+            };
+
+            var getStandardsResponse = new GetStandardsListResponse
+            {
+                Standards = new List<GetStandardsListItem> { matchingStandard }
+            };
+
+            courseServiceMock
+                .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(getStandardsResponse);
             var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient
                 .Setup(x =>
@@ -190,12 +329,30 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             GetProviderAccountLegalEntitiesResponse response,
             [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<ICourseService> courseServiceMock,
             CreateVacancyCommandHandler handler)
         {
             //Arrange
             command.PostVacancyRequestData.OwnerType = OwnerType.Provider;
             response.AccountProviderLegalEntities.First().AccountLegalEntityPublicHashedId = command.PostVacancyRequestData.AccountLegalEntityPublicHashedId;
             command.IsSandbox = false;
+            var expectedLarsCode = 123;
+            command.PostVacancyRequestData.ProgrammeId = expectedLarsCode.ToString();
+
+            var matchingStandard = new GetStandardsListItem
+            {
+                LarsCode = expectedLarsCode,
+                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+            };
+
+            var getStandardsResponse = new GetStandardsListResponse
+            {
+                Standards = new List<GetStandardsListItem> { matchingStandard }
+            };
+
+            courseServiceMock
+                .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(getStandardsResponse);
             var apiResponse = new ApiResponse<long?>(null, HttpStatusCode.BadRequest, errorContent);
             recruitApiClient
                 .Setup(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true))

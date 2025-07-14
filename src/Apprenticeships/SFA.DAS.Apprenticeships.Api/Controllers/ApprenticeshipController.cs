@@ -9,8 +9,8 @@ using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
 using CreateApprenticeshipStartDateChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipStartDateChangeRequest;
@@ -22,14 +22,14 @@ namespace SFA.DAS.Apprenticeships.Api.Controllers;
 [Route("[controller]")]
 public class ApprenticeshipController : ControllerBase
 {
-    private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apiClient;
+    private readonly ILearningApiClient<LearningApiConfiguration> _apiClient;
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
     private readonly IMediator _mediator;
     private readonly ILogger<ApprenticeshipController> _logger;
 
     public ApprenticeshipController(
         ILogger<ApprenticeshipController> logger,
-        IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apiClient,
+        ILearningApiClient<LearningApiConfiguration> apiClient,
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
         IMediator mediator)
     {
