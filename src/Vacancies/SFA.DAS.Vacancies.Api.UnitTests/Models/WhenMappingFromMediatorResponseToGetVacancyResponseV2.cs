@@ -50,6 +50,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.VacancyReference)
                 .Excluding(item => item.VacancySource)
                 .Excluding(item => item.Location)
+                .Excluding(c => c.ApprenticeshipType)
                 .Excluding(item => item.EmploymentLocationInformation)
                 .Excluding(item => item.Address)
                 .Excluding(item => item.OtherAddresses)
