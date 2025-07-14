@@ -13,9 +13,14 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 public class ProviderLocationDeleteController(ILogger<ProviderLocationDeleteController> logger, IMediator mediator) : ControllerBase
 {
     [HttpDelete]
-    public async Task<IActionResult> DeleteProviderLocation([FromRoute] int ukprn, [FromRoute] Guid id, DeleteProviderLocationCommand command)
+    public async Task<IActionResult> DeleteProviderLocation([FromRoute] int ukprn, [FromRoute] Guid id, [FromQuery] Guid userId, [FromQuery] string userDisplayName)
     {
-        logger.LogInformation("Outer API: Request received to delete provider location for ukprn: {ukprn} id: {id} by UserId: {userId}", ukprn, id, command.UserId);
+
+        DeleteProviderLocationCommand command = new DeleteProviderLocationCommand
+        { Ukprn = ukprn, Id = id, UserId = userId.ToString(), UserDisplayName = userDisplayName };
+
+
+        logger.LogInformation("Outer API: Request received to delete provider location for ukprn: {Ukprn} id: {Id} by UserId: {UserId}", ukprn, id, command.UserId);
         command.Ukprn = ukprn;
         command.Id = id;
         var response = await mediator.Send(command);

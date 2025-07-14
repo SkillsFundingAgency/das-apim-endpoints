@@ -23,29 +23,44 @@ public class ProviderLocationDeleteControllerTests
     public async Task DeleteProviderLocation_InvokesCommand(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderLocationDeleteController sut,
-        int ukprn, Guid id, DeleteProviderLocationCommand command)
+        int ukprn, Guid id, Guid userId, string userDisplayName)
     {
         var apiResponse = new ApiResponse<Unit>(new Unit(), HttpStatusCode.OK, "");
 
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
+        DeleteProviderLocationCommand command = new DeleteProviderLocationCommand
+        { Ukprn = ukprn, Id = id, UserId = userId.ToString(), UserDisplayName = userDisplayName };
+
+
+        mediatorMock.Setup(m => m.Send(It.Is<DeleteProviderLocationCommand>(c => c.Ukprn == ukprn
+                && c.Id == id && c.UserId == userId.ToString()
+                && c.UserDisplayName == userDisplayName),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(apiResponse);
 
-        await sut.DeleteProviderLocation(ukprn, id, command);
+        await sut.DeleteProviderLocation(ukprn, id, userId, userDisplayName);
 
-        mediatorMock.Verify(m => m.Send(command, It.IsAny<CancellationToken>()));
+        mediatorMock.Verify(m => m.Send(It.Is<DeleteProviderLocationCommand>(c => c.Ukprn == ukprn
+            && c.Id == id && c.UserId == userId.ToString()
+            && c.UserDisplayName == userDisplayName), It.IsAny<CancellationToken>()));
     }
 
     [Test, MoqAutoData]
     public async Task DeleteProviderLocation_ReturnsNoContent(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderLocationDeleteController sut,
-        int ukprn, Guid id, DeleteProviderLocationCommand command)
+        int ukprn, Guid id, Guid userId, string userDisplayName)
     {
         var apiResponse = new ApiResponse<Unit>(new Unit(), HttpStatusCode.NoContent, "");
+        DeleteProviderLocationCommand command = new DeleteProviderLocationCommand
+        { Ukprn = ukprn, Id = id, UserId = userId.ToString(), UserDisplayName = userDisplayName };
 
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.Is<DeleteProviderLocationCommand>(c => c.Ukprn == ukprn
+                    && c.Id == id && c.UserId == userId.ToString()
+                    && c.UserDisplayName == userDisplayName),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(apiResponse);
-        var response = await sut.DeleteProviderLocation(ukprn, id, command);
+
+        var response = await sut.DeleteProviderLocation(ukprn, id, userId, userDisplayName);
 
         (response as NoContentResult).Should().NotBeNull();
     }
@@ -54,13 +69,19 @@ public class ProviderLocationDeleteControllerTests
     public async Task DeleteProviderLocation_ReturnsNotFound(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderLocationDeleteController sut,
-        int ukprn, Guid id, DeleteProviderLocationCommand command)
+        int ukprn, Guid id, Guid userId, string userDisplayName)
     {
         var apiResponse = new ApiResponse<Unit>(new Unit(), HttpStatusCode.NotFound, "");
+        DeleteProviderLocationCommand command = new DeleteProviderLocationCommand
+        { Ukprn = ukprn, Id = id, UserId = userId.ToString(), UserDisplayName = userDisplayName };
 
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.Is<DeleteProviderLocationCommand>(c => c.Ukprn == ukprn
+                    && c.Id == id && c.UserId == userId.ToString()
+                    && c.UserDisplayName == userDisplayName),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(apiResponse);
-        var response = await sut.DeleteProviderLocation(ukprn, id, command);
+
+        var response = await sut.DeleteProviderLocation(ukprn, id, userId, userDisplayName);
 
         (response as NotFoundResult).Should().NotBeNull();
     }
@@ -69,13 +90,19 @@ public class ProviderLocationDeleteControllerTests
     public async Task DeleteProviderLocation_ReturnsBadRequest(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProviderLocationDeleteController sut,
-        int ukprn, Guid id, DeleteProviderLocationCommand command)
+        int ukprn, Guid id, Guid userId, string userDisplayName)
     {
         var apiResponse = new ApiResponse<Unit>(new Unit(), HttpStatusCode.BadRequest, "");
+        DeleteProviderLocationCommand command = new DeleteProviderLocationCommand
+        { Ukprn = ukprn, Id = id, UserId = userId.ToString(), UserDisplayName = userDisplayName };
 
-        mediatorMock.Setup(m => m.Send(command, It.IsAny<CancellationToken>()))
+        mediatorMock.Setup(m => m.Send(It.Is<DeleteProviderLocationCommand>(c => c.Ukprn == ukprn
+                    && c.Id == id && c.UserId == userId.ToString()
+                    && c.UserDisplayName == userDisplayName),
+                It.IsAny<CancellationToken>()))
             .ReturnsAsync(apiResponse);
-        var response = await sut.DeleteProviderLocation(ukprn, id, command);
+
+        var response = await sut.DeleteProviderLocation(ukprn, id, userId, userDisplayName);
 
         (response as BadRequestResult).Should().NotBeNull();
     }
