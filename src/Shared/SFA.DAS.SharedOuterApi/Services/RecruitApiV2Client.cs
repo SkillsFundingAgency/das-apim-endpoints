@@ -78,7 +78,7 @@ public class RecruitApiV2Client(IInternalApiClient<RecruitApiV2Configuration> ap
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
         {
-            throw new NotImplementedException();
+            return apiClient.PatchWithResponseCode<TData>(request);
         }
 
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
@@ -88,6 +88,6 @@ public class RecruitApiV2Client(IInternalApiClient<RecruitApiV2Configuration> ap
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
         {
-            throw new NotImplementedException();
+            return apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
         }
 }

@@ -2,17 +2,11 @@
 
 namespace SFA.DAS.Approvals.InnerApi.Requests
 {
-    public class PostAddDraftApprenticeshipRequest : IPostApiRequest
+    public class PostAddDraftApprenticeshipRequest(long cohortId, AddDraftApprenticeshipRequest data) : IPostApiRequest
     {
-        public long CohortId { get; }
-        public object Data { get; set; }
+        public long CohortId { get; } = cohortId;
+        public object Data { get; set; } = data;
 
         public string PostUrl => $"api/cohorts/{CohortId}/draft-apprenticeships";
-
-        public PostAddDraftApprenticeshipRequest(long cohortId, AddDraftApprenticeshipRequest data)
-        {
-            CohortId = cohortId;
-            Data = data;
-        }
     }
 }
