@@ -5,7 +5,6 @@ namespace SFA.DAS.Recruit.Domain.Vacancy;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum WageType
 {
-    Unspecified,
     FixedWage,
     NationalMinimumWageForApprentices,
     NationalMinimumWage,
