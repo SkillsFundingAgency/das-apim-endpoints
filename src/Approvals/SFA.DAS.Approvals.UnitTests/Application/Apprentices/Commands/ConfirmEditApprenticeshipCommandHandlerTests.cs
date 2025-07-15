@@ -14,8 +14,11 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using AutoFixture.NUnit3;
+using System.Net;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands;
 
@@ -33,12 +36,14 @@ public class ConfirmEditApprenticeshipCommandHandlerTests
         EditApprenticeshipResponse editResponse)
     {
         // Arrange
+        apprenticeshipResponse.CourseCode = command.CourseCode;
         commitmentsV2ApiClient.Setup(x => x.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
             .ReturnsAsync(apprenticeshipResponse);
         courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(command.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult { LearnerAgeRules = learnerAgeResponse });
-        commitmentsV2ApiClient.Setup(x => x.Post<EditApprenticeshipResponse>(It.IsAny<EditApprenticeshipApiRequest>()))
-            .ReturnsAsync(editResponse);
+        
+        commitmentsV2ApiClient.Setup(x => x.PostWithResponseCode<EditApprenticeshipResponse>(It.IsAny<EditApprenticeshipApiRequest>(), true))
+            .ReturnsAsync(new ApiResponse<EditApprenticeshipResponse>(editResponse, HttpStatusCode.OK, string.Empty, new Dictionary<string, IEnumerable<string>>()));
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
@@ -48,7 +53,7 @@ public class ConfirmEditApprenticeshipCommandHandlerTests
         result.ApprenticeshipId.Should().Be(editResponse.ApprenticeshipId);
         result.NeedReapproval.Should().Be(editResponse.NeedReapproval);
         courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(command.CourseCode), Times.Once);
-        commitmentsV2ApiClient.Verify(x => x.Post<EditApprenticeshipResponse>(It.IsAny<EditApprenticeshipApiRequest>()), Times.Once);
+        commitmentsV2ApiClient.Verify(x => x.PostWithResponseCode<EditApprenticeshipResponse>(It.IsAny<EditApprenticeshipApiRequest>(), true), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -67,15 +72,16 @@ public class ConfirmEditApprenticeshipCommandHandlerTests
             .ReturnsAsync(apprenticeshipResponse);
         courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(command.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult { LearnerAgeRules = learnerAgeResponse });
-        commitmentsV2ApiClient.Setup(x => x.Post<EditApprenticeshipResponse>(It.Is<EditApprenticeshipApiRequest>(r => ((EditApprenticeshipApiRequestData)r.Data).Option == string.Empty)))
-            .ReturnsAsync(editResponse);
+        
+        commitmentsV2ApiClient.Setup(x => x.PostWithResponseCode<EditApprenticeshipResponse>(It.Is<EditApprenticeshipApiRequest>(r => ((EditApprenticeshipApiRequestData)r.Data).Option == string.Empty), true))
+            .ReturnsAsync(new ApiResponse<EditApprenticeshipResponse>(editResponse, HttpStatusCode.OK, string.Empty, new Dictionary<string, IEnumerable<string>>()));
 
         // Act
         var result = await handler.Handle(command, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
-        commitmentsV2ApiClient.Verify(x => x.Post<EditApprenticeshipResponse>(It.Is<EditApprenticeshipApiRequest>(r => ((EditApprenticeshipApiRequestData)r.Data).Option == string.Empty)), Times.Once);
+        commitmentsV2ApiClient.Verify(x => x.PostWithResponseCode<EditApprenticeshipResponse>(It.Is<EditApprenticeshipApiRequest>(r => ((EditApprenticeshipApiRequestData)r.Data).Option == string.Empty), true), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -92,8 +98,8 @@ public class ConfirmEditApprenticeshipCommandHandlerTests
             .ReturnsAsync(apprenticeshipResponse);
         courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(command.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult { LearnerAgeRules = learnerAgeResponse });
-        commitmentsV2ApiClient.Setup(x => x.Post<EditApprenticeshipResponse>(It.IsAny<EditApprenticeshipApiRequest>()))
-            .ThrowsAsync(new HttpRequestContentException("fail", System.Net.HttpStatusCode.BadRequest, "fail"));
+        commitmentsV2ApiClient.Setup(x => x.PostWithResponseCode<EditApprenticeshipResponse>(It.IsAny<EditApprenticeshipApiRequest>(), true))
+            .ThrowsAsync(new HttpRequestContentException("fail", HttpStatusCode.BadRequest, "fail"));
 
         // Act & Assert
         await FluentActions.Invoking(() => handler.Handle(command, CancellationToken.None))
