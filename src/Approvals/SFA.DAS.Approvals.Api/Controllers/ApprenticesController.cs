@@ -8,6 +8,7 @@ using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
@@ -391,6 +392,47 @@ public class ApprenticesController(
         catch (Exception exception)
         {
             logger.LogError(exception, "GET ManageApprenticeshipDetails exception caught for apprenticeshipId {Id}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPost]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/confirm")]
+    public async Task<IActionResult> ConfirmEditApprenticeship(long providerId, long apprenticeshipId, [FromBody] ConfirmEditApprenticeshipRequest request)
+    {
+        try
+        {
+            var command = new ConfirmEditApprenticeshipCommand
+            {
+                ApprenticeshipId = apprenticeshipId,
+                ProviderId = providerId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                DateOfBirth = request.DateOfBirth,
+                Cost = request.Cost,
+                ProviderReference = request.ProviderReference,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                DeliveryModel = request.DeliveryModel,
+                EmploymentEndDate = request.EmploymentEndDate,
+                EmploymentPrice = request.EmploymentPrice,
+                CourseCode = request.CourseCode,
+                Version = request.Version,
+                Option = request.Option
+            };
+
+            var result = await mediator.Send(command);
+
+            return Ok(new ConfirmEditApprenticeshipResponse
+            {
+                ApprenticeshipId = result.ApprenticeshipId,
+                NeedReapproval = result.NeedReapproval
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
             return BadRequest();
         }
     }
