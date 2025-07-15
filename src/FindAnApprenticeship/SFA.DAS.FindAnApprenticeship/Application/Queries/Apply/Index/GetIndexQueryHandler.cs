@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -15,7 +14,6 @@ using System.Threading.Tasks;
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 
 public class GetIndexQueryHandler(
-    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
     IVacancyService vacancyService)
     : IRequestHandler<GetIndexQuery, GetIndexQueryResult>
@@ -23,7 +21,7 @@ public class GetIndexQueryHandler(
     public async Task<GetIndexQueryResult> Handle(GetIndexQuery request, CancellationToken cancellationToken)
     {
         var application = await candidateApiClient.Get<GetApplicationApiResponse>(new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, false));
-        if (application == null || application.Status != ApplicationStatus.Draft) return null;
+        if (application == null) return null;
 
         var vacancy = await vacancyService.GetVacancy(application.VacancyReference)
                       ?? await vacancyService.GetClosedVacancy(application.VacancyReference);
@@ -104,13 +102,13 @@ public class GetIndexQueryHandler(
 
     private static Question GetAdditionalQuestion(List<Question> additionalQuestions, int questionNumber)
     {
-        var additionalQuestion = additionalQuestions is { Count: > 0 } && additionalQuestions.FirstOrDefault(c => c.QuestionOrder==questionNumber) != null 
-            ? additionalQuestions.FirstOrDefault(c => c.QuestionOrder==questionNumber)! 
+        var additionalQuestion = additionalQuestions is { Count: > 0 } && additionalQuestions.FirstOrDefault(c => c.QuestionOrder == questionNumber) != null
+            ? additionalQuestions.FirstOrDefault(c => c.QuestionOrder == questionNumber)!
             : null;
 
         if (additionalQuestion == null && additionalQuestions.Count > 0 && additionalQuestions.TrueForAll(c => c.QuestionOrder == null))
         {
-            if(additionalQuestions is { Count: >= 2 } )
+            if (additionalQuestions is { Count: >= 2 })
             {
                 switch (questionNumber)
                 {
@@ -126,8 +124,8 @@ public class GetIndexQueryHandler(
                 return additionalQuestions.FirstOrDefault();
             }
         }
-            
-        
+
+
         return additionalQuestion;
     }
 }
