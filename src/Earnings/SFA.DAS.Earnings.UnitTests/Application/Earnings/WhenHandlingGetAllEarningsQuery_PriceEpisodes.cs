@@ -79,7 +79,6 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             actualPriceEpisode.PriceEpisodeValues.TNP2.Should().Be(episodePrice.Price.EndPointAssessmentPrice);
             actualPriceEpisode.PriceEpisodeValues.TNP3.Should().Be(0);
             actualPriceEpisode.PriceEpisodeValues.TNP4.Should().Be(0);
-           // actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA - Tested seperately
             actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUBalValue.Should().Be(0);
             actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftCompElement.Should().Be(0);
             actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FrameworkUpliftTotPrevEarnings.Should().Be(0);
