@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.ApprenticeCommitments.Extensions;
+using SFA.DAS.ApprenticeCommitments.Types;
 using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.ApprovalCreatedRequestData;
 
 #nullable enable
@@ -109,7 +111,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             var course = await _coursesService.GetCourse(courseCode);
             
             // TODO implement
-            apprenticeship.ApprenticeshipType = course.ApprenticeshipType;
+            apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
 
             var provider = _trainingProviderService.GetTrainingProviderDetails(
                 command.TrainingProviderId);

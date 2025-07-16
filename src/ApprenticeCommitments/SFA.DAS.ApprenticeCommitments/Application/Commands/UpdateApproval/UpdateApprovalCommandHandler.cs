@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.ApprenticeCommitments.Extensions;
+using SFA.DAS.ApprenticeCommitments.Types;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
@@ -93,7 +95,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
             var provider = _trainingProviderService.GetTrainingProviderDetails(apprenticeship.ProviderId);
             
             // TODO implement
-            apprenticeship.ApprenticeshipType = course.ApprenticeshipType;
+            apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
             
             return (apprenticeship, await provider, course);
         }
