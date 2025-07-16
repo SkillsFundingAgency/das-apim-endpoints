@@ -4,9 +4,12 @@ using SFA.DAS.EarlyConnect.Api.Models;
 using System.Net;
 using Asp.Versioning;
 using SFA.DAS.EarlyConnect.Api.Mappers;
+using SFA.DAS.EarlyConnect.Api.Requests.GetRequests;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateOtherStudentTriageData;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
+using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
+using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate;
 using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
 using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
@@ -45,7 +48,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     }
                 });
 
-                var model = new SendReminderEmailResponse()
+                var model = new InnerApi.Responses.SendReminderEmailResponse()
                 {
                     Message = response.Message
                 };
@@ -205,5 +208,25 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 Log = LogMapper.MapFromLogUpdateRequest(updateLog)
             });
         }
+        
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ResendDataToLondon([FromQuery] LondonDataGetRequest londonDataGetRequest)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = londonDataGetRequest.ToDate, FromDate = londonDataGetRequest.FromDate });
+                return Ok((Models.GetStudentTriageDataByDateResponse)result);
+            }
+            catch (Exception e)
+            {
+                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
+
+                _logger.LogError(e, "Error getting london data ");
+
+                return BadRequest($"Error getting london data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
+            }
+        }        
     }
 }
