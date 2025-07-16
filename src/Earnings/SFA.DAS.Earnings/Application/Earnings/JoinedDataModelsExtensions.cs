@@ -85,7 +85,10 @@ internal static class JoinedDataModelsExtensions
             TNP3 = EarningsFM36Constants.TNP3,
             TNP4 = EarningsFM36Constants.TNP4,
 
-            PriceEpisodeActualEndDateIncEPA = EarningsFM36Constants.PriceEpisodeActualEndDateIncEPA,
+            PriceEpisodeActualEndDateIncEPA = joinedEarningsApprenticeship.GetPriceEpisodeActualEndDateIncEPA(joinedPriceEpisode, hasSubsequentPriceEpisodes),
+
+
+
             PriceEpisode1618FUBalValue = EarningsFM36Constants.PriceEpisode1618FUBalValue,
             PriceEpisodeApplic1618FrameworkUpliftCompElement = EarningsFM36Constants.PriceEpisodeApplic1618FrameworkUpliftCompElement,
             PriceEpisode1618FrameworkUpliftTotPrevEarnings = EarningsFM36Constants.PriceEpisode1618FrameworkUpliftTotPrevEarnings,
@@ -156,6 +159,18 @@ internal static class JoinedDataModelsExtensions
         };
     }
     
+    private static DateTime? GetPriceEpisodeActualEndDateIncEPA(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode, bool hasSubsequentPriceEpisodes)
+    {
+        if (hasSubsequentPriceEpisodes)
+        {
+            var dayBeforeNextPEStartDate = joinedEarningsApprenticeship.GetNextPriceEpisode(currentPriceEpisode)?.StartDate.AddDays(-1);
+            return joinedEarningsApprenticeship.CompletionDate.EarliestOf(dayBeforeNextPEStartDate);
+        }
+
+        return joinedEarningsApprenticeship.CompletionDate;
+
+    }
+
     private static DateTime? GetActualEndDate(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode, bool hasSubsequentPriceEpisodes)
     {
         if(hasSubsequentPriceEpisodes)
