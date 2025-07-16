@@ -6,8 +6,8 @@ using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Apprenticeship;
 public class WhenGettingApprenticeshipStartDate
 {
 	private readonly Mock<ILogger<GetApprenticeshipStartDateQueryHandler>> _mocklogger;
-    private readonly Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient;
+    private readonly Mock<ILearningApiClient<LearningApiConfiguration>> _mockApprenticeshipsApiClient;
     private readonly Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _mockCommitmentsV2ApiApiClient;
     private readonly Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _mockCollectionCalendarApiClient;
     private readonly Fixture _fixture;
@@ -37,12 +37,12 @@ public class WhenGettingApprenticeshipStartDate
     DateTime _dateOfBirth;
     DateTime _effectiveFrom;
     DateTime _effectiveTo;
-    private GetApprenticeshipStartDateResponse _expectedInnerApiResponse = null!;
+    private GetLearningStartDateResponse _expectedInnerApiResponse = null!;
 
     public WhenGettingApprenticeshipStartDate()
     {
 		_mocklogger = new Mock<ILogger<GetApprenticeshipStartDateQueryHandler>>();
-        _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockCommitmentsV2ApiApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
         _mockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
         _fixture = new Fixture();
@@ -73,10 +73,10 @@ public class WhenGettingApprenticeshipStartDate
             }
         };
 
-        _expectedInnerApiResponse = new GetApprenticeshipStartDateResponse
+        _expectedInnerApiResponse = new GetLearningStartDateResponse
         {
             AccountLegalEntityId = 1,
-            ApprenticeshipKey = _expectedResponse.ApprenticeshipKey,
+            LearningKey = _expectedResponse.ApprenticeshipKey,
             ActualStartDate = _expectedResponse.ActualStartDate,
             PlannedEndDate = _expectedResponse.PlannedEndDate,
             UKPRN = 123,
@@ -86,7 +86,7 @@ public class WhenGettingApprenticeshipStartDate
             SimplifiedPaymentsMinimumStartDate = new DateTime(2024, 10, 1)
         };
 
-        _mockApprenticeshipsApiClient.Setup(x => x.Get<GetApprenticeshipStartDateResponse>(It.IsAny<GetApprenticeshipStartDateRequest>()))
+        _mockApprenticeshipsApiClient.Setup(x => x.Get<GetLearningStartDateResponse>(It.IsAny<GetLearningStartDateRequest>()))
         .ReturnsAsync(_expectedInnerApiResponse);
 
         _mockCommitmentsV2ApiApiClient.Setup(x => x.Get<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))

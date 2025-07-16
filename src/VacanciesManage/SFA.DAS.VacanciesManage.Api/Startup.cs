@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -17,6 +12,10 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.VacanciesManage.Api.AppStart;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.VacanciesManage.Configuration;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.VacanciesManage.Api
 {
