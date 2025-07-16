@@ -10,7 +10,11 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
-public class GetNhsJobsQueryHandler(INhsJobsApiClient nhsJobsApiClient, ILiveVacancyMapper liveVacancyMapper, ILocationApiClient<LocationApiConfiguration> locationApiClient,ICourseService courseService) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
+public class GetNhsJobsQueryHandler(
+    INhsJobsApiClient nhsJobsApiClient,
+    ILiveVacancyMapper liveVacancyMapper,
+    ILocationApiClient<LocationApiConfiguration> locationApiClient,
+    ICourseService courseService) : IRequestHandler<GetNhsJobsQuery, GetNhsJobsQueryResult>
 {
     public async Task<GetNhsJobsQueryResult> Handle(GetNhsJobsQuery request, CancellationToken cancellationToken)
     {

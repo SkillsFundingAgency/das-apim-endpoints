@@ -1,4 +1,5 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.CivilServiceJobs;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
@@ -29,6 +30,19 @@ public class GetLiveVacanciesApiResponse
             PageNo = 1,
             TotalLiveVacanciesReturned = source.NhsVacancies.Count,
             TotalLiveVacancies = source.NhsVacancies.Count,
+            TotalPages = 1
+        };
+    }
+
+    public static implicit operator GetLiveVacanciesApiResponse(GetCivilServiceJobsQueryResult source)
+    {
+        return new GetLiveVacanciesApiResponse
+        {
+            Vacancies = source.CivilServiceVacancies.Select(x => (LiveVacancy)x),
+            PageSize = source.CivilServiceVacancies.Count,
+            PageNo = 1,
+            TotalLiveVacanciesReturned = source.CivilServiceVacancies.Count,
+            TotalLiveVacancies = source.CivilServiceVacancies.Count,
             TotalPages = 1
         };
     }
