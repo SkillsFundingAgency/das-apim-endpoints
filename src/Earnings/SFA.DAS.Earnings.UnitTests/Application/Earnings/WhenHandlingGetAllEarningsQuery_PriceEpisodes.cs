@@ -79,7 +79,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             actualPriceEpisode.PriceEpisodeValues.TNP2.Should().Be(episodePrice.Price.EndPointAssessmentPrice);
             actualPriceEpisode.PriceEpisodeValues.TNP3.Should().Be(0);
             actualPriceEpisode.PriceEpisodeValues.TNP4.Should().Be(0);
-            actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA.Should().BeNull();
+           // actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA - Tested seperately
             actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FUBalValue.Should().Be(0);
             actualPriceEpisode.PriceEpisodeValues.PriceEpisodeApplic1618FrameworkUpliftCompElement.Should().Be(0);
             actualPriceEpisode.PriceEpisodeValues.PriceEpisode1618FrameworkUpliftTotPrevEarnings.Should().Be(0);
@@ -639,6 +639,58 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             case ExpectedActualEndDate.IsDayBeforeNextPriceEpisode:
                 var nextPriceStartDate = expectedEpisodePrice.EndDate.AddDays(1);
                 priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().Be(nextPriceStartDate.AddDays(-1));
+                break;
+        }
+    }
+
+    public enum ExpectedPriceEpisodeActualEndDateIncEPA { IsNull, IsCompletionDate, IsDayBeforeNextPriceEpisode }
+    public enum SetCompletionDateTo { Null, BeforeEndOfCurrentEpisode, AfterStartOfNextEpisode }
+
+    [TestCase(ExpectedPriceEpisodeActualEndDateIncEPA.IsNull, SetCompletionDateTo.Null, TestScenario.SimpleApprenticeship)]
+    [TestCase(ExpectedPriceEpisodeActualEndDateIncEPA.IsCompletionDate, SetCompletionDateTo.BeforeEndOfCurrentEpisode, TestScenario.SimpleApprenticeship)]
+    [TestCase(ExpectedPriceEpisodeActualEndDateIncEPA.IsDayBeforeNextPriceEpisode, SetCompletionDateTo.Null, TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(ExpectedPriceEpisodeActualEndDateIncEPA.IsCompletionDate, SetCompletionDateTo.BeforeEndOfCurrentEpisode, TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(ExpectedPriceEpisodeActualEndDateIncEPA.IsDayBeforeNextPriceEpisode, SetCompletionDateTo.AfterStartOfNextEpisode, TestScenario.ApprenticeshipWithPriceChange)]
+    public async Task ThenPriceEpisodeActualEndDateIncEPAMatchesExpectations(ExpectedPriceEpisodeActualEndDateIncEPA expectedDate, SetCompletionDateTo setCompletionDateTo, TestScenario testScenario)
+    {
+        // Arrange
+        var testFixture = new GetAllEarningsQueryTestFixture(testScenario);
+        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.First();
+        var prices = apprenticeship.Episodes.First().Prices.OrderBy(x=>x.StartDate);
+
+        switch (setCompletionDateTo)
+        {
+            case SetCompletionDateTo.Null:
+                apprenticeship.CompletionDate = null;
+                break;
+
+            case SetCompletionDateTo.BeforeEndOfCurrentEpisode:
+                apprenticeship.CompletionDate = prices.First().EndDate.AddDays(-5);
+                break;
+
+            case SetCompletionDateTo.AfterStartOfNextEpisode:
+                apprenticeship.CompletionDate = prices.ElementAt(1).StartDate.AddDays(5);
+                break;
+        }
+
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        var expectedEpisodePrice = GetExpectedEpisodePrice(testFixture);
+        var priceEpisode = GetPriceEpisode(testFixture, expectedEpisodePrice);
+
+        switch (expectedDate)
+        {
+            case ExpectedPriceEpisodeActualEndDateIncEPA.IsNull:
+                priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA.Should().BeNull();
+                break;
+            case ExpectedPriceEpisodeActualEndDateIncEPA.IsCompletionDate:
+                priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA.Should().Be(apprenticeship.CompletionDate);
+                break;
+            case ExpectedPriceEpisodeActualEndDateIncEPA.IsDayBeforeNextPriceEpisode:
+                priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDateIncEPA.Should().Be(expectedEpisodePrice.EndDate);
                 break;
         }
     }

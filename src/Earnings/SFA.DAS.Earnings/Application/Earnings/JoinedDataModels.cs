@@ -29,6 +29,8 @@ public class JoinedEarningsApprenticeship
     public DateTime? WithdrawnDate { get; set; }
     /// <summary> Derived from earnings.FundingLineType </summary>
     public string FundingLineType { get; set; }
+    /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
+    public DateTime? CompletionDate { get; set; }
 
     internal JoinedEarningsApprenticeship(Apprenticeship apprenticeship, EarningsApprenticeship earningsApprenticeship, short academicYear)
     {
@@ -40,6 +42,7 @@ public class JoinedEarningsApprenticeship
         AgeAtStartOfApprenticeship = apprenticeship.AgeAtStartOfApprenticeship;
         WithdrawnDate = apprenticeship.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
+        CompletionDate = apprenticeship.CompletionDate;
     }
 
     private static List<JoinedPriceEpisode> JoinEpisodes(Apprenticeship apprenticeship, EarningsApprenticeship earningsApprenticeship, short academicYear)
