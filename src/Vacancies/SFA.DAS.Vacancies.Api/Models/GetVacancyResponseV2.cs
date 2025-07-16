@@ -39,10 +39,26 @@ namespace SFA.DAS.Vacancies.Api.Models
             {
                 return null;
             }
+
+            var isRecruitNationally = string.Equals(
+                source.Vacancy.VacancyLocationType,
+                "National",
+                StringComparison.CurrentCultureIgnoreCase);
+
+            var addresses = new List<GetVacancyAddressItem>();
+            if (source.Vacancy.Address != null)
+            {
+                addresses.Add(GetVacancyAddressItem.From(source.Vacancy.Address));
+            }
+            if (source.Vacancy.OtherAddresses != null && source.Vacancy.OtherAddresses.Any())
+            {
+                addresses.AddRange(source.Vacancy.OtherAddresses.Select(GetVacancyAddressItem.From));
+            }
+
             return new GetVacancyResponseV2
             {
                 AdditionalTrainingDescription = source.Vacancy.AdditionalTrainingDescription,
-                Address = GetVacancyAddressItem.From(source.Vacancy.Address),
+                Addresses = addresses,
                 ApprenticeshipLevel = source.Vacancy.ApprenticeshipLevel,
                 ApplicationUrl = source.Vacancy.ApplicationUrl,
                 ClosingDate = source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
@@ -60,9 +76,9 @@ namespace SFA.DAS.Vacancies.Api.Models
                 FullDescription = source.Vacancy.LongDescription,
                 HoursPerWeek = source.Vacancy.HoursPerWeek,
                 IsDisabilityConfident = source.Vacancy.IsDisabilityConfident,
-                IsNationalVacancy = source.Vacancy.VacancyLocationType?.Equals("National", StringComparison.CurrentCultureIgnoreCase) ?? false,
+                IsNationalVacancy = isRecruitNationally,
+                IsNationalVacancyDetails = isRecruitNationally ? source.Vacancy.EmploymentLocationInformation : string.Empty,
                 NumberOfPositions = source.Vacancy.NumberOfPositions,
-                OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 OutcomeDescription = source.Vacancy.OutcomeDescription,
                 PostedDate = source.Vacancy.PostedDate,
                 ProviderName = source.Vacancy.ProviderName,

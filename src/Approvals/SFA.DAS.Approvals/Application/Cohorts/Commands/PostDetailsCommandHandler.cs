@@ -15,21 +15,15 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Commands
 {
-    public class PostDetailsCommandHandler : IRequestHandler<PostDetailsCommand, Unit>
+    public class PostDetailsCommandHandler(
+        ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
+        ServiceParameters serviceParameters)
+        : IRequestHandler<PostDetailsCommand, Unit>
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly ServiceParameters _serviceParameters;
-
-        public PostDetailsCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, ServiceParameters serviceParameters)
-        {
-            _apiClient = apiClient;
-            _serviceParameters = serviceParameters;
-        }
-
         public async Task<Unit> Handle(PostDetailsCommand request, CancellationToken cancellationToken)
         {
             var cohortRequest = new GetCohortRequest(request.CohortId);
-            var cohortResponse = await _apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
+            var cohortResponse = await apiClient.GetWithResponseCode<GetCohortResponse>(cohortRequest);
 
             if (cohortResponse.StatusCode == HttpStatusCode.NotFound)
             {
@@ -40,7 +34,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
 
             var cohort = cohortResponse.Body;
 
-            if (!cohort.CheckParty(_serviceParameters))
+            if (!cohort.CheckParty(serviceParameters))
             {
                 throw new ResourceNotFoundException();
             }
@@ -52,7 +46,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
                 apiRequest = new ApproveCohortRequest(request.CohortId);
                 apiRequest.Data = new ApproveCohortRequest.Body
                 {
-                    RequestingParty = _serviceParameters.CallingParty,
+                    RequestingParty = serviceParameters.CallingParty,
                     Message = request.Message,
                     UserInfo = request.UserInfo
                 };
@@ -62,13 +56,13 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Commands
                 apiRequest = new SendCohortRequest(request.CohortId);
                 apiRequest.Data = new SendCohortRequest.Body
                 {
-                    RequestingParty = _serviceParameters.CallingParty,
+                    RequestingParty = serviceParameters.CallingParty,
                     Message = request.Message,
                     UserInfo = request.UserInfo
                 };
             }
             
-            var response = await _apiClient.PostWithResponseCode<EmptyResponse>(apiRequest, false);
+            var response = await apiClient.PostWithResponseCode<EmptyResponse>(apiRequest, false);
             response.EnsureSuccessStatusCode();
  
             return Unit.Value;

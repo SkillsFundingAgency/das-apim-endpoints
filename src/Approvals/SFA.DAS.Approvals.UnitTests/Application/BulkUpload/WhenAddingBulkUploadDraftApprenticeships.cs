@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -8,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -23,6 +26,8 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
          GetBulkUploadAddDraftApprenticeshipsResponse response,
          [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
          [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
+         [Frozen] Mock<IAddCourseTypeDataToCsvService> addCourseTypeDataToCsvService,
+         List<BulkUploadAddDraftApprenticeshipExtendedRequest> csvRecordsExtendedRequests,
          BulkUploadAddDraftApprenticeshipsCommandHandler handler
          )
         {
@@ -30,10 +35,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload
             
             apiClient.Setup(x => x.PostWithResponseCode<GetBulkUploadAddDraftApprenticeshipsResponse>
                 (It.Is<PostAddDraftApprenticeshipsRequest>(
-                    x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddDraftApprenticeshipsRequest).BulkUploadDraftApprenticeships == command.BulkUploadAddDraftApprenticeships
+                    x => x.ProviderId == command.ProviderId && (x.Data as BulkUploadAddDraftApprenticeshipsRequest).BulkUploadDraftApprenticeships == csvRecordsExtendedRequests
                                                             && (x.Data as BulkUploadAddDraftApprenticeshipsRequest).LogId == command.FileUploadLogId
                 ), true)).ReturnsAsync(apiResponse);
 
+            addCourseTypeDataToCsvService.Setup(x => x.MapAndAddCourseTypeData(command.BulkUploadAddDraftApprenticeships.ToList())).ReturnsAsync(csvRecordsExtendedRequests);
 
             var result = new BulkCreateReservationsWithNonLevyResult();
             foreach (var draftApprenticeship in command.BulkUploadAddDraftApprenticeships)

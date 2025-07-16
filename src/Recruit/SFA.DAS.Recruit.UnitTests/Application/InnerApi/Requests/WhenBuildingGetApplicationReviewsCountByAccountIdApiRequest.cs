@@ -7,13 +7,13 @@ namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests
     public class WhenBuildingGetApplicationReviewsCountByAccountIdApiRequest
     {
         [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed(long accountId, List<long> vacancyReferences)
+        public void Then_The_Url_Is_Correctly_Constructed(long accountId, List<long> vacancyReferences, string applicationSharedFilteringStatus)
         {
             //Act
-            var actual = new GetApplicationReviewsCountByAccountIdApiRequest(accountId, vacancyReferences);
+            var actual = new GetApplicationReviewsCountByAccountIdApiRequest(accountId, vacancyReferences, applicationSharedFilteringStatus);
 
             //Assert
-            actual.PostUrl.Should().Be($"api/employer/{accountId}/applicationReviews/count");
+            actual.PostUrl.Should().Be($"api/employer/{accountId}/applicationReviews/count?applicationSharedFilteringStatus={applicationSharedFilteringStatus}");
         }
     }
 }

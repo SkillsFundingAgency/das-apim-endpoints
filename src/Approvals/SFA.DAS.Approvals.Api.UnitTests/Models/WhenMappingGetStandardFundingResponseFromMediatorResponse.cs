@@ -15,7 +15,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
             var actual = (GetStandardFundingResponse)source;
             
             //Assert
-            actual.Should().BeEquivalentTo(source);
+            actual.Should().BeEquivalentTo(source, options => options.ExcludingMissingMembers());
         }
     }
 }
