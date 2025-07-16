@@ -10,7 +10,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Encoding;
 using SFA.DAS.Recruit.Api.AppStart;
 using SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
 using SFA.DAS.SharedOuterApi.AppStart;
