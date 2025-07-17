@@ -351,6 +351,8 @@ components:
           properties:
             uln:
               type: string
+            learnerRef:
+              type: string
             firstname:
               type: string
             lastname:
@@ -379,8 +381,6 @@ components:
                 properties:
                   standardCode:
                     type: integer
-                  learnerRef:
-                    type: string
                   agreementId:
                     type: string
                   startDate:
