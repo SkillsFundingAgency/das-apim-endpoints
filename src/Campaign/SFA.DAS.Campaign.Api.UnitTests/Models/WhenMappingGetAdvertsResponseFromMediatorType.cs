@@ -80,5 +80,22 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
             actual.Vacancies.Should().BeEmpty();
             actual.Location.Should().BeNull();
         }
+        
+        [Test, AutoData]
+        public void Then_If_National_Vacancy_Response_Returned_Then_Mapped(GetAdvertsQueryResult source)
+        {
+            //Arrange
+            //Arrange
+            foreach (var vacancy in source.Vacancies)
+            {
+                vacancy.Location = null;
+            }
+
+            //Act
+            var actual = (GetAdvertsResponse)source;
+
+            //Assert
+            actual.Vacancies.ToList().TrueForAll(c=>c.Location.Lat == 0 && c.Location.Lon == 0).Should().BeTrue();
+        }
     }
 }
