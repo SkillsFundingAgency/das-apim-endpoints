@@ -32,7 +32,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task GetStudentTriageData_ValidRequest_ReturnsOk(
-            GetStudentTriageDataBySurveyIdResult mediatorResult,
+            GetStudentTriageDataResult mediatorResult,
             Guid surveyGuid
         )
         {
@@ -44,7 +44,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.InstanceOf<GetStudentTriageDataBySurveyIdResponse>());
+            Assert.That(okResult.Value, Is.InstanceOf<GetStudentTriageDataResponse>());
             Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 

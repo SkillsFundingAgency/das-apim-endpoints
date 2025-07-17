@@ -3,7 +3,7 @@ using SFA.DAS.EarlyConnect.Models;
 
 namespace SFA.DAS.EarlyConnect.Api.Models
 {
-    public class GetStudentTriageDataBySurveyIdResponse
+    public class GetStudentTriageDataResponse
     {
         public int Id { get; set; }
         public DateTime? LepDateSent { get; set; }
@@ -23,9 +23,9 @@ namespace SFA.DAS.EarlyConnect.Api.Models
         public DateTime? DateInterest { get; set; }
         public ICollection<SurveyQuestions> SurveyQuestions { get; set; }
         public StudentSurvey StudentSurvey { get; set; }
-        public static implicit operator GetStudentTriageDataBySurveyIdResponse(GetStudentTriageDataBySurveyIdResult source)
+        public static implicit operator GetStudentTriageDataResponse(GetStudentTriageDataResult source)
         {
-            return new GetStudentTriageDataBySurveyIdResponse
+            return new GetStudentTriageDataResponse
             {
                 Id = source.Id,
                 LepDateSent = source.LepDateSent,

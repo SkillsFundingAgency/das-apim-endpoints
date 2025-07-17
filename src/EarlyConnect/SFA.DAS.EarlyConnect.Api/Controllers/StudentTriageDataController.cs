@@ -153,7 +153,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStudentTriageDataBySurveyIdQuery { SurveyGuid = surveyGuid });
 
-                return Ok((Models.GetStudentTriageDataBySurveyIdResponse)result);
+                return Ok((Models.GetStudentTriageDataResponse)result);
             }
             catch (Exception e)
             {
@@ -174,7 +174,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = ToDate, FromDate = FromDate });
 
-                var responseList = result.Select(r => new Models.GetStudentTriageDataByDateResponse
+                var responseList = result.Select(r => new Models.GetStudentTriageDataResponse
                 {
                     Id = r.Id,
                     LepDateSent = r.LepDateSent,

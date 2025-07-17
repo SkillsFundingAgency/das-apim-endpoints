@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId
 {
-    public class GetStudentTriageDataBySurveyIdQueryHandler : IRequestHandler<GetStudentTriageDataBySurveyIdQuery, GetStudentTriageDataBySurveyIdResult>
+    public class GetStudentTriageDataBySurveyIdQueryHandler : IRequestHandler<GetStudentTriageDataBySurveyIdQuery, GetStudentTriageDataResult>
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
 
@@ -16,13 +16,13 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
             _apiClient = apiClient;
         }
 
-        public async Task<GetStudentTriageDataBySurveyIdResult> Handle(GetStudentTriageDataBySurveyIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetStudentTriageDataResult> Handle(GetStudentTriageDataBySurveyIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
+            var result = await _apiClient.GetWithResponseCode<GetStudentTriageDataResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
 
             result.EnsureSuccessStatusCode();
 
-            return new GetStudentTriageDataBySurveyIdResult
+            return new GetStudentTriageDataResult
             {
                 Id = result.Body.Id,
                 LepDateSent = result.Body.LepDateSent,

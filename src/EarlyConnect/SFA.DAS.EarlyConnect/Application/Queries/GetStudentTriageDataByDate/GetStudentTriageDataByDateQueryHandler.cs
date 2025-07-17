@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
 using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -7,7 +8,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate
 {
-    public class GetStudentTriageDataByDateQueryHandler : IRequestHandler<GetStudentTriageDataByDateQuery, List<GetStudentTriageDataByDateResult>>
+    public class GetStudentTriageDataByDateQueryHandler : IRequestHandler<GetStudentTriageDataByDateQuery, List<GetStudentTriageDataResult>>
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
 
@@ -16,17 +17,17 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate
             _apiClient = apiClient;
         }
 
-        public async Task<List<GetStudentTriageDataByDateResult>> Handle(GetStudentTriageDataByDateQuery request, CancellationToken cancellationToken)
+        public async Task<List<GetStudentTriageDataResult>> Handle(GetStudentTriageDataByDateQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.GetWithResponseCode<List<GetStudentTriageDataByDateResponse>>(new GetStudentTriageDataByDateRequest(request.ToDate, request.FromDate));
+            var result = await _apiClient.GetWithResponseCode<List<GetStudentTriageDataResponse>>(new GetStudentTriageDataByDateRequest(request.ToDate, request.FromDate));
 
             result.EnsureSuccessStatusCode();
 
-            var listResult = new List<GetStudentTriageDataByDateResult>();
+            var listResult = new List<GetStudentTriageDataResult>();
 
             foreach(var student in result.Body)
             {
-                listResult.Add(new GetStudentTriageDataByDateResult
+                listResult.Add(new GetStudentTriageDataResult
                 {
                     Id = student.Id,
                     LepDateSent = student.LepDateSent,
