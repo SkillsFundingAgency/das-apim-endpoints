@@ -398,13 +398,19 @@ public class ApprenticesController(
 
     [HttpPost]
     [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/confirm")]
-    public async Task<IActionResult> ConfirmEditApprenticeship(long providerId, long apprenticeshipId, [FromBody] ConfirmEditApprenticeshipRequest request)
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit/confirm")]
+    public async Task<IActionResult> ConfirmEditApprenticeship(
+        [FromRoute] long? providerId, 
+        [FromRoute] long? accountId, 
+        [FromRoute] long apprenticeshipId, 
+        [FromBody] ConfirmEditApprenticeshipRequest request)
     {
         try
         {
             var command = new ConfirmEditApprenticeshipCommand
             {
                 ApprenticeshipId = apprenticeshipId,
+                AccountId = accountId,
                 ProviderId = providerId,
                 FirstName = request.FirstName,
                 LastName = request.LastName,

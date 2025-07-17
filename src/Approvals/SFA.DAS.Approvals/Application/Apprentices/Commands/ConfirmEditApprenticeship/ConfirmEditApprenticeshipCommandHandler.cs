@@ -33,6 +33,7 @@ public class ConfirmEditApprenticeshipCommandHandler(
         {
             ApprenticeshipId = command.ApprenticeshipId,
             ProviderId = command.ProviderId,
+            AccountId = command.AccountId,
             FirstName = command.FirstName,
             LastName = command.LastName,
             Email = command.Email,

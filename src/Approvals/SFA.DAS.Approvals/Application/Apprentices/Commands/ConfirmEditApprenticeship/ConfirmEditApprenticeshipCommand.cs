@@ -21,4 +21,5 @@ public class ConfirmEditApprenticeshipCommand : IRequest<ConfirmEditApprenticesh
     public string CourseCode { get; set; }
     public string Version { get; set; }
     public string Option { get; set; }
+    public long? AccountId { get; set; }
 } 
