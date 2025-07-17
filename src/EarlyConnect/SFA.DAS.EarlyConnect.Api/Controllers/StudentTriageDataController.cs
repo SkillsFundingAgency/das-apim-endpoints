@@ -165,6 +165,49 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ResendDataToLondon([FromQuery] DateTime ToDate, DateTime FromDate)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = ToDate, FromDate = FromDate });
+
+                var responseList = result.Select(r => new Models.GetStudentTriageDataByDateResponse
+                {
+                    Id = r.Id,
+                    LepDateSent = r.LepDateSent,
+                    LepsId = r.LepsId,
+                    LepCode = r.LepCode,
+                    LogId = r.LogId,
+                    FirstName = r.FirstName,
+                    LastName = r.LastName,
+                    DateOfBirth = r.DateOfBirth,
+                    SchoolName = r.SchoolName,
+                    URN = r.URN,
+                    Telephone = r.Telephone,
+                    Email = r.Email,
+                    Postcode = r.Postcode,
+                    DataSource = r.DataSource,
+                    Industry = r.Industry,
+                    DateInterest = r.DateInterest,
+                    StudentSurvey = r.StudentSurvey,
+                    SurveyQuestions = r.SurveyQuestions.Select(dto => (SurveyQuestions)dto).ToList(),
+                }).ToList();
+
+                return Ok(responseList);                
+            }
+            catch (Exception e)
+            {
+                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
+
+                _logger.LogError(e, "Error getting london data ");
+
+                return BadRequest($"Error getting london data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
+            }
+        }
+
         private async Task<int> CreateLog(StudentDataUploadStatus status, string ipAddress, ManageStudentTriageDataPostRequest request)
         {
             if (request.StudentSurvey.DateCompleted == null)
@@ -207,26 +250,6 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 Log = LogMapper.MapFromLogUpdateRequest(updateLog)
             });
-        }
-        
-        [HttpGet]
-        [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> ResendDataToLondon([FromQuery] LondonDataGetRequest londonDataGetRequest)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = londonDataGetRequest.ToDate, FromDate = londonDataGetRequest.FromDate });
-                return Ok((Models.GetStudentTriageDataByDateResponse)result);
-            }
-            catch (Exception e)
-            {
-                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
-
-                _logger.LogError(e, "Error getting london data ");
-
-                return BadRequest($"Error getting london data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
-            }
-        }        
+        }                       
     }
 }

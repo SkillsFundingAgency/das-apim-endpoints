@@ -1,7 +1,13 @@
-﻿namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.EarlyConnect.ExternalModels
 {
-    public class GetStudentTriageDataByDateResult
-    {       
+    public  class StudentTriageDataByDate
+    {
         public int Id { get; set; }
         public DateTime? LepDateSent { get; set; }
         public int? LepsId { get; set; }
@@ -18,7 +24,7 @@
         public string DataSource { get; set; }
         public string Industry { get; set; }
         public DateTime? DateInterest { get; set; }
-        public ICollection<Models.SurveyQuestionsDto> SurveyQuestions { get; set; }
-        public Models.StudentSurveyDto StudentSurvey { get; set; }
+        public ICollection<SurveyQuestionsDto> SurveyQuestions { get; set; }
+        public StudentSurveyDto StudentSurvey { get; set; }
     }
 }
