@@ -23,6 +23,11 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         /// <example>Creative and design</example>
         public string Route { get; set; }
+        /// <summary>
+        /// Will either be `apprenticeship` or `foundationApprenticeship`.
+        /// </summary>
+        public string Type { get; set; }
+
         public static implicit operator GetVacancyCourseItem (GetVacanciesListItem source)
         {
             if (source.StandardLarsCode == null)
@@ -34,7 +39,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 LarsCode = source.StandardLarsCode.Value,
                 Level = source.CourseLevel,
                 Route = source.Route,
-                Title = $"{source.CourseTitle} (level {source.CourseLevel})"
+                Title = $"{source.CourseTitle} (level {source.CourseLevel})",
+                Type = source.ApprenticeshipType
             };
         }
     }

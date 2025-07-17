@@ -32,8 +32,8 @@ public class OuterApi
             {
                 {"Environment", "LOCAL_ACCEPTANCE_TESTS"},
                 {"EarningsApiConfiguration:url", _context?.EarningsApi?.BaseAddress + "/"},
-                {"ApprenticeshipsApiConfiguration:url", _context?.ApprenticeshipsApi?.BaseAddress + "/"},
-                {"ApprenticeshipsApiConfiguration:BearerTokenSigningKey", "local_test_outer_api_client_bearer_token_signing_key"},
+                {"LearningApiConfiguration:url", _context?.ApprenticeshipsApi?.BaseAddress + "/"},
+                {"LearningApiConfiguration:BearerTokenSigningKey", "local_test_outer_api_client_bearer_token_signing_key"},
                 {"CollectionCalendarApiConfiguration:url", _context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
                 {"AzureAD:identifier", ""}
@@ -56,7 +56,7 @@ public class OuterApi
             new Claim(JwtRegisteredClaimNames.Exp, DateTimeOffset.UtcNow.AddMinutes(60).ToUnixTimeSeconds().ToString())
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["ApprenticeshipsApiConfiguration:BearerTokenSigningKey"]));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Config["LearningApiConfiguration:BearerTokenSigningKey"]));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(

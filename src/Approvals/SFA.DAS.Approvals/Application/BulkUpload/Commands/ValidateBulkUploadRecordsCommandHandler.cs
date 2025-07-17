@@ -16,7 +16,8 @@ public class ValidateBulkUploadRecordsCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
     IProviderStandardsService providerStandardsService,
-    IBulkCourseMetadataService bulkCourseMetadataService)
+    IBulkCourseMetadataService bulkCourseMetadataService,
+    IAddCourseTypeDataToCsvService courseTypesToCsvService)
     : IRequestHandler<ValidateBulkUploadRecordsCommand, Unit>
 {
     public async Task<Unit> Handle(ValidateBulkUploadRecordsCommand command, CancellationToken cancellationToken)
@@ -47,7 +48,7 @@ public class ValidateBulkUploadRecordsCommandHandler(
 
         BulkUploadValidateApiRequest bulkUploadValidateApiRequest = new BulkUploadValidateApiRequest
         {
-            CsvRecords = command.CsvRecords,
+            CsvRecords = await courseTypesToCsvService.MapAndAddCourseTypeData(command.CsvRecords),
             ProviderId = command.ProviderId,
             LogId = command.FileUploadLogId,
             UserInfo = command.UserInfo,

@@ -51,7 +51,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>, ProviderCoursesApiClient>();
         services.AddTransient<IProviderPaymentEventsApiClient<ProviderEventsConfiguration>, ProviderPaymentEventsApiClient>();
         services.AddTransient<IEmployerProfilesApiClient<EmployerProfilesApiConfiguration>, EmployerProfilesApiClient>();
-        services.AddTransient<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>, ApprenticeshipsApiClient>();
+        services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         services.AddTransient<ICourseTypesApiClient, CourseTypesApiClient>();
@@ -71,6 +71,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
+        services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();
         services.AddServiceParameters();
     }
 }
