@@ -29,6 +29,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             // Arrange
             query.CandidateId = null;
             vacancy.ClosedDate = null;
+            vacancy.IsClosed = false;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(
                     It.Is<GetStandardRequest>(c => c.StandardId.Equals(vacancy.CourseId))))
@@ -44,25 +45,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => 
-                options
-                    .Excluding(x => x.Application)
-                    .Excluding(x => x.ClosingDate)
-                    .Excluding(x => x.ClosedDate)
-                    .Excluding(x => x.ExternalVacancyUrl)
-                    .Excluding(x => x.IsExternalVacancy)
-                    .Excluding(x => x.City)
-                    .Excluding(x => x.Postcode)
-                    .Excluding(x => x.ApplicationUrl)
-                    .Excluding(x => x.IsSavedVacancy)
-                    .Excluding(x => x.VacancySource)
-                    .Excluding(x => x.IsPrimaryLocation)
-                    .Excluding(x => x.Over25NationalMinimumWage)
-                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
-                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
-                    .Excluding(x => x.Under18NationalMinimumWage)
-                    .Excluding(x => x.ApprenticeMinimumWage)
-                );
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
@@ -87,6 +70,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
         {
             // Arrange
             vacancy.ClosedDate = null;
+            vacancy.IsClosed = false;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(
                     It.Is<GetStandardRequest>(c => c.StandardId.Equals(vacancy.CourseId))))
@@ -113,7 +97,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
                         It.Is<GetCandidateApiRequest>(c=>c.GetUrl == expectedGetCandidateAddressRequest.GetUrl)))
                 .ReturnsAsync(candidateApiResponse);
 
-            var expectedGetSavedVacancyApiRequest = new GetSavedVacancyApiRequest(query.CandidateId.Value, query.VacancyReference.TrimVacancyReference());
+            var expectedGetSavedVacancyApiRequest = new GetSavedVacancyApiRequest(query.CandidateId.Value, null, query.VacancyReference.TrimVacancyReference());
             candidateApiClient
                 .Setup(client =>
                     client.Get<GetSavedVacancyApiResponse>(
@@ -124,20 +108,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
-                    .Excluding(x => x.Application)
-                    .Excluding(x => x.ClosingDate)
-                    .Excluding(x => x.ClosedDate)
-                    .Excluding(x => x.ExternalVacancyUrl)
-                    .Excluding(x => x.IsExternalVacancy)
-                    .Excluding(x => x.City)
-                    .Excluding(x => x.Postcode)
-                    .Excluding(x => x.ApplicationUrl)
-                    .Excluding(x => x.IsSavedVacancy)
-                    .Excluding(x => x.VacancySource)
-                    .Excluding(x => x.IsPrimaryLocation)
-                );
-
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().NotBeNull();
@@ -164,6 +135,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             // Arrange
             query.CandidateId = null;
             vacancy.ClosedDate = null;
+            vacancy.IsClosed = false;
             vacancy.VacancySource = VacancyDataSource.Raa;
             courseApiClient
                 .Setup(x => x.Get<GetStandardsListItemResponse>(
@@ -184,30 +156,33 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options =>
-                options
-                    .Excluding(x => x.Application)
-                    .Excluding(x => x.ClosingDate)
-                    .Excluding(x => x.ClosedDate)
-                    .Excluding(x => x.ExternalVacancyUrl)
-                    .Excluding(x => x.IsExternalVacancy)
-                    .Excluding(x => x.City)
-                    .Excluding(x => x.Postcode)
-                    .Excluding(x => x.ApplicationUrl)
-                    .Excluding(x => x.IsSavedVacancy)
-                    .Excluding(x => x.VacancySource)
-                    .Excluding(x => x.IsPrimaryLocation)
-                    .Excluding(x => x.Over25NationalMinimumWage)
-                    .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
-                    .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
-                    .Excluding(x => x.Under18NationalMinimumWage)
-                    .Excluding(x => x.ApprenticeMinimumWage)
-                );
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
             result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
             result.IsSavedVacancy.Should().BeFalse();
+        }
+
+        [Test, MoqAutoData]
+        public async Task If_CourseId_Is_Not_In_Correct_Format_Then_Return_Null(
+            GetApprenticeshipVacancyQuery request,
+            CancellationToken token,
+            Mock<IVacancy> vacancy,
+            [Frozen] Mock<IVacancyService> vacancyService,
+            GetApprenticeshipVacancyQueryHandler sut)
+        {
+            // arrange
+            vacancy.Setup(x => x.CourseId).Returns(-1);
+            vacancyService.Setup(x => x.GetVacancy(request.VacancyReference)).ReturnsAsync((IVacancy)null!);
+            vacancyService.Setup(x => x.GetClosedVacancy(request.VacancyReference)).ReturnsAsync(vacancy.Object);
+
+            // act
+            var result = await sut.Handle(request, token);
+
+            // assert
+            result.Should().BeNull();
+            vacancy.Verify(x => x.CourseId, Times.Once);
         }
     }
 }

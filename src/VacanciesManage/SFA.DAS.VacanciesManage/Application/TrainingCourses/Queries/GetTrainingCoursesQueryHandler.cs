@@ -10,32 +10,16 @@ namespace SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries
 {
     public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQuery, GetTrainingCoursesQueryResult>
     {
-        private const int CourseCacheDurationInHours = 3;
-        private readonly ICacheStorageService _cacheStorageService;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        private readonly ICourseService _courseService;
 
-        public GetTrainingCoursesQueryHandler (ICacheStorageService cacheStorageService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+        public GetTrainingCoursesQueryHandler (ICourseService courseService)
         {
-            _cacheStorageService = cacheStorageService;
-            _coursesApiClient = coursesApiClient;
+            _courseService = courseService;
         }
         public async Task<GetTrainingCoursesQueryResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
         {
-            var courses =
-                await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(
-                    nameof(GetStandardsListResponse));
-
-            if (courses != null)
-            {
-                return new GetTrainingCoursesQueryResult
-                {
-                    TrainingCourses = courses.Standards
-                };
-            }
+            var courses = await _courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
             
-            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
-            await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, CourseCacheDurationInHours);
-
             return new GetTrainingCoursesQueryResult
             {
                 TrainingCourses = courses.Standards

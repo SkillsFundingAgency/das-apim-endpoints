@@ -1,19 +1,15 @@
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Application.Candidates.Commands.CandidateApplicationStatus;
 using SFA.DAS.Recruit.Domain;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Net;
+using System.Threading;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Candidates.Commands;
 
@@ -25,6 +21,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
         CandidateApplicationStatusCommand request,
         GetCandidateApiResponse candidateResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         CandidateApplicationStatusCommandHandler handler)
     {
@@ -33,7 +30,9 @@ public class WhenHandlingCandidateApplicationStatusCommand
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
         apiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.Is<GetCandidateByIdApiRequest>(c=>c.GetUrl.Contains(request.CandidateId.ToString()))))
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidateResponse, HttpStatusCode.OK, ""));
-        
+        recruitApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewStatusApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
+
         await handler.Handle(request, CancellationToken.None);
         
         apiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
@@ -42,7 +41,15 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
                 c.Data.Operations[1].path == "/Status" &&
-                ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.Successful
+                (ApplicationStatus)c.Data.Operations[1].value == ApplicationStatus.Successful
+            )), Times.Once
+        );
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewStatusApiRequest>(c =>
+                c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.Data.Operations[0].path == "/CandidateFeedback" &&
+                c.Data.Operations[0].value.ToString() == request.Feedback &&
+                c.Data.Operations[1].path == "/Status" &&
+                (string?)c.Data.Operations[1].value == Enum.GetName(ApplicationStatus.Successful)
             )), Times.Once
         );
         notificationService.Verify(x=>x.Send(
@@ -58,11 +65,12 @@ public class WhenHandlingCandidateApplicationStatusCommand
     }
     
     [Test, MoqAutoData]
-    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_Unsuccess_Email_Sent_When_Unsuccessful(
+    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_UnSuccess_Email_Sent_When_Unsuccessful(
         CandidateApplicationStatusCommand request,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetCandidateApiResponse candidateResponse,
         [Frozen]Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         CandidateApplicationStatusCommandHandler handler)
     {
@@ -71,7 +79,9 @@ public class WhenHandlingCandidateApplicationStatusCommand
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
         apiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.Is<GetCandidateByIdApiRequest>(c=>c.GetUrl.Contains(request.CandidateId.ToString()))))
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidateResponse, HttpStatusCode.OK, ""));
-        
+        recruitApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewStatusApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
+
         await handler.Handle(request, CancellationToken.None);
         
         apiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
@@ -80,7 +90,15 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
                 c.Data.Operations[1].path == "/Status" &&
-                ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.UnSuccessful
+                (ApplicationStatus)c.Data.Operations[1].value == ApplicationStatus.UnSuccessful
+            )), Times.Once
+        );
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewStatusApiRequest>(c =>
+                c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.Data.Operations[0].path == "/CandidateFeedback" &&
+                c.Data.Operations[0].value.ToString() == request.Feedback &&
+                c.Data.Operations[1].path == "/Status" &&
+                (string?)c.Data.Operations[1].value == Enum.GetName(ApplicationStatus.UnSuccessful)
             )), Times.Once
         );
         notificationService.Verify(x=>x.Send(
@@ -101,6 +119,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
         CandidateApplicationStatusCommand request,
         GetCandidateApiResponse candidateResponse,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         CandidateApplicationStatusCommandHandler handler)
     {
@@ -110,7 +129,9 @@ public class WhenHandlingCandidateApplicationStatusCommand
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
         apiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.Is<GetCandidateByIdApiRequest>(c=>c.GetUrl.Contains(request.CandidateId.ToString()))))
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidateResponse, HttpStatusCode.OK, ""));
-        
+        recruitApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewStatusApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
+
         await handler.Handle(request, CancellationToken.None);
         
         apiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
@@ -119,7 +140,15 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
                 c.Data.Operations[1].path == "/Status" &&
-                ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.Successful
+                (ApplicationStatus)c.Data.Operations[1].value == ApplicationStatus.Successful
+            )), Times.Once
+        );
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewStatusApiRequest>(c =>
+                c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.Data.Operations[0].path == "/CandidateFeedback" &&
+                c.Data.Operations[0].value.ToString() == request.Feedback &&
+                c.Data.Operations[1].path == "/Status" &&
+                (string?)c.Data.Operations[1].value == Enum.GetName(ApplicationStatus.Successful)
             )), Times.Once
         );
         notificationService.Verify(x=>x.Send(
@@ -135,11 +164,12 @@ public class WhenHandlingCandidateApplicationStatusCommand
     }
     
     [Test, MoqAutoData]
-    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_Unsuccess_Email_Sent_When_Unsuccessful_With_Null_Or_Empty_Location_Values(
+    public async Task Then_The_Command_Is_Handled_And_The_Api_Called_And_UnSuccess_Email_Sent_When_Unsuccessful_With_Null_Or_Empty_Location_Values(
         CandidateApplicationStatusCommand request,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetCandidateApiResponse candidateResponse,
         [Frozen]Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         CandidateApplicationStatusCommandHandler handler)
     {
@@ -149,7 +179,9 @@ public class WhenHandlingCandidateApplicationStatusCommand
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
         apiClient.Setup(x => x.GetWithResponseCode<GetCandidateApiResponse>(It.Is<GetCandidateByIdApiRequest>(c=>c.GetUrl.Contains(request.CandidateId.ToString()))))
             .ReturnsAsync(new ApiResponse<GetCandidateApiResponse>(candidateResponse, HttpStatusCode.OK, ""));
-        
+        recruitApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewStatusApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
+
         await handler.Handle(request, CancellationToken.None);
         
         apiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
@@ -158,9 +190,19 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
                 c.Data.Operations[1].path == "/Status" &&
-                ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.UnSuccessful
+                (ApplicationStatus)c.Data.Operations[1].value == ApplicationStatus.UnSuccessful
             )), Times.Once
         );
+
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewStatusApiRequest>(c =>
+                c.PatchUrl.Contains(request.ApplicationId.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.Data.Operations[0].path == "/CandidateFeedback" &&
+                c.Data.Operations[0].value.ToString() == request.Feedback &&
+                c.Data.Operations[1].path == "/Status" &&
+                (string?)c.Data.Operations[1].value == Enum.GetName(ApplicationStatus.UnSuccessful)
+            )), Times.Once
+        );
+
         notificationService.Verify(x=>x.Send(
             It.Is<SendEmailCommand>(c=>
                 c.RecipientsAddress == candidateResponse.Email
@@ -179,6 +221,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
         GetApplicationByReferenceApiResponse apiResponse,
         CandidateApplicationStatusCommand request,
         [Frozen]Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         CandidateApplicationStatusCommandHandler handler)
     {
         request.ApplicationId = Guid.Empty;
@@ -195,7 +238,9 @@ public class WhenHandlingCandidateApplicationStatusCommand
             .ReturnsAsync(new ApiResponse<GetApplicationByReferenceApiResponse>(apiResponse, HttpStatusCode.OK, ""));
         apiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
             .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
-        
+        recruitApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewStatusApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.Accepted, ""));
+
         await handler.Handle(request, CancellationToken.None);
         
         apiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(c =>
@@ -204,7 +249,16 @@ public class WhenHandlingCandidateApplicationStatusCommand
                 c.Data.Operations[0].path == "/ResponseNotes" &&
                 c.Data.Operations[0].value.ToString() == request.Feedback &&
                 c.Data.Operations[1].path == "/Status" &&
-                ((ApplicationStatus)c.Data.Operations[1].value) == ApplicationStatus.Successful
+                (ApplicationStatus)c.Data.Operations[1].value == ApplicationStatus.Successful
+            )), Times.Once
+        );
+
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewStatusApiRequest>(c =>
+                c.PatchUrl.Contains(apiResponse.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                c.Data.Operations[0].path == "/CandidateFeedback" &&
+                c.Data.Operations[0].value.ToString() == request.Feedback &&
+                c.Data.Operations[1].path == "/Status" &&
+                (string?) c.Data.Operations[1].value == Enum.GetName(ApplicationStatus.Successful)
             )), Times.Once
         );
     }
@@ -214,6 +268,7 @@ public class WhenHandlingCandidateApplicationStatusCommand
         GetApplicationByReferenceApiResponse apiResponse,
         CandidateApplicationStatusCommand request,
         [Frozen]Mock<ICandidateApiClient<CandidateApiConfiguration>> apiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         CandidateApplicationStatusCommandHandler handler)
     {
         request.ApplicationId = Guid.Empty;
@@ -226,6 +281,9 @@ public class WhenHandlingCandidateApplicationStatusCommand
         await handler.Handle(request, CancellationToken.None);
         
         apiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>(
+            )), Times.Never
+        );
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewStatusApiRequest>(
             )), Times.Never
         );
     }

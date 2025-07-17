@@ -25,13 +25,15 @@ parameters:
 jobs:
 - deployment: DeployInfrastructure
   pool:
-    name: DAS - Continuous Deployment Agents
+    name: DAS - APIM Continuous Deployment Agents
   environment: ${{ parameters.Environment }}
   workspace:
     clean: all
   variables:
     AppServiceName: ${{ parameters.AppServiceName }}
+    AppServicePlanName: ${{ parameters.AppServicePlanName }}
     CustomHostName: ${{ parameters.CustomHostName }}
+    ApimEndpointsSubnetResourceId:  ${{ parameters.ApimEndpointsSubnetResourceId }}
     AppServiceKeyVaultCertificateName: ${{ parameters.AppServiceKeyVaultCertificateName }}
     ConfigNames: ${{ parameters.ConfigNames }}
   strategy:

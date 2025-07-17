@@ -1,9 +1,7 @@
 using Newtonsoft.Json;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
@@ -28,42 +26,24 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         public string FrameworkLarsCode { get; init; }
         [JsonProperty("hoursPerWeek")]
         public decimal? HoursPerWeek { get; init; }
-        [JsonProperty("isDisabilityConfident")]
-        public bool IsDisabilityConfident { get; set; }
         [JsonProperty("isPositiveAboutDisability")]
         public bool IsPositiveAboutDisability { get; init; }
         [JsonProperty("isRecruitVacancy")]
         public bool IsRecruitVacancy { get; init; }
-        [JsonProperty("location")]
-        public Location Location { get; init; }
         [JsonProperty("numberOfPositions")]
         public int NumberOfPositions { get; init; }
         [JsonProperty("providerName")]
         public string ProviderName { get; init; }
-        [JsonProperty("startDate")]
-        public DateTime StartDate { get; init; }
         [JsonProperty("subCategory")]
         public string SubCategory { get; init; }
         [JsonProperty("subCategoryCode")]
         public string SubCategoryCode { get; init; }
         [JsonProperty("ukprn")]
-        public string Ukprn { get; init; }
+        public string Ukprn { get; set; }
         [JsonProperty("wageAmountLowerBound")]
         public decimal? WageAmountLowerBound { get; init; }
         [JsonProperty("wageAmountUpperBound")]
         public decimal? WageAmountUpperBound { get; init; }
-        [JsonPropertyName("over25NationalMinimumWage")]
-        public decimal? Over25NationalMinimumWage { get; set; }
-        [JsonPropertyName("between21AndUnder25NationalMinimumWage")]
-        public decimal? Between21AndUnder25NationalMinimumWage { get; set; }
-        [JsonPropertyName("between18AndUnder21NationalMinimumWage")]
-        public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
-        [JsonPropertyName("under18NationalMinimumWage")]
-        public decimal? Under18NationalMinimumWage { get; set; }
-        [JsonPropertyName("apprenticeMinimumWage")]
-        public decimal? ApprenticeMinimumWage { get; set; }
-        [JsonProperty("wageText")]
-        public string WageText { get; init; }
         [JsonProperty("wageUnit")]
         public int WageUnit { get; init; }
         [JsonProperty("wageAdditionalInformation")]
@@ -113,16 +93,13 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("closedDate")]
         public DateTime? ClosedDate { get; set; }
 
-        [JsonPropertyName("vacancySource")]
-        public VacancyDataSource VacancySource { get; set; }
         public string Postcode => Address?.Postcode;
         public string City => Address?.GetCity();
-        public string ApplicationUrl { get; set; }
         public string ApplicationInstructions { get; set; }
         public bool IsExternalVacancy => !string.IsNullOrWhiteSpace(ApplicationUrl);
         public string ExternalVacancyUrl => ApplicationUrl;
-        public string? CompanyBenefitsInformation { get; set; }
-        public string? AdditionalTrainingDescription { get; set; }
+        public long? AccountId { get; set; }
+        public long? AccountLegalEntityId { get; set; } 
     }
 
     public class VacancyQualification

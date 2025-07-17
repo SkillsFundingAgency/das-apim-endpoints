@@ -16,29 +16,23 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearni
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningData;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningSummary;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequirements;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
     [ApiController]
-    public class DraftApprenticeshipController : Controller
+    public class DraftApprenticeshipController(
+        ILogger<DraftApprenticeshipController> logger,
+        IMediator mediator)
+        : Controller
     {
-        private readonly ILogger<DraftApprenticeshipController> _logger;
-        private readonly IMediator _mediator;
-
-        public DraftApprenticeshipController(ILogger<DraftApprenticeshipController> logger,
-            IMediator mediator)
-        {
-            _logger = logger;
-            _mediator = mediator;
-        }
-
         [HttpGet]
         [Route("[controller]/{cohortId}")]
         public async Task<IActionResult> GetAll(long cohortId)
         {
             try
             {
-                var result = await _mediator.Send(new GetDraftApprenticeshipsQuery(cohortId));
+                var result = await mediator.Send(new GetDraftApprenticeshipsQuery(cohortId));
                 if (result == null)
                 {
                     return NotFound();
@@ -48,7 +42,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error getting cohort {id}", cohortId);
+                logger.LogError(e, "Error getting cohort {id}", cohortId);
                 return BadRequest();
             }
         }
@@ -60,7 +54,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetEditDraftApprenticeshipQuery{ CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId, CourseCode = courseCode});
+                var result = await mediator.Send(new GetEditDraftApprenticeshipQuery{ CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId, CourseCode = courseCode});
                 
                 if (result == null)
                 {
@@ -71,7 +65,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetEditDraftApprenticeship cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
+                logger.LogError(e, $"Error in GetEditDraftApprenticeship cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
                 return BadRequest();
             }
         }
@@ -83,7 +77,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetViewDraftApprenticeshipQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId });
+                var result = await mediator.Send(new GetViewDraftApprenticeshipQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId });
 
                 if (result == null)
                 {
@@ -94,7 +88,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetViewDraftApprenticeship cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
+                logger.LogError(e, $"Error in GetViewDraftApprenticeship cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
                 return BadRequest();
             }
         }
@@ -107,7 +101,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetEditDraftApprenticeshipDeliveryModelQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId, CourseCode = courseCode });
+                var result = await mediator.Send(new GetEditDraftApprenticeshipDeliveryModelQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId, CourseCode = courseCode });
 
                 if (result == null)
                 {
@@ -118,7 +112,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetEditDraftApprenticeshipDeliveryModel cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
+                logger.LogError(e, $"Error in GetEditDraftApprenticeshipDeliveryModel cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
                 return BadRequest();
             }
         }
@@ -130,7 +124,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetEditDraftApprenticeshipCourseQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId});
+                var result = await mediator.Send(new GetEditDraftApprenticeshipCourseQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId});
 
                 if (result == null)
                 {
@@ -141,7 +135,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetEditDraftApprenticeshipCourse cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
+                logger.LogError(e, $"Error in GetEditDraftApprenticeshipCourse cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
                 return BadRequest();
             }
         }
@@ -153,7 +147,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAddDraftApprenticeshipDetailsQuery { CohortId = cohortId, CourseCode = courseCode, StartDate = startDate });
+                var result = await mediator.Send(new GetAddDraftApprenticeshipDetailsQuery { CohortId = cohortId, CourseCode = courseCode, StartDate = startDate });
 
                 if (result == null)
                 {
@@ -164,7 +158,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetAddDraftApprenticeshipDetails cohort {cohortId}");
+                logger.LogError(e, $"Error in GetAddDraftApprenticeshipDetails cohort {cohortId}");
                 return BadRequest();
             }
         }
@@ -176,7 +170,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAddDraftApprenticeshipCourseQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId });
+                var result = await mediator.Send(new GetAddDraftApprenticeshipCourseQuery { CohortId = cohortId, DraftApprenticeshipId = draftApprenticeshipId });
 
                 if (result == null)
                 {
@@ -187,7 +181,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error in GetEditDraftApprenticeshipCourse cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
+                logger.LogError(e, $"Error in GetEditDraftApprenticeshipCourse cohort {cohortId} draft apprenticeship {draftApprenticeshipId}");
                 return BadRequest();
             }
         }
@@ -222,9 +216,10 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 UserId = request.UserId,
                 CohortId = cohortId,
                 RequestingParty = request.RequestingParty,
+                LearnerDataId = request.LearnerDataId
             };
 
-            var result = await _mediator.Send(command);
+            var result = await mediator.Send(command);
 
             return Ok(new AddDraftApprenticeshipResponse
             {
@@ -264,7 +259,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 RequestingParty = request.RequestingParty,
             };
 
-            await _mediator.Send(command);
+            await mediator.Send(command);
 
             return Ok();
         }
@@ -273,7 +268,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/prior-learning-data")]
         public async Task<IActionResult> GetPriorLearningData(long cohortId, long draftApprenticeshipId)
         {
-            var result = await _mediator.Send(new GetEditDraftApprenticeshipPriorLearningDataQuery(cohortId,draftApprenticeshipId));
+            var result = await mediator.Send(new GetEditDraftApprenticeshipPriorLearningDataQuery(cohortId,draftApprenticeshipId));
 
             if (result == null)
             {
@@ -298,7 +293,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 TrainingTotalHours = request.TrainingTotalHours
             };
 
-            var response = await _mediator.Send(command);
+            var response = await mediator.Send(command);
 
             return Ok(response);
         }
@@ -307,9 +302,31 @@ namespace SFA.DAS.Approvals.Api.Controllers
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/edit/prior-learning-summary")]
         public async Task<IActionResult> GetPriorLearningSummary(long cohortId, long draftApprenticeshipId)
         {
-            var result = await _mediator.Send(new GetEditDraftApprenticeshipPriorLearningSummaryQuery(cohortId, draftApprenticeshipId));
+            var result = await mediator.Send(new GetEditDraftApprenticeshipPriorLearningSummaryQuery(cohortId, draftApprenticeshipId));
 
             return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/recognise-prior-learning")]
+        public async Task<IActionResult> GetRplRequirements(long cohortId, long draftApprenticeshipId, [FromQuery] string courseId)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetRplRequirementsQuery { CourseId = courseId });
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in GetRplRequirements cohort {CohortId} draft apprenticeship {DraftApprenticeshipId}", cohortId, draftApprenticeshipId);
+                return BadRequest();
+            }
         }
     }
 }

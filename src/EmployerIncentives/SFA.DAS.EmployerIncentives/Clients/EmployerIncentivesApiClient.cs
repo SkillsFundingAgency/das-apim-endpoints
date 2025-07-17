@@ -1,10 +1,10 @@
+using System.Collections.Generic;
+using System.Net;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Configuration;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerIncentives.Clients
 {
@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerIncentives.Clients
             return _client.Put(request);
         }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request,  bool includeResponse = true)
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
             return _client.PostWithResponseCode<TResponse>(request, includeResponse);
         }
@@ -87,6 +87,11 @@ namespace SFA.DAS.EmployerIncentives.Clients
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
         {
             throw new System.NotImplementedException();
         }
