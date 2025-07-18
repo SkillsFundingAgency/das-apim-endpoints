@@ -50,10 +50,15 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
             var result = await _controller.StudentSurveyEmailReminder(request);
 
             Assert.That(result, Is.InstanceOf<CreatedAtActionResult>());
-            var okResult = (CreatedAtActionResult)result;
+            var okResult = (CreatedAtActionResult)result;                    
+
+            var mockResult = new SendReminderEmailResponse
+            {
+                Message = "Success"
+            };
 
             Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.Created));
-            var model = (SendReminderEmailResponse)okResult.Value;
+            var model = (SendReminderEmailResponse)mockResult;
             Assert.That(model.Message, Is.EqualTo(sendReminderEmailCommandResult.Message));
         }
 

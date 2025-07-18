@@ -22,7 +22,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
     public class SendStudentDataToLepsServiceTests
     {
         [Test, MoqAutoData]
-        public async Task SendStudentDataToLeps_WhenNorthEastRegionAndLepDateSentIsNull_CallsNeApiClient(GetStudentTriageDataBySurveyIdResponse apiResponse)
+        public async Task SendStudentDataToLeps_WhenNorthEastRegionAndLepDateSentIsNull_CallsNeApiClient(GetStudentTriageDataResponse apiResponse)
         {
             var surveyGuid = Guid.NewGuid();
             var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
@@ -43,7 +43,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
 
             var SendStudentDataToNeLepsResponse = new ApiResponse<SendStudentDataToNeLepsResponse>(SendStudentDataToNeLepsexpectedResponse.Object, HttpStatusCode.OK, string.Empty);
 
-            mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataBySurveyIdResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+            mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var sendStudentDataResponse = new SendStudentDataToNeLepsResponse();
             mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
@@ -55,7 +55,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             Assert.That(result, Is.Not.Null);
         }
         [Test, MoqAutoData]
-        public async Task SendStudentDataToLeps_WhenLancashireRegionAndLepDateSentIsNull_CallsLaApiClient(GetStudentTriageDataBySurveyIdResponse apiResponse)
+        public async Task SendStudentDataToLeps_WhenLancashireRegionAndLepDateSentIsNull_CallsLaApiClient(GetStudentTriageDataResponse apiResponse)
         {
             var surveyGuid = Guid.NewGuid();
             var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
@@ -76,7 +76,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
 
             var SendStudentDataToNeLepsResponse = new ApiResponse<SendStudentDataToNeLepsResponse>(SendStudentDataToNeLepsexpectedResponse.Object, HttpStatusCode.OK, string.Empty);
 
-            mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataBySurveyIdResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+            mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var sendStudentDataResponse = new SendStudentDataToNeLepsResponse();
             mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToNeLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))
@@ -87,7 +87,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
             mockLaApiClient.Verify(x => x.PostWithResponseCode<SendStudentDataToLaLepsResponse>(It.IsAny<SendStudentDataToLaLepsRequest>(), false), Times.Once);
             Assert.That(result, Is.Not.Null);
         }
-        public async Task SendStudentDataToLeps_WhenLondonRegionAndLepDateSentIsNull_CallsLaApiClient(GetStudentTriageDataBySurveyIdResponse apiResponse)
+        public async Task SendStudentDataToLeps_WhenLondonRegionAndLepDateSentIsNull_CallsLaApiClient(GetStudentTriageDataResponse apiResponse)
         {
             var surveyGuid = Guid.NewGuid();
             var mockApiClient = new Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>>();
@@ -108,7 +108,7 @@ namespace SFA.DAS.EarlyConnect.UnitTests.Services
 
             var SendStudentDataToLoLepsResponse = new ApiResponse<SendStudentDataToLoLepsResponse>(SendStudentDataToLoLepsexpectedResponse.Object, HttpStatusCode.OK, string.Empty);
 
-            mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataBySurveyIdResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
+            mockApiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
             var sendStudentDataResponse = new SendStudentDataToNeLepsResponse();
             mockNeApiClient.Setup(x => x.PostWithResponseCode<SendStudentDataToLoLepsResponse>(It.IsAny<SendStudentDataToNeLepsRequest>(), false))

@@ -1,8 +1,8 @@
 ﻿using SFA.DAS.EarlyConnect.Models;
 
-namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId
+namespace SFA.DAS.EarlyConnect.InnerApi.Responses
 {
-    public class GetStudentTriageDataBySurveyIdResult
+    public class GetStudentTriageDataResponse
     {
         public int Id { get; set; }
         public DateTime? LepDateSent { get; set; }
@@ -24,3 +24,4 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
         public StudentSurveyDto StudentSurvey { get; set; }
     }
 }
+
