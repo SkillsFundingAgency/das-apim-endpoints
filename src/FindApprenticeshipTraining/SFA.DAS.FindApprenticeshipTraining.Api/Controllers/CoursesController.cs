@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
@@ -10,8 +12,6 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRo
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 
@@ -85,7 +85,7 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
             Distance = distance
         });
 
-        if(result == null)
+        if (result == null)
         {
             return NotFound();
         }
@@ -107,6 +107,9 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
             ),
             cancellationToken
         );
+
+        if (result == null)
+            return NotFound();
 
         return Ok(result);
     }

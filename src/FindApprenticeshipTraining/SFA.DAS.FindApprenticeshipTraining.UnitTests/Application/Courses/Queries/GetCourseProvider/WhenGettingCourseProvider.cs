@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
@@ -387,5 +388,40 @@ public sealed class WhenGettingCourseProvider
             ),
             Times.Once
         );
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task And_Roatp_Api_Call_Returns_404_Handler_Returns_Null(
+        GetCourseProviderQuery query,
+        GetCourseProviderDetailsResponse courseProviderDetailsResponse,
+        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        GetAssessmentsResponse assessmentResponse,
+        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        List<ProviderCourseResponse> providerCoursesResponse,
+        GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
+        LocationItem locationResponse)
+    {
+        var sut = SetupHandler(
+            query,
+            courseProviderDetailsResponse,
+            employerFeedbackResponse,
+            assessmentResponse,
+            apprenticeFeedbackResponse,
+            providerCoursesResponse,
+            courseTrainingProvidersCountResponse,
+            locationResponse
+        );
+
+        _roatpClientMock.Setup(x => x.GetWithResponseCode<GetCourseProviderDetailsResponse>(
+            It.IsAny<GetCourseProviderDetailsRequest>())).ReturnsAsync(new ApiResponse<GetCourseProviderDetailsResponse>(
+            null,
+            HttpStatusCode.NotFound,
+            string.Empty
+        ));
+
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        result.Should().Be(null);
     }
 }

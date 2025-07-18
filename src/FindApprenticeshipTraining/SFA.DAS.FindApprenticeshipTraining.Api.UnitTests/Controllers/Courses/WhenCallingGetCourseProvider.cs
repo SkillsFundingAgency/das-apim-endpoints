@@ -1,12 +1,14 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 
@@ -50,5 +52,21 @@ public sealed class WhenCallingGetCourseProvider
             ),
             Times.Once
         );
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task And_The_Handler_Returns_Null_Then_Returns_NotFound(
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] CoursesController sut)
+    {
+        mockMediator.Setup(x => x.Send(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetCourseProviderQueryResult)null);
+
+        var result = await sut.GetCourseProvider(1, 1, new GetCourseProviderRequest(), CancellationToken.None);
+
+        result.Should().BeOfType<NotFoundResult>();
+        var notFoundResult = result as NotFoundResult;
+        notFoundResult!.StatusCode.Should().Be(404);
     }
 }

@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -79,6 +80,9 @@ public sealed class GetCourseProviderQueryHandler(
         ApiResponse<GetApprenticeFeedbackSummaryAnnualResponse> apprenticeFeedbackResponse = apprenticeFeedbackTask.Result;
         ApiResponse<List<ProviderCourseResponse>> courseDetailsResponse = courseDetailsTask.Result;
         ApiResponse<GetCourseTrainingProvidersCountResponse> courseTrainingProvidersCountResponse = courseTrainingProvidersCountTask.Result;
+
+        if (courseProviderDetailsResponse.StatusCode == HttpStatusCode.NotFound)
+            return null;
 
         courseProviderDetailsResponse.EnsureSuccessStatusCode();
         employerFeedbackResponse.EnsureSuccessStatusCode();
