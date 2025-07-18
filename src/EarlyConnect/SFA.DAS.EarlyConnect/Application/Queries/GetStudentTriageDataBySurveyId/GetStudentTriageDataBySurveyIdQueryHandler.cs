@@ -32,6 +32,7 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
                 DateCompleted = result.Body.StudentSurvey.DateCompleted,
                 DateEmailSent = result.Body.StudentSurvey.DateEmailSent,
                 DateAdded = result.Body.StudentSurvey.DateAdded,
+                ResponseAnswers = result.Body.StudentSurvey.ResponseAnswers,
             };
 
             return new StudentTriageDataShared
