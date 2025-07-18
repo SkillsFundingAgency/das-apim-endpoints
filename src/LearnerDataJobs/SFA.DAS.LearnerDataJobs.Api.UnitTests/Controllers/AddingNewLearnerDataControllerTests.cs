@@ -11,7 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerDataJobs.Api.UnitTests.Controllers;
 
-public class LearnersControllerTests
+public class AddingNewLearnerDataControllerTests
 {
     [Test, MoqAutoData]
     public async Task Then_Posts_Valid_Learner_With_No_Issues(
