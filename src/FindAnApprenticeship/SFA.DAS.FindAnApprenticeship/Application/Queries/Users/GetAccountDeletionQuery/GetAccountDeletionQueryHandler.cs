@@ -28,7 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
                     x.Status == ApplicationStatus.Submitted.ToString())
                 .ToList();
 
-            var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
+            var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference.TrimVacancyReference()}").ToList();
 
             var vacancies = await VacancyService.GetVacancies(vacancyReferences);
 
