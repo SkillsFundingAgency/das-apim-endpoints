@@ -52,7 +52,7 @@ public class WhenPostingEditApprenticeship
             .ReturnsAsync(commandResult);
 
         // Act
-        var result = await controller.EditApprenticeship(providerId, null, apprenticeshipId, request);
+        var result = await controller.EditApprenticeshipProvider(providerId, apprenticeshipId, request);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -95,32 +95,14 @@ public class WhenPostingEditApprenticeship
                     c.EmploymentEndDate == request.EmploymentEndDate &&
                     c.EmploymentPrice == request.EmploymentPrice),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(commandResult);
+            .ReturnsAsync(commandResult)
+            .Verifiable();
 
         // Act
-        await controller.EditApprenticeship(providerId, null, apprenticeshipId, request);
+        await controller.EditApprenticeshipProvider(providerId, apprenticeshipId, request);
 
         // Assert
-        mediator.Verify(x => x.Send(It.Is<EditApprenticeshipCommand>(c =>
-            c.ApprenticeshipId == apprenticeshipId &&
-            c.ProviderId == providerId &&
-            c.EmployerAccountId == request.EmployerAccountId &&
-            c.FirstName == request.FirstName &&
-            c.LastName == request.LastName &&
-            c.Email == request.Email &&
-            c.DateOfBirth == request.DateOfBirth &&
-            c.ULN == request.ULN &&
-            c.CourseCode == request.CourseCode &&
-            c.Version == request.Version &&
-            c.Option == request.Option &&
-            c.Cost == request.Cost &&
-            c.EmployerReference == request.EmployerReference &&
-            c.StartDate == request.StartDate &&
-            c.EndDate == request.EndDate &&
-            c.DeliveryModel == request.DeliveryModel &&
-            c.ProviderReference == request.ProviderReference &&
-            c.EmploymentEndDate == request.EmploymentEndDate &&
-            c.EmploymentPrice == request.EmploymentPrice), It.IsAny<CancellationToken>()), Times.Once);
+        mediator.Verify();
     }
 
     [Test, MoqAutoData]
@@ -133,10 +115,9 @@ public class WhenPostingEditApprenticeship
         [NoAutoProperties]ApprenticesController controller)
     {
         // Arrange
-        request.EmployerAccountId = null; // Clear this so it uses accountId from route
         mediator.Setup(x => x.Send(It.Is<EditApprenticeshipCommand>(c =>
                     c.ApprenticeshipId == apprenticeshipId &&
-                    c.ProviderId == null &&
+                    c.ProviderId == request.ProviderId &&
                     c.EmployerAccountId == accountId &&
                     c.FirstName == request.FirstName &&
                     c.LastName == request.LastName &&
@@ -158,7 +139,7 @@ public class WhenPostingEditApprenticeship
             .ReturnsAsync(commandResult);
 
         // Act
-        var result = await controller.EditApprenticeship(null, accountId, apprenticeshipId, request);
+        var result = await controller.EditApprenticeshipEmployer(accountId, apprenticeshipId, request);
 
         // Assert
         result.Should().BeOfType<OkObjectResult>();
@@ -180,10 +161,9 @@ public class WhenPostingEditApprenticeship
         [NoAutoProperties]ApprenticesController controller)
     {
         // Arrange
-        request.EmployerAccountId = null; // Clear this so it uses accountId from route
         mediator.Setup(x => x.Send(It.Is<EditApprenticeshipCommand>(c =>
                     c.ApprenticeshipId == apprenticeshipId &&
-                    c.ProviderId == null &&
+                    c.ProviderId == request.ProviderId &&
                     c.EmployerAccountId == accountId &&
                     c.FirstName == request.FirstName &&
                     c.LastName == request.LastName &&
@@ -202,31 +182,13 @@ public class WhenPostingEditApprenticeship
             c.EmploymentEndDate == request.EmploymentEndDate &&
             c.EmploymentPrice == request.EmploymentPrice),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync(commandResult);
+            .ReturnsAsync(commandResult)
+            .Verifiable();
 
         // Act
-        await controller.EditApprenticeship(null, accountId, apprenticeshipId, request);
+        await controller.EditApprenticeshipEmployer(accountId, apprenticeshipId, request);
 
         // Assert
-        mediator.Verify(x => x.Send(It.Is<EditApprenticeshipCommand>(c =>
-            c.ApprenticeshipId == apprenticeshipId &&
-            c.ProviderId == null &&
-            c.EmployerAccountId == accountId &&
-            c.FirstName == request.FirstName &&
-            c.LastName == request.LastName &&
-            c.Email == request.Email &&
-            c.DateOfBirth == request.DateOfBirth &&
-            c.ULN == request.ULN &&
-            c.CourseCode == request.CourseCode &&
-            c.Version == request.Version &&
-            c.Option == request.Option &&
-            c.Cost == request.Cost &&
-            c.EmployerReference == request.EmployerReference &&
-            c.StartDate == request.StartDate &&
-            c.EndDate == request.EndDate &&
-            c.DeliveryModel == request.DeliveryModel &&
-            c.ProviderReference == request.ProviderReference &&
-            c.EmploymentEndDate == request.EmploymentEndDate &&
-            c.EmploymentPrice == request.EmploymentPrice), It.IsAny<CancellationToken>()), Times.Once);
+        mediator.Verify();
     }
 }

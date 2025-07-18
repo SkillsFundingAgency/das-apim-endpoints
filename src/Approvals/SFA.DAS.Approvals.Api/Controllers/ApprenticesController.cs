@@ -220,14 +220,30 @@ public class ApprenticesController(
 
     [HttpPut]
     [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
-    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}")]
-    public async Task<IActionResult> EditApprenticeship(long? providerId, long? accountId, long apprenticeshipId,
+    public async Task<IActionResult> EditApprenticeshipProvider(long providerId, long apprenticeshipId,
         [FromBody] EditApprenticeshipRequest request)
+    {
+        return await EditApprenticeshipInternal(apprenticeshipId, providerId, request.EmployerAccountId, request);
+    }
+
+    [HttpPut]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> EditApprenticeshipEmployer(long accountId, long apprenticeshipId,
+        [FromBody] EditApprenticeshipRequest request)
+    {
+        return await EditApprenticeshipInternal(apprenticeshipId, request.ProviderId, accountId, request);
+    }
+
+    private async Task<IActionResult> EditApprenticeshipInternal(
+        long apprenticeshipId, 
+        long? providerId, 
+        long? employerAccountId, 
+        EditApprenticeshipRequest request)
     {
         var command = new EditApprenticeshipCommand
         {
             ApprenticeshipId = apprenticeshipId,
-            EmployerAccountId = request.EmployerAccountId ?? accountId,
+            EmployerAccountId = employerAccountId,
             ProviderId = providerId,
             FirstName = request.FirstName,
             LastName = request.LastName,
@@ -398,49 +414,22 @@ public class ApprenticesController(
 
     [HttpPost]
     [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/confirm")]
-    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit/confirm")]
-    public async Task<IActionResult> ConfirmEditApprenticeship(
-        [FromRoute] long? providerId, 
-        [FromRoute] long? accountId, 
+    public async Task<IActionResult> ConfirmEditApprenticeshipProvider(
+        [FromRoute] long providerId, 
         [FromRoute] long apprenticeshipId, 
         [FromBody] ConfirmEditApprenticeshipRequest request)
     {
-        try
-        {
-            var command = new ConfirmEditApprenticeshipCommand
-            {
-                ApprenticeshipId = apprenticeshipId,
-                AccountId = accountId,
-                ProviderId = providerId,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-                Email = request.Email,
-                DateOfBirth = request.DateOfBirth,
-                Cost = request.Cost,
-                ProviderReference = request.ProviderReference,
-                StartDate = request.StartDate,
-                EndDate = request.EndDate,
-                DeliveryModel = request.DeliveryModel,
-                EmploymentEndDate = request.EmploymentEndDate,
-                EmploymentPrice = request.EmploymentPrice,
-                CourseCode = request.CourseCode,
-                Version = request.Version,
-                Option = request.Option
-            };
+        return await ConfirmEditApprenticeshipInternal(apprenticeshipId, providerId, null, request);
+    }
 
-            var result = await mediator.Send(command);
-
-            return Ok(new ConfirmEditApprenticeshipResponse
-            {
-                ApprenticeshipId = result.ApprenticeshipId,
-                NeedReapproval = result.NeedReapproval
-            });
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
-            return BadRequest();
-        }
+    [HttpPost]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit/confirm")]
+    public async Task<IActionResult> ConfirmEditApprenticeshipEmployer(
+        [FromRoute] long accountId, 
+        [FromRoute] long apprenticeshipId, 
+        [FromBody] ConfirmEditApprenticeshipRequest request)
+    {
+        return await ConfirmEditApprenticeshipInternal(apprenticeshipId, null, accountId, request);
     }
 
     [HttpPost]
@@ -481,6 +470,49 @@ public class ApprenticesController(
             logger.LogError(ex, "Error in GetApprenticeshipsCSV for provider Id: {providerId}", providerId);
             return BadRequest();
         }
-       
+    }
+    
+    private async Task<IActionResult> ConfirmEditApprenticeshipInternal(
+        long apprenticeshipId, 
+        long? providerId, 
+        long? accountId, 
+        ConfirmEditApprenticeshipRequest request)
+    {
+        try
+        {
+            var command = new ConfirmEditApprenticeshipCommand
+            {
+                ApprenticeshipId = apprenticeshipId,
+                AccountId = accountId,
+                ProviderId = providerId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                DateOfBirth = request.DateOfBirth,
+                Cost = request.Cost,
+                ProviderReference = request.ProviderReference,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                DeliveryModel = request.DeliveryModel,
+                EmploymentEndDate = request.EmploymentEndDate,
+                EmploymentPrice = request.EmploymentPrice,
+                CourseCode = request.CourseCode,
+                Version = request.Version,
+                Option = request.Option
+            };
+
+            var result = await mediator.Send(command);
+
+            return Ok(new ConfirmEditApprenticeshipResponse
+            {
+                ApprenticeshipId = result.ApprenticeshipId,
+                NeedReapproval = result.NeedReapproval
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
     }
 }
