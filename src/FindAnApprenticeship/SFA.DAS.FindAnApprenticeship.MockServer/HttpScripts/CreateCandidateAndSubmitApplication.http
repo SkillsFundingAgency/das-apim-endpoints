@@ -1,4 +1,3 @@
-// To convert to CURL and execute - for use on AzureDevops node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=dev --out ./HttpScripts/generated.sh --exec
 ###
 PUT {{baseUrl}}/candidates/{{$random.uuid}}
 Content-Type: application/json
