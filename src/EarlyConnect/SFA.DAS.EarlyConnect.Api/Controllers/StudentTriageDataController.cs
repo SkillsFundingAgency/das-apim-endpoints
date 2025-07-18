@@ -173,20 +173,9 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = ToDate, FromDate = FromDate });
+                var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = ToDate, FromDate = FromDate });                
 
-                var test = result.Select(r => new StudentSurveyDtoShared
-                {
-                    Id = r.StudentSurvey.Id,
-                    StudentId = r.StudentSurvey.StudentId,
-                    SurveyId = r.StudentSurvey.SurveyId,
-                    LastUpdated = r.StudentSurvey.LastUpdated,
-                    DateCompleted = r.StudentSurvey.DateCompleted,
-                    DateEmailSent = r.StudentSurvey.DateEmailSent,
-                    DateAdded = r.StudentSurvey.DateAdded
-                }).FirstOrDefault();
-
-                var responseList = result.Select(r => new StudentTriageDataShared
+                var responseList = result.Select(r => new GetStudentTriageDataResponse
                 {
                     Id = r.Id,
                     LepDateSent = r.LepDateSent,
@@ -204,7 +193,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     DataSource = r.DataSource,
                     Industry = r.Industry,
                     DateInterest = r.DateInterest,
-                    StudentSurvey = test,
+                    StudentSurvey = r.StudentSurvey,
                     SurveyQuestions = r.SurveyQuestions
                 }).ToList();
 

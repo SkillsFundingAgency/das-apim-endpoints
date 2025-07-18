@@ -20,12 +20,12 @@ public class WhenGetStudentTriageDataBySurveyId
     [Test, MoqAutoData]
     public async Task Then_The_Api_Is_Called_With_The_Request_And_The_StudentTriageData_Is_Returned(
         GetStudentTriageDataBySurveyIdQuery query,
-        StudentTriageDataShared apiResponse,
+        GetStudentTriageDataResponse apiResponse,
         [Frozen] Mock<IEarlyConnectApiClient<EarlyConnectApiConfiguration>> apiClient,
         GetStudentTriageDataBySurveyIdQueryHandler handler
     )
     {
-        apiClient.Setup(x => x.GetWithResponseCode<StudentTriageDataShared>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<StudentTriageDataShared>(apiResponse, HttpStatusCode.OK, string.Empty));
+        apiClient.Setup(x => x.GetWithResponseCode<GetStudentTriageDataResponse>(It.IsAny<GetStudentTriageDataBySurveyIdRequest>())).ReturnsAsync(new ApiResponse<GetStudentTriageDataResponse>(apiResponse, HttpStatusCode.OK, string.Empty));
 
         var actual = await handler.Handle(query, CancellationToken.None);
 

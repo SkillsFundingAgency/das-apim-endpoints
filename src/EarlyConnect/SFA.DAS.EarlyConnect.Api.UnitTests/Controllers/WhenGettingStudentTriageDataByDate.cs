@@ -7,6 +7,7 @@ using SFA.DAS.EarlyConnect.Api.Controllers;
 using SFA.DAS.EarlyConnect.Api.Models;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
+using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
@@ -37,7 +38,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task GetStudentTriageData_ValidRequest_ReturnsOk(
-            List<StudentTriageDataShared> mediatorResult,
+            List<GetStudentTriageDataResponse> mediatorResult,
             DateTime toDate,
             DateTime fromDate
         )
@@ -50,7 +51,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.InstanceOf<List<StudentTriageDataShared>>());
+            Assert.That(okResult.Value, Is.InstanceOf<List<GetStudentTriageDataResponse>>());
             Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 
