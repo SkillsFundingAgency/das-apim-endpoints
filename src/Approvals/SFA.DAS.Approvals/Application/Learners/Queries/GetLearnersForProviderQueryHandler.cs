@@ -84,7 +84,6 @@ public class GetLearnersForProviderQueryHandler(
         var response = await learnerDataClient.GetWithResponseCode<GetLearnersForProviderResponse>(
             new GetLearnersForProviderRequest(
                 request.ProviderId,
-                2425,
                 request.SearchTerm,
                 request.SortField,
                 request.SortDescending,
