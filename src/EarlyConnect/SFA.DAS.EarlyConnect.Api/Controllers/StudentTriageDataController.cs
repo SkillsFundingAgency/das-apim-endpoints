@@ -15,6 +15,7 @@ using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
 using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
 using SendReminderEmailRequest = SFA.DAS.EarlyConnect.Api.Models.SendReminderEmailRequest;
 using SFA.DAS.EarlyConnect.Application.Commands.SendReminderEmail;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
@@ -153,7 +154,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStudentTriageDataBySurveyIdQuery { SurveyGuid = surveyGuid });
 
-                return Ok((Models.GetStudentTriageDataResponse)result);
+                return Ok(result);                
             }
             catch (Exception e)
             {
@@ -174,7 +175,18 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = ToDate, FromDate = FromDate });
 
-                var responseList = result.Select(r => new Models.GetStudentTriageDataResponse
+                var test = result.Select(r => new StudentSurveyDtoShared
+                {
+                    Id = r.StudentSurvey.Id,
+                    StudentId = r.StudentSurvey.StudentId,
+                    SurveyId = r.StudentSurvey.SurveyId,
+                    LastUpdated = r.StudentSurvey.LastUpdated,
+                    DateCompleted = r.StudentSurvey.DateCompleted,
+                    DateEmailSent = r.StudentSurvey.DateEmailSent,
+                    DateAdded = r.StudentSurvey.DateAdded
+                }).FirstOrDefault();
+
+                var responseList = result.Select(r => new StudentTriageDataShared
                 {
                     Id = r.Id,
                     LepDateSent = r.LepDateSent,
@@ -192,8 +204,8 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     DataSource = r.DataSource,
                     Industry = r.Industry,
                     DateInterest = r.DateInterest,
-                    StudentSurvey = r.StudentSurvey,
-                    SurveyQuestions = r.SurveyQuestions.Select(dto => (SurveyQuestions)dto).ToList(),
+                    StudentSurvey = test,
+                    SurveyQuestions = r.SurveyQuestions
                 }).ToList();
 
                 return Ok(responseList);                

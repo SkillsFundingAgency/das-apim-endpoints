@@ -4,10 +4,11 @@ using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId
 {
-    public class GetStudentTriageDataBySurveyIdQueryHandler : IRequestHandler<GetStudentTriageDataBySurveyIdQuery, GetStudentTriageDataResult>
+    public class GetStudentTriageDataBySurveyIdQueryHandler : IRequestHandler<GetStudentTriageDataBySurveyIdQuery, StudentTriageDataShared>
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
 
@@ -16,13 +17,24 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
             _apiClient = apiClient;
         }
 
-        public async Task<GetStudentTriageDataResult> Handle(GetStudentTriageDataBySurveyIdQuery request, CancellationToken cancellationToken)
+        public async Task<StudentTriageDataShared> Handle(GetStudentTriageDataBySurveyIdQuery request, CancellationToken cancellationToken)
         {
-            var result = await _apiClient.GetWithResponseCode<GetStudentTriageDataResponse>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
+            var result = await _apiClient.GetWithResponseCode<StudentTriageDataShared>(new GetStudentTriageDataBySurveyIdRequest(request.SurveyGuid));
 
             result.EnsureSuccessStatusCode();
 
-            return new GetStudentTriageDataResult
+            var test = new StudentSurveyDtoShared
+            {
+                Id = result.Body.StudentSurvey.Id,
+                StudentId = result.Body.StudentSurvey.StudentId,
+                SurveyId = result.Body.StudentSurvey.SurveyId,
+                LastUpdated = result.Body.StudentSurvey.LastUpdated,
+                DateCompleted = result.Body.StudentSurvey.DateCompleted,
+                DateEmailSent = result.Body.StudentSurvey.DateEmailSent,
+                DateAdded = result.Body.StudentSurvey.DateAdded,
+            };
+
+            return new StudentTriageDataShared
             {
                 Id = result.Body.Id,
                 LepDateSent = result.Body.LepDateSent,
@@ -40,8 +52,8 @@ namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyI
                 DataSource = result.Body.DataSource,
                 Industry = result.Body.Industry,
                 DateInterest = result.Body.DateInterest,
-                StudentSurvey = result.Body.StudentSurvey,
-                SurveyQuestions = result.Body.SurveyQuestions
+                StudentSurvey = test,
+                SurveyQuestions = (ICollection<SurveyQuestionsDtoShared>)result.Body.SurveyQuestions
             };
         }
     }
