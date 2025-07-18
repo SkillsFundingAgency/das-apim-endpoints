@@ -420,7 +420,7 @@ public sealed class WhenGettingCourseProvider
             string.Empty
         ));
 
-        var result = sut.Handle(query, CancellationToken.None).Result;
+        var result = await sut.Handle(query, CancellationToken.None);
 
         result.Should().Be(null);
     }
