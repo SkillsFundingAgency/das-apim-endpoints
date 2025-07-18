@@ -184,6 +184,61 @@ public class WhenValidatingLearnerData
         result.Errors.First().PropertyName.Should().Contain("StandardCode");
     }
 
+    [Test]
+    public async Task And_FirstName_Too_Long()
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.FirstName = new string('A', 101);
+        var result = await RunValidation(learner);
+        result.IsValid.Should().BeFalse();
+        result.Errors.First().ErrorMessage.Should().Be("FirstName cannot be more then 100 characters long");
+        result.Errors.First().PropertyName.Should().Contain("FirstName");
+    }
+
+    [Test]
+    public async Task And_LastName_Too_Long()
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.LastName = new string('B', 101);
+        var result = await RunValidation(learner);
+        result.IsValid.Should().BeFalse();
+        result.Errors.First().ErrorMessage.Should().Be("LastName cannot be more then 100 characters long");
+        result.Errors.First().PropertyName.Should().Contain("LastName");
+    }
+
+    [Test]
+    public async Task And_LearnerEmail_Too_Long()
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.LearnerEmail = new string('C', 201) + "@test.com";
+        var result = await RunValidation(learner);
+        result.IsValid.Should().BeFalse();
+        result.Errors.First().ErrorMessage.Should().Be("Email cannot be more then 200 characters long");
+        result.Errors.First().PropertyName.Should().Contain("LearnerEmail");
+    }
+
+    [Test]
+    public async Task And_AgreementId_Too_Long()
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.AgreementId = new string('D', 21);
+        var result = await RunValidation(learner);
+        result.IsValid.Should().BeFalse();
+        result.Errors.First().ErrorMessage.Should().Be("AgreementId cannot be more then 20 characters long");
+        result.Errors.First().PropertyName.Should().Contain("AgreementId");
+    }
+
+    [Test]
+    public async Task And_ConsumerReference_Too_Long()
+    {
+        var learner = CreateValidLearnerDataRequest();
+        learner.ConsumerReference = new string('E', 101);
+        var result = await RunValidation(learner);
+        result.IsValid.Should().BeFalse();
+        result.Errors.First().ErrorMessage.Should().Be("ConsumerReference cannot be more then 100 characters long");
+        result.Errors.First().PropertyName.Should().Contain("ConsumerReference");
+    }
+
     private LearnerDataRequest CreateValidLearnerDataRequest()
     {
         return new LearnerDataRequest
