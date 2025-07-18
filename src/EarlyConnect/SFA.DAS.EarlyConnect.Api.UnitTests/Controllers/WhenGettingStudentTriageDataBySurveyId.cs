@@ -10,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.EarlyConnect.Api.Controllers;
 using SFA.DAS.EarlyConnect.Api.Models;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
@@ -32,7 +33,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task GetStudentTriageData_ValidRequest_ReturnsOk(
-            GetStudentTriageDataResult mediatorResult,
+            StudentTriageDataShared mediatorResult,
             Guid surveyGuid
         )
         {
@@ -44,7 +45,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.InstanceOf<GetStudentTriageDataResponse>());
+            Assert.That(okResult.Value, Is.InstanceOf<StudentTriageDataShared>());
             Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 
