@@ -23,11 +23,18 @@ function interpolate(str) {
 }
 
 function extractVariable(code, responseJson) {
-    const match = code.match(/client\.global\.set\("(.+?)",\s*response\.body\.(.+?)\)/);
-    if (!match) return;
-    const [, varName, path] = match;
-    const value = path.split(".").reduce((o, k) => (o ? o[k] : undefined), responseJson);
-    if (value) globalVars[varName] = value;
+    const matches = [...code.matchAll(/client\.global\.set\("(.+?)",\s*response\.body\.(.+?)\)/g)];
+    for (const [, varName, jsExpr] of matches) {
+        try {
+            // Build a function that evaluates the JS expression safely
+            const value = Function("body", `return body.${jsExpr}`)(responseJson);
+            if (value !== undefined) {
+                globalVars[varName] = value;
+            }
+        } catch (err) {
+            console.warn(`⚠️ Failed to extract '${varName}' from response.body.${jsExpr}`);
+        }
+    }
 }
 
 function runRequestBlock(block, output = []) {

@@ -106,7 +106,7 @@ Ocp-Apim-Subscription-Key: {{subscriptionKey}}
     {
       "preferenceId": "{{preferenceId}}",
       "preferenceMeaning": "A vacancy is closing soon",
-      "preferenceHint": "Get a reminder 7 days before the closing date for an apprenticeship. We'll notify you for your saved vacancies and apprenticeships you've began an application for.",
+      "preferenceHint": "",
       "contactMethodsAndStatus": [
         {
           "contactMethod": "Email",
