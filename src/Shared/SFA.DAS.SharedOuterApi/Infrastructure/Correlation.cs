@@ -48,6 +48,7 @@ public class CorrelationIdMiddleware
 
     public async Task Invoke(HttpContext context)
     {
+        
         var correlationId = context.Request.Headers.TryGetValue(HeaderName, out var values) &&
                             !string.IsNullOrWhiteSpace(values.FirstOrDefault())
             ? values.First()
