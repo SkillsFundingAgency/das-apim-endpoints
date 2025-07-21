@@ -47,7 +47,7 @@ public class UpdateLearnerCommandHandler(
         logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", changes));
 
-        await UpdateEarnings(command, changes);// CODE Review comment, this should really be deleted and a single earnings endpoint to take all updates be created
+        await UpdateEarnings(command, changes);
 
         logger.LogInformation("Earnings updated for learner with key {LearningKey}", command.LearningKey);
     }
