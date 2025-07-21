@@ -4,14 +4,14 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
     public class GetAllCoursesRequest : IGetApiRequest
     {
-        public string GetUrl => $"providers/{Ukprn}/courses?excludeCoursesWithoutLocation={ExcludeCoursesWithoutLocation}";
+        public string GetUrl => $"providers/{Ukprn}/courses?excludeCoursesWithoutLocation={ExcludeInvalidCourses}";
         public int Ukprn { get; }
-        public bool ExcludeCoursesWithoutLocation { get; }
+        public bool ExcludeInvalidCourses { get; }
 
         public GetAllCoursesRequest(int ukprn)
         {
             Ukprn = ukprn;
-            ExcludeCoursesWithoutLocation = false;
+            ExcludeInvalidCourses = false;
         }
     }
 }
