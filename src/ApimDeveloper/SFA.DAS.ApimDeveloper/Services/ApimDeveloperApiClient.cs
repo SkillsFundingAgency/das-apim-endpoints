@@ -81,10 +81,7 @@ namespace SFA.DAS.ApimDeveloper.Services
         {
             throw new System.NotImplementedException();
         }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
         {
@@ -92,6 +89,16 @@ namespace SFA.DAS.ApimDeveloper.Services
         }
 
         public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }
