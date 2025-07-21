@@ -2,6 +2,7 @@
 
 namespace SFA.DAS.EarlyConnect.InnerApi.Responses
 {
+    [ExcludeFromCodeCoverage]
     public class GetStudentTriageDataResponse
     {
         public int Id { get; set; }
