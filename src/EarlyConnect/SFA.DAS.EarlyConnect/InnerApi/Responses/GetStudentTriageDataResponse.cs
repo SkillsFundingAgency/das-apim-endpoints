@@ -1,7 +1,9 @@
 ﻿using SFA.DAS.EarlyConnect.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EarlyConnect.InnerApi.Responses
-{    
+{
+    [ExcludeFromCodeCoverage]
     public abstract class StudentTriageDataBase
     {
         public int Id { get; set; }                        

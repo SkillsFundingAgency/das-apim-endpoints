@@ -6,9 +6,11 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate
 {
+    [ExcludeFromCodeCoverage]
     public class GetStudentTriageDataByDateQueryHandler : IRequestHandler<GetStudentTriageDataByDateQuery, List<GetStudentTriageDataResponse>>
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;

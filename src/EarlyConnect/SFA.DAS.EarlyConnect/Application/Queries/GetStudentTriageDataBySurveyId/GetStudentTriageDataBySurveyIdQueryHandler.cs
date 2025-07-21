@@ -5,9 +5,11 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId
 {
+    [ExcludeFromCodeCoverage]
     public class GetStudentTriageDataBySurveyIdQueryHandler : IRequestHandler<GetStudentTriageDataBySurveyIdQuery, GetStudentTriageDataResponse>
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;

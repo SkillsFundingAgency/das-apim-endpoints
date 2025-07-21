@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using SFA.DAS.EarlyConnect.Configuration;
 using SFA.DAS.EarlyConnect.ExternalApi.Requests;
 using SFA.DAS.EarlyConnect.ExternalApi.Responses;
@@ -14,6 +15,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EarlyConnect.Services
 {
+    [ExcludeFromCodeCoverage]
     public class SendStudentDataToLepsService : ISendStudentDataToLepsService
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;

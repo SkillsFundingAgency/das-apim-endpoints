@@ -1,7 +1,9 @@
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EarlyConnect.InnerApi.Requests
 {
+    [ExcludeFromCodeCoverage]
     public class GetStudentTriageDataByDateRequest : IGetApiRequest
     {
         public DateTime ToDate { get; set; }

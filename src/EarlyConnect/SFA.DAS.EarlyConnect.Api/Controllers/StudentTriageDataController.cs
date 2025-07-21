@@ -16,12 +16,14 @@ using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
 using SendReminderEmailRequest = SFA.DAS.EarlyConnect.Api.Models.SendReminderEmailRequest;
 using SFA.DAS.EarlyConnect.Application.Commands.SendReminderEmail;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/early-connect/student-triage-data/")]
+    [ExcludeFromCodeCoverage]
     public class StudentTriageDataController : ControllerBase
     {
         private readonly IMediator _mediator;
