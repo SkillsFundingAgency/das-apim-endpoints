@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
@@ -11,7 +10,8 @@ public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
     private readonly CivilServiceJobsConfiguration _apiConfiguration;
     private readonly HttpClient _httpClient;
 
-    public CivilServiceJobsApiClient(IHttpClientFactory httpClientFactory, CivilServiceJobsConfiguration apiConfiguration)
+    public CivilServiceJobsApiClient(IHttpClientFactory httpClientFactory,
+        CivilServiceJobsConfiguration apiConfiguration)
     {
         _apiConfiguration = apiConfiguration;
         _httpClient = httpClientFactory.CreateClient();
@@ -20,36 +20,30 @@ public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
 
     public async Task<ApiResponse<string>> GetWithResponseCode(IGetApiRequest request)
     {
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
-        httpRequestMessage.AddVersion(request.Version);
+        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
         httpRequestMessage.Headers.TryAddWithoutValidation("X-API-Key", _apiConfiguration.ApiKey);
 
-        var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
-
+        using var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
         var stringResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
-        var errorContent = "";
-        var responseBody = "";
+        string? errorContent = null;
+        string? responseBody = null;
 
         if (IsNot200RangeResponseCode(response.StatusCode))
         {
             errorContent = stringResponse;
         }
-        else if (string.IsNullOrWhiteSpace(stringResponse))
-        {
-            // 204 No Content from a potential returned null
-            // Will throw if attempts to deserialise but didn't
-            // feel right making it part of the error if branch
-            // even if there is no content.
-        }
-        else
+        else if (!string.IsNullOrWhiteSpace(stringResponse))
         {
             responseBody = stringResponse;
         }
 
-        var getWithResponseCode = new ApiResponse<string>(responseBody, response.StatusCode, errorContent);
-
-        return getWithResponseCode;
+        return new ApiResponse<string>(
+            responseBody,
+            response.StatusCode,
+            errorContent,
+            response.Headers.ToDictionary(h => h.Key, h => h.Value)
+        );
     }
 
     private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)

@@ -8,7 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 
 public class GetNhsJobsQueryHandler(
     INhsJobsApiClient nhsJobsApiClient,

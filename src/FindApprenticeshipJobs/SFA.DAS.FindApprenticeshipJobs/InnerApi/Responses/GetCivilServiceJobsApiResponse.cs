@@ -5,60 +5,41 @@ public record GetCivilServiceJobsApiResponse
 {
     [JsonProperty("meta")]
     public Meta MetaData { get; set; }
-     
-    [JsonProperty("jobs")]
-    public List<Job> Jobs { get; set; }
+
+    [JsonProperty("jobs")] public List<Job> Jobs { get; set; } = [];
 
     public class Approach
     {
-        [JsonProperty("cy")]
-        public string Cy { get; set; }
-
         [JsonProperty("en")]
         public string En { get; set; }
     }
 
     public class ContractType
     {
-        [JsonProperty("cy")]
-        public List<string> Cy { get; set; }
-
         [JsonProperty("en")]
         public List<string> En { get; set; }
     }
 
     public class Country
     {
-        [JsonProperty("cy")]
-        public string Cy { get; set; }
-
         [JsonProperty("en")]
         public string En { get; set; }
     }
 
     public class CountryRegions
     {
-        [JsonProperty("cy")]
-        public List<string> Cy { get; set; }
-
         [JsonProperty("en")]
         public List<string> En { get; set; }
     }
 
     public class Department
     {
-        [JsonProperty("cy")]
-        public string Cy { get; set; }
-
         [JsonProperty("en")]
         public string En { get; set; }
     }
 
     public class Grade
     {
-        [JsonProperty("cy")]
-        public List<string> Cy { get; set; }
-
         [JsonProperty("en")]
         public List<string> En { get; set; }
     }
@@ -134,18 +115,12 @@ public record GetCivilServiceJobsApiResponse
 
     public class JobApplyURL
     {
-        [JsonProperty("cy")]
-        public string Cy { get; set; }
-
         [JsonProperty("en")]
         public string En { get; set; }
     }
 
     public class JobTitle
     {
-        [JsonProperty("cy")]
-        public string Cy { get; set; }
-
         [JsonProperty("en")]
         public string En { get; set; }
     }
@@ -180,10 +155,10 @@ public record GetCivilServiceJobsApiResponse
     public class LocationGeoCoordinate
     {
         [JsonProperty("lat")]
-        public string Lat { get; set; }
+        public double Lat { get; set; }
 
         [JsonProperty("lon")]
-        public string Lon { get; set; }
+        public double Lon { get; set; }
     }
 
     public class Meta
@@ -194,27 +169,18 @@ public record GetCivilServiceJobsApiResponse
 
     public class Profession
     {
-        [JsonProperty("cy")]
-        public string Cy { get; set; }
-
         [JsonProperty("en")]
         public string En { get; set; }
     }
 
     public class Role
     {
-        [JsonProperty("cy")]
-        public List<string> Cy { get; set; }
-
         [JsonProperty("en")]
         public List<string> En { get; set; }
     }
 
     public class WorkingPattern
     {
-        [JsonProperty("cy")]
-        public List<string> Cy { get; set; }
-
         [JsonProperty("en")]
         public List<string> En { get; set; }
     }

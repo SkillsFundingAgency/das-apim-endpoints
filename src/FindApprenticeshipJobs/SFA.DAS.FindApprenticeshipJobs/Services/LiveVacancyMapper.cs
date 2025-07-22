@@ -152,19 +152,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             };
         }
 
-        public Application.Shared.LiveVacancy Map(GetCivilServiceJobsApiResponse.Job source,
-            GetLocationsListResponse locations, GetRoutesListItem route)
+        public Application.Shared.LiveVacancy Map(GetCivilServiceJobsApiResponse.Job source, GetRoutesListItem route)
         {
-            var location = source.Locations.FirstOrDefault().Location.Split(",");
-            var locationLookup = locations.Locations.FirstOrDefault(c =>
-                c.Postcode.Replace(" ", "").Equals(location[1].Replace(" ", "").Trim(),
-                    StringComparison.CurrentCultureIgnoreCase));
             return new Application.Shared.LiveVacancy
             {
                 Route = route.Name,
                 RouteCode = route.Id,
                 Title = source.JobTitle.En,
-                Description = source.Description,
+                Description = string.Empty,
                 Id = source.JobCode,
                 EmployerName = source.Department.En,
                 VacancyReference = source.JobReference,
@@ -174,11 +169,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 PostedDate = source.KeyTimes.PublishedTime,
                 Address = new Address
                 {
-                    AddressLine4 = location[0].Trim(),
-                    Postcode = location[1].Trim(),
-                    Latitude = locationLookup?.Location?.GeoPoint?.FirstOrDefault() ?? 0,
-                    Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0,
-                    Country = locationLookup?.Country
+                    Latitude = source.LocationGeoCoordinates.FirstOrDefault()?.Lat ?? 0,
+                    Longitude = source.LocationGeoCoordinates.FirstOrDefault()?.Lon ?? 0,
                 },
                 Qualifications = [],
                 Skills = [],

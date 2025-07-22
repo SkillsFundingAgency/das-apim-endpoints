@@ -1,5 +1,6 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.CivilServiceJobs;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
