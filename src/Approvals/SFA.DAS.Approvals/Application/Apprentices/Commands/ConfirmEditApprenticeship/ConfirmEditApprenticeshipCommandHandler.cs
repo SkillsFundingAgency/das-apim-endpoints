@@ -32,8 +32,8 @@ public class ConfirmEditApprenticeshipCommandHandler(
         var editRequestData = new EditApprenticeshipApiRequestData
         {
             ApprenticeshipId = command.ApprenticeshipId,
-            ProviderId = command.ProviderId ?? apprenticeship.ProviderId,
-            AccountId = command.AccountId ?? apprenticeship.AccountId,
+            ProviderId = command.ProviderId,
+            AccountId = command.AccountId,
             FirstName = command.FirstName,
             LastName = command.LastName,
             Email = command.Email,
