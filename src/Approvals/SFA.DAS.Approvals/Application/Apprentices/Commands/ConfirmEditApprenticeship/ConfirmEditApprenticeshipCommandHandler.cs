@@ -49,7 +49,8 @@ public class ConfirmEditApprenticeshipCommandHandler(
             Version = command.Version,
             Option = command.Option == "TBC" ? string.Empty : command.Option,
             MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
-            MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge
+            MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
+            UserInfo = command.UserInfo
         };
 
         var editApiRequest = new EditApprenticeshipApiRequest(editRequestData);

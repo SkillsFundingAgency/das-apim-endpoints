@@ -1,5 +1,6 @@
 using System;
 using MediatR;
+using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 
@@ -22,4 +23,5 @@ public class ConfirmEditApprenticeshipCommand : IRequest<ConfirmEditApprenticesh
     public string Version { get; set; }
     public string Option { get; set; }
     public long? AccountId { get; set; }
+    public UserInfo UserInfo { get; set; }
 } 
