@@ -78,7 +78,7 @@ builder.Services.AddAuthentication(configuration);
 builder.Services.AddConfigurationOptions(configuration);
 
 builder.Services.AddHealthChecks()
-    .AddCheck<ApprenticeshipsApiHealthCheck>(ApprenticeshipsApiHealthCheck.HealthCheckResultDescription)
+    .AddCheck<LearningApiHealthCheck>(LearningApiHealthCheck.HealthCheckResultDescription)
     .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription);
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
