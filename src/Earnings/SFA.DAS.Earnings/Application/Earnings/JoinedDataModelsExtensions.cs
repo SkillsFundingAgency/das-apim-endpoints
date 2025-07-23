@@ -2,8 +2,6 @@
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
 
@@ -11,55 +9,58 @@ internal static class JoinedDataModelsExtensions
 {
     internal static List<PriceEpisodePeriodisedValues> GetPriceEpisodePeriodisedValues(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode joinedPriceEpisode, GetAcademicYearsResponse currentAcademicYear)
     {
+        var periodisedValues = new List<PriceEpisodePeriodisedValues>();
 
-        return new List<PriceEpisodePeriodisedValues>()
-        {
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftBalancing, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeBalancePayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeBalanceValue, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeCompletionPayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstDisadvantagePayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftBalancing, 0);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftBalancing, 0);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftCompletionPayment, 0);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeApplic1618FrameworkUpliftOnProgPayment, 0);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeBalancePayment, 0);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeBalanceValue, 0);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeCompletionPayment, 0);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstDisadvantagePayment, 0);
+        periodisedValues.AddNthIncentivePaymentValues(
                 joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstEmp1618Pay,
-                EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive, 
-                1),
-            PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive,
+                1);
+        periodisedValues.AddNthIncentivePaymentValues(
                 joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeFirstProv1618Pay,
                 EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive,
-                1),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLevyNonPayInd, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildAdditionalPaymentPerPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(),EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLSFCash, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondDisadvantagePayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                1);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLevyNonPayInd, 0);
+        periodisedValues.AddAdditionalPaymentPerPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLSFCash, EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondDisadvantagePayment, 0);
+        periodisedValues.AddNthIncentivePaymentValues(
                 joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondEmp1618Pay,
                 EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive,
-                2),
-            PriceEpisodePeriodisedValuesBuilder.BuildNthIncentivePaymentValues(
+                2);
+        periodisedValues.AddNthIncentivePaymentValues(
                 joinedEarningsApprenticeship,
                 joinedPriceEpisode,
                 currentAcademicYear.GetShortAcademicYear(),
                 EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeSecondProv1618Pay,
-                EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive, 
-                2),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLearnerAdditionalPayment, 0),
-            PriceEpisodePeriodisedValuesBuilder.BuildPriceEpisodeInstalmentsThisPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear()),
-            PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeOnProgPayment),
-            PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier),
-            PriceEpisodePeriodisedValuesBuilder.BuildCoInvestmentValues(joinedPriceEpisode,currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier),
-            PriceEpisodePeriodisedValuesBuilder.BuildInstallmentAmountValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeTotProgFunding),
-            PriceEpisodePeriodisedValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeESFAContribPct, EarningsFM36Constants.CoInvestSfaMultiplier),
-        };
+                EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive,
+                2);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeLearnerAdditionalPayment, 0);
+
+        periodisedValues.AddPriceEpisodeInstalmentsThisPeriodValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear());
+
+        periodisedValues.AddInstallmentAmountValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeOnProgPayment);
+        periodisedValues.AddCoInvestmentValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMaxEmpCont, EarningsFM36Constants.CoInvestEmployerMultiplier);
+        periodisedValues.AddCoInvestmentValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeProgFundIndMinCoInvest, EarningsFM36Constants.CoInvestSfaMultiplier);
+        periodisedValues.AddInstallmentAmountValues(joinedPriceEpisode, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeTotProgFunding);
+        periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeESFAContribPct, EarningsFM36Constants.CoInvestSfaMultiplier);
+
+        return periodisedValues;
     }
 
     internal static PriceEpisodeValues GetPriceEpisodeValues(

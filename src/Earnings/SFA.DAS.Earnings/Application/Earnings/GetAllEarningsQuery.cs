@@ -99,27 +99,29 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             FM36Learners = joinedApprenticeships
             .Select(joinedApprenticeship =>
             {
-                var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear)
+                try
+                {
+                    var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear)
                     .ToList();
 
-                //If there are no price episodes for the requested academic year, create one, using the values of the first actual episode
-                if (priceEpisodesForAcademicYear.Count == 0)
-                {
-                    priceEpisodesForAcademicYear =
-                    [
-                        new JoinedPriceEpisode(joinedApprenticeship.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear(), true)
-                    ];
-                }
+                    //If there are no price episodes for the requested academic year, create one, using the values of the first actual episode
+                    if (priceEpisodesForAcademicYear.Count == 0)
+                    {
+                        priceEpisodesForAcademicYear =
+                        [
+                            new JoinedPriceEpisode(joinedApprenticeship.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear(), true)
+                        ];
+                    }
 
-                return new FM36Learner
-                {
-                    ULN = long.Parse(joinedApprenticeship.Uln),
-                    LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-                    EarningsPlatform = SimplificationEarningsPlatform,
-                    PriceEpisodes = GetPriceEpisodes(joinedApprenticeship, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
-                    LearningDeliveries =
-                    [
-                        new LearningDelivery
+                    return new FM36Learner
+                    {
+                        ULN = long.Parse(joinedApprenticeship.Uln),
+                        LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                        EarningsPlatform = SimplificationEarningsPlatform,
+                        PriceEpisodes = GetPriceEpisodes(joinedApprenticeship, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
+                        LearningDeliveries =
+                        [
+                            new LearningDelivery
                         {
                             AimSeqNumber = 1,
                             LearningDeliveryValues = joinedApprenticeship.GetLearningDelivery(currentAcademicYear),
@@ -128,9 +130,16 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearningDeliveryPeriodisedTextValues =
                                 joinedApprenticeship.GetLearningDeliveryPeriodisedTextValues()
                         }
-                    ],
-                    HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
-                };
+                        ],
+                        HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
+                    };
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedApprenticeship.Uln);
+                    return null;
+                }
+
             })
             .ToArray()
         };
