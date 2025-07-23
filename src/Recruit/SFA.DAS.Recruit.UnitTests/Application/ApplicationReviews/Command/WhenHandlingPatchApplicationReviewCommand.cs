@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading;
+using SFA.DAS.SharedOuterApi.Exceptions;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command
 {
@@ -54,11 +55,28 @@ namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command
             var expectedPatchRequest = new PatchRecruitApplicationReviewApiRequest(command.Id, new JsonPatchDocument<ApplicationReview>());
 
             recruitApiClient
-                .Setup(client => client.PatchWithResponseCode(It.Is<PatchApplicationApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
-                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.BadRequest, string.Empty));
+                .Setup(client => client.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.NotFound, string.Empty));
+
+            await handler.Handle(command, CancellationToken.None);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Api_Response_IsNotSuccess_CommandResult_Is_Returned_As_Expected(
+            PatchApplicationReviewCommand command,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            PatchApplicationReviewCommandHandler handler)
+        {
+            var expectedPatchRequest = new PatchRecruitApplicationReviewApiRequest(command.Id, new JsonPatchDocument<ApplicationReview>());
+
+            recruitApiClient
+                .Setup(client => client.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(r => r.PatchUrl == expectedPatchRequest.PatchUrl)))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.InternalServerError, string.Empty));
 
             var act = async () => { await handler.Handle(command, CancellationToken.None); };
-            await act.Should().ThrowAsync<ArgumentException>();
+            await act.Should().ThrowAsync<ApiResponseException>();
+
         }
+        
     }
 }

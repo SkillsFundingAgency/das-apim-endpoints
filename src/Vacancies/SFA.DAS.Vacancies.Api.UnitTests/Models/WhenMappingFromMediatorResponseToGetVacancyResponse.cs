@@ -47,6 +47,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(c=>c.WorkingWeek)
                 .Excluding(c=>c.IsPositiveAboutDisability)
                 .Excluding(c => c.ClosingDate)
+                .Excluding(c => c.ApprenticeshipType)
                 .Excluding(item => item.Ukprn)
                 .Excluding(item => item.VacancyReference)
                 .Excluding(item => item.VacancySource)

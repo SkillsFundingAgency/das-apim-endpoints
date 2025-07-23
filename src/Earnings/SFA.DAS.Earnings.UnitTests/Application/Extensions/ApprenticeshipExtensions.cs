@@ -1,15 +1,15 @@
 using System.ComponentModel;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Extensions;
 
 public static class ApprenticeshipExtensions
 {
-    public static Guid GetEpisodePriceKey(this Apprenticeship apprenticeship, short academicYear, byte deliveryPeriod)
+    public static Guid GetEpisodePriceKey(this Learning learning, short academicYear, byte deliveryPeriod)
     {
-        var prices = apprenticeship.Episodes.SelectMany(e => e.Prices).ToList();
+        var prices = learning.Episodes.SelectMany(e => e.Prices).ToList();
         var searchDateTime = academicYear.GetDateTime(deliveryPeriod).AddDays(14);
         var price = prices.FirstOrDefault(p => p.StartDate <= searchDateTime && p.EndDate >= searchDateTime);
         return price?.Key ?? Guid.Empty;
@@ -18,14 +18,14 @@ public static class ApprenticeshipExtensions
     /// <summary>
     /// Sets the withdrawal date for an apprenticeship based on the specified withdrawal date type and returns the date that has been set
     /// </summary>
-    public static DateTime? SetWithdrawalDate(this Apprenticeship apprenticeship, WithdrawalDate withdrawalDate)
+    public static DateTime? SetWithdrawalDate(this Learning learning, WithdrawalDate withdrawalDate)
     {
         var qualifyingPeriod = SharedOuterApi.Common.Constants.QualifyingPeriod;
 
         EpisodePrice? nextPriceEpisode = null;
         if(withdrawalDate == WithdrawalDate.AfterNextPriceEpisodeStart || withdrawalDate == WithdrawalDate.BeforeNextPriceEpisodeStart)
         {
-            nextPriceEpisode = apprenticeship.Episodes
+            nextPriceEpisode = learning.Episodes
                 .SelectMany(e => e.Prices)
                 .OrderBy(p => p.StartDate)
                 .ElementAtOrDefault(1);
@@ -39,25 +39,25 @@ public static class ApprenticeshipExtensions
             case WithdrawalDate.None:
                 break;
             case WithdrawalDate.DuringQualifyingPeriod:
-                apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod - 1);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod - 1);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.AfterQualifyingPeriod:
-                apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod + 1);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod + 1);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.BeforeNextPriceEpisodeStart:
-                apprenticeship.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(-5);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(-5);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.AfterNextPriceEpisodeStart:
-                apprenticeship.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(5);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(5);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             default:
                 throw new InvalidEnumArgumentException();
         }
 
-        return apprenticeship.WithdrawnDate;
+        return learning.WithdrawnDate;
     }
 }

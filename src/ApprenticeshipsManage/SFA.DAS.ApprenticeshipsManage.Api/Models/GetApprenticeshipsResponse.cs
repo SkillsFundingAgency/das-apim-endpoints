@@ -5,7 +5,7 @@ namespace SFA.DAS.ApprenticeshipsManage.Api.Models;
 
 public class GetApprenticeshipsResponse
 {
-    public List<Apprenticeship> Apprenticeships { get; set; } = [];
+    public List<Learning> Apprenticeships { get; set; } = [];
     public int Total { get; set; }
     public int Page { get; set; }
     public int PageSize { get; set; }

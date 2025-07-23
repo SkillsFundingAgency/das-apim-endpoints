@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.Recruit.InnerApi.Requests;
@@ -35,6 +36,11 @@ namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplication
 
             var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewApiRequest(command.Id, jsonPatchApplicationReviewDocument);
             var patchResponse = await recruitApiClient.PatchWithResponseCode(patchApplicationReviewApiRequest);
+            
+            if (patchResponse.StatusCode == HttpStatusCode.NotFound)
+            {
+                return;
+            }
 
             patchResponse.EnsureSuccessStatusCode();
         }
