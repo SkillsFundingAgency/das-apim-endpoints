@@ -41,7 +41,7 @@ public class JoinedEarningsApprenticeship
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
-        CompletionDate = apprenticeship.CompletionDate;
+        CompletionDate = learning.CompletionDate;
     }
 
     private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
