@@ -9,7 +9,7 @@ public static class AddConfigurationOptionsExtension
     {
         services.AddOptions();
         services.AddConfigurationOptions<AzureActiveDirectoryConfiguration>(configuration, "AzureAd");
-        services.AddConfigurationOptions<ApprenticeshipsApiConfiguration>(configuration);
+        services.AddConfigurationOptions<LearningApiConfiguration>(configuration);
         services.AddConfigurationOptions<EarningsApiConfiguration>(configuration);
     }
 

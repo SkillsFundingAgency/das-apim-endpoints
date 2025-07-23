@@ -20,7 +20,7 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_Learner_Is_Updated_Successfully_With_Changes(
         Guid learningKey,
         DateTime completionDate,
-        [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> learningApiClient,
+        [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         [Frozen] Mock<IEarningsApiClient<EarningsApiConfiguration>> earningsApiClient,
         [Frozen] Mock<ILogger<UpdateLearnerCommandHandler>> logger,
         UpdateLearnerCommandHandler handler)
@@ -49,7 +49,7 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_No_Earnings_Updated_If_No_Changes(
         Guid learningKey,
         DateTime completionDate,
-        [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> learningApiClient,
+        [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         [Frozen] Mock<IEarningsApiClient<EarningsApiConfiguration>> earningsApiClient,
         [Frozen] Mock<ILogger<UpdateLearnerCommandHandler>> logger,
         UpdateLearnerCommandHandler handler)
@@ -70,7 +70,7 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_Logs_Error_If_Learner_Update_Fails(
         Guid learningKey,
         DateTime completionDate,
-        [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> learningApiClient,
+        [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         [Frozen] Mock<ILogger<UpdateLearnerCommandHandler>> logger,
         UpdateLearnerCommandHandler handler)
     {
@@ -100,7 +100,7 @@ public class WhenHandlingUpdateLearnerCommand
     }
 
     private static void MockLearningApiResponse(
-        Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> learningApiClient,
+        Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,
         HttpStatusCode statusCode,
         string errorContent = "")
