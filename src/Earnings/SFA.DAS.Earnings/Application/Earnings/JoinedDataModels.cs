@@ -1,12 +1,11 @@
 ﻿using System.Diagnostics;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Earnings.Application.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 using EarningsApprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship;
 using EarningsEpisode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Episode;
-using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode;
+using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
 
@@ -32,24 +31,24 @@ public class JoinedEarningsApprenticeship
     /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
     public DateTime? CompletionDate { get; set; }
 
-    internal JoinedEarningsApprenticeship(Apprenticeship apprenticeship, EarningsApprenticeship earningsApprenticeship, short academicYear)
+    internal JoinedEarningsApprenticeship(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
     {
-        Key = apprenticeship.Key;
-        Uln = apprenticeship.Uln;
-        StartDate = apprenticeship.StartDate;
-        PlannedEndDate = apprenticeship.PlannedEndDate;
-        Episodes = JoinEpisodes(apprenticeship,earningsApprenticeship, academicYear);
-        AgeAtStartOfApprenticeship = apprenticeship.AgeAtStartOfApprenticeship;
-        WithdrawnDate = apprenticeship.WithdrawnDate;
+        Key = learning.Key;
+        Uln = learning.Uln;
+        StartDate = learning.StartDate;
+        PlannedEndDate = learning.PlannedEndDate;
+        Episodes = JoinEpisodes(learning,earningsApprenticeship, academicYear);
+        AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
+        WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
-        CompletionDate = apprenticeship.CompletionDate;
+        CompletionDate = learning.CompletionDate;
     }
 
-    private static List<JoinedPriceEpisode> JoinEpisodes(Apprenticeship apprenticeship, EarningsApprenticeship earningsApprenticeship, short academicYear)
+    private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
     {
         var joinedEpisodes = new List<JoinedPriceEpisode>();
 
-        foreach(var apprenticeshipEpisode in apprenticeship.Episodes)
+        foreach(var apprenticeshipEpisode in learning.Episodes)
         {
             foreach(var apprenticeshipEpisodePrice in apprenticeshipEpisode.Prices)
             {

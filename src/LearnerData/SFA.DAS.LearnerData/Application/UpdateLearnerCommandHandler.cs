@@ -19,7 +19,7 @@ public class UpdateLearnerCommand : IRequest
 
 public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
-    IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> learningApiClient,
+    ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
     ) : IRequestHandler<UpdateLearnerCommand>
 {

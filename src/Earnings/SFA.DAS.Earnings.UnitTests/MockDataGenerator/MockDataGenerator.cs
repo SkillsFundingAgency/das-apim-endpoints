@@ -1,9 +1,7 @@
 ﻿using AutoFixture;
-using SFA.DAS.Earnings.UnitTests.Application.Earnings;
 using SFA.DAS.Earnings.UnitTests.Application.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using Apprenticeship = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Apprenticeship;
 
 namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
 {
@@ -14,7 +12,7 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
         private const string AdditionalPaymentTypeEmployerIncentive = "EmployerIncentive";
         private const string AdditionalPaymentTypeLearningSupport = "LearningSupport";
 
-        public GetApprenticeshipsResponse GetApprenticeshipsResponse { get; private set; }
+        public GetLearningsResponse GetLearningsResponse { get; private set; }
         public GetFm36DataResponse GetFm36DataResponse { get; private set; }
         private Fixture Fixture { get; set; }
 
@@ -27,10 +25,10 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
         {
             _ukprn = Fixture.Create<long>();
 
-            GetApprenticeshipsResponse = new GetApprenticeshipsResponse
+            GetLearningsResponse = new GetLearningsResponse
             {
                 Ukprn = _ukprn,
-                Apprenticeships = []
+                Learnings = []
             };
             GetFm36DataResponse = new GetFm36DataResponse();
         }
@@ -60,13 +58,13 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
         private void AddSimpleApprenticeship()
         {
             var simpleApprenticeship =
-                new Apprenticeship
+                new Learning
                 {
                     Uln = Fixture.Create<int>().ToString(),
                     Key = Guid.NewGuid(),
                     Episodes =
                     [
-                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode
+                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode
                         {
                             Key = Guid.NewGuid(),
                             TrainingCode = $"{Fixture.Create<int>()}    ",
@@ -134,20 +132,20 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
                 }
             };
 
-            GetApprenticeshipsResponse.Apprenticeships.Add(simpleApprenticeship);
+            GetLearningsResponse.Learnings.Add(simpleApprenticeship);
             GetFm36DataResponse.Add(earningsApprenticeship);
         }
 
         private void AddApprenticeshipWithPriceChange()
         {
             var apprenticeshipWithAPriceChange =
-                new Apprenticeship
+                new Learning
                 {
                     Uln = Fixture.Create<int>().ToString(),
                     Key = Guid.NewGuid(),
-                    Episodes = new List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode>
+                    Episodes = new List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode>
                     {
-                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.Episode
+                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode
                         {
                             Key = Guid.NewGuid(),
                             TrainingCode = $"{Fixture.Create<int>()}    ",
@@ -228,7 +226,7 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
                 }
             };
 
-            GetApprenticeshipsResponse.Apprenticeships.Add(apprenticeshipWithAPriceChange);
+            GetLearningsResponse.Learnings.Add(apprenticeshipWithAPriceChange);
             GetFm36DataResponse.Add(earnings);
         }
     }
