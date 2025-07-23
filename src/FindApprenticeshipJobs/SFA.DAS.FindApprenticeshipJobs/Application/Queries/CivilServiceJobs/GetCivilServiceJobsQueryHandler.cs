@@ -61,6 +61,7 @@ public class GetCivilServiceJobsQueryHandler(
             liveVacancy.Address.AddressLine2 = locationApiResponse.AddressLine2;
             liveVacancy.Address.AddressLine3 = locationApiResponse.AddressLine3;
             liveVacancy.Address.Postcode = locationApiResponse.Postcode;
+            liveVacancy.Address.Country = locationApiResponse.Country;
         }
 
         return new GetCivilServiceJobsQueryResult

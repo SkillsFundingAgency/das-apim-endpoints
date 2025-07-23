@@ -21,6 +21,9 @@ public record GetAddressByCoordinatesApiResponse
     [JsonProperty("postcode")]
     public string Postcode { get; set; }
 
+    [JsonProperty("country")]
+    public string Country { get; set; }
+
     [JsonProperty("longitude")]
     public double Longitude { get; set; }
 
