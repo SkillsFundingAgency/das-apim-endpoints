@@ -48,6 +48,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                     .Excluding(p=>p.MigratedEmail)
                 );
             result.IsApplicationComplete.Should().BeTrue();
+            result.EmploymentLocation.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation);
             result.ClosedDate.Should().Be(vacancyApiResponse.ClosedDate);
             result.ClosingDate.Should().Be(vacancyApiResponse.ClosingDate);
             result.VacancyTitle.Should().Be(vacancyApiResponse.Title);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
@@ -24,10 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public PreviousApplicationDetails PreviousApplication { get; set; }
-        public AddressDto? Address { get; set; }
-        public List<AddressDto>? OtherAddresses { get; set; }
-        [JsonConverter(typeof(JsonStringEnumConverter))]
-        public AvailableWhere? EmployerLocationOption { get; set; }
+        public EmploymentLocationSection? EmploymentLocation { get; set; }
 
         public class EducationHistorySection
         {
@@ -40,6 +38,24 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 {
                     Qualifications = source.Qualifications,
                     TrainingCourses = source.TrainingCourses
+                };
+            }
+        }
+        
+        public record EmploymentLocationSection : LocationDto
+        {
+            public string EmploymentLocationStatus { get; set; }
+            public static implicit operator EmploymentLocationSection(GetIndexQueryResult.EmploymentLocationSection? source)
+            {
+                if (source is null) return null;
+
+                return new EmploymentLocationSection
+                {
+                    Id = source.Id,
+                    Addresses = source.Addresses,
+                    EmploymentLocationInformation = source.EmploymentLocationInformation,
+                    EmployerLocationOption = source.EmployerLocationOption,
+                    EmploymentLocationStatus = source.EmploymentLocationStatus
                 };
             }
         }
@@ -125,14 +141,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 IsDisabilityConfident = source.IsDisabilityConfident,
                 IsApplicationComplete = source.IsApplicationComplete,
                 EducationHistory = source.EducationHistory,
+                EmploymentLocation = source.EmploymentLocation,
                 WorkHistory = source.WorkHistory,
                 ApplicationQuestions = source.ApplicationQuestions,
                 InterviewAdjustments = source.InterviewAdjustments,
                 DisabilityConfidence = source.DisabilityConfidence,
                 PreviousApplication = source.PreviousApplication,
-                EmployerLocationOption = source.EmployerLocationOption,
-                Address = AddressDto.From(source.Address),
-                OtherAddresses = source.OtherAddresses?.Select(AddressDto.From).ToList()
             };
         }
 
