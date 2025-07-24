@@ -524,6 +524,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ToolsSupport.Api.Un
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.ToolsSupport.UnitTests", "ToolsSupport\SFA.DAS.ToolsSupport.UnitTests\SFA.DAS.ToolsSupport.UnitTests.csproj", "{9597FC6E-9F57-4A9E-9855-D77FEB98E70A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.FindAnApprenticeship.MockServer", "FindAnApprenticeship\SFA.DAS.FindAnApprenticeship.MockServer\SFA.DAS.FindAnApprenticeship.MockServer.csproj", "{C5113B1D-F964-4817-8D34-27612467E3B3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -1370,6 +1372,10 @@ Global
 		{9597FC6E-9F57-4A9E-9855-D77FEB98E70A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9597FC6E-9F57-4A9E-9855-D77FEB98E70A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9597FC6E-9F57-4A9E-9855-D77FEB98E70A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5113B1D-F964-4817-8D34-27612467E3B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5113B1D-F964-4817-8D34-27612467E3B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5113B1D-F964-4817-8D34-27612467E3B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5113B1D-F964-4817-8D34-27612467E3B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1586,6 +1592,7 @@ Global
 		{97CE3FD2-5351-4838-88E3-C54A9A908BA3} = {41C20C9E-0978-4E8B-A01E-C078F0C4F098}
 		{9597FC6E-9F57-4A9E-9855-D77FEB98E70A} = {41C20C9E-0978-4E8B-A01E-C078F0C4F098}
 
+		{C5113B1D-F964-4817-8D34-27612467E3B3} = {08806349-A78F-4FAA-BF40-A7CD54145D9C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2353A4D0-2859-4472-B2D4-BBD8087B4E22}

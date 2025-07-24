@@ -50,6 +50,10 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
                 .Excluding(item => item.VacancyReference)
                 .Excluding(item => item.VacancySource)
                 .Excluding(item => item.Location)
+                .Excluding(c => c.ApprenticeshipType)
+                .Excluding(item => item.EmploymentLocationInformation)
+                .Excluding(item => item.Address)
+                .Excluding(item => item.OtherAddresses)
             );
             actual.FullDescription.Should().Be(source.Vacancy.LongDescription);
             actual.Qualifications.Should().BeEquivalentTo(source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList());
@@ -65,6 +69,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
             actual.ClosingDate.Should().Be(source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)));
             actual.ApplicationUrl.Should().Be(source.Vacancy.ApplicationUrl);
+            actual.IsNationalVacancy.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase));
+            actual.IsNationalVacancyDetails.Should().Be(source.Vacancy.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase) ? source.Vacancy.EmploymentLocationInformation : string.Empty);
         }
 
         [Test, AutoData]
@@ -88,8 +94,8 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
             );
             actual.EmployerName.Should().Be(source.Vacancy.AnonymousEmployerName);
             actual.VacancyReference.Should().Be(source.Vacancy.VacancyReference.TrimVacancyReference());
-            actual.Location.Should().BeNull();
         }
+
 
         [Test, AutoData]
         public void Then_If_Null_Then_Null_Returned(GetVacancyQueryResult source)

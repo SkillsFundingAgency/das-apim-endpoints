@@ -13,8 +13,8 @@ public static class AddConfigurationOptionsExtension
         services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>()!.Value);
 
-        services.Configure<ApprenticeshipsApiConfiguration>(configuration.GetSection(nameof(ApprenticeshipsApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>()!.Value);
+        services.Configure<LearningApiConfiguration>(configuration.GetSection(nameof(LearningApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LearningApiConfiguration>>()!.Value);
         services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection(nameof(CollectionCalendarApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>()!.Value);
 

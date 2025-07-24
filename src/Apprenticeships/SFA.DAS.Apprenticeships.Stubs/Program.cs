@@ -4,7 +4,7 @@ using AutoFixture;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -12,7 +12,7 @@ using WireMock.Server;
 using WireMock.Settings;
 
 namespace SFA.DAS.Apprenticeships.Stubs
-{
+{   
     public class Program
     {
         private static WireMockServer _fakeCoursesApi;
@@ -160,7 +160,7 @@ namespace SFA.DAS.Apprenticeships.Stubs
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetApprenticeshipPriceResponse>())));
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetLearningPriceResponse>())));
 
             _fakeApprenticeshipsApi.Given(
                     Request.Create().WithPath($"/*/startDate")
@@ -169,7 +169,7 @@ namespace SFA.DAS.Apprenticeships.Stubs
                     Response.Create()
                         .WithStatusCode((int)HttpStatusCode.OK)
                         .WithHeader("Content-Type", "application/json")
-                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetApprenticeshipStartDateResponse>())));
+                        .WithBody(JsonSerializer.Serialize(new Fixture().Create<GetLearningStartDateResponse>())));
 
             _fakeApprenticeshipsApi.Given(
                     Request.Create().WithPath($"/*/priceHistory").UsingPost()

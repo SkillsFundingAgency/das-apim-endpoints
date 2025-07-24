@@ -28,6 +28,9 @@ public class GetVacanciesListItem
     [JsonPropertyName("apprenticeshipLevel")]
     public string ApprenticeshipLevel { get; set; }
 
+    [JsonPropertyName("apprenticeshipType")]
+    public string ApprenticeshipType { get; set; }
+
     [JsonPropertyName("category")]
     public string Category { get; set; }
 
@@ -135,7 +138,10 @@ public class GetVacanciesListItem
         
     [JsonPropertyName("otherAddresses")]
     public List<Address>? OtherAddresses { get; set; }
-        
+
+    [JsonPropertyName("employmentLocationInformation")]
+    public string EmploymentLocationInformation { get; set; }
+
     [JsonPropertyName("distance")]
     public decimal? Distance { get; set; }
         

@@ -18,10 +18,10 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
             GetApplicationReviewsCountByAccountIdQuery query,
             List<ApplicationReviewStats> apiResponse,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-            GetApplicationReviewsCountByAccountIdQueryHandler handler)
+            [Greedy] GetApplicationReviewsCountByAccountIdQueryHandler handler)
         {
             //Arrange
-            var expectedGetUrl = new GetApplicationReviewsCountByAccountIdApiRequest(query.AccountId, query.VacancyReferences);
+            var expectedGetUrl = new GetApplicationReviewsCountByAccountIdApiRequest(query.AccountId, query.VacancyReferences, query.ApplicationSharedFilteringStatus);
             recruitApiClient
                 .Setup(x => x.PostWithResponseCode<List<ApplicationReviewStats>>(
                     It.Is<GetApplicationReviewsCountByAccountIdApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl), true))
@@ -41,7 +41,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
             GetApplicationReviewsCountByAccountIdQueryHandler handler)
         {
             //Arrange
-            var expectedGetUrl = new GetApplicationReviewsCountByAccountIdApiRequest(query.AccountId, query.VacancyReferences);
+            var expectedGetUrl = new GetApplicationReviewsCountByAccountIdApiRequest(query.AccountId, query.VacancyReferences, query.ApplicationSharedFilteringStatus);
             recruitApiClient
                 .Setup(x => x.PostWithResponseCode<List<ApplicationReviewStats>>(
                     It.Is<GetApplicationReviewsCountByAccountIdApiRequest>(r => r.PostUrl == expectedGetUrl.PostUrl), true))

@@ -1,14 +1,7 @@
-﻿namespace SFA.DAS.Approvals.Types
-{
-    public class Standard
-    {
-        public Standard(string courseCode, string name)
-        {
-            CourseCode = courseCode;
-            Name = name;
-        }
+﻿namespace SFA.DAS.Approvals.Types;
 
-        public string CourseCode { get; }
-        public string Name { get; }
-    }
+public class Standard(string courseCode, string name)
+{
+    public string CourseCode { get; } = courseCode;
+    public string Name { get; } = name;
 }

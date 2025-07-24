@@ -5,6 +5,8 @@ using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using System;
+using System.Collections.Generic;
 using WageType = SFA.DAS.VacanciesManage.Api.Models.WageType;
 
 namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
@@ -110,6 +112,21 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             actual.Address.Should().BeNull();
             actual.Addresses.Should().BeNull();
             actual.EmployerLocationOption.Should().Be(AvailableWhere.AcrossEngland);
+        }
+        
+        [Test, AutoData]
+        public void Then_If_Foundation_And_No_Skills_Or_Qualifications_Set_To_Empty_List(CreateVacancyRequest source)
+        {
+            // arrange
+            source.Qualifications = null;
+            source.Skills = null;
+            
+            // act
+            var actual = (PostVacancyRequestData) source;
+            
+            // assert
+            actual.Skills.Should().BeEmpty();
+            actual.Qualifications.Should().BeEmpty();
         }
     }
 }

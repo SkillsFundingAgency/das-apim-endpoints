@@ -1,7 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+﻿using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using static SFA.DAS.FindAnApprenticeship.Api.Models.Applications.GetApplicationApiResponse;
 
@@ -15,6 +12,7 @@ public class WhenMappingMediatrResponseToGetApplicationApiResponse
         var actual = (GetApplicationApiResponse)source;
 
         actual.Candidate.Should().BeEquivalentTo(source.CandidateDetails);
+        actual.EmploymentLocation.Should().BeEquivalentTo(source.EmploymentLocation);
     }
     
     [Test, AutoData]
@@ -82,6 +80,14 @@ public class WhenMappingMediatrResponseToGetApplicationApiResponse
     public void Then_WhatIsYourInterest_The_Fields_Are_Mapped_To_WhatIsYourInterestSection(GetApplicationQueryResult.WhatIsYourInterestSection source)
     {
         var actual = (WhatIsYourInterestSection)source;
+
+        actual.Should().BeEquivalentTo(source);
+    }
+    
+    [Test, AutoData]
+    public void Then_EmploymentLocation_The_Fields_Are_Mapped_To_EmploymentLocationSection(GetApplicationQueryResult.EmploymentLocationSection source)
+    {
+        var actual = (EmploymentLocationSection)source;
 
         actual.Should().BeEquivalentTo(source);
     }
