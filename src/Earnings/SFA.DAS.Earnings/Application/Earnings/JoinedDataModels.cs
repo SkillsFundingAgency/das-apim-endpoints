@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
@@ -116,6 +117,9 @@ public class JoinedPriceEpisode
     public bool IsTerminatedByAcademicYearEnd { get; set; }
     public Guid EpisodePriceKey { get; set; }
 
+    /// <summary> Derived from Apprenticeships API, apprenticeship.Episodes.LastDayOfLearning </summary>
+    public DateTime? ActualEndDate { get; set; }
+
     public JoinedPriceEpisode()
     {
         
@@ -142,6 +146,7 @@ public class JoinedPriceEpisode
         FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
         Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
         AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
+        ActualEndDate = apprenticeshipEpisode.LastDayOfLearning;
     }
 
     /// <summary>
@@ -163,6 +168,7 @@ public class JoinedPriceEpisode
         Instalments = existingEpisode.Instalments.Where(x => x.AcademicYear == academicYear).ToList();
         AdditionalPayments = existingEpisode.AdditionalPayments.Where(x => x.AcademicYear == academicYear).ToList();
         IsTerminatedByAcademicYearEnd = isTerminatedByAcademicYearEnd;
+        ActualEndDate = existingEpisode.ActualEndDate;
     }
 
     private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)

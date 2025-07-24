@@ -24,6 +24,7 @@ public class Episode
 {
     public Guid Key { get; set; }
     public string TrainingCode { get; set; }
+    public DateTime? LastDayOfLearning { get; set; }
     public List<EpisodePrice> Prices { get; set; }
 }
 
