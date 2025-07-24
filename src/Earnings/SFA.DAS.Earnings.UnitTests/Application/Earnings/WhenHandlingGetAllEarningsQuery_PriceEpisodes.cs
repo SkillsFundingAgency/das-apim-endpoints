@@ -1,8 +1,6 @@
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.Application.Extensions;
-using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using static SFA.DAS.Earnings.Application.Earnings.EarningsFM36Constants;
@@ -18,7 +16,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Arrange
         var testFixture = new GetAllEarningsQueryTestFixture(scenario);
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -45,7 +43,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -178,8 +176,19 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         var expectedEpisodePrice = GetExpectedEpisodePrice(testFixture);
         var priceEpisode = GetPriceEpisode(testFixture, expectedEpisodePrice);
 
-        priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().BeNull();
-        priceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(0);
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(testFixture.LearningsResponse.Learnings.First().Uln));
+
+        var expectedPriceEpisodesSplitByAcademicYear =
+            testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(testFixture.LearningsResponse.Learnings.First().Episodes).ToList();
+
+        var episodePrice = expectedPriceEpisodesSplitByAcademicYear.Single().Price;
+
+        var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+            x.PriceEpisodeValues.EpisodeStartDate == episodePrice.StartDate);
+
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().BeNull();
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(0);
     }
 
     [Test]
@@ -195,8 +204,19 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         var expectedEpisodePrice = GetExpectedEpisodePrice(testFixture);
         var priceEpisode = GetPriceEpisode(testFixture, expectedEpisodePrice);
 
-        priceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().Be(expectedEpisodePrice.EndDate);
-        priceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(12);
+        var fm36Learner = testFixture.Result.FM36Learners
+            .SingleOrDefault(x => x.ULN == long.Parse(testFixture.LearningsResponse.Learnings.First().Uln));
+
+        var expectedPriceEpisodesSplitByAcademicYear =
+            testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(testFixture.LearningsResponse.Learnings.First().Episodes).ToList();
+
+        var episodePrice = expectedPriceEpisodesSplitByAcademicYear.First().Price;
+
+        var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
+            x.PriceEpisodeValues.EpisodeStartDate == episodePrice.StartDate);
+
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualEndDate.Should().Be(episodePrice.EndDate);
+        actualPriceEpisode.PriceEpisodeValues.PriceEpisodeActualInstalments.Should().Be(12);
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -212,7 +232,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -261,7 +281,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
 
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -310,7 +330,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -358,7 +378,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -408,7 +428,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
     
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -459,7 +479,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -510,7 +530,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.Single();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
         
         var fm36Learner = testFixture.Result.FM36Learners
             .SingleOrDefault(x => x.ULN == long.Parse(apprenticeship.Uln));
@@ -560,7 +580,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in testFixture.ApprenticeshipsResponse.Apprenticeships)
+        foreach (var apprenticeship in testFixture.LearningsResponse.Learnings)
         {
             var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
 

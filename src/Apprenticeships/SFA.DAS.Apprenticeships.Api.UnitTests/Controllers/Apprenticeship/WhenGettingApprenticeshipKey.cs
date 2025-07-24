@@ -6,7 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
@@ -21,7 +21,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             Guid expectedResponse,
 			Mock<ILogger<ApprenticeshipController>> mockLogger,
 			Mock<IMediator> mockMediator,
-			Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient)
+			Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient)
         {
             //  Arrange
             mockApprenticeshipsApiClient.Setup(x => x.Get<Guid>(It.IsAny<GetApprenticeshipKeyRequest>()))
