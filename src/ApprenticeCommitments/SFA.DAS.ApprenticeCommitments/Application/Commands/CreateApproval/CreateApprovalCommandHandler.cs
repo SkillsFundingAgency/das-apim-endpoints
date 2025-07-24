@@ -110,7 +110,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
 
             var course = await _coursesService.GetCourse(courseCode);
             
-            // TODO implement
             apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
 
             var provider = _trainingProviderService.GetTrainingProviderDetails(

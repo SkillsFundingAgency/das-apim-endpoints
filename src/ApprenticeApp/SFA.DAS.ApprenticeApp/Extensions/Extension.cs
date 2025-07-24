@@ -3,7 +3,7 @@ using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.Extensions
 {
-    public static class Extensions
+    public static class Extension
     {
         public static int GetApprenticeshipType(this string value, int defaultValue = 0)
         {

@@ -94,7 +94,6 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
             var course = await _coursesService.GetCourse(courseCode);
             var provider = _trainingProviderService.GetTrainingProviderDetails(apprenticeship.ProviderId);
             
-            // TODO implement
             apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
             
             return (apprenticeship, await provider, course);
