@@ -89,7 +89,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
-builder.Services.AddApiServices();
+builder.Services.AddServices();
 
 var app = builder.Build();
 
