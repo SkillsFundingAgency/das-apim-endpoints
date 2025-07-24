@@ -236,9 +236,16 @@ public class ApprenticesController(
         
         // Log all incoming headers
         logger.LogInformation("=== INCOMING REQUEST HEADERS ===");
-        foreach (var header in Request.Headers)
+        if (Request?.Headers != null)
         {
-            logger.LogInformation("Header: {HeaderKey} = {HeaderValue}", header.Key, header.Value);
+            foreach (var header in Request.Headers)
+            {
+                logger.LogInformation("Header: {HeaderKey} = {HeaderValue}", header.Key, header.Value);
+            }
+        }
+        else
+        {
+            logger.LogInformation("Request or Headers is null (unit test context)");
         }
         
         // Log authentication context
@@ -253,7 +260,7 @@ public class ApprenticesController(
         }
         else
         {
-            logger.LogWarning("User is NOT authenticated!");
+            logger.LogWarning("User is NOT authenticated or User is null!");
         }
         
         return await EditApprenticeshipInternal(apprenticeshipId, request.ProviderId, accountId, request);
