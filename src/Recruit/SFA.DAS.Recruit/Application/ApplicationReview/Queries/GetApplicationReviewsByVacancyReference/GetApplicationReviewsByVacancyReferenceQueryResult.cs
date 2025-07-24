@@ -4,8 +4,8 @@ namespace SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationRe
 {
     public record GetApplicationReviewsByVacancyReferenceQueryResult
     {
-        public List<InnerApi.Responses.ApplicationReview> ApplicationReviews { get; init; } = new();
-        public GetApplicationReviewsByVacancyReferenceQueryResult(List<InnerApi.Responses.ApplicationReview> applicationReviews)
+        public List<Domain.ApplicationReview> ApplicationReviews { get; init; } = new();
+        public GetApplicationReviewsByVacancyReferenceQueryResult(List<Domain.ApplicationReview> applicationReviews)
         {
             ApplicationReviews = applicationReviews;
         }
