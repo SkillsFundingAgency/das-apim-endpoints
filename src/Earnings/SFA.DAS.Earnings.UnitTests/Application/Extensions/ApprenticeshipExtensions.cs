@@ -25,7 +25,7 @@ public static class ApprenticeshipExtensions
         EpisodePrice? nextPriceEpisode = null;
         if(withdrawalDate == WithdrawalDate.AfterNextPriceEpisodeStart || withdrawalDate == WithdrawalDate.BeforeNextPriceEpisodeStart)
         {
-            nextPriceEpisode = apprenticeship.Episodes
+            nextPriceEpisode = learning.Episodes
                 .SelectMany(e => e.Prices)
                 .OrderBy(p => p.StartDate)
                 .ElementAtOrDefault(1);
