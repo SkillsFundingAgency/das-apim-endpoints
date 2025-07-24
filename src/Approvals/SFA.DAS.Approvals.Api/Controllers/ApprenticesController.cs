@@ -231,6 +231,31 @@ public class ApprenticesController(
     public async Task<IActionResult> EditApprenticeshipEmployer(long accountId, long apprenticeshipId,
         [FromBody] EditApprenticeshipRequest request)
     {
+        logger.LogInformation("=== APIM CONTROLLER: EditApprenticeshipEmployer called ===");
+        logger.LogInformation("AccountId: {AccountId}, ApprenticeshipId: {ApprenticeshipId}", accountId, apprenticeshipId);
+        
+        // Log all incoming headers
+        logger.LogInformation("=== INCOMING REQUEST HEADERS ===");
+        foreach (var header in Request.Headers)
+        {
+            logger.LogInformation("Header: {HeaderKey} = {HeaderValue}", header.Key, header.Value);
+        }
+        
+        // Log authentication context
+        if (User?.Identity?.IsAuthenticated == true)
+        {
+            logger.LogInformation("User is authenticated: {UserName}", User.Identity.Name);
+            logger.LogInformation("User claims:");
+            foreach (var claim in User.Claims)
+            {
+                logger.LogInformation("Claim: {ClaimType} = {ClaimValue}", claim.Type, claim.Value);
+            }
+        }
+        else
+        {
+            logger.LogWarning("User is NOT authenticated!");
+        }
+        
         return await EditApprenticeshipInternal(apprenticeshipId, request.ProviderId, accountId, request);
     }
 
