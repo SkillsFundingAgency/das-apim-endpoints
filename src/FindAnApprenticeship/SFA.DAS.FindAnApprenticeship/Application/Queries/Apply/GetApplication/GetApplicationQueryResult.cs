@@ -18,6 +18,10 @@ public record GetApplicationQueryResult
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
     public EmploymentLocationSection? EmploymentLocation { get; set; }
     public bool IsApplicationComplete { get; set; }
+    public DateTime ClosingDate { get; set; }
+    public DateTime? ClosedDate { get; set; }
+    public string VacancyTitle { get; set; }
+    public string EmployerName { get; set; }
 
 
     public record Candidate
