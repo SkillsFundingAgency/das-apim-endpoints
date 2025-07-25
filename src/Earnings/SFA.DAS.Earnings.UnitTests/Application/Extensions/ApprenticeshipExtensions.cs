@@ -25,7 +25,7 @@ public static class ApprenticeshipExtensions
         EpisodePrice? nextPriceEpisode = null;
         if(withdrawalDate == WithdrawalDate.AfterNextPriceEpisodeStart || withdrawalDate == WithdrawalDate.BeforeNextPriceEpisodeStart)
         {
-            nextPriceEpisode = apprenticeship.Episodes
+            nextPriceEpisode = learning.Episodes
                 .SelectMany(e => e.Prices)
                 .OrderBy(p => p.StartDate)
                 .ElementAtOrDefault(1);
@@ -39,25 +39,25 @@ public static class ApprenticeshipExtensions
             case WithdrawalDate.None:
                 break;
             case WithdrawalDate.DuringQualifyingPeriod:
-                apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod - 1);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod - 1);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.AfterQualifyingPeriod:
-                apprenticeship.WithdrawnDate = apprenticeship.StartDate.AddDays(qualifyingPeriod + 1);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod + 1);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.BeforeNextPriceEpisodeStart:
-                apprenticeship.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(-5);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(-5);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.AfterNextPriceEpisodeStart:
-                apprenticeship.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(5);
-                apprenticeship.Episodes.First().LastDayOfLearning = apprenticeship.WithdrawnDate;
+                learning.WithdrawnDate = nextPriceEpisode!.StartDate.AddDays(5);
+                learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             default:
                 throw new InvalidEnumArgumentException();
         }
 
-        return apprenticeship.WithdrawnDate;
+        return learning.WithdrawnDate;
     }
 }

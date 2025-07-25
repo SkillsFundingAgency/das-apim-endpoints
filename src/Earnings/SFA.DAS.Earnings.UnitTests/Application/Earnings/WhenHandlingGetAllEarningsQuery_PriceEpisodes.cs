@@ -1,8 +1,10 @@
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.Application.Extensions;
+using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using static SFA.DAS.Earnings.Application.Earnings.EarningsFM36Constants;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
@@ -638,7 +640,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
     {
         // Arrange
         var testFixture = new GetAllEarningsQueryTestFixture(testScenario);
-        var withdrawDate = testFixture.ApprenticeshipsResponse.Apprenticeships.First().SetWithdrawalDate(withdrawalDate);
+        var withdrawDate = testFixture.LearningsResponse.Learnings.First().SetWithdrawalDate(withdrawalDate);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -674,7 +676,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
     {
         // Arrange
         var testFixture = new GetAllEarningsQueryTestFixture(testScenario);
-        var apprenticeship = testFixture.ApprenticeshipsResponse.Apprenticeships.First();
+        var apprenticeship = testFixture.LearningsResponse.Learnings.First();
         var prices = apprenticeship.Episodes.First().Prices.OrderBy(x=>x.StartDate);
 
         switch (setCompletionDateTo)
@@ -719,7 +721,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         testFixture.Result.Should().NotBeNull();
 
         var expectedPriceEpisodesSplitByAcademicYear =
-            testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(testFixture.ApprenticeshipsResponse.Apprenticeships.First().Episodes).ToList();
+            testFixture.GetExpectedPriceEpisodesSplitByAcademicYear(testFixture.LearningsResponse.Learnings.First().Episodes).ToList();
 
         var episodePrice = expectedPriceEpisodesSplitByAcademicYear.First().Price;
 
@@ -731,7 +733,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         testFixture.Result.Should().NotBeNull();
 
         var fm36Learner = testFixture.Result.FM36Learners
-            .SingleOrDefault(x => x.ULN == long.Parse(testFixture.ApprenticeshipsResponse.Apprenticeships.First().Uln));
+            .SingleOrDefault(x => x.ULN == long.Parse(testFixture.LearningsResponse.Learnings.First().Uln));
 
         var actualPriceEpisode = fm36Learner.PriceEpisodes.SingleOrDefault(x =>
             x.PriceEpisodeValues.EpisodeStartDate == expectedEpisodePrice.StartDate);
