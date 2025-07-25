@@ -1,11 +1,18 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
 
 public static class LearningDeliveryPeriodisedValuesBuilder
 {
-    public static LearningDeliveryPeriodisedValues BuildWithSameValues(string attributeName, decimal value)
+    public static void AddWithSamePeriodisedValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        string attributeName, 
+        decimal value)
+    {
+        list.Add(BuildWithSameValues(attributeName, value));
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildWithSameValues(string attributeName, decimal value)
     {
         return new LearningDeliveryPeriodisedValues
         {
@@ -25,9 +32,27 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(JoinedEarningsApprenticeship apprenticeship, short academicYear)
+    public static void AddInstPerPeriodValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        InstalmentType instalmentType = InstalmentType.Regular)
     {
-        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear);
+        try
+        {
+            list.Add(BuildInstPerPeriodValues(apprenticeship, academicYear, instalmentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add InstPerPeriodValues {EarningsFM36Constants.PeriodisedAttributes.InstPerPeriod} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, InstalmentType instalmentType)
+    {
+        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear, instalmentType);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -47,14 +72,48 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildInstallmentAmountValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName)
+    public static void AddInstallmentAmountValues(
+        this List<LearningDeliveryPeriodisedValues> 
+        list, JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        InstalmentType instalmentType = InstalmentType.Regular)
     {
-        return BuildCoInvestmentValues(apprenticeship, academicYear, attributeName, 1);
+        try
+        {
+            list.Add(BuildCoInvestmentValues(apprenticeship, academicYear, attributeName, 1, instalmentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add InstallmentAmountValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
     }
 
-    public static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, decimal multiplier)
+    public static void AddCoInvestmentValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        decimal multiplier,
+        InstalmentType instalmentType = InstalmentType.Regular)
     {
-        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear);
+        try
+        {
+            list.Add(BuildCoInvestmentValues(apprenticeship, academicYear, attributeName, multiplier, instalmentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add CoInvestmentValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, decimal multiplier, InstalmentType instalmentType)
+    {
+        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear, instalmentType);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -74,7 +133,27 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
+    public static void AddNthIncentivePaymentValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        string additionalPaymentType, 
+        int n)
+    {
+        try
+        {
+            list.Add(BuildNthIncentivePaymentValues(apprenticeship, academicYear, attributeName, additionalPaymentType, n));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add NthIncentivePaymentValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
         var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
 
@@ -102,7 +181,26 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType)
+    public static void AddAdditionalPaymentPerPeriodValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship,
+        short academicYear,
+        string attributeName,
+        string additionalPaymentType)
+    {
+        try
+        {
+            list.Add(BuildAdditionalPaymentPerPeriodValues(apprenticeship, academicYear, attributeName, additionalPaymentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add AdditionalPaymentPerPeriodValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType)
     {
         var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
 
@@ -124,7 +222,26 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodIndicators(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType)
+    public static void AddAdditionalPaymentPerPeriodIndicators(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        string additionalPaymentType)
+    {
+        try
+        {
+            list.Add(BuildAdditionalPaymentPerPeriodIndicators(apprenticeship, academicYear, attributeName, additionalPaymentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add AdditionalPaymentPerPeriodIndicators {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodIndicators(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType)
     {
         var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
 
@@ -146,12 +263,11 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-
-    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedEarningsApprenticeship apprenticeship, short academicYear)
+    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedEarningsApprenticeship apprenticeship, short academicYear, InstalmentType instalmentType)
     {
         return apprenticeship.Episodes
             .SelectMany(episode => episode.Instalments)
-            .Where(i => i.AcademicYear == academicYear)
+            .Where(i => i.AcademicYear == academicYear && i.InstalmentType == instalmentType)
             .ToList();
     }
 

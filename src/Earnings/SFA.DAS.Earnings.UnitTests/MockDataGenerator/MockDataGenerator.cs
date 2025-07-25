@@ -2,6 +2,7 @@
 using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.Earnings.Application.Earnings;
 
 namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
 {
@@ -103,18 +104,17 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
                         OnProgramTotal = 12000,
                         Instalments = new List<Instalment>
                         {
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920,6) },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920,7) },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920,8) },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 9, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920,9) },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 10, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920, 10) },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 11, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920, 11) },
-                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 12, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920, 12) },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 1) },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 2) },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 3) },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 4) },
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 5) }
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 6, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920,6), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 7, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920,7), InstalmentType =InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 9, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920,9), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 10, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920, 10), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 11, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920, 11), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 1920, DeliveryPeriod = 12, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(1920, 12) , InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 1), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 2), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 3), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 4), InstalmentType = InstalmentType.Regular.ToString() },
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1000, EpisodePriceKey = simpleApprenticeship.GetEpisodePriceKey(2021, 5), InstalmentType = InstalmentType.Regular.ToString() }
                         },
                         AdditionalPayments = new List<AdditionalPayment>
                         {
@@ -194,18 +194,18 @@ namespace SFA.DAS.Earnings.UnitTests.MockDataGenerator
                         OnProgramTotal = 24000,
                         Instalments = new List<Instalment>
                         {
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,1)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,2)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,3)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,4)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,5)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,6)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,7)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,8)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,9)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 3500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,10)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 3500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,11)},
-                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 3500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,12)}
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 1, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,1), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 2, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,2), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,3), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,4), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,5), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,6), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,7), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,8), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 1500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,9), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 10, Amount = 3500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,10), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 11, Amount = 3500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,11), InstalmentType = InstalmentType.Regular.ToString()},
+                            new Instalment{ AcademicYear = 2021, DeliveryPeriod = 12, Amount = 3500 , EpisodePriceKey = apprenticeshipWithAPriceChange.GetEpisodePriceKey(2021,12), InstalmentType = InstalmentType.Regular.ToString()}
                         },
                         AdditionalPayments = new List<AdditionalPayment>
                         {

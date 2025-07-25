@@ -25,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
         public decimal OnProgramTotal { get; set; }
     }
     
-    [DebuggerDisplay("AY {AcademicYear} DP {DeliveryPeriod} Amount: {Amount} EpisodePriceKey: {EpisodePriceKey}")]
+    [DebuggerDisplay("AY {AcademicYear} DP {DeliveryPeriod} Amount: {Amount} EpisodePriceKey: {EpisodePriceKey} Type: {InstalmentType}")]
 
     public class Instalment
     {
@@ -33,6 +33,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
         public Guid EpisodePriceKey { get; set; }
+        public string InstalmentType { get; set; }
     }
 
     public class AdditionalPayment
