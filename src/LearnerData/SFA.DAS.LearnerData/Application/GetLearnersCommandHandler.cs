@@ -20,7 +20,7 @@ public class GetLearnersQueryHandler(
     {
         LearnerApiClient.GenerateServiceToken("LearnersManage");
 
-        var applicationsResponse = await LearnerApiClient.Get<PagedLearnersResponse>(
+        var applicationsResponse = await LearnerApiClient.Get<GetLearnersQueryResult>(
             new GetAllLearningsRequest(
                 request.Ukprn,
                 request.AcademicYear,
@@ -29,35 +29,13 @@ public class GetLearnersQueryHandler(
                 )
             );
 
-        return (GetLearnersQueryResult)applicationsResponse;
+        return applicationsResponse;
     }
 }
 
 public class GetLearnersQueryResult : PagedQueryResult<Learning>
 {
 
-    public static implicit operator GetLearnersQueryResult(PagedLearnersResponse source)
-    {
-        if (source == null) return new GetLearnersQueryResult();
-
-        return new GetLearnersQueryResult()
-        {
-            TotalItems = source.TotalItems,
-            Page = source.Page,
-            PageSize = source.PageSize,
-            Items = source.Items
-        };
-    }
-}
-
-public class PagedLearnersResponse
-{
-    public List<Learning> Items { get; set; } = [];
-
-    public int TotalItems { get; set; }
-    public int TotalPages { get; set; }
-    public int PageSize { get; set; }
-    public int Page { get; set; }
 }
 
 public class Learning
