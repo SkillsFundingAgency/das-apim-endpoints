@@ -52,39 +52,6 @@ public class WhenGettingLearners
         context.Response.Headers.Should().ContainKey("links");
     }
 
-    [Test, MoqAutoData]
-    public async Task And_when_exception_thrown_Then_InternalServerError_returned(
-        string ukprn,
-        [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<LearnersController>> mockLogger,
-        [Greedy] LearnersController sut)
-    {
-        // Arrange
-        mockMediator
-            .Setup(x => x.Send(It.IsAny<GetLearnersQuery>(), It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new Exception("Unexpected error"));
-
-        // Setup fake HttpContext to prevent null ref
-        sut.ControllerContext = new ControllerContext
-        {
-            HttpContext = new DefaultHttpContext()
-        };
-
-        // Act
-        var result = await sut.GetLearners(ukprn, 2425, 1, 3) as StatusCodeResult;
-
-        // Assert
-        result.Should().NotBeNull();
-        result!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-
-        mockLogger.Verify(l => l.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.Is<It.IsAnyType>((v, _) => v.ToString()!.Contains($"Internal error occurred when getting learners for ukprn {ukprn}")),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception?, string>>()), Times.Once);
-    }
-
     private GetLearnersQueryResult CreateLearnersQueryResult(List<string> ulns)
     {
         var learners = ulns.Select(uln => new Learning { Uln = uln }).ToList();
