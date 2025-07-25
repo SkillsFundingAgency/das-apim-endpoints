@@ -46,7 +46,9 @@ public class WhenGettingLearners
 
         foreach (var expectedLearner in queryResult.Items)
         {
-            resultBody!.Learners.Should().ContainSingle(x => x.Uln == expectedLearner.Uln);
+            resultBody!.Learners.Should().ContainSingle(x => 
+                x.Uln == expectedLearner.Uln &&
+                x.Key == expectedLearner.Key);
         }
 
         context.Response.Headers.Should().ContainKey("links");
@@ -54,7 +56,7 @@ public class WhenGettingLearners
 
     private GetLearnersQueryResult CreateLearnersQueryResult(List<string> ulns)
     {
-        var learners = ulns.Select(uln => new Learning { Uln = uln }).ToList();
+        var learners = ulns.Select(uln => new Learning { Uln = uln , Key = Guid.NewGuid()}).ToList();
         return new GetLearnersQueryResult
         {
             Items = learners,

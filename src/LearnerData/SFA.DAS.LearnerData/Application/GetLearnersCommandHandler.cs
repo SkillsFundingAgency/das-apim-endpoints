@@ -41,7 +41,7 @@ public class GetLearnersQueryResult : PagedQueryResult<Learning>
 public class Learning
 {
     public string Uln { get; set; } = "";
-
+    public Guid Key { get; set; }
 }
 
 
