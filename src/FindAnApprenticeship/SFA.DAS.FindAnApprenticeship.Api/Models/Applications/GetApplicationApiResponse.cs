@@ -10,6 +10,10 @@ public record GetApplicationApiResponse
 {
     public bool IsDisabilityConfident { get; set; }
     public bool IsApplicationComplete { get; set; }
+    public DateTime ClosingDate { get; set; }
+    public DateTime? ClosedDate { get; set; }
+    public string VacancyTitle { get; set; }
+    public string EmployerName { get; set; }
     public CandidateDetailsSection Candidate { get; set; }
     public AboutYouSection AboutYou { get; set; }
     public EducationHistorySection EducationHistory { get; set; }
@@ -24,6 +28,8 @@ public record GetApplicationApiResponse
     {
         return new GetApplicationApiResponse
         {
+            ClosedDate = source.ClosedDate,
+            ClosingDate = source.ClosingDate,
             Candidate = source.CandidateDetails,
             DisabilityConfidence = source.DisabilityConfidence,
             ApplicationQuestions = source.ApplicationQuestions,
@@ -35,6 +41,8 @@ public record GetApplicationApiResponse
             WorkHistory = source.WorkHistory,
             WhatIsYourInterest = source.WhatIsYourInterest,
             AboutYou = source.AboutYou,
+            EmployerName = source.EmployerName,
+            VacancyTitle = source.VacancyTitle,
         };
     }
 
