@@ -47,7 +47,7 @@ public class Learning
 
 public class GetLearnersResponse
 {
-    public List<Learning> Apprenticeships { get; set; } = [];
+    public List<Learning> Learners { get; set; } = [];
     public int Total { get; set; }
     public int Page { get; set; }
     public int PageSize { get; set; }
@@ -63,7 +63,7 @@ public class GetLearnersResponse
             Page = source.Page,
             PageSize = source.PageSize,
             TotalPages = source.TotalPages,
-            Apprenticeships = source.Items
+            Learners = source.Items
         };
     }
 }

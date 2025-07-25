@@ -3,34 +3,15 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using SFA.DAS.LearnerData.Responses;
 
-namespace SFA.DAS.LearnerData.Services;
+namespace SFA.DAS.LearnerData.Extensions;
 
-public interface IPagedLinkHeaderService
+public static class HttpContextExtensions
 {
     /// <summary>
     /// Adds 'Links' to response headers. 
     /// </summary>
-    /// <param name="response">PagedQueryResult of T</param>
-    /// <param name="request">PagedQuery</param>
-    /// <typeparam name="T">Return type</typeparam>
-    KeyValuePair<string, StringValues> GetPageLinks<T>(PagedQuery request, PagedQueryResult<T> response);
-}
-
-/// <summary>
-/// Constructor
-/// </summary>
-/// <param name="httpContextAccessor">IHttpContextAccessor</param>
-public class PagedLinkHeaderService(IHttpContextAccessor httpContextAccessor) : IPagedLinkHeaderService
-{
-    /// <summary>
-    /// Adds 'Links' to response headers. 
-    /// </summary>
-    /// <param name="response">PagedQueryResult of T</param>
-    /// <param name="request">PagedQuery</param>
-    /// <typeparam name="T">Return type</typeparam>
-    public KeyValuePair<string, StringValues> GetPageLinks<T>(PagedQuery request, PagedQueryResult<T> response)
+    public static void SetPageLinksInResponseHeaders<T>(this HttpContext httpContext, PagedQuery request, PagedQueryResult<T> response)
     {
-        var httpContext = httpContextAccessor.HttpContext!;
         var httpRequest = httpContext.Request;
 
         var baseUrl = GetBaseUrlFrom(httpRequest);
@@ -54,7 +35,8 @@ public class PagedLinkHeaderService(IHttpContextAccessor httpContextAccessor) : 
             links.Add($"{nextLink};rel=\"next\"");
         }
 
-        return new KeyValuePair<string, StringValues>("links", string.Join(",", links));
+        var pageLinks = new KeyValuePair<string, StringValues>("links", string.Join(",", links));
+        httpContext.Response.Headers.Add(pageLinks);
     }
 
     private static string GetBaseUrlFrom(HttpRequest httpRequest)

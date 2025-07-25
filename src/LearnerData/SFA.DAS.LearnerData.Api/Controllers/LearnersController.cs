@@ -1,14 +1,12 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using System.Net;
-using FluentValidation;
-using FluentValidation.Results;
 using SFA.DAS.LearnerData.Responses;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.LearnerData.Services;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -17,7 +15,6 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 public class LearnersController(
     IMediator mediator, 
     IValidator<IEnumerable<LearnerDataRequest>> validator,
-    IPagedLinkHeaderService pagedLinkHeaderService,
     ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
@@ -36,9 +33,7 @@ public class LearnersController(
         };
 
         var response = await mediator.Send(query);
-
-        var pageLinks = pagedLinkHeaderService.GetPageLinks(query, response);
-        Response.Headers.Add(pageLinks);
+        HttpContext.SetPageLinksInResponseHeaders(query, response);
 
         return Ok((GetLearnersResponse)response);
     }

@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -19,6 +18,5 @@ public static class AddServicesExtension
         services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<IEarningsApiClient<EarningsApiConfiguration>, EarningsApiClient>();
 
-        services.AddScoped<IPagedLinkHeaderService, PagedLinkHeaderService>();
     }
 }
