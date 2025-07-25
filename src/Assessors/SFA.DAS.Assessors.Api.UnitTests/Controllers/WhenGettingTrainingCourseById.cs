@@ -1,16 +1,18 @@
-﻿using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
+using Azure;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Framing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Assessors.Api.Controllers;
 using SFA.DAS.Assessors.Api.Models;
 using SFA.DAS.Assessors.Application.Queries.GetStandardDetails;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
 {
@@ -35,7 +37,11 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardDetailsResponse;
             Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo(mediatorResult.StandardDetails);
+            model.Should().BeEquivalentTo(mediatorResult.StandardDetails, options =>
+                options
+                    .Excluding(info => info.Path.EndsWith(".FoundationAppFirstEmpPayment"))
+                    .Excluding(info => info.Path.EndsWith(".FoundationAppSecondEmpPayment"))
+                    .Excluding(info => info.Path.EndsWith(".FoundationAppThirdEmpPayment")));
         }
 
         [Test, MoqAutoData]

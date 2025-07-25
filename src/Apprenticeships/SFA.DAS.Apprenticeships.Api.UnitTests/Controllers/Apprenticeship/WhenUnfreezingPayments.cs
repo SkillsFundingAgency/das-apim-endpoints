@@ -12,7 +12,7 @@ using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -21,7 +21,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 #pragma warning disable CS8618
 public class WhenUnfreezingPayments
 {
-    private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApprenticeshipsApiClient = null!;
+    private Mock<ILearningApiClient<LearningApiConfiguration>> _mockApprenticeshipsApiClient = null!;
     private Mock<IMediator> _mockMediator = null!;
     private ApprenticeshipController _sut = null!;
     private Fixture _fixture = null!;
@@ -30,7 +30,7 @@ public class WhenUnfreezingPayments
     public void SetUp()
     {
         _fixture = new Fixture();
-        _mockApprenticeshipsApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();
     }
 

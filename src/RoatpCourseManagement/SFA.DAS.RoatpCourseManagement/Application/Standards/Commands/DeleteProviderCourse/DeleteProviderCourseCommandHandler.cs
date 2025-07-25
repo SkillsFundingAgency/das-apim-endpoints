@@ -1,12 +1,11 @@
-﻿using MediatR;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeleteProviderCourse;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeleteProviderCourseLocation
+namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeleteProviderCourse
 {
     public class DeleteProviderCourseCommandHandler : IRequestHandler<DeleteProviderCourseCommand, Unit>
     {

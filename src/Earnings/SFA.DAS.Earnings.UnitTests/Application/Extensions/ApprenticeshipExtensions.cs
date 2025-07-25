@@ -1,15 +1,15 @@
 using System.ComponentModel;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Extensions;
 
 public static class ApprenticeshipExtensions
 {
-    public static Guid GetEpisodePriceKey(this Apprenticeship apprenticeship, short academicYear, byte deliveryPeriod)
+    public static Guid GetEpisodePriceKey(this Learning learning, short academicYear, byte deliveryPeriod)
     {
-        var prices = apprenticeship.Episodes.SelectMany(e => e.Prices).ToList();
+        var prices = learning.Episodes.SelectMany(e => e.Prices).ToList();
         var searchDateTime = academicYear.GetDateTime(deliveryPeriod).AddDays(14);
         var price = prices.FirstOrDefault(p => p.StartDate <= searchDateTime && p.EndDate >= searchDateTime);
         return price?.Key ?? Guid.Empty;
@@ -18,7 +18,7 @@ public static class ApprenticeshipExtensions
     /// <summary>
     /// Sets the withdrawal date for an apprenticeship based on the specified withdrawal date type and returns the date that has been set
     /// </summary>
-    public static DateTime? SetWithdrawalDate(this Apprenticeship apprenticeship, WithdrawalDate withdrawalDate)
+    public static DateTime? SetWithdrawalDate(this Learning learning, WithdrawalDate withdrawalDate)
     {
         var qualifyingPeriod = SharedOuterApi.Common.Constants.QualifyingPeriod;
 

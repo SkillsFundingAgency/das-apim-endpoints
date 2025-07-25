@@ -38,5 +38,4 @@
       <ProjectReference Include="..\SFA.DAS.FindAnApprenticeship\SFA.DAS.FindAnApprenticeship.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
-
 </Project>
