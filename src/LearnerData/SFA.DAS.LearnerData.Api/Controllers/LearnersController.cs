@@ -6,6 +6,7 @@ using System.Net;
 using FluentValidation;
 using FluentValidation.Results;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -42,6 +43,28 @@ public class LearnersController(IMediator mediator, IValidator<IEnumerable<Learn
             return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
         }
     }
+
+    [HttpPut]
+    [Route("{learningKey}")]
+    public async Task<IActionResult> UpdateLearner([FromRoute] Guid learningKey, 
+    [FromBody] UpdateLearnerRequest request)
+    {
+        try
+        {
+            await mediator.Send(new UpdateLearnerCommand
+            {
+                LearningKey = learningKey,
+                UpdateLearnerRequest = request
+            });
+            return Accepted();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Internal error occurred when updating learner {learningKey}");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
 
     private IActionResult BuildErrorResponse(List<ValidationFailure> errors)
     {
