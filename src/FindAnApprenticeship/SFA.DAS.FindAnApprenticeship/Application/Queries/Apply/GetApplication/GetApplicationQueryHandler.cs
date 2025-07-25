@@ -8,10 +8,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 {
     public class GetApplicationQueryHandler(
+        IVacancyService vacancyService,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
         : IRequestHandler<GetApplicationQuery, GetApplicationQueryResult>
     {
@@ -28,6 +30,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             var qualificationTypes = qualificationTypesTask.Result;
             
             if (application == null) return null;
+
+            var vacancy = await vacancyService.GetVacancy(application.VacancyReference)
+                          ?? await vacancyService.GetClosedVacancy(application.VacancyReference);
+
+            if (vacancy is null) return null;
 
             var additionalQuestions = application
                 .AdditionalQuestions
@@ -77,6 +84,10 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 
             return new GetApplicationQueryResult
             {
+                ClosingDate = vacancy.ClosingDate,
+                ClosedDate = vacancy.ClosedDate,
+                EmployerName = vacancy.EmployerName,
+                VacancyTitle = vacancy.Title,
                 IsDisabilityConfident = application.DisabilityConfidenceStatus != "NotRequired",
                 EducationHistory = new GetApplicationQueryResult.EducationHistorySection
                 {
