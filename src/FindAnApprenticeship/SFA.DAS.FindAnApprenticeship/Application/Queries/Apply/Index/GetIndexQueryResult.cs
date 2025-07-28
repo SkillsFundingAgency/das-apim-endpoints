@@ -1,4 +1,5 @@
 ﻿using System;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
@@ -15,6 +16,7 @@ public class GetIndexQueryResult
     public AvailableWhere? EmployerLocationOption { get; set; }
     public string EmployerName { get; set; }
     public DateTime ClosingDate { get; set; }
+    public DateTime? ClosedDate { get; set; }
     public bool IsMigrated { get; set; }
     public bool IsDisabilityConfident { get; set; }
     public bool IsApplicationComplete { get; set; }
@@ -24,11 +26,17 @@ public class GetIndexQueryResult
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public PreviousApplicationDetails PreviousApplication { get; set; }
+    public EmploymentLocationSection? EmploymentLocation { get; set; }
 
     public class EducationHistorySection
     {
         public string Qualifications { get; set; }
         public string TrainingCourses { get; set; }
+    }
+    
+    public record EmploymentLocationSection : LocationDto
+    {
+        public string EmploymentLocationStatus { get; set; }
     }
 
     public class WorkHistorySection
