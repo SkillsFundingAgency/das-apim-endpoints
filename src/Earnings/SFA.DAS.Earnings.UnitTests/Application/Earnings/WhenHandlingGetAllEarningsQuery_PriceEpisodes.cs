@@ -4,6 +4,7 @@ using SFA.DAS.Earnings.Application.Earnings;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.Application.Extensions;
 using SFA.DAS.Earnings.UnitTests.MockDataGenerator;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using static SFA.DAS.Earnings.Application.Earnings.EarningsFM36Constants;
 
@@ -716,6 +717,60 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         }
     }
 
+    [Test]
+    public async Task ThenPeriodisedValuesPriceEpisodeBalancePaymentMatchesExpectations()
+    {
+        // Arrange
+        var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.SimpleApprenticeship);
+        var instalments = testFixture.EarningsResponse.First().Episodes.First().Instalments;
+        var balancingPayment = new Instalment
+        {
+            AcademicYear = short.Parse(testFixture.CollectionCalendarResponse.AcademicYear),
+            Amount = 1000,
+            DeliveryPeriod = 6,
+            EpisodePriceKey = instalments.First().EpisodePriceKey,
+            InstalmentType = InstalmentType.Balancing.ToString()
+        };
+        instalments.Add(balancingPayment);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        var expectedEpisodePrice = GetExpectedEpisodePrice(testFixture);
+        var priceEpisode = GetPriceEpisode(testFixture, expectedEpisodePrice);
+        var balancingPaymentPeriodisedValues = GetPriceEpisodePeriodisedValues(priceEpisode, PeriodisedAttributes.PriceEpisodeBalancePayment);
+        balancingPaymentPeriodisedValues.HasExactPeriodValues([0, 0, 0, 0, 0, 1000, 0, 0, 0, 0, 0, 0]).Should().BeTrue();
+
+    }
+
+    [Test]
+    public async Task ThenPeriodisedValuesPriceEpisodeCompletionPaymentMatchesExpectations()
+    {
+        // Arrange
+        var testFixture = new GetAllEarningsQueryTestFixture(TestScenario.SimpleApprenticeship);
+        var instalments = testFixture.EarningsResponse.First().Episodes.First().Instalments;
+        var completionPayment = new Instalment
+        {
+            AcademicYear = short.Parse(testFixture.CollectionCalendarResponse.AcademicYear),
+            Amount = 1000,
+            DeliveryPeriod = 6,
+            EpisodePriceKey = instalments.First().EpisodePriceKey,
+            InstalmentType = InstalmentType.Completion.ToString()
+        };
+        instalments.Add(completionPayment);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        var expectedEpisodePrice = GetExpectedEpisodePrice(testFixture);
+        var priceEpisode = GetPriceEpisode(testFixture, expectedEpisodePrice);
+        var completionPaymentPeriodisedValues = GetPriceEpisodePeriodisedValues(priceEpisode, PeriodisedAttributes.PriceEpisodeCompletionPayment);
+        completionPaymentPeriodisedValues.HasExactPeriodValues([0, 0, 0, 0, 0, 1000, 0, 0, 0, 0, 0, 0]).Should().BeTrue();
+
+    }
+
     private static EpisodePrice GetExpectedEpisodePrice(GetAllEarningsQueryTestFixture testFixture)
     {
         testFixture.Result.Should().NotBeNull();
@@ -728,7 +783,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         return episodePrice;
     }
 
-    private static ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode GetPriceEpisode(GetAllEarningsQueryTestFixture testFixture, EpisodePrice expectedEpisodePrice)
+    private static PriceEpisode GetPriceEpisode(GetAllEarningsQueryTestFixture testFixture, EpisodePrice expectedEpisodePrice)
     {
         testFixture.Result.Should().NotBeNull();
 
@@ -739,5 +794,12 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
             x.PriceEpisodeValues.EpisodeStartDate == expectedEpisodePrice.StartDate);
 
         return actualPriceEpisode;
+    }
+
+    private static PriceEpisodePeriodisedValues GetPriceEpisodePeriodisedValues(PriceEpisode priceEpisode, string valueName)
+    {
+        return priceEpisode.PriceEpisodePeriodisedValues
+            .SingleOrDefault(x => x.AttributeName == valueName)
+            ?? throw new Exception($"Price episode periodised values for {valueName} not found.");
     }
 }
