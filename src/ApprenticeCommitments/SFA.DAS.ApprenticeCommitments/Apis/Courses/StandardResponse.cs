@@ -7,5 +7,6 @@
         public string Title { get; set; }
         public int Level { get; set; }
         public int CourseDuration { get; set; }
+        public int ApprenticeshipType { get; set; }
     }
 }
