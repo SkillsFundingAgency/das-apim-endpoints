@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CancelE
             });
 
             var response = await _requestApprenticeTrainingApiClient
-                .PutWithResponseCode<NullResponse>(request);
+                .PutWithResponseCode<PutCancelEmployerRequestRequestData, NullResponse>(request);
 
             response.EnsureSuccessStatusCode();
 

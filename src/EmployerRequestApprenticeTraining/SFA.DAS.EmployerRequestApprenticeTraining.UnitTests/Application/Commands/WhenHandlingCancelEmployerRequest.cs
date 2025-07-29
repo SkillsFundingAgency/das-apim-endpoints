@@ -58,14 +58,14 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             // Arrange
             var response = new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, errorContent);
 
-            _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
+            _mockApiClient.Setup(c => c.PutWithResponseCode<PutCancelEmployerRequestRequestData, NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
                 .ReturnsAsync(response);
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            _mockApiClient.Verify(c => c.PutWithResponseCode<NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()), Times.Once);
+            _mockApiClient.Verify(c => c.PutWithResponseCode<PutCancelEmployerRequestRequestData, NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -73,10 +73,10 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             // Arrange
             var response = new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, errorContent);
-            IPutApiRequest cancelledRequest = null;
+            IPutApiRequest<PutCancelEmployerRequestRequestData> cancelledRequest = null;
 
-            _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
-                .Callback<IPutApiRequest>((x) => cancelledRequest = x)
+            _mockApiClient.Setup(c => c.PutWithResponseCode<PutCancelEmployerRequestRequestData, NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
+                .Callback<IPutApiRequest<PutCancelEmployerRequestRequestData>>((x) => cancelledRequest = x)
                 .ReturnsAsync(response);
                 
             // Act
@@ -99,7 +99,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
             string errorContent)
         {
             var response = new ApiResponse<NullResponse>(new NullResponse(), statusCode, errorContent);
-            _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
+            _mockApiClient.Setup(c => c.PutWithResponseCode<PutCancelEmployerRequestRequestData, NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
                 .ReturnsAsync(response);
 
             Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
@@ -112,7 +112,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             // Arrange
             var response = new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, errorContent);
-            _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
+            _mockApiClient.Setup(c => c.PutWithResponseCode<PutCancelEmployerRequestRequestData, NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
                 .ReturnsAsync(response);
 
             var templateId = _mockOptions.Object.Value.NotificationTemplates
@@ -130,7 +130,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Comman
         {
             // Arrange
             var response = new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, errorContent);
-            _mockApiClient.Setup(c => c.PutWithResponseCode<NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
+            _mockApiClient.Setup(c => c.PutWithResponseCode<PutCancelEmployerRequestRequestData, NullResponse>(It.IsAny<PutCancelEmployerRequestRequest>()))
                 .ReturnsAsync(response);
 
             var emptyNotificationTemplates = new EmployerRequestApprenticeTrainingConfiguration

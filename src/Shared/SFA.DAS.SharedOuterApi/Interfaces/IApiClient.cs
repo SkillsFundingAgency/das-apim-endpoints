@@ -33,5 +33,6 @@ public interface IApiClient<T> : IGetApiClient<T>
     /// <typeparam name="TResponse">If the API returns no data use NullResponse type.</typeparam>
     /// <param name="request"></param>
     /// <returns></returns>
-    Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request);
+    Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class;
+    Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request);
 }

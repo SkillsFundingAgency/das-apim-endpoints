@@ -728,7 +728,7 @@ public class WhenHandlingGetAllEarningsQuery_PriceEpisodes
         return episodePrice;
     }
 
-    private static PriceEpisode GetPriceEpisode(GetAllEarningsQueryTestFixture testFixture, EpisodePrice expectedEpisodePrice)
+    private static ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisode GetPriceEpisode(GetAllEarningsQueryTestFixture testFixture, EpisodePrice expectedEpisodePrice)
     {
         testFixture.Result.Should().NotBeNull();
 

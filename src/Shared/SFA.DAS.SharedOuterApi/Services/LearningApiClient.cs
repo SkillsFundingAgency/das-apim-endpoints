@@ -91,7 +91,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             return await _apiClient.PatchWithResponseCode(request);
         }
 
-        public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             return await _apiClient.PutWithResponseCode<TResponse>(request);
         }
@@ -104,6 +104,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         public async Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
         {
             return await _apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
+        }
+
+        public async Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+        {
+            return await _apiClient.PutWithResponseCode<TData, TResponse>(request);
         }
     }
 

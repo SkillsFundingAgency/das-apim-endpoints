@@ -1,3 +1,6 @@
+using Newtonsoft.Json;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -5,9 +8,6 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure;
@@ -51,6 +51,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         requestMessage.AddVersion(request.Version);
         requestMessage.Content = stringContent;
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -99,6 +100,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
         requestMessage.AddVersion(request.Version);
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -110,6 +112,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
         requestMessage.AddVersion(request.Version);
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -156,6 +159,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         requestMessage.AddVersion(request.Version);
         requestMessage.Content = stringContent;
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -186,6 +190,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         requestMessage.AddVersion(request.Version);
         requestMessage.Content = stringContent;
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
         var responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -200,6 +205,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         requestMessage.AddVersion(request.Version);
         requestMessage.Content = stringContent;
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
         await response.EnsureSuccessStatusCodeIncludeContentInException();
@@ -212,12 +218,18 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         requestMessage.AddVersion(request.Version);
         requestMessage.Content = stringContent;
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
         await response.EnsureSuccessStatusCodeIncludeContentInException();
     }
 
-    public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+    public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+    {
+        return await PutWithResponseCode<object, TResponse>(request);
+    }
+
+    public async Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
         var stringContent = request.Data != null ? new StringContent(JsonSerializer.Serialize(request.Data), Encoding.UTF8, "application/json") : null;
 
@@ -225,6 +237,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         requestMessage.AddVersion(request.Version);
         requestMessage.Content = stringContent;
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -253,6 +266,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetAllUrl);
         requestMessage.AddVersion(request.Version);
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -270,6 +284,7 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
         var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
         requestMessage.AddVersion(request.Version);
         await AddAuthenticationHeader(requestMessage);
+        requestMessage.AddCorrelationId();
 
         var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
