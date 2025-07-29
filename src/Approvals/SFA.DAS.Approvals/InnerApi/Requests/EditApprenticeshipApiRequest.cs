@@ -1,4 +1,5 @@
 using System;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests;
@@ -33,4 +34,5 @@ public class EditApprenticeshipApiRequestData
     public int? MinimumAgeAtApprenticeshipStart { get; set; }
     public int? MaximumAgeAtApprenticeshipStart { get; set; }
     public UserInfo UserInfo { get; set; }
+    public Party Party { get; set; }
 } 
