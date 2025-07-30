@@ -5,8 +5,8 @@ namespace SFA.DAS.Recruit.Application.Queries.GetAllAccountLegalEntities
 {
     public record GetAllAccountLegalEntitiesQueryResult
     {
-        public GetAllAccountLegalEntitiesApiResponse.PaginationInfo PageInfo { get; set; }
-        public List<GetAccountLegalEntityResponseItem> LegalEntities { get; set; }
+        public PageInfo PageInfo { get; set; }
+        public List<GetAccountLegalEntityResponseItem> LegalEntities { get; set; } = [];
 
         public static implicit operator GetAllAccountLegalEntitiesQueryResult(GetAllAccountLegalEntitiesApiResponse response)
         {
