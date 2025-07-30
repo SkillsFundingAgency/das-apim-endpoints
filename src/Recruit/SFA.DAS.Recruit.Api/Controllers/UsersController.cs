@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetUserAccounts;
+using SFA.DAS.Recruit.Application.User.Commands.UpsertUser;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -42,6 +43,25 @@ namespace SFA.DAS.Recruit.Api.Controllers
                 return BadRequest();
             }
         }
-        
+
+        [HttpPost]
+        [Route("{id}")]
+        public async Task<IActionResult> UpsertUser([FromRoute] Guid id, [FromBody]UserDto userDto)
+        {
+            try
+            {
+                await _mediator.Send(new UpsertUserCommand()
+                {
+                    User = (InnerApi.Requests.UserDto)userDto,
+                    Id = id
+                });
+                return Created();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error occured while upserting user");
+                return new StatusCodeResult(500);
+            }
+        }
     }
 }
