@@ -1,0 +1,179 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: Endpoint for ILR Validation data to be used in SLD
+  description: This endpoint will provide the data for SLD to validate incoming ILR records for the Apprenticeship service
+paths:
+  /info:
+    get:
+      description: information regarding this API. The version will be returned
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/infoResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'   
+  
+  /health:
+    get:
+      description: The system is fully ready to accept requests and all the dependencies are healthy
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/healthCheckResponse'
+        '503':
+          $ref: '#/components/responses/healthCheckResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse' 
+
+  /providers/{ukprn}:
+    get:
+      summary: returns data pertinant to a provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number
+          schema:
+            type: string        
+      responses:
+        '200':
+          $ref: '#/components/responses/providerReferenceDataResponse' 
+        '404':
+          description: The provider was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error' 
+    
+components:  
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Ocp-Apim-Subscription-Key
+      description: "Enter your API key in the `Ocp-Apim-Subscription-Key` header."
+  headers:
+    X-RateLimit-Limit:
+      description: The maximum number of requests allowed in a time window
+      schema:
+        type: integer
+        example: 100
+    X-RateLimit-Remaining:
+      description: The number of requests remaining in the current time window
+      schema:
+        type: integer
+        example: 99
+    X-RateLimit-Reset:
+      description: The time (in UNIX timestamp) when the rate limit resets
+      schema:
+        type: integer
+        example: 1712345678
+    Retry-After:
+      description: The number of seconds to wait before making a new request
+      schema:
+        type: integer
+        example: 60
+
+  responses:
+    providerReferenceDataResponse:
+      description: A paged training response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/providerReferenceData'
+
+    rateLimitExceededResponse:
+      description: Too many requests - rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Rate limit exceeded. Try again later."
+
+    badRequest:
+      description: A bad request was sent and validation of the payload failed
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/error'
+
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+
+    healthCheckResponse:
+      description: Results of a health check
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/healthcheckResults'
+
+    infoResponse:
+      description: Information response
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Leaner data APIM for the training service - Version 3.0.2
+            
+  schemas:
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    
+    providerReferenceData:
+      type: object
+      properties:
+        ukprn:
+          type: string
+        employers:
+          type: array
+          items:
+              $ref: '#/components/schemas/employerData'
+    
+    employerData:
+      type: object
+      properties:
+        employers:
+          type: object
+          properties:
+            agreementId:
+              type: string
+            flexibleFunding:
+              type: boolean
+          
+    healthcheckResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/healthcheck' 
+  
+    healthcheck:
+      type: object
+      properties:
+        description: 
+          type: string
+        result: 
+          type: string 
+        
+security:
+  - ApiKeyAuth: []  # Apply API Key security globally
