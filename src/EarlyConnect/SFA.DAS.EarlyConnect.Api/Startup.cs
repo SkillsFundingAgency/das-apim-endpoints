@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Security;
 using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
