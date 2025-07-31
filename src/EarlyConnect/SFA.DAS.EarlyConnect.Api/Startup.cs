@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Net.Security;
 using System.Text.Json.Serialization;
 using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -10,6 +11,9 @@ using SFA.DAS.EarlyConnect.Api.ErrorHandler;
 using SFA.DAS.EarlyConnect.Application.Queries;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using System.Security.Authentication;
+using System.Runtime.InteropServices;
 
 [ExcludeFromCodeCoverage]
 public class Startup
@@ -25,6 +29,34 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
+        // Configure Kestrel to disable CBC ciphers
+        services.Configure<KestrelServerOptions>(options =>
+        {
+            options.AddServerHeader = false; // Disable 'Server' header
+            
+            options.ConfigureHttpsDefaults(httpsOptions =>
+            {
+                httpsOptions.OnAuthenticate = (context, sslOptions) =>
+                {
+                    // Allow only non-CBC cipher suites
+                    sslOptions.CipherSuitesPolicy = new CipherSuitesPolicy(
+                        new[] {
+                            // TLS 1.3 ciphers
+                            TlsCipherSuite.TLS_AES_128_GCM_SHA256,
+                            TlsCipherSuite.TLS_AES_256_GCM_SHA384,
+                            TlsCipherSuite.TLS_CHACHA20_POLY1305_SHA256,
+                            
+                            // TLS 1.2 non-CBC ciphers
+                            TlsCipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
+                            TlsCipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
+                            TlsCipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+                            TlsCipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+                        }
+                    );
+                };
+            });
+        });
+
         services.AddOptions();
         services.AddSingleton(_env);
 
@@ -74,6 +106,25 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
     {
+        // Security headers middleware - placed early in pipeline
+        app.Use(async (context, next) =>
+        {
+            // Remove identifying headers
+            context.Response.Headers.Remove("X-Powered-By");
+            context.Response.Headers.Remove("Server");
+            context.Response.Headers.Remove("X-AspNet-Version");
+            context.Response.Headers.Remove("X-AspNetMvc-Version");
+            
+            // Add security headers
+            context.Response.Headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains";
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+            context.Response.Headers["Content-Security-Policy"] = "default-src 'self'";
+            context.Response.Headers["Referrer-Policy"] = "no-referrer";
+            
+            await next();
+        });
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();
