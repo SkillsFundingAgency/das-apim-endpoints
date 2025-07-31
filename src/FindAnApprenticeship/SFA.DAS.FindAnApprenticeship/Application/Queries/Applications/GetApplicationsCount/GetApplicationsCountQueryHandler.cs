@@ -13,8 +13,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
     {
         public async Task<GetApplicationsCountQueryResult> Handle(GetApplicationsCountQuery request, CancellationToken cancellationToken)
         {
-            var response = await candidateApiClient.GetWithResponseCode<GetApplicationsCountApiResponse>(new GetApplicationsCountApiRequest(request.CandidateId, request.Status));
-            return response.Body;
+            return new GetApplicationsCountApiResponse
+            {
+                
+            };
+                
+            
+            // var response = await candidateApiClient.GetWithResponseCode<GetApplicationsCountApiResponse>(new GetApplicationsCountApiRequest(request.CandidateId, request.Status));
+            // return response.Body;
         }
     }
 }
