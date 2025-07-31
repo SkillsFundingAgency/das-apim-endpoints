@@ -76,11 +76,6 @@ namespace SFA.DAS.EmployerIncentives.Clients
             return _client.PatchWithResponseCode(request);
         }
 
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
-
         public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
         {
             return _client.GetPaged<TResponse>(request);
@@ -92,6 +87,16 @@ namespace SFA.DAS.EmployerIncentives.Clients
         }
 
         public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }

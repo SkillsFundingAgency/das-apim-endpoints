@@ -3,7 +3,7 @@ using System;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
 {
-    public class PutCancelEmployerRequestRequest : IPutApiRequest
+    public class PutCancelEmployerRequestRequest : IPutApiRequest<PutCancelEmployerRequestRequestData>
     {
         public Guid EmployerRequestId { get; set; }
 
@@ -16,8 +16,6 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests
         }
 
         public string PutUrl => $"api/employer-requests/{EmployerRequestId}/cancel";
-
-        object IPutApiRequest.Data { get => Data; set => Data = value as PutCancelEmployerRequestRequestData; }
     }
 
     public class PutCancelEmployerRequestRequestData
