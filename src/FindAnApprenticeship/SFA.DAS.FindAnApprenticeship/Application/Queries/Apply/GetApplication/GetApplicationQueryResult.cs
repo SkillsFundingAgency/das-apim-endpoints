@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 
 public record GetApplicationQueryResult
 {
+    public ApprenticeshipTypes ApprenticeshipType { get; set; }
     public bool IsDisabilityConfident { get; set; }
     public Candidate CandidateDetails { get; set; }
     public AboutYouSection AboutYou { get; set; }
