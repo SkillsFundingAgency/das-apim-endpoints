@@ -120,6 +120,10 @@
         },
         "deployPrivateLinkedScopedResource": {
             "type": "bool"
+        },
+        "vnetRouteAllEnabled": {
+            "type": "bool",
+            "defaultValue": false
         }
     },
     "variables": {
@@ -128,9 +132,8 @@
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]",
         "alertActionGroupResourceIdFailedRequests": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
-        "alertActionGroupResourceIdResponseTime": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ya')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
+        "alertActionGroupResourceIdResponseTime": "[if(and(equals(parameters('environmentName'), 'PROD'), or(equals(parameters('productShortName'), 'faa'), equals(parameters('productShortName'), 'ea'))), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
         "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]"
-
     },
     "resources": [
         {
@@ -281,6 +284,9 @@
                     },
                     "subnetResourceId": {
                         "value": "[parameters('apimEndpointsSubnetResourceId')]"
+                    },
+                    "vnetRouteAllEnabled": {
+                        "value": "[parameters('vnetRouteAllEnabled')]"
                     }
                 }
             }

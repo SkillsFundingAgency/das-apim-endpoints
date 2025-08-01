@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="AutoFixture" />
+        <PackageReference Include="WireMock.Net" />
+        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+        <PackageReference Include="WireMock.Net.StandAlone"/>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="vacancy-detail.json">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Update="HttpScripts\http-client.env.json">
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
+</Project>
