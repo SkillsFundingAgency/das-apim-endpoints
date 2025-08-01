@@ -28,7 +28,7 @@ public class ConfirmEditApprenticeshipCommandHandler(
             throw new InvalidOperationException($"Apprenticeship {command.ApprenticeshipId} not found");
         }
         
-        var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(apprenticeship.CourseCode);
+        var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(command.CourseCode ?? apprenticeship.CourseCode);
         
         var editRequestData = new EditApprenticeshipApiRequestData
         {
