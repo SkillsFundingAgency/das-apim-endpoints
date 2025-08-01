@@ -49,16 +49,24 @@ namespace SFA.DAS.RoatpCourseManagement.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAllProviderCoursesQueryHandler).Assembly));
+            const string ready = nameof(ready);
             services.AddHealthChecks()
                     .AddCheck<RoatpCourseManagementApiHealthCheck>(RoatpCourseManagementApiHealthCheck.HealthCheckResultDescription,
                         failureStatus: HealthStatus.Unhealthy,
-                        tags: new[] { "ready" })
+                        tags: new[] { ready })
                     .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription,
                         failureStatus: HealthStatus.Unhealthy,
-                        tags: new[] { "ready" })
+                        tags: new[] { ready })
                     .AddCheck<LocationsApiHealthCheck>(LocationsApiHealthCheck.HealthCheckResultDescription,
                         failureStatus: HealthStatus.Unhealthy,
-                        tags: new[] { "ready" });
+                        tags: new[] { ready })
+                    .AddCheck<ApprenticeFeedbackApiHealthCheck>(ApprenticeFeedbackApiHealthCheck.HealthCheckResultDescription,
+                        failureStatus: HealthStatus.Unhealthy,
+                        tags: new[] { ready })
+                    .AddCheck<ProviderFeedbackApiHealthCheck>(ProviderFeedbackApiHealthCheck.HealthCheckResultDescription,
+                        failureStatus: HealthStatus.Unhealthy,
+                        tags: new[] { ready });
+
             services.AddServiceRegistration(_configuration);
 
             services
