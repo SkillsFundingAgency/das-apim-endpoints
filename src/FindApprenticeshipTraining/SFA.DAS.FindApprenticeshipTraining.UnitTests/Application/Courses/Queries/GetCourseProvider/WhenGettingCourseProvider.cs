@@ -15,6 +15,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -33,7 +34,7 @@ public sealed class WhenGettingCourseProvider
     private GetCourseProviderQueryHandler SetupHandler(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -80,12 +81,12 @@ public sealed class WhenGettingCourseProvider
         ));
 
         _employerFeedbackMock
-            .Setup(x => x.GetWithResponseCode<GetEmployerFeedbackSummaryAnnualResponse>(
+            .Setup(x => x.GetWithResponseCode<EmployerFeedbackAnnualDetails>(
                 It.Is<GetEmployerFeedbackSummaryAnnualRequest>(a =>
                     a.GetUrl.Contains(query.Ukprn.ToString())
                 )
             ))
-        .ReturnsAsync(new ApiResponse<GetEmployerFeedbackSummaryAnnualResponse>(
+        .ReturnsAsync(new ApiResponse<EmployerFeedbackAnnualDetails>(
             employerFeedbackResponse,
             HttpStatusCode.OK,
             string.Empty
@@ -144,7 +145,7 @@ public sealed class WhenGettingCourseProvider
     public async Task Then_Handle_Calls_The_Cached_Location_Api_With_The_Correct_Parameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -176,7 +177,7 @@ public sealed class WhenGettingCourseProvider
     public async Task Then_Handle_Calls_The_Roatp_Api_With_The_Correct_Parameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -214,7 +215,7 @@ public sealed class WhenGettingCourseProvider
     public async Task Then_Handle_Calls_The_Accessor_Api_With_The_Correct_Parameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -249,7 +250,7 @@ public sealed class WhenGettingCourseProvider
     public async Task Then_Handle_Calls_The_Employer_Feedback_Api_With_The_Correct_Parameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -271,7 +272,7 @@ public sealed class WhenGettingCourseProvider
         await sut.Handle(query, CancellationToken.None);
 
         _employerFeedbackMock.Verify(x =>
-            x.GetWithResponseCode<GetEmployerFeedbackSummaryAnnualResponse>(
+            x.GetWithResponseCode<EmployerFeedbackAnnualDetails>(
                 It.Is<GetEmployerFeedbackSummaryAnnualRequest>(a =>
                     a.GetUrl.Contains(query.Ukprn.ToString()
                 )
@@ -285,7 +286,7 @@ public sealed class WhenGettingCourseProvider
     public async Task Then_Handle_Calls_The_Apprentice_Feedback_Api_With_The_Correct_Parameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -321,7 +322,7 @@ public sealed class WhenGettingCourseProvider
     public async Task Then_Handle_Calls_The_Roatp_Api_For_Course_Details_With_The_Correct_Parameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -357,7 +358,7 @@ public sealed class WhenGettingCourseProvider
     public async Task Then_Handle_Calls_The_Roatp_Api_For_Provider_Count_With_The_Correct_Parameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
@@ -396,7 +397,7 @@ public sealed class WhenGettingCourseProvider
     public async Task And_Roatp_Api_Call_Returns_404_Handler_Returns_Null(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
-        GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
+        EmployerFeedbackAnnualDetails employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
         ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,

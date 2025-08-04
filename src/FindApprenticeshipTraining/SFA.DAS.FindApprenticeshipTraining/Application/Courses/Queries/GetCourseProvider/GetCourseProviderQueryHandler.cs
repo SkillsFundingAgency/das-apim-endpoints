@@ -13,6 +13,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -46,7 +47,7 @@ public sealed class GetCourseProviderQueryHandler(
 
         tasks.Add(courseProviderDetailsTask);
 
-        var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackSummaryAnnualResponse>(
+        var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<EmployerFeedbackAnnualDetails>(
             new GetEmployerFeedbackSummaryAnnualRequest(query.Ukprn)
         );
 
@@ -77,7 +78,7 @@ public sealed class GetCourseProviderQueryHandler(
         await Task.WhenAll(tasks);
 
         ApiResponse<GetCourseProviderDetailsResponse> courseProviderDetailsResponse = courseProviderDetailsTask.Result;
-        ApiResponse<GetEmployerFeedbackSummaryAnnualResponse> employerFeedbackResponse = employerFeedbackTask.Result;
+        ApiResponse<EmployerFeedbackAnnualDetails> employerFeedbackResponse = employerFeedbackTask.Result;
         ApiResponse<ApprenticeFeedbackAnnualDetails> apprenticeFeedbackResponse = apprenticeFeedbackTask.Result;
         ApiResponse<List<ProviderCourseResponse>> courseDetailsResponse = courseDetailsTask.Result;
         ApiResponse<GetCourseTrainingProvidersCountResponse> courseTrainingProvidersCountResponse = courseTrainingProvidersCountTask.Result;
