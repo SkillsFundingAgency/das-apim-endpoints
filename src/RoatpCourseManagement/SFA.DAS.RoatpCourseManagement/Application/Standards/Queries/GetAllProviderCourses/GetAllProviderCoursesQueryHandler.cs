@@ -1,13 +1,13 @@
-﻿using MediatR;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses
 {
@@ -44,7 +44,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProv
                         LarsCode = c.LarsCode,
                         ApprovalBody = c.ApprovalBody,
                         Version = c.Version,
-                        IsApprovedByRegulator = c.IsApprovedByRegulator
+                        IsApprovedByRegulator = c.IsApprovedByRegulator,
+                        IsRegulatedForProvider = c.IsRegulatedForProvider,
+                        HasLocations = c.HasLocations
                     };
                     results.Add(course);
                 }
