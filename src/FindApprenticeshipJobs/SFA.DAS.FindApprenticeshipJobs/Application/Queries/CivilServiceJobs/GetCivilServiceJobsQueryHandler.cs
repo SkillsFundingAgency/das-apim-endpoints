@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
@@ -13,12 +14,17 @@ public class GetCivilServiceJobsQueryHandler(
     ICivilServiceJobsApiClient apiClient,
     ILiveVacancyMapper liveVacancyMapper,
     ILocationApiClient<LocationApiConfiguration> locationApiClient,
-    ICourseService courseService) : IRequestHandler<GetCivilServiceJobsQuery, GetCivilServiceJobsQueryResult>
+    ICourseService courseService,
+    ILogger<GetCivilServiceJobsQueryHandler> logger) : IRequestHandler<GetCivilServiceJobsQuery, GetCivilServiceJobsQueryResult>
 {
     public async Task<GetCivilServiceJobsQueryResult> Handle(GetCivilServiceJobsQuery request, CancellationToken cancellationToken)
     {
         var response = await apiClient.GetWithResponseCode(new GetCivilServiceJobsApiRequest());
 
+        logger.LogInformation("CSJ Response code from API: {response}", response.StatusCode);
+        logger.LogInformation("CSJ Response Error from API: {response}", response.ErrorContent);
+        logger.LogInformation("CSJ Response from API: {response}", response.Body);
+        
         if (response.StatusCode != System.Net.HttpStatusCode.OK || response.Body is null)
         {
             return new GetCivilServiceJobsQueryResult
