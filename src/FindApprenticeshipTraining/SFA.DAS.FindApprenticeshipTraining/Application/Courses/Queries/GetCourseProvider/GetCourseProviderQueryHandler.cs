@@ -1,4 +1,9 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
@@ -7,14 +12,10 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 
@@ -51,7 +52,7 @@ public sealed class GetCourseProviderQueryHandler(
 
         tasks.Add(employerFeedbackTask);
 
-        var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackSummaryAnnualResponse>(
+        var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<ApprenticeFeedbackAnnualDetails>(
             new GetApprenticeFeedbackSummaryAnnualRequest(query.Ukprn)
         );
 
@@ -77,7 +78,7 @@ public sealed class GetCourseProviderQueryHandler(
 
         ApiResponse<GetCourseProviderDetailsResponse> courseProviderDetailsResponse = courseProviderDetailsTask.Result;
         ApiResponse<GetEmployerFeedbackSummaryAnnualResponse> employerFeedbackResponse = employerFeedbackTask.Result;
-        ApiResponse<GetApprenticeFeedbackSummaryAnnualResponse> apprenticeFeedbackResponse = apprenticeFeedbackTask.Result;
+        ApiResponse<ApprenticeFeedbackAnnualDetails> apprenticeFeedbackResponse = apprenticeFeedbackTask.Result;
         ApiResponse<List<ProviderCourseResponse>> courseDetailsResponse = courseDetailsTask.Result;
         ApiResponse<GetCourseTrainingProvidersCountResponse> courseTrainingProvidersCountResponse = courseTrainingProvidersCountTask.Result;
 

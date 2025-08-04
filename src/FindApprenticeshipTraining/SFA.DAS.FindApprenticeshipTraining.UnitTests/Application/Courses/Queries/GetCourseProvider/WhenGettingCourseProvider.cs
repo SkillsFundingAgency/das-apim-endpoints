@@ -14,6 +14,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -34,7 +35,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -91,12 +92,12 @@ public sealed class WhenGettingCourseProvider
         ));
 
         _apprenticeFeedbackMock
-            .Setup(x => x.GetWithResponseCode<GetApprenticeFeedbackSummaryAnnualResponse>(
+            .Setup(x => x.GetWithResponseCode<ApprenticeFeedbackAnnualDetails>(
                 It.Is<GetApprenticeFeedbackSummaryAnnualRequest>(a =>
                     a.GetUrl.Contains(query.Ukprn.ToString())
                 )
             ))
-        .ReturnsAsync(new ApiResponse<GetApprenticeFeedbackSummaryAnnualResponse>(
+        .ReturnsAsync(new ApiResponse<ApprenticeFeedbackAnnualDetails>(
             apprenticeFeedbackResponse,
             HttpStatusCode.OK,
             string.Empty
@@ -145,7 +146,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -177,7 +178,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -215,7 +216,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -250,7 +251,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -286,7 +287,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -306,7 +307,7 @@ public sealed class WhenGettingCourseProvider
         await sut.Handle(query, CancellationToken.None);
 
         _apprenticeFeedbackMock.Verify(x =>
-            x.GetWithResponseCode<GetApprenticeFeedbackSummaryAnnualResponse>(
+            x.GetWithResponseCode<ApprenticeFeedbackAnnualDetails>(
                 It.Is<GetApprenticeFeedbackSummaryAnnualRequest>(a =>
                     a.GetUrl.Contains(query.Ukprn.ToString()
                 )
@@ -322,7 +323,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -358,7 +359,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse
@@ -397,7 +398,7 @@ public sealed class WhenGettingCourseProvider
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetEmployerFeedbackSummaryAnnualResponse employerFeedbackResponse,
         GetAssessmentsResponse assessmentResponse,
-        GetApprenticeFeedbackSummaryAnnualResponse apprenticeFeedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         List<ProviderCourseResponse> providerCoursesResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse,
         LocationItem locationResponse)
