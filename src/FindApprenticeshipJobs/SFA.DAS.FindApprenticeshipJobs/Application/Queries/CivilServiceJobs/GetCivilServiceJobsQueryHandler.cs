@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
@@ -11,14 +13,35 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.CivilServiceJobs;
 public class GetCivilServiceJobsQueryHandler(
+    IOptions<CivilServiceJobsConfiguration> civilServiceJobsConfiguration,
     ICivilServiceJobsApiClient apiClient,
     ILiveVacancyMapper liveVacancyMapper,
     ILocationApiClient<LocationApiConfiguration> locationApiClient,
     ICourseService courseService,
     ILogger<GetCivilServiceJobsQueryHandler> logger) : IRequestHandler<GetCivilServiceJobsQuery, GetCivilServiceJobsQueryResult>
 {
+    private readonly CivilServiceJobsConfiguration _civilServiceJobsConfiguration = civilServiceJobsConfiguration.Value;
+
     public async Task<GetCivilServiceJobsQueryResult> Handle(GetCivilServiceJobsQuery request, CancellationToken cancellationToken)
     {
+        // Ensure the API client is configured with the correct base address
+        logger.LogInformation("CSJ API Url:{url}", _civilServiceJobsConfiguration.Url);
+        logger.LogInformation("CSJ API Key:{key}", _civilServiceJobsConfiguration.ApiKey);
+        if (string.IsNullOrWhiteSpace(_civilServiceJobsConfiguration.Url) || string.IsNullOrWhiteSpace(_civilServiceJobsConfiguration.ApiKey))
+        {
+            logger.LogError("Civil Service Jobs API configuration is not set correctly.");
+            return new GetCivilServiceJobsQueryResult
+            {
+                CivilServiceVacancies = []
+            };
+        }
+        // Fetch the civil service jobs from the API
+        logger.LogInformation("Fetching Civil Service Jobs from API");
+        logger.LogInformation("CSJ API Request: {request}", new GetCivilServiceJobsApiRequest().GetUrl);
+
+        var outboundIp = await LogOutboundIpAsync();
+        logger.LogInformation("Outbound IP for CSJ API request: {ip}", outboundIp);
+
         var response = await apiClient.GetWithResponseCode(new GetCivilServiceJobsApiRequest());
 
         logger.LogInformation("CSJ Response code from API: {response}", response.StatusCode);
@@ -74,5 +97,12 @@ public class GetCivilServiceJobsQueryHandler(
         {
             CivilServiceVacancies = liveVacancies
         };
+    }
+
+    public static async Task<string> LogOutboundIpAsync()
+    {
+        using var client = new HttpClient();
+        var ip = await client.GetStringAsync("https://api.ipify.org");
+        return ip;
     }
 }
