@@ -26,7 +26,8 @@ public class GetCivilServiceJobsQueryHandler(
     {
         // Ensure the API client is configured with the correct base address
         logger.LogInformation("CSJ API Url:{url}", _civilServiceJobsConfiguration.Url);
-        logger.LogInformation("CSJ API Key:{key}", _civilServiceJobsConfiguration.ApiKey);
+        // Log the API key, truncating it for security
+        logger.LogInformation("CSJ API Key:{key}", TruncateGuid(_civilServiceJobsConfiguration.ApiKey));
         if (string.IsNullOrWhiteSpace(_civilServiceJobsConfiguration.Url) || string.IsNullOrWhiteSpace(_civilServiceJobsConfiguration.ApiKey))
         {
             logger.LogError("Civil Service Jobs API configuration is not set correctly.");
@@ -104,5 +105,11 @@ public class GetCivilServiceJobsQueryHandler(
         using var client = new HttpClient();
         var ip = await client.GetStringAsync("https://api.ipify.org");
         return ip;
+    }
+
+    static string TruncateGuid(string guid)
+    {
+        string full = guid.ToString();
+        return $"{full[..8]}-****-****-****-******{full[^4..]}";
     }
 }

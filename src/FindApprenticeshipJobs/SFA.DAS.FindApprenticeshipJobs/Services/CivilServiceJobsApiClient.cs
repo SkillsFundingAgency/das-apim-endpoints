@@ -21,7 +21,7 @@ public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
     public async Task<ApiResponse<string>> GetWithResponseCode(IGetApiRequest request)
     {
         using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
-        httpRequestMessage.Headers.TryAddWithoutValidation("X-API-Key", _apiConfiguration.ApiKey);
+        httpRequestMessage.Headers.TryAddWithoutValidation("X-API-Key", Guid.NewGuid().ToString());
         httpRequestMessage.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
         using var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
