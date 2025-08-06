@@ -164,8 +164,8 @@ internal static class JoinedDataModelsExtensions
     {
         if (hasSubsequentPriceEpisodes)
         {
-            var dayBeforeNextPEStartDate = joinedEarningsApprenticeship.GetNextPriceEpisode(currentPriceEpisode)?.StartDate.AddDays(-1);
-            return joinedEarningsApprenticeship.CompletionDate.EarliestOf(dayBeforeNextPEStartDate);
+            var nextPEStartDate = joinedEarningsApprenticeship.GetNextPriceEpisode(currentPriceEpisode)?.StartDate;
+            return joinedEarningsApprenticeship.CompletionDate.EarliestOf(nextPEStartDate);
         }
 
         return joinedEarningsApprenticeship.CompletionDate;
