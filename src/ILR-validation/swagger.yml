@@ -150,6 +150,10 @@ components:
           type: array
           items:
               $ref: '#/components/schemas/employerData'
+        supportedCourses:
+          type: array
+          items:
+            type: string
     
     employerData:
       type: object
