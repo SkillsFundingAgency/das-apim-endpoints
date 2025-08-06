@@ -9,7 +9,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public record GetApplicationApiResponse
 {
-    public ApprenticeshipTypes ApprenticeshipType { get; set; }
+    public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     public bool IsDisabilityConfident { get; set; }
     public bool IsApplicationComplete { get; set; }
     public DateTime ClosingDate { get; set; }
