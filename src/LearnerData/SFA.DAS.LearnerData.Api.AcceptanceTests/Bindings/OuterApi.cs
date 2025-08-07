@@ -1,5 +1,7 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
@@ -8,7 +10,7 @@ namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 public class OuterApi
 {
     public static HttpClient Client { get; set; }
-    public static LocalWebApplicationFactory<Startup> Factory { get; set; }
+    public static LocalWebApplicationFactory<Program> Factory { get; set; }
     public static Dictionary<string, string> Config { get; set; }
 
 
@@ -38,7 +40,7 @@ public class OuterApi
             };
 
 
-            Factory = new LocalWebApplicationFactory<Startup>(Config);
+            Factory = new LocalWebApplicationFactory<Program>(Config);
             Client = Factory.CreateClient();
             Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {GenerateBearerToken("Earnings")}");
         }

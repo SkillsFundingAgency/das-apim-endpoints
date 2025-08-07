@@ -1,9 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using System.Net;
 using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 
-namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
+namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 
 [Binding]
 public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioContext)
@@ -12,7 +17,7 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
     public void GivenTheFollowingPriceEpisodes(Table table)
     {
         var apprenticeship = scenarioContext.Get<ApprenticeshipModel>();
-        var priceEpisodes = table.CreateSet<Models.PriceEpisodeModel>().ToList();
+        var priceEpisodes = table.CreateSet<PriceEpisodeModel>().ToList();
         apprenticeship.PriceEpisodes = priceEpisodes;
     }
 
@@ -58,7 +63,7 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
                     .WithBodyAsJson(apiResponses.EarningsInnerApiResponse)
             );
 
-        var response = await testContext.OuterApiClient.GetAsync($"/learners/10005077/{academicYear}/{deliveryPeriod}");
+        var response = await testContext.OuterApiClient.GetAsync($"/learners/providers/10005077/collectionPeriod/{academicYear}/{deliveryPeriod}/fm36Data");
         var contentString = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode)

@@ -79,7 +79,8 @@ builder.Services.AddConfigurationOptions(configuration);
 
 builder.Services.AddHealthChecks()
     .AddCheck<LearningApiHealthCheck>(LearningApiHealthCheck.HealthCheckResultDescription)
-    .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription);
+    .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription)
+    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription);
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
@@ -89,7 +90,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
-builder.Services.AddApiServices();
+builder.Services.AddServices();
 
 var app = builder.Build();
 
@@ -110,3 +111,5 @@ app.UseSwagger()
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

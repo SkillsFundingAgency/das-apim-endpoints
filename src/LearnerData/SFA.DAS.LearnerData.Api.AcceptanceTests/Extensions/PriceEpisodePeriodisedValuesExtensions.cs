@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+
+namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
 public static class PriceEpisodePeriodisedValuesExtensions
 {

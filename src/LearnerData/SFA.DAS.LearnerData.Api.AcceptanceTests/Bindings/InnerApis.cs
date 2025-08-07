@@ -7,7 +7,7 @@ namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 public class InnerApis(TestContext context)
 {
     public static HttpClient Client { get; set; }
-    public static LocalWebApplicationFactory<Startup> Factory { get; set; }
+    public static LocalWebApplicationFactory<Program> Factory { get; set; }
 
     [BeforeScenario(Order = 1)]
     public void Initialise()
@@ -43,7 +43,7 @@ public class InnerApis(TestContext context)
             };
 
 
-            Factory = new LocalWebApplicationFactory<Startup>(config);
+            Factory = new LocalWebApplicationFactory<Program>(config);
             Client = Factory.CreateClient();
         }
 
