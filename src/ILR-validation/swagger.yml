@@ -163,7 +163,7 @@ components:
           properties:
             agreementId:
               type: string
-            flexibleFunding:
+            IsLevy:
               type: boolean
           
     healthcheckResults:
