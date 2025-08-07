@@ -15,10 +15,12 @@ using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAcc
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.EmployerFeedback.Api
-{
-    public class Startup
+namespace SFA.DAS.EmployerFeedback.Api;
+
+[ExcludeFromCodeCoverage]
+public class Startup
     {
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
@@ -109,4 +111,3 @@ namespace SFA.DAS.EmployerFeedback.Api
             });
         }
     }
-}
