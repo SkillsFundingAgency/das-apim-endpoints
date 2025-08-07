@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -6,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.EmployerFeedback.Api.AppStart
 {
+    [ExcludeFromCodeCoverage]
     public static class AddConfigurationOptionsExtension
     {
         public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
@@ -17,6 +19,8 @@ namespace SFA.DAS.EmployerFeedback.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
             services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
+            services.Configure<EmployerFeedbackApiConfiguration>(configuration.GetSection(nameof(EmployerFeedbackApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerFeedbackApiConfiguration>>().Value);
         }
     }
 }
