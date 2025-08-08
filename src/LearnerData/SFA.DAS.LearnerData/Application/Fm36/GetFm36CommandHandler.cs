@@ -12,9 +12,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
-public class GetAllEarningsQuery : IRequest<GetAllEarningsQueryResult>
+public class GetFm36Command : IRequest<GetAllEarningsQueryResult>
 {
-    public GetAllEarningsQuery(long ukprn, int collectionYear, byte collectionPeriod)
+    public GetFm36Command(long ukprn, int collectionYear, byte collectionPeriod)
     {
         Ukprn = ukprn;
         CollectionYear = collectionYear;
@@ -31,19 +31,19 @@ public class GetAllEarningsQueryResult
     public FM36Learner[] FM36Learners { get; set; }
 }
 
-public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, GetAllEarningsQueryResult>
+public class GetFm36CommandHandler : IRequestHandler<GetFm36Command, GetAllEarningsQueryResult>
 {
     const int SimplificationEarningsPlatform = 2;
 
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
-    private readonly ILogger<GetAllEarningsQueryHandler> _logger;
+    private readonly ILogger<GetFm36CommandHandler> _logger;
 
-    public GetAllEarningsQueryHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
+    public GetFm36CommandHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
         ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
-        ILogger<GetAllEarningsQueryHandler> logger)
+        ILogger<GetFm36CommandHandler> logger)
     {
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
@@ -51,7 +51,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
         _logger = logger;
     }
 
-    public async Task<GetAllEarningsQueryResult> Handle(GetAllEarningsQuery request, CancellationToken cancellationToken)
+    public async Task<GetAllEarningsQueryResult> Handle(GetFm36Command request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 

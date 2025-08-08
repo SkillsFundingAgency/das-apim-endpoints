@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoFixture" />
     <PackageReference Include="coverlet.collector" />
 	<PackageReference Include="FluentAssertions" />
 	<PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
