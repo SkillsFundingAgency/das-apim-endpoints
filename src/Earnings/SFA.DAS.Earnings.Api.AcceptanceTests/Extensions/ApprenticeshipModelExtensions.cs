@@ -50,7 +50,8 @@ public static class ApprenticeshipModelExtensions
                         EpisodePriceKey = apprenticeshipModel.PriceEpisodes.Single(y => y.PriceEpisodeId == x.PriceEpisodeId).Key,
                         AcademicYear = x.AcademicYear,
                         DeliveryPeriod = x.DeliveryPeriod,
-                        Amount = x.Amount
+                        Amount = x.Amount,
+                        InstalmentType = x.InstalmentType
                     }).ToList(),
                     AdditionalPayments = apprenticeshipModel.AdditionalPayments.Select(x =>
                         new SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.AdditionalPayment
@@ -81,7 +82,8 @@ public static class ApprenticeshipModelExtensions
                         Amount = 0,
                         AcademicYear = 0,
                         DeliveryPeriod = 0,
-                        EpisodePriceKey = price.Key
+                        EpisodePriceKey = price.Key,
+                        InstalmentType = "Regular"
                     });
                 }
             }

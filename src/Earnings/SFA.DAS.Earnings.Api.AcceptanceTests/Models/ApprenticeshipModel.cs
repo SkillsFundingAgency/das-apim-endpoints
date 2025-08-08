@@ -28,6 +28,7 @@ public class InstalmentModel
     public short AcademicYear { get; set; }
     public byte DeliveryPeriod { get; set; }
     public decimal Amount { get; set; }
+    public string InstalmentType { get; set; }
 }
 
 public class AdditionalPaymentModel
