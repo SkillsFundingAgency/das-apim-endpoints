@@ -27,5 +27,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<ICachedLocationLookupService, CachedLocationLookupService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
+        services.AddTransient<ICachedFeedbackService, CachedFeedbackService>();
     }
 }
