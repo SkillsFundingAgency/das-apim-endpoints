@@ -14,6 +14,6 @@ namespace SFA.DAS.EmployerAccounts.ExternalApi.Requests
             MaximumResults = maximumResults;
         }
 
-        public string GetUrl => $"search/companies/?q={HttpUtility.UrlEncode(SearchTerm)}&items_per_page={MaximumResults}";
+        public string GetUrl => $"search/companies?q={HttpUtility.UrlEncode(SearchTerm)}&items_per_page={MaximumResults}";
     }
 }
