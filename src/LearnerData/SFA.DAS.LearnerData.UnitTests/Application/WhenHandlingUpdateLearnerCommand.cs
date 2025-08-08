@@ -20,13 +20,14 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_Learner_Is_Updated_Successfully_With_Changes(
         Guid learningKey,
         DateTime completionDate,
+        List<MathsAndEnglish> mathsAndEnglishCourses,
         [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         [Frozen] Mock<IEarningsApiClient<EarningsApiConfiguration>> earningsApiClient,
         [Frozen] Mock<ILogger<UpdateLearnerCommandHandler>> logger,
         UpdateLearnerCommandHandler handler)
     {
         // Arrange
-        var command = CreateCommand(learningKey, completionDate);
+        var command = CreateCommand(learningKey, completionDate, mathsAndEnglishCourses);
 
         MockLearningApiResponse(learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.CompletionDate }, HttpStatusCode.OK);
 
@@ -49,13 +50,14 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_No_Earnings_Updated_If_No_Changes(
         Guid learningKey,
         DateTime completionDate,
+        List<MathsAndEnglish> mathsAndEnglishCourses,
         [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         [Frozen] Mock<IEarningsApiClient<EarningsApiConfiguration>> earningsApiClient,
         [Frozen] Mock<ILogger<UpdateLearnerCommandHandler>> logger,
         UpdateLearnerCommandHandler handler)
     {
         // Arrange
-        var command = CreateCommand(learningKey, completionDate);
+        var command = CreateCommand(learningKey, completionDate, mathsAndEnglishCourses);
 
         MockLearningApiResponse(learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
 
@@ -70,12 +72,13 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_Logs_Error_If_Learner_Update_Fails(
         Guid learningKey,
         DateTime completionDate,
+        List<MathsAndEnglish> mathsAndEnglishCourses,
         [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         [Frozen] Mock<ILogger<UpdateLearnerCommandHandler>> logger,
         UpdateLearnerCommandHandler handler)
     {
         // Arrange
-        var command = CreateCommand(learningKey, completionDate);
+        var command = CreateCommand(learningKey, completionDate, mathsAndEnglishCourses);
 
         MockLearningApiResponse(learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.InternalServerError, "error");
 
@@ -84,7 +87,37 @@ public class WhenHandlingUpdateLearnerCommand
 
     }
 
-    private static UpdateLearnerCommand CreateCommand(Guid learningKey, DateTime completionDate)
+    [Test, MoqAutoData]
+    public async Task Then_Learner_Is_Updated_Successfully_With_MathsAndEnglish_Changes(
+        Guid learningKey,
+        DateTime completionDate,
+        List<MathsAndEnglish> mathsAndEnglishCourses,
+        [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
+        [Frozen] Mock<IEarningsApiClient<EarningsApiConfiguration>> earningsApiClient,
+        [Frozen] Mock<ILogger<UpdateLearnerCommandHandler>> logger,
+        UpdateLearnerCommandHandler handler)
+    {
+        // Arrange
+        var command = CreateCommand(learningKey, completionDate, mathsAndEnglishCourses);
+
+        MockLearningApiResponse(learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.MathsAndEnglish }, HttpStatusCode.OK);
+
+        earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.Is<UpdateLearningApiPutRequest>(r => r.Data.Learner.CompletionDate == completionDate)), Times.Once);
+
+        earningsApiClient.Verify(x => x.Patch(It.Is<SaveMathsAndEnglishApiPatchRequest>(
+            r => Matches(r.Data, mathsAndEnglishCourses))), Times.Once);
+    }
+
+    private static UpdateLearnerCommand CreateCommand(Guid learningKey, DateTime completionDate, List<MathsAndEnglish> mathsAndEnglishCourses)
     {
         return new UpdateLearnerCommand
         {
@@ -93,7 +126,8 @@ public class WhenHandlingUpdateLearnerCommand
             {
                 Delivery = new UpdateLearnerRequestDeliveryDetails
                 {
-                    CompletionDate = completionDate
+                    CompletionDate = completionDate,
+                    MathsAndEnglishCourses = mathsAndEnglishCourses
                 }
             }
         };
@@ -113,5 +147,17 @@ public class WhenHandlingUpdateLearnerCommand
         learningApiClient.Setup(x => 
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
         .ReturnsAsync(response);
+    }
+
+    private static bool Matches(SaveMathsAndEnglishRequest request, List<MathsAndEnglish> courses)
+    {
+        return request.Count == courses.Count &&
+               request.All(r => courses.Any(c => c.StartDate == r.StartDate &&
+                                                 c.PlannedEndDate == r.EndDate &&
+                                                 c.Course == r.Course &&
+                                                 c.Amount == r.Amount &&
+                                                 c.WithdrawalDate == r.WithdrawalDate &&
+                                                 c.PriorLearningPercentage == r.PriorLearningAdjustmentPercentage &&
+                                                 c.CompletionDate == r.ActualEndDate));
     }
 }

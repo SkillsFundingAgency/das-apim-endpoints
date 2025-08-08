@@ -3,11 +3,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 
 public record GetApplicationApiResponse
 {
+    public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     public bool IsDisabilityConfident { get; set; }
     public bool IsApplicationComplete { get; set; }
     public DateTime ClosingDate { get; set; }
@@ -43,6 +45,7 @@ public record GetApplicationApiResponse
             AboutYou = source.AboutYou,
             EmployerName = source.EmployerName,
             VacancyTitle = source.VacancyTitle,
+            ApprenticeshipType = source.ApprenticeshipType,
         };
     }
 

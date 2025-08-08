@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35201.131
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.Api", "..\SFA.DAS.EmployerProfiles.Api\SFA.DAS.EmployerProfiles.Api.csproj", "{41243F8D-2878-43D7-8FB2-6D53324C499C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.Api", "SFA.DAS.EmployerProfiles.Api\SFA.DAS.EmployerProfiles.Api.csproj", "{41243F8D-2878-43D7-8FB2-6D53324C499C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles", "SFA.DAS.EmployerProfiles.csproj", "{9E5014AA-8639-49F6-B617-A939D2B4DC71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles", "SFA.DAS.EmployerProfiles\SFA.DAS.EmployerProfiles.csproj", "{9E5014AA-8639-49F6-B617-A939D2B4DC71}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.Api.UnitTests", "..\SFA.DAS.EmployerProfiles.Api.UnitTests\SFA.DAS.EmployerProfiles.Api.UnitTests.csproj", "{70327028-A670-4464-A0A8-85C416945166}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.Api.UnitTests", "SFA.DAS.EmployerProfiles.Api.UnitTests\SFA.DAS.EmployerProfiles.Api.UnitTests.csproj", "{70327028-A670-4464-A0A8-85C416945166}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.UnitTests", "..\SFA.DAS.EmployerProfiles.UnitTests\SFA.DAS.EmployerProfiles.UnitTests.csproj", "{5FC068BF-7371-4FBD-9F92-287ED26E245E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerProfiles.UnitTests", "SFA.DAS.EmployerProfiles.UnitTests\SFA.DAS.EmployerProfiles.UnitTests.csproj", "{5FC068BF-7371-4FBD-9F92-287ED26E245E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
