@@ -174,9 +174,7 @@ components:
       content:
         application/json:
           schema:
-            type: array 
-            items:
-              $ref: "#/components/schemas/apprenticeshipLearning"
+            $ref: "#/components/schemas/apprenticeshipLearning"
   responses:
     pagedLearningIdentifiersResponse:
       description: A paged training response
