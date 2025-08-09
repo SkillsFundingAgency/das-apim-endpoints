@@ -6,6 +6,7 @@ namespace SFA.DAS.ApprenticeApp.Models
     {
         public long Id { get; set; }
         public Guid ApprenticeId { get; set; }
+        public long CommitmentsApprenticeshipId { get; set; }
         public string EmployerName { get; set; }
         public string CourseName { get; set; }
         public DateTime? ConfirmedOn { get; set; }
