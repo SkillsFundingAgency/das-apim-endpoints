@@ -1,6 +1,6 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 
-namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 
 public class GetNhsJobsQueryResult
 {
