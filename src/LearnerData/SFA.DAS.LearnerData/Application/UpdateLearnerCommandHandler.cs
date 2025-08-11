@@ -60,11 +60,27 @@ public class UpdateLearnerCommandHandler(
             {
                 case LearningUpdateChanges.CompletionDate:
                     logger.LogInformation("Updating earnings for learner with key {LearnerKey} due to completion date change", command.LearningKey);
-                    var request = new SaveCompletionApiPutRequest(command.LearningKey, new SaveCompletionRequest
+                    await earningsApiClient.Patch(new SaveCompletionApiPutRequest(command.LearningKey, new SaveCompletionRequest
                     {
                         CompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate
-                    });
-                    await earningsApiClient.Patch(request);
+                    }));
+                    break;
+                case LearningUpdateChanges.MathsAndEnglish:
+                    logger.LogInformation("Updating earnings for learner with key {LearnerKey} due to maths and english change", command.LearningKey);
+
+                    var data = new SaveMathsAndEnglishRequest();
+                    data.AddRange(command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses.Select(x => new MathsAndEnglishRequestDetail
+                    {
+                        StartDate = x.StartDate,
+                        EndDate = x.PlannedEndDate,
+                        Course = x.Course,
+                        Amount = x.Amount,
+                        WithdrawalDate = x.WithdrawalDate,
+                        PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
+                        ActualEndDate = x.CompletionDate
+                    }).ToList());
+
+                    await earningsApiClient.Patch(new SaveMathsAndEnglishApiPatchRequest(command.LearningKey, data));
                     break;
             }
         }
@@ -77,7 +93,18 @@ public class UpdateLearnerCommandHandler(
             Learner = new LearningUpdateDetails
             {
                 CompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate
-            }
+            },
+            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses.Select(x =>
+                new MathsAndEnglishDetails
+                {
+                    Amount = x.Amount,
+                    CompletionDate = x.CompletionDate,
+                    Course = x.Course,
+                    PlannedEndDate = x.PlannedEndDate,
+                    PriorLearningPercentage = x.PriorLearningPercentage,
+                    StartDate = x.StartDate,
+                    WithdrawalDate = x.WithdrawalDate
+                }).ToList()
         };
 
         return new UpdateLearningApiPutRequest(learnerKey, body);
