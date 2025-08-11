@@ -31,7 +31,6 @@ public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
             using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             httpRequestMessage.Headers.Accept.Clear();
             httpRequestMessage.Headers.Add("x-api-key", _apiConfiguration.ApiKey);
-            httpRequestMessage.Headers.Add("Content-Type", "application/json");
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             _logger.LogInformation($"CSJ BaseUrl {_httpClient.BaseAddress}");
