@@ -1,6 +1,6 @@
 ﻿Feature: GetLearners
 
-Tests designed to confirm the functionality of the GetLearners endpoint
+These tests confirm the functionality of the GetLearners endpoint
 
 Scenario: Returns first page of a list of learners
 	Given there are 100 learners in the system

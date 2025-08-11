@@ -51,7 +51,7 @@ public class WhenHandlingUpdateLearnerCommand
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.CompletionDate }, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()))
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -62,7 +62,7 @@ public class WhenHandlingUpdateLearnerCommand
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
                 It.Is<UpdateLearningApiPutRequest>(r => r.Data.Learner.CompletionDate == expectedCompletionDate)), Times.Once);
 
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveCompletionApiPutRequest>(
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveCompletionApiPatchRequest>(
             r => r.Data.CompletionDate == expectedCompletionDate)), Times.Once);
     }
 
@@ -78,7 +78,7 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()), Times.Never);
+        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()), Times.Never);
     }
 
     [Test]
@@ -104,7 +104,7 @@ public class WhenHandlingUpdateLearnerCommand
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.MathsAndEnglish }, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()))
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -129,7 +129,7 @@ public class WhenHandlingUpdateLearnerCommand
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.LearningSupport }, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()))
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act

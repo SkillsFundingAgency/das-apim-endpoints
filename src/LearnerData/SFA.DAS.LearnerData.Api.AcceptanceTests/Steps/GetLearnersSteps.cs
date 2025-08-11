@@ -1,20 +1,13 @@
 ﻿using AutoFixture;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using Newtonsoft.Json;
-using NUnit.Framework;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.SharedOuterApi.Models;
-using System.Drawing.Printing;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using static SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.GetLearnersSteps;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 
