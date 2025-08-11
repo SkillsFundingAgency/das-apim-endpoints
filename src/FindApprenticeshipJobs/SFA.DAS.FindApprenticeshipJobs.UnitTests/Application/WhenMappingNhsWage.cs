@@ -14,7 +14,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
         {
 
             // Act
-            var result = LiveVacancyMapper.GetWage(wageText);
+            var result = LiveVacancyMapper.GetNhsJobsWage(wageText);
 
             // Assert
             result.WageType.Should().Be("FixedWage");
@@ -31,7 +31,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
         public void GetWage_ShouldReturnCorrectWage_ForFixedWageInput(string wageText)
         {
             // Act
-            var result = LiveVacancyMapper.GetWage(wageText);
+            var result = LiveVacancyMapper.GetNhsJobsWage(wageText);
 
             // Assert
             result.WageType.Should().Be("FixedWage");
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
         {
 
             // Act
-            var result = LiveVacancyMapper.GetWage(wageText);
+            var result = LiveVacancyMapper.GetNhsJobsWage(wageText);
 
             // Assert
             result.WageType.Should().Be("CompetitiveSalary");

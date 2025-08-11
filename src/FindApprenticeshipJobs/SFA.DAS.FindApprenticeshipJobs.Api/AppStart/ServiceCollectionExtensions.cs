@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Services;
@@ -24,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
         services.AddTransient<INhsJobsApiClient, NhsJobsApiClient>();
+        services.AddTransient<ICivilServiceJobsApiClient, CivilServiceJobsApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
