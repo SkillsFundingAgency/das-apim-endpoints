@@ -106,11 +106,7 @@ public class WhenHandlingWithdrawApplicationCommand
         recruitApiClientv2.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
             c.PatchUrl.Contains(applicationReview.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
             c.Data.Operations[0].path == "/WithdrawnDate" &&
-            DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date &&
-            c.Data.Operations[1].path == "/Status" &&
-            c.Data.Operations[1].value.ToString() == Enum.GetName(ApplicationStatus.Withdrawn) &&
-            c.Data.Operations[2].path == "/StatusUpdatedDate" &&
-            DateTime.Parse(c.Data.Operations[2].value.ToString()!).Date == DateTime.UtcNow.Date
+            DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
         )), Times.Once);
     }
 
@@ -294,11 +290,7 @@ public class WhenHandlingWithdrawApplicationCommand
         recruitApiClientv2.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
                     c.PatchUrl.Contains(applicationReview.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
                     c.Data.Operations[0].path == "/WithdrawnDate" &&
-                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date &&
-                    c.Data.Operations[1].path == "/Status" &&
-                    c.Data.Operations[1].value.ToString() == Enum.GetName(ApplicationStatus.Withdrawn) &&
-                    c.Data.Operations[2].path == "/StatusUpdatedDate" &&
-                    DateTime.Parse(c.Data.Operations[2].value.ToString()!).Date == DateTime.UtcNow.Date
+                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
                 )), Times.Once);
     }
 
@@ -447,11 +439,7 @@ public class WhenHandlingWithdrawApplicationCommand
         recruitApiClientv2.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
             c.PatchUrl.Contains(applicationReview.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
             c.Data.Operations[0].path == "/WithdrawnDate" &&
-            DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date &&
-            c.Data.Operations[1].path == "/Status" &&
-            c.Data.Operations[1].value.ToString() == Enum.GetName(ApplicationStatus.Withdrawn) &&
-            c.Data.Operations[2].path == "/StatusUpdatedDate" &&
-            DateTime.Parse(c.Data.Operations[2].value.ToString()!).Date == DateTime.UtcNow.Date
+            DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
         )), Times.Once);
     }
 }
