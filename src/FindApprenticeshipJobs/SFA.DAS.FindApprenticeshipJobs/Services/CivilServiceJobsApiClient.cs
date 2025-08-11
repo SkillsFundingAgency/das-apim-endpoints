@@ -29,13 +29,29 @@ public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
         try
         {
             using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
-            httpRequestMessage.Headers.TryAddWithoutValidation("x-api-key", _apiConfiguration.ApiKey);
+            httpRequestMessage.Headers.Accept.Clear();
+            httpRequestMessage.Headers.Add("x-api-key", _apiConfiguration.ApiKey);
+            httpRequestMessage.Headers.Add("Content-Type", "application/json");
             httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            _logger.LogInformation($" CSJ GET {request.GetUrl}");
+            _logger.LogInformation($"CSJ BaseUrl {_httpClient.BaseAddress}");
+            _logger.LogInformation($"CSJ GET {request.GetUrl}");
             _logger.LogInformation($"CSJ x-api-key: {_apiConfiguration.ApiKey}");
 
+            // General headers
+            foreach (var header in httpRequestMessage.Headers)
+            {
+                _logger.LogInformation($"CSJ Request Headers: {header.Key}: {string.Join(", ", header.Value)}");
+            }
 
+            // Content headers (if any)
+            if (httpRequestMessage.Content != null)
+            {
+                foreach (var header in httpRequestMessage.Content.Headers)
+                {
+                    _logger.LogInformation($"CSJ Request Header: {header.Key}: {string.Join(", ", header.Value)}");
+                }
+            }
 
             using var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
             var stringResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -51,12 +67,16 @@ public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
                 .Concat(response.Content.Headers)
                 .ToDictionary(h => h.Key, h => h.Value);
 
-            return new ApiResponse<string>(
+            var apiResponse = new ApiResponse<string>(
                 response.IsSuccessStatusCode ? stringResponse : null,
                 response.StatusCode,
                 response.IsSuccessStatusCode ? null : stringResponse,
                 headers
             );
+
+            apiResponse.RawContent = stringResponse;
+
+            return apiResponse;
         }
         catch (Exception ex)
         {
