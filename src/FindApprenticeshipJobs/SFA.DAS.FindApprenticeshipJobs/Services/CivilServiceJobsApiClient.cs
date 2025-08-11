@@ -3,16 +3,22 @@ using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using System.Net.Http.Headers;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services;
 public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
 {
+    private readonly ILogger<CivilServiceJobsApiClient> _logger;
     private readonly CivilServiceJobsConfiguration _apiConfiguration;
     private readonly HttpClient _httpClient;
 
-    public CivilServiceJobsApiClient(IHttpClientFactory httpClientFactory,
+    public CivilServiceJobsApiClient(
+        ILogger<CivilServiceJobsApiClient> logger,
+        IHttpClientFactory httpClientFactory,
         CivilServiceJobsConfiguration apiConfiguration)
     {
+        _logger = logger;
         _apiConfiguration = apiConfiguration;
         _httpClient = httpClientFactory.CreateClient();
         _httpClient.BaseAddress = new Uri(apiConfiguration.Url);
@@ -20,35 +26,46 @@ public class CivilServiceJobsApiClient : ICivilServiceJobsApiClient
 
     public async Task<ApiResponse<string>> GetWithResponseCode(IGetApiRequest request)
     {
-        using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
-        httpRequestMessage.Headers.TryAddWithoutValidation("X-API-Key", Guid.NewGuid().ToString());
-        httpRequestMessage.Headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
-
-        using var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
-        var stringResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-        string? errorContent = null;
-        string? responseBody = null;
-
-        if (IsNot200RangeResponseCode(response.StatusCode))
+        try
         {
-            errorContent = stringResponse;
+            using var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            httpRequestMessage.Headers.TryAddWithoutValidation("x-api-key", _apiConfiguration.ApiKey);
+            httpRequestMessage.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            _logger.LogInformation($" CSJ GET {request.GetUrl}");
+            _logger.LogInformation($"CSJ x-api-key: {_apiConfiguration.ApiKey}");
+
+
+
+            using var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            var stringResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+            _logger.LogInformation("CSJ Response headers:");
+            foreach (var header in response.Headers)
+            {
+                _logger.LogInformation($"CSJ {header.Key}: {string.Join(", ", header.Value)}");
+            }
+            _logger.LogInformation($"CSJ Body: {stringResponse}");
+
+            var headers = response.Headers
+                .Concat(response.Content.Headers)
+                .ToDictionary(h => h.Key, h => h.Value);
+
+            return new ApiResponse<string>(
+                response.IsSuccessStatusCode ? stringResponse : null,
+                response.StatusCode,
+                response.IsSuccessStatusCode ? null : stringResponse,
+                headers
+            );
         }
-        else if (!string.IsNullOrWhiteSpace(stringResponse))
+        catch (Exception ex)
         {
-            responseBody = stringResponse;
+            return new ApiResponse<string>(
+                null,
+                HttpStatusCode.InternalServerError,
+                ex.Message,
+                new Dictionary<string, IEnumerable<string>>()
+            );
         }
-
-        return new ApiResponse<string>(
-            responseBody,
-            response.StatusCode,
-            errorContent,
-            response.Headers.ToDictionary(h => h.Key, h => h.Value)
-        );
-    }
-
-    private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
-    {
-        return !((int)statusCode >= 200 && (int)statusCode <= 299);
     }
 }
