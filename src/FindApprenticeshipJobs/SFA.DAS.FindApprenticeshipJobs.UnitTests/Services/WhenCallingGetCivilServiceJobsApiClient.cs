@@ -7,6 +7,7 @@ using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services;
 [TestFixture]
@@ -41,9 +42,12 @@ public class WhenCallingGetCivilServiceJobsApiClient
 
         var client = new HttpClient(httpMessageHandler.Object);
         var clientFactory = new Mock<IHttpClientFactory>();
-        
+        var logger = new Mock<ILogger<CivilServiceJobsApiClient>>();
+
+
+
         clientFactory.Setup(_ => _.CreateClient(It.IsAny<string>())).Returns(client);
-        var actualClient = new CivilServiceJobsApiClient(clientFactory.Object, config);
+        var actualClient = new CivilServiceJobsApiClient(logger.Object, clientFactory.Object, config);
 
         //Act
         var actual = await actualClient.GetWithResponseCode(getTestRequest);
