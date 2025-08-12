@@ -13,16 +13,17 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
         public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
         public bool IsDisabilityConfident { get; set; }
         public Candidate CandidateDetails { get; set; }
-        public DateTime? WithdrawnDate { get; set; }
         public DateTime? MigrationDate { get; set; }
+        public DateTime? WithdrawnDate { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public EducationHistorySection EducationHistory { get; set; }
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
+        public string ApplicationStatus { get; set; }
         public VacancyDetailsSection VacancyDetails { get; set; }
         public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
         public WorkHistorySection WorkHistory { get; set; }
         public EmploymentLocationSection? EmploymentLocation { get; set; }
-        public string ApplicationStatus { get; set; }
+        
         
 
         public record VacancyDetailsSection

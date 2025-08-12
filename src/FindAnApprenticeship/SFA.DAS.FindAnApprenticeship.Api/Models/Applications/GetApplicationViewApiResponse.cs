@@ -1,5 +1,4 @@
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplication;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using System;
