@@ -23,6 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
         public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
         public WorkHistorySection WorkHistory { get; set; }
         public EmploymentLocationSection? EmploymentLocation { get; set; }
+
         public record VacancyDetailsSection
         {
             public string Title { get; set; }
