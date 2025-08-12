@@ -11,7 +11,9 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
 public class WhenHandlingGetFm36Command
 {
+#pragma warning disable CS8618 // initialised in setup
     private GetFm36CommandTestFixture _testFixture;
+#pragma warning restore CS8618 // initialised in setup
 
     [SetUp]
     public async Task SetUp()

@@ -7,6 +7,7 @@ using static SFA.DAS.LearnerData.Application.Fm36.EarningsFM36Constants;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
+#pragma warning disable CS8602 // Defrerred nullability warnings for test cases
 public class WhenHandlingGetFm36Command_LearningDeliveries
 {
     [Test]
@@ -641,3 +642,4 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
         learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
     }
 }
+#pragma warning restore CS8602 // Defrerred nullability warnings for test cases
