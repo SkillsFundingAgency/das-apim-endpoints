@@ -15,7 +15,6 @@ public record GetApplicationViewApiResponse
     public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     public bool IsDisabilityConfident { get; set; }
     public CandidateDetailsSection Candidate { get; set; }
-    public DateTime? WithdrawnDate { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public EducationHistorySection EducationHistory { get; set; }
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
@@ -24,6 +23,7 @@ public record GetApplicationViewApiResponse
     public WorkHistorySection WorkHistory { get; set; }
     public EmploymentLocationSection? EmploymentLocation { get; set; }
     public string ApplicationStatus { get; set; }
+    public DateTime? WithdrawnDate { get; set; }
     public DateTime? MigrationDate { get; set; }
 
     public static implicit operator GetApplicationViewApiResponse(GetApplicationViewQueryResult source)

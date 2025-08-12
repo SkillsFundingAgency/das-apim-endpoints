@@ -13,6 +13,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
         public ApprenticeshipTypes? ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
         public bool IsDisabilityConfident { get; set; }
         public Candidate CandidateDetails { get; set; }
+        public DateTime? WithdrawnDate { get; set; }
+        public DateTime? MigrationDate { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public EducationHistorySection EducationHistory { get; set; }
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
@@ -21,8 +23,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
         public WorkHistorySection WorkHistory { get; set; }
         public EmploymentLocationSection? EmploymentLocation { get; set; }
         public string ApplicationStatus { get; set; }
-        public DateTime? WithdrawnDate { get; set; }
-        public DateTime? MigrationDate { get; set; }
+        
 
         public record VacancyDetailsSection
         {
