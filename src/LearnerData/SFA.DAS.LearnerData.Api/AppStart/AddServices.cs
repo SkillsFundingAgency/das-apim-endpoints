@@ -9,7 +9,7 @@ namespace SFA.DAS.LearnerData.Api.AppStart;
 
 public static class AddApiServicesExtension
 {
-    public static void AddApiServices(this IServiceCollection services)
+    public static void AddServices(this IServiceCollection services)
     {
         services.AddHttpClient();
         services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
@@ -17,5 +17,6 @@ public static class AddApiServicesExtension
         services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
         services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<IEarningsApiClient<EarningsApiConfiguration>, EarningsApiClient>();
+        services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
     }
 }

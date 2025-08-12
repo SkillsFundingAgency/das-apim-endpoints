@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
-using SFA.DAS.LearnerData.Application;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
 using SFA.DAS.NServiceBus.Configuration;
@@ -79,7 +79,8 @@ builder.Services.AddConfigurationOptions(configuration);
 
 builder.Services.AddHealthChecks()
     .AddCheck<LearningApiHealthCheck>(LearningApiHealthCheck.HealthCheckResultDescription)
-    .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription);
+    .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription)
+    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription);
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
@@ -89,7 +90,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 
-builder.Services.AddApiServices();
+builder.Services.AddServices();
 
 var app = builder.Build();
 
@@ -110,3 +111,5 @@ app.UseSwagger()
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }
