@@ -3,12 +3,12 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Earnings.Helpers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
@@ -36,17 +36,17 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
 {
     const int SimplificationEarningsPlatform = 2;
 
-    private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
+    private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
     private readonly ILogger<GetAllEarningsQueryHandler> _logger;
 
-    public GetAllEarningsQueryHandler(IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
+    public GetAllEarningsQueryHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
         ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
         ILogger<GetAllEarningsQueryHandler> logger)
     {
-        _apprenticeshipsApiClient = apprenticeshipsApiClient;
+        _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
         _collectionCalendarApiClient = collectionCalendarApiClient;
         _logger = logger;
@@ -56,15 +56,15 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
     {
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 
-        _apprenticeshipsApiClient.GenerateServiceToken("Earnings");
+        _learningApiClient.GenerateServiceToken("Earnings");
         
-        var apprenticeshipsDataTask = _apprenticeshipsApiClient.Get<GetApprenticeshipsResponse>(new GetApprenticeshipsRequest { Ukprn = request.Ukprn, CollectionYear = request.CollectionYear, CollectionPeriod = request.CollectionPeriod });
+        var learningDataTask = _learningApiClient.Get<GetLearningsResponse>(new GetLearningsRequest { Ukprn = request.Ukprn, CollectionYear = request.CollectionYear, CollectionPeriod = request.CollectionPeriod });
         var earningsDataTask = _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn, request.CollectionYear, request.CollectionPeriod));
         var currentAcademicYearTask = _collectionCalendarApiClient.Get<GetAcademicYearsResponse>(new GetAcademicYearByYearRequest(request.CollectionYear));
 
-        await Task.WhenAll(apprenticeshipsDataTask, earningsDataTask, currentAcademicYearTask);
+        await Task.WhenAll(learningDataTask, earningsDataTask, currentAcademicYearTask);
 
-        var apprenticeshipsData = apprenticeshipsDataTask.Result;
+        var learningData = learningDataTask.Result;
         var earningsData = earningsDataTask.Result;
         var currentAcademicYear = currentAcademicYearTask.Result;
 
@@ -74,52 +74,65 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             currentAcademicYear = AcademicYearFallbackHelper.GetFallbackAcademicYearResponse(request.CollectionYear);
         }
 
-        if (!IsDataReturnedValid(request.Ukprn, apprenticeshipsData, earningsData))
+        if (!IsDataReturnedValid(request.Ukprn, learningData, earningsData))
             return new GetAllEarningsQueryResult { FM36Learners = [] };
 
-        _logger.LogInformation("Found {apprenticeshipsCount} apprenticeships, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", apprenticeshipsData.Apprenticeships.Count, earningsData.Count, request.Ukprn);
+        _logger.LogInformation("Found {learningsCount} learnings, {earningsApprenticeshipsCount} earnings apprenticeships, for provider {ukprn}", learningData.Learnings.Count, earningsData.Count, request.Ukprn);
         _logger.LogInformation($"Academic year {currentAcademicYear.AcademicYear}: {currentAcademicYear.StartDate:yyyy-MM-dd} - {currentAcademicYear.EndDate:yyyy-MM-dd}");
 
         var joinedApprenticeships = new List<JoinedEarningsApprenticeship>();
 
-        foreach (var apprenticeship in apprenticeshipsData.Apprenticeships)
+        foreach (var learning in learningData.Learnings)
         {
             // Find matching entries in earningsData
-            var matchingEarnings = earningsData.FirstOrDefault(e => e.Key == apprenticeship.Key);
+            var matchingEarnings = earningsData.FirstOrDefault(e => e.Key == learning.Key);
 
             if (matchingEarnings != null)
             {
-                _logger.LogInformation($"Processing apprenticeship with key: {apprenticeship.Key}");
-                joinedApprenticeships.Add(new JoinedEarningsApprenticeship(apprenticeship, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
+                _logger.LogInformation($"Processing learning with key: {learning.Key}");
+                joinedApprenticeships.Add(new JoinedEarningsApprenticeship(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
             }
         }
 
         var result = new GetAllEarningsQueryResult
         {
-            FM36Learners = joinedApprenticeships
+            FM36Learners = TransformToFm36Learners(joinedApprenticeships, currentAcademicYear, request.CollectionPeriod)
+        };
+
+        return result;
+    }
+
+    private FM36Learner[] TransformToFm36Learners(
+        List<JoinedEarningsApprenticeship> joinedApprenticeships,
+        GetAcademicYearsResponse currentAcademicYear,
+        byte collectionPeriod)
+    {
+        FM36Learner[] result = joinedApprenticeships
             .Select(joinedApprenticeship =>
             {
-                var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear)
+                try
+                {
+                    var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedApprenticeship.Episodes, currentAcademicYear)
                     .ToList();
 
-                //If there are no price episodes for the requested academic year, create one, using the values of the first actual episode
-                if (priceEpisodesForAcademicYear.Count == 0)
-                {
-                    priceEpisodesForAcademicYear =
-                    [
-                        new JoinedPriceEpisode(joinedApprenticeship.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear(), true)
-                    ];
-                }
+                    //If there are no price episodes for the requested academic year, create one, using the values of the first actual episode
+                    if (priceEpisodesForAcademicYear.Count == 0)
+                    {
+                        priceEpisodesForAcademicYear =
+                        [
+                            new JoinedPriceEpisode(joinedApprenticeship.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear(), true)
+                        ];
+                    }
 
-                return new FM36Learner
-                {
-                    ULN = long.Parse(joinedApprenticeship.Uln),
-                    LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
-                    EarningsPlatform = SimplificationEarningsPlatform,
-                    PriceEpisodes = GetPriceEpisodes(joinedApprenticeship, priceEpisodesForAcademicYear, currentAcademicYear, request.CollectionPeriod),
-                    LearningDeliveries =
-                    [
-                        new LearningDelivery
+                    return new FM36Learner
+                    {
+                        ULN = long.Parse(joinedApprenticeship.Uln),
+                        LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
+                        EarningsPlatform = SimplificationEarningsPlatform,
+                        PriceEpisodes = GetPriceEpisodes(joinedApprenticeship, priceEpisodesForAcademicYear, currentAcademicYear, collectionPeriod),
+                        LearningDeliveries =
+                        [
+                            new LearningDelivery
                         {
                             AimSeqNumber = 1,
                             LearningDeliveryValues = joinedApprenticeship.GetLearningDelivery(currentAcademicYear),
@@ -128,12 +141,19 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                             LearningDeliveryPeriodisedTextValues =
                                 joinedApprenticeship.GetLearningDeliveryPeriodisedTextValues()
                         }
-                    ],
-                    HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
-                };
+                        ],
+                        HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
+                    };
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedApprenticeship.Uln);
+                    return null;
+                }
+
             })
-            .ToArray()
-        };
+            .Where(learner => learner != null)
+            .ToArray()!;
 
         return result;
     }
@@ -161,9 +181,9 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
             }).ToList();
     }
 
-    private bool IsDataReturnedValid(long ukprn, GetApprenticeshipsResponse apprenticeshipsData, GetFm36DataResponse earningsData)
+    private bool IsDataReturnedValid(long ukprn, GetLearningsResponse learningsData, GetFm36DataResponse earningsData)
     {
-        if(apprenticeshipsData == null || apprenticeshipsData.Apprenticeships == null || !apprenticeshipsData.Apprenticeships.Any())
+        if(learningsData == null || learningsData.Learnings == null || !learningsData.Learnings.Any())
         {
             _logger.LogWarning("No apprenticeships data returned for {ukprn}", ukprn);
             return false;

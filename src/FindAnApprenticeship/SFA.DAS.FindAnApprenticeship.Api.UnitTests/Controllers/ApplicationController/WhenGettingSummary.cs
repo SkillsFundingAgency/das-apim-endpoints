@@ -1,12 +1,7 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
-using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,5 +37,9 @@ public class WhenGettingSummary
         actualObject!.IsDisabilityConfident.Should().Be(queryResult.IsDisabilityConfident); 
         actualObject!.EducationHistory.Should().BeEquivalentTo(queryResult.EducationHistory);
         actualObject!.InterviewAdjustments.Should().BeEquivalentTo(queryResult.InterviewAdjustments);
+        actualObject!.ClosedDate.Should().Be(queryResult.ClosedDate);
+        actualObject!.ClosingDate.Should().Be(queryResult.ClosingDate);
+        actualObject!.VacancyTitle.Should().Be(queryResult.VacancyTitle);
+        actualObject!.EmployerName.Should().Be(queryResult.EmployerName);
     }
 }

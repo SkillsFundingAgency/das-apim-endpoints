@@ -29,6 +29,7 @@ public class WhenMappingLearnerRecords
         result[0].FirstName.Should().Be(inputDataRecord.FirstName);
         result[0].LastName.Should().Be(inputDataRecord.LastName);
         result[0].Uln.Should().Be(inputDataRecord.Uln);
+        result[0].StartDate.Should().Be(inputDataRecord.StartDate);
     }
 
     [Test, MoqAutoData]

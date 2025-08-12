@@ -79,8 +79,6 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure
                 responseBody = JsonSerializer.Deserialize<TResponse>(json, options);
             }
 
-            var headers = response.Headers;
-
             var getWithResponseCode = new ApiResponse<TResponse>(responseBody, response.StatusCode, errorContent, GetHeaders(response));
 
             return getWithResponseCode;

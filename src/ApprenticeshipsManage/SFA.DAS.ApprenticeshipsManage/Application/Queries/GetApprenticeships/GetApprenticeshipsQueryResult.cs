@@ -2,7 +2,7 @@
 using SFA.DAS.ApprenticeshipsManage.InnerApi.Responses;
 
 namespace SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
-public class GetApprenticeshipsQueryResult : PagedQueryResult<Apprenticeship>
+public class GetApprenticeshipsQueryResult : PagedQueryResult<Learning>
 {
 
     public static implicit operator GetApprenticeshipsQueryResult(PagedApprenticeshipsResponse source)

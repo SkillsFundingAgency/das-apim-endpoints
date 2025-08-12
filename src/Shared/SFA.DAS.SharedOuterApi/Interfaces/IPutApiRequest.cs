@@ -2,11 +2,9 @@ using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
 {
-    public interface IPutApiRequest : IBaseApiRequest
+    public interface IPutApiRequest : IPutApiRequest<object>
     {
-        [JsonIgnore]
-        string PutUrl { get; }
-        object Data { get; set; }
+
     }
 
     public interface IPutApiRequest<TData> : IBaseApiRequest

@@ -29,7 +29,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             _mockMediator = new Mock<IMediator>();
             _sut = new ApprenticeshipController(
                 Mock.Of<ILogger<ApprenticeshipController>>(),
-                Mock.Of<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>(),
+                Mock.Of<ILearningApiClient<LearningApiConfiguration>>(),
                 Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(),
                 _mockMediator.Object);
         }

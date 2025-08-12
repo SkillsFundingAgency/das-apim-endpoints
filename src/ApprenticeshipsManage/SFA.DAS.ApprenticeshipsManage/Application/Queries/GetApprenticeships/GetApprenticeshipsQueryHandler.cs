@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeshipsManage.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
 
 public class GetApprenticeshipsQueryHandler(
-    IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipApiClient)
+    ILearningApiClient<LearningApiConfiguration> apprenticeshipApiClient)
     : IRequestHandler<GetApprenticeshipsQuery, GetApprenticeshipsQueryResult>
 {
     public async Task<GetApprenticeshipsQueryResult> Handle(GetApprenticeshipsQuery request, CancellationToken cancellationToken)
@@ -15,7 +15,7 @@ public class GetApprenticeshipsQueryHandler(
         apprenticeshipApiClient.GenerateServiceToken("ApprenticeshipsManage");
 
         var applicationsResponse = await apprenticeshipApiClient.Get<PagedApprenticeshipsResponse>(
-            new GetAllApprenticeshipsRequest(
+            new GetAllLearningsRequest(
                 request.Ukprn,
                 request.AcademicYear,
                 request.Page,

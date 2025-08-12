@@ -16,13 +16,16 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 
 public class WithdrawApplicationCommandHandler(
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, 
     IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client,
     INotificationService notificationService,
     IVacancyService vacancyService,
     EmailEnvironmentHelper emailEnvironmentHelper) : IRequestHandler<WithdrawApplicationCommand, bool>
@@ -44,6 +47,23 @@ public class WithdrawApplicationCommandHandler(
         {
             return false;
         }
+        
+        //need to get the application from recruit v2 for the Id. 
+        var applicationReview =
+            await recruitApiV2Client.GetWithResponseCode<ApplicationReview>(
+                new GetApplicationReviewByApplicationIdRequest(request.ApplicationId));
+
+        var patchTask = Task.FromResult(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
+
+        if (applicationReview.StatusCode == HttpStatusCode.OK)
+        {
+            var jsonPatchApplicationReviewDocument = new JsonPatchDocument<ApplicationReview>();
+            jsonPatchApplicationReviewDocument.Replace(x => x.WithdrawnDate, DateTime.UtcNow);
+            var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewApiRequest(applicationReview.Body.Id, jsonPatchApplicationReviewDocument);
+
+            patchTask = recruitApiV2Client.PatchWithResponseCode(patchApplicationReviewApiRequest);    
+        }
+        
 
         var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
         jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Withdrawn);
@@ -57,7 +77,8 @@ public class WithdrawApplicationCommandHandler(
 
         await Task.WhenAll(
             candidateApiClient.PatchWithResponseCode(patchRequest),
-            notificationService.Send(new SendEmailCommand(withDrawnApplicationEmail.TemplateId, withDrawnApplicationEmail.RecipientAddress, withDrawnApplicationEmail.Tokens))
+            notificationService.Send(new SendEmailCommand(withDrawnApplicationEmail.TemplateId, withDrawnApplicationEmail.RecipientAddress, withDrawnApplicationEmail.Tokens)),
+            patchTask
         );
 
         return true;

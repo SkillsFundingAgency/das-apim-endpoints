@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
+﻿using MediatR;
+using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -17,7 +15,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply;
 
@@ -43,8 +40,9 @@ public class ApplyCommandHandler(
 
         var putApplicationApiRequestData = new PutApplicationApiRequest.PutApplicationApiRequestData
         {
-            CandidateId = request.CandidateId,
             AdditionalQuestions = additionalQuestions,
+            ApprenticeshipType = result.ApprenticeshipType,
+            CandidateId = request.CandidateId,
             IsAdditionalQuestion1Complete = string.IsNullOrEmpty(result.AdditionalQuestion1) ? (short)4 : (short)0,
             IsAdditionalQuestion2Complete = string.IsNullOrEmpty(result.AdditionalQuestion2) ? (short)4 : (short)0,
             IsDisabilityConfidenceComplete = result.IsDisabilityConfident ? (short)0 : (short)4,

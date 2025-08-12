@@ -3,6 +3,13 @@ using System.Globalization;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests
 {
+
+    public class BulkUploadAddDraftApprenticeshipExtendedRequest : BulkUploadAddDraftApprenticeshipRequest
+    {
+        public int? MinimumAgeAtApprenticeshipStart { get; set; }
+        public int? MaximumAgeAtApprenticeshipStart { get; set; }
+    }
+
     public class BulkUploadAddDraftApprenticeshipRequest
     {
         public string EndDateAsString { get; set; }
