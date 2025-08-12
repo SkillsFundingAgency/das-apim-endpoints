@@ -1,4 +1,7 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
@@ -6,24 +9,20 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetProviderSummary;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Assessor;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Providers.Queries;
 public class WhenGettingProviderSummary
 {
     [Test, MoqAutoData]
-    public async Task Then_Gets_ProviderSummary_Check_Results_From_RoatpApi(
+    public async Task Then_Gets_ProviderSummary_From_RoatpApi(
         int ukprn,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
         [Greedy] GetProviderSummaryQueryHandler handler,
@@ -60,7 +59,7 @@ public class WhenGettingProviderSummary
 
 
     [Test, MoqAutoData]
-    public async Task Then_Gets_ProviderSummary_Check_Results_From_Courses(
+    public async Task Then_Gets_Provider_Courses(
        int ukprn,
        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
        [Greedy] GetProviderSummaryQueryHandler handler,
@@ -84,11 +83,10 @@ public class WhenGettingProviderSummary
                 .Excluding(c => c.IsApprovedByRegulator)
                 .Excluding(c => c.ApprovalBody)
             );
-
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Gets_ProviderSummary_Check_Results_From_Assessor(
+    public async Task Then_Gets_Provider_Assessment_Summary(
      int ukprn,
      [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> assessorsApiClient,
      [Greedy] GetProviderSummaryQueryHandler handler,
@@ -111,46 +109,23 @@ public class WhenGettingProviderSummary
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Gets_ProviderSummary_Check_Results_From_EmployerFeedback(
+    public async Task Then_Gets_Provider_Feedback(
         int ukprn,
-        [Frozen] Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> employerFeedbackApiClient,
+        [Frozen] Mock<ICachedFeedbackService> cachedFeedbackService,
         [Greedy] GetProviderSummaryQueryHandler handler,
         EmployerFeedbackAnnualDetails feedbackResponse,
+        ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
         CancellationToken cancellationToken
 )
     {
         var query = new GetProviderSummaryQuery(ukprn);
 
-        employerFeedbackApiClient.Setup(x =>
-                x.Get<EmployerFeedbackAnnualDetails>(
-                    It.Is<GetEmployerFeedbackDetailsAnnualRequest>(c => c.GetUrl.Contains(ukprn.ToString()))
-                )
-            )
-            .ReturnsAsync(feedbackResponse);
+        cachedFeedbackService.Setup(x =>
+                x.GetProviderFeedback(ukprn))
+            .ReturnsAsync((feedbackResponse, apprenticeFeedbackResponse));
 
         var sut = await handler.Handle(query, cancellationToken);
         sut.AnnualEmployerFeedbackDetails.Should().BeEquivalentTo(feedbackResponse.AnnualEmployerFeedbackDetails);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Gets_ProviderSummary_Check_Results_From_ApprenticeFeedback(
-       int ukprn,
-       [Frozen] Mock<IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration>> apprenticeFeedbackApiClient,
-       [Greedy] GetProviderSummaryQueryHandler handler,
-       ApprenticeFeedbackAnnualDetails feedbackResponse,
-       CancellationToken cancellationToken
-)
-    {
-        var query = new GetProviderSummaryQuery(ukprn);
-
-        apprenticeFeedbackApiClient.Setup(x =>
-                x.Get<ApprenticeFeedbackAnnualDetails>(
-                    It.Is<GetApprenticeFeedbackDetailsAnnualRequest>(c => c.GetUrl.Contains(ukprn.ToString()))
-                )
-            )
-            .ReturnsAsync(feedbackResponse);
-
-        var sut = await handler.Handle(query, cancellationToken);
-        sut.AnnualApprenticeFeedbackDetails.Should().BeEquivalentTo(feedbackResponse.AnnualApprenticeFeedbackDetails);
+        sut.AnnualApprenticeFeedbackDetails.Should().BeEquivalentTo(apprenticeFeedbackResponse.AnnualApprenticeFeedbackDetails);
     }
 }

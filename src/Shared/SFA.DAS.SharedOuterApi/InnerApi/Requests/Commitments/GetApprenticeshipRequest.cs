@@ -1,16 +1,10 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+
+public class GetApprenticeshipRequest(long apprenticeshipId) : IGetApiRequest
 {
-    public class GetApprenticeshipRequest : IGetApiRequest
-    {
-        public readonly long ApprenticeshipId;
+    public readonly long ApprenticeshipId = apprenticeshipId;
 
-        public GetApprenticeshipRequest(long apprenticeshipId)
-        {
-            ApprenticeshipId = apprenticeshipId;
-        }
-
-        public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}";
-    }
+    public string GetUrl => $"api/apprenticeships/{ApprenticeshipId}";
 }
