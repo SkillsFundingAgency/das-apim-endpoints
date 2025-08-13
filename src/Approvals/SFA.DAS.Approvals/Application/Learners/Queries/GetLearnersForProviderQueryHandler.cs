@@ -88,7 +88,9 @@ public class GetLearnersForProviderQueryHandler(
                 request.SortField,
                 request.SortDescending,
                 request.Page,
-                request.PageSize
+                request.PageSize, 
+                request.StartMonth,
+                request.StartYear
             ));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))

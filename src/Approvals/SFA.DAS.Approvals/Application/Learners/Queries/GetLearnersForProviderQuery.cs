@@ -12,5 +12,7 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries
         public bool SortDescending { get; set; }
         public int Page { get; set; }
         public int? PageSize { get; set; }
+        public int? StartMonth { get; set; }
+        public int StartYear { get; set; }
     }
 }
