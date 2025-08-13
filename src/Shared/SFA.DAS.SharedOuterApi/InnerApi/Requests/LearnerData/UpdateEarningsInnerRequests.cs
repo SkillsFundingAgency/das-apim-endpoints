@@ -47,3 +47,24 @@ public class MathsAndEnglishRequestDetail
     public int? PriorLearningAdjustmentPercentage { get; set; }
     public DateTime? ActualEndDate { get; set; }
 }
+
+public class SaveLearningSupportApiPutRequest : IPatchApiRequest<SaveLearningSupportRequest>
+{
+    public string PatchUrl { get; }
+
+    public SaveLearningSupportRequest Data { get; set; }
+
+    public SaveLearningSupportApiPutRequest(Guid learningKey, SaveLearningSupportRequest data)
+    {
+        PatchUrl = $"apprenticeship/{learningKey.ToString()}/learningSupport";
+        Data = data;
+    }
+}
+
+public class SaveLearningSupportRequest : List<LearningSupportPaymentDetail> { }
+
+public class LearningSupportPaymentDetail
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+}
