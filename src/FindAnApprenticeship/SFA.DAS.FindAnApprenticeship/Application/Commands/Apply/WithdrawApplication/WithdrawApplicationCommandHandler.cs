@@ -59,8 +59,6 @@ public class WithdrawApplicationCommandHandler(
         {
             var jsonPatchApplicationReviewDocument = new JsonPatchDocument<ApplicationReview>();
             jsonPatchApplicationReviewDocument.Replace(x => x.WithdrawnDate, DateTime.UtcNow);
-            jsonPatchApplicationReviewDocument.Replace(x => x.Status, Enum.GetName(ApplicationStatus.Withdrawn));
-            jsonPatchApplicationReviewDocument.Replace(x => x.StatusUpdatedDate, DateTime.UtcNow);
             var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewApiRequest(applicationReview.Body.Id, jsonPatchApplicationReviewDocument);
 
             patchTask = recruitApiV2Client.PatchWithResponseCode(patchApplicationReviewApiRequest);    
