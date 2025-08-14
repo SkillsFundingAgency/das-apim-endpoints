@@ -1,0 +1,62 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using RestEase;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
+using SFA.DAS.EmployerFeedback.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Net;
+using System.Threading.Tasks;
+
+namespace SFA.DAS.EmployerFeedback.Api.Controllers
+{
+
+    [Route("commitments")]
+    public class CommitmentsController : Controller
+    {
+        private readonly IMediator _mediator;
+        private readonly ILogger<CommitmentsController> _logger;
+        //ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
+
+        public CommitmentsController(IMediator mediator, ILogger<CommitmentsController> logger)
+        {
+            _logger = logger;
+            _mediator = mediator;
+        }
+
+        [HttpGet("{providerId}")]
+        public async Task<IActionResult> GetProvider([Path]int providerId)
+        {
+            try
+            {
+                _logger.LogInformation("Getting providers");
+                if (providerId <= 0)
+                {
+                    _logger.LogWarning("No provider found for providerId: {ProviderId}", providerId);
+                    return NotFound();
+                }
+
+                var providerResponse = await _mediator.Send(new GetProviderQuery
+                {
+                    ProviderId = providerId
+                });
+
+                if (providerResponse == null)
+                {
+                    _logger.LogWarning("No provider found for providerId: {ProviderId}", providerId);
+                    return NotFound();
+                }
+
+                return Ok(providerResponse);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, $"Error attempting to retrieve provider");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+
+        }
+    }
+}
