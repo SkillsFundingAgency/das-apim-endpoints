@@ -1,0 +1,6 @@
+@SFA.DAS.Admin.Roatp.Api_HostAddress = http://localhost:5138
+
+GET {{SFA.DAS.Admin.Roatp.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
