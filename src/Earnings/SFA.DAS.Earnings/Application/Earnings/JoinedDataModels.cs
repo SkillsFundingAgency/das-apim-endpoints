@@ -182,7 +182,8 @@ public class JoinedPriceEpisode
             {
                 AcademicYear = x.AcademicYear,
                 DeliveryPeriod = x.DeliveryPeriod,
-                Amount = x.Amount
+                Amount = x.Amount,
+                InstalmentType = Enum.Parse<InstalmentType>(x.InstalmentType)
             })
             .OrderBy(x => x.AcademicYear)
             .ThenBy(x => x.DeliveryPeriod)
@@ -227,12 +228,20 @@ public class JoinedPriceEpisode
     }
 }
 
-[DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}")]
+[DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}, InstalmentType: {InstalmentType}")]
 public class JoinedInstalment
 {
     public short AcademicYear { get; set; }
     public byte DeliveryPeriod { get; set; }
     public decimal Amount { get; set; }
+    public InstalmentType InstalmentType { get; set; }
+}
+
+public enum InstalmentType
+{
+    Regular = 0,
+    Completion = 1,
+    Balancing = 2
 }
 
 public class JoinedAdditionalPayment
