@@ -81,9 +81,14 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
         }
 
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             return _apiClient.PutWithResponseCode<TResponse>(request);
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+        {
+            return _apiClient.PutWithResponseCode<TData, TResponse>(request);
         }
 
         // Method Obsolete
