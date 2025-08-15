@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFeedback.Api.Controllers
 {
-
+    [ApiController]
     [Route("commitments")]
     public class CommitmentsController : ControllerBase
     {
