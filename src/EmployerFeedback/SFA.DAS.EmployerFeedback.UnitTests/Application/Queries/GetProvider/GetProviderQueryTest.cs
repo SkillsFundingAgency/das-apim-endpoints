@@ -8,11 +8,8 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetProvider
         [Test]
         public void GetProviderQuery_ShouldHaveProviderIdProperty()
         {
-            // Arrange
             var query = new GetProviderQuery();
-            // Act
             query.ProviderId = 123;
-            // Assert
             Assert.That(123, Is.EqualTo(query.ProviderId));
         }
     }

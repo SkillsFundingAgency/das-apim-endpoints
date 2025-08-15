@@ -35,9 +35,9 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetProvider
             _commitmentsV2ApiClientMock
                 .Setup(x => x.Get<GetProviderQueryResult>(It.IsAny<GetProviderRequest>()))
                 .ReturnsAsync(expectedProvider);
-            
+
             var result = await _handler.Handle(query, CancellationToken.None);
-            
+
             Assert.That(result != null);
             Assert.That(expectedProvider.Name, Is.EqualTo(result.Name));
             Assert.That(expectedProvider.ProviderId, Is.EqualTo(result.ProviderId));
@@ -62,10 +62,20 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetProvider
             _commitmentsV2ApiClientMock
                 .Setup(x => x.Get<GetProviderQueryResult>(It.IsAny<GetProviderRequest>()))
                 .ReturnsAsync((GetProviderQueryResult)null);
-            
+
             var result = await _handler.Handle(query, CancellationToken.None);
-            
+
             Assert.That(result == null);
+        }
+        
+        [Test]
+        public void GetUrl_ShouldReturnCorrectUrl_WithGivenProviderId()
+        {
+            var providerId = 12345;
+            var request = new GetProviderRequest(providerId);
+            var url = request.GetUrl;
+
+            Assert.That($"api/providers/{providerId}", Is.EqualTo(url));
         }
     }
 }

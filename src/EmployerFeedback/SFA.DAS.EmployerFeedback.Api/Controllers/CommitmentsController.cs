@@ -15,7 +15,6 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
     {
         private readonly IMediator _mediator;
         private readonly ILogger<CommitmentsController> _logger;
-        //ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 
         public CommitmentsController(IMediator mediator, ILogger<CommitmentsController> logger)
         {

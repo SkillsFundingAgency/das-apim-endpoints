@@ -33,7 +33,7 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         public async Task GetProvider_ReturnsOk_WhenIdIsNotNull()
         {
             var providerId = 12345678;
-            var resultObj = new GetProviderQueryResult { Name = "", ProviderId = 12345678};
+            var resultObj = new GetProviderQueryResult { Name = "", ProviderId = 12345678 };
             _mediatorMock.Setup(m => m.Send(It.Is<GetProviderQuery>(q => q != null), CancellationToken.None)).ReturnsAsync(resultObj);
 
             var result = await _controller.GetProvider(providerId);
@@ -62,6 +62,26 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 
             var result = await _controller.GetProvider(-1);
 
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+        }
+
+        [Test]
+        public async Task GetProvider_ReturnsInternalServerError_WhenExceptionThrown()
+        {
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderQuery>(), CancellationToken.None)).ThrowsAsync(new Exception());
+
+            var result = await _controller.GetProvider(12345678);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusCodeResult = result as StatusCodeResult;
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+        }
+
+        [Test]
+        public async Task GetProvider_ProviderResponseIsNull_ReturnsNotFound()
+        {
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetProviderQuery>(), CancellationToken.None)).ReturnsAsync((GetProviderQueryResult)null);
+            var result = await _controller.GetProvider(12345678);
             Assert.That(result, Is.InstanceOf<NotFoundResult>());
         }
     }

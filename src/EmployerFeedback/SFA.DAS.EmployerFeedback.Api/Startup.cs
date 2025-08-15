@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -19,6 +20,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerFeedback.Api
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private readonly IConfiguration _configuration;
@@ -51,7 +53,7 @@ namespace SFA.DAS.EmployerFeedback.Api
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly));
             services.AddServiceRegistration();
-            
+
             services.Configure<RouteOptions>(options =>
                 {
                     options.LowercaseUrls = true;
@@ -70,7 +72,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                 services.AddHealthChecks()
                      .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription);
             }
-            
+
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>
@@ -81,7 +83,7 @@ namespace SFA.DAS.EmployerFeedback.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -93,7 +95,7 @@ namespace SFA.DAS.EmployerFeedback.Api
             {
                 app.UseHealthChecks();
             }
-            
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -101,7 +103,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                     name: "default",
                     pattern: "api/{controller=Account}/{action=index}/{id?}");
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
