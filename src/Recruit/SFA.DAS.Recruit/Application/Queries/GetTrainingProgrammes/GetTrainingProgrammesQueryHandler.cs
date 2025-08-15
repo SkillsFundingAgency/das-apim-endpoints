@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
 
 public class GetTrainingProgrammesQueryHandler(
-    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
+    ICourseService courseService,
     IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpApiClient,
     ILogger<GetTrainingProgrammesQueryHandler> _logger)
     : IRequestHandler<GetTrainingProgrammesQuery, GetTrainingProgrammesQueryResult>
@@ -26,36 +26,40 @@ public class GetTrainingProgrammesQueryHandler(
     {
         _logger.LogInformation("Fetching active standards");
 
-        var standards = await coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
-        var allTrainingProgrammes = new List<TrainingProgramme>();
-        allTrainingProgrammes.AddRange(standards.Standards?
+        var standards = await courseService.GetActiveStandards<GetStandardsListResponse>("ActiveStandards");
+        var allTrainingProgrammes = standards.Standards?
             .Where(c => request.IncludeFoundationApprenticeships ||
-                    c.ApprenticeshipType.Equals("Apprenticeship", StringComparison.CurrentCultureIgnoreCase))
-            .Select(item => (TrainingProgramme)item) ?? []);
+                        c.ApprenticeshipType.Equals("Apprenticeship", StringComparison.CurrentCultureIgnoreCase))
+            .Select(item => (TrainingProgramme)item)
+            .ToList() ?? [];
 
-        List<TrainingProgramme> filteredCourses = allTrainingProgrammes;
-
-        if (request.Ukprn.HasValue)
+        if (!request.Ukprn.HasValue)
         {
-            _logger.LogInformation("Filtering training programmes for UKPRN {Ukprn}", request.Ukprn.Value);
-
-            var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value ));
-
-            if (providerCourses == null || !providerCourses.Any())
+            _logger.LogInformation("Returning {Count} unfiltered training programmes", allTrainingProgrammes.Count);
+            return new GetTrainingProgrammesQueryResult
             {
-                _logger.LogInformation("No provider courses found for UKPRN {ukprn}", request.Ukprn.Value);
-                return new GetTrainingProgrammesQueryResult
-                {
-                    TrainingProgrammes = allTrainingProgrammes
-                };
-            }
-
-            var providerLarsCodes = providerCourses?.Select(c => c.LarsCode.ToString()).ToHashSet();
-
-            filteredCourses = allTrainingProgrammes
-                .Where(p => providerLarsCodes.Contains(p.Id))
-                .ToList();
+                TrainingProgrammes = allTrainingProgrammes
+            };
         }
+
+        _logger.LogInformation("Filtering training programmes for UKPRN {Ukprn}", request.Ukprn.Value);
+
+        var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value ));
+
+        if (providerCourses == null || !providerCourses.Any())
+        {
+            _logger.LogInformation("No provider courses found for UKPRN {ukprn}", request.Ukprn.Value);
+            return new GetTrainingProgrammesQueryResult
+            {
+                TrainingProgrammes = allTrainingProgrammes
+            };
+        }
+
+        var providerLarsCodes = providerCourses.Select(c => c.LarsCode.ToString()).ToHashSet();
+
+        var filteredCourses = allTrainingProgrammes
+            .Where(p => providerLarsCodes.Contains(p.Id))
+            .ToList();
 
         _logger.LogInformation("Returning {Count} training programmes", filteredCourses.Count);
 
