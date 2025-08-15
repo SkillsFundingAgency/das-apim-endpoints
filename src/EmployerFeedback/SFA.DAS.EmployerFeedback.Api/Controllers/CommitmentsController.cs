@@ -3,9 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RestEase;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
-using SFA.DAS.EmployerFeedback.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -14,7 +11,7 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
 {
 
     [Route("commitments")]
-    public class CommitmentsController : Controller
+    public class CommitmentsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly ILogger<CommitmentsController> _logger;
