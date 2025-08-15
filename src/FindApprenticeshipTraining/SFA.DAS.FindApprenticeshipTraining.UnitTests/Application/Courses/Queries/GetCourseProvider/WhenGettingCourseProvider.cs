@@ -388,8 +388,10 @@ public sealed class WhenGettingCourseProvider
     }
 
     [Test]
-    [MoqAutoData]
-    public async Task And_Roatp_Api_Call_Returns_404_Handler_Returns_Null(
+    [MoqInlineAutoData(HttpStatusCode.NotFound)]
+    [MoqInlineAutoData(HttpStatusCode.BadRequest)]
+    public async Task And_Roatp_Api_Call_Returns_404_Or_400_Handler_Returns_Null(
+        HttpStatusCode statusCode,
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -413,7 +415,7 @@ public sealed class WhenGettingCourseProvider
         _roatpClientMock.Setup(x => x.GetWithResponseCode<GetCourseProviderDetailsResponse>(
             It.IsAny<GetCourseProviderDetailsRequest>())).ReturnsAsync(new ApiResponse<GetCourseProviderDetailsResponse>(
             null,
-            HttpStatusCode.NotFound,
+            statusCode,
             string.Empty
         ));
 

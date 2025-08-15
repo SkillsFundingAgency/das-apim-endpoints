@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -49,6 +50,11 @@ public sealed class GetCourseByLarsCodeQueryHandler(
                     locationItem?.Longitude
                 )
         );
+
+        if (courseTrainingProvidersCountResponse.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+        {
+            return null;
+        }
 
         courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 

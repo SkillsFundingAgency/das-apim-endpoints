@@ -1,3 +1,6 @@
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
@@ -10,9 +13,6 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
 {
@@ -79,6 +79,26 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
             Assert.That(model, Is.Not.Null);
 
             model.Should().BeEquivalentTo(new GetCourseProvidersResponse());
+        }
+
+        [Test, MoqAutoData]
+        public async Task And_Null_Response_Returns_NotFound(
+            int id,
+            GetCourseProvidersModel getCourseProvidersModel,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] CoursesController controller
+        )
+        {
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.IsAny<GetCourseProvidersQuery>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((GetCourseProvidersResponse)null);
+
+            var controllerResult = await controller.GetCourseProviders(id, getCourseProvidersModel) as NotFoundResult;
+
+            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
         }
     }
 }

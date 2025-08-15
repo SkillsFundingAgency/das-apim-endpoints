@@ -1,3 +1,6 @@
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
@@ -7,8 +10,6 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
@@ -63,7 +64,10 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                 }
             );
 
-        return ApiResponseErrorChecking.IsSuccessStatusCode(response.StatusCode)
+        if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+            return null;
+
+        return response.StatusCode.IsSuccessStatusCode()
                 ? response.Body
                 : new GetCourseProvidersResponse();
     }
