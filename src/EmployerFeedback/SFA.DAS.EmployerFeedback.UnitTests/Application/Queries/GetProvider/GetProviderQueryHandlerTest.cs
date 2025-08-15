@@ -44,14 +44,19 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetProvider
         }
 
         [Test]
-        public async Task Handle_ThrowsException_WhenApiCallFails()
+        public Task Handle_ThrowsException_WhenApiCallFails()
         {
             var providerId = 12345678;
             var query = new GetProviderQuery { ProviderId = providerId };
             _commitmentsV2ApiClientMock
                 .Setup(x => x.Get<GetProviderQueryResult>(It.IsAny<GetProviderRequest>()))
                 .ThrowsAsync(new System.Exception("API call failed"));
-            Assert.ThrowsAsync<System.Exception>(async () => await _handler.Handle(query, CancellationToken.None));
+
+            Assert.ThrowsAsync<System.Exception>(async () =>
+            {
+                await _handler.Handle(query, CancellationToken.None);
+            });
+            return Task.CompletedTask;
         }
 
         [Test]
