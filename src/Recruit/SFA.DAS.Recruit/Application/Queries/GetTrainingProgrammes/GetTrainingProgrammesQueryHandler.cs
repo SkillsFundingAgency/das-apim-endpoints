@@ -33,39 +33,39 @@ public class GetTrainingProgrammesQueryHandler(
             .Select(item => (TrainingProgramme)item)
             .ToList() ?? [];
 
-        if (!request.Ukprn.HasValue)
+        if (request.Ukprn.HasValue)
         {
-            _logger.LogInformation("Returning {Count} unfiltered training programmes", allTrainingProgrammes.Count);
+            _logger.LogInformation("Filtering training programmes for UKPRN {Ukprn}", request.Ukprn.Value);
+
+            var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value ));
+
+            if (providerCourses == null || !providerCourses.Any())
+            {
+                _logger.LogInformation("No provider courses found for UKPRN {ukprn}", request.Ukprn.Value);
+                return new GetTrainingProgrammesQueryResult
+                {
+                    TrainingProgrammes = allTrainingProgrammes
+                };
+            }
+
+            var providerLarsCodes = providerCourses.Select(c => c.LarsCode.ToString()).ToHashSet();
+
+            var filteredCourses = allTrainingProgrammes
+                .Where(p => providerLarsCodes.Contains(p.Id))
+                .ToList();
+
+            _logger.LogInformation("Returning {Count} training programmes", filteredCourses.Count);
+
             return new GetTrainingProgrammesQueryResult
             {
-                TrainingProgrammes = allTrainingProgrammes
+                TrainingProgrammes = filteredCourses
             };
         }
 
-        _logger.LogInformation("Filtering training programmes for UKPRN {Ukprn}", request.Ukprn.Value);
-
-        var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value ));
-
-        if (providerCourses == null || !providerCourses.Any())
-        {
-            _logger.LogInformation("No provider courses found for UKPRN {ukprn}", request.Ukprn.Value);
-            return new GetTrainingProgrammesQueryResult
-            {
-                TrainingProgrammes = allTrainingProgrammes
-            };
-        }
-
-        var providerLarsCodes = providerCourses.Select(c => c.LarsCode.ToString()).ToHashSet();
-
-        var filteredCourses = allTrainingProgrammes
-            .Where(p => providerLarsCodes.Contains(p.Id))
-            .ToList();
-
-        _logger.LogInformation("Returning {Count} training programmes", filteredCourses.Count);
-
+        _logger.LogInformation("Returning {Count} unfiltered training programmes", allTrainingProgrammes.Count);
         return new GetTrainingProgrammesQueryResult
         {
-            TrainingProgrammes = filteredCourses
+            TrainingProgrammes = allTrainingProgrammes
         };
     }
 }
