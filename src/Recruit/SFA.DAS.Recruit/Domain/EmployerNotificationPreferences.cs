@@ -8,8 +8,8 @@ public static class EmployerNotificationPreferences
 {
     private static readonly Dictionary<NotificationTypes, NotificationPreference> EmployerDefaults = new()
         {
-            { NotificationTypes.ApplicationSubmitted, new NotificationPreference(NotificationTypes.ApplicationSubmitted, "Email", NotificationScope.Default, NotificationFrequency.Default) },
-            { NotificationTypes.VacancyApprovedOrRejectedByDfE, new NotificationPreference(NotificationTypes.VacancyApprovedOrRejectedByDfE, "Email", NotificationScope.Default, NotificationFrequency.Default) },
+            { NotificationTypes.ApplicationSubmitted, new NotificationPreference(NotificationTypes.ApplicationSubmitted, "Email", NotificationScope.Default, NotificationFrequency.Never) },
+            { NotificationTypes.VacancyApprovedOrRejectedByDfE, new NotificationPreference(NotificationTypes.VacancyApprovedOrRejectedByDfE, "Email", NotificationScope.Default, NotificationFrequency.Never) },
         };
 
     private static NotificationPreference GetOrDefault(NotificationTypes eventType, List<NotificationPreference> current)

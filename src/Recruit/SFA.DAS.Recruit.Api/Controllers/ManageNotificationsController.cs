@@ -17,7 +17,7 @@ public class ManageNotificationsController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetUserNotificationPreferencesByIdams([FromRoute] string idamsId)
     {
         var result = await mediator.Send(new GetUserByIdamsIdQuery(idamsId));
-        if (result is null)
+        if (result?.User is null)
         {
             return NotFound();
         }
@@ -36,7 +36,7 @@ public class ManageNotificationsController(IMediator mediator) : ControllerBase
     {
         var result = await mediator.Send(new UpdateUserNotificationPreferencesCommand(id, notificationPreferences));
         return result 
-            ? NoContent()
+            ? Ok()
             : NotFound();
     }
 }
