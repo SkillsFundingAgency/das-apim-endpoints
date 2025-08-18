@@ -7,8 +7,8 @@ public class ProviderNotificationPreferences
 {
     private static readonly List<NotificationPreference> EmployerDefaults = [
         new (NotificationTypes.ApplicationSubmitted, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
-        new (NotificationTypes.VacancyApprovedOrRejected, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
-        new (NotificationTypes.SharedApplicationReviewedByEmployer, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
+        new (NotificationTypes.VacancyApprovedOrRejected, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
+        new (NotificationTypes.SharedApplicationReviewedByEmployer, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
         new (NotificationTypes.ProviderAttachedToVacancy, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Immediately),
     ];
 

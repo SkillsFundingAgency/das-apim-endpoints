@@ -8,8 +8,8 @@ public static class EmployerNotificationPreferences
 {
     private static readonly List<NotificationPreference> EmployerDefaults = [
             new (NotificationTypes.ApplicationSubmitted, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
-            new (NotificationTypes.VacancyApprovedOrRejected, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
-            new (NotificationTypes.VacancySentForReview, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
+            new (NotificationTypes.VacancyApprovedOrRejected, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
+            new (NotificationTypes.VacancySentForReview, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
         ];
 
     public static void UpdateWithDefaults(NotificationPreferences preferences)
