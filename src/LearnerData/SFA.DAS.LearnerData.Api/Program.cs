@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
-using SFA.DAS.LearnerData.Application;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
 using SFA.DAS.NServiceBus.Configuration;

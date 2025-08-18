@@ -21,6 +21,7 @@ public class UpdateLearningRequestBody
 {
     public LearningUpdateDetails Learner { get; set; }
     public List<MathsAndEnglishDetails> MathsAndEnglishCourses { get; set; }
+    public List<LearningSupportUpdatedDetails> LearningSupport { get; set; }
 }
 
 public class LearningUpdateDetails
@@ -37,4 +38,10 @@ public class MathsAndEnglishDetails
     public DateTime? WithdrawalDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     public decimal Amount { get; set; }
+}
+
+public class LearningSupportUpdatedDetails
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 }

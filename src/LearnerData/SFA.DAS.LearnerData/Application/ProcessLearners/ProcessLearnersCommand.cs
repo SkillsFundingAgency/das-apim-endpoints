@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.LearnerData.Requests;
 
-namespace SFA.DAS.LearnerData.Application;
+namespace SFA.DAS.LearnerData.Application.ProcessLearners;
 
 public class ProcessLearnersCommand : IRequest
 {
