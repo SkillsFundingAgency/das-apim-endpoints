@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Models.ManageUserNotificationPreferences;
 using SFA.DAS.Recruit.Application.User.Commands.UpdateUserNotificationPreferences;
+using SFA.DAS.Recruit.Application.User.Queries.GetUserByDfeUserId;
 using SFA.DAS.Recruit.Application.User.Queries.GetUserByIdamsId;
 using SFA.DAS.Recruit.Domain;
 
@@ -22,11 +23,29 @@ public class ManageNotificationsController(IMediator mediator) : ControllerBase
             return NotFound();
         }
 
-        EmployerNotificationPreferences.UpdateWithEmployerDefaults(result.User.NotificationPreferences);
+        EmployerNotificationPreferences.UpdateWithDefaults(result.User.NotificationPreferences);
         return Ok(new GetUserNotificationPreferencesByIdamsIdResponse
         {
             Id = result.User.Id,
             IdamsId = result.User.IdamsUserId,
+            NotificationPreferences = result.User.NotificationPreferences,
+        });
+    }
+    
+    [HttpGet, Route("provider/{dfeUserId}")]
+    public async Task<IActionResult> GetUserNotificationPreferencesByDfeUserId([FromRoute] string dfeUserId)
+    {
+        var result = await mediator.Send(new GetUserByDfeUserIdQuery(dfeUserId));
+        if (result?.User is null)
+        {
+            return NotFound();
+        }
+
+        ProviderNotificationPreferences.UpdateWithDefaults(result.User.NotificationPreferences);
+        return Ok(new GetUserNotificationPreferencesByDfeUserIdResponse
+        {
+            Id = result.User.Id,
+            DfeUserId = result.User.DfEUserId,
             NotificationPreferences = result.User.NotificationPreferences,
         });
     }

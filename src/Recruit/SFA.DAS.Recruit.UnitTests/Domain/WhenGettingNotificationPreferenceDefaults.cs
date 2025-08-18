@@ -11,7 +11,7 @@ public class WhenGettingNotificationPreferenceDefaults
         var prefs = new NotificationPreferences();
 
         // act
-        EmployerNotificationPreferences.UpdateWithEmployerDefaults(prefs);
+        EmployerNotificationPreferences.UpdateWithDefaults(prefs);
 
         // assert
         prefs.EventPreferences.Should().HaveCount(3);
@@ -20,7 +20,7 @@ public class WhenGettingNotificationPreferenceDefaults
         applicationSubmittedPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
         applicationSubmittedPref.Frequency.Should().Be(NotificationFrequency.Daily);
         
-        var vacancyApprovedOrRejectedByDfEPref = prefs.GetForEvent(NotificationTypes.VacancyApprovedOrRejectedByDfE);
+        var vacancyApprovedOrRejectedByDfEPref = prefs.GetForEvent(NotificationTypes.VacancyApprovedOrRejected);
         vacancyApprovedOrRejectedByDfEPref.Method.Should().Be("Email");
         vacancyApprovedOrRejectedByDfEPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
         vacancyApprovedOrRejectedByDfEPref.Frequency.Should().Be(NotificationFrequency.Daily);
@@ -42,14 +42,14 @@ public class WhenGettingNotificationPreferenceDefaults
         };
 
         // act
-        EmployerNotificationPreferences.UpdateWithEmployerDefaults(prefs);
+        EmployerNotificationPreferences.UpdateWithDefaults(prefs);
 
         // assert
         prefs.EventPreferences.Should().HaveCount(3);
         var applicationSubmittedPref = prefs.GetForEvent(NotificationTypes.ApplicationSubmitted);
         applicationSubmittedPref.Should().BeEquivalentTo(existingPref);
         
-        var vacancyApprovedOrRejectedByDfEPref = prefs.GetForEvent(NotificationTypes.VacancyApprovedOrRejectedByDfE);
+        var vacancyApprovedOrRejectedByDfEPref = prefs.GetForEvent(NotificationTypes.VacancyApprovedOrRejected);
         vacancyApprovedOrRejectedByDfEPref.Method.Should().Be("Email");
         vacancyApprovedOrRejectedByDfEPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
         vacancyApprovedOrRejectedByDfEPref.Frequency.Should().Be(NotificationFrequency.Daily);
@@ -71,7 +71,7 @@ public class WhenGettingNotificationPreferenceDefaults
         };
 
         // act
-        EmployerNotificationPreferences.UpdateWithEmployerDefaults(prefs);
+        EmployerNotificationPreferences.UpdateWithDefaults(prefs);
 
         // assert
         prefs.EventPreferences.Should().HaveCount(4);

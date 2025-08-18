@@ -6,9 +6,10 @@ namespace SFA.DAS.Recruit.Domain;
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum NotificationTypes
 {
-    VacancyApprovedOrRejectedByDfE,
+    VacancyApprovedOrRejected,
     VacancyClosingSoon,
     ApplicationSubmitted,
     VacancySentForReview,
-    VacancyRejectedByEmployer,
+    SharedApplicationReviewedByEmployer,
+    ProviderAttachedToVacancy
 }
