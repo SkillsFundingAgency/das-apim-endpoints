@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.SharedOuterApi.Exceptions;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command

@@ -23,7 +23,7 @@ public class WhenCallingUpsertVacancyReview
         mediator.Verify(x => x.Send(
                 It.Is<UpsertVacancyReviewCommand>(c => 
                     c.Id == id &&
-                    c.VacancyReview.VacancyTitle == ((InnerApi.Requests.VacancyReviewDto)vacancyReview).VacancyTitle), 
+                    c.VacancyReview.VacancyTitle == ((InnerApi.Recruit.Requests.VacancyReviewDto)vacancyReview).VacancyTitle), 
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -38,7 +38,7 @@ public class WhenCallingUpsertVacancyReview
         mediator.Setup(x => x.Send(
                 It.Is<UpsertVacancyReviewCommand>(c => 
                     c.Id == id &&
-                    c.VacancyReview.VacancyTitle == ((InnerApi.Requests.VacancyReviewDto)vacancyReview).VacancyTitle), 
+                    c.VacancyReview.VacancyTitle == ((InnerApi.Recruit.Requests.VacancyReviewDto)vacancyReview).VacancyTitle), 
                 It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
         
         var actual = await controller.UpsertVacancyReview(id, vacancyReview) as StatusCodeResult;

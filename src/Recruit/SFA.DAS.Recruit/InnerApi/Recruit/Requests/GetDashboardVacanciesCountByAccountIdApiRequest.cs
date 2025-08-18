@@ -2,10 +2,10 @@
 using SFA.DAS.Recruit.Enums;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests
 {
-    public record GetDashboardVacanciesCountByUkprnApiRequest(
-        int Ukprn,
+    public record GetDashboardVacanciesCountByAccountIdApiRequest(
+        long AccountId,
         int PageNumber = 1,
         int PageSize = 25,
         string SortColumn = "CreatedDate",
@@ -13,6 +13,6 @@ namespace SFA.DAS.Recruit.InnerApi.Requests
         List<ApplicationReviewStatus>? Status = null) : IGetApiRequest
     {
         public string GetUrl =>
-            $"api/provider/{Ukprn}/applicationReviews/dashboard/vacancies?pageNumber={PageNumber}&pageSize={PageSize}&sortColumn={SortColumn}&isAscending={IsAscending}&status={string.Join("&status=",Status)}";
+            $"api/employer/{AccountId}/applicationReviews/dashboard/vacancies?pageNumber={PageNumber}&pageSize={PageSize}&sortColumn={SortColumn}&isAscending={IsAscending}&status={string.Join("&status=",Status) }";
     }
 }

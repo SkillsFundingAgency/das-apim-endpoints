@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             {
                 await _mediator.Send(new UpsertUserCommand()
                 {
-                    User = (InnerApi.Requests.UserDto)userDto,
+                    User = (InnerApi.Recruit.Requests.UserDto)userDto,
                     Id = id
                 });
                 return Created();

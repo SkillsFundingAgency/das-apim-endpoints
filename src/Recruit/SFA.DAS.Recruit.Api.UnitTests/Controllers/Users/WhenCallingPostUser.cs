@@ -23,7 +23,7 @@ public class WhenCallingPostUser
         mediator.Verify(x => x.Send(
                 It.Is<UpsertUserCommand>(c => 
                     c.Id == id &&
-                    c.User.Name == ((InnerApi.Requests.UserDto)user).Name), 
+                    c.User.Name == ((InnerApi.Recruit.Requests.UserDto)user).Name), 
                 It.IsAny<CancellationToken>()),
             Times.Once);
     }
@@ -38,7 +38,7 @@ public class WhenCallingPostUser
         mediator.Setup(x => x.Send(
             It.Is<UpsertUserCommand>(c => 
                 c.Id == id &&
-                c.User.Name == ((InnerApi.Requests.UserDto)user).Name), 
+                c.User.Name == ((InnerApi.Recruit.Requests.UserDto)user).Name), 
             It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
         
         var actual = await controller.UpsertUser(id, user) as StatusCodeResult;

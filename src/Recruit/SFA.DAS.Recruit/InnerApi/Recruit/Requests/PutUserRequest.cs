@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests;
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
 public class PutUserRequest(Guid id, UserDto data) : IPutApiRequest
 {

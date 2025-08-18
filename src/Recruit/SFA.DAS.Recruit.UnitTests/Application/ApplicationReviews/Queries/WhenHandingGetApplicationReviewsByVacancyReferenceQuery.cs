@@ -5,6 +5,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Threading;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using ApplicationReview = SFA.DAS.Recruit.Domain.ApplicationReview;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Queries

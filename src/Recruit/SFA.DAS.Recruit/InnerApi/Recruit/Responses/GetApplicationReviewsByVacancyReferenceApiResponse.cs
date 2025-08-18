@@ -1,7 +1,7 @@
-﻿using SFA.DAS.Recruit.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SFA.DAS.Recruit.Domain;
 
-namespace SFA.DAS.Recruit.InnerApi.Responses
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses
 {
     public record GetApplicationReviewsByVacancyReferenceApiResponse
     {

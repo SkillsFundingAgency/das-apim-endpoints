@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn
+﻿using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
+
+namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn
 {
     public record GetDashboardByUkprnQueryResult
     {
@@ -10,7 +12,7 @@
         public int UnsuccessfulApplicationsCount { get; set; } = 0;
         public bool HasNoApplications { get; set; } = false;
 
-        public static implicit operator GetDashboardByUkprnQueryResult(InnerApi.Responses.GetDashboardApiResponse response)
+        public static implicit operator GetDashboardByUkprnQueryResult(GetDashboardApiResponse response)
         {
             return new GetDashboardByUkprnQueryResult
             {

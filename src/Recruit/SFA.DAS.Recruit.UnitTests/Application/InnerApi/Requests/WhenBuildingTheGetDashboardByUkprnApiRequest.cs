@@ -1,4 +1,5 @@
 using SFA.DAS.Recruit.Enums;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Requests;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests
