@@ -16,10 +16,12 @@ public class EmailEnvironmentHelper
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "d8855c4f-9ce1-4870-93ff-53e609f59a51" : "9a45ff1d-769d-4be2-96fb-dcf605e0108f";
         CandidateApplicationUrl = $"{GetBaseUrl(environmentName)}applications";
+        LiveVacancyUrl = $"{GetBaseUrl(environmentName)}apprenticeship/{{0}}";
         NotificationsSettingsProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/notifications-manage/";
         NotificationsSettingsEmployerUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/notifications-manage/";
     }
     public string CandidateApplicationUrl { get; }
+    public string LiveVacancyUrl { get; }
     public string NotificationsSettingsProviderUrl { get; }
     public string NotificationsSettingsEmployerUrl { get; }
     public string SuccessfulApplicationEmailTemplateId { get; }
