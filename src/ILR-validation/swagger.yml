@@ -158,14 +158,11 @@ components:
     employerData:
       type: object
       properties:
-        employers:
-          type: object
-          properties:
-            agreementId:
-              type: string
-            IsLevy:
-              type: boolean
-          
+        agreementId:
+          type: string
+        IsLevy:
+          type: boolean
+      
     healthcheckResults:
       type: array
       items:
