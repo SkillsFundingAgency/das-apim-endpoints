@@ -162,6 +162,8 @@ components:
           type: string
         IsLevy:
           type: boolean
+        IsFlexi:
+          type: boolean
       
     healthcheckResults:
       type: array
