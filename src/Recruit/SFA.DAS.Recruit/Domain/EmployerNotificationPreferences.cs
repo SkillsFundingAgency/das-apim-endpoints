@@ -6,10 +6,12 @@ namespace SFA.DAS.Recruit.Domain;
 
 public static class EmployerNotificationPreferences
 {
+    private const string Channel = "Email"; 
+    
     private static readonly List<NotificationPreference> EmployerDefaults = [
-            new (NotificationTypes.ApplicationSubmitted, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
-            new (NotificationTypes.VacancyApprovedOrRejected, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
-            new (NotificationTypes.VacancySentForReview, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
+            new (NotificationTypes.ApplicationSubmitted, Channel, NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
+            new (NotificationTypes.VacancyApprovedOrRejected, Channel, NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
+            new (NotificationTypes.VacancySentForReview, Channel, NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
         ];
 
     public static void UpdateWithDefaults(NotificationPreferences preferences)

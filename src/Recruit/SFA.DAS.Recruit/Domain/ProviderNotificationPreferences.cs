@@ -5,11 +5,13 @@ namespace SFA.DAS.Recruit.Domain;
 
 public class ProviderNotificationPreferences
 {
+    private const string Channel = "Email"; 
+    
     private static readonly List<NotificationPreference> EmployerDefaults = [
-        new (NotificationTypes.ApplicationSubmitted, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
-        new (NotificationTypes.VacancyApprovedOrRejected, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
-        new (NotificationTypes.SharedApplicationReviewedByEmployer, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
-        new (NotificationTypes.ProviderAttachedToVacancy, "Email", NotificationScope.OrganisationVacancies, NotificationFrequency.Immediately),
+        new (NotificationTypes.ApplicationSubmitted, Channel, NotificationScope.OrganisationVacancies, NotificationFrequency.Daily),
+        new (NotificationTypes.VacancyApprovedOrRejected, Channel, NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
+        new (NotificationTypes.SharedApplicationReviewedByEmployer, Channel, NotificationScope.OrganisationVacancies, NotificationFrequency.NotSet),
+        new (NotificationTypes.ProviderAttachedToVacancy, Channel, NotificationScope.OrganisationVacancies, NotificationFrequency.Immediately),
     ];
 
     public static void UpdateWithDefaults(NotificationPreferences preferences)

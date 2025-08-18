@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Recruit.UnitTests.Domain;
 
-public class WhenGettingNotificationPreferenceDefaults
+public class WhenGettingProviderNotificationPreferenceDefaults
 {
     [Test, MoqAutoData]
     public void Defaults_Should_Be_Added()
@@ -11,10 +11,10 @@ public class WhenGettingNotificationPreferenceDefaults
         var prefs = new NotificationPreferences();
 
         // act
-        EmployerNotificationPreferences.UpdateWithDefaults(prefs);
+        ProviderNotificationPreferences.UpdateWithDefaults(prefs);
 
         // assert
-        prefs.EventPreferences.Should().HaveCount(3);
+        prefs.EventPreferences.Should().HaveCount(4);
         var applicationSubmittedPref = prefs.GetForEvent(NotificationTypes.ApplicationSubmitted);
         applicationSubmittedPref.Method.Should().Be("Email");
         applicationSubmittedPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
@@ -23,12 +23,17 @@ public class WhenGettingNotificationPreferenceDefaults
         var vacancyApprovedOrRejectedByDfEPref = prefs.GetForEvent(NotificationTypes.VacancyApprovedOrRejected);
         vacancyApprovedOrRejectedByDfEPref.Method.Should().Be("Email");
         vacancyApprovedOrRejectedByDfEPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
-        vacancyApprovedOrRejectedByDfEPref.Frequency.Should().Be(NotificationFrequency.Daily);
+        vacancyApprovedOrRejectedByDfEPref.Frequency.Should().Be(NotificationFrequency.NotSet);
         
-        var vacancySendForReviewPref = prefs.GetForEvent(NotificationTypes.VacancySentForReview);
-        vacancySendForReviewPref.Method.Should().Be("Email");
-        vacancySendForReviewPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
-        vacancySendForReviewPref.Frequency.Should().Be(NotificationFrequency.Daily);
+        var sharedVacancyPref = prefs.GetForEvent(NotificationTypes.SharedApplicationReviewedByEmployer);
+        sharedVacancyPref.Method.Should().Be("Email");
+        sharedVacancyPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
+        sharedVacancyPref.Frequency.Should().Be(NotificationFrequency.NotSet);
+        
+        var providerAttachedPref = prefs.GetForEvent(NotificationTypes.ProviderAttachedToVacancy);
+        providerAttachedPref.Method.Should().Be("Email");
+        providerAttachedPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
+        providerAttachedPref.Frequency.Should().Be(NotificationFrequency.Immediately);
     }
     
     [Test, MoqAutoData]
@@ -42,22 +47,12 @@ public class WhenGettingNotificationPreferenceDefaults
         };
 
         // act
-        EmployerNotificationPreferences.UpdateWithDefaults(prefs);
+        ProviderNotificationPreferences.UpdateWithDefaults(prefs);
 
         // assert
-        prefs.EventPreferences.Should().HaveCount(3);
+        prefs.EventPreferences.Should().HaveCount(4);
         var applicationSubmittedPref = prefs.GetForEvent(NotificationTypes.ApplicationSubmitted);
         applicationSubmittedPref.Should().BeEquivalentTo(existingPref);
-        
-        var vacancyApprovedOrRejectedByDfEPref = prefs.GetForEvent(NotificationTypes.VacancyApprovedOrRejected);
-        vacancyApprovedOrRejectedByDfEPref.Method.Should().Be("Email");
-        vacancyApprovedOrRejectedByDfEPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
-        vacancyApprovedOrRejectedByDfEPref.Frequency.Should().Be(NotificationFrequency.Daily);
-        
-        var vacancySendForReviewPref = prefs.GetForEvent(NotificationTypes.VacancySentForReview);
-        vacancySendForReviewPref.Method.Should().Be("Email");
-        vacancySendForReviewPref.Scope.Should().Be(NotificationScope.OrganisationVacancies);
-        vacancySendForReviewPref.Frequency.Should().Be(NotificationFrequency.Daily);
     }
     
     [Test, MoqAutoData]
@@ -71,10 +66,10 @@ public class WhenGettingNotificationPreferenceDefaults
         };
 
         // act
-        EmployerNotificationPreferences.UpdateWithDefaults(prefs);
+        ProviderNotificationPreferences.UpdateWithDefaults(prefs);
 
         // assert
-        prefs.EventPreferences.Should().HaveCount(4);
+        prefs.EventPreferences.Should().HaveCount(5);
         var pref = prefs.GetForEvent(NotificationTypes.VacancyClosingSoon);
         pref.Should().Be(existingPref);
     }
