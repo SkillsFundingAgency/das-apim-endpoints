@@ -177,6 +177,76 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             distributedCache.Verify(x=>x.RemoveAsync($"{appName}_{keyName}", It.IsAny<CancellationToken>()), Times.Once);
         }
 
+        [Test, MoqAutoData]
+        public async Task Then_The_Key_Is_Added_To_The_Registry_If_Not_Already_Present(
+            string registryName,
+            string keyToAdd,
+            string appName,
+            [Frozen] Mock<IDistributedCache> distributedCache,
+            [Frozen] Mock<IConfiguration> configuration,
+            CacheStorageService service)
+        {
+            // Arrange
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+            distributedCache.Setup(x => x.GetAsync($"{appName}_{registryName}", It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[])null);
+
+            // Act
+            await service.AddToCacheKeyRegistry(registryName, keyToAdd);
+
+            // Assert
+            distributedCache.Verify(x => x.SetAsync(
+                $"{appName}_{registryName}",
+                It.Is<byte[]>(c => Encoding.UTF8.GetString(c).Contains(keyToAdd)),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Registry_Is_Retrieved_And_Deserialized(
+            string registryName,
+            string appName,
+            List<string> expectedKeys,
+            [Frozen] Mock<IDistributedCache> distributedCache,
+            [Frozen] Mock<IConfiguration> configuration,
+            CacheStorageService service)
+        {
+            // Arrange
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+            var json = JsonSerializer.Serialize(expectedKeys);
+            distributedCache.Setup(x => x.GetAsync($"{appName}_{registryName}", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Encoding.UTF8.GetBytes(json));
+
+            // Act
+            var result = await service.GetCacheKeyRegistry(registryName);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.EquivalentTo(expectedKeys));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_An_Empty_List_Is_Returned_If_Registry_Does_Not_Exist(
+            string registryName,
+            string appName,
+            [Frozen] Mock<IDistributedCache> distributedCache,
+            [Frozen] Mock<IConfiguration> configuration,
+            CacheStorageService service)
+        {
+            // Arrange
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+            distributedCache.Setup(x => x.GetAsync($"{appName}_{registryName}", It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[])null);
+
+            // Act
+            var result = await service.GetCacheKeyRegistry(registryName);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Empty);
+        }
+
         public class TestObject
         {
             public int Id { get; set; }
