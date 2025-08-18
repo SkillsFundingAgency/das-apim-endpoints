@@ -17,12 +17,12 @@ public class VacancyReviewDto
     public required DateTime? CreatedDate { get; init; }
     public required DateTime? SlaDeadLine { get; init; }
     public DateTime? ReviewedDate { get; init; }
-    public required string Status { get; init; }
+    public required string Status { get; set; }
     public required byte? SubmissionCount { get; init; }
     public string? ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
     public DateTime? ClosedDate { get; init; }
-    public string? ManualOutcome { get; init; }
+    public string? ManualOutcome { get; set; }
     public string? ManualQaComment { get; init; }
     public required List<string> ManualQaFieldIndicators { get; init; }
     public string? AutomatedQaOutcome { get; init; }
@@ -34,4 +34,6 @@ public class VacancyReviewDto
     public long AccountId { get; set; }
     public long AccountLegalEntityId { get; set; }
     public string OwnerType { get; set; }
+    public string HashedAccountId { get; set; }
+    public string EmployerName { get; set; }
 }
