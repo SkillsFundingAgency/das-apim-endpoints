@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using SFA.DAS.Notifications.Messages.Commands;
@@ -6,7 +5,6 @@ using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -20,19 +18,22 @@ public class WhenHandlingUpsertVacancyReviewCommand
     public async Task Then_The_Command_Is_Handled_And_Api_Called(
         UpsertVacancyReviewCommand command,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<INotificationService> notificationService,
         UpsertVacancyReviewCommandHandler handler)
     {
+        command.VacancyReview.OwnerType = "Provider";
         var expectedPutRequest = new PutCreateVacancyReviewRequest(command.Id, command.VacancyReview);
         recruitApiClient.Setup(
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
-            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
+            .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
 
         await handler.Handle(command, CancellationToken.None);
 
         recruitApiClient.Verify(
             x => x.PutWithResponseCode<NullResponse>(
                 It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)), Times.Once);
+        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
     }
     
     [Test, MoqAutoData]
@@ -67,11 +68,12 @@ public class WhenHandlingUpsertVacancyReviewCommand
             }
         ];
         command.VacancyReview.ManualOutcome = "Approved";
+        command.VacancyReview.OwnerType = "Employer";
         var expectedPutRequest = new PutCreateVacancyReviewRequest(command.Id, command.VacancyReview);
         recruitApiClient.Setup(
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
-            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
+            .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
@@ -96,5 +98,4 @@ public class WhenHandlingUpsertVacancyReviewCommand
         ), Times.Once);
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
     }
-    
 }
