@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Earnings.Application.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
@@ -27,6 +28,8 @@ public class JoinedEarningsApprenticeship
     public DateTime? WithdrawnDate { get; set; }
     /// <summary> Derived from earnings.FundingLineType </summary>
     public string FundingLineType { get; set; }
+    /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
+    public DateTime? CompletionDate { get; set; }
 
     internal JoinedEarningsApprenticeship(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
     {
@@ -38,6 +41,7 @@ public class JoinedEarningsApprenticeship
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
+        CompletionDate = learning.CompletionDate;
     }
 
     private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
@@ -116,6 +120,9 @@ public class JoinedPriceEpisode
     public bool IsTerminatedByAcademicYearEnd { get; set; }
     public Guid EpisodePriceKey { get; set; }
 
+    /// <summary> Derived from Apprenticeships API, apprenticeship.Episodes.LastDayOfLearning </summary>
+    public DateTime? ActualEndDate { get; set; }
+
     public JoinedPriceEpisode()
     {
         
@@ -142,6 +149,7 @@ public class JoinedPriceEpisode
         FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
         Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
         AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
+        ActualEndDate = apprenticeshipEpisode.LastDayOfLearning;
     }
 
     /// <summary>
@@ -163,6 +171,7 @@ public class JoinedPriceEpisode
         Instalments = existingEpisode.Instalments.Where(x => x.AcademicYear == academicYear).ToList();
         AdditionalPayments = existingEpisode.AdditionalPayments.Where(x => x.AcademicYear == academicYear).ToList();
         IsTerminatedByAcademicYearEnd = isTerminatedByAcademicYearEnd;
+        ActualEndDate = existingEpisode.ActualEndDate;
     }
 
     private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
@@ -173,7 +182,8 @@ public class JoinedPriceEpisode
             {
                 AcademicYear = x.AcademicYear,
                 DeliveryPeriod = x.DeliveryPeriod,
-                Amount = x.Amount
+                Amount = x.Amount,
+                InstalmentType = Enum.Parse<InstalmentType>(x.InstalmentType)
             })
             .OrderBy(x => x.AcademicYear)
             .ThenBy(x => x.DeliveryPeriod)
@@ -218,12 +228,20 @@ public class JoinedPriceEpisode
     }
 }
 
-[DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}")]
+[DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}, InstalmentType: {InstalmentType}")]
 public class JoinedInstalment
 {
     public short AcademicYear { get; set; }
     public byte DeliveryPeriod { get; set; }
     public decimal Amount { get; set; }
+    public InstalmentType InstalmentType { get; set; }
+}
+
+public enum InstalmentType
+{
+    Regular = 0,
+    Completion = 1,
+    Balancing = 2
 }
 
 public class JoinedAdditionalPayment

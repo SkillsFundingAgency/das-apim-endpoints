@@ -13,7 +13,7 @@ namespace SFA.DAS.EmployerAccounts.UnitTests.ExternalApi.Requests
         {
             var actual = new SearchCompanyInformationRequest(searchTerm, maximumResults);
 
-            var expected = $"search/companies/?q={HttpUtility.UrlEncode(searchTerm.ToUpper())}&items_per_page={maximumResults}";
+            var expected = $"search/companies?q={HttpUtility.UrlEncode(searchTerm.ToUpper())}&items_per_page={maximumResults}";
 
             actual.GetUrl.Should().Be(expected);
         }

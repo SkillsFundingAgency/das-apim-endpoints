@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using SFA.DAS.EarlyConnect.Configuration;
 using SFA.DAS.EarlyConnect.ExternalApi.Requests;
 using SFA.DAS.EarlyConnect.ExternalApi.Responses;
@@ -14,6 +15,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EarlyConnect.Services
 {
+    [ExcludeFromCodeCoverage]
     public class SendStudentDataToLepsService : ISendStudentDataToLepsService
     {
         private readonly IEarlyConnectApiClient<EarlyConnectApiConfiguration> _apiClient;
@@ -34,7 +36,7 @@ namespace SFA.DAS.EarlyConnect.Services
         }
         public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToNe(Guid SurveyGuid)
         {
-            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
+            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
             getStudentTriageResult.EnsureSuccessStatusCode();
 
             _sendStudentDataToLepsServiceResponse = new SendStudentDataToLepsServiceResponse();
@@ -50,7 +52,7 @@ namespace SFA.DAS.EarlyConnect.Services
 
         public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLa(Guid SurveyGuid)
         {
-            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
+            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
             getStudentTriageResult.EnsureSuccessStatusCode();
 
             _sendStudentDataToLepsServiceResponse = new SendStudentDataToLepsServiceResponse();
@@ -65,7 +67,7 @@ namespace SFA.DAS.EarlyConnect.Services
 
         public async Task<SendStudentDataToLepsServiceResponse> SendStudentDataToLo(Guid SurveyGuid)
         {
-            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataBySurveyIdResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
+            var getStudentTriageResult = await _apiClient.GetWithResponseCode<GetStudentTriageDataResponse>(new GetStudentTriageDataBySurveyIdRequest(SurveyGuid));
             getStudentTriageResult.EnsureSuccessStatusCode();
 
             _sendStudentDataToLepsServiceResponse = new SendStudentDataToLepsServiceResponse();
@@ -77,7 +79,7 @@ namespace SFA.DAS.EarlyConnect.Services
 
             return CreateSendStudentDataToLepsServiceResponse("LepCode not matching with Lo");
         }
-        private async Task<SendStudentDataToLepsServiceResponse> SendToNorthEast(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)
+        private async Task<SendStudentDataToLepsServiceResponse> SendToNorthEast(GetStudentTriageDataResponse data, Guid surveyGuid)
         {
             var studentTriageData = MapResponseToStudentData(data);
 
@@ -97,7 +99,7 @@ namespace SFA.DAS.EarlyConnect.Services
             return _sendStudentDataToLepsServiceResponse;
         }
 
-        private async Task<SendStudentDataToLepsServiceResponse> SendToLancashire(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)
+        private async Task<SendStudentDataToLepsServiceResponse> SendToLancashire(GetStudentTriageDataResponse data, Guid surveyGuid)
         {
             var studentTriageData = MapResponseToStudentData(data);
 
@@ -117,7 +119,7 @@ namespace SFA.DAS.EarlyConnect.Services
             return _sendStudentDataToLepsServiceResponse;
         }
 
-        private async Task<SendStudentDataToLepsServiceResponse> SendToLondon(GetStudentTriageDataBySurveyIdResponse data, Guid surveyGuid)
+        private async Task<SendStudentDataToLepsServiceResponse> SendToLondon(GetStudentTriageDataResponse data, Guid surveyGuid)
         {
             var studentTriageData = MapResponseToStudentData(data);
 
@@ -145,7 +147,7 @@ namespace SFA.DAS.EarlyConnect.Services
             CreateSendStudentDataToLepsServiceResponse($"{deliveryUpdateResponse?.Body?.Message}");
         }
 
-        public StudentTriageData MapResponseToStudentData(GetStudentTriageDataBySurveyIdResponse responseData)
+        public StudentTriageData MapResponseToStudentData(GetStudentTriageDataResponse responseData)
         {
             var studentData = new StudentTriageData
             {
@@ -189,7 +191,7 @@ namespace SFA.DAS.EarlyConnect.Services
             return studentData;
         }
 
-        private IEnumerable<AnswersDto> MapAnswers(GetStudentTriageDataBySurveyIdResponse responseData, int questionId)
+        private IEnumerable<AnswersDto> MapAnswers(GetStudentTriageDataResponse responseData, int questionId)
         {
             return responseData.SurveyQuestions
                 .Where(q => q.Id == questionId)
@@ -202,7 +204,7 @@ namespace SFA.DAS.EarlyConnect.Services
                 }));
         }
 
-        private IEnumerable<ResponseAnswersDto> MapStudentResponses(ICollection<SFA.DAS.EarlyConnect.Models.ResponseAnswersDto> responseAnswers, GetStudentTriageDataBySurveyIdResponse responseData, int questionId)
+        private IEnumerable<ResponseAnswersDto> MapStudentResponses(ICollection<SFA.DAS.EarlyConnect.Models.ResponseAnswersDto> responseAnswers, GetStudentTriageDataResponse responseData, int questionId)
         {
             return responseAnswers
                 .Where(responseAnswer => responseAnswer.QuestionId == questionId)
@@ -217,7 +219,7 @@ namespace SFA.DAS.EarlyConnect.Services
                 });
         }
 
-        private string GetAnswerText(int answerId, int questionId, GetStudentTriageDataBySurveyIdResponse responseData)
+        private string GetAnswerText(int answerId, int questionId, GetStudentTriageDataResponse responseData)
         {
             var question = responseData.SurveyQuestions.FirstOrDefault(q => q.Id == questionId);
             if (question != null)

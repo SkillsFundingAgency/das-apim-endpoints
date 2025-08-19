@@ -8,10 +8,12 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.FindAnApprenticeship.Services;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 {
     public class GetApplicationQueryHandler(
+        IVacancyService vacancyService,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
         : IRequestHandler<GetApplicationQuery, GetApplicationQueryResult>
     {
@@ -29,6 +31,11 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             
             if (application == null) return null;
 
+            var vacancy = await vacancyService.GetVacancy(application.VacancyReference)
+                          ?? await vacancyService.GetClosedVacancy(application.VacancyReference);
+
+            if (vacancy is null) return null;
+
             var additionalQuestions = application
                 .AdditionalQuestions
                 .OrderBy(ord => ord.QuestionOrder)
@@ -39,7 +46,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
             var trainingCourses = application.TrainingCourses;
             var jobs = application.WorkHistory?.Where(c=>c.WorkHistoryType == WorkHistoryType.Job);
             var volunteeringExperiences = application.WorkHistory?.Where(c=>c.WorkHistoryType == WorkHistoryType.WorkExperience);
-            var otherDetails = application.AboutYou;
 
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion1 = null;
             GetApplicationQueryResult.ApplicationQuestionsSection.Question additionalQuestion2 = null;
@@ -78,7 +84,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
 
             return new GetApplicationQueryResult
             {
+                ClosingDate = vacancy.ClosingDate,
+                ClosedDate = vacancy.ClosedDate,
+                EmployerName = vacancy.EmployerName,
+                VacancyTitle = vacancy.Title,
                 IsDisabilityConfident = application.DisabilityConfidenceStatus != "NotRequired",
+                ApprenticeshipType = vacancy.ApprenticeshipType,
                 EducationHistory = new GetApplicationQueryResult.EducationHistorySection
                 {
                     QualificationsStatus = application.QualificationsStatus,
@@ -122,6 +133,16 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                     PhoneNumber = candidate.PhoneNumber,
                     Address = address
                 },
+                EmploymentLocation = application.EmploymentLocation is not null
+                    ? new GetApplicationQueryResult.EmploymentLocationSection
+                    {
+                        Id = application.EmploymentLocation.Id,
+                        EmploymentLocationStatus = application.EmploymentLocationStatus,
+                        Addresses = application.EmploymentLocation.Addresses,
+                        EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
+                        EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
+                    }
+                    : null,
                 AboutYou = new GetApplicationQueryResult.AboutYouSection
                 {
                     SkillsAndStrengths = application.Strengths,

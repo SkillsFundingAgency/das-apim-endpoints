@@ -86,12 +86,17 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             throw new NotImplementedException();
         }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             throw new NotImplementedException();
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new NotImplementedException();
         }

@@ -18,7 +18,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetApplicationReviewsCou
             GetApplicationReviewsCountByAccountIdQuery query,
             List<ApplicationReviewStats> apiResponse,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-            GetApplicationReviewsCountByAccountIdQueryHandler handler)
+            [Greedy] GetApplicationReviewsCountByAccountIdQueryHandler handler)
         {
             //Arrange
             var expectedGetUrl = new GetApplicationReviewsCountByAccountIdApiRequest(query.AccountId, query.VacancyReferences, query.ApplicationSharedFilteringStatus);

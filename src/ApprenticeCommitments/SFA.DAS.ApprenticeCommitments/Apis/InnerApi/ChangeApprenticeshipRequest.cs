@@ -34,6 +34,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.InnerApi
         public bool? RecognisePriorLearning { get; set; }
         public int? DurationReducedByHours { get; set; }
         public int? DurationReducedBy { get; set; }
-
+        public int? ApprenticeshipType { get; set; }
     }
 }
