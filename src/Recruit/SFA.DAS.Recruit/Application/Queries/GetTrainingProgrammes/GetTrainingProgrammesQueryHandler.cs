@@ -18,14 +18,11 @@ namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
 
 public class GetTrainingProgrammesQueryHandler(
     ICourseService courseService,
-    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpApiClient,
-    ILogger<GetTrainingProgrammesQueryHandler> _logger)
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpApiClient)
     : IRequestHandler<GetTrainingProgrammesQuery, GetTrainingProgrammesQueryResult>
 {
     public async Task<GetTrainingProgrammesQueryResult> Handle(GetTrainingProgrammesQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Fetching active standards");
-
         var standards = await courseService.GetActiveStandards<GetStandardsListResponse>("ActiveStandards");
         var allTrainingProgrammes = standards.Standards?
             .Where(c => request.IncludeFoundationApprenticeships ||
@@ -35,16 +32,13 @@ public class GetTrainingProgrammesQueryHandler(
 
         if (request.Ukprn.HasValue)
         {
-            _logger.LogInformation("Filtering training programmes for UKPRN {Ukprn}", request.Ukprn.Value);
-
             var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value ));
 
             if (providerCourses == null || !providerCourses.Any())
             {
-                _logger.LogInformation("No provider courses found for UKPRN {ukprn}", request.Ukprn.Value);
                 return new GetTrainingProgrammesQueryResult
                 {
-                    TrainingProgrammes = allTrainingProgrammes
+                    TrainingProgrammes = []
                 };
             }
 
@@ -54,15 +48,12 @@ public class GetTrainingProgrammesQueryHandler(
                 .Where(p => providerLarsCodes.Contains(p.Id))
                 .ToList();
 
-            _logger.LogInformation("Returning {Count} training programmes", filteredCourses.Count);
-
             return new GetTrainingProgrammesQueryResult
             {
                 TrainingProgrammes = filteredCourses
             };
         }
 
-        _logger.LogInformation("Returning {Count} unfiltered training programmes", allTrainingProgrammes.Count);
         return new GetTrainingProgrammesQueryResult
         {
             TrainingProgrammes = allTrainingProgrammes

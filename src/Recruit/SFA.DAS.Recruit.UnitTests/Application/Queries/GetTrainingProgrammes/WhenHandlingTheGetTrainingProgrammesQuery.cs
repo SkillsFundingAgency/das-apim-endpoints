@@ -3,12 +3,8 @@ using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderCoursesService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCoursesService;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -19,21 +15,25 @@ public class WhenHandlingTheGetTrainingProgrammesQuery
 {
     [Test, MoqAutoData]
     public async Task Then_Returns_Only_Apprenticeship_Standards_When_Foundation_Is_Excluded(
-    GetTrainingProgrammesQuery query,
-    GetStandardsListResponse apiResponse,
-    List<GetStandardsListItem> apprenticeshipStandards,
-    List<GetStandardsListItem> foundationStandards,
-    [Frozen] Mock<ICourseService> mockCourseService,
-    GetTrainingProgrammesQueryHandler handler)
+        GetTrainingProgrammesQuery query,
+        GetStandardsListResponse apiResponse,
+        List<GetStandardsListItem> apprenticeshipStandards,
+        List<GetStandardsListItem> foundationStandards,
+        [Frozen] Mock<ICourseService> mockCourseService,
+        GetTrainingProgrammesQueryHandler handler)
     {
+        query.Ukprn = null;
+        query.IncludeFoundationApprenticeships = false;
+
         foreach (var standard in apprenticeshipStandards)
         {
-            standard.Level = (int) ApprenticeshipLevel.Advanced;
+            standard.Level = (int)ApprenticeshipLevel.Advanced;
             standard.ApprenticeshipType = "Apprenticeship";
         }
+
         foreach (var standard in foundationStandards)
         {
-            standard.Level = (int) ApprenticeshipLevel.Intermediate;
+            standard.Level = (int)ApprenticeshipLevel.Intermediate;
             standard.ApprenticeshipType = "Foundation";
         }
 
@@ -42,8 +42,6 @@ public class WhenHandlingTheGetTrainingProgrammesQuery
         mockCourseService
             .Setup(service => service.GetActiveStandards<GetStandardsListResponse>("ActiveStandards"))
             .ReturnsAsync(apiResponse);
-
-        query.IncludeFoundationApprenticeships = false;
 
         var result = await handler.Handle(query, CancellationToken.None);
 
@@ -60,11 +58,15 @@ public class WhenHandlingTheGetTrainingProgrammesQuery
         [Frozen] Mock<ICourseService> mockCourseService,
         GetTrainingProgrammesQueryHandler handler)
     {
+        query.Ukprn = null;
+        query.IncludeFoundationApprenticeships = true;
+
         foreach (var standard in apprenticeshipStandards)
         {
             standard.Level = (int)ApprenticeshipLevel.Advanced;
             standard.ApprenticeshipType = "Apprenticeship";
         }
+
         foreach (var standard in foundationStandards)
         {
             standard.Level = (int)ApprenticeshipLevel.Intermediate;
@@ -76,8 +78,6 @@ public class WhenHandlingTheGetTrainingProgrammesQuery
         mockCourseService
             .Setup(service => service.GetActiveStandards<GetStandardsListResponse>("ActiveStandards"))
             .ReturnsAsync(apiResponse);
-
-        query.IncludeFoundationApprenticeships = true;
 
         var result = await handler.Handle(query, CancellationToken.None);
 
