@@ -2,7 +2,7 @@
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 
-namespace SFA.DAS.Admin.Roatp.Api.AppStart;
+namespace SFA.DAS.AdminRoatp.Api.AppStart;
 
 public static class AddAuthenticationExtension
 {

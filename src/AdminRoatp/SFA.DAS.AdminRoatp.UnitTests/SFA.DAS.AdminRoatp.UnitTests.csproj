@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.Admin.Roatp\SFA.DAS.Admin.Roatp.csproj" />
+    <ProjectReference Include="..\SFA.DAS.AdminRoatp\SFA.DAS.AdminRoatp.csproj" />
   </ItemGroup>
 
 </Project>

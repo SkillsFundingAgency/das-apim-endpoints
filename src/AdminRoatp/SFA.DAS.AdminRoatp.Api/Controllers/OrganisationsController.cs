@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Admin.Roatp.Application.Organisation.Queries;
+using SFA.DAS.AdminRoatp.Application.Organisation.Queries;
 
-namespace SFA.DAS.Admin.Roatp.Api.Controllers;
+namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]

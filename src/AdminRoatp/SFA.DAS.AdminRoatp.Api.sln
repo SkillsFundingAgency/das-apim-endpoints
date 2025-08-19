@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{02EA681E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{BA42848C-142E-4452-F891-F4F9C7633D96}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Admin.Roatp.Api", "SFA.DAS.Admin.Roatp.Api\SFA.DAS.Admin.Roatp.Api.csproj", "{7C3EC9B3-534D-4684-811B-1630002DAA93}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.AdminRoatp.Api", "SFA.DAS.AdminRoatp.Api\SFA.DAS.AdminRoatp.Api.csproj", "{7C3EC9B3-534D-4684-811B-1630002DAA93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Admin.Roatp", "SFA.DAS.Admin.Roatp\SFA.DAS.Admin.Roatp.csproj", "{02654EEB-4B5E-42E7-8198-42028A0EF9AB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.AdminRoatp", "SFA.DAS.AdminRoatp\SFA.DAS.AdminRoatp.csproj", "{02654EEB-4B5E-42E7-8198-42028A0EF9AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Admin.Roatp.Api.UnitTests", "SFA.DAS.Admin.Roatp.Api.UnitTests\SFA.DAS.Admin.Roatp.Api.UnitTests.csproj", "{8CB196AD-3BE9-4B83-BD8E-604E898B8A77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.AdminRoatp.Api.UnitTests", "SFA.DAS.AdminRoatp.Api.UnitTests\SFA.DAS.AdminRoatp.Api.UnitTests.csproj", "{8CB196AD-3BE9-4B83-BD8E-604E898B8A77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Admin.Roatp.UnitTests", "SFA.DAS.Admin.Roatp.UnitTests\SFA.DAS.Admin.Roatp.UnitTests.csproj", "{5A1166BC-0298-4323-85C6-3FBC4BF63A6A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.AdminRoatp.UnitTests", "SFA.DAS.AdminRoatp.UnitTests\SFA.DAS.AdminRoatp.UnitTests.csproj", "{5A1166BC-0298-4323-85C6-3FBC4BF63A6A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

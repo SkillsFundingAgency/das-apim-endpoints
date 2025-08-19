@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.Admin.Roatp.Application.Organisation.Queries;
+namespace SFA.DAS.AdminRoatp.Application.Organisation.Queries;
 public record GetOrganisationQuery(int Ukprn) : IRequest<GetOrganisationQueryResponse>;
 
 public class GetOrganisationQueryResponse

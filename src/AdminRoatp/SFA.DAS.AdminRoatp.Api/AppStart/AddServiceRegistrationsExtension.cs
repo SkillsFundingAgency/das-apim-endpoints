@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Admin.Roatp.Application.Organisation.Queries;
+﻿using SFA.DAS.AdminRoatp.Application.Organisation.Queries;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
-namespace SFA.DAS.Admin.Roatp.Api.AppStart;
+namespace SFA.DAS.AdminRoatp.Api.AppStart;
 
 public static class AddServiceRegistrationsExtension
 {

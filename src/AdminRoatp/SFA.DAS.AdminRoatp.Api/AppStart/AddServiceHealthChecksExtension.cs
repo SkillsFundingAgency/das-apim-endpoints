@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
-namespace SFA.DAS.Admin.Roatp.Api.AppStart;
+namespace SFA.DAS.AdminRoatp.Api.AppStart;
 
 public static class AddServiceHealthChecksExtension
 {

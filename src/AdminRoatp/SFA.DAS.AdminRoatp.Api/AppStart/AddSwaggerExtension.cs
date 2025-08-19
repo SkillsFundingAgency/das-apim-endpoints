@@ -1,7 +1,7 @@
 ﻿using Microsoft.OpenApi.Models;
 using SFA.DAS.SharedOuterApi.AppStart;
 
-namespace SFA.DAS.Admin.Roatp.Api.AppStart;
+namespace SFA.DAS.AdminRoatp.Api.AppStart;
 
 public static class AddSwaggerExtension
 {

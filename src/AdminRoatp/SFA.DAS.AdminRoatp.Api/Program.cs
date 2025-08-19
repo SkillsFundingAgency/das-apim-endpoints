@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using SFA.DAS.Admin.Roatp.Api.AppStart;
+using SFA.DAS.AdminRoatp.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);

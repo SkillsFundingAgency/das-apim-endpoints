@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Configuration;
 
-namespace SFA.DAS.Admin.Roatp.Api.AppStart;
+namespace SFA.DAS.AdminRoatp.Api.AppStart;
 
 public static class AddConfigurationOptionsExtension
 {
