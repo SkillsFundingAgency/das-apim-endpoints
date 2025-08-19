@@ -12,7 +12,8 @@ public class VacancyReviewResponseEmailTemplate : EmailTemplateArguments
         string employerName, 
         string findAnApprenticeshipAdvertUrl, 
         string notificationSettingsUrl,
-        string vacancyReference)
+        string vacancyReference,
+        string location)
     {
         TemplateId = templateId;
         RecipientAddress = recipientEmail;
@@ -23,7 +24,8 @@ public class VacancyReviewResponseEmailTemplate : EmailTemplateArguments
             {"employerName", employerName },
             {"FindAnApprenticeshipAdvertURL", findAnApprenticeshipAdvertUrl},
             {"notificationSettingsURL", notificationSettingsUrl},
-            {"VACcode", vacancyReference}
+            {"VACcode", vacancyReference},
+            {"location", location}
         };
     }
 }

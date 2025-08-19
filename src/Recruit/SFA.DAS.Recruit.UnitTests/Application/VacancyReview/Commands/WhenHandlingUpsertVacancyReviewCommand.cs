@@ -6,6 +6,7 @@ using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -51,7 +52,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [
             new EventPreference
             {
-                Event = "VacancyApprovedOrRejectedByDfE",
+                Event = "VacancyApprovedOrRejected",
                 Frequency = "Default",
                 Method = "Email",
                 Scope = "OrganisationVacancies"
@@ -61,7 +62,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [
             new EventPreference
             {
-                Event = "VacancyApprovedOrRejectedByDfE",
+                Event = "VacancyApprovedOrRejected",
                 Frequency = "Daily",
                 Method = "Email",
                 Scope = "OrganisationVacancies"
@@ -69,6 +70,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         ];
         command.VacancyReview.ManualOutcome = "Approved";
         command.VacancyReview.OwnerType = "Employer";
+        command.VacancyReview.EmployerLocationOption = AvailableWhere.AcrossEngland;
         var expectedPutRequest = new PutCreateVacancyReviewRequest(command.Id, command.VacancyReview);
         recruitApiClient.Setup(
                 x => x.PutWithResponseCode<NullResponse>(
@@ -94,6 +96,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 && c.Tokens["FindAnApprenticeshipAdvertURL"] == string.Format(emailEnvironmentHelper.LiveVacancyUrl,command.VacancyReview.VacancyReference.ToString())
                 && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsEmployerUrl, command.VacancyReview.HashedAccountId)
                 && c.Tokens["VACcode"] == command.VacancyReview.VacancyReference.ToString()
+                && c.Tokens["location"] == "Recruiting nationally"
             )
         ), Times.Once);
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);

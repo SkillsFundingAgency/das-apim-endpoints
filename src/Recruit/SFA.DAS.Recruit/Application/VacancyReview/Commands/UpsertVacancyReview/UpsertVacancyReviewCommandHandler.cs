@@ -10,6 +10,8 @@ using SFA.DAS.Recruit.Domain.EmailTemplates;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -29,7 +31,7 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
                 new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId));
 
             var usersToNotify = users.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Event.Equals("VacancyApprovedOrRejectedByDfE", StringComparison.CurrentCultureIgnoreCase) &&
+                c.Event.Equals("VacancyApprovedOrRejected", StringComparison.CurrentCultureIgnoreCase) &&
                 c.Frequency.Equals("Default", StringComparison.CurrentCultureIgnoreCase))).ToList();
 
             var emailTasks = usersToNotify
@@ -41,7 +43,9 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
                     request.VacancyReview.EmployerName,
                     string.Format(helper.LiveVacancyUrl, request.VacancyReview.VacancyReference.ToString()),
                     string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId),
-                    request.VacancyReview.VacancyReference.ToString()))
+                    request.VacancyReview.VacancyReference.ToString(),
+                    request.VacancyReview.EmployerLocationOption == AvailableWhere.AcrossEngland ? "Recruiting nationally" 
+                        : EmailTemplateAddressExtension.GetEmploymentLocationCityNames(request.VacancyReview.EmployerLocations)))
                 .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
                 .Select(notificationService.Send).ToList();
             

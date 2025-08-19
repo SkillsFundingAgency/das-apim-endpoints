@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
@@ -36,4 +38,6 @@ public class VacancyReviewDto
     public string OwnerType { get; set; }
     public string HashedAccountId { get; set; }
     public string EmployerName { get; set; }
+    public AvailableWhere EmployerLocationOption { get; set; }
+    public List<Address> EmployerLocations { get; set; }
 }
