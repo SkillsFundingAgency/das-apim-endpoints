@@ -54,6 +54,6 @@ public class WhenGettingNotificationPreferences
         value.Should().NotBeNull();
         value!.Id.Should().Be(userResponse.Id);
         value.IdamsId.Should().Be(userResponse.IdamsUserId);
-        value.NotificationPreferences.EventPreferences.Should().HaveCount(2);
+        value.NotificationPreferences.EventPreferences.Should().HaveCount(3);
     }
 }

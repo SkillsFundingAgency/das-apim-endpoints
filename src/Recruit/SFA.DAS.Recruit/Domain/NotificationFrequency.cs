@@ -6,7 +6,7 @@ namespace SFA.DAS.Recruit.Domain;
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum NotificationFrequency
 {
-    Default,
+    NotSet,
     Never,
     Immediately,
     Daily,

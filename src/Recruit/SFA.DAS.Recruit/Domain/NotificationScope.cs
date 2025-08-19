@@ -6,7 +6,7 @@ namespace SFA.DAS.Recruit.Domain;
 [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
 public enum NotificationScope
 {
-    Default,
+    NotSet,
     UserSubmittedVacancies,
     OrganisationVacancies,
 }
