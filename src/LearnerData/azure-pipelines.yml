@@ -54,3 +54,4 @@ stages:
     OuterApiName: LearnerData
     ConfigurationSecrets:
       NServiceBusLicense: $(NServiceBusLicense)
+      UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
