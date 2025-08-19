@@ -23,7 +23,6 @@ public class ManageNotificationsController(IMediator mediator) : ControllerBase
             return NotFound();
         }
 
-        EmployerNotificationPreferences.UpdateWithDefaults(result.User.NotificationPreferences);
         return Ok(new GetUserNotificationPreferencesByIdamsIdResponse
         {
             Id = result.User.Id,
@@ -41,7 +40,6 @@ public class ManageNotificationsController(IMediator mediator) : ControllerBase
             return NotFound();
         }
 
-        ProviderNotificationPreferences.UpdateWithDefaults(result.User.NotificationPreferences);
         return Ok(new GetUserNotificationPreferencesByDfeUserIdResponse
         {
             Id = result.User.Id,
