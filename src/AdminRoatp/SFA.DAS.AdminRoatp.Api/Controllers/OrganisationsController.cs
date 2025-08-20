@@ -17,4 +17,11 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
         GetOrganisationQueryResponse response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
         return Ok(response);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Received request to get all organisations");
+        return Ok(new { Message = "This endpoint is not implemented yet." });
+    }
 }
