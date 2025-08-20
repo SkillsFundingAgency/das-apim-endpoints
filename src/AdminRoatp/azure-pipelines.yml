@@ -46,7 +46,7 @@ resources:
   - pipeline: das-employer-config
     project: Digital Apprenticeship Service
     source: das-employer-config
-    branch: refs/heads/CSP-2021-RoatpAdminOuterApiConfig
+    branch: master
 
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
