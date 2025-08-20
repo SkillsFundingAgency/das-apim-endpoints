@@ -6,12 +6,14 @@ namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class OrganisationsController(IMediator _mediator) : ControllerBase
+public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsController> _logger) : ControllerBase
 {
     [HttpGet]
     [Route("{ukprn}")]
-    public async Task<IActionResult> Get(int ukprn, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(GetOrganisationQueryResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get([FromRoute] int ukprn, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Received request to get organisation with UKPRN: {Ukprn}", ukprn);
         GetOrganisationQueryResponse response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
         return Ok(response);
     }
