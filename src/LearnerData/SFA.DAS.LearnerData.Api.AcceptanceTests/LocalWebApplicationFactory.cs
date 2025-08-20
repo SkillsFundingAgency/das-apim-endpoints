@@ -20,6 +20,6 @@ public class LocalWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEn
         {
             a.AddInMemoryCollection(_config);
         });
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment("LOCAL_ACCEPTANCE_TESTS");
     }
 }
