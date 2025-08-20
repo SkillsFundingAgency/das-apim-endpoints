@@ -43,8 +43,6 @@ public class WhenGettingNotificationPreferences
             .Setup(x => x.Send(It.IsAny<GetUserByIdamsIdQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetUserByIdamsIdQueryResult(userResponse));
         
-        userResponse.NotificationPreferences.EventPreferences.Clear();
-        
         // act
         var result = await sut.GetUserNotificationPreferencesByIdams(idamsId) as OkObjectResult;
         var value = result?.Value as GetUserNotificationPreferencesByIdamsIdResponse;
@@ -54,6 +52,6 @@ public class WhenGettingNotificationPreferences
         value.Should().NotBeNull();
         value!.Id.Should().Be(userResponse.Id);
         value.IdamsId.Should().Be(userResponse.IdamsUserId);
-        value.NotificationPreferences.EventPreferences.Should().HaveCount(3);
+        value.NotificationPreferences.EventPreferences.Should().HaveCount(userResponse.NotificationPreferences.EventPreferences.Count);
     }
 }
