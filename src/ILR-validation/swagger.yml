@@ -146,12 +146,26 @@ components:
       properties:
         ukprn:
           type: string
+        type:
+          type: string
+          description: From RoatP (under download controller)
+          enum:
+          - employer
+          - main
+        status:
+          type: string
+          description: RoatP
+          enum:
+          - active
+          - notTakingOnNewLearners
         employers:
           type: array
+          description: Provider relationships
           items:
               $ref: '#/components/schemas/employerData'
         supportedCourses:
           type: array
+          description: course management, do we need learning aim definition? Al will create an endpoint
           items:
             type: string
     
@@ -162,7 +176,7 @@ components:
           type: string
         IsLevy:
           type: boolean
-        IsFlexi:
+        IsFlexiEmployer: 
           type: boolean
       
     healthcheckResults:
