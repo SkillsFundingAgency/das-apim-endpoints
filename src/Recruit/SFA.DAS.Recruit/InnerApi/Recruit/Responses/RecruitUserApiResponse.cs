@@ -22,10 +22,10 @@ public class RecruitUserApiResponse
     public DateTime CreatedDate { get; set; }
 
     [JsonPropertyName("updatedDate")]
-    public object UpdatedDate { get; set; }
+    public DateTime? UpdatedDate { get; set; }
 
     [JsonPropertyName("lastSignedInDate")]
-    public DateTime LastSignedInDate { get; set; }
+    public DateTime? LastSignedInDate { get; set; }
 
     [JsonPropertyName("name")]
     public string Name { get; set; }

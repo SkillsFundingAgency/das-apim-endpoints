@@ -32,7 +32,7 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
 
             var usersToNotify = users.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
                 c.Event.Equals("VacancyApprovedOrRejected", StringComparison.CurrentCultureIgnoreCase) &&
-                c.Frequency.Equals("Default", StringComparison.CurrentCultureIgnoreCase))).ToList();
+                c.Frequency.Equals("Immediately", StringComparison.CurrentCultureIgnoreCase))).ToList();
 
             var emailTasks = usersToNotify
                 .Select(apiResponse => new VacancyReviewResponseEmailTemplate(

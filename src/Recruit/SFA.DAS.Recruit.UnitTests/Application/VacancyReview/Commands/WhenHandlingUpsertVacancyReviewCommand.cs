@@ -53,7 +53,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
             new EventPreference
             {
                 Event = "VacancyApprovedOrRejected",
-                Frequency = "Default",
+                Frequency = "Immediately",
                 Method = "Email",
                 Scope = "OrganisationVacancies"
             }
