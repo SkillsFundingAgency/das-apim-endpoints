@@ -380,8 +380,6 @@ components:
         learningKey:
           type: string
           format: uuid
-        ukprn:
-          type: integer
         uln:
           type: integer
 
