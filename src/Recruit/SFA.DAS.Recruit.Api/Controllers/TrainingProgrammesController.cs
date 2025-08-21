@@ -24,13 +24,12 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> GetAll([FromQuery] bool? includeFoundationApprenticeships = false, [FromQuery] int? ukprn = null)
+        public async Task<IActionResult> GetAll([FromQuery] int? ukprn = null)
         {
             try
             {
                 var result = await _mediator.Send(new GetTrainingProgrammesQuery
                 {
-                    IncludeFoundationApprenticeships = includeFoundationApprenticeships.HasValue && includeFoundationApprenticeships.Value,
                     Ukprn = ukprn
                 });
                 

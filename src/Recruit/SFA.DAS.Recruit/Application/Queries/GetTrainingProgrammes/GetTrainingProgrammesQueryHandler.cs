@@ -1,14 +1,10 @@
 ﻿using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCoursesService;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -25,8 +21,6 @@ public class GetTrainingProgrammesQueryHandler(
     {
         var standards = await courseService.GetActiveStandards<GetStandardsListResponse>("ActiveStandards");
         var allTrainingProgrammes = standards.Standards?
-            .Where(c => request.IncludeFoundationApprenticeships ||
-                        c.ApprenticeshipType.Equals("Apprenticeship", StringComparison.CurrentCultureIgnoreCase))
             .Select(item => (TrainingProgramme)item)
             .ToList() ?? [];
 

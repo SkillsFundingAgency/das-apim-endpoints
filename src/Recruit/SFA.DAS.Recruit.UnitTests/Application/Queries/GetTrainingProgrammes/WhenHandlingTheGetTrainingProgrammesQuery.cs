@@ -14,7 +14,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetTrainingProgrammes;
 public class WhenHandlingTheGetTrainingProgrammesQuery
 {
     [Test, MoqAutoData]
-    public async Task Then_Returns_Only_Apprenticeship_Standards_When_Foundation_Is_Excluded(
+    public async Task Then_Returns_All_Standards_When_Ukprn_IsNull(
         GetTrainingProgrammesQuery query,
         GetStandardsListResponse apiResponse,
         List<GetStandardsListItem> apprenticeshipStandards,
@@ -23,43 +23,6 @@ public class WhenHandlingTheGetTrainingProgrammesQuery
         GetTrainingProgrammesQueryHandler handler)
     {
         query.Ukprn = null;
-        query.IncludeFoundationApprenticeships = false;
-
-        foreach (var standard in apprenticeshipStandards)
-        {
-            standard.Level = (int)ApprenticeshipLevel.Advanced;
-            standard.ApprenticeshipType = "Apprenticeship";
-        }
-
-        foreach (var standard in foundationStandards)
-        {
-            standard.Level = (int)ApprenticeshipLevel.Intermediate;
-            standard.ApprenticeshipType = "Foundation";
-        }
-
-        apiResponse.Standards = apprenticeshipStandards.Concat(foundationStandards).ToList();
-
-        mockCourseService
-            .Setup(service => service.GetActiveStandards<GetStandardsListResponse>("ActiveStandards"))
-            .ReturnsAsync(apiResponse);
-
-        var result = await handler.Handle(query, CancellationToken.None);
-
-        result.TrainingProgrammes.Should().BeEquivalentTo(
-            apprenticeshipStandards.Select(item => (TrainingProgramme)item));
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Returns_All_Standards_When_Foundation_Is_Included(
-        GetTrainingProgrammesQuery query,
-        GetStandardsListResponse apiResponse,
-        List<GetStandardsListItem> apprenticeshipStandards,
-        List<GetStandardsListItem> foundationStandards,
-        [Frozen] Mock<ICourseService> mockCourseService,
-        GetTrainingProgrammesQueryHandler handler)
-    {
-        query.Ukprn = null;
-        query.IncludeFoundationApprenticeships = true;
 
         foreach (var standard in apprenticeshipStandards)
         {
