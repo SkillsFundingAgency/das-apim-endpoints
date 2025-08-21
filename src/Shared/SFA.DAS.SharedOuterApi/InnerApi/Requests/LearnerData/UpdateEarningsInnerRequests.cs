@@ -4,13 +4,13 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 
-public class SaveCompletionApiPutRequest : IPatchApiRequest<SaveCompletionRequest>
+public class SaveCompletionApiPatchRequest : IPatchApiRequest<SaveCompletionRequest>
 {
     public string PatchUrl { get; }
 
     public SaveCompletionRequest Data { get; set; }
 
-    public SaveCompletionApiPutRequest(Guid learningKey, SaveCompletionRequest data)
+    public SaveCompletionApiPatchRequest(Guid learningKey, SaveCompletionRequest data)
     {
         PatchUrl = $"apprenticeship/{learningKey.ToString()}/completion";
         Data = data;

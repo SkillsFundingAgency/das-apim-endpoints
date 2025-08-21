@@ -14,7 +14,7 @@ internal static class EarningsApiClientExtensions
     {
         await LogAndExecute(async () =>
         {
-            await earningsApiClient.Patch(new SaveCompletionApiPutRequest(command.LearningKey, new SaveCompletionRequest
+            await earningsApiClient.Patch(new SaveCompletionApiPatchRequest(command.LearningKey, new SaveCompletionRequest
             {
                 CompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate
             }));

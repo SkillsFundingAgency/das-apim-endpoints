@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LearnerData.Application;
+namespace SFA.DAS.LearnerData.Application.GetLearners;
 
 public class GetLearnersQuery : PagedQuery, IRequest<GetLearnersQueryResult>
 {

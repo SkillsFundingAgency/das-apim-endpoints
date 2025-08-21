@@ -7,7 +7,6 @@ using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ProcessLearners;
 
