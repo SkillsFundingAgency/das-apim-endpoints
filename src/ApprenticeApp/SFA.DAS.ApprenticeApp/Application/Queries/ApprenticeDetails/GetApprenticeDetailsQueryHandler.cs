@@ -42,7 +42,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
                 ApprenticeDetails = new ApprenticeDetails
                 {
                     Apprentice = await apprenticeTask,
-                    MyApprenticeship = await myApprenticeshipTask
+                    MyApprenticeship = myApprenticeship,
                 }
             };
         }
@@ -60,7 +60,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
                 var course = await _coursesService.GetStandardCourse(myApprenticeship.StandardUId);
                 myApprenticeship.Title = course.Title;
                 myApprenticeship.Level = course.Level;
-                myApprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();;
+                myApprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
             }
             return myApprenticeship;
         }
