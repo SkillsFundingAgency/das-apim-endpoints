@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Interfaces
@@ -9,5 +10,7 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task SaveToCache<T>(string key, T item, int expirationInHours);
         Task DeleteFromCache(string key);
         Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow);
+        Task AddToCacheKeyRegistry(string registryName, string key);
+        Task<List<string>> GetCacheKeyRegistry(string registryName);
     }
 }

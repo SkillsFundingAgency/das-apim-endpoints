@@ -31,9 +31,11 @@ namespace SFA.DAS.ApimDeveloper.Application.Services
                 await _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
                     new GetAvailableApiProductsRequest(accountType));
 
-            await _cacheStorageService.SaveToCache($"{accountType}-{nameof(GetAvailableApiProductsResponse)}", products,
-                CachedProductExpiryTimeInHours);
-            
+            var key = $"{accountType}-{nameof(GetAvailableApiProductsResponse)}";
+
+            await _cacheStorageService.SaveToCache(key, products, CachedProductExpiryTimeInHours);
+            await _cacheStorageService.AddToCacheKeyRegistry("DocumentationKeys", key);
+
             return products;
         }
     }
