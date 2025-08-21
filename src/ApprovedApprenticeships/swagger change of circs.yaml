@@ -384,10 +384,6 @@ components:
           type: integer
         uln:
           type: integer
-        standardCode:
-          type: integer
-        academicYear:
-          type: integer
 
     # common CoC header
     header:
