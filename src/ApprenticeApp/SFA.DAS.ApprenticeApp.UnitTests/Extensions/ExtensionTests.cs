@@ -15,7 +15,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string input = "Apprenticeship";
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
             ClassicAssert.AreEqual((int)ApprenticeshipType.Apprenticeship, result);
@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string input = "fOuNdAtIoNaPpReNtIcEsHiP";
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
             ClassicAssert.AreEqual((int)ApprenticeshipType.FoundationApprenticeship, result);
@@ -41,10 +41,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string input = "InvalidValue";
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
-            ClassicAssert.AreEqual(0, result);
+            ClassicAssert.AreEqual(null, result);
         }
 
         [Test]
@@ -54,10 +54,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string input = "";
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
-            ClassicAssert.AreEqual(0, result);
+            ClassicAssert.AreEqual(null, result);
         }
 
         [Test]
@@ -67,10 +67,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string? input = null;
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
-            ClassicAssert.AreEqual(0, result);
+            ClassicAssert.AreEqual(null, result);
         }
 
         [Test]
@@ -81,7 +81,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             int customDefault = 99;
             
             // Act
-            int result = input.GetApprenticeshipType(customDefault);
+            int? result = input.GetApprenticeshipType(customDefault);
             
             // Assert
             ClassicAssert.AreEqual(customDefault, result);
@@ -94,10 +94,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string input = "   ";
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
-            ClassicAssert.AreEqual(0, result);
+            ClassicAssert.AreEqual(null, result);
         }
         
         [Test]
@@ -107,10 +107,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string input = "Foundation";
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
-            ClassicAssert.AreEqual(0, result); // Should return default since it's not exact match
+            ClassicAssert.AreEqual(null, result); // Should return default since it's not exact match
         }
 
         [Test]
@@ -120,7 +120,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Extensions
             string input = "Apprenticeship".ToUpperInvariant(); // Test different casing
             
             // Act
-            int result = input.GetApprenticeshipType();
+            int? result = input.GetApprenticeshipType();
             
             // Assert
             ClassicAssert.AreEqual((int)ApprenticeshipType.Apprenticeship, result);

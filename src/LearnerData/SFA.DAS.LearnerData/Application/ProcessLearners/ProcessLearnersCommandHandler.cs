@@ -4,7 +4,7 @@ using NServiceBus;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 
-namespace SFA.DAS.LearnerData.Application;
+namespace SFA.DAS.LearnerData.Application.ProcessLearners;
 
 public class ProcessLearnersCommandHandler(
     ILogger<ProcessLearnersCommandHandler> logger,
@@ -12,7 +12,7 @@ public class ProcessLearnersCommandHandler(
 {
     public Task Handle(ProcessLearnersCommand request, CancellationToken cancellationToken)
     {
-        return Parallel.ForEachAsync(request.Learners, new ParallelOptions {MaxDegreeOfParallelism = 5},
+        return Parallel.ForEachAsync(request.Learners, new ParallelOptions { MaxDegreeOfParallelism = 5 },
             async (learner, cancellationToken) =>
             {
                 logger.LogTrace("Publishing LearnerDataEvent");
