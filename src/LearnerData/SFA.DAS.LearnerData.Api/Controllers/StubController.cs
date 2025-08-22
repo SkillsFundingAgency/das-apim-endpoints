@@ -13,7 +13,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
         public IActionResult UpdateLearner([FromRoute] Guid learningKey,
             [FromBody] StubUpdateLearnerRequest request)
         {
-            return new OkResult();
+            return Ok();
         }
 
         [HttpDelete]
@@ -21,7 +21,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
         [ProducesResponseType(200)]
         public IActionResult DeleteLearner([FromRoute] Guid learningKey)
         {
-            return new OkResult();
+            return Ok();
         }
     }
 }
