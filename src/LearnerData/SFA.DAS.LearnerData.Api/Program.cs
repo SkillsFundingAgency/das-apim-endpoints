@@ -84,10 +84,6 @@ builder.Services.AddHealthChecks()
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IValidator<IEnumerable<LearnerDataRequest>>, BulkLearnerDataRequestsValidator>();
-builder.Services.Configure<ApiBehaviorOptions>(options =>
-{
-    options.SuppressModelStateInvalidFilter = true;
-});
 
 builder.Services.AddApiServices();
 
