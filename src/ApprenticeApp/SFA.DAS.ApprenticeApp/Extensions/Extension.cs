@@ -5,7 +5,7 @@ namespace SFA.DAS.ApprenticeApp.Extensions
 {
     public static class Extension
     {
-        public static int GetApprenticeshipType(this string value, int defaultValue = 0)
+        public static int? GetApprenticeshipType(this string value, int? defaultValue = null)
         {
             if (Enum.TryParse(typeof(ApprenticeshipType), value, true, out var result))
             {
