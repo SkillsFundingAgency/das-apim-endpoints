@@ -2,11 +2,12 @@
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Domain.EmailTemplates;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+using SFA.DAS.SharedOuterApi.Models.Messages;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,25 +29,27 @@ public class ApplicationReviewSharedCommandHandler(
             .Replace("{2}", request.ApplicationId.ToString());
 
         var users = await apiClient.GetAll<RecruitUserApiResponse>(
-            new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.AccountId));
+            new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.AccountId, NotificationTypes.ApplicationSharedWithEmployer));
 
         var usersToNotify = users.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-            c.Event.Equals("ApplicationSharedWithEmployer", StringComparison.CurrentCultureIgnoreCase) &&
-            c.Frequency.Equals("Default", StringComparison.CurrentCultureIgnoreCase))).ToList();
+            c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
 
-        var applicationReviewSharedEmail = new ApplicationReviewSharedEmailTemplate(helper.ApplicationReviewSharedEmailTemplatedId,
-            request.RecipientEmail,
-            request.FirstName,
+        var emailTasks = usersToNotify
+            .Select(apiResponse => ApplicationReviewSharedEmailTemplate(request, apiResponse, employerReviewUrl))
+            .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
+            .Select(notificationService.Send).ToList();
+
+        await Task.WhenAll(emailTasks);
+    }
+
+    private EmailTemplateArguments ApplicationReviewSharedEmailTemplate(ApplicationReviewSharedCommand request, RecruitUserApiResponse apiResponse, string employerReviewUrl)
+    {
+        return new ApplicationReviewSharedEmailTemplate(helper.ApplicationReviewSharedEmailTemplatedId,
+            apiResponse.Email,
+            apiResponse.Name,
             request.TrainingProvider,
             request.AdvertTitle,
             request.VacancyReference.ToString(),
             employerReviewUrl);
-
-        var sendEmailCommand = new SendEmailCommand(applicationReviewSharedEmail.TemplateId,
-            applicationReviewSharedEmail.RecipientAddress,
-            applicationReviewSharedEmail.Tokens);
-
-        // Send the email using the notification service
-        await notificationService.Send(sendEmailCommand).ConfigureAwait(false);
     }
 }
