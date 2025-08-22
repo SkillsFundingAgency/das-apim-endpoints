@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests;
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 
-public class PutVacancyRequest(Guid id, PutVacancyRequestData data) : IPutApiRequest
+public class PutVacancyResponse
 {
-    public string PutUrl => $"api/vacancies/{id}";
-    public object Data { get; set; } = data;
-}
-
-public class PutVacancyRequestData
-{
+    public Guid Id { get; set; }
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
     public required VacancyStatus Status { get; init; }

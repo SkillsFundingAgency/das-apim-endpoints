@@ -2,7 +2,7 @@ using System;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests;
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
 public record PatchRecruitApplicationReviewApiRequest(
     Guid ApplicationId,

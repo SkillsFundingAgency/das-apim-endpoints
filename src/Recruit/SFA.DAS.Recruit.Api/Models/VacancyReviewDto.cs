@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.OpenApi.Expressions;
 using Newtonsoft.Json;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Api.Models;
@@ -28,13 +30,12 @@ public class VacancyReviewDto
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
     public long AccountLegalEntityId { get; set; }
-
     public string OwnerType { get; set; }
-
     public long AccountId { get; set; }
-
     public long Ukprn { get; set; }
-
+    public string HashedAccountId { get; set; }
+    public string EmployerName { get; set; }
+    public Guid VacancyId { get; set; }
     public static explicit operator VacancyReviewDto(GetVacancyReviewResponse source)
     {
         return new VacancyReviewDto
@@ -58,13 +59,16 @@ public class VacancyReviewDto
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = source.VacancySnapshot,
-            OwnerType = source.OwnerType
+            OwnerType = source.OwnerType,
+            VacancyId = source.VacancyId
         };
     }
 
-    public static explicit operator InnerApi.Requests.VacancyReviewDto(VacancyReviewDto source)
+    
+
+    public static explicit operator InnerApi.Recruit.Requests.VacancyReviewDto(VacancyReviewDto source)
     {
-        return new InnerApi.Requests.VacancyReviewDto
+        return new InnerApi.Recruit.Requests.VacancyReviewDto
         {
             VacancyReference = source.VacancyReference,
             VacancyTitle =  source.VacancyTitle,
@@ -87,7 +91,9 @@ public class VacancyReviewDto
             Ukprn = source.Ukprn,
             AccountId = source.AccountId,
             OwnerType = source.OwnerType,
-            AccountLegalEntityId = source.AccountLegalEntityId
+            AccountLegalEntityId = source.AccountLegalEntityId,
+            EmployerName = source.EmployerName,
+            HashedAccountId = source.HashedAccountId
         };
     }
 }

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Recruit.InnerApi.Responses;
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 
 public class GetVacancyReviewResponse
 {
@@ -25,4 +25,5 @@ public class GetVacancyReviewResponse
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
     public string OwnerType { get; set; }
+    public Guid VacancyId { get; set; }
 }

@@ -1,14 +1,16 @@
 ﻿using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Api.Models.Vacancies;
 
 public class VacancyMapper()
 {
-    public InnerApi.Requests.PutVacancyRequestData ToInnerDto(PostVacancyRequest vacancy)
+    public PutVacancyRequestData ToInnerDto(PostVacancyRequest vacancy)
     {
-        return new InnerApi.Requests.PutVacancyRequestData
+        return new PutVacancyRequestData
         {
             AccountId = vacancy.AccountId,
             AccountLegalEntityId = vacancy.AccountLegalEntityId,
