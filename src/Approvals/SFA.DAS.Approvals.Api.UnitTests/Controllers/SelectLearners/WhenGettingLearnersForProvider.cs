@@ -39,6 +39,8 @@ public class WhenGettingLearnersForProvider
             {
                 var q = (GetLearnersForProviderQuery)o;
                 q.ProviderId.Should().Be(providerId);
+                q.StartYear.Should().Be(startYear);
+                q.StartMonth.Should().Be(startMonth);
                 q.AccountLegalEntityId.Should().Be(accountLegalEntityId);
                 q.SearchTerm.Should().Be(searchTerm);
                 q.SortField.Should().Be(sortColumn);
