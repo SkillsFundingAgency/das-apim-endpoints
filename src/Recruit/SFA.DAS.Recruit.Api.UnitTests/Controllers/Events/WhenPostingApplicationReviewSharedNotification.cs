@@ -6,7 +6,7 @@ using System;
 using System.Net;
 using System.Threading;
 
-namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.ApplicationReviews;
+namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Events;
 
 [TestFixture]
 internal class WhenPostingApplicationReviewSharedNotification
@@ -16,7 +16,7 @@ internal class WhenPostingApplicationReviewSharedNotification
     public async Task Then_Post_From_Mediator(
         PostApplicationReviewSharedNotificationApiRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ApplicationReviewsController controller)
+        [Greedy] EventsController controller)
     {
 
         var actual = await controller.SendApplicationReviewSharedNotification(request) as NoContentResult;
@@ -27,8 +27,6 @@ internal class WhenPostingApplicationReviewSharedNotification
                 c.HashAccountId == request.HashAccountId
                 && c.VacancyId == request.VacancyId
                 && c.ApplicationId == request.ApplicationId
-                && c.RecipientEmail == request.RecipientEmail
-                && c.FirstName == request.FirstName
                 && c.TrainingProvider == request.TrainingProvider
                 && c.AdvertTitle == request.AdvertTitle
                 && c.VacancyReference == request.VacancyReference
@@ -39,7 +37,7 @@ internal class WhenPostingApplicationReviewSharedNotification
     public async Task And_Exception_Then_Returns_Bad_Request(
         PostApplicationReviewSharedNotificationApiRequest request,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ApplicationReviewsController controller)
+        [Greedy] EventsController controller)
     {
         mockMediator
             .Setup(mediator => mediator.Send(

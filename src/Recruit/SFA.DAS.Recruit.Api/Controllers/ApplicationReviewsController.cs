@@ -86,30 +86,5 @@ namespace SFA.DAS.Recruit.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-
-        [HttpPost]
-        [Route("notification/shared-with-employer")]
-        public async Task<IActionResult> SendApplicationReviewSharedNotification(
-            [FromBody] PostApplicationReviewSharedNotificationApiRequest request,
-            CancellationToken token = default)
-        {
-            try
-            {
-                await mediator.Send(new ApplicationReviewSharedCommand(request.HashAccountId,
-                    request.VacancyId,
-                    request.ApplicationId,
-                    request.RecipientEmail,
-                    request.FirstName,
-                    request.TrainingProvider,
-                    request.AdvertTitle,
-                    request.VacancyReference), token);
-                return NoContent();
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error posting application review shared notification");
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
     }
 }
