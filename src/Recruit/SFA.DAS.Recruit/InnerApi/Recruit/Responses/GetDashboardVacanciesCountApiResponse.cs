@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SFA.DAS.Recruit.InnerApi.Responses;
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 public record GetDashboardVacanciesCountApiResponse
 {
     [JsonProperty("info")]

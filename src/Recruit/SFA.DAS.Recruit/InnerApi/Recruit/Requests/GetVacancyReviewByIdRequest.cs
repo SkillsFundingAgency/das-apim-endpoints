@@ -1,7 +1,7 @@
 using System;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests;
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
 public class GetVacancyReviewByIdRequest(Guid id) : IGetApiRequest
 {

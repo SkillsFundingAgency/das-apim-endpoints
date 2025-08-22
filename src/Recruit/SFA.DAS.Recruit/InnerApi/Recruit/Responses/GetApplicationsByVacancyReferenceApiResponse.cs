@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Enums;
 
-namespace SFA.DAS.Recruit.InnerApi.Responses
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses
 {
     public record GetApplicationsByVacancyReferenceApiResponse
     {
