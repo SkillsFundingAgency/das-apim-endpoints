@@ -35,7 +35,7 @@ public class VacancyReviewDto
     public long Ukprn { get; set; }
     public string HashedAccountId { get; set; }
     public string EmployerName { get; set; }
-
+    public Guid VacancyId { get; set; }
     public static explicit operator VacancyReviewDto(GetVacancyReviewResponse source)
     {
         return new VacancyReviewDto
@@ -60,8 +60,11 @@ public class VacancyReviewDto
             UpdatedFieldIdentifiers = source.UpdatedFieldIdentifiers,
             VacancySnapshot = source.VacancySnapshot,
             OwnerType = source.OwnerType,
+            VacancyId = source.VacancyId
         };
     }
+
+    
 
     public static explicit operator InnerApi.Recruit.Requests.VacancyReviewDto(VacancyReviewDto source)
     {

@@ -15,7 +15,7 @@ public class EmailEnvironmentHelper
         VacancyReviewApprovedTemplateId=
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "d8855c4f-9ce1-4870-93ff-53e609f59a51" : "9a45ff1d-769d-4be2-96fb-dcf605e0108f";
-        VacacnyReviewRejectedByDfeTemplayeId = 
+        VacacnyReviewRejectedByDfeTemplateId = 
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "27acd0e9-96fe-47ec-ae33-785e00a453f8" : "5869140a-2a76-4a7c-b4b9-083d2afc5aa5";
         CandidateApplicationUrl = $"{GetBaseUrl(environmentName)}applications";
@@ -34,7 +34,7 @@ public class EmailEnvironmentHelper
     public string SuccessfulApplicationEmailTemplateId { get; }
     public string UnsuccessfulApplicationEmailTemplateId { get; }
     public string VacancyReviewApprovedTemplateId { get; }
-    public string VacacnyReviewRejectedByDfeTemplayeId { get; }
+    public string VacacnyReviewRejectedByDfeTemplateId { get; }
 
     private static string GetBaseUrl(string environmentName)
     {
