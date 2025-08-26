@@ -8,7 +8,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
     public class StubController : ControllerBase
     {
         [HttpPut]
-        [Route("{learningKey}")]
+        [Route("providers/{ukprn}/learning/{learningKey}")]
         [ProducesResponseType(200)]
         public IActionResult UpdateLearner([FromRoute] Guid learningKey,
             [FromBody] StubUpdateLearnerRequest request)
@@ -17,7 +17,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
         }
 
         [HttpDelete]
-        [Route("{learningKey}")]
+        [Route("providers/{ukprn}/learning/{learningKey}")]
         [ProducesResponseType(200)]
         public IActionResult DeleteLearner([FromRoute] Guid learningKey)
         {
