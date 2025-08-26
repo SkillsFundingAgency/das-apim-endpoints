@@ -6,6 +6,7 @@ using MediatR;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Domain.EmailTemplates;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -31,8 +32,8 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
                 new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId));
 
             var usersToNotify = users.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Event.Equals("VacancyApprovedOrRejected", StringComparison.CurrentCultureIgnoreCase) &&
-                c.Frequency.Equals("Immediately", StringComparison.CurrentCultureIgnoreCase))).ToList();
+                c.Event.Equals(NotificationTypes.VacancyApprovedOrRejected) &&
+                c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
 
             var emailTasks = usersToNotify
                 .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome))
@@ -63,7 +64,7 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
         if (outcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase))
         {
             return new VacancyReviewRejectedResponseEmailTemplate(
-                helper.VacacnyReviewRejectedByDfeTemplateId,
+                helper.VacancyReviewRejectedByDfeTemplateId,
                 apiResponse.Email, 
                 request.VacancyReview.VacancyTitle, 
                 apiResponse.Name,

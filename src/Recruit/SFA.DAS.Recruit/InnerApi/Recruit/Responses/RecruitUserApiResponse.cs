@@ -1,3 +1,4 @@
+using SFA.DAS.Recruit.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -46,14 +47,14 @@ public class NotificationPreferences
 public class EventPreference
 {
     [JsonPropertyName("event")]
-    public string Event { get; set; }
+    public NotificationTypes Event { get; set; }
 
     [JsonPropertyName("method")]
     public string Method { get; set; }
 
     [JsonPropertyName("scope")]
-    public string Scope { get; set; }
+    public NotificationScope Scope { get; set; }
 
     [JsonPropertyName("frequency")]
-    public string Frequency { get; set; }
+    public NotificationFrequency Frequency { get; set; }
 }
