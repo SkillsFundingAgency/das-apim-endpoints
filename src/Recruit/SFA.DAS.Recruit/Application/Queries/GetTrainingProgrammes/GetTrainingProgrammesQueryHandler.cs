@@ -26,7 +26,7 @@ public class GetTrainingProgrammesQueryHandler(
 
         if (request.Ukprn.HasValue)
         {
-            var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value ));
+            var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value));
 
             if (providerCourses == null || !providerCourses.Any())
             {

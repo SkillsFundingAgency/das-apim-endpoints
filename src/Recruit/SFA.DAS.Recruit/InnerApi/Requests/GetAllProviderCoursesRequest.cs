@@ -16,6 +16,6 @@ namespace SFA.DAS.Recruit.InnerApi.Requests
             _ukprn = ukprn;
         }
 
-        public string GetUrl => $"providers/{_ukprn}/courses";
+        public string GetUrl => $"api/providers/{_ukprn}/courses";
     }
 }
