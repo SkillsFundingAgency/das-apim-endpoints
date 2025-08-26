@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.Recruit.Application.ApplicationReview.Command.ApplicationReviewShared;
+using SFA.DAS.Recruit.Application.ApplicationReview.Events.ApplicationReviewShared;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
@@ -15,14 +15,14 @@ internal class WhenHandlingApplicationReviewSharedCommand
 {
     [Test, MoqAutoData]
     public async Task Then_If_The_Command_Is_Handled_Then_Notifications_Sent_For_Employers_With_Immediate_Notification(
-        ApplicationReviewSharedCommand command,
+        ApplicationReviewSharedEvent command,
         RecruitUserApiResponse userApiResponse1,
         RecruitUserApiResponse userApiResponse2,
         RecruitUserApiResponse userApiResponse3,
         [Frozen] EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
-        ApplicationReviewSharedCommandHandler handler)
+        ApplicationReviewSharedEventHandler handler)
     {
         userApiResponse1.NotificationPreferences.EventPreferences =
         [

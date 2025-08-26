@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.ApplicationReview.Command.ApplicationReviewShared;
+using SFA.DAS.Recruit.Application.ApplicationReview.Events.ApplicationReviewShared;
 using System;
 using System.Net;
 using System.Threading;
@@ -15,14 +15,14 @@ internal class WhenPostingApplicationReviewSharedNotification
     [Test, MoqAutoData]
     public async Task Then_Post_From_Mediator(
         PostApplicationReviewSharedNotificationApiRequest request,
-        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IPublisher> mockMediator,
         [Greedy] EventsController controller)
     {
 
         var actual = await controller.SendApplicationReviewSharedNotification(request) as NoContentResult;
 
         actual.Should().NotBeNull();
-        mockMediator.Verify(x => x.Send(It.Is<ApplicationReviewSharedCommand>(
+        mockMediator.Verify(x => x.Publish(It.Is<ApplicationReviewSharedEvent>(
             c =>
                 c.HashAccountId == request.HashAccountId
                 && c.VacancyId == request.VacancyId
@@ -36,12 +36,12 @@ internal class WhenPostingApplicationReviewSharedNotification
     [Test, MoqAutoData]
     public async Task And_Exception_Then_Returns_Bad_Request(
         PostApplicationReviewSharedNotificationApiRequest request,
-        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<IPublisher> mockMediator,
         [Greedy] EventsController controller)
     {
         mockMediator
-            .Setup(mediator => mediator.Send(
-                It.IsAny<ApplicationReviewSharedCommand>(),
+            .Setup(mediator => mediator.Publish(
+                It.IsAny<ApplicationReviewSharedEvent>(),
                 It.IsAny<CancellationToken>()))
             .Throws<InvalidOperationException>();
 

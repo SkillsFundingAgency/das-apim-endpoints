@@ -12,16 +12,16 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.ApplicationReviewShared;
+namespace SFA.DAS.Recruit.Application.ApplicationReview.Events.ApplicationReviewShared;
 // <summary>
 // Handles the command to share an application review via email.
 // </summary>
-public class ApplicationReviewSharedCommandHandler(
+public class ApplicationReviewSharedEventHandler(
     IRecruitApiClient<RecruitApiConfiguration> apiClient,
     INotificationService notificationService,
-    EmailEnvironmentHelper helper) : IRequestHandler<ApplicationReviewSharedCommand>
+    EmailEnvironmentHelper helper) : INotificationHandler<ApplicationReviewSharedEvent>
 {
-    public async Task Handle(ApplicationReviewSharedCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ApplicationReviewSharedEvent request, CancellationToken cancellationToken)
     {
         var employerReviewUrl = $"{helper.ApplicationReviewSharedEmployerUrl}"
             .Replace("{0}", request.HashAccountId)
@@ -42,14 +42,12 @@ public class ApplicationReviewSharedCommandHandler(
         await Task.WhenAll(emailTasks);
     }
 
-    private EmailTemplateArguments ApplicationReviewSharedEmailTemplate(ApplicationReviewSharedCommand request, RecruitUserApiResponse apiResponse, string employerReviewUrl)
-    {
-        return new ApplicationReviewSharedEmailTemplate(helper.ApplicationReviewSharedEmailTemplatedId,
+    private EmailTemplateArguments ApplicationReviewSharedEmailTemplate(ApplicationReviewSharedEvent request, RecruitUserApiResponse apiResponse, string employerReviewUrl) =>
+        new ApplicationReviewSharedEmailTemplate(helper.ApplicationReviewSharedEmailTemplatedId,
             apiResponse.Email,
             apiResponse.Name,
             request.TrainingProvider,
             request.AdvertTitle,
             request.VacancyReference.ToString(),
             employerReviewUrl);
-    }
 }

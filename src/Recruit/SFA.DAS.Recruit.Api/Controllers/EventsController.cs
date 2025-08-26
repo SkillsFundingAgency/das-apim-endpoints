@@ -6,13 +6,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.ApplicationReview.Command.ApplicationReviewShared;
+using SFA.DAS.Recruit.Application.ApplicationReview.Events.ApplicationReviewShared;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class EventsController(IMediator mediator,
+public class EventsController(IPublisher mediator,
     ILogger<ApplicationReviewsController> logger) : ControllerBase
 {
     [HttpPost]
@@ -23,7 +23,7 @@ public class EventsController(IMediator mediator,
     {
         try
         {
-            await mediator.Send(new ApplicationReviewSharedCommand(request.HashAccountId,
+            await mediator.Publish(new ApplicationReviewSharedEvent(request.HashAccountId,
                 request.AccountId,
                 request.VacancyId,
                 request.ApplicationId,
@@ -34,7 +34,7 @@ public class EventsController(IMediator mediator,
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error posting application review shared with employer notification");
+            logger.LogError(e, "Error posting application review shared with employer notification event");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

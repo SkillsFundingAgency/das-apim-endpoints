@@ -9,7 +9,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Recruit.Application.ApplicationReview.Command.ApplicationReviewShared;
 using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewById;
 
 namespace SFA.DAS.Recruit.Api.Controllers
