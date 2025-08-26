@@ -83,7 +83,7 @@ public class WhenHandlingTheGetTrainingProgrammesQuery
 
         mockRoatpClient
             .Setup(client => client.Get<List<ProviderCourse>>(
-                It.Is<GetAllProviderCoursesRequest>(r => r.GetUrl == $"providers/{providerUkprn}/courses")))
+                It.Is<GetAllProviderCoursesRequest>(r => r.GetUrl == $"api/providers/{providerUkprn}/courses")))
             .ReturnsAsync(providerCourses);
 
         var result = await handler.Handle(query, CancellationToken.None);
