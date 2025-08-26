@@ -40,4 +40,5 @@ public class VacancyReviewDto
     public string EmployerName { get; set; }
     public AvailableWhere EmployerLocationOption { get; set; }
     public List<Address> EmployerLocations { get; set; }
+    public Guid VacancyId { get; set; }
 }

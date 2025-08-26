@@ -45,6 +45,6 @@ namespace SFA.DAS.ApprenticeApp.Services
     {
         public string Title { get; set; }
         public int Level { get; set; }
-        public string ApprenticeshipType { get; set; }
+        public string? ApprenticeshipType { get; set; }
     }
 }

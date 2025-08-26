@@ -101,4 +101,70 @@ public class WhenHandlingUpsertVacancyReviewCommand
         ), Times.Once);
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
     }
+    
+    
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Command_Is_Referring_An_Employer_Created_Vacancy_Review_Then_Notifications_Sent_For_Employers_With_Immediate_Notification(
+        UpsertVacancyReviewCommand command,
+        RecruitUserApiResponse userApiResponse1,
+        RecruitUserApiResponse userApiResponse2,
+        RecruitUserApiResponse userApiResponse3,
+        [Frozen] EmailEnvironmentHelper emailEnvironmentHelper,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<INotificationService> notificationService,
+        UpsertVacancyReviewCommandHandler handler)
+    {
+        userApiResponse1.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = "VacancyApprovedOrRejected",
+                Frequency = "Immediately",
+                Method = "Email",
+                Scope = "OrganisationVacancies"
+            }
+        ];
+        userApiResponse3.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = "VacancyApprovedOrRejected",
+                Frequency = "Daily",
+                Method = "Email",
+                Scope = "OrganisationVacancies"
+            }
+        ];
+        command.VacancyReview.ManualOutcome = "Referred";
+        command.VacancyReview.OwnerType = "Employer";
+        command.VacancyReview.EmployerLocationOption = AvailableWhere.AcrossEngland;
+        var expectedPutRequest = new PutCreateVacancyReviewRequest(command.Id, command.VacancyReview);
+        recruitApiClient.Setup(
+                x => x.PutWithResponseCode<NullResponse>(
+                    It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
+            .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
+        recruitApiClient
+            .Setup(x => x.GetAll<RecruitUserApiResponse>(
+                It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
+                    c.GetAllUrl.Contains(command.VacancyReview.AccountId.ToString())))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
+
+        await handler.Handle(command, CancellationToken.None);
+
+        recruitApiClient.Verify(
+            x => x.PutWithResponseCode<NullResponse>(
+                It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)), Times.Once);
+        notificationService.Verify(x=>x.Send(
+            It.Is<SendEmailCommand>(c=>
+                c.RecipientsAddress == userApiResponse1.Email
+                && c.TemplateId == emailEnvironmentHelper.VacacnyReviewRejectedByDfeTemplateId
+                && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
+                && c.Tokens["firstName"] == userApiResponse1.Name
+                && c.Tokens["employerName"] == command.VacancyReview.EmployerName
+                && c.Tokens["rejectedAdvertURL"] == string.Format(emailEnvironmentHelper.ReviewVacancyReviewInRecruitEmployerUrl,command.VacancyReview.HashedAccountId, command.VacancyReview.VacancyId.ToString())
+                && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsEmployerUrl, command.VacancyReview.HashedAccountId)
+                && c.Tokens["VACcode"] == command.VacancyReview.VacancyReference.ToString()
+                && c.Tokens["location"] == "Recruiting nationally"
+            )
+        ), Times.Once);
+        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
+    }
 }

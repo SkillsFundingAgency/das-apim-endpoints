@@ -25,4 +25,5 @@ public class GetVacancyReviewResponse
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
     public string OwnerType { get; set; }
+    public Guid VacancyId { get; set; }
 }
