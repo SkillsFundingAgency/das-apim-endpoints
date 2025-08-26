@@ -3,6 +3,7 @@ using System.Threading;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
 using SFA.DAS.Recruit.Domain;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -52,20 +53,20 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [
             new EventPreference
             {
-                Event = "VacancyApprovedOrRejected",
-                Frequency = "Immediately",
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Immediately,
                 Method = "Email",
-                Scope = "OrganisationVacancies"
+                Scope = NotificationScope.OrganisationVacancies
             }
         ];
         userApiResponse3.NotificationPreferences.EventPreferences =
         [
             new EventPreference
             {
-                Event = "VacancyApprovedOrRejected",
-                Frequency = "Daily",
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Daily,
                 Method = "Email",
-                Scope = "OrganisationVacancies"
+                Scope = NotificationScope.OrganisationVacancies
             }
         ];
         command.VacancyReview.ManualOutcome = "Approved";
@@ -118,20 +119,20 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [
             new EventPreference
             {
-                Event = "VacancyApprovedOrRejected",
-                Frequency = "Immediately",
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Immediately,
                 Method = "Email",
-                Scope = "OrganisationVacancies"
+                Scope = NotificationScope.OrganisationVacancies
             }
         ];
         userApiResponse3.NotificationPreferences.EventPreferences =
         [
             new EventPreference
             {
-                Event = "VacancyApprovedOrRejected",
-                Frequency = "Daily",
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Daily,
                 Method = "Email",
-                Scope = "OrganisationVacancies"
+                Scope = NotificationScope.OrganisationVacancies
             }
         ];
         command.VacancyReview.ManualOutcome = "Referred";
@@ -155,7 +156,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         notificationService.Verify(x=>x.Send(
             It.Is<SendEmailCommand>(c=>
                 c.RecipientsAddress == userApiResponse1.Email
-                && c.TemplateId == emailEnvironmentHelper.VacacnyReviewRejectedByDfeTemplateId
+                && c.TemplateId == emailEnvironmentHelper.VacancyReviewRejectedByDfeTemplateId
                 && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
                 && c.Tokens["firstName"] == userApiResponse1.Name
                 && c.Tokens["employerName"] == command.VacancyReview.EmployerName
