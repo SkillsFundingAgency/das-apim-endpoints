@@ -28,6 +28,7 @@ public class StubLearner
     public string LearnerRef { get; set; }
     public string Firstname { get; set; }
     public string Lastname { get; set; }
+    [Required]
     public DateTime? Dob { get; set; }
     public string Email { get; set; }
     public bool HasEhcp { get; set; }
@@ -42,9 +43,12 @@ public class StubDelivery
 public class StubOnProgramme
 {
     public StubCare Care { get; set; }
-    public int StandardCode { get; set; }
+    [Required]
+    public int? StandardCode { get; set; }
     public string AgreementId { get; set; }
+    [Required]
     public DateTime? StartDate { get; set; }
+    [Required]
     public DateTime? ExpectedEndDate { get; set; }
     public int OffTheJobHours { get; set; }
     public int PercentageOfTrainingLeft { get; set; }
@@ -64,20 +68,26 @@ public class StubCost
 {
     public int TrainingPrice { get; set; }
     public int EpaoPrice { get; set; }
-    public DateTime FromDate { get; set; }
+    [Required]
+    public DateTime? FromDate { get; set; }
 }
 
 public class StubLearningSupport
 {
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    [Required]
+    public DateTime? StartDate { get; set; }
+    [Required]
+    public DateTime? EndDate { get; set; }
 }
 
 public class StubEnglishAndMaths
 {
-    public DateTime StartDate { get; set; }
-    public DateTime PlannedEndDate { get; set; }
-    public int CourseCode { get; set; }
+    [Required]
+    public DateTime? StartDate { get; set; }
+    [Required]
+    public DateTime? PlannedEndDate { get; set; }
+    [Required]
+    public int? CourseCode { get; set; }
     public int? PriorLearningPercentage { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }

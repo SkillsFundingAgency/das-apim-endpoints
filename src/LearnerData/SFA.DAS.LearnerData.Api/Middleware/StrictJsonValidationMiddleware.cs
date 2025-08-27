@@ -8,7 +8,7 @@ public class StrictJsonValidationMiddleware<T>(RequestDelegate next, ILogger<Str
 {
     public async Task InvokeAsync(HttpContext context)
     {
-        if (context.Request.Path.StartsWithSegments("/stub/") &&
+        if (context.Request.Path.StartsWithSegments("/Stub/providers", StringComparison.OrdinalIgnoreCase) &&
             context.Request.Method.Equals("PUT", StringComparison.OrdinalIgnoreCase))
         {
             context.Request.EnableBuffering();
@@ -25,7 +25,7 @@ public class StrictJsonValidationMiddleware<T>(RequestDelegate next, ILogger<Str
 
             try
             {
-                JsonConvert.DeserializeObject<T>(rawJson, settings);
+                var result = JsonConvert.DeserializeObject<T>(rawJson, settings);
             }
             catch (JsonSerializationException ex)
             {
