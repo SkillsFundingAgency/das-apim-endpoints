@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: Approved training external API for consumption from an authenticated consumer
-  description: 'This service will provide a contract to the Data Collections team for consumption of approved training'
+  title: Approved learning external API for consumption from an authenticated consumer
+  description: 'This service will provide a contract to the Data Collections team for consumption of approved learning'
 paths:
   /info:
     get:
@@ -72,7 +72,7 @@ paths:
         '201':
           $ref: '#/components/responses/acceptedResponse'
     put:
-      summary: Updates the details of a list of approved training records
+      summary: Updates the details of a list of approved learning records
       security:
         - ApiKeyAuth: []  # Require API Key authentication
       parameters:
@@ -169,15 +169,18 @@ components:
 
   requestBodies:
     learningRecordRequest:
-      description: Details of an updated training
+      description: Details of an updated learning
       required: true
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/apprenticeshipLearning"
+            oneOf:
+              - $ref: "#/components/schemas/apprenticeshipLearning"
+              - $ref: "#/components/schemas/shortApprenticeshipLearning"
+              - $ref: "#/components/schemas/foundationApprenticeshipLearning"
   responses:
     pagedLearningIdentifiersResponse:
-      description: A paged training response
+      description: A paged learning identifiers response
       headers:
         Link:
           description: Pagination links (next, prev)
@@ -250,7 +253,7 @@ components:
         text/plain:
           schema:
             type: string
-            example: Leaner data APIM for the training service - Version 3.0.2
+            example: Leaner data APIM for the learning service - Version 3.0.2
             
   schemas:
     error:
@@ -267,7 +270,7 @@ components:
     pagedLearningIdentifiers:
       type: object
       properties:
-        training:
+        learning:
           type: array
           items:
               $ref: '#/components/schemas/learningIdentifier'
@@ -325,7 +328,7 @@ components:
       properties:
         ukprn:
           type: string
-        trainingType:
+        learningType:
           type: string
           enum:
           - apprenticeship
@@ -450,5 +453,14 @@ components:
                             type: string
                             format: date
 
+    foundationApprenticeshipLearning:
+      description: This is the exact copy of a normal apprenticeship
+      allOf:
+      - $ref: "#/components/schemas/apprenticeshipLearning"
+
+    shortApprenticeshipLearning:
+      description: This is the exact copy of a normal apprenticeship
+      allOf:
+      - $ref: "#/components/schemas/apprenticeshipLearning"
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
