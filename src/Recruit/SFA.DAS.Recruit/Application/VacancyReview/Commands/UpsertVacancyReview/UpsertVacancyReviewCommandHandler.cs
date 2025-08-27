@@ -50,7 +50,7 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
         if (outcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase))
         {
             return new VacancyReviewResponseEmailTemplate(
-                helper.VacancyReviewApprovedTemplateId,
+                helper.VacancyReviewApprovedEmployerTemplateId,
                 apiResponse.Email, 
                 request.VacancyReview.VacancyTitle, 
                 apiResponse.Name,

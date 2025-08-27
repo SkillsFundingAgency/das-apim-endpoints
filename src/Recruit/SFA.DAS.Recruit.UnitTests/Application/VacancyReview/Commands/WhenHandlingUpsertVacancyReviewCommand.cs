@@ -90,7 +90,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         notificationService.Verify(x=>x.Send(
             It.Is<SendEmailCommand>(c=>
                 c.RecipientsAddress == userApiResponse1.Email
-                && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedTemplateId
+                && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedEmployerTemplateId
                 && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
                 && c.Tokens["firstName"] == userApiResponse1.Name
                 && c.Tokens["employerName"] == command.VacancyReview.EmployerName
