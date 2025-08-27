@@ -19,23 +19,66 @@ public class WhenHandlingUpsertVacancyReviewCommand
     [Test, MoqAutoData]
     public async Task Then_The_Command_Is_Handled_And_Api_Called(
         UpsertVacancyReviewCommand command,
+        RecruitUserApiResponse userApiResponse1,
+        RecruitUserApiResponse userApiResponse2,
+        RecruitUserApiResponse userApiResponse3,
+        [Frozen] EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         UpsertVacancyReviewCommandHandler handler)
     {
+        userApiResponse1.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Immediately,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            }
+        ];
+        userApiResponse3.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Daily,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            }
+        ];
+        command.VacancyReview.ManualOutcome = "Approved";
         command.VacancyReview.OwnerType = "Provider";
+        command.VacancyReview.EmployerLocationOption = AvailableWhere.AcrossEngland;
         var expectedPutRequest = new PutCreateVacancyReviewRequest(command.Id, command.VacancyReview);
         recruitApiClient.Setup(
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
+        recruitApiClient
+            .Setup(x => x.GetAll<RecruitUserApiResponse>(
+                It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
+                    c.GetAllUrl.Contains(command.VacancyReview.Ukprn.ToString())))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
 
         await handler.Handle(command, CancellationToken.None);
 
         recruitApiClient.Verify(
             x => x.PutWithResponseCode<NullResponse>(
                 It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)), Times.Once);
-        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
+        
+        notificationService.Verify(x=>x.Send(
+            It.Is<SendEmailCommand>(c=>
+                c.RecipientsAddress == userApiResponse1.Email
+                && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedProviderTemplateId
+                && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
+                && c.Tokens["firstName"] == userApiResponse1.Name
+                && c.Tokens["employerName"] == command.VacancyReview.EmployerName
+                && c.Tokens["FindAnApprenticeshipAdvertURL"] == string.Format(emailEnvironmentHelper.LiveVacancyUrl,command.VacancyReview.VacancyReference.ToString())
+                && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsProviderUrl, command.VacancyReview.Ukprn)
+                && c.Tokens["VACcode"] == command.VacancyReview.VacancyReference.ToString()
+                && c.Tokens["location"] == "Recruiting nationally"
+            )
+        ), Times.Once);
     }
     
     [Test, MoqAutoData]
@@ -100,7 +143,6 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 && c.Tokens["location"] == "Recruiting nationally"
             )
         ), Times.Once);
-        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
     }
     
     
