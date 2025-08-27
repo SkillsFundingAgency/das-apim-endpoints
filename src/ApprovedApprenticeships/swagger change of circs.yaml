@@ -406,8 +406,6 @@ components:
                         fromDate:
                           type: string
                           format: date
-                        reduction4Rpl:
-                          type: integer
                   completionDate:
                     type: string
                     format: date
