@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace SFA.DAS.LearnerData.Requests;
 
@@ -71,16 +70,19 @@ public class StubCost
 
 public class StubLearningSupport
 {
-    public DateTime? From { get; set; }
-    public DateTime? To { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
 }
 
 public class StubEnglishAndMaths
 {
-    public DateTime? StartDate { get; set; }
-    public DateTime? EndDate { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime PlannedEndDate { get; set; }
     public int CourseCode { get; set; }
-    public DateTime? ActualEndDate { get; set; }
+    public int? PriorLearningPercentage { get; set; }
+    public DateTime? CompletionDate { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
+
     public List<StubLearningSupport> LearningSupport { get; set; }
 }
 
