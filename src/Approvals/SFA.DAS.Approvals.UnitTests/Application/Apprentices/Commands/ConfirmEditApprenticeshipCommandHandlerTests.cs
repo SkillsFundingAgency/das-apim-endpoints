@@ -138,4 +138,43 @@ public class ConfirmEditApprenticeshipCommandHandlerTests
         await FluentActions.Invoking(() => handler.Handle(command, CancellationToken.None))
             .Should().ThrowAsync<HttpRequestContentException>();
     }
+
+    [Test, MoqAutoData]
+    public async Task Handle_ShouldPass_EmployerReferenceInto_Request(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsV2ApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
+        ConfirmEditApprenticeshipCommandHandler handler,
+         GetApprenticeshipResponse apprenticeshipResponse,
+         GetLearnerAgeResponse learnerAgeResponse)
+    {
+        // Arrange
+        var command = new ConfirmEditApprenticeshipCommand
+        {
+            ApprenticeshipId = 123,
+            EmployerReference = "Reference",
+            CourseCode = "Course1",
+            ProviderId = 1,
+            AccountId = 111,
+            Email = "Test@test.com"
+        };        
+
+        commitmentsV2ApiClient.Setup(x => x.Get<GetApprenticeshipResponse>(It.IsAny<GetApprenticeshipRequest>()))
+            .ReturnsAsync(apprenticeshipResponse);
+        courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(command.CourseCode))
+            .ReturnsAsync(new CourseTypeRulesResult { LearnerAgeRules = learnerAgeResponse });
+
+        IPostApiRequest apiRequest = null;
+        bool resp = false;
+        commitmentsV2ApiClient.Setup(x => x.PostWithResponseCode<EditApprenticeshipResponse>(It.IsAny<EditApprenticeshipApiRequest>(),
+            It.IsAny<bool>()
+            ))
+            .Callback<IPostApiRequest,bool>((req, r) => { apiRequest = req; resp = r; })
+           .ReturnsAsync(new ApiResponse<EditApprenticeshipResponse>(new EditApprenticeshipResponse() { ApprenticeshipId =123 }, HttpStatusCode.OK,string.Empty));
+
+        await handler.Handle(command, CancellationToken.None);
+
+        apiRequest.Should().NotBeNull();
+        var editRequest = apiRequest.Should().BeOfType<EditApprenticeshipApiRequest>().Subject;
+        editRequest.EditApprenticeshipApiRequestData.EmployerReference.Should().Be("Reference");
+    }
 } 
