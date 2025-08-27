@@ -1,5 +1,5 @@
 ﻿namespace SFA.DAS.Recruit.Domain;
-public record Address
+public record CandidateAddress
 {
     public string? AddressLine1 { get; init; }
     public string? AddressLine2 { get; init; }
