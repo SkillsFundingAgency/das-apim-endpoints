@@ -25,9 +25,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             return json == null ? default : JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions{});
         }
 
-        public async Task SaveToCache<T>(string key, T item, int expirationInHours, string? registryName = null)
+        public async Task SaveToCache<T>(string key, T item, int expirationInHours)
         {
-            await SaveToCache(key, item, TimeSpan.FromHours(expirationInHours), registryName);
+            await SaveToCache(key, item, TimeSpan.FromHours(expirationInHours), null);
         }
 
         public async Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow, string? registryName = null)

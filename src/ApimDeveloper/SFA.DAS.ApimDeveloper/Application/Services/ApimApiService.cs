@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.InnerApi.Requests;
@@ -33,7 +34,7 @@ namespace SFA.DAS.ApimDeveloper.Application.Services
             var products = await _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
                 new GetAvailableApiProductsRequest(accountType));
 
-            await _cacheStorageService.SaveToCache(key, products, CachedProductExpiryTimeInHours, "DocumentationKeys");
+            await _cacheStorageService.SaveToCache(key, products, TimeSpan.FromHours(CachedProductExpiryTimeInHours), "DocumentationKeys");
 
             return products;
 
