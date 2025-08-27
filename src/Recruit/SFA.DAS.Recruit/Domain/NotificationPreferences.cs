@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.Recruit.Enums;
 
 namespace SFA.DAS.Recruit.Domain;
 
