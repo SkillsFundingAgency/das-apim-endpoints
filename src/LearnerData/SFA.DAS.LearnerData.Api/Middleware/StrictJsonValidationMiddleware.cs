@@ -29,11 +29,22 @@ public class StrictJsonValidationMiddleware<T>(RequestDelegate next, ILogger<Str
             }
             catch (JsonSerializationException ex)
             {
-                logger.LogWarning("Strict deserialization failed: {Message}", ex.Message);
+                logger.LogError("Strict deserialization failed: {Message}", ex.Message);
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsJsonAsync(new
                 {
                     error = "Unexpected or invalid fields in payload",
+                    details = ex.Message
+                });
+                return;
+            }
+            catch (JsonReaderException ex)
+            {
+                logger.LogError("Strict deserialization failed: {Message}", ex.Message);
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(new
+                {
+                    error = "Invalid JSON format in payload",
                     details = ex.Message
                 });
                 return;

@@ -18,7 +18,7 @@ public class StubUpdateLearnerRequest
 public class StubHeader
 {
     [Required]
-    public string TrainingType { get; set; }
+    public string TrainingType { get; set; } //todo: rename to LearningType
     [Required]
     public string ConsumerReference { get; set; }
 }
