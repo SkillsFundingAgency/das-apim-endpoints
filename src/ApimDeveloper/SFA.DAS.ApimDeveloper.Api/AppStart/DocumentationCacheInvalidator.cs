@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApimDeveloper.Api.AppStart
 {
-    public class DocumentationCacheInvalidator : IHostedService
+    public class DocumentationCacheInvalidator
     {
         private readonly ICacheStorageService _cacheStorageService;
         private readonly ILogger<DocumentationCacheInvalidator> _logger;
@@ -19,25 +19,15 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
             _logger = logger;
         }
 
-        public async Task StartAsync(CancellationToken cancellationToken)
+        public async Task InvalidateAsync()
         {
             try
             {
                 var keys = await _cacheStorageService.GetCacheKeyRegistry("DocumentationKeys");
 
-                if (keys.Any())
-                {
-                    _logger.LogInformation("Found {Count} documentation cache keys to delete.", keys.Count);
-                }
-                else
-                {
-                    _logger.LogInformation("No documentation cache keys found to delete.");
-                }
-
                 foreach (var key in keys)
                 {
                     await _cacheStorageService.DeleteFromCache(key);
-                    _logger.LogInformation("Deleted cache key: {Key}", key);
                 }
             }
             catch (Exception ex)
@@ -45,7 +35,5 @@ namespace SFA.DAS.ApimDeveloper.Api.AppStart
                 _logger.LogError(ex, "Error occurred while invalidating documentation cache.");
             }
         }
-
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 }

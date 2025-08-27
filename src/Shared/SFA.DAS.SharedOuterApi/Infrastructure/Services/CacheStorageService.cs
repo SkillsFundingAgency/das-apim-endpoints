@@ -25,12 +25,12 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             return json == null ? default : JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions{});
         }
 
-        public async Task SaveToCache<T>(string key, T item, int expirationInHours)
+        public async Task SaveToCache<T>(string key, T item, int expirationInHours, string? registryName = null)
         {
-            await SaveToCache(key, item, TimeSpan.FromHours(expirationInHours));
+            await SaveToCache(key, item, TimeSpan.FromHours(expirationInHours), registryName);
         }
 
-        public async Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow)
+        public async Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow, string? registryName = null)
         {
             var json = JsonSerializer.Serialize(item);
 
@@ -38,6 +38,11 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             {
                 AbsoluteExpirationRelativeToNow = expiryTimeFromNow
             });
+
+            if (!string.IsNullOrEmpty(registryName))
+            {
+                await AddToCacheKeyRegistry(registryName, key);
+            }
         }
 
         public async Task DeleteFromCache(string key)
