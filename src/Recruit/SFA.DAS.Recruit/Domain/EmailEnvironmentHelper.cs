@@ -24,6 +24,9 @@ public class EmailEnvironmentHelper
         ApplicationReviewSharedEmailTemplatedId =
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "53058846-e369-4396-87b2-015c9d16360a" : "f6fc57e6-7318-473d-8cb5-ca653035391a ";
+        AdvertApprovedByDfeTemplateId =
+            environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
+                ? "c35e76e7-303b-4b18-bb06-ad98cf68158d" : "c445095e-e659-499b-b2ab-81e321a9b591";
         CandidateApplicationUrl = $"{GetBaseUrl(environmentName)}applications";
         LiveVacancyUrl = $"{GetBaseUrl(environmentName)}apprenticeship/{{0}}";
         NotificationsSettingsProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/notifications-manage/";
@@ -45,6 +48,7 @@ public class EmailEnvironmentHelper
     public string VacancyReviewApprovedProviderTemplateId { get; }
     public string VacancyReviewRejectedByDfeTemplateId { get; }
     public string ApplicationReviewSharedEmailTemplatedId { get; }
+    public string AdvertApprovedByDfeTemplateId { get; }
 
     private static string GetBaseUrl(string environmentName)
     {

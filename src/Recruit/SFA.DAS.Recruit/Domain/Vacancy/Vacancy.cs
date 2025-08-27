@@ -1,19 +1,19 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using DomainAddress = SFA.DAS.SharedOuterApi.Models.Address;
 
-namespace SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
+namespace SFA.DAS.Recruit.Domain.Vacancy;
 
-public class PostVacancyRequest
+public class Vacancy
 {
+    public Guid Id { get; init; }
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
-    public required VacancyStatus Status { get; init; }
+    public required VacancyStatus Status { get; set; }
     public ApprenticeshipTypes? ApprenticeshipType { get; init; }
     public string? Title { get; init; }
-    public OwnerType? OwnerType { get; init; }
+    public OwnerType? OwnerType { get; set; }
     public SourceOrigin? SourceOrigin { get; init; }
     public SourceType? SourceType { get; init; }
     public long? SourceVacancyReference { get; init; }
@@ -37,7 +37,7 @@ public class PostVacancyRequest
     public bool? DisabilityConfident { get; init; }
     public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; init; }
-    public List<Address>? EmployerLocations { get; set; }
+    public List<DomainAddress>? EmployerLocations { get; set; }
     public AvailableWhere? EmployerLocationOption { get; init; }
     public string? EmployerLocationInformation { get; init; }
     public string? EmployerName { get; init; }
@@ -66,6 +66,6 @@ public class PostVacancyRequest
     public bool? HasOptedToAddQualifications { get; init; }
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
-    public string? SubmittedByUserId { get; init; }
-    public string? ReviewRequestedByUserId { get; init; }
+    public Guid? SubmittedByUserId { get; init; }
+    public Guid? ReviewRequestedByUserId { get; set; }
 }

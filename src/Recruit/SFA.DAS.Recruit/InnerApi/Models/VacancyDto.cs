@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
+namespace SFA.DAS.Recruit.InnerApi.Models;
 
-public class PostVacancyRequest
+public class VacancyDto
 {
+    public Guid Id { get; init; }
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
     public required VacancyStatus Status { get; init; }
@@ -21,7 +22,7 @@ public class PostVacancyRequest
     public DateTime? CreatedDate { get; init; }
     public DateTime? LastUpdatedDate { get; init; }
     public DateTime? SubmittedDate { get; init; }
-    public DateTime? ReviewRequestedDate { get; init; }
+    public DateTime? ReviewDate { get; init; }
     public DateTime? ClosedDate { get; init; }
     public DateTime? DeletedDate { get; init; }
     public DateTime? LiveDate { get; init; }
@@ -66,6 +67,6 @@ public class PostVacancyRequest
     public bool? HasOptedToAddQualifications { get; init; }
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
-    public string? SubmittedByUserId { get; init; }
-    public string? ReviewRequestedByUserId { get; init; }
+    public Guid? SubmittedByUserId { get; init; }
+    public Guid? ReviewRequestedByUserId { get; init; }
 }

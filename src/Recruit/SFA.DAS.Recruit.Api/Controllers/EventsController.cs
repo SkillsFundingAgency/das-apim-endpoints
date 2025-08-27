@@ -7,13 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.ApplicationReview.Events.ApplicationReviewShared;
+using SFA.DAS.Recruit.Events;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class EventsController(IPublisher mediator,
-    ILogger<ApplicationReviewsController> logger) : ControllerBase
+public class EventsController(
+    IPublisher mediator,
+    ILogger<EventsController> logger) : ControllerBase
 {
     [HttpPost]
     [Route("application-shared-with-employer")]
@@ -37,5 +39,13 @@ public class EventsController(IPublisher mediator,
             logger.LogError(e, "Error posting application review shared with employer notification event");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
+    }
+
+    [HttpPost, Route("vacancy-submitted")]
+    public async Task<IActionResult> OnVacancySubmitted([FromBody] PostVacancySubmittedEventModel body)
+    {
+        logger.LogInformation("OnVacancySubmitted triggered for vacancy {VacancyId} ({VacancyReference})", body.VacancyId, body.VacancyReference);
+        await mediator.Publish(new VacancySubmittedEvent(body.VacancyId, body.VacancyReference));
+        return NoContent();
     }
 }
