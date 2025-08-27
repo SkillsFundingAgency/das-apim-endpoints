@@ -38,6 +38,7 @@ public class VacancySubmittedEventHandler(
         var vacancy = result.Vacancy;
         if (vacancy is { OwnerType: OwnerType.Provider, ReviewRequestedByUserId: not null })
         {
+            // TODO: this should be pulled out into another service
             var users = await apiClient.GetAll<RecruitUserApiResponse>(
                 new GetProviderRecruitUserNotificationPreferencesApiRequest(vacancy.TrainingProvider!.Ukprn!.Value,
                     NotificationTypes.VacancyApprovedOrRejected));
