@@ -7,26 +7,20 @@ using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Exceptions;
-using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey;
-using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
-using GetPendingPriceChangeRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange.GetPendingPriceChangeRequest;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries;
@@ -50,11 +44,6 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     private GetChangeOfProviderChainResponse _changeOfProviderChainResponse;
     private GetChangeOfEmployerChainResponse _changeOfEmployerChainResponse;
     private GetOverlappingTrainingDateResponse _overlappingTrainingDateResponse;
-    private GetPendingPriceChangeResponse _pendingPriceChangeResponse;
-    private GetPendingStartDateChangeApiResponse _pendingStartDateChangeResponse;
-    private GetPaymentStatusApiResponse _paymentStatusResponse;
-    private GetLearnerStatusResponse _learnerStatusResponse;
-    private Guid _apprenticeshipKey;
 
     [SetUp]
     public void Setup()
@@ -75,11 +64,6 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _changeOfProviderChainResponse = fixture.Create<GetChangeOfProviderChainResponse>();
         _changeOfEmployerChainResponse = fixture.Create<GetChangeOfEmployerChainResponse>();
         _overlappingTrainingDateResponse = fixture.Create<GetOverlappingTrainingDateResponse>();
-        _pendingPriceChangeResponse = fixture.Create<GetPendingPriceChangeResponse>();
-        _pendingStartDateChangeResponse = fixture.Create<GetPendingStartDateChangeApiResponse>();
-        _paymentStatusResponse = fixture.Create<GetPaymentStatusApiResponse>();
-        _learnerStatusResponse = fixture.Create<GetLearnerStatusResponse>();
-
         _deliveryModels = fixture.Create<List<string>>();
 
         _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
@@ -164,33 +148,6 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         result.ChangeOfProviderChain.Should().BeEquivalentTo(_changeOfProviderChainResponse.ChangeOfProviderChain);
         result.ChangeOfEmployerChain.Should().BeEquivalentTo(_changeOfEmployerChainResponse.ChangeOfEmployerChain);
         result.OverlappingTrainingDateRequest.Should().BeEquivalentTo(_overlappingTrainingDateResponse.OverlappingTrainingDateRequest);
-    }
-
-    [Test]
-    public async Task When_apprenticeship_has_pending_price_change_then_details_returned()
-    {
-        _pendingPriceChangeResponse.HasPendingPriceChange = true;
-        
-        var result = await _handler.Handle(_query, CancellationToken.None);
-        
-        result.PendingPriceChange.Cost.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice);
-        result.PendingPriceChange.TrainingPrice.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice);
-        result.PendingPriceChange.EndPointAssessmentPrice.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice);
-        result.PendingPriceChange.ProviderApprovedDate.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate);
-        result.PendingPriceChange.EmployerApprovedDate.Should().Be(_pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate);
-    }
-
-    [Test]
-    public async Task When_apprenticeship_has_pending_start_date_change_then_details_returned()
-    {
-        _pendingStartDateChangeResponse.HasPendingStartDateChange = true;
-        
-        var result = await _handler.Handle(_query, CancellationToken.None);
-        
-        result.PendingStartDateChange.PendingActualStartDate.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate);
-        result.PendingStartDateChange.ProviderApprovedDate.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate);
-        result.PendingStartDateChange.EmployerApprovedDate.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate);
-        result.PendingStartDateChange.Initiator.Should().Be(_pendingStartDateChangeResponse.PendingStartDateChange.Initiator);
     }
 
     [Test]
@@ -317,16 +274,6 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     }
 
     [Test]
-    public async Task When_apprenticeship_has_no_pending_price_change_then_details_not_returned()
-    {
-        _pendingPriceChangeResponse.HasPendingPriceChange = false;
-        
-        var result = await _handler.Handle(_query, CancellationToken.None);
-        
-        result.PendingPriceChange.Should().BeNull();
-    }
-
-    [Test]
     public async Task Handle_Returns_null_if_apprenticeship_not_found()
     {
         _apiClient.Setup(x =>
@@ -338,24 +285,6 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         result.Should().BeNull();
     }
 
-    [TestCase(true)]
-    [TestCase(false)]
-    public async Task When_apprenticeship_has_payments_frozen_then_correct_response_returned(bool paymentsFrozen)
-    {
-        _paymentStatusResponse.PaymentsFrozen = paymentsFrozen;
-        
-            _paymentStatusResponse.ReasonFrozen = "Test reason";
-            _paymentStatusResponse.FrozenOn = DateTime.Now;
-
-
-        //  Act
-        var result = await _handler.Handle(_query, CancellationToken.None);
-        
-        result.PaymentsStatus.PaymentsFrozen.Should().Be(paymentsFrozen);
-        result.PaymentsStatus.ReasonFrozen.Should().Be(_paymentStatusResponse.ReasonFrozen);
-        result.PaymentsStatus.FrozenOn.Should().Be(_paymentStatusResponse.FrozenOn);
-    }
-    
     [Test]
     public async Task When_Apprenticeship_Is_Null_Then_No_Exception_Is_Thrown()
     {
