@@ -18,6 +18,6 @@ public class WhenBuildingGetProviderRecruitUserNotificationPreferencesApiRequest
     {
         var actual = new GetProviderRecruitUserNotificationPreferencesApiRequest(ukprn);
 
-        actual.GetAllUrl.Should().Be($"api/user/by/ukprn/{ukprn}?notificationType=");
+        actual.GetAllUrl.Should().Be($"api/user/by/ukprn/{ukprn}");
     }
 }
