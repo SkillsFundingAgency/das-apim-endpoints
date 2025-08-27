@@ -531,7 +531,8 @@ public class ApprenticesController(
                 CourseCode = request.CourseCode,
                 Version = request.Version,
                 Option = request.Option,
-                UserInfo = request.UserInfo
+                UserInfo = request.UserInfo,
+                EmployerReference = request.EmployerReference,
             };
 
             var result = await mediator.Send(command);
