@@ -38,7 +38,6 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
     private Mock<IDeliveryModelService> _deliveryModelService;
     private ServiceParameters _serviceParameters;
-    private Mock<ILearningApiClient<LearningApiConfiguration>> _apprenticeshipsApiClient;
     private Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _collectionCalendarApiClient;
 
     private GetApprenticeshipResponse _apprenticeship;
@@ -67,7 +66,6 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
             .With(x => x.EmployerAccountId, 123)
             .With(x => x.Id, _query.ApprenticeshipId)
             .With(x => x.ActualStartDate, (DateTime?)null)
-            .With(x => x.IsOnFlexiPaymentPilot, true)
             .Create();
 
         _priceEpisodesResponse = fixture.Create<GetPriceEpisodesResponse>();
@@ -129,26 +127,9 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
 
         _serviceParameters = new ServiceParameters(Party.Employer, 123);
 
-        _apprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
-
-        _apprenticeshipKey = Guid.NewGuid();
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<Guid>(It.Is<GetLearningKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId))).ReturnsAsync(new ApiResponse<Guid>(_apprenticeshipKey, HttpStatusCode.OK, string.Empty));
-
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
-            .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
-
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
-            .ReturnsAsync(new ApiResponse<GetPendingStartDateChangeApiResponse>(_pendingStartDateChangeResponse, HttpStatusCode.OK, string.Empty));
-
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.LearningKey == _apprenticeshipKey)))
-            .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(_paymentStatusResponse, HttpStatusCode.OK, string.Empty));
-
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetLearnerStatusResponse>(It.Is<GetLearnerStatusRequest>(r => r.LearningKey == _apprenticeshipKey)))
-            .ReturnsAsync(new ApiResponse<GetLearnerStatusResponse>(_learnerStatusResponse, HttpStatusCode.OK, string.Empty));
-
         _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
-        _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _apprenticeshipsApiClient.Object, _collectionCalendarApiClient.Object);
+        _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _collectionCalendarApiClient.Object);
     }
 
     [TestCase(0, false)]
@@ -519,92 +500,5 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         result.HasMultipleDeliveryModelOptions.Should().BeFalse();
-    }
-    
-    [Test]
-    public async Task When_PendingPriceChangeResponse_Is_Null_Then_No_Exception_Is_Thrown()
-    {
-        _pendingPriceChangeResponse = null;
-        
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(It.Is<GetPendingPriceChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
-            .ReturnsAsync(new ApiResponse<GetPendingPriceChangeResponse>(_pendingPriceChangeResponse, HttpStatusCode.OK, string.Empty));
-        
-        var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
-        await result.Should().NotThrowAsync();
-    }
-    
-    [Test]
-    public async Task When_PendingStartDateChangeResponse_Is_Null_Then_No_Exception_Is_Thrown()
-    {
-        _pendingStartDateChangeResponse = null;
-        
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(It.Is<GetPendingStartDateChangeRequest>(r => r.LearningKey == _apprenticeshipKey)))
-            .ReturnsAsync(new ApiResponse<GetPendingStartDateChangeApiResponse>(_pendingStartDateChangeResponse, HttpStatusCode.OK, string.Empty));
-        
-        var result = async () => await _handler.Handle(_query, CancellationToken.None);
-
-        await result.Should().NotThrowAsync();
-    }
-
-    [Test]
-    public async Task When_PaymentStatusResponse_Is_Null_Then_No_Exception_Is_Thrown()
-    {
-        _paymentStatusResponse = null;
-        
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.Is<GetPaymentStatusRequest>(r => r.LearningKey == _apprenticeshipKey)))
-            .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(_paymentStatusResponse, HttpStatusCode.OK, string.Empty));
-        
-        var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
-        await result.Should().NotThrowAsync();
-    }
-    
-    [Test]
-    public async Task When_not_found_returned_when_getting_payments_status_then_correct_response_returned()
-    {
-        //  Arrange
-        _apprenticeshipsApiClient.Setup(x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(It.IsAny<GetPaymentStatusRequest>()))
-            .ReturnsAsync(new ApiResponse<GetPaymentStatusApiResponse>(null, HttpStatusCode.NotFound, string.Empty));
-       
-        //  Act
-        var result = await _handler.Handle(_query, CancellationToken.None);
-        
-        result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
-        result.PaymentsStatus.ReasonFrozen.Should().BeNull();
-        result.PaymentsStatus.FrozenOn.Should().BeNull();
-    }
-
-    [Test]
-    public async Task Handle_If_Not_On_PaymentsSimplificationPilot_Do_Not_Call_ApprenticeshipsApi_Subsequently()
-    {
-        _apprenticeship.IsOnFlexiPaymentPilot = false;
-
-        var result = await _handler.Handle(_query, CancellationToken.None);
-
-        _apprenticeshipsApiClient.Verify(
-            x => x.GetWithResponseCode<Guid>(
-                It.Is<GetLearningKeyRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)), Times.Never);
-
-        _apprenticeshipsApiClient.Verify(
-            x => x.GetWithResponseCode<GetPendingPriceChangeResponse>(
-                It.IsAny<GetPendingPriceChangeRequest>()), Times.Never);
-
-        _apprenticeshipsApiClient.Verify(x =>
-            x.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(
-                It.IsAny<GetPendingStartDateChangeRequest>()), Times.Never);
-
-        _apprenticeshipsApiClient.Verify(
-            x => x.GetWithResponseCode<GetPaymentStatusApiResponse>(
-                It.IsAny<GetPaymentStatusRequest>()), Times.Never);
-
-        _apprenticeshipsApiClient.Verify(
-            x => x.GetWithResponseCode<GetLearnerStatusResponse>(
-                It.IsAny<GetLearnerStatusRequest>()), Times.Never);
-
-        result.LearnerStatusDetails.Should().NotBeNull();
-        result.LearnerStatusDetails.LearnerStatus.Should().Be(LearnerStatus.None);
-        result.PaymentsStatus.Should().NotBeNull();
-        result.PaymentsStatus.PaymentsFrozen.Should().BeFalse();
     }
 }
