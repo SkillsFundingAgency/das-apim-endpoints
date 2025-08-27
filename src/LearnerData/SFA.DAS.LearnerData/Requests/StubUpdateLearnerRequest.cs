@@ -17,51 +17,68 @@ public class StubUpdateLearnerRequest
 
 public class StubHeader
 {
-    public string Ukprn { get; set; }
+    [Required]
     public string TrainingType { get; set; }
+    [Required]
     public string ConsumerReference { get; set; }
 }
 
 public class StubLearner
 {
+    [Required]
     public string Uln { get; set; }
+    [Required]
     public string LearnerRef { get; set; }
+    [Required]
     public string Firstname { get; set; }
+    [Required]
     public string Lastname { get; set; }
     [Required]
     public DateTime? Dob { get; set; }
+    [Required]
     public string Email { get; set; }
-    public bool HasEhcp { get; set; }
+    [Required]
+    public bool? HasEhcp { get; set; }
 }
 
 public class StubDelivery
 {
+    [Required]
     public StubOnProgramme OnProgramme { get; set; }
+    [Required]
     public List<StubEnglishAndMaths> EnglishAndMaths { get; set; }
 }
 
 public class StubOnProgramme
 {
+    [Required]
     public StubCare Care { get; set; }
     [Required]
     public int? StandardCode { get; set; }
+    [Required]
     public string AgreementId { get; set; }
     [Required]
     public DateTime? StartDate { get; set; }
     [Required]
     public DateTime? ExpectedEndDate { get; set; }
-    public int OffTheJobHours { get; set; }
-    public int PercentageOfTrainingLeft { get; set; }
+    [Required]
+    public int? OffTheJobHours { get; set; }
+    [Required]
+    public int? PercentageOfTrainingLeft { get; set; }
+    [Required]
     public List<StubCost> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    [Required]
     public List<StubLearningSupport> LearningSupport { get; set; }
 }
 
 public class StubCare
 {
-    public bool Careleaver { get; set; }
-    public bool EmployerConsent { get; set; }
+    [Required]
+    public bool? Careleaver { get; set; }
+    [Required]
+    public bool? EmployerConsent { get; set; }
 }
 
 public class StubCost
@@ -88,6 +105,7 @@ public class StubEnglishAndMaths
     public DateTime? PlannedEndDate { get; set; }
     [Required]
     public int? CourseCode { get; set; }
+    [Required]
     public int? PriorLearningPercentage { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
