@@ -1,7 +1,6 @@
 using Azure.Identity;
 using FluentValidation;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
@@ -17,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Net;
 using System.Text.Json.Serialization;
+using SFA.DAS.LearnerData.Api.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -102,6 +102,8 @@ app.UseSwagger()
     .UseHttpsRedirection()
     .UseHealthChecks()
     .UseAuthentication();
+
+app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateLearnerRequest>>();
 
 app.MapControllers();
 

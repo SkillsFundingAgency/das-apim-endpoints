@@ -64,8 +64,7 @@ public class StubCost
 {
     public int TrainingPrice { get; set; }
     public int EpaoPrice { get; set; }
-    public DateTime? FromDate { get; set; }
-    public int Reduction4Rpl { get; set; }
+    public DateTime FromDate { get; set; }
 }
 
 public class StubLearningSupport

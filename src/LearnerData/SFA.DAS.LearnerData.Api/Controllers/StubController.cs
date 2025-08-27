@@ -7,11 +7,8 @@ namespace SFA.DAS.LearnerData.Api.Controllers
     [ApiController]
     public class StubController : ControllerBase
     {
-        [HttpPut]
-        [Route("providers/{ukprn}/learning/{learningKey}")]
-        [ProducesResponseType(200)]
-        public IActionResult UpdateLearner([FromRoute] Guid learningKey,
-            [FromBody] StubUpdateLearnerRequest request)
+        [HttpPut("providers/{ukprn}/learning/{learningKey}")]
+        public IActionResult UpdateLearner([FromBody] StubUpdateLearnerRequest payload)
         {
             return Ok();
         }
