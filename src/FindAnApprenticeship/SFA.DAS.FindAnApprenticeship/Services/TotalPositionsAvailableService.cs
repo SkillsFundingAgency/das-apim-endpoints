@@ -8,48 +8,48 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
-namespace SFA.DAS.FindAnApprenticeship.Services
+namespace SFA.DAS.FindAnApprenticeship.Services;
+
+public class TotalPositionsAvailableService(
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+    ICacheStorageService cacheStorageService) : ITotalPositionsAvailableService
 {
-    public class TotalPositionsAvailableService(
-        IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
-        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
-        ICacheStorageService cacheStorageService) : ITotalPositionsAvailableService
+    public async Task<long> GetTotalPositionsAvailable()
     {
-        public async Task<long> GetTotalPositionsAvailable()
+        var cachedValue = await cacheStorageService.RetrieveFromCache<long?>(nameof(GetTotalPositionsAvailableRequest));
+
+        if (cachedValue.HasValue)
         {
-            var cachedValue = await cacheStorageService.RetrieveFromCache<long?>(nameof(GetTotalPositionsAvailableRequest));
-
-            if (cachedValue.HasValue)
-            {
-                return cachedValue.Value;
-            }
-
-            var raaVacanciesCountTask = recruitApiClient.Get<long>(new GetTotalPositionsAvailableRequest());
-            var nhsVacanciesCountTask = findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
-                    new GetApprenticeshipCountRequest(null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        null,
-                        false,
-                        new List<VacancyDataSource>
-                        {
-                            VacancyDataSource.Nhs
-                        },
-                        null));
-
-            await Task.WhenAll(raaVacanciesCountTask, nhsVacanciesCountTask);
-            
-            var totalPositionsAvailable = raaVacanciesCountTask.Result + nhsVacanciesCountTask.Result.TotalVacancies;
-
-            await cacheStorageService.SaveToCache(nameof(GetTotalPositionsAvailableRequest), totalPositionsAvailable,
-                    TimeSpan.FromHours(1));
-
-            return totalPositionsAvailable;
+            return cachedValue.Value;
         }
+
+        var raaVacanciesCountTask = recruitApiClient.Get<long>(new GetTotalPositionsAvailableRequest());
+        var nhsVacanciesCountTask = findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
+            new GetApprenticeshipCountRequest(null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                false,
+                new List<VacancyDataSource>
+                {
+                    VacancyDataSource.Nhs
+                },
+                null,
+                null));
+
+        await Task.WhenAll(raaVacanciesCountTask, nhsVacanciesCountTask);
+            
+        var totalPositionsAvailable = raaVacanciesCountTask.Result + nhsVacanciesCountTask.Result.TotalVacancies;
+
+        await cacheStorageService.SaveToCache(nameof(GetTotalPositionsAvailableRequest), totalPositionsAvailable,
+            TimeSpan.FromHours(1));
+
+        return totalPositionsAvailable;
     }
 }
