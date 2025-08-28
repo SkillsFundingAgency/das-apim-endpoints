@@ -18,6 +18,8 @@ public class StubUpdateLearnerRequest
 public class StubHeader
 {
     [Required]
+    public string Ukprn { get; set; }
+    [Required]
     public string LearningType { get; set; }
     [Required]
     public string ConsumerReference { get; set; }
