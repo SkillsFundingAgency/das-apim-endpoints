@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
@@ -27,7 +28,7 @@ public class PutVacancyRequestData
     public DateTime? CreatedDate { get; init; }
     public DateTime? LastUpdatedDate { get; init; }
     public DateTime? SubmittedDate { get; init; }
-    public DateTime? ReviewDate { get; init; }
+    public DateTime? ReviewRequestedDate { get; init; }
     public DateTime? ClosedDate { get; init; }
     public DateTime? DeletedDate { get; init; }
     public DateTime? LiveDate { get; init; }
@@ -73,4 +74,5 @@ public class PutVacancyRequestData
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
+    public string? ReviewRequestedByUserId { get; init; }
 }

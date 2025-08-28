@@ -1,0 +1,75 @@
+using SFA.DAS.Recruit.Domain.Vacancy;
+using SFA.DAS.Recruit.InnerApi.Models;
+
+namespace SFA.DAS.Recruit.InnerApi.Mappers;
+
+public static class VacancyExtensions
+{
+    public static Vacancy ToDomain(this VacancyDto source)
+    {
+        return new Vacancy
+        {
+            AccountId = source.AccountId,
+            AccountLegalEntityId = source.AccountLegalEntityId,
+            AdditionalQuestion1 = source.AdditionalQuestion1,
+            AdditionalQuestion2 = source.AdditionalQuestion2,
+            AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+            AnonymousReason = source.AnonymousReason,
+            ApplicationInstructions = source.ApplicationInstructions,
+            ApplicationMethod = source.ApplicationMethod,
+            ApplicationUrl = source.ApplicationUrl,
+            ApprenticeshipType = source.ApprenticeshipType,
+            ApprovedDate = source.ApprovedDate,
+            ClosedDate = source.ClosedDate,
+            ClosingDate = source.ClosingDate,
+            ClosureReason = source.ClosureReason,
+            Contact = source.Contact,
+            CreatedDate = source.CreatedDate,
+            DeletedDate = source.DeletedDate,
+            Description = source.Description,
+            DisabilityConfident = source.DisabilityConfident,
+            EmployerDescription = source.EmployerDescription,
+            EmployerLocationInformation = source.EmployerLocationInformation,
+            EmployerLocationOption = source.EmployerLocationOption,
+            EmployerLocations = source.EmployerLocations,
+            EmployerName = source.EmployerName,
+            EmployerNameOption = source.EmployerNameOption,
+            EmployerRejectedReason = source.EmployerRejectedReason,
+            EmployerReviewFieldIndicators = source.EmployerReviewFieldIndicators,
+            EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+            GeoCodeMethod = source.GeoCodeMethod,
+            HasChosenProviderContactDetails = source.HasChosenProviderContactDetails,
+            HasOptedToAddQualifications = source.HasOptedToAddQualifications,
+            HasSubmittedAdditionalQuestions = source.HasSubmittedAdditionalQuestions,
+            Id = source.Id,
+            LastUpdatedDate = source.LastUpdatedDate,
+            LegalEntityName = source.LegalEntityName,
+            LiveDate = source.LiveDate,
+            NumberOfPositions = source.NumberOfPositions,
+            OutcomeDescription = source.OutcomeDescription,
+            OwnerType = source.OwnerType,
+            ProgrammeId = source.ProgrammeId,
+            ProviderReviewFieldIndicators = source.ProviderReviewFieldIndicators,
+            Qualifications = source.Qualifications,
+            ReviewCount = source.ReviewCount,
+            ReviewRequestedByUserId = source.ReviewRequestedByUserId,
+            ReviewRequestedDate = source.ReviewDate,
+            ShortDescription = source.ShortDescription,
+            Skills = source.Skills,
+            SourceOrigin = source.SourceOrigin,
+            SourceType = source.SourceType,
+            SourceVacancyReference = source.SourceVacancyReference,
+            StartDate = source.StartDate,
+            Status = source.Status,
+            SubmittedByUserId = source.SubmittedByUserId,
+            SubmittedDate = source.SubmittedDate,
+            ThingsToConsider = source.ThingsToConsider,
+            Title = source.Title,
+            TrainingDescription = source.TrainingDescription,
+            TrainingProvider = source.TrainingProvider,
+            TransferInfo = source.TransferInfo,
+            VacancyReference = source.VacancyReference,
+            Wage = source.Wage,
+        };
+    }
+}
