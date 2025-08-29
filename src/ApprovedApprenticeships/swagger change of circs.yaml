@@ -28,7 +28,7 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
 
-  /providers/{ukprn}/learning:
+  /providers/{ukprn}/learners:
     post:
       summary: Create a new record in the AS service due to no match
       security:
