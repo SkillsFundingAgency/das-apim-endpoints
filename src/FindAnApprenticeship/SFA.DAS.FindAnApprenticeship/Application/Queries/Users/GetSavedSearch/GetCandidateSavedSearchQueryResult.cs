@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearches;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
@@ -32,7 +31,8 @@ public record GetCandidateSavedSearchQueryResult(SavedSearch SavedSearch, List<G
                 source.SearchParameters.SelectedLevelIds,
                 source.SearchParameters.Location,
                 source.SearchParameters.Latitude,
-                source.SearchParameters.Longitude
+                source.SearchParameters.Longitude,
+                source.SearchParameters.SelectedApprenticeshipTypes
             )
         );
     }
