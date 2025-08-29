@@ -39,7 +39,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Services
             
             //Assert
             actual.Should().BeEquivalentTo(apiResponse);
-            cacheStorageService.Verify(x=>x.SaveToCache($"{accountType}-{nameof(GetAvailableApiProductsResponse)}", apiResponse, 1));
+            cacheStorageService.Verify(x=>x.SaveToCache($"{accountType}-{nameof(GetAvailableApiProductsResponse)}", apiResponse, 1, null));
         }
 
         [Test, MoqAutoData]

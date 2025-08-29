@@ -25,9 +25,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
             return json == null ? default : JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions{});
         }
 
-        public async Task SaveToCache<T>(string key, T item, int expirationInHours)
+        public async Task SaveToCache<T>(string key, T item, int expirationInHours, string? registryName = null)
         {
-            await SaveToCache(key, item, TimeSpan.FromHours(expirationInHours), null);
+            await SaveToCache(key, item, TimeSpan.FromHours(expirationInHours), registryName);
         }
 
         public async Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow, string? registryName = null)
@@ -52,18 +52,19 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 
         public async Task AddToCacheKeyRegistry(string registryName, string key)
         {
-            var cacheKey = $"{_configuration["ConfigNames"].Split(",")[0]}_{registryName}";
-            var existingJson = await _distributedCache.GetStringAsync(cacheKey);
+            var registryKey = $"{_configuration["ConfigNames"].Split(",")[0]}_{registryName}";
+            var existingJson = await _distributedCache.GetStringAsync(registryKey);
 
             var keys = string.IsNullOrEmpty(existingJson)
                 ? new List<string>()
                 : JsonSerializer.Deserialize<List<string>>(existingJson, new JsonSerializerOptions());
 
-            if (!keys.Contains(key))
+            var fullItemKey = $"{_configuration["ConfigNames"].Split(",")[0]}_{key}";
+            if (!keys.Contains(fullItemKey))
             {
-                keys.Add(key);
+                keys.Add(fullItemKey);
                 var updatedJson = JsonSerializer.Serialize(keys);
-                await _distributedCache.SetStringAsync(cacheKey, updatedJson, new DistributedCacheEntryOptions
+                await _distributedCache.SetStringAsync(registryKey, updatedJson, new DistributedCacheEntryOptions
                 {
                     AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
                 });

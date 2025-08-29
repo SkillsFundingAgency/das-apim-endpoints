@@ -1,17 +1,21 @@
+using AutoFixture.NUnit3;
+using FluentAssertions;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Moq;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
 {
@@ -245,6 +249,29 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             // Assert
             Assert.That(result, Is.Not.Null);
             Assert.That(result, Is.Empty);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Adding_To_Cache_With_Registry_The_KeyName_Is_In_The_Registry(
+            string registryName,
+            string appName,
+            string keyName,
+            TestObject test,
+            [Frozen] Mock<IConfiguration> configuration)
+        {
+            // Arrange
+            var options = Options.Create(new MemoryDistributedCacheOptions());
+            IDistributedCache cache = new MemoryDistributedCache(options);
+            var service = new CacheStorageService(cache, configuration.Object);
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+
+            // Act
+            await service.SaveToCache<TestObject>(keyName, test, 1, registryName);
+            var items = await service.GetCacheKeyRegistry(registryName);
+
+            // Assert
+            items.Should().HaveCount(1);
+            items.Should().Contain($"{appName}_{keyName}");
         }
 
         public class TestObject
