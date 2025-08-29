@@ -14,7 +14,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.EmployerAccounts
             var response = new GetAccountByIdResponse();
 
             // Act & Assert
-            response.AccountId.Should().BeGreaterThanOrEqualTo(0);
+            response.AccountId.Should().BeGreaterOrEqualTo(0);
             response.HashedAccountId.Should().BeNull();
             response.PublicHashedAccountId.Should().BeNull();
             response.DasAccountName.Should().BeNull();            
