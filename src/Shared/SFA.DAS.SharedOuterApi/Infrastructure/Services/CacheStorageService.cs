@@ -21,7 +21,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
         
         public async Task<T> RetrieveFromCache<T>(string key)
         {
-            var json = await _distributedCache.GetStringAsync($"{_configuration["ConfigNames"].Split(",")[0]}_{key}");
+            var json = await _distributedCache.GetStringAsync(GetCacheKey(key));
             return json == null ? default : JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions{});
         }
 
@@ -34,7 +34,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
         {
             var json = JsonSerializer.Serialize(item);
 
-            await _distributedCache.SetStringAsync($"{_configuration["ConfigNames"].Split(",")[0]}_{key}", json, new DistributedCacheEntryOptions
+            await _distributedCache.SetStringAsync(GetCacheKey(key), json, new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = expiryTimeFromNow
             });
@@ -47,38 +47,40 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 
         public async Task DeleteFromCache(string key)
         {
-            await _distributedCache.RemoveAsync($"{_configuration["ConfigNames"]}_{key}");
+            await _distributedCache.RemoveAsync(GetCacheKey(key));
         }
 
-        public async Task AddToCacheKeyRegistry(string registryName, string key)
+        private async Task AddToCacheKeyRegistry(string registryName, string key)
         {
-            var registryKey = $"{_configuration["ConfigNames"].Split(",")[0]}_{registryName}";
-            var existingJson = await _distributedCache.GetStringAsync(registryKey);
+            var registryKey = GetCacheKey(registryName);
+            var keys = await RetrieveFromCache<List<string>>(registryName) ?? [];
 
-            var keys = string.IsNullOrEmpty(existingJson)
-                ? new List<string>()
-                : JsonSerializer.Deserialize<List<string>>(existingJson, new JsonSerializerOptions());
+            key = GetCacheKey(key);
 
-            var fullItemKey = $"{_configuration["ConfigNames"].Split(",")[0]}_{key}";
-            if (!keys.Contains(fullItemKey))
+            if (!keys.Contains(key))
             {
-                keys.Add(fullItemKey);
+                keys.Add(key);
                 var updatedJson = JsonSerializer.Serialize(keys);
                 await _distributedCache.SetStringAsync(registryKey, updatedJson, new DistributedCacheEntryOptions
                 {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromDays(7)
+                    SlidingExpiration = TimeSpan.FromDays(7)
                 });
             }
         }
 
         public async Task<List<string>> GetCacheKeyRegistry(string registryName)
         {
-            var cacheKey = $"{_configuration["ConfigNames"].Split(",")[0]}_{registryName}";
+            var cacheKey = GetCacheKey(registryName);
             var json = await _distributedCache.GetStringAsync(cacheKey);
 
             return string.IsNullOrEmpty(json)
                 ? new List<string>()
                 : JsonSerializer.Deserialize<List<string>>(json, new JsonSerializerOptions());
+        }
+
+        private string GetCacheKey(string keyName)
+        {
+            return $"{_configuration["ConfigNames"].Split(",")[0]}_{keyName}";
         }
     }
 }

@@ -10,7 +10,6 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
         Task SaveToCache<T>(string key, T item, int expirationInHours, string? registryName = null);
         Task DeleteFromCache(string key);
         Task SaveToCache<T>(string key, T item, TimeSpan expiryTimeFromNow, string? registryName = null);
-        Task AddToCacheKeyRegistry(string registryName, string key);
         Task<List<string>> GetCacheKeyRegistry(string registryName);
     }
 }

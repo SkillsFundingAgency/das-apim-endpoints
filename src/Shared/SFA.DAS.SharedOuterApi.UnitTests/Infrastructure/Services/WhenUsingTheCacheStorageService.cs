@@ -186,6 +186,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             string registryName,
             string keyToAdd,
             string appName,
+            TestObject item,
             [Frozen] Mock<IDistributedCache> distributedCache,
             [Frozen] Mock<IConfiguration> configuration,
             CacheStorageService service)
@@ -196,7 +197,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
                 .ReturnsAsync((byte[])null);
 
             // Act
-            await service.AddToCacheKeyRegistry(registryName, keyToAdd);
+            await service.SaveToCache(keyToAdd, item, 1, registryName);
 
             // Assert
             distributedCache.Verify(x => x.SetAsync(
