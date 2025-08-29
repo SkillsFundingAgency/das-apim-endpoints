@@ -5,7 +5,7 @@ trigger:
       - "master"
   paths:
     include:
-    - src/LearnerData
+    - src/AdminRoatp
     exclude:
     - azure
     - pipeline-templates
@@ -18,7 +18,7 @@ pr:
       - "master"
   paths:
     include:
-    - src/LearnerData
+    - src/AdminRoatp
     - Directory.Packages.props
     exclude:
     - azure
@@ -35,7 +35,7 @@ resources:
   - repository: das-platform-building-blocks
     type: github
     name: SkillsFundingAgency/das-platform-building-blocks
-    ref: refs/tags/2.2.19
+    ref: refs/tags/3.0.14
     endpoint: SkillsFundingAgency
   - repository: das-platform-automation
     type: github
@@ -51,7 +51,6 @@ resources:
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
-    OuterApiName: LearnerData
+    OuterApiName: AdminRoatp
     ConfigurationSecrets:
-      NServiceBusLicense: $(NServiceBusLicense)
-      UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
+      ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
