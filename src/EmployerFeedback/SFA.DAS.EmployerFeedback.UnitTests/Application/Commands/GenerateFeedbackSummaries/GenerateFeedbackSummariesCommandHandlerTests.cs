@@ -27,9 +27,13 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.GenerateFeedba
         [Test]
         public async Task Handle_CallsApiClient_AndSucceeds_WhenApiReturnsSuccess()
         {
+            var expectedRequest = new GenerateFeedbackSummariesRequest();
             var apiResponse = new ApiResponse<object>(null, HttpStatusCode.NoContent, string.Empty);
             _apiClientMock
-                .Setup(x => x.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>(), false))
+                .Setup(x => x.PostWithResponseCode<object>(
+                    It.Is<GenerateFeedbackSummariesRequest>(r =>
+                        r.PostUrl == expectedRequest.PostUrl && r.Data == expectedRequest.Data),
+                    false))
                 .ReturnsAsync(apiResponse);
 
             Assert.DoesNotThrowAsync(async () =>
@@ -39,9 +43,13 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.GenerateFeedba
         [Test]
         public void Handle_Throws_WhenApiReturnsNonSuccess()
         {
+            var expectedRequest = new GenerateFeedbackSummariesRequest();
             var apiResponse = new ApiResponse<object>(null, HttpStatusCode.InternalServerError, "Error");
             _apiClientMock
-                .Setup(x => x.PostWithResponseCode<object>(It.IsAny<GenerateFeedbackSummariesRequest>(), false))
+                .Setup(x => x.PostWithResponseCode<object>(
+                    It.Is<GenerateFeedbackSummariesRequest>(r =>
+                        r.PostUrl == expectedRequest.PostUrl && r.Data == expectedRequest.Data),
+                    false))
                 .ReturnsAsync(apiResponse);
 
             Assert.ThrowsAsync<SFA.DAS.SharedOuterApi.Exceptions.ApiResponseException>(async () =>
