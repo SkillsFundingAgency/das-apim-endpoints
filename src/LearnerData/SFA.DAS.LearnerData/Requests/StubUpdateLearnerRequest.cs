@@ -104,7 +104,7 @@ public class StubEnglishAndMaths
     [Required]
     public DateTime? StartDate { get; set; }
     [Required]
-    public DateTime? PlannedEndDate { get; set; }
+    public DateTime? EndDate { get; set; }
     [Required]
     public int? CourseCode { get; set; }
     [Required]
