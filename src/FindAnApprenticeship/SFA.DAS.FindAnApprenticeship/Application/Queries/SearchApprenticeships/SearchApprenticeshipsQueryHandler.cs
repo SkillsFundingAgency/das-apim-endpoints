@@ -184,7 +184,8 @@ public class SearchApprenticeshipsQueryHandler(
                 levelIds,
                 request.Location,
                 location?.GeoPoint?.FirstOrDefault().ToString(CultureInfo.InvariantCulture),
-                location?.GeoPoint?.LastOrDefault().ToString(CultureInfo.InvariantCulture)
+                location?.GeoPoint?.LastOrDefault().ToString(CultureInfo.InvariantCulture),
+                request.ApprenticeshipTypes
             );
                 
             savedSearchesCount = savedSearchesResponse.SavedSearches?.Count ?? 0;
