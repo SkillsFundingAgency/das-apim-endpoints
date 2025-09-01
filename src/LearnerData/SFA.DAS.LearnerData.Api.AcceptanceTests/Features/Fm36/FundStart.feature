@@ -6,6 +6,18 @@ Qualifying periods: >= 168 day planned duration: 42 days
 					14 to 167 day planned duration: 14 days
 					<14 day planned duration: 1 day
 
+Scenario: FundStart defaults to True while learners are Active
+	Given the following price episodes
+	| PriceEpisodeId | StartDate    | EndDate    |
+	| 1              | <start_date> | <end_date> |
+	When the FM36 block is retrieved for Academic Year <academic_year> Delivery Period <delivery_period>
+	Then FundStart for the Learning Delivery is true
+	Examples: 
+	| start_date | end_date   | academic_year | delivery_period |
+	| 2020-01-01 | 2024-01-01 | 2021          | 1               | 
+	| 2020-01-01 | 2020-02-01 | 2021          | 1               | 
+	| 2020-01-01 | 2020-01-08 | 2021          | 1               |
+
 Scenario: FundStart and ThresholdDays based on qualifying period
 	Given the following price episodes
 	| PriceEpisodeId | StartDate    | EndDate    |
