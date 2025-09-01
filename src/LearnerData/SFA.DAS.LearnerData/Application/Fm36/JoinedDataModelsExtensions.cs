@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using System.Diagnostics;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
@@ -207,7 +208,7 @@ internal static class JoinedDataModelsExtensions
             ApplicCompDate = EarningsFM36Constants.ApplicCompDate,
             CombinedAdjProp = EarningsFM36Constants.CombinedAdjProp,
             Completed = EarningsFM36Constants.Completed,
-            FundStart = daysInLearning.FundingStart(),
+            FundStart = joinedEarningsApprenticeship.FundingStart(),
             LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
             LearnAimRef = EarningsFM36Constants.LearnAimRef,
             LearnStartDate = joinedEarningsApprenticeship.StartDate,
@@ -238,12 +239,12 @@ internal static class JoinedDataModelsExtensions
             MathEngAimValue = EarningsFM36Constants.MathEngAimValue,
             OutstandNumOnProgInstalm = EarningsFM36Constants.OutstandNumOnProgInstalm,
             PlannedNumOnProgInstalm = joinedEarningsApprenticeship.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedEarningsApprenticeship.PlannedEndDate),
-            PlannedTotalDaysIL = 1 + (joinedEarningsApprenticeship.PlannedEndDate - joinedEarningsApprenticeship.StartDate).Days,
+            PlannedTotalDaysIL = joinedEarningsApprenticeship.PlannedDuration(),
             ProgType = EarningsFM36Constants.ProgType,
             PwayCode = EarningsFM36Constants.PwayCode,
             SecondIncentiveThresholdDate = secondAdditionalPaymentDate >= joinedEarningsApprenticeship.StartDate && secondAdditionalPaymentDate <= joinedEarningsApprenticeship.PlannedEndDate ? secondAdditionalPaymentDate : null,
             StdCode = int.TryParse(joinedEarningsApprenticeship.Episodes.MinBy(x => x.StartDate)?.TrainingCode, out int parsedTrainingCode) ? parsedTrainingCode : null,
-            ThresholdDays = Constants.QualifyingPeriod, // This will eventually change to a calculated value, but for now is using a global constant instead of the local EarningsFM36Constants as other components refer to QualifyingPeriod
+            ThresholdDays = joinedEarningsApprenticeship.QualifyingPeriod(),
             LearnDelApplicCareLeaverIncentive = EarningsFM36Constants.LearnDelApplicCareLeaverIncentive,
             LearnDelHistDaysCareLeavers = EarningsFM36Constants.LearnDelHistDaysCareLeavers,
             LearnDelAccDaysILCareLeavers = EarningsFM36Constants.LearnDelAccDaysILCareLeavers,
@@ -310,8 +311,10 @@ internal static class JoinedDataModelsExtensions
         return 0;// Default to zero if still in learning
     }
 
-    private static bool FundingStart(this int daysInLearning)
+    private static bool FundingStart(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
     {
+        var daysInLearning = joinedEarningsApprenticeship.DaysInLearning();
+
         if (daysInLearning == 0)
         {
             // if we dont have a days in learning value, then we assume the funding start is true. If later the days in learning
@@ -319,7 +322,26 @@ internal static class JoinedDataModelsExtensions
             return true;
         }
 
-        return daysInLearning > Constants.QualifyingPeriod;
+        var qualifyingPeriod = joinedEarningsApprenticeship.QualifyingPeriod();
+
+        return daysInLearning >= qualifyingPeriod;
+    }
+
+    private static int QualifyingPeriod(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+    {
+        var plannedDuration = joinedEarningsApprenticeship.PlannedDuration();
+
+        switch (plannedDuration)
+        {
+            case < 14: return 1;
+            case < 167: return 14;
+            default: return 42;
+        }
+    }
+
+    private static int PlannedDuration(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+    {
+        return 1 + (joinedEarningsApprenticeship.PlannedEndDate - joinedEarningsApprenticeship.StartDate).Days;
     }
 
     private static decimal GetPreviousEarnings(JoinedEarningsApprenticeship? apprenticeship, short academicYear, short collectionPeriod)
