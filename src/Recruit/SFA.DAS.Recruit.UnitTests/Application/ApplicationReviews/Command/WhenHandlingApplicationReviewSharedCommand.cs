@@ -65,7 +65,7 @@ internal class WhenHandlingApplicationReviewSharedCommand
                 && c.Tokens["trainingProvider"] == command.TrainingProvider
                 && c.Tokens["advertTitle"] == command.AdvertTitle
                 && c.Tokens["vacancyReference"] == command.VacancyReference.ToString()
-                && c.Tokens["applicationUrl"] == employerReviewUrl)
+                && c.Tokens["applicationURL"] == employerReviewUrl)
         ), Times.Once);
 
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
