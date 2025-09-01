@@ -24,7 +24,7 @@ public class WhenUpdatingALearner
         [Greedy] LearnersController sut)
     {
         // Act
-        var result = await sut.UpdateLearner(learningKey, request) as AcceptedResult;
+        var result = await sut.UpdateLearner(Guid.Empty, learningKey, request) as AcceptedResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
@@ -48,7 +48,7 @@ public class WhenUpdatingALearner
             .ThrowsAsync(new Exception("Something went wrong"));
 
         // Act
-        var result = await sut.UpdateLearner(learningKey, request) as StatusCodeResult;
+        var result = await sut.UpdateLearner(Guid.Empty, learningKey, request) as StatusCodeResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

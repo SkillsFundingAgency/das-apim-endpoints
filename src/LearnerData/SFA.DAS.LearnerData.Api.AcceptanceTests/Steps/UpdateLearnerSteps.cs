@@ -18,11 +18,13 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private readonly Fixture _fixture = new Fixture();
     private const string ChangesKey = "Changes";
     private const string LearnerKey = "LearnerKey";
+    private const string UkprnKey = "UkprnKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
     {
         scenarioContext.Set(Guid.NewGuid(), LearnerKey);
+        scenarioContext.Set(Guid.NewGuid(), UkprnKey);
     }
 
     [Given(@"the (.*) passed is different to the value in the learners domain")]
@@ -112,9 +114,10 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private async Task CallUpdateLearnerEndpoint()
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var ukprn = scenarioContext.Get<Guid>(UkprnKey);
         var requestBody = _fixture.Create<UpdateLearnerRequest>();
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
-        var response = await testContext.OuterApiClient.PutAsync($"/learners/{learnerKey}", httpContent);
+        var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();
         response.IsSuccessStatusCode.Should().BeTrue($"Expected successful response from outer Api call, but got {response.StatusCode}. Content: {contentString}");
     }
