@@ -334,7 +334,7 @@ internal static class JoinedDataModelsExtensions
         switch (plannedDuration)
         {
             case < 14: return 1;
-            case < 167: return 14;
+            case <= 167: return 14;
             default: return 42;
         }
     }
