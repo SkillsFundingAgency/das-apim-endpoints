@@ -20,7 +20,7 @@ public class EmailEnvironmentHelper
                 ? "27acd0e9-96fe-47ec-ae33-785e00a453f8" : "5869140a-2a76-4a7c-b4b9-083d2afc5aa5";
         ApplicationReviewSharedEmailTemplatedId =
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
-                ? "53058846-e369-4396-87b2-015c9d16360a" : "f6fc57e6-7318-473d-8cb5-ca653035391a ";
+                ? "53058846-e369-4396-87b2-015c9d16360a" : "f6fc57e6-7318-473d-8cb5-ca653035391a";
         AdvertApprovedByDfeTemplateId =
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "c35e76e7-303b-4b18-bb06-ad98cf68158d" : "c445095e-e659-499b-b2ab-81e321a9b591";
