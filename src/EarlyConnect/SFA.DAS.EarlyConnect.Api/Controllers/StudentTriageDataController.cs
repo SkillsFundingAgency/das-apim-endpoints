@@ -4,20 +4,26 @@ using SFA.DAS.EarlyConnect.Api.Models;
 using System.Net;
 using Asp.Versioning;
 using SFA.DAS.EarlyConnect.Api.Mappers;
+using SFA.DAS.EarlyConnect.Api.Requests.GetRequests;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateOtherStudentTriageData;
 using SFA.DAS.EarlyConnect.InnerApi.Requests;
+using SFA.DAS.EarlyConnect.InnerApi.Responses;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
+using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataByDate;
 using SFA.DAS.EarlyConnect.Application.Commands.ManageStudentTriageData;
 using SFA.DAS.EarlyConnect.Application.Commands.CreateLogData;
 using SFA.DAS.EarlyConnect.Application.Commands.UpdateLogData;
 using SendReminderEmailRequest = SFA.DAS.EarlyConnect.Api.Models.SendReminderEmailRequest;
 using SFA.DAS.EarlyConnect.Application.Commands.SendReminderEmail;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EarlyConnect.Api.Controllers
 {
     [ApiVersion("1.0")]
     [ApiController]
     [Route("/early-connect/student-triage-data/")]
+    [ExcludeFromCodeCoverage]
     public class StudentTriageDataController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -45,7 +51,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                     }
                 });
 
-                var model = new SendReminderEmailResponse()
+                var model = new InnerApi.Responses.SendReminderEmailResponse()
                 {
                     Message = response.Message
                 };
@@ -150,7 +156,7 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 var result = await _mediator.Send(new GetStudentTriageDataBySurveyIdQuery { SurveyGuid = surveyGuid });
 
-                return Ok((Models.GetStudentTriageDataBySurveyIdResponse)result);
+                return Ok(result);                
             }
             catch (Exception e)
             {
@@ -159,6 +165,49 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
                 _logger.LogError(e, "Error getting student triage data ");
 
                 return BadRequest($"Error getting student triage data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
+            }
+        }
+
+        [HttpGet]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> ResendDataToLondon([FromQuery] DateTime ToDate, DateTime FromDate)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetStudentTriageDataByDateQuery { ToDate = ToDate, FromDate = FromDate });                
+
+                var responseList = result.Select(r => new GetStudentTriageDataResponse
+                {
+                    Id = r.Id,
+                    LepDateSent = r.LepDateSent,
+                    LepsId = r.LepsId,
+                    LepCode = r.LepCode,
+                    LogId = r.LogId,
+                    FirstName = r.FirstName,
+                    LastName = r.LastName,
+                    DateOfBirth = r.DateOfBirth,
+                    SchoolName = r.SchoolName,
+                    URN = r.URN,
+                    Telephone = r.Telephone,
+                    Email = r.Email,
+                    Postcode = r.Postcode,
+                    DataSource = r.DataSource,
+                    Industry = r.Industry,
+                    DateInterest = r.DateInterest,
+                    StudentSurvey = r.StudentSurvey,
+                    SurveyQuestions = r.SurveyQuestions
+                }).ToList();
+
+                return Ok(responseList);                
+            }
+            catch (Exception e)
+            {
+                var errorMessage = (e as SharedOuterApi.Exceptions.ApiResponseException)?.Error;
+
+                _logger.LogError(e, "Error getting london data ");
+
+                return BadRequest($"Error getting london data. {(errorMessage != null ? $"\nErrorInfo: {errorMessage}" : "")}");
             }
         }
 
@@ -204,6 +253,6 @@ namespace SFA.DAS.EarlyConnect.Api.Controllers
             {
                 Log = LogMapper.MapFromLogUpdateRequest(updateLog)
             });
-        }
+        }                       
     }
 }

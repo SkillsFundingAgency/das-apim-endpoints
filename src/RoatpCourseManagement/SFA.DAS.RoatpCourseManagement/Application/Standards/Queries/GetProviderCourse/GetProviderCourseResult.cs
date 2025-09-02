@@ -1,6 +1,6 @@
-﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+﻿using System.Collections.Generic;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.SharedOuterApi.Common;
-using System.Collections.Generic;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse
 {
@@ -20,5 +20,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
         public string ContactUsPageUrl { get; set; }
         public List<ProviderCourseLocationModel> ProviderCourseLocations { get; set; } = new List<ProviderCourseLocationModel>();
         public bool? IsApprovedByRegulator { get; set; }
+        public bool IsRegulatedForProvider { get; set; }
+        public bool HasLocations { get; set; }
     }
 }

@@ -37,22 +37,16 @@ public class SubmitApplicationCommandHandler(
                 new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
 
         if (application == null || application.Status == ApplicationStatus.Submitted)
-        {
             return false;
-        }
 
         var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
             new PostSubmitApplicationRequest(request.CandidateId, application), false);
 
         if (response.StatusCode != HttpStatusCode.NoContent)
-        {
             return false;
-        }
         
         if (await vacancyService.GetVacancy(application.VacancyReference) is not GetApprenticeshipVacancyItemResponse vacancy)
-        {
             return false;
-        }
         
         // Create in the new SQL Recruit Db - this should be a temporary call
         int.TryParse(vacancy.Ukprn, out var ukprn);

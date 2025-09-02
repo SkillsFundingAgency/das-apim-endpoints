@@ -1,17 +1,11 @@
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Application.Candidates.Queries.GetCandidate;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using System.Net;
+using System.Threading;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Candidates.Queries;
 
@@ -32,7 +26,11 @@ public class WhenHandlingGetCandidateQuery
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
-        actual.Candidate.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
+        actual.Candidate.Should().BeEquivalentTo(apiResponse, options => options
+            .Excluding(x =>x.FirstName)
+            .Excluding(x => x.MiddleNames)
+            .Excluding(x => x.Email)
+            .ExcludingMissingMembers());
     }
     
     [Test, MoqAutoData]

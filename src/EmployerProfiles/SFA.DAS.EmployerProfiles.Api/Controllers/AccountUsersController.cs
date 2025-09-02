@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerProfiles.Api.Models;
 using System;
 using System.Net;
@@ -13,10 +14,12 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers
     public class AccountUsersController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly ILogger<AccountUsersController> _logger;
 
-        public AccountUsersController(IMediator mediator)
+        public AccountUsersController(IMediator mediator, ILogger<AccountUsersController> logger)
         {
             _mediator = mediator;
+            _logger = logger;
         }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace SFA.DAS.EmployerProfiles.Api.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e, "Error occurred while upserting user account for userId: {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

@@ -58,7 +58,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment env)
         if (_configuration["Environment"] != "DEV")
         {
             services.AddHealthChecks()
-                .AddCheck<ApprenticeshipsApiHealthCheck>(ApprenticeshipsApiHealthCheck.HealthCheckResultDescription)
+                .AddCheck<LearningApiHealthCheck>(LearningApiHealthCheck.HealthCheckResultDescription)
                 .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription)
                 .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription);
         }

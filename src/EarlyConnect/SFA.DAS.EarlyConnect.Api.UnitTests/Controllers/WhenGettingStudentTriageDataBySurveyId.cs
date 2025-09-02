@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -10,7 +6,13 @@ using NUnit.Framework;
 using SFA.DAS.EarlyConnect.Api.Controllers;
 using SFA.DAS.EarlyConnect.Api.Models;
 using SFA.DAS.EarlyConnect.Application.Queries.GetStudentTriageDataBySurveyId;
+using SFA.DAS.EarlyConnect.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 {
@@ -32,7 +34,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
         [Test, MoqAutoData]
         public async Task GetStudentTriageData_ValidRequest_ReturnsOk(
-            GetStudentTriageDataBySurveyIdResult mediatorResult,
+            GetStudentTriageDataResponse mediatorResult,
             Guid surveyGuid
         )
         {
@@ -44,7 +46,7 @@ namespace SFA.DAS.EarlyConnect.Api.UnitTests.Controllers
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = (OkObjectResult)result;
-            Assert.That(okResult.Value, Is.InstanceOf<GetStudentTriageDataBySurveyIdResponse>());
+            Assert.That(okResult.Value, Is.InstanceOf<GetStudentTriageDataResponse>());
             Assert.That(okResult.StatusCode, Is.EqualTo((int)HttpStatusCode.OK));
         }
 

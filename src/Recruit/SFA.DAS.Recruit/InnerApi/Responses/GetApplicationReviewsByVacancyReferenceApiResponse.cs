@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SFA.DAS.Recruit.Domain;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.InnerApi.Responses
 {

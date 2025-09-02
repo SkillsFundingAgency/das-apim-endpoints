@@ -17,8 +17,7 @@ public static class AddServiceRegistrationExtensions
 {
     private static void AddCommitmentApiInternalClient(IServiceCollection services, IConfiguration configuration)
     {
-        bool useLocalDevClient =
-            configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "True";
+        bool useLocalDevClient = configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "true";
 
         if (useLocalDevClient)
         {

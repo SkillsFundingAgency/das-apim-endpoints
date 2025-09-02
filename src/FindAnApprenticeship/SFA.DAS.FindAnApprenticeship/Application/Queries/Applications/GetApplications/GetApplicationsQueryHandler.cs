@@ -36,7 +36,7 @@ public class GetApplicationsQueryHandler(
             return new GetApplicationsQueryResult();
         }
 
-        var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
+        var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference.TrimVacancyReference()}").ToList();
         
         var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 

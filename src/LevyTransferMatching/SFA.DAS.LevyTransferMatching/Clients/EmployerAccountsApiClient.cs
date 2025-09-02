@@ -57,10 +57,6 @@ namespace SFA.DAS.LevyTransferMatching.Clients
             throw new System.NotImplementedException();
         }
 
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
 
         public Task<TResponse> Post<TResponse>(IPostApiRequest request)
         {
@@ -93,6 +89,16 @@ namespace SFA.DAS.LevyTransferMatching.Clients
         }
 
         public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }

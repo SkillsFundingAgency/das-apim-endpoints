@@ -1,16 +1,10 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
+﻿using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
+using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
 {
@@ -21,8 +15,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
         public async Task Then_The_QueryResult_Is_Returned_As_Expected(
             GetApplicationQuery query,
             GetApplicationApiResponse applicationApiResponse,
+            GetApprenticeshipVacancyItemResponse vacancyApiResponse,
             GetQualificationReferenceTypesApiResponse qualificationReferenceTypesApiResponse,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            [Frozen] Mock<IVacancyService> vacancyService,
             GetApplicationQueryHandler handler)
         {
             var expectedGetApplicationApiRequest = new GetApplicationApiRequest(query.CandidateId, query.ApplicationId, true);
@@ -38,6 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                     It.Is<GetQualificationReferenceTypesApiRequest>(r => r.GetUrl == expectedGetQualificationTypesApiRequest.GetUrl)))
                 .ReturnsAsync(qualificationReferenceTypesApiResponse);
 
+            vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyApiResponse);
 
             var result = await handler.Handle(query, CancellationToken.None);
 
@@ -51,6 +48,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Apply
                     .Excluding(p=>p.MigratedEmail)
                 );
             result.IsApplicationComplete.Should().BeTrue();
+            result.EmploymentLocation.Should().BeEquivalentTo(applicationApiResponse.EmploymentLocation);
+            result.ClosedDate.Should().Be(vacancyApiResponse.ClosedDate);
+            result.ClosingDate.Should().Be(vacancyApiResponse.ClosingDate);
+            result.VacancyTitle.Should().Be(vacancyApiResponse.Title);
+            result.EmployerName.Should().Be(vacancyApiResponse.EmployerName);
         }
     }
 }

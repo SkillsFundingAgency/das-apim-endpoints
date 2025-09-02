@@ -4,5 +4,7 @@ public enum WithdrawalDate
 {
     None,
     DuringQualifyingPeriod,
-    AfterQualifyingPeriod
+    AfterQualifyingPeriod,
+    BeforeNextPriceEpisodeStart,
+    AfterNextPriceEpisodeStart
 }

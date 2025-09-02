@@ -1,43 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCoursesService;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
-namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes
+namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
+
+public class GetTrainingProgrammesQueryHandler(
+    ICourseService courseService,
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpApiClient)
+    : IRequestHandler<GetTrainingProgrammesQuery, GetTrainingProgrammesQueryResult>
 {
-    public class GetTrainingProgrammesQueryHandler : IRequestHandler<GetTrainingProgrammesQuery, GetTrainingProgrammesQueryResult>
+    public async Task<GetTrainingProgrammesQueryResult> Handle(GetTrainingProgrammesQuery request, CancellationToken cancellationToken)
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+        var standards = await courseService.GetActiveStandards<GetStandardsListResponse>("ActiveStandards");
+        var allTrainingProgrammes = standards.Standards?
+            .Select(item => (TrainingProgramme)item)
+            .ToList() ?? [];
 
-        public GetTrainingProgrammesQueryHandler (ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+        if (request.Ukprn.HasValue)
         {
-            _coursesApiClient = coursesApiClient;
-        }
-        public async Task<GetTrainingProgrammesQueryResult> Handle(GetTrainingProgrammesQuery request, CancellationToken cancellationToken)
-        {
-            var frameworksTask = _coursesApiClient.Get<GetFrameworksListResponse>(new GetFrameworksRequest());
-            var standardsTask = _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+            var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value));
 
-            await Task.WhenAll(frameworksTask, standardsTask);
+            if (providerCourses == null || !providerCourses.Any())
+            {
+                return new GetTrainingProgrammesQueryResult
+                {
+                    TrainingProgrammes = []
+                };
+            }
 
-            var trainingProgrammes = new List<TrainingProgramme>();
-            trainingProgrammes.AddRange(frameworksTask.Result.Frameworks?.Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
-            trainingProgrammes.AddRange(standardsTask.Result.Standards?
-                .Where(c=>request.IncludeFoundationApprenticeships || c.ApprenticeshipType.Equals("Apprenticeship", StringComparison.CurrentCultureIgnoreCase))
-                .Select(item => (TrainingProgramme)item) ?? Array.Empty<TrainingProgramme>());
-            
+            var providerLarsCodes = providerCourses.Select(c => c.LarsCode.ToString()).ToHashSet();
+
+            var filteredCourses = allTrainingProgrammes
+                .Where(p => providerLarsCodes.Contains(p.Id))
+                .ToList();
+
             return new GetTrainingProgrammesQueryResult
             {
-                TrainingProgrammes = trainingProgrammes
+                TrainingProgrammes = filteredCourses
             };
         }
+
+        return new GetTrainingProgrammesQueryResult
+        {
+            TrainingProgrammes = allTrainingProgrammes
+        };
     }
 }
