@@ -24,7 +24,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     public void GivenThereIsALearner()
     {
         scenarioContext.Set(Guid.NewGuid(), LearnerKey);
-        scenarioContext.Set(Guid.NewGuid(), UkprnKey);
+        scenarioContext.Set(_fixture.Create<long>(), UkprnKey);
     }
 
     [Given(@"the (.*) passed is different to the value in the learners domain")]
@@ -114,7 +114,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private async Task CallUpdateLearnerEndpoint()
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
-        var ukprn = scenarioContext.Get<Guid>(UkprnKey);
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<UpdateLearnerRequest>();
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);

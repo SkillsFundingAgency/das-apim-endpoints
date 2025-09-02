@@ -73,7 +73,7 @@ public class LearnersController(
 
     [HttpPut]
     [Route("/providers/{ukprn}/learning/{learningKey}")]
-    public async Task<IActionResult> UpdateLearner([FromRoute] Guid ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request)
+    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request)
     {
         try
         {

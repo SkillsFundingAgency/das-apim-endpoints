@@ -18,13 +18,14 @@ public class WhenUpdatingALearner
     [Test, MoqAutoData]
     public async Task And_when_successful_Then_Accepted_returned(
         Guid learningKey,
+        long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<ILogger<LearnersController>> mockLogger,
         [Greedy] LearnersController sut)
     {
         // Act
-        var result = await sut.UpdateLearner(Guid.Empty, learningKey, request) as AcceptedResult;
+        var result = await sut.UpdateLearner(ukprn, learningKey, request) as AcceptedResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.Accepted);
@@ -38,6 +39,7 @@ public class WhenUpdatingALearner
     [Test, MoqAutoData]
     public async Task And_when_exception_thrown_Then_InternalServerError_returned(
         Guid learningKey,
+        long ukprn,
         UpdateLearnerRequest request,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<ILogger<LearnersController>> mockLogger,
@@ -48,7 +50,7 @@ public class WhenUpdatingALearner
             .ThrowsAsync(new Exception("Something went wrong"));
 
         // Act
-        var result = await sut.UpdateLearner(Guid.Empty, learningKey, request) as StatusCodeResult;
+        var result = await sut.UpdateLearner(ukprn, learningKey, request) as StatusCodeResult;
 
         // Assert
         result!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
