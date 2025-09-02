@@ -50,7 +50,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'  
   
-  /providers/{ukprn}/learning/{learningKey}:
+  /providers/{ukprn}/academicyears/{academicyear}/learners/{learningKey}:
     delete:
       summary: Deletes a learning record identified by this request for this provider
       security:
@@ -60,6 +60,12 @@ paths:
           in: path
           required: true
           description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          description: The academic year in which the learner has been removed.
           schema:
             type: string
         - name: learningKey
@@ -82,6 +88,12 @@ paths:
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
+        - name: academicyear
+          in: path
+          required: true
+          description: The academic year in which the learner has been updated.
+          schema:
+            type: string
         - name: learningKey
           in: path
           required: true
@@ -98,7 +110,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'         
           
-  /providers/{ukprn}/academicyears/{academicyear}/learningIdentifiers:
+  /providers/{ukprn}/academicyears/{academicyear}/learners:
     get:
       summary: Returns a paged list of learningIdentifiers for this provider
       security:
@@ -174,10 +186,7 @@ components:
       content:
         application/json:
           schema:
-            oneOf:
-              - $ref: "#/components/schemas/apprenticeshipLearning"
-              - $ref: "#/components/schemas/shortApprenticeshipLearning"
-              - $ref: "#/components/schemas/foundationApprenticeshipLearning"
+            $ref: "#/components/schemas/apprenticeshipLearning"
   responses:
     pagedLearningIdentifiersResponse:
       description: A paged learning identifiers response
@@ -270,7 +279,7 @@ components:
     pagedLearningIdentifiers:
       type: object
       properties:
-        learning:
+        learners:
           type: array
           items:
               $ref: '#/components/schemas/learningIdentifier'
@@ -309,44 +318,15 @@ components:
     learningIdentifier:
       type: object
       properties:
-        learningKey:
+        key:
           type: string
           format: uuid
-        ukprn:
-          type: integer
         uln:
           type: integer
-        standardCode:
-          type: integer
-        startDate:
-          type: integer
-          format: date
 
-    # common CoC header
-    header:
-      type: object
-      properties:
-        ukprn:
-          type: string
-        learningType:
-          type: string
-          enum:
-          - apprenticeship
-          - shortApprenticeship
-          - foundationApprenticeship
-          - Bootcamp
-          - HTC
-        consumerReference:
-          description: A reference the consumer can set. This will aid remediation under production errors and should not be used as a system identifier 
-          type: string
-          
-    # apprenticeship, short apprenticeship and foundation apprenticeship
-    
     apprenticeshipLearning:
       type: object
       properties:
-        header:
-          $ref: "#/components/schemas/header"
         learner:
           type: object
           properties:
@@ -436,7 +416,10 @@ components:
                       format: date
                     courseCode:
                       type: integer
-                    actualEndDate:
+                    completionDate:
+                      type: string
+                      format: date
+                    withdrawalDate:
                       type: string
                       format: date
                     learningSupport:
@@ -451,14 +434,5 @@ components:
                             type: string
                             format: date
 
-    foundationApprenticeshipLearning:
-      description: This is the exact copy of a normal apprenticeship
-      allOf:
-      - $ref: "#/components/schemas/apprenticeshipLearning"
-
-    shortApprenticeshipLearning:
-      description: This is the exact copy of a normal apprenticeship
-      allOf:
-      - $ref: "#/components/schemas/apprenticeshipLearning"
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
