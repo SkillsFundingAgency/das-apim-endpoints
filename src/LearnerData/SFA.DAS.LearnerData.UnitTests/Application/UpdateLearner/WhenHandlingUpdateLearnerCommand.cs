@@ -47,7 +47,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.First().OnProgramme.CompletionDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.CompletionDate }, HttpStatusCode.OK);
 
@@ -99,8 +99,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate;
-        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.First().OnProgramme.CompletionDate;
+        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.First().EnglishAndMaths;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.MathsAndEnglish }, HttpStatusCode.OK);
 
@@ -124,8 +124,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses.SelectMany(x=>x.LearningSupport).ToList();
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
+        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.First().EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
+        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.First().OnProgramme!.LearningSupport!);
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.LearningSupport }, HttpStatusCode.OK);
 
@@ -166,7 +166,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         return request.Count == courses.Count &&
                request.All(r => courses.Any(c => c.StartDate == r.StartDate &&
-                                                 c.PlannedEndDate == r.EndDate &&
+                                                 c.EndDate == r.EndDate &&
                                                  c.Course == r.Course &&
                                                  c.Amount == r.Amount &&
                                                  c.WithdrawalDate == r.WithdrawalDate &&
