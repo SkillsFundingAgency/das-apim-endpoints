@@ -5,7 +5,6 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="MediatR" />
-        <PackageReference Include="RestEase" />
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />

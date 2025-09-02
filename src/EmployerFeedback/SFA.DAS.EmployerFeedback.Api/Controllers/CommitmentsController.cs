@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using RestEase;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
 using System;
 using System.Net;
@@ -23,7 +22,7 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
         }
 
         [HttpGet("{providerId}")]
-        public async Task<IActionResult> GetProvider([Path]int providerId)
+        public async Task<IActionResult> GetProvider(int providerId)
         {
             try
             {
