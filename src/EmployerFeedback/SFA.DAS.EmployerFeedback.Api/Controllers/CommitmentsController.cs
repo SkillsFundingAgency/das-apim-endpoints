@@ -21,6 +21,8 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
             _mediator = mediator;
         }
 
+
+        //TODO - REMOVE - TEMPORARY - FOR TESTING PURPOSES ONLY
         [HttpGet("{providerId}")]
         public async Task<IActionResult> GetProvider(int providerId)
         {

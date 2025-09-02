@@ -5,13 +5,13 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
+
+//TODO - REMOVE GETPROVIDER TESTS - TEMPORARY - FOR TESTING CONNECTIVITY PURPOSES ONLY
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
     [TestFixture]
