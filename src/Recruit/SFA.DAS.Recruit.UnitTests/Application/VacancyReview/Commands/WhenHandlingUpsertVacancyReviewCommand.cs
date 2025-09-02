@@ -55,10 +55,12 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
+        var expectedGetUrl = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn,
+            NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
-                    c.GetAllUrl.Contains(command.VacancyReview.Ukprn.ToString())))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
+                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
 
         await handler.Handle(command, CancellationToken.None);
 
@@ -120,10 +122,12 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
+        var expectedGetUrl = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId,
+            NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
-                    c.GetAllUrl.Contains(command.VacancyReview.AccountId.ToString())))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
+                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
 
         await handler.Handle(command, CancellationToken.None);
 
@@ -185,10 +189,12 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
+        var expectedGetUrl = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId,
+                NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
-                    c.GetAllUrl.Contains(command.VacancyReview.AccountId.ToString())))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
+                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
 
         await handler.Handle(command, CancellationToken.None);
 

@@ -29,20 +29,18 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
             && (request.VacancyReview.ManualOutcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase) || request.VacancyReview.ManualOutcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase )))
         {
             var employerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
-                new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId));
+                new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected));
             var providerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
-                new GetProviderRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.Ukprn));
+                new GetProviderRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.Ukprn, NotificationTypes.VacancyApprovedOrRejected));
 
             await Task.WhenAll(employerUsersTask, providerUsersTask);
             var employerUsers = await employerUsersTask;
             var providerUsers = await providerUsersTask;
             
             var usersToNotify = employerUsers.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Event.Equals(NotificationTypes.VacancyApprovedOrRejected) &&
                 c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
             
             var providerUsersToNotify = providerUsers.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Event.Equals(NotificationTypes.VacancyApprovedOrRejected) &&
                 c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
 
             var emailTasks = usersToNotify
