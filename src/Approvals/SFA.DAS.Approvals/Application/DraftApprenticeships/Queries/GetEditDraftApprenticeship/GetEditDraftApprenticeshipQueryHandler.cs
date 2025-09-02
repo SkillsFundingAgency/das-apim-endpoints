@@ -105,7 +105,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 DurationReducedByHours = apprenticeship.DurationReducedByHours,
                 IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl,
                 StandardPageUrl = course?.StandardPageUrl,
-                ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(apprenticeship.StartDate)
+                ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(apprenticeship.StartDate),
+                LearnerDataId = apprenticeship.LearnerDataId
             };
         }
     }
