@@ -73,6 +73,8 @@ public class StubOnProgramme
     public DateTime? WithdrawalDate { get; set; }
     [Required]
     public List<StubLearningSupport> LearningSupport { get; set; }
+    [Required]
+    public bool? IsFlexiJob { get; set; }
 }
 
 public class StubCare
