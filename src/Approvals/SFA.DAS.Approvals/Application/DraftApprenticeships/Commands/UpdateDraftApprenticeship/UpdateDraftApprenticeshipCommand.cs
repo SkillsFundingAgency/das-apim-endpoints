@@ -32,5 +32,6 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraf
         public Guid? ReservationId { get; set; }
         public bool IgnoreStartDateOverlap { get; set; }
         public bool? IsOnFlexiPaymentPilot { get; set; }
+        public bool IsLearnerDataSync { get; set; }
     }
 }

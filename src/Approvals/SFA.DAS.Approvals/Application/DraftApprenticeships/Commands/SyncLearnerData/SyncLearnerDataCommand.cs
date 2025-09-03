@@ -1,13 +1,15 @@
 using MediatR;
+using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
 
 public class SyncLearnerDataCommand : IRequest<SyncLearnerDataCommandResult>
-    {
-        public long ProviderId { get; set; }
-        public long CohortId { get; set; }
-        public long DraftApprenticeshipId { get; set; }
-    }
+{
+    public long ProviderId { get; set; }
+    public long CohortId { get; set; }
+    public long DraftApprenticeshipId { get; set; }
+    public UserInfo UserInfo { get; set; }
+}
 
     public class SyncLearnerDataCommandResult
     {

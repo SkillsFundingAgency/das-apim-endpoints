@@ -5,12 +5,12 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
+using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -27,11 +27,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
             // Arrange
             commandResult.Success = true;
             commandResult.Message = "Test success message";
+            var request = new SyncLearnerDataRequest { UserInfo = new UserInfo { UserId = "test", UserEmail = "test@test.com", UserDisplayName = "Test User" } };
             mediator.Setup(x => x.Send(It.IsAny<SyncLearnerDataCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(commandResult);
 
             // Act
-            var result = await controller.SyncLearnerData(1, 2, 3);
+            var result = await controller.SyncLearnerData(1, 2, 3, request);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -51,11 +52,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
             // Arrange
             commandResult.Success = false;
             commandResult.Message = "Test failure message";
+            var request = new SyncLearnerDataRequest { UserInfo = new UserInfo { UserId = "test", UserEmail = "test@test.com", UserDisplayName = "Test User" } };
             mediator.Setup(x => x.Send(It.IsAny<SyncLearnerDataCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(commandResult);
 
             // Act
-            var result = await controller.SyncLearnerData(1, 2, 3);
+            var result = await controller.SyncLearnerData(1, 2, 3, request);
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
@@ -72,11 +74,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
             [Greedy] DraftApprenticeshipController controller)
         {
             // Arrange
+            var request = new SyncLearnerDataRequest { UserInfo = new UserInfo { UserId = "test", UserEmail = "test@test.com", UserDisplayName = "Test User" } };
             mediator.Setup(x => x.Send(It.IsAny<SyncLearnerDataCommand>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception("Test exception"));
 
             // Act
-            var result = await controller.SyncLearnerData(1, 2, 3);
+            var result = await controller.SyncLearnerData(1, 2, 3, request);
 
             // Assert
             result.Should().BeOfType<BadRequestObjectResult>();
@@ -97,18 +100,20 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
             const long providerId = 123;
             const long cohortId = 456;
             const long draftApprenticeshipId = 789;
+            var request = new SyncLearnerDataRequest { UserInfo = new UserInfo { UserId = "test", UserEmail = "test@test.com", UserDisplayName = "Test User" } };
 
             mediator.Setup(x => x.Send(It.IsAny<SyncLearnerDataCommand>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(commandResult);
 
             // Act
-            await controller.SyncLearnerData(providerId, cohortId, draftApprenticeshipId);
+            await controller.SyncLearnerData(providerId, cohortId, draftApprenticeshipId, request);
 
             // Assert
             mediator.Verify(x => x.Send(It.Is<SyncLearnerDataCommand>(c =>
                     c.ProviderId == providerId &&
                     c.CohortId == cohortId &&
-                    c.DraftApprenticeshipId == draftApprenticeshipId),
+                    c.DraftApprenticeshipId == draftApprenticeshipId &&
+                    c.UserInfo == request.UserInfo),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
     }

@@ -332,7 +332,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpPost]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/sync-learner-data")]
-        public async Task<IActionResult> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId)
+        public async Task<IActionResult> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] SyncLearnerDataRequest request)
         {
             try
             {
@@ -340,7 +340,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 {
                     ProviderId = providerId,
                     CohortId = cohortId,
-                    DraftApprenticeshipId = draftApprenticeshipId
+                    DraftApprenticeshipId = draftApprenticeshipId,
+                    UserInfo = request.UserInfo
                 });
 
                 return Ok(new SyncLearnerDataResponse
