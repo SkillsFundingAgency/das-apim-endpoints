@@ -31,6 +31,9 @@ public class RecruitUserApiResponse
     [JsonPropertyName("name")]
     public string Name { get; set; }
 
+    public string? FirstName => Name?.Split(' ')[0];
+    public string? LastName => Name?.Contains(' ') == true ? Name?[(Name.IndexOf(' ') + 1)..] : null;
+
     [JsonPropertyName("email")]
     public string Email { get; set; }
 
