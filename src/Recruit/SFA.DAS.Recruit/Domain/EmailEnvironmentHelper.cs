@@ -24,6 +24,9 @@ public class EmailEnvironmentHelper
         AdvertApprovedByDfeTemplateId =
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "c35e76e7-303b-4b18-bb06-ad98cf68158d" : "c445095e-e659-499b-b2ab-81e321a9b591";
+        SharedApplicationsReturned = environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase)
+            ? "2f1b70d4-c722-4815-85a0-80a080eac642" : "feb4191d-a373-4040-9bc6-93c09d8039b5";
+
         CandidateApplicationUrl = $"{GetBaseUrl(environmentName)}applications";
         LiveVacancyUrl = $"{GetBaseUrl(environmentName)}apprenticeship/{{0}}";
         NotificationsSettingsProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/notifications-manage/";
@@ -31,6 +34,7 @@ public class EmailEnvironmentHelper
         ReviewVacancyReviewInRecruitEmployerUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/check-answers/";
         ReviewVacancyReviewInRecruitProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/vacancies/{{1}}/check-answers/";
         ApplicationReviewSharedEmployerUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/applications/{{2}}/?vacancySharedByProvider=True";
+        ManageVacancyProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/vacancies/{{1}}/manage/";
     }
     public string CandidateApplicationUrl { get; }
     public string LiveVacancyUrl { get; }
@@ -39,12 +43,14 @@ public class EmailEnvironmentHelper
     public string ReviewVacancyReviewInRecruitEmployerUrl { get; }
     public string ReviewVacancyReviewInRecruitProviderUrl { get; }
     public string ApplicationReviewSharedEmployerUrl { get; }
+    public string ManageVacancyProviderUrl { get; }
     public string SuccessfulApplicationEmailTemplateId { get; }
     public string UnsuccessfulApplicationEmailTemplateId { get; }
     public string VacancyReviewApprovedTemplateId { get; }
     public string VacancyReviewRejectedByDfeTemplateId { get; }
     public string ApplicationReviewSharedEmailTemplatedId { get; }
     public string AdvertApprovedByDfeTemplateId { get; }
+    public string SharedApplicationsReturned { get; }
 
     private static string GetBaseUrl(string environmentName)
     {
