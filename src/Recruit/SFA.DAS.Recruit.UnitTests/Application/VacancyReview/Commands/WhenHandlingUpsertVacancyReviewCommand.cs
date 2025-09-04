@@ -49,6 +49,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [Frozen] Mock<INotificationService> notificationService,
         UpsertVacancyReviewCommandHandler handler)
     {
+        userApiResponse1.Name = "firstName lastName";
         userApiResponse1.NotificationPreferences.EventPreferences =
         [
             new EventPreference
@@ -92,7 +93,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 c.RecipientsAddress == userApiResponse1.Email
                 && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedTemplateId
                 && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
-                && c.Tokens["firstName"] == userApiResponse1.Name
+                && c.Tokens["firstName"] == userApiResponse1.FirstName
                 && c.Tokens["employerName"] == command.VacancyReview.EmployerName
                 && c.Tokens["FindAnApprenticeshipAdvertURL"] == string.Format(emailEnvironmentHelper.LiveVacancyUrl,command.VacancyReview.VacancyReference.ToString())
                 && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsEmployerUrl, command.VacancyReview.HashedAccountId)
@@ -115,6 +116,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [Frozen] Mock<INotificationService> notificationService,
         UpsertVacancyReviewCommandHandler handler)
     {
+        userApiResponse1.Name = "firstName lastName";
         userApiResponse1.NotificationPreferences.EventPreferences =
         [
             new EventPreference
@@ -158,7 +160,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 c.RecipientsAddress == userApiResponse1.Email
                 && c.TemplateId == emailEnvironmentHelper.VacancyReviewRejectedByDfeTemplateId
                 && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
-                && c.Tokens["firstName"] == userApiResponse1.Name
+                && c.Tokens["firstName"] == userApiResponse1.FirstName
                 && c.Tokens["employerName"] == command.VacancyReview.EmployerName
                 && c.Tokens["rejectedAdvertURL"] == string.Format(emailEnvironmentHelper.ReviewVacancyReviewInRecruitEmployerUrl,command.VacancyReview.HashedAccountId, command.VacancyReview.VacancyId.ToString())
                 && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsEmployerUrl, command.VacancyReview.HashedAccountId)

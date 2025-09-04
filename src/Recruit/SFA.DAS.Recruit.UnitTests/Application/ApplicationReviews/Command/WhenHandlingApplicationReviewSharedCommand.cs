@@ -24,6 +24,7 @@ internal class WhenHandlingApplicationReviewSharedCommand
         [Frozen] Mock<INotificationService> notificationService,
         ApplicationReviewSharedEventHandler handler)
     {
+        userApiResponse1.Name = "firstName lastName";
         userApiResponse1.NotificationPreferences.EventPreferences =
         [
             new EventPreference
@@ -61,7 +62,7 @@ internal class WhenHandlingApplicationReviewSharedCommand
             It.Is<SendEmailCommand>(c =>
                 c.TemplateId == emailEnvironmentHelper.ApplicationReviewSharedEmailTemplatedId
                 && c.RecipientsAddress == userApiResponse1.Email
-                && c.Tokens["firstName"] == userApiResponse1.Name
+                && c.Tokens["firstName"] == userApiResponse1.FirstName
                 && c.Tokens["trainingProvider"] == command.TrainingProvider
                 && c.Tokens["advertTitle"] == command.AdvertTitle
                 && c.Tokens["vacancyReference"] == command.VacancyReference.ToString()
