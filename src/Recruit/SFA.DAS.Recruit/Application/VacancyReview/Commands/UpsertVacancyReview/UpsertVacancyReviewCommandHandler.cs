@@ -68,7 +68,7 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
                     : helper.VacancyReviewApprovedProviderTemplateId,
                 apiResponse.Email, 
                 request.VacancyReview.VacancyTitle, 
-                apiResponse.Name,
+                apiResponse.FirstName,
                 request.VacancyReview.EmployerName,
                 string.Format(helper.LiveVacancyUrl, request.VacancyReview.VacancyReference.ToString()),
                 isEmployer ? string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId):
@@ -83,7 +83,7 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
                 helper.VacancyReviewRejectedByDfeTemplateId,
                 apiResponse.Email, 
                 request.VacancyReview.VacancyTitle, 
-                apiResponse.Name,
+                apiResponse.FirstName,
                 request.VacancyReview.EmployerName,
                 string.Format(helper.ReviewVacancyReviewInRecruitEmployerUrl, request.VacancyReview.HashedAccountId, request.VacancyReview.VacancyId.ToString()),
                 string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId),
