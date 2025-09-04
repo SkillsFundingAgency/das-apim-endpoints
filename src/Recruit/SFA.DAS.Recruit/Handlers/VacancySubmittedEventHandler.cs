@@ -68,7 +68,7 @@ public class VacancySubmittedEventHandler(
                 .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
                 .Select(notificationService.Send).ToList();
 
-            if (emailTasks?.Count != 0)
+            if (emailTasks?.Count > 0)
             {
                 await Task.WhenAll(emailTasks!);
             }
