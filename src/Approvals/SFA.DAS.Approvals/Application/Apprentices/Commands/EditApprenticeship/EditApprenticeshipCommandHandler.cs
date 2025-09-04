@@ -85,6 +85,7 @@ public class EditApprenticeshipCommandHandler(
             EmploymentPrice = command.EmploymentPrice,
             MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
             MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
+            Party = command.Party,
         };
 
         var validateApiRequest = new ValidateApprenticeshipForEditApiRequest(validateRequest);

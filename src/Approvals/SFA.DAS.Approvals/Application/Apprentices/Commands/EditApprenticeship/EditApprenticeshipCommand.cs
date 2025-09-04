@@ -1,5 +1,6 @@
 using System;
 using MediatR;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 
@@ -27,4 +28,5 @@ public class EditApprenticeshipCommand : IRequest<EditApprenticeshipResult>
     
     public bool IsProviderContext => ProviderId.HasValue;
     public bool IsEmployerContext => EmployerAccountId.HasValue && !ProviderId.HasValue;
+    public Party Party { get; set; }
 }

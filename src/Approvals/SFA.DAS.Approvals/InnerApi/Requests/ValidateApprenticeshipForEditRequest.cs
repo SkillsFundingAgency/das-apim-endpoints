@@ -1,3 +1,4 @@
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using System;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests;
@@ -25,4 +26,5 @@ public class ValidateApprenticeshipForEditRequest
     public int? EmploymentPrice { get; set; }
     public int MinimumAgeAtApprenticeshipStart { get; set; }
     public int MaximumAgeAtApprenticeshipStart { get; set; }
+    public Party Party { get; set; }
 }

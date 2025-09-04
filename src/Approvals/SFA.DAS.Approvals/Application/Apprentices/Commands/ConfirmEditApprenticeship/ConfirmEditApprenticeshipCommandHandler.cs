@@ -54,7 +54,8 @@ public class ConfirmEditApprenticeshipCommandHandler(
             UserInfo = command.UserInfo,
             Party = serviceParameters.CallingParty != Shared.Enums.Party.None 
                 ? serviceParameters.CallingParty 
-                : Shared.Enums.Party.None
+                : Shared.Enums.Party.None,
+            EmployerReference = command.EmployerReference           
         };
 
         var editApiRequest = new EditApprenticeshipApiRequest(editRequestData);
