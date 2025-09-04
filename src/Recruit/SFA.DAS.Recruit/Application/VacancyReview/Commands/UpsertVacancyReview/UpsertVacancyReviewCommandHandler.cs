@@ -28,35 +28,51 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
         if (!string.IsNullOrEmpty(request.VacancyReview.ManualOutcome) 
             && (request.VacancyReview.ManualOutcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase) || request.VacancyReview.ManualOutcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase )))
         {
-            var users = await apiClient.GetAll<RecruitUserApiResponse>(
-                new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId));
+            var employerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
+                new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected));
+            var providerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
+                new GetProviderRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.Ukprn, NotificationTypes.VacancyApprovedOrRejected));
 
-            var usersToNotify = users.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Event.Equals(NotificationTypes.VacancyApprovedOrRejected) &&
-                c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
+            await Task.WhenAll(employerUsersTask, providerUsersTask);
+            var employerUsers = await employerUsersTask;
+            var providerUsers = await providerUsersTask;
+            
+            var usersToNotify = employerUsers.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
+                c.Frequency.Equals(NotificationFrequency.Immediately) || c.Frequency.Equals(NotificationFrequency.NotSet))).ToList();
+            
+            var providerUsersToNotify = providerUsers.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
+                c.Frequency.Equals(NotificationFrequency.Immediately) || c.Frequency.Equals(NotificationFrequency.NotSet))).ToList();
 
             var emailTasks = usersToNotify
-                .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome))
+                .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome, true))
                 .Where(c=>c != null)
                 .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
                 .Select(notificationService.Send).ToList();
+            
+            emailTasks.AddRange(providerUsersToNotify
+                .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome, false))
+                .Where(c=>c != null)
+                .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
+                .Select(notificationService.Send).ToList());
             
             await Task.WhenAll(emailTasks);
         }
     }
 
-    private EmailTemplateArguments VacancyReviewResponseEmailTemplate(UpsertVacancyReviewCommand request, RecruitUserApiResponse apiResponse, string outcome)
+    private EmailTemplateArguments VacancyReviewResponseEmailTemplate(UpsertVacancyReviewCommand request, RecruitUserApiResponse apiResponse, string outcome, bool isEmployer)
     {
         if (outcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase))
         {
             return new VacancyReviewResponseEmailTemplate(
-                helper.VacancyReviewApprovedTemplateId,
+                isEmployer ? helper.VacancyReviewApprovedEmployerTemplateId 
+                    : helper.VacancyReviewApprovedProviderTemplateId,
                 apiResponse.Email, 
                 request.VacancyReview.VacancyTitle, 
                 apiResponse.FirstName,
                 request.VacancyReview.EmployerName,
                 string.Format(helper.LiveVacancyUrl, request.VacancyReview.VacancyReference.ToString()),
-                string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId),
+                isEmployer ? string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId):
+                    string.Format(helper.NotificationsSettingsProviderUrl, request.VacancyReview.Ukprn),
                 request.VacancyReview.VacancyReference.ToString(),
                 request.VacancyReview.EmployerLocationOption == AvailableWhere.AcrossEngland ? "Recruiting nationally" 
                     : EmailTemplateAddressExtension.GetEmploymentLocationCityNames(request.VacancyReview.EmployerLocations));    

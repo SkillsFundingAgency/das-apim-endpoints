@@ -32,7 +32,7 @@ public class VacancyReviewDto
     public long AccountLegalEntityId { get; set; }
     public string OwnerType { get; set; }
     public long AccountId { get; set; }
-    public long Ukprn { get; set; }
+    public int Ukprn { get; set; }
     public string HashedAccountId { get; set; }
     public string EmployerName { get; set; }
     public Guid VacancyId { get; set; }
