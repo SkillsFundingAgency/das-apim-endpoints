@@ -292,7 +292,8 @@ public class ApprenticesController(
             DeliveryModel = request.DeliveryModel,
             ProviderReference = request.ProviderReference,
             EmploymentEndDate = request.EmploymentEndDate,
-            EmploymentPrice = request.EmploymentPrice
+            EmploymentPrice = request.EmploymentPrice,
+            Party = request.Party,
         };
 
         var result = await mediator.Send(command);

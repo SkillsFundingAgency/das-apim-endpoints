@@ -1,3 +1,4 @@
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using System;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices;
@@ -27,4 +28,5 @@ public class EditApprenticeshipRequest
     public int? EmploymentPrice { get; set; }
     public string ChangeCourse { get; set; }
     public string ChangeDeliveryModel { get; set; }
+    public Party Party { get; set; }
 }
