@@ -59,7 +59,7 @@ public class VacancySubmittedEventHandler(
                     emailHelper.AdvertApprovedByDfeTemplateId,
                     x.Email,
                     vacancy.Title,
-                    x.Name,
+                    x.FirstName,
                     vacancy.VacancyReference!.Value.ToString(),
                     vacancy.EmployerName,
                     location,
