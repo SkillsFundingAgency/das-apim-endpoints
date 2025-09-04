@@ -18,14 +18,21 @@ internal class WhenBuildingSharedApplicationReviewedEmailTemplate
         var expectedTokens = new Dictionary<string, string>
         {
             {"firstName", firstName },
-            {"vacancy", vacancyReference },
+            {"VACcode", vacancyReference },
             {"employer", employerName },
-            {"advertTitle", advertTitle },
-            {"manageVacancyUrl", manageVacancyUrl },
-            {"notificationSettingsUrl", notificationSettingsUrl }
+            {"vacancyTitle", advertTitle },
+            {"manageVacancyURL", manageVacancyUrl },
+            {"notificationSettingsURL", notificationSettingsUrl }
         };
 
-        var actual = new SharedApplicationsReturnedEmailTemplate(templateId, recipientEmail, advertTitle, firstName, vacancyReference, employerName, manageVacancyUrl, notificationSettingsUrl);
+        var actual = new SharedApplicationsReturnedEmailTemplate(templateId,
+            recipientEmail,
+            advertTitle,
+            firstName,
+            vacancyReference,
+            employerName,
+            manageVacancyUrl,
+            notificationSettingsUrl);
 
         actual.TemplateId.Should().Be(templateId);
         actual.Tokens.Should().BeEquivalentTo(expectedTokens);

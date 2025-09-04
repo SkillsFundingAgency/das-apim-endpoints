@@ -18,11 +18,11 @@ public class SharedApplicationsReturnedEmailTemplate : EmailTemplateArguments
         Tokens = new Dictionary<string, string>
         {
             {"firstName", firstName },
-            {"vacancy", vacancyReference },
+            {"VACcode", vacancyReference }, // upcoming stories will change this to VacancyReference
             {"employer", employerName },
-            {"advertTitle", advertTitle },
-            {"manageVacancyUrl", manageVacancyUrl },
-            {"notificationSettingsUrl", notificationSettingsUrl }
+            {"vacancyTitle", advertTitle }, // to be replaced with advertTitle in upcoming stories
+            {"manageVacancyURL", manageVacancyUrl },
+            {"notificationSettingsURL", notificationSettingsUrl }
         };
     }
 }
