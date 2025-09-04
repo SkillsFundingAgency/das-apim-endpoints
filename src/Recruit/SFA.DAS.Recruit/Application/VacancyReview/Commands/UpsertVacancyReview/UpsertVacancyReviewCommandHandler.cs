@@ -38,10 +38,10 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
             var providerUsers = await providerUsersTask;
             
             var usersToNotify = employerUsers.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
+                c.Frequency.Equals(NotificationFrequency.Immediately) || c.Frequency.Equals(NotificationFrequency.NotSet))).ToList();
             
             var providerUsersToNotify = providerUsers.Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
+                c.Frequency.Equals(NotificationFrequency.Immediately) || c.Frequency.Equals(NotificationFrequency.NotSet))).ToList();
 
             var emailTasks = usersToNotify
                 .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome, true))

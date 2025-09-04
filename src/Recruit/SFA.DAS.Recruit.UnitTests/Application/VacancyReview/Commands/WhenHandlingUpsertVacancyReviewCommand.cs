@@ -84,7 +84,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
     }
     
     [Test, MoqAutoData]
-    public async Task Then_If_The_Command_Is_Approving_An_Employer_Created_Vacancy_Review_Then_Notifications_Sent_For_Employers_With_Immediate_Notification(
+    public async Task Then_If_The_Command_Is_Approving_An_Employer_Created_Vacancy_Review_Then_Notifications_Sent_For_Employers_With_Immediate_And_NotSet_Notification(
         UpsertVacancyReviewCommand command,
         RecruitUserApiResponse userApiResponse1,
         RecruitUserApiResponse userApiResponse2,
@@ -100,6 +100,16 @@ public class WhenHandlingUpsertVacancyReviewCommand
             {
                 Event = NotificationTypes.VacancyApprovedOrRejected,
                 Frequency = NotificationFrequency.Immediately,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            }
+        ];
+        userApiResponse2.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.NotSet,
                 Method = "Email",
                 Scope = NotificationScope.OrganisationVacancies
             }
@@ -147,6 +157,20 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 && c.Tokens["location"] == "Recruiting nationally"
             )
         ), Times.Once);
+        notificationService.Verify(x=>x.Send(
+            It.Is<SendEmailCommand>(c=>
+                c.RecipientsAddress == userApiResponse2.Email
+                && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedEmployerTemplateId
+                && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
+                && c.Tokens["firstName"] == userApiResponse2.Name
+                && c.Tokens["employerName"] == command.VacancyReview.EmployerName
+                && c.Tokens["FindAnApprenticeshipAdvertURL"] == string.Format(emailEnvironmentHelper.LiveVacancyUrl,command.VacancyReview.VacancyReference.ToString())
+                && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsEmployerUrl, command.VacancyReview.HashedAccountId)
+                && c.Tokens["VACcode"] == command.VacancyReview.VacancyReference.ToString()
+                && c.Tokens["location"] == "Recruiting nationally"
+            )
+        ), Times.Once);
+        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Exactly(2));
     }
     
     
@@ -167,6 +191,16 @@ public class WhenHandlingUpsertVacancyReviewCommand
             {
                 Event = NotificationTypes.VacancyApprovedOrRejected,
                 Frequency = NotificationFrequency.Immediately,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            }
+        ];
+        userApiResponse2.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Weekly,
                 Method = "Email",
                 Scope = NotificationScope.OrganisationVacancies
             }
