@@ -47,7 +47,8 @@ public class WhenPostingEditApprenticeship
                     c.DeliveryModel == request.DeliveryModel &&
                     c.ProviderReference == request.ProviderReference &&
                     c.EmploymentEndDate == request.EmploymentEndDate &&
-                    c.EmploymentPrice == request.EmploymentPrice),
+                    c.EmploymentPrice == request.EmploymentPrice &&
+                    c.Party == request.Party),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(commandResult);
 
@@ -134,7 +135,8 @@ public class WhenPostingEditApprenticeship
                     c.DeliveryModel == request.DeliveryModel &&
                     c.ProviderReference == request.ProviderReference &&
                     c.EmploymentEndDate == request.EmploymentEndDate &&
-                    c.EmploymentPrice == request.EmploymentPrice),
+                    c.EmploymentPrice == request.EmploymentPrice &&
+                    c.Party == request.Party),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(commandResult);
 
@@ -180,7 +182,8 @@ public class WhenPostingEditApprenticeship
             c.DeliveryModel == request.DeliveryModel &&
             c.ProviderReference == request.ProviderReference &&
             c.EmploymentEndDate == request.EmploymentEndDate &&
-            c.EmploymentPrice == request.EmploymentPrice),
+            c.EmploymentPrice == request.EmploymentPrice &&
+                    c.Party == request.Party),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(commandResult)
             .Verifiable();
