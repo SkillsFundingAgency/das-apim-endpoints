@@ -20,7 +20,6 @@ public class WhenHandlingUpsertVacancyReviewCommand
     public async Task Then_The_Command_Is_Handled_And_Api_Called(
         UpsertVacancyReviewCommand command,
         RecruitUserApiResponse userApiResponse1,
-        RecruitUserApiResponse userApiResponse2,
         RecruitUserApiResponse userApiResponse3,
         [Frozen] EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -61,7 +60,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
-                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse1, userApiResponse2, userApiResponse3]);
+                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse1, userApiResponse3]);
 
         await handler.Handle(command, CancellationToken.None);
 
@@ -74,7 +73,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 c.RecipientsAddress == userApiResponse1.Email
                 && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedProviderTemplateId
                 && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
-                && c.Tokens["firstName"] == userApiResponse1.Name
+                && c.Tokens["firstName"] == "firstName"
                 && c.Tokens["employerName"] == command.VacancyReview.EmployerName
                 && c.Tokens["FindAnApprenticeshipAdvertURL"] == string.Format(emailEnvironmentHelper.LiveVacancyUrl,command.VacancyReview.VacancyReference.ToString())
                 && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsProviderUrl, command.VacancyReview.Ukprn)

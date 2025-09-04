@@ -26,7 +26,8 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
             new PutCreateVacancyReviewRequest(request.Id, request.VacancyReview));
         
         if (!string.IsNullOrEmpty(request.VacancyReview.ManualOutcome) 
-            && (request.VacancyReview.ManualOutcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase) || request.VacancyReview.ManualOutcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase )))
+            && (request.VacancyReview.ManualOutcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase) 
+                || request.VacancyReview.ManualOutcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase )))
         {
             var employerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
                 new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected));
