@@ -45,7 +45,7 @@ public class ApplicationReviewSharedEventHandler(
     private EmailTemplateArguments ApplicationReviewSharedEmailTemplate(ApplicationReviewSharedEvent request, RecruitUserApiResponse apiResponse, string employerReviewUrl) =>
         new ApplicationReviewSharedEmailTemplate(helper.ApplicationReviewSharedEmailTemplatedId,
             apiResponse.Email,
-            apiResponse.Name,
+            apiResponse.FirstName,
             request.TrainingProvider,
             request.AdvertTitle,
             request.VacancyReference.ToString(),

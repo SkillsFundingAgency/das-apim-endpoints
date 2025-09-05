@@ -20,7 +20,7 @@ public class ApplicationReviewSharedEmailTemplate : EmailTemplateArguments
             {"trainingProvider", trainingProvider },
             {"advertTitle", advertTitle },
             {"vacancyReference", vacancyReference },
-            {"applicationUrl", applicationUrl },
+            {"applicationURL", applicationUrl },
         };
     }
 }
