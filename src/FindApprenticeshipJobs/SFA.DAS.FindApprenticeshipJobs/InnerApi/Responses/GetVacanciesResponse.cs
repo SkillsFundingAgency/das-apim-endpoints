@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
+using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 {
@@ -66,5 +67,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
       
         [JsonPropertyName("vacancySource")]
         public string VacancySource { get; set; }
+        
+        [JsonPropertyName("apprenticeshipType")]
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; }
     }
 }

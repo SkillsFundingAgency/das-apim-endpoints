@@ -1,8 +1,4 @@
 using System.Globalization;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
@@ -61,16 +57,16 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> mockFindApprenticeshipApiClient,
         GetSavedSearchVacanciesQueryHandler sut)
     {
-        mockQuery = mockQuery with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
-        mockQuery = mockQuery with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
-        
+        // arrange
+        mockQuery = mockQuery with
+        {
+            Latitude = latitude.ToString(CultureInfo.InvariantCulture),
+            Longitude = longitude.ToString(CultureInfo.InvariantCulture),
+        };
+
         getCandidateApiResponse.Status = UserStatus.Completed;
-
-        courseService.Setup(x => x.GetRoutes())
-            .ReturnsAsync(getRoutesListResponse);
-
-        courseService.Setup(x => x.GetLevels())
-            .ReturnsAsync(getCourseLevelsListResponse);
+        courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
+        courseService.Setup(x => x.GetLevels()).ReturnsAsync(getCourseLevelsListResponse);
 
         var categories = getRoutesListResponse.Routes
             .Where(route =>
@@ -108,12 +104,22 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
             mockQuery.ApprenticeshipSearchResultsSortOrder,
             mockQuery.DisabilityConfident,
             mockQuery.ExcludeNational,
-            new List<VacancyDataSource> { VacancyDataSource.Nhs });
+            [VacancyDataSource.Nhs],
+            mockQuery.SelectedApprenticeshipTypes);
 
-        mockFindApprenticeshipApiClient.Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c => c.GetUrl == getVacanciesExpectedUrl.GetUrl))).ReturnsAsync(getVacanciesResponse);
+        GetVacanciesRequest? capturedGetVacanciesRequest = null;
+        mockFindApprenticeshipApiClient
+            .Setup(client => client.Get<GetVacanciesResponse>(It.IsAny<GetVacanciesRequest>()))
+            .Callback<IGetApiRequest>(x => capturedGetVacanciesRequest = x as GetVacanciesRequest)
+            .ReturnsAsync(getVacanciesResponse);
 
+        // act
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
+        // assert
+        capturedGetVacanciesRequest.Should().NotBeNull();
+        capturedGetVacanciesRequest!.GetUrl.Should().Be(getVacanciesExpectedUrl.GetUrl);
+        
         actual.Should().NotBeNull();
         actual.Vacancies.Should().NotBeEmpty();
         actual.Levels.Should().BeEquivalentTo(levels);

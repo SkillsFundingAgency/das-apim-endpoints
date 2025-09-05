@@ -1,6 +1,7 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
+using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
 {
@@ -17,6 +18,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
         public bool? ExcludeNational { get; set; }
         public string? UnSubscribeToken { get; set; }
         public List<Vacancy> Vacancies { get; set; } = [];
+        public List<ApprenticeshipTypes>? ApprenticeshipTypes { get; set; } = [];
 
         public class Vacancy
         {
@@ -43,6 +45,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
             public string? VacancySource { get; set; }
             public string? WageType { get; set; }
             public string? WageUnit { get; set; }
+            public ApprenticeshipTypes? ApprenticeshipType { get; set; }
         }
         
         public class Category
@@ -68,6 +71,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
         {
             return new PostSendSavedSearchNotificationCommand
             {
+                ApprenticeshipTypes = savedSearchApiRequest.ApprenticeshipTypes,
                 Id = savedSearchApiRequest.Id,
                 Categories = savedSearchApiRequest.Categories?.Select(category =>
                     new PostSendSavedSearchNotificationCommand.Category
@@ -97,21 +101,22 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Models
                 Vacancies = savedSearchApiRequest.Vacancies.Select(vacancy =>
                     new PostSendSavedSearchNotificationCommand.Vacancy
                     {
-                        Id = vacancy.Id,
+                        ApprenticeshipType = vacancy.ApprenticeshipType,
                         ClosingDate = vacancy.ClosingDate,
-                        StartDate = vacancy.StartDate,
                         Distance = vacancy.Distance,
+                        EmployerLocation = vacancy.Address,
                         EmployerName = vacancy.EmployerName,
+                        EmploymentLocationOption = vacancy.EmploymentLocationOption,
+                        Id = vacancy.Id,
+                        OtherAddresses = vacancy.OtherAddresses,
+                        StartDate = vacancy.StartDate,
                         Title = vacancy.Title,
                         TrainingCourse = vacancy.TrainingCourse,
                         VacancyReference = vacancy.VacancyReference,
-                        Wage = vacancy.Wage,
-                        EmployerLocation = vacancy.Address,
-                        OtherAddresses = vacancy.OtherAddresses,
-                        EmploymentLocationOption = vacancy.EmploymentLocationOption,
                         VacancySource = vacancy.VacancySource,
+                        Wage = vacancy.Wage,
+                        WageType = vacancy.WageType,
                         WageUnit = vacancy.WageUnit,
-                        WageType = vacancy.WageType
                     }).ToList()
             };
         }

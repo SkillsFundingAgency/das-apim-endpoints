@@ -1,4 +1,5 @@
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
@@ -20,4 +21,5 @@ public class GetCandidateSavedVacanciesRequest
     public DateTime LastRunDateFilter { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
+    public List<ApprenticeshipTypes>? SelectedApprenticeshipTypes { get; set; }
 }
