@@ -48,4 +48,12 @@ public class EventsController(
         await mediator.Publish(new VacancySubmittedEvent(body.VacancyId, body.VacancyReference));
         return NoContent();
     }
+
+    [HttpPost, Route("application-submitted")]
+    public async Task<IActionResult> OnApplicationSubmitted([FromBody] PostApplicationSubmittedEventModel body)
+    {
+        logger.LogInformation("ApplicationSubmitted for vacancy: VAC{VacancyReference}, ApplicationId: {ApplicationId}", body.VacancyReference, body.ApplicationId);
+        await mediator.Publish(new ApplicationSubmittedEvent(body.ApplicationId, body.VacancyReference));
+        return NoContent();
+    }
 }
