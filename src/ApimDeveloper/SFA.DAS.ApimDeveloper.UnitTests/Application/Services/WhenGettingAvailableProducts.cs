@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -39,7 +40,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Services
             
             //Assert
             actual.Should().BeEquivalentTo(apiResponse);
-            cacheStorageService.Verify(x=>x.SaveToCache($"{accountType}-{nameof(GetAvailableApiProductsResponse)}", apiResponse, 1, null));
+            cacheStorageService.Verify(x=>x.SaveToCache($"{accountType}-{nameof(GetAvailableApiProductsResponse)}", apiResponse, TimeSpan.FromHours(1), "DocumentationKeys"));
         }
 
         [Test, MoqAutoData]
