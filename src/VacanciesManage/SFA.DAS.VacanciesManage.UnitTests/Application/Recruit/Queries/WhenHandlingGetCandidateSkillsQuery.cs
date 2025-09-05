@@ -52,7 +52,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Queries
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.CandidateSkills.Should().BeEquivalentTo(apiQueryResponse);
-            cacheStorageService.Verify(x=>x.SaveToCache("GetCandidateSkills",apiQueryResponse, 3));
+            cacheStorageService.Verify(x=>x.SaveToCache("GetCandidateSkills",apiQueryResponse, 3, null));
         }
     }
 }

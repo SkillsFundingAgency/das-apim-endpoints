@@ -53,7 +53,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Epaos.Services
                 service.SaveToCache<IReadOnlyList<GetDeliveryAreaListItem>>(
                     nameof(GetDeliveryAreasRequest),
                     areasFromApi,
-                    expectedExpirationInHours));
+                    expectedExpirationInHours, null));
         }
     }
 }

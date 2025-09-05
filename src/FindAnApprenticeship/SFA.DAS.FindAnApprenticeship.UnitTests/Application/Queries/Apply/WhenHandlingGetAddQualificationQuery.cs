@@ -139,8 +139,8 @@ public class WhenHandlingGetAddQualificationQuery
         actual.Qualifications.Should().BeEquivalentTo(new List<Qualification>
             { apiResponseQualifications.Qualifications.FirstOrDefault() });
         actual.Courses.Should().BeEquivalentTo(expectedCourses);
-        cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsApiResponse), It.IsAny<GetStandardsApiResponse>(), TimeSpan.FromHours(12)), Times.Once);
-        cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetFrameworksApiResponse), It.IsAny<GetFrameworksApiResponse>(), TimeSpan.FromHours(12)), Times.Once);
+        cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsApiResponse), It.IsAny<GetStandardsApiResponse>(), TimeSpan.FromHours(12), null), Times.Once);
+        cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetFrameworksApiResponse), It.IsAny<GetFrameworksApiResponse>(), TimeSpan.FromHours(12), null), Times.Once);
     }
     
     [Test, MoqAutoData]

@@ -28,7 +28,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
             var actual = await service.GetActiveStandards<TestGetStandardsListResponse>(nameof(TestGetStandardsListResponse));
             
             actual.Should().BeEquivalentTo(coursesFromApi);
-            mockCacheService.Verify(x=>x.SaveToCache(nameof(TestGetStandardsListResponse), coursesFromApi, 4), Times.Once);
+            mockCacheService.Verify(x=>x.SaveToCache(nameof(TestGetStandardsListResponse), coursesFromApi, 4, null), Times.Once);
         }
         
         [Test, MoqAutoData]

@@ -1,17 +1,21 @@
+using AutoFixture.NUnit3;
+using FluentAssertions;
+using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Moq;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
 {
@@ -175,6 +179,100 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             
             //Assert
             distributedCache.Verify(x=>x.RemoveAsync($"{appName}_{keyName}", It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Key_Is_Added_To_The_Registry_If_Not_Already_Present(
+            string registryName,
+            string keyToAdd,
+            string appName,
+            TestObject item,
+            [Frozen] Mock<IDistributedCache> distributedCache,
+            [Frozen] Mock<IConfiguration> configuration,
+            CacheStorageService service)
+        {
+            // Arrange
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+            distributedCache.Setup(x => x.GetAsync($"{appName}_{registryName}", It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[])null);
+
+            // Act
+            await service.SaveToCache(keyToAdd, item, 1, registryName);
+
+            // Assert
+            distributedCache.Verify(x => x.SetAsync(
+                $"{appName}_{registryName}",
+                It.Is<byte[]>(c => Encoding.UTF8.GetString(c).Contains(keyToAdd)),
+                It.IsAny<DistributedCacheEntryOptions>(),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Registry_Is_Retrieved_And_Deserialized(
+            string registryName,
+            string appName,
+            List<string> expectedKeys,
+            [Frozen] Mock<IDistributedCache> distributedCache,
+            [Frozen] Mock<IConfiguration> configuration,
+            CacheStorageService service)
+        {
+            // Arrange
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+            var json = JsonSerializer.Serialize(expectedKeys);
+            distributedCache.Setup(x => x.GetAsync($"{appName}_{registryName}", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Encoding.UTF8.GetBytes(json));
+
+            // Act
+            var result = await service.GetCacheKeyRegistry(registryName);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.EquivalentTo(expectedKeys));
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_An_Empty_List_Is_Returned_If_Registry_Does_Not_Exist(
+            string registryName,
+            string appName,
+            [Frozen] Mock<IDistributedCache> distributedCache,
+            [Frozen] Mock<IConfiguration> configuration,
+            CacheStorageService service)
+        {
+            // Arrange
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+            distributedCache.Setup(x => x.GetAsync($"{appName}_{registryName}", It.IsAny<CancellationToken>()))
+                .ReturnsAsync((byte[])null);
+
+            // Act
+            var result = await service.GetCacheKeyRegistry(registryName);
+
+            // Assert
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result, Is.Empty);
+        }
+
+        [Test, MoqAutoData]
+        public async Task When_Adding_To_Cache_With_Registry_The_KeyName_Is_In_The_Registry(
+            string registryName,
+            string appName,
+            string keyName,
+            TestObject test,
+            [Frozen] Mock<IConfiguration> configuration)
+        {
+            // Arrange
+            var options = Options.Create(new MemoryDistributedCacheOptions());
+            IDistributedCache cache = new MemoryDistributedCache(options);
+            var service = new CacheStorageService(cache, configuration.Object);
+            configuration.SetupGet(x => x[It.Is<string>(s => s.Equals("ConfigNames"))]).Returns(appName);
+
+            // Act
+            await service.SaveToCache<TestObject>(keyName, test, 1, registryName);
+            var items = await service.GetCacheKeyRegistry(registryName);
+
+            // Assert
+            items.Should().HaveCount(1);
+            items.Should().Contain($"{appName}_{keyName}");
         }
 
         public class TestObject

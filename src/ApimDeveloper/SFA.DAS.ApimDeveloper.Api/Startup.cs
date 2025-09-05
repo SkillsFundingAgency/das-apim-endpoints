@@ -89,6 +89,7 @@ namespace SFA.DAS.ApimDeveloper.Api
                     options.Configuration = configuration.ApimEndpointsRedisConnectionString;
                 });
             }
+            services.AddTransient<DocumentationCacheInvalidator>();
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(c =>

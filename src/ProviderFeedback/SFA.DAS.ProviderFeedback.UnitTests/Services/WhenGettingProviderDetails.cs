@@ -53,7 +53,7 @@ namespace SFA.DAS.ProviderFeedback.UnitTests.Services
             actual.Should().BeEquivalentTo(providerResponse);
             cacheStorageService.Verify(x => x.RetrieveFromCache<TrainingProviderResponse>(cacheKey), Times.Once);
             trainingProviderService.Verify(x => x.GetTrainingProviderDetails(providerId), Times.Once);
-            cacheStorageService.Verify(x => x.SaveToCache(cacheKey, providerResponse, ProviderService.CacheExpiryHours), Times.Once);
+            cacheStorageService.Verify(x => x.SaveToCache(cacheKey, providerResponse, ProviderService.CacheExpiryHours, null), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -75,7 +75,7 @@ namespace SFA.DAS.ProviderFeedback.UnitTests.Services
 
             var actual = await providerService.GetTrainingProviderDetails(providerId);
 
-            cacheStorageService.Verify(x => x.SaveToCache(cacheKey, providerResponse, ProviderService.CacheExpiryHours), Times.Once);
+            cacheStorageService.Verify(x => x.SaveToCache(cacheKey, providerResponse, ProviderService.CacheExpiryHours, null), Times.Once);
         }
     }
 }

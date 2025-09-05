@@ -40,7 +40,7 @@ public sealed class WhenCallingCachedLocationLookupService
             x.SaveToCache(
                 $"loc:{location}",
                 It.IsAny<LocationItem>(),
-                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours)
+                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours), null
             ), Times.Never);
     }
 
@@ -77,7 +77,7 @@ public sealed class WhenCallingCachedLocationLookupService
             x.SaveToCache(
                 $"loc:{location}",
                 It.IsAny<LocationItem>(),
-                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours)
+                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours), null
             ), Times.Once);
     }
 
@@ -114,7 +114,7 @@ public sealed class WhenCallingCachedLocationLookupService
             x.SaveToCache(
                 $"loc:{location}",
                 It.IsAny<LocationItem>(),
-                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours)
+                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours), null
             ), Times.Never);
     }
 
@@ -141,7 +141,7 @@ public sealed class WhenCallingCachedLocationLookupService
             x.SaveToCache(
                 It.IsAny<string>(),
                 It.IsAny<LocationItem>(),
-                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours)
+                TimeSpan.FromHours(CachedLocationLookupService.LocationItemCacheExpirationInHours), null
             ), Times.Never);
     }
 }

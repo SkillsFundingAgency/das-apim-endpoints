@@ -34,8 +34,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             
             //Assert
             actual.Should().BeEquivalentTo(requestData);
-            cacheStorageService.Verify(x=>x.SaveToCache(cacheKey, requestData, TimeSpan.FromMinutes(5)), Times.Once);
-            cacheStorageService.Verify(x=>x.SaveToCache($"{cacheKey}_extended", requestData, TimeSpan.FromDays(180)), Times.Once);
+            cacheStorageService.Verify(x=>x.SaveToCache(cacheKey, requestData, TimeSpan.FromMinutes(5), null), Times.Once);
+            cacheStorageService.Verify(x=>x.SaveToCache($"{cacheKey}_extended", requestData, TimeSpan.FromDays(180), null), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -80,7 +80,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             
             //Assert
             actual.Should().BeNull();
-            cacheStorageService.Verify(x=>x.SaveToCache(It.IsAny<string>(), It.IsAny<TestData>(), It.IsAny<TimeSpan>()), Times.Never);
+            cacheStorageService.Verify(x=>x.SaveToCache(It.IsAny<string>(), It.IsAny<TestData>(), It.IsAny<TimeSpan>(), null), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -104,7 +104,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             
             //Assert
             actual.Should().BeNull();
-            cacheStorageService.Verify(x=>x.SaveToCache(It.IsAny<string>(), It.IsAny<TestData>(), It.IsAny<TimeSpan>()), Times.Never);
+            cacheStorageService.Verify(x=>x.SaveToCache(It.IsAny<string>(), It.IsAny<TestData>(), It.IsAny<TimeSpan>(), null), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -132,8 +132,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Services
             
             //Assert
             actual.Should().BeEquivalentTo(cacheData);
-            cacheStorageService.Verify(x=>x.SaveToCache(cacheKey, cacheData, TimeSpan.FromMinutes(5)), Times.Once);
-            cacheStorageService.Verify(x=>x.SaveToCache($"{cacheKey}_extended", It.IsAny<TestData>(), TimeSpan.FromDays(180)), Times.Never);
+            cacheStorageService.Verify(x=>x.SaveToCache(cacheKey, cacheData, TimeSpan.FromMinutes(5), null), Times.Once);
+            cacheStorageService.Verify(x=>x.SaveToCache($"{cacheKey}_extended", It.IsAny<TestData>(), TimeSpan.FromDays(180), null), Times.Never);
         }
 
         public class TestRequest : IGetApiRequest
