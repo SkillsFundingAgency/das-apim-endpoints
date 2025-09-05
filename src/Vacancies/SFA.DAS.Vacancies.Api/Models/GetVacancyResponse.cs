@@ -1,10 +1,10 @@
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
+using SFA.DAS.Vacancies.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
-using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {

@@ -1,19 +1,20 @@
-﻿using MediatR;
+﻿using Asp.Versioning;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Vacancies.Api.Models;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
+using SFA.DAS.Vacancies.Enums;
+using SFA.DAS.Vacancies.Services;
 using System;
 using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
-using Asp.Versioning;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Vacancies.Api.Models;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
-using SFA.DAS.Vacancies.Enums;
-using SFA.DAS.Vacancies.Services;
-    
+
 namespace SFA.DAS.Vacancies.Api.Controllers.v2;
 
 [ApiController]
@@ -50,7 +51,9 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
     [Route("/vacancy")]
     [ProducesResponseType(typeof(GetVacanciesListResponseV2), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
-    public async Task<IActionResult> GetVacancies([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, [FromQuery] SearchVacancyRequestV2 request)
+    public async Task<IActionResult> GetVacancies(
+        [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier,
+        [FromQuery] SearchVacancyRequestV2 request)
     {
         try
         {
@@ -73,7 +76,6 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
                 StandardLarsCode = request.StandardLarsCode,
                 PostedInLastNumberOfDays = request.PostedInLastNumberOfDays,
                 AdditionalDataSources = request.AdditionalDataSources?.Select(x => x.ToString()).ToList(),
-                ExcludeNational = true, // TODO: temp - this ensures we don't get national data that the api doesn't yet support
             });
 
             return Ok((GetVacanciesListResponseV2)queryResponse);

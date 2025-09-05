@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
+using SFA.DAS.Vacancies.InnerApi.Responses;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
-using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
