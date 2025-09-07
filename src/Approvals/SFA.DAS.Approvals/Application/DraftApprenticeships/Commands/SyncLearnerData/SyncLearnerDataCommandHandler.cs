@@ -3,15 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.Approvals.Application.Shared.Enums;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
 
@@ -28,7 +24,6 @@ public class SyncLearnerDataCommandHandler(
             logger.LogInformation("Syncing learner data for draft apprenticeship {DraftApprenticeshipId} in cohort {CohortId}", 
                 request.DraftApprenticeshipId, request.CohortId);
 
-            // 1. Get the draft apprenticeship to find the learnerDataId
             var draftApprenticeshipResponse = await commitmentsApiClient.GetWithResponseCode<GetDraftApprenticeshipResponse>(
                 new GetDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId));
 
@@ -54,7 +49,6 @@ public class SyncLearnerDataCommandHandler(
                 };
             }
 
-            // 2. Get the latest learner data from das-learner-data-api
             var learnerDataResponse = await learnerDataClient.GetWithResponseCode<GetLearnerForProviderResponse>(
                 new GetLearnerForProviderRequest(request.ProviderId, draftApprenticeship.LearnerDataId.Value));
 
@@ -71,60 +65,61 @@ public class SyncLearnerDataCommandHandler(
 
             var learnerData = learnerDataResponse.Body;
 
-            // 3. Create an update request by merging learner data with existing draft apprenticeship
-            var updateRequest = new UpdateDraftApprenticeshipRequest
+            var updatedDraftApprenticeship = new GetDraftApprenticeshipResponse
             {
-                UserInfo = request.UserInfo,
-                RequestingParty = SFA.DAS.Approvals.Application.Shared.Enums.Party.Provider,
-
-                // Overwrite with learner data values
+                Id = draftApprenticeship.Id,
                 FirstName = learnerData.FirstName,
                 LastName = learnerData.LastName,
-                Email = learnerData.Email,
-                DateOfBirth = learnerData.Dob,
-                Uln = learnerData.Uln.ToString(),
-                StartDate = learnerData.StartDate,
-                EndDate = learnerData.PlannedEndDate,
-                Cost = learnerData.TrainingPrice,
+                Email = draftApprenticeship.Email,
+                Uln = draftApprenticeship.Uln,
+                CourseCode = draftApprenticeship.CourseCode,
+                DeliveryModel = draftApprenticeship.DeliveryModel,
+                TrainingCourseName = draftApprenticeship.TrainingCourseName,
+                TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
+                TrainingCourseOption = draftApprenticeship.TrainingCourseOption,
+                TrainingCourseVersionConfirmed = draftApprenticeship.TrainingCourseVersionConfirmed,
+                StandardUId = draftApprenticeship.StandardUId,
+                Cost = learnerData.TrainingPrice + learnerData.EpaoPrice,
                 TrainingPrice = learnerData.TrainingPrice,
                 EndPointAssessmentPrice = learnerData.EpaoPrice,
-                EmploymentPrice = null, // Not available in learner data
-                CourseCode = learnerData.StandardCode.ToString(),
-                CourseOption = string.Empty, // Not available in learner data
-                DeliveryModel = learnerData.IsFlexiJob ? SFA.DAS.Approvals.InnerApi.DeliveryModel.PortableFlexiJob : SFA.DAS.Approvals.InnerApi.DeliveryModel.Regular,
-                Reference = draftApprenticeship.ProviderReference, // Keep existing provider reference
+                StartDate = learnerData.StartDate,
+                ActualStartDate = draftApprenticeship.ActualStartDate,
+                EndDate = learnerData.PlannedEndDate,
+                DateOfBirth = learnerData.Dob,
+                Reference = draftApprenticeship.Reference,
+                EmployerReference = draftApprenticeship.EmployerReference,
+                ProviderReference = draftApprenticeship.ProviderReference,
                 ReservationId = draftApprenticeship.ReservationId,
-                IgnoreStartDateOverlap = false,
+                IsContinuation = draftApprenticeship.IsContinuation,
+                ContinuationOfId = draftApprenticeship.ContinuationOfId,
+                OriginalStartDate = draftApprenticeship.OriginalStartDate,
+                HasStandardOptions = draftApprenticeship.HasStandardOptions,
+                EmploymentPrice = draftApprenticeship.EmploymentPrice,
+                EmploymentEndDate = draftApprenticeship.EmploymentEndDate,
+                RecognisePriorLearning = draftApprenticeship.RecognisePriorLearning,
+                DurationReducedBy = draftApprenticeship.DurationReducedBy,
+                PriceReducedBy = draftApprenticeship.PriceReducedBy,
+                RecognisingPriorLearningStillNeedsToBeConsidered = draftApprenticeship.RecognisingPriorLearningStillNeedsToBeConsidered,
+                RecognisingPriorLearningExtendedStillNeedsToBeConsidered = draftApprenticeship.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
                 IsOnFlexiPaymentPilot = draftApprenticeship.IsOnFlexiPaymentPilot,
-                MinimumAgeAtApprenticeshipStart = 16,
-                MaximumAgeAtApprenticeshipStart = 120,
-                IsLearnerDataSync = true // This will trigger the flag clearing in das-commitments
+                EmployerHasEditedCost = draftApprenticeship.EmployerHasEditedCost,
+                EmailAddressConfirmed = draftApprenticeship.EmailAddressConfirmed,
+                TrainingTotalHours = draftApprenticeship.TrainingTotalHours,
+                DurationReducedByHours = draftApprenticeship.DurationReducedByHours,
+                IsDurationReducedByRpl = draftApprenticeship.IsDurationReducedByRpl,
+                LearnerDataId = draftApprenticeship.LearnerDataId,
+                HasLearnerDataChanges = false,
+                LastLearnerDataSync = DateTime.UtcNow
             };
 
-            // 4. Update the draft apprenticeship (this will run validation and clear flags if successful)
-            var updateResponse = await commitmentsApiClient.PutWithResponseCode<NullResponse>(
-                new PutUpdateDraftApprenticeshipRequest(request.CohortId, request.DraftApprenticeshipId, updateRequest));
-
-            if (!string.IsNullOrEmpty(updateResponse.ErrorContent))
-            {
-                logger.LogWarning("Validation failed when updating draft apprenticeship. Status: {StatusCode}, Error: {Error}", 
-                    updateResponse.StatusCode, updateResponse.ErrorContent);
-                
-                // Validation failed - don't reset the flags so banner will still appear
-                return new SyncLearnerDataCommandResult
-                {
-                    Success = false,
-                    Message = "Learner data validation failed. Please review the apprenticeship details and correct any errors."
-                };
-            }
-
-            logger.LogInformation("Successfully synced learner data for draft apprenticeship {DraftApprenticeshipId}", 
+            logger.LogInformation("Successfully merged learner data for draft apprenticeship {DraftApprenticeshipId}", 
                 request.DraftApprenticeshipId);
 
             return new SyncLearnerDataCommandResult
             {
                 Success = true,
-                Message = "Learner data has been successfully updated"
+                Message = "Learner data has been successfully merged",
+                UpdatedDraftApprenticeship = updatedDraftApprenticeship
             };
         }
         catch (Exception ex)
