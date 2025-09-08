@@ -47,7 +47,6 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SubmitEmployer
 
             Assert.DoesNotThrowAsync(async () =>
                 await _handler.Handle(command, CancellationToken.None));
-            //return Task.CompletedTask;
         }
 
         [Test]
