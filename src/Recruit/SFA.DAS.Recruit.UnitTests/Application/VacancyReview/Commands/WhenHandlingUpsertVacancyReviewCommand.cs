@@ -17,7 +17,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.VacancyReview.Commands;
 public class WhenHandlingUpsertVacancyReviewCommand
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Command_Is_Handled_And_Api_Called(
+    public async Task Then_The_Command_Is_Handled_And_Api_Called_For_Providers(
         UpsertVacancyReviewCommand command,
         RecruitUserApiResponse userApiResponse1,
         RecruitUserApiResponse userApiResponse3,
@@ -81,6 +81,9 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 && c.Tokens["location"] == "Recruiting nationally"
             )
         ), Times.Once);
+        recruitApiClient
+            .Verify(x => x.GetAll<RecruitUserApiResponse>(
+                It.IsAny<GetEmployerRecruitUserNotificationPreferencesApiRequest>()), Times.Never);
     }
     
     [Test, MoqAutoData]
@@ -171,6 +174,9 @@ public class WhenHandlingUpsertVacancyReviewCommand
             )
         ), Times.Once);
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Exactly(2));
+        recruitApiClient
+            .Verify(x => x.GetAll<RecruitUserApiResponse>(
+                It.IsAny<GetProviderRecruitUserNotificationPreferencesApiRequest>()), Times.Never);
     }
     
     
