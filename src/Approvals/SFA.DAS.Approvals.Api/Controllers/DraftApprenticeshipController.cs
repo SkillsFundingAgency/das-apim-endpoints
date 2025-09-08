@@ -258,6 +258,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 CohortId = cohortId,
                 ApprenticeshipId = apprenticeshipId,
                 RequestingParty = request.RequestingParty,
+                HasLearnerDataChanges = request.HasLearnerDataChanges,
+                LastLearnerDataSync = request.LastLearnerDataSync
             };
 
             await mediator.Send(command);
