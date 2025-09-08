@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SubmitEmployer
         }
 
         [Test]
-        public Task Handle_CallsApiClient_AndSucceeds_WhenApiReturnsSuccess()
+        public void Handle_CallsApiClient_AndSucceeds_WhenApiReturnsSuccess()
         {
             var command = new SubmitEmployerFeedbackCommand
             {
@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SubmitEmployer
 
             Assert.DoesNotThrowAsync(async () =>
                 await _handler.Handle(command, CancellationToken.None));
-            return Task.CompletedTask;
+            //return Task.CompletedTask;
         }
 
         [Test]
