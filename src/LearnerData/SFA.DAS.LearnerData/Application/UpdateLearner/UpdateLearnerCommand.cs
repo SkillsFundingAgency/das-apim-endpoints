@@ -21,7 +21,7 @@ internal static class UpdateLearnerCommandExtensions
     {
         var combinedLearningSupport = new List<LearningSupportUpdatedDetails>();
 
-        var onProgrammeLearningSupport = command.UpdateLearnerRequest.Delivery.First().OnProgramme?.LearningSupport
+        var onProgrammeLearningSupport = command.UpdateLearnerRequest.Delivery.OnProgramme?.LearningSupport
             .Select(ls => new LearningSupportUpdatedDetails
             {
                 StartDate = ls.StartDate,
@@ -31,7 +31,7 @@ internal static class UpdateLearnerCommandExtensions
         if (onProgrammeLearningSupport != null && onProgrammeLearningSupport.Any())
             combinedLearningSupport.AddRange(onProgrammeLearningSupport);
 
-        var mathsAndEnglishLearningSupport = command.UpdateLearnerRequest.Delivery.First().EnglishAndMaths?
+        var mathsAndEnglishLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths?
             .SelectMany(x => x.LearningSupport != null
                 ? x.LearningSupport.Select(ls => new LearningSupportUpdatedDetails
                 {
