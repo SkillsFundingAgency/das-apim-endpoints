@@ -4,6 +4,7 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -165,5 +166,43 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         // assert
         request.Should().NotBeNull();
         request!.GetUrl.Should().Contain($"categories={getRoutesListResponse.Routes.First().Name}");
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_SearchParameters_ApprenticeshipTypes_Are_Preserved_In_Results(
+        GetSavedSearchVacanciesQuery mockQuery,
+        GetCandidateApiResponse getCandidateApiResponse,
+        GetRoutesListResponse getRoutesListResponse,
+        GetVacanciesResponse getVacanciesResponse,
+        GetCourseLevelsListResponse getCourseLevelsListResponse,
+        [Frozen] Mock<ICourseService> courseService,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockCandidateApiClient,
+        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> mockFindApprenticeshipApiClient,
+        GetSavedSearchVacanciesQueryHandler sut)
+    {
+        // arrange
+        mockQuery = mockQuery with
+        {
+            Latitude = 2.ToString(CultureInfo.InvariantCulture),
+            Longitude = 2.ToString(CultureInfo.InvariantCulture),
+            SelectedApprenticeshipTypes = [ApprenticeshipTypes.Standard, ApprenticeshipTypes.Foundation]
+        };
+
+        getCandidateApiResponse.Status = UserStatus.Completed;
+        courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
+        courseService.Setup(x => x.GetLevels()).ReturnsAsync(getCourseLevelsListResponse);
+
+        var candidateExpectedUrl = new GetCandidateApiRequest(mockQuery.UserId.ToString());
+        mockCandidateApiClient.Setup(client => client.Get<GetCandidateApiResponse>(It.Is<GetCandidateApiRequest>(c => c.GetUrl == candidateExpectedUrl.GetUrl))).ReturnsAsync(getCandidateApiResponse);
+        mockFindApprenticeshipApiClient
+            .Setup(client => client.Get<GetVacanciesResponse>(It.IsAny<GetVacanciesRequest>()))
+            .ReturnsAsync(getVacanciesResponse);
+
+        // act
+        var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
+
+        // assert
+        actual.Should().NotBeNull();
+        actual!.ApprenticeshipTypes.Should().BeEquivalentTo([ApprenticeshipTypes.Standard, ApprenticeshipTypes.Foundation]);
     }
 }
