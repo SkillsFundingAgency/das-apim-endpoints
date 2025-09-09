@@ -52,7 +52,7 @@ namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Services
                 service.SaveToCache<GetStandardsListResponse>(
                     nameof(GetStandardsListResponse),
                     coursesFromApi,
-                    expectedExpirationInHours));
+                    expectedExpirationInHours, null));
         }
     }
 }

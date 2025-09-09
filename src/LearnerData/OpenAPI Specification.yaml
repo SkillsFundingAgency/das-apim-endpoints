@@ -346,46 +346,76 @@ components:
             hasEhcp:
               type: boolean
         delivery:
-          type: array
-          items:
-            type: object
-            properties:
-              onProgramme:
-                type: object
-                properties:
-                  care:
+          type: object
+          properties:
+            onProgramme:
+              type: object
+              properties:
+                care:
+                  type: object
+                  properties:
+                    careleaver:
+                      type: boolean
+                    employerConsent:
+                      type: boolean
+                standardCode:
+                  type: integer
+                agreementId:
+                  type: string
+                startDate:
+                  type: string
+                  format: date
+                expectedEndDate:
+                  type: string
+                  format: date
+                OffTheJobHours:
+                  type: integer
+                percentageOfTrainingLeft:
+                  type: integer
+                costs:
+                  type: array
+                  items:
                     type: object
                     properties:
-                      careleaver:
-                        type: boolean
-                      employerConsent:
-                        type: boolean
-                  standardCode:
-                    type: integer
-                  agreementId:
-                    type: string
+                      trainingPrice:
+                        type: number
+                      epaoPrice:
+                        type: number
+                      fromDate:
+                        type: string
+                        format: date
+                completionDate:
+                  type: string
+                  format: date
+                withdrawalDate:
+                  type: string
+                  format: date
+                learningSupport:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      startDate:
+                        type: string
+                        format: date
+                      endDate:
+                        type: string
+                        format: date
+                isFlexiJob:
+                  type: boolean
+            englishAndMaths:
+              type: array
+              items:
+                type: object
+                properties:
                   startDate:
                     type: string
                     format: date
-                  expectedEndDate:
+                  endDate:
                     type: string
                     format: date
-                  OffTheJobHours:
+                  courseCode:
                     type: integer
-                  percentageOfTrainingLeft:
-                    type: integer
-                  costs:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        trainingPrice:
-                          type: number
-                        epaoPrice:
-                          type: number
-                        fromDate:
-                          type: string
-                          format: date
                   completionDate:
                     type: string
                     format: date
@@ -403,38 +433,6 @@ components:
                         endDate:
                           type: string
                           format: date
-                  isFlexiJob:
-                    type: boolean
-              englishAndMaths:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    startDate:
-                      type: string
-                      format: date
-                    endDate:
-                      type: string
-                      format: date
-                    courseCode:
-                      type: integer
-                    completionDate:
-                      type: string
-                      format: date
-                    withdrawalDate:
-                      type: string
-                      format: date
-                    learningSupport:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          startDate:
-                            type: string
-                            format: date
-                          endDate:
-                            type: string
-                            format: date
 
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
