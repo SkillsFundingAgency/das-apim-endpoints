@@ -72,9 +72,8 @@ public class WhenGettingTotalPositionsAvailable
         cacheStorageService.Verify(x =>
             x.SaveToCache(It.Is<string>(key => key == nameof(GetTotalPositionsAvailableRequest)),
                 It.Is<long>(item => item == totalPositionsAvailable),
-                It.Is<TimeSpan>(expiry => expiry == TimeSpan.FromHours(1))));
+                It.Is<TimeSpan>(expiry => expiry == TimeSpan.FromHours(1)), null));
     }
-
 
     [Test, MoqAutoData]
     public async Task Then_The_Count_Is_Retrieved_From_The_Cache(

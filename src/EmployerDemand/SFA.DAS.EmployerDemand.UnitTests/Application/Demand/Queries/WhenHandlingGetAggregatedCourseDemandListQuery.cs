@@ -66,8 +66,8 @@ namespace SFA.DAS.EmployerDemand.UnitTests.Application.Demand.Queries
             result.TotalFiltered.Should().Be(demandApiResponse.TotalFiltered);
             result.LocationItem.Should().BeNull();
             result.Routes.Should().BeEquivalentTo(coursesApiRoutesResponse.Routes.ToList());
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse),coursesApiStandardsResponse, 1));
-            cacheStorageService.Verify(x => x.SaveToCache(nameof(GetRoutesListResponse), coursesApiRoutesResponse, 1));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetStandardsListResponse),coursesApiStandardsResponse, 1, null));
+            cacheStorageService.Verify(x => x.SaveToCache(nameof(GetRoutesListResponse), coursesApiRoutesResponse, 1, null));
         }
 
         [Test, MoqAutoData]
