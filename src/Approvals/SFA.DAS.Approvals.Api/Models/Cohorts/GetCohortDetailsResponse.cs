@@ -124,6 +124,8 @@ public class DraftApprenticeship
     public bool? EmailAddressConfirmed { get; set; }
     public int? DurationReducedByHours { get; set; }
     public string ApprenticeshipType { get; set; }
+    public bool HasLearnerDataChanges { get; set; }
+    public DateTime? LastLearnerDataSync { get; set; }
 
     public static implicit operator DraftApprenticeship(
         InnerApi.Responses.DraftApprenticeship source)
@@ -155,7 +157,9 @@ public class DraftApprenticeship
             RecognisingPriorLearningExtendedStillNeedsToBeConsidered = source.RecognisingPriorLearningExtendedStillNeedsToBeConsidered,
             IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
             EmailAddressConfirmed = source.EmailAddressConfirmed,
-            DurationReducedByHours = source.DurationReducedByHours
+            DurationReducedByHours = source.DurationReducedByHours,
+            HasLearnerDataChanges = source.HasLearnerDataChanges,
+            LastLearnerDataSync = source.LastLearnerDataSync
         };
     }
 }
