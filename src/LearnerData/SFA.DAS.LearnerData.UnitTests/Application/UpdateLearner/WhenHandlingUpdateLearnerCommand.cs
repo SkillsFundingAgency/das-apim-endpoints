@@ -47,7 +47,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.First().OnProgramme.CompletionDate;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.CompletionDate }, HttpStatusCode.OK);
 
@@ -99,8 +99,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.First().OnProgramme.CompletionDate;
-        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.First().EnglishAndMaths;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
+        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.MathsAndEnglish }, HttpStatusCode.OK);
 
@@ -124,8 +124,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.First().EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.First().OnProgramme!.LearningSupport!);
+        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
+        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.LearningSupport }, HttpStatusCode.OK);
 

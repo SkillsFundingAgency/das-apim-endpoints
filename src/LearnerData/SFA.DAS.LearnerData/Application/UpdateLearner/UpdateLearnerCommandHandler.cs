@@ -68,9 +68,9 @@ public class UpdateLearnerCommandHandler(
         {
             Learner = new LearningUpdateDetails
             {
-                CompletionDate = command.UpdateLearnerRequest.Delivery.First().OnProgramme.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
             },
-            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.First().EnglishAndMaths.Select(x =>
+            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
                 {
                     Amount = x.Amount,

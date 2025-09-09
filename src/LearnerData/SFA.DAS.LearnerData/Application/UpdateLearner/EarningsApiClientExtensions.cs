@@ -16,7 +16,7 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Patch(new SaveCompletionApiPatchRequest(command.LearningKey, new SaveCompletionRequest
             {
-                CompletionDate = command.UpdateLearnerRequest.Delivery.First().OnProgramme.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
             }));
         }, "completion date", logger, command.LearningKey);
 
@@ -27,7 +27,7 @@ internal static class EarningsApiClientExtensions
         await LogAndExecute(async () =>
         {
             var data = new SaveMathsAndEnglishRequest();
-            data.AddRange(command.UpdateLearnerRequest.Delivery.First().EnglishAndMaths.Select(x => new MathsAndEnglishRequestDetail
+            data.AddRange(command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x => new MathsAndEnglishRequestDetail
             {
                 StartDate = x.StartDate,
                 EndDate = x.EndDate,

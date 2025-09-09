@@ -4,7 +4,7 @@
 
 public class UpdateLearnerRequest
 {
-    public List<UpdateLearnerRequestDeliveryDetails> Delivery { get; set; }
+    public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
 }
 public class UpdateLearnerRequestDeliveryDetails
 {
