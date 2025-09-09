@@ -7,11 +7,13 @@ public class ApprenticeshipModel
         PriceEpisodes = new List<PriceEpisodeModel>();
         AdditionalPayments = new List<AdditionalPaymentModel>();
         Instalments = new List<InstalmentModel>();
+        WithdrawnDate = null;
     }
 
     public List<PriceEpisodeModel> PriceEpisodes { get; set; }
     public List<AdditionalPaymentModel> AdditionalPayments { get; set; }
     public List<InstalmentModel> Instalments { get; set; }
+    public DateTime? WithdrawnDate { get; set; }
 }
 
 public class PriceEpisodeModel

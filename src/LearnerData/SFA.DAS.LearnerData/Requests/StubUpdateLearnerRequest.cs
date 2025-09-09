@@ -73,6 +73,8 @@ public class StubOnProgramme
     public DateTime? WithdrawalDate { get; set; }
     [Required]
     public List<StubLearningSupport> LearningSupport { get; set; }
+    [Required]
+    public bool? IsFlexiJob { get; set; }
 }
 
 public class StubCare
@@ -104,7 +106,7 @@ public class StubEnglishAndMaths
     [Required]
     public DateTime? StartDate { get; set; }
     [Required]
-    public DateTime? PlannedEndDate { get; set; }
+    public DateTime? EndDate { get; set; }
     [Required]
     public int? CourseCode { get; set; }
     [Required]
