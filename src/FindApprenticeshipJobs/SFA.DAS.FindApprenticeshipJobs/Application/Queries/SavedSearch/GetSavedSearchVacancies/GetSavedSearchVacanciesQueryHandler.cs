@@ -80,21 +80,22 @@ public class GetSavedSearchVacanciesQueryHandler(
 
         var searchResult = new GetSavedSearchVacanciesQueryResult
         {
-            Id = request.Id,
-            User = candidate,
-            SearchTerm = request.SearchTerm,
-            Location = request.Location,
+            ApprenticeshipTypes = request.SelectedApprenticeshipTypes,
             Categories = categories,
-            Levels = levels,
             DisabilityConfident = request.DisabilityConfident,
-            ExcludeNational = request.ExcludeNational,
             Distance = request.Distance,
+            ExcludeNational = request.ExcludeNational,
+            Id = request.Id,
+            Levels = levels,
+            Location = request.Location,
+            SearchTerm = request.SearchTerm,
             UnSubscribeToken = request.UnSubscribeToken,
-            Vacancies = vacanciesResponse?.ApprenticeshipVacancies != null ? vacanciesResponse.ApprenticeshipVacancies.Select(x =>
-                    (GetSavedSearchVacanciesQueryResult.ApprenticeshipVacancy) x)
-                .ToList() : []
+            User = candidate,
+            Vacancies = vacanciesResponse?.ApprenticeshipVacancies != null 
+                ? vacanciesResponse.ApprenticeshipVacancies.Select(x => (GetSavedSearchVacanciesQueryResult.ApprenticeshipVacancy) x).ToList()
+                : [],
         };
+
         return searchResult;
-        
     }
 }

@@ -21,6 +21,7 @@ public class GetSavedSearchVacanciesQueryResult
     public bool? ExcludeNational { get; set; }
     public string? UnSubscribeToken { get; set; }
     public List<ApprenticeshipVacancy> Vacancies { get; set; } = [];
+    public List<ApprenticeshipTypes>? ApprenticeshipTypes { get; set; } = [];
     
     public class Category
     {
