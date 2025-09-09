@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.Domain.EmailTemplates;
-public class ProviderAddedToEmployerVacancy : EmailTemplateArguments
+public class ProviderAddedToEmployerVacancyEmailTemplate : EmailTemplateArguments
 {
-    public ProviderAddedToEmployerVacancy(string templateId,
+    public ProviderAddedToEmployerVacancyEmailTemplate(string templateId,
         string recipientEmail,
         string firstName,
         string advertTitle,
@@ -27,9 +27,9 @@ public class ProviderAddedToEmployerVacancy : EmailTemplateArguments
             {"advertTitle", advertTitle },
             {"VACnumber", vacancyReference },
             {"employer", employerName },
+            {"submitterEmail", employerEmail },
             {"location", location },
             {"applicationUrl", findAnApprenticeshipAdvertUrl },
-            {"submitterEmail", employerEmail },
             {"courseTitle", courseTitle },
             {"positions", positions },
             {"startDate", startDate },

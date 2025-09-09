@@ -16,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models.Messages;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -38,11 +39,12 @@ public class UpsertVacancyReviewCommandHandler(
             && (request.VacancyReview.ManualOutcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase) 
                 || request.VacancyReview.ManualOutcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase )))
         {
-            var employerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
-                new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected));
-            var providerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
-                new GetProviderRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.Ukprn));
-
+            var employerUsersTask = request.VacancyReview.OwnerType.Equals("Employer", StringComparison.CurrentCultureIgnoreCase) 
+                ? apiClient.GetAll<RecruitUserApiResponse>(new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId))
+                : Task.FromResult(new List<RecruitUserApiResponse>().AsEnumerable());
+            
+            var providerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(new GetProviderRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.Ukprn));
+            
             await Task.WhenAll(employerUsersTask, providerUsersTask);
 
             var employerUsers = await employerUsersTask;
@@ -82,7 +84,7 @@ public class UpsertVacancyReviewCommandHandler(
                     var vacancy = result.Vacancy;
 
                     var emailResults = await Task.WhenAll(
-                        providerUsersToNotifyOnVacancyApprovedOrRejected
+                        providerUsersToNotifyOnAddingToEmployerVacancy
                             .Select(apiResponse => ProviderAddedToEmployerVacancy(request, apiResponse, vacancy))
                     );
 
@@ -150,7 +152,7 @@ public class UpsertVacancyReviewCommandHandler(
 
         var trainingProgramme = await GetTrainingProgrammeById(vacancy.ProgrammeId);
 
-        return new ProviderAddedToEmployerVacancy(templateId: helper.ProviderAddedToEmployerVacancy,
+        return new ProviderAddedToEmployerVacancyEmailTemplate(templateId: helper.ProviderAddedToEmployerVacancy,
             apiResponse.Email,
             firstName: apiResponse.FirstName,
             vacancy.Title,

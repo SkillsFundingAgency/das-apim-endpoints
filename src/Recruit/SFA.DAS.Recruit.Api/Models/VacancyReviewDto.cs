@@ -2,6 +2,8 @@ using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Recruit.Api.Models;
 
@@ -33,6 +35,8 @@ public class VacancyReviewDto
     public string HashedAccountId { get; set; }
     public string EmployerName { get; set; }
     public Guid VacancyId { get; set; }
+    public List<Address> EmployerLocations { get; set; }
+    public AvailableWhere EmployerLocationOption { get; set; }
     public static explicit operator VacancyReviewDto(GetVacancyReviewResponse source)
     {
         return new VacancyReviewDto
@@ -91,6 +95,8 @@ public class VacancyReviewDto
             AccountLegalEntityId = source.AccountLegalEntityId,
             EmployerName = source.EmployerName,
             HashedAccountId = source.HashedAccountId,
+            EmployerLocations = source.EmployerLocations,
+            EmployerLocationOption = source.EmployerLocationOption,
             VacancyId = source.VacancyId,
         };
     }
