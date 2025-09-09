@@ -16,7 +16,8 @@ public class EmailEnvironmentHelperTests
         actual.AdvertApprovedByDfeTemplateId.Should().Be("c35e76e7-303b-4b18-bb06-ad98cf68158d");
         actual.VacancyReviewApprovedEmployerTemplateId.Should().Be("d8855c4f-9ce1-4870-93ff-53e609f59a51");
         actual.VacancyReviewApprovedProviderTemplateId.Should().Be("ee2d7ab3-7ac1-47f8-bc32-86290bda55c9");
-        actual.VacancyReviewRejectedByDfeTemplateId.Should().Be("27acd0e9-96fe-47ec-ae33-785e00a453f8");
+        actual.VacancyReviewEmployerRejectedByDfeTemplateId.Should().Be("27acd0e9-96fe-47ec-ae33-785e00a453f8");
+        actual.VacancyReviewProviderRejectedByDfeTemplateId.Should().Be("872e847b-77f5-44a7-b12e-4a19df969ec1");
         actual.CandidateApplicationUrl.Should().Be("https://findapprenticeship.service.gov.uk/applications");
         string.Format(actual.LiveVacancyUrl,"VAC1000001213").Should().Be("https://findapprenticeship.service.gov.uk/apprenticeship/VAC1000001213");
         string.Format(actual.NotificationsSettingsEmployerUrl,"ABC123").Should().Be("https://recruit.manage-apprenticeships.service.gov.uk/accounts/ABC123/notifications-manage/");
@@ -35,7 +36,8 @@ public class EmailEnvironmentHelperTests
         actual.UnsuccessfulApplicationEmailTemplateId.Should().Be("95d7ff0c-79fc-4585-9fff-5e583b478d23");
         actual.VacancyReviewApprovedEmployerTemplateId.Should().Be("9a45ff1d-769d-4be2-96fb-dcf605e0108f");
         actual.VacancyReviewApprovedProviderTemplateId.Should().Be("48c9ab9e-5b13-4843-b4d5-ee1caa46cc64");
-        actual.VacancyReviewRejectedByDfeTemplateId.Should().Be("5869140a-2a76-4a7c-b4b9-083d2afc5aa5");
+        actual.VacancyReviewEmployerRejectedByDfeTemplateId.Should().Be("5869140a-2a76-4a7c-b4b9-083d2afc5aa5");
+        actual.VacancyReviewProviderRejectedByDfeTemplateId.Should().Be("048d93c9-4371-45a3-96c4-3f93241a5908");
         actual.AdvertApprovedByDfeTemplateId.Should().Be("c445095e-e659-499b-b2ab-81e321a9b591");
         string.Format(actual.LiveVacancyUrl,"VAC1000001213").Should().Be("https://sit-findapprenticeship.apprenticeships.education.gov.uk/apprenticeship/VAC1000001213");
         actual.CandidateApplicationUrl.Should().Be("https://sit-findapprenticeship.apprenticeships.education.gov.uk/applications");
