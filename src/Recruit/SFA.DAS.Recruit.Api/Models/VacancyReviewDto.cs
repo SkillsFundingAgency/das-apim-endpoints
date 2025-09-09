@@ -1,10 +1,7 @@
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.OpenApi.Expressions;
-using Newtonsoft.Json;
-using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Api.Models;
 
@@ -93,7 +90,8 @@ public class VacancyReviewDto
             OwnerType = source.OwnerType,
             AccountLegalEntityId = source.AccountLegalEntityId,
             EmployerName = source.EmployerName,
-            HashedAccountId = source.HashedAccountId
+            HashedAccountId = source.HashedAccountId,
+            VacancyId = source.VacancyId,
         };
     }
 }
