@@ -45,7 +45,6 @@ public class StubOnProgramme
     public StubCare Care { get; set; }
     [Required]
     public int? StandardCode { get; set; }
-    [Required]
     public string? AgreementId { get; set; }
     [Required]
     public DateTime? StartDate { get; set; }
