@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Domain.Models;
 
@@ -11,5 +12,6 @@ public record SearchParameters(
     List<int>? SelectedLevelIds,
     string? Location,
     string? Latitude,
-    string? Longitude
+    string? Longitude,
+    List<ApprenticeshipTypes>? SelectedApprenticeshipTypes
 );

@@ -26,6 +26,8 @@ public class WhenGettingLearnersForProvider
         bool sortDescending,
         int page,
         int? pageSize,
+        int? startMonth,
+        int startYear,
         GetLearnersForProviderQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] SelectLearnersController controller)
@@ -37,6 +39,8 @@ public class WhenGettingLearnersForProvider
             {
                 var q = (GetLearnersForProviderQuery)o;
                 q.ProviderId.Should().Be(providerId);
+                q.StartYear.Should().Be(startYear);
+                q.StartMonth.Should().Be(startMonth);
                 q.AccountLegalEntityId.Should().Be(accountLegalEntityId);
                 q.SearchTerm.Should().Be(searchTerm);
                 q.SortField.Should().Be(sortColumn);
@@ -45,7 +49,7 @@ public class WhenGettingLearnersForProvider
             })
             .ReturnsAsync(mediatorResult);
 
-        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pageSize) as ObjectResult;
+        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pageSize, startMonth, startYear) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -64,6 +68,8 @@ public class WhenGettingLearnersForProvider
         bool sortDescending,
         int page,
         int pagesize,
+        int? startMonth,
+        int startYear,
         GetLearnersForProviderQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] SelectLearnersController controller)
@@ -73,7 +79,7 @@ public class WhenGettingLearnersForProvider
                 It.IsAny<CancellationToken>()))
             .Throws<InvalidOperationException>();
 
-        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pagesize) as StatusCodeResult;
+        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pagesize, startMonth, startYear) as StatusCodeResult;
 
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

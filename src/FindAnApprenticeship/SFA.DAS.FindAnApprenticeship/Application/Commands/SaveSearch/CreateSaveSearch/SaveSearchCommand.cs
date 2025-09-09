@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MediatR;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch.CreateSaveSearch;
 
@@ -14,5 +15,6 @@ public record SaveSearchCommand(
     string SearchTerm,
     List<int>? SelectedLevelIds,
     List<int>? SelectedRouteIds,
-    string UnSubscribeToken
+    string UnSubscribeToken,
+    List<ApprenticeshipTypes>? ApprenticeshipTypes
 ) : IRequest<SaveSearchCommandResult>;
