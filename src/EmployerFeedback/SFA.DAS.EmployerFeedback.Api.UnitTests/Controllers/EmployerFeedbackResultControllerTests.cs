@@ -48,6 +48,15 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
             var result = await _controller.SubmitEmployerFeedback(request);
 
             Assert.That(result, Is.InstanceOf<NoContentResult>());
+            _mediatorMock.Verify(m => m.Send(
+                It.Is<SubmitEmployerFeedbackCommand>(c =>
+                    c.UserRef == request.UserRef &&
+                    c.Ukprn == request.Ukprn &&
+                    c.AccountId == request.AccountId &&
+                    c.ProviderRating == request.ProviderRating &&
+                    c.FeedbackSource == request.FeedbackSource &&
+                    c.ProviderAttributes == request.ProviderAttributes),
+                It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]

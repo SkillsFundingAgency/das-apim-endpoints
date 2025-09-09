@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SubmitEmployer
         }
 
         [Test]
-        public void Handle_CallsApiClient_AndSucceeds_WhenApiReturnsSuccess()
+        public async Task Handle_CallsApiClient_AndSucceeds_WhenApiReturnsSuccess()
         {
             var command = new SubmitEmployerFeedbackCommand
             {
@@ -45,8 +45,19 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SubmitEmployer
                     It.IsAny<SubmitEmployerFeedbackRequest>(), false))
                 .ReturnsAsync(apiResponse);
 
-            Assert.DoesNotThrowAsync(async () =>
-                await _handler.Handle(command, CancellationToken.None));
+            await _handler.Handle(command, CancellationToken.None);
+
+            _apiClientMock.Verify(x => x.PostWithResponseCode<SubmitEmployerFeedbackRequestData, object>(
+                It.Is<SubmitEmployerFeedbackRequest>(r =>
+                    r.Data.UserRef == command.UserRef &&
+                    r.Data.Ukprn == command.Ukprn &&
+                    r.Data.AccountId == command.AccountId &&
+                    r.Data.ProviderRating == command.ProviderRating.ToString() &&
+                    r.Data.FeedbackSource == command.FeedbackSource &&
+                    r.Data.ProviderAttributes.Count == command.ProviderAttributes.Count &&
+                    r.Data.ProviderAttributes[0].AttributeId == command.ProviderAttributes[0].AttributeId &&
+                    r.Data.ProviderAttributes[0].AttributeValue == command.ProviderAttributes[0].AttributeValue
+                ), false), Times.Once);
         }
 
         [Test]
