@@ -2,14 +2,37 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
+using SFA.DAS.LearnerDataJobs.Application.Queries;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 
 namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 
+[Route("")]
 [ApiController]
-
 public class LearnersController(IMediator mediator, ILogger<LearnersController> logger) : ControllerBase
 {
+    [HttpGet("learners")]
+    public async Task<IActionResult> GetAllLearners([FromQuery] int page = 1, [FromQuery] int? pagesize = 100, [FromQuery] bool excludeApproved = true)
+    {
+        logger.LogInformation("GetAllLearners for page {Page}, pageSize {PageSize}, excludeApproved {ExcludeApproved}", page, pagesize, excludeApproved);
+        
+        if (pagesize.HasValue && pagesize.Value > 1000)
+        {
+            return BadRequest("Page size cannot exceed 1000");
+        }
+
+        var query = new GetAllLearnersQuery()
+        {
+            Page = page,
+            PageSize = pagesize,
+            ExcludeApproved = excludeApproved
+        };
+
+        var response = await mediator.Send(query);
+
+        return Ok(response);
+    }
+    
     [HttpPut]
     [Route("providers/{providerId}/learners")]
     public async Task<IActionResult> PutLearner([FromRoute] long providerId, [FromBody] LearnerDataRequest request)
