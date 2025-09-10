@@ -13,6 +13,7 @@ namespace SFA.DAS.Recruit.Domain.EmailTemplates
             string vacancyReference,
             string employerName,
             string location,
+            string manageAdvertUrl,
             string notificationSettingsUrl) 
         { 
             TemplateId = templateId;
@@ -22,6 +23,7 @@ namespace SFA.DAS.Recruit.Domain.EmailTemplates
                 {"advertTitle", advertTitle},
                 {"firstName", firstName},
                 {"employerName", employerName},
+                {"manageAdvertURL", manageAdvertUrl},
                 {"notificationSettingsURL", notificationSettingsUrl},
                 {"VACcode", vacancyReference},
                 {"location", location}
