@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,10 +30,12 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
             && (request.VacancyReview.ManualOutcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase) 
                 || request.VacancyReview.ManualOutcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase )))
         {
-            var employerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
-                new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected));
-            var providerUsersTask = apiClient.GetAll<RecruitUserApiResponse>(
-                new GetProviderRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.Ukprn, NotificationTypes.VacancyApprovedOrRejected));
+            var employerUsersTask = request.VacancyReview.OwnerType.Equals("Employer", StringComparison.CurrentCultureIgnoreCase) 
+                ? apiClient.GetAll<RecruitUserApiResponse>(new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected))
+                : Task.FromResult(new List<RecruitUserApiResponse>().AsEnumerable());
+            var providerUsersTask = request.VacancyReview.OwnerType.Equals("Provider", StringComparison.CurrentCultureIgnoreCase) 
+                ? apiClient.GetAll<RecruitUserApiResponse>(new GetProviderRecruitUserNotificationPreferencesApiRequest(request.VacancyReview.Ukprn, NotificationTypes.VacancyApprovedOrRejected)) 
+                : Task.FromResult(new List<RecruitUserApiResponse>().AsEnumerable());
 
             await Task.WhenAll(employerUsersTask, providerUsersTask);
             var employerUsers = await employerUsersTask;
@@ -81,13 +84,16 @@ public class UpsertVacancyReviewCommandHandler(IRecruitApiClient<RecruitApiConfi
         if (outcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase))
         {
             return new VacancyReviewRejectedResponseEmailTemplate(
-                helper.VacancyReviewRejectedByDfeTemplateId,
+                isEmployer ? helper.VacancyReviewEmployerRejectedByDfeTemplateId
+                    : helper.VacancyReviewProviderRejectedByDfeTemplateId,
                 apiResponse.Email, 
                 request.VacancyReview.VacancyTitle, 
                 apiResponse.FirstName,
                 request.VacancyReview.EmployerName,
-                string.Format(helper.ReviewVacancyReviewInRecruitEmployerUrl, request.VacancyReview.HashedAccountId, request.VacancyReview.VacancyId.ToString()),
-                string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId),
+                isEmployer ? string.Format(helper.ReviewVacancyReviewInRecruitEmployerUrl, request.VacancyReview.HashedAccountId, request.VacancyReview.VacancyId.ToString())
+                    : string.Format(helper.ReviewVacancyReviewInRecruitProviderUrl, request.VacancyReview.Ukprn, request.VacancyReview.VacancyId.ToString()),
+                isEmployer ? string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId):
+                    string.Format(helper.NotificationsSettingsProviderUrl, request.VacancyReview.Ukprn),
                 request.VacancyReview.VacancyReference.ToString(),
                 request.VacancyReview.EmployerLocationOption == AvailableWhere.AcrossEngland ? "Recruiting nationally" 
                     : EmailTemplateAddressExtension.GetEmploymentLocationCityNames(request.VacancyReview.EmployerLocations));   

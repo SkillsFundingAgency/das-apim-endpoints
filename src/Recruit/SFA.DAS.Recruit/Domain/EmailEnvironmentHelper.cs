@@ -18,9 +18,12 @@ public class EmailEnvironmentHelper
         VacancyReviewApprovedProviderTemplateId=
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "ee2d7ab3-7ac1-47f8-bc32-86290bda55c9" : "48c9ab9e-5b13-4843-b4d5-ee1caa46cc64";
-        VacancyReviewRejectedByDfeTemplateId = 
+        VacancyReviewEmployerRejectedByDfeTemplateId = 
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "27acd0e9-96fe-47ec-ae33-785e00a453f8" : "5869140a-2a76-4a7c-b4b9-083d2afc5aa5";
+        VacancyReviewProviderRejectedByDfeTemplateId = 
+            environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
+                ? "872e847b-77f5-44a7-b12e-4a19df969ec1" : "048d93c9-4371-45a3-96c4-3f93241a5908";
         ApplicationReviewSharedEmailTemplatedId =
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "53058846-e369-4396-87b2-015c9d16360a" : "f6fc57e6-7318-473d-8cb5-ca653035391a";
@@ -50,7 +53,8 @@ public class EmailEnvironmentHelper
     public string UnsuccessfulApplicationEmailTemplateId { get; }
     public string VacancyReviewApprovedEmployerTemplateId { get; }
     public string VacancyReviewApprovedProviderTemplateId { get; }
-    public string VacancyReviewRejectedByDfeTemplateId { get; }
+    public string VacancyReviewEmployerRejectedByDfeTemplateId { get; }
+    public string VacancyReviewProviderRejectedByDfeTemplateId { get; }
     public string ApplicationReviewSharedEmailTemplatedId { get; }
 
     public string AdvertApprovedByDfeTemplateId { get; }
