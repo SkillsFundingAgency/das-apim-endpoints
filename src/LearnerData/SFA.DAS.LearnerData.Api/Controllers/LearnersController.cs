@@ -2,9 +2,10 @@
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Application.GetLearners;
 using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.LearnerData.Application;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
@@ -91,6 +92,28 @@ public class LearnersController(
         }
     }
 
+    /// <summary>
+    /// Gets all earnings data.
+    /// </summary>
+    /// <returns>All earnings data in the format of an FM36Learner array.</returns>
+    [HttpGet]
+    [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
+    public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod)
+    {
+        try
+        {
+            var queryResult = await mediator.Send(new GetFm36Command(ukprn, collectionYear, collectionPeriod));
+
+            var model = queryResult.FM36Learners;
+
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to get all earnings");
+            return BadRequest();
+        }
+    }
 
     private IActionResult BuildErrorResponse(List<ValidationFailure> errors)
     {

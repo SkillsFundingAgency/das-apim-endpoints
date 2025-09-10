@@ -1,13 +1,10 @@
 using System.Globalization;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -61,16 +58,16 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> mockFindApprenticeshipApiClient,
         GetSavedSearchVacanciesQueryHandler sut)
     {
-        mockQuery = mockQuery with { Latitude = latitude.ToString(CultureInfo.InvariantCulture) };
-        mockQuery = mockQuery with { Longitude = longitude.ToString(CultureInfo.InvariantCulture) };
-        
+        // arrange
+        mockQuery = mockQuery with
+        {
+            Latitude = latitude.ToString(CultureInfo.InvariantCulture),
+            Longitude = longitude.ToString(CultureInfo.InvariantCulture),
+        };
+
         getCandidateApiResponse.Status = UserStatus.Completed;
-
-        courseService.Setup(x => x.GetRoutes())
-            .ReturnsAsync(getRoutesListResponse);
-
-        courseService.Setup(x => x.GetLevels())
-            .ReturnsAsync(getCourseLevelsListResponse);
+        courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
+        courseService.Setup(x => x.GetLevels()).ReturnsAsync(getCourseLevelsListResponse);
 
         var categories = getRoutesListResponse.Routes
             .Where(route =>
@@ -108,12 +105,22 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
             mockQuery.ApprenticeshipSearchResultsSortOrder,
             mockQuery.DisabilityConfident,
             mockQuery.ExcludeNational,
-            new List<VacancyDataSource> { VacancyDataSource.Nhs });
+            [VacancyDataSource.Nhs],
+            mockQuery.SelectedApprenticeshipTypes);
 
-        mockFindApprenticeshipApiClient.Setup(client => client.Get<GetVacanciesResponse>(It.Is<GetVacanciesRequest>(c => c.GetUrl == getVacanciesExpectedUrl.GetUrl))).ReturnsAsync(getVacanciesResponse);
+        GetVacanciesRequest? capturedGetVacanciesRequest = null;
+        mockFindApprenticeshipApiClient
+            .Setup(client => client.Get<GetVacanciesResponse>(It.IsAny<GetVacanciesRequest>()))
+            .Callback<IGetApiRequest>(x => capturedGetVacanciesRequest = x as GetVacanciesRequest)
+            .ReturnsAsync(getVacanciesResponse);
 
+        // act
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
+        // assert
+        capturedGetVacanciesRequest.Should().NotBeNull();
+        capturedGetVacanciesRequest!.GetUrl.Should().Be(getVacanciesExpectedUrl.GetUrl);
+        
         actual.Should().NotBeNull();
         actual.Vacancies.Should().NotBeEmpty();
         actual.Levels.Should().BeEquivalentTo(levels);
@@ -159,5 +166,43 @@ public class WhenHandlingGetSavedSearchVacanciesQuery
         // assert
         request.Should().NotBeNull();
         request!.GetUrl.Should().Contain($"categories={getRoutesListResponse.Routes.First().Name}");
+    }
+    
+    [Test, MoqAutoData]
+    public async Task When_SearchParameters_ApprenticeshipTypes_Are_Preserved_In_Results(
+        GetSavedSearchVacanciesQuery mockQuery,
+        GetCandidateApiResponse getCandidateApiResponse,
+        GetRoutesListResponse getRoutesListResponse,
+        GetVacanciesResponse getVacanciesResponse,
+        GetCourseLevelsListResponse getCourseLevelsListResponse,
+        [Frozen] Mock<ICourseService> courseService,
+        [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> mockCandidateApiClient,
+        [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> mockFindApprenticeshipApiClient,
+        GetSavedSearchVacanciesQueryHandler sut)
+    {
+        // arrange
+        mockQuery = mockQuery with
+        {
+            Latitude = 2.ToString(CultureInfo.InvariantCulture),
+            Longitude = 2.ToString(CultureInfo.InvariantCulture),
+            SelectedApprenticeshipTypes = [ApprenticeshipTypes.Standard, ApprenticeshipTypes.Foundation]
+        };
+
+        getCandidateApiResponse.Status = UserStatus.Completed;
+        courseService.Setup(x => x.GetRoutes()).ReturnsAsync(getRoutesListResponse);
+        courseService.Setup(x => x.GetLevels()).ReturnsAsync(getCourseLevelsListResponse);
+
+        var candidateExpectedUrl = new GetCandidateApiRequest(mockQuery.UserId.ToString());
+        mockCandidateApiClient.Setup(client => client.Get<GetCandidateApiResponse>(It.Is<GetCandidateApiRequest>(c => c.GetUrl == candidateExpectedUrl.GetUrl))).ReturnsAsync(getCandidateApiResponse);
+        mockFindApprenticeshipApiClient
+            .Setup(client => client.Get<GetVacanciesResponse>(It.IsAny<GetVacanciesRequest>()))
+            .ReturnsAsync(getVacanciesResponse);
+
+        // act
+        var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
+
+        // assert
+        actual.Should().NotBeNull();
+        actual!.ApprenticeshipTypes.Should().BeEquivalentTo([ApprenticeshipTypes.Standard, ApprenticeshipTypes.Foundation]);
     }
 }
