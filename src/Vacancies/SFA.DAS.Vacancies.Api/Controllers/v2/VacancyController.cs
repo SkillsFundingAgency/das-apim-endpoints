@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
+using SFA.DAS.Vacancies.Api.ApiRequests;
 
 namespace SFA.DAS.Vacancies.Api.Controllers.v2;
 
@@ -72,10 +73,10 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
                 Routes = request.Routes,
                 Sort = request.Sort?.ToString(),
                 DistanceInMiles = request.DistanceInMiles,
-                NationWideOnly = request.NationWideOnly,
                 StandardLarsCode = request.StandardLarsCode,
                 PostedInLastNumberOfDays = request.PostedInLastNumberOfDays,
                 AdditionalDataSources = request.AdditionalDataSources?.Select(x => x.ToString()).ToList(),
+                ExcludeNational = request.ExcludeRecruitingNationally
             });
 
             return Ok((GetVacanciesListResponseV2)queryResponse);

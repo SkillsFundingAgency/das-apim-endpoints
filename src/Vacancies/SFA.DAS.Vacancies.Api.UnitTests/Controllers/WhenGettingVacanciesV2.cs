@@ -13,17 +13,17 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Api.ApiRequests;
 using SFA.DAS.Vacancies.Api.ApiRequests.Base;
-using SFA.DAS.Vacancies.Api.Controllers.v1;
+using SFA.DAS.Vacancies.Api.Controllers.v2;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 {
-    public class WhenGettingVacancies
+    public class WhenGettingVacanciesV2
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Employer_With_Filter(
-            SearchVacancyRequest request,
+            SearchVacancyRequestV2 request,
             int ukprn,
             GetVacanciesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -55,7 +55,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                          && c.Routes.Equals(request.Routes)
                          && c.Sort.Equals(request.Sort.ToString())
                          && c.DistanceInMiles.Equals(request.DistanceInMiles)
-                         && c.NationWideOnly.Equals(request.NationWideOnly)
+                         && c.ExcludeNational.Equals(request.ExcludeRecruitingNationally)
                          && c.StandardLarsCode.Equals(request.StandardLarsCode)
                          && c.PostedInLastNumberOfDays.Equals(request.PostedInLastNumberOfDays)
                          ),
@@ -66,14 +66,14 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetVacanciesListResponse;
+            var model = controllerResult.Value as GetVacanciesListResponseV2;
             Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo((GetVacanciesListResponse)mediatorResult);
+            model.Should().BeEquivalentTo((GetVacanciesListResponseV2)mediatorResult);
         }
         
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Employer_With_No_AccountId_Filter_When_FilterBySubscription_Is_False(
-            SearchVacancyRequest request,
+            SearchVacancyRequestV2 request,
             int ukprn,
             GetVacanciesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -105,7 +105,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                          && c.Routes.Equals(request.Routes)
                          && c.Sort.Equals(request.Sort.ToString())
                          && c.DistanceInMiles.Equals(request.DistanceInMiles)
-                         && c.NationWideOnly.Equals(request.NationWideOnly)
+                         && c.ExcludeNational.Equals(request.ExcludeRecruitingNationally)
                          && c.StandardLarsCode.Equals(request.StandardLarsCode)
                          && c.PostedInLastNumberOfDays.Equals(request.PostedInLastNumberOfDays)
                          ),
@@ -116,14 +116,14 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetVacanciesListResponse;
+            var model = controllerResult.Value as GetVacanciesListResponseV2;
             Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo((GetVacanciesListResponse)mediatorResult);
+            model.Should().BeEquivalentTo((GetVacanciesListResponseV2)mediatorResult);
         }
         
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Provider_Then_Ukprn_Set_From_Header(
-            SearchVacancyRequest request,
+            SearchVacancyRequestV2 request,
             int ukprn,
             GetVacanciesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -145,6 +145,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                            && c.AccountIdentifier.AccountHashedId == null
                            && c.AccountIdentifier.Ukprn == ukprn
                            && c.PageNumber.Equals(request.PageNumber)
+                           && c.ExcludeNational.Equals(request.ExcludeRecruitingNationally)
                            && c.AccountPublicHashedId == null
                            && c.AccountLegalEntityPublicHashedId.Equals(request.AccountLegalEntityPublicHashedId)
                            && c.PageSize.Equals(request.PageSize)),
@@ -155,14 +156,14 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetVacanciesListResponse;
+            var model = controllerResult.Value as GetVacanciesListResponseV2;
             Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo((GetVacanciesListResponse)mediatorResult);
+            model.Should().BeEquivalentTo((GetVacanciesListResponseV2)mediatorResult);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Gets_Vacancies_From_Mediator_As_Provider_And_Uses_Request_Ukprn_If_FilterBySubscription_Is_false(
-            SearchVacancyRequest request,
+            SearchVacancyRequestV2 request,
             int ukprn,
             GetVacanciesQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
@@ -184,6 +185,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                            && c.AccountIdentifier.AccountHashedId == null
                            && c.AccountIdentifier.Ukprn == ukprn
                            && c.PageNumber.Equals(request.PageNumber)
+                           && c.ExcludeNational.Equals(request.ExcludeRecruitingNationally)
                            && c.AccountPublicHashedId == null
                            && c.AccountLegalEntityPublicHashedId.Equals(request.AccountLegalEntityPublicHashedId)
                            && c.PageSize.Equals(request.PageSize)),
@@ -194,14 +196,14 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetVacanciesListResponse;
+            var model = controllerResult.Value as GetVacanciesListResponseV2;
             Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo((GetVacanciesListResponse)mediatorResult);
+            model.Should().BeEquivalentTo((GetVacanciesListResponseV2)mediatorResult);
         }
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             string accountId,
-            SearchVacancyRequest request,
+            SearchVacancyRequestV2 request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {
@@ -220,7 +222,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task And_SecurityException_Then_Returns_Forbidden(
             string accountId,
-            SearchVacancyRequest request,
+            SearchVacancyRequestV2 request,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] VacancyController controller)
         {

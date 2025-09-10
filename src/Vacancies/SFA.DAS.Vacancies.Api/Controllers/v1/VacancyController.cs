@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Security;
 using System.Threading.Tasks;
+using SFA.DAS.Vacancies.Api.ApiRequests;
 
 namespace SFA.DAS.Vacancies.Api.Controllers.v1;
 
