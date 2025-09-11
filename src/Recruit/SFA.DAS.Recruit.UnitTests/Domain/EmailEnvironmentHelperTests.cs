@@ -23,7 +23,7 @@ public class EmailEnvironmentHelperTests
         string.Format(actual.NotificationsSettingsEmployerUrl,"ABC123").Should().Be("https://recruit.manage-apprenticeships.service.gov.uk/accounts/ABC123/notifications-manage/");
         string.Format(actual.NotificationsSettingsProviderUrl,"10000001").Should().Be("https://recruit.providers.apprenticeships.education.gov.uk/10000001/notifications-manage/");
         string.Format(actual.ReviewVacancyReviewInRecruitEmployerUrl,"ABC123", vacancyId).Should().Be($"https://recruit.manage-apprenticeships.service.gov.uk/accounts/ABC123/vacancies/{vacancyId}/check-answers/");
-        string.Format(actual.ReviewVacancyReviewInRecruitProviderUrl,"10000001", vacancyId).Should().Be($"https://recruit.providers.apprenticeships.education.gov.uk/10000001/vacancies/{vacancyId}/check-answers/");
+        string.Format(actual.ReviewVacancyReviewInRecruitProviderUrl,"10000001", vacancyId).Should().Be($"https://recruit.providers.apprenticeships.education.gov.uk/10000001/vacancies/{vacancyId}/check-your-answers/");
     }
     
     [Test]
@@ -44,6 +44,6 @@ public class EmailEnvironmentHelperTests
         string.Format(actual.NotificationsSettingsEmployerUrl,"ABC123").Should().Be("https://recruit.sit-eas.apprenticeships.education.gov.uk/accounts/ABC123/notifications-manage/");
         string.Format(actual.NotificationsSettingsProviderUrl,"10000001").Should().Be("https://recruit.sit-pas.apprenticeships.education.gov.uk/10000001/notifications-manage/");
         string.Format(actual.ReviewVacancyReviewInRecruitEmployerUrl,"ABC123", vacancyId).Should().Be($"https://recruit.sit-eas.apprenticeships.education.gov.uk/accounts/ABC123/vacancies/{vacancyId}/check-answers/");
-        string.Format(actual.ReviewVacancyReviewInRecruitProviderUrl,"10000001", vacancyId).Should().Be($"https://recruit.sit-pas.apprenticeships.education.gov.uk/10000001/vacancies/{vacancyId}/check-answers/");
+        string.Format(actual.ReviewVacancyReviewInRecruitProviderUrl,"10000001", vacancyId).Should().Be($"https://recruit.sit-pas.apprenticeships.education.gov.uk/10000001/vacancies/{vacancyId}/check-your-answers/");
     }
 }
