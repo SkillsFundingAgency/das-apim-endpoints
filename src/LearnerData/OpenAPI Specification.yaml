@@ -327,6 +327,8 @@ components:
     apprenticeshipLearning:
       type: object
       properties:
+        consumerReference:
+          type: string
         learner:
           type: object
           properties:
