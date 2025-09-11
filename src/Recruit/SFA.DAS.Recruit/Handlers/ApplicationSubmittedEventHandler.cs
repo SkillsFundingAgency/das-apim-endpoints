@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.Recruit.Application.Vacancies.Queries.GetVacancyByReference;
+using SFA.DAS.Recruit.Application.Vacancies.Queries.GetVacancyById;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Domain.EmailTemplates;
 using SFA.DAS.Recruit.Enums;
@@ -27,17 +27,17 @@ public class ApplicationSubmittedEventHandler(
 {
     public async Task Handle(ApplicationSubmittedEvent @event, CancellationToken cancellationToken)
     {
-        var result = await mediator.Send(new GetVacancyByReferenceQuery(@event.VacancyReference), cancellationToken);
-        if (result == GetVacancyByReferenceQueryResult.None)
+        var result = await mediator.Send(new GetVacancyByIdQuery(@event.VacancyId), cancellationToken);
+        if (result == GetVacancyByIdQueryResult.None)
         {
-            logger.LogError("ApplicationSubmittedEventHandler: Vacancy not found '{VacancyReference}'", @event.VacancyReference);
+            logger.LogError("ApplicationSubmittedEventHandler: Vacancy not found '{VacancyId}'", @event.VacancyId);
             return;
         }
         var vacancy = result.Vacancy;
 
         if (vacancy.AccountId is not long employerAccountId)
         {
-            logger.LogError("ApplicationSubmittedEventHandler: Vacancy does not have an associated employer account '{VacancyReference}'", @event.VacancyReference);
+            logger.LogError("ApplicationSubmittedEventHandler: Vacancy does not have an associated employer account '{VacancyId}'", @event.VacancyId);
             return;
         }
 

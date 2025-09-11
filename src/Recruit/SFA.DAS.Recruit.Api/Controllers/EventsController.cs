@@ -52,8 +52,8 @@ public class EventsController(
     [HttpPost, Route("application-submitted")]
     public async Task<IActionResult> OnApplicationSubmitted([FromBody] PostApplicationSubmittedEventModel body)
     {
-        logger.LogInformation("ApplicationSubmitted for vacancy: VAC{VacancyReference}, ApplicationId: {ApplicationId}", body.VacancyReference, body.ApplicationId);
-        await mediator.Publish(new ApplicationSubmittedEvent(body.ApplicationId, body.VacancyReference));
+        logger.LogInformation("ApplicationSubmitted for VacancyId: {VacancyId}, ApplicationId: {ApplicationId}", body.VacancyId, body.ApplicationId);
+        await mediator.Publish(new ApplicationSubmittedEvent(body.ApplicationId, body.VacancyId));
         return NoContent();
     }
 }

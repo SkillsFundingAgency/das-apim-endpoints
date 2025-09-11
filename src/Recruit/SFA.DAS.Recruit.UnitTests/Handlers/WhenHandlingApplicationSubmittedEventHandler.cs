@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.Recruit.Application.Vacancies.Queries.GetVacancyByReference;
+using SFA.DAS.Recruit.Application.Vacancies.Queries.GetVacancyById;
 using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.Events;
 using SFA.DAS.Recruit.Handlers;
@@ -23,18 +23,18 @@ public class WhenHandlingApplicationSubmittedEventHandler
         [Greedy] ApplicationSubmittedEventHandler sut)
     {
         // arrange
-        GetVacancyByReferenceQuery? capturedQuery = null;
+        GetVacancyByIdQuery? capturedQuery = null;
         mediator
-            .Setup(x => x.Send(It.IsAny<GetVacancyByReferenceQuery>(), It.IsAny<CancellationToken>()))
-            .Callback<IRequest<GetVacancyByReferenceQueryResult>, CancellationToken>((q, _) => capturedQuery = q as GetVacancyByReferenceQuery)
-            .ReturnsAsync(GetVacancyByReferenceQueryResult.None);
+            .Setup(x => x.Send(It.IsAny<GetVacancyByIdQuery>(), It.IsAny<CancellationToken>()))
+            .Callback<IRequest<GetVacancyByIdQueryResult>, CancellationToken>((q, _) => capturedQuery = q as GetVacancyByIdQuery)
+            .ReturnsAsync(GetVacancyByIdQueryResult.None);
 
         // act
         await sut.Handle(@event, CancellationToken.None);
 
         // assert
         capturedQuery.Should().NotBeNull();
-        capturedQuery!.VacancyReference.Should().Be(@event.VacancyReference);
+        capturedQuery!.Id.Should().Be(@event.VacancyId);
         apiClient.Verify(x => x.GetAll<RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()), Times.Never);
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
     }
@@ -42,7 +42,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
     [Test, MoqAutoData]
     public async Task Nothing_Happens_When_The_Vacancy_Has_No_Employer_AccountId(
         ApplicationSubmittedEvent @event,
-        GetVacancyByReferenceQueryResult vacancyResponse,
+        GetVacancyByIdQueryResult vacancyResponse,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -51,7 +51,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         // arrange
         vacancyResponse.Vacancy.AccountId = null;
         mediator
-            .Setup(x => x.Send(It.IsAny<GetVacancyByReferenceQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.Send(It.IsAny<GetVacancyByIdQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacancyResponse);
 
         // act
@@ -65,7 +65,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
     [Test, MoqAutoData]
     public async Task No_Emails_Sent_When_No_Users_Found_Who_Should_Receive_Email(
         ApplicationSubmittedEvent @event,
-        GetVacancyByReferenceQueryResult vacancyResponse,
+        GetVacancyByIdQueryResult vacancyResponse,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -74,7 +74,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         // arrange
         vacancyResponse.Vacancy.AccountId = 123;
         mediator
-            .Setup(x => x.Send(It.IsAny<GetVacancyByReferenceQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.Send(It.IsAny<GetVacancyByIdQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacancyResponse);
 
         GetEmployerRecruitUserNotificationPreferencesApiRequest? capturedRequest = null;
@@ -112,7 +112,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
     [Test, MoqAutoData]
     public async Task Emails_Sent_When_Users_With_Organisation_Preferences_Found(
         ApplicationSubmittedEvent @event,
-        GetVacancyByReferenceQueryResult vacancyResponse,
+        GetVacancyByIdQueryResult vacancyResponse,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -121,7 +121,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         // arrange
         vacancyResponse.Vacancy.AccountId = 123;
         mediator
-            .Setup(x => x.Send(It.IsAny<GetVacancyByReferenceQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.Send(It.IsAny<GetVacancyByIdQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacancyResponse);
 
         apiClient
@@ -154,7 +154,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
     [Test, MoqAutoData]
     public async Task Email_Sent_To_User_Who_Submitted_The_Vacancy(
         ApplicationSubmittedEvent @event,
-        GetVacancyByReferenceQueryResult vacancyResponse,
+        GetVacancyByIdQueryResult vacancyResponse,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -166,7 +166,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         vacancyResponse.Vacancy.SubmittedByUserId = submittingUserId;
 
         mediator
-            .Setup(x => x.Send(It.IsAny<GetVacancyByReferenceQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(x => x.Send(It.IsAny<GetVacancyByIdQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacancyResponse);
 
         apiClient
