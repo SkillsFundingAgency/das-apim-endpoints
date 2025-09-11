@@ -17,6 +17,7 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApp
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningSummary;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequirements;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -257,6 +258,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 CohortId = cohortId,
                 ApprenticeshipId = apprenticeshipId,
                 RequestingParty = request.RequestingParty,
+                HasLearnerDataChanges = request.HasLearnerDataChanges,
+                LastLearnerDataSync = request.LastLearnerDataSync
             };
 
             await mediator.Send(command);
@@ -326,6 +329,37 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 logger.LogError(e, "Error in GetRplRequirements cohort {CohortId} draft apprenticeship {DraftApprenticeshipId}", cohortId, draftApprenticeshipId);
                 return BadRequest();
+            }
+        }
+
+        [HttpPost]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/sync-learner-data")]
+        public async Task<IActionResult> SyncLearnerData(long providerId, long cohortId, long draftApprenticeshipId)
+        {
+            try
+            {
+                var result = await mediator.Send(new SyncLearnerDataCommand
+                {
+                    ProviderId = providerId,
+                    CohortId = cohortId,
+                    DraftApprenticeshipId = draftApprenticeshipId
+                });
+
+                return Ok(new SyncLearnerDataResponse
+                {
+                    Success = result.Success,
+                    Message = result.Message,
+                    UpdatedDraftApprenticeship = result.UpdatedDraftApprenticeship
+                });
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in SyncLearnerData provider {ProviderId} cohort {CohortId} draft apprenticeship {DraftApprenticeshipId}", providerId, cohortId, draftApprenticeshipId);
+                return BadRequest(new SyncLearnerDataResponse
+                {
+                    Success = false,
+                    Message = "An error occurred while syncing learner data."
+                });
             }
         }
     }

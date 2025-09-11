@@ -44,6 +44,9 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
         public int? TrainingTotalHours { get; set; }
+        public long? LearnerDataId { get; set; }
+        public bool HasLearnerDataChanges { get; set; }
+        public DateTime? LastLearnerDataSync { get; set; }
 
         public static implicit operator GetViewDraftApprenticeshipResponse(GetViewDraftApprenticeshipQueryResult source)
         {
@@ -85,7 +88,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 EmailAddressConfirmed = source.EmailAddressConfirmed,
                 DurationReducedByHours = source.DurationReducedByHours,
                 IsDurationReducedByRpl = source.IsDurationReducedByRpl,
-                TrainingTotalHours = source.TrainingTotalHours,
+                TrainingTotalHours = source.TrainingTotalHours
             };
         }
     }
