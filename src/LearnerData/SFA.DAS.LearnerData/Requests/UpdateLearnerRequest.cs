@@ -4,6 +4,7 @@
 
 public class UpdateLearnerRequest
 {
+    public string ConsumerReference { get; set; }
     public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
 }
 public class UpdateLearnerRequestDeliveryDetails
