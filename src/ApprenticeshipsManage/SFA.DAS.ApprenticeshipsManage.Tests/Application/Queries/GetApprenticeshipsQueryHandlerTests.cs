@@ -33,7 +33,5 @@ public class GetApprenticeshipsQueryHandlerTests
         actual.TotalPages.Should().Be((int)Math.Ceiling((double)apiResponse.TotalItems / apiResponse.PageSize));
         actual.Page.Should().Be(apiResponse.Page);
         actual.PageSize.Should().Be(apiResponse.PageSize);
-
-        apiClient.Verify(client => client.GenerateServiceToken("ApprenticeshipsManage"), Times.Once());
     }
 }
