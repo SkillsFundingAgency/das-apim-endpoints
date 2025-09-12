@@ -28,7 +28,7 @@ public class UpdateLearnerCommandHandler(
             throw new Exception($"Failed to update learner with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        var changes = learningResponse.Body;
+        var changes = learningResponse.Body.Changes;
         if (!changes.Any())
         {
             logger.LogInformation("No changes detected for learner with key {LearningKey}", command.LearningKey);
@@ -43,19 +43,19 @@ public class UpdateLearnerCommandHandler(
         logger.LogInformation("Earnings updated for learner with key {LearningKey}", command.LearningKey);
     }
 
-    private async Task UpdateEarnings(UpdateLearnerCommand command, List<LearningUpdateChanges> learningUpdateChanges)
+    private async Task UpdateEarnings(UpdateLearnerCommand command, List<UpdateLearnerApiPutResponse.LearningUpdateChanges> learningUpdateChanges)
     {
         foreach (var change in learningUpdateChanges)
         {
             switch (change)
             {
-                case LearningUpdateChanges.CompletionDate:
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
                     await earningsApiClient.UpdateCompletionDate(command, logger);
                     break;
-                case LearningUpdateChanges.MathsAndEnglish:
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
                     await earningsApiClient.UpdateMathAndEnglish(command, logger);
                     break;
-                case LearningUpdateChanges.LearningSupport:
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
                     await earningsApiClient.UpdateLearningSupport(command, logger);
                     break;
             }

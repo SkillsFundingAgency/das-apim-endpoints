@@ -49,7 +49,10 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
         var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.CompletionDate }, HttpStatusCode.OK);
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate }
+        }, HttpStatusCode.OK);
 
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
@@ -102,7 +105,10 @@ public class WhenHandlingUpdateLearnerCommand
         var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
         var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.MathsAndEnglish }, HttpStatusCode.OK);
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish }
+        }, HttpStatusCode.OK);
 
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
@@ -127,7 +133,10 @@ public class WhenHandlingUpdateLearnerCommand
         var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
         expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.LearningSupport }, HttpStatusCode.OK);
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
+        }, HttpStatusCode.OK);
 
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
