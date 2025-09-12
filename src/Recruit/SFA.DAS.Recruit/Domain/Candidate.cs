@@ -13,5 +13,5 @@ public record Candidate
     public string? MiddleNames { get; set; }
     public string? PhoneNumber { get; set; }
 
-    public Address? Address { get; set; }
+    public CandidateAddress? Address { get; set; }
 }
