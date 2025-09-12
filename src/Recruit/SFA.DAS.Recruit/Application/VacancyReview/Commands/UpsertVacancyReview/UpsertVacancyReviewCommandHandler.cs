@@ -122,13 +122,16 @@ public class UpsertVacancyReviewCommandHandler(
         if (outcome.Equals("Referred", StringComparison.CurrentCultureIgnoreCase))
         {
             return new VacancyReviewRejectedResponseEmailTemplate(
-                helper.VacancyReviewRejectedByDfeTemplateId,
+                isEmployer ? helper.VacancyReviewEmployerRejectedByDfeTemplateId
+                    : helper.VacancyReviewProviderRejectedByDfeTemplateId,
                 apiResponse.Email, 
                 request.VacancyReview.VacancyTitle, 
                 apiResponse.FirstName,
                 request.VacancyReview.EmployerName,
-                string.Format(helper.ReviewVacancyReviewInRecruitEmployerUrl, request.VacancyReview.HashedAccountId, request.VacancyReview.VacancyId.ToString()),
-                string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId),
+                isEmployer ? string.Format(helper.ReviewVacancyReviewInRecruitEmployerUrl, request.VacancyReview.HashedAccountId, request.VacancyReview.VacancyId.ToString())
+                    : string.Format(helper.ReviewVacancyReviewInRecruitProviderUrl, request.VacancyReview.Ukprn, request.VacancyReview.VacancyId.ToString()),
+                isEmployer ? string.Format(helper.NotificationsSettingsEmployerUrl, request.VacancyReview.HashedAccountId):
+                    string.Format(helper.NotificationsSettingsProviderUrl, request.VacancyReview.Ukprn),
                 request.VacancyReview.VacancyReference.ToString(),
                 request.VacancyReview.EmployerLocationOption == AvailableWhere.AcrossEngland ? "Recruiting nationally" 
                     : EmailTemplateAddressExtension.GetEmploymentLocationCityNames(request.VacancyReview.EmployerLocations));   
