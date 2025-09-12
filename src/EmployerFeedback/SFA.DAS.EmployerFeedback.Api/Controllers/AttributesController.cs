@@ -37,7 +37,7 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, $"Error attempting to retrieve attributes");
+                _logger.LogError(e, $"Error attempting to retrieve attributes.");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

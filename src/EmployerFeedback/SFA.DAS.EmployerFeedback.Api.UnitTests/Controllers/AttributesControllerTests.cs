@@ -1,14 +1,15 @@
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
+using SFA.DAS.EmployerFeedback.Api.UnitTests.Extensions;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
@@ -54,21 +55,18 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         [Test]
         public async Task GetAll_ReturnsInternalServerError_AndLogs_WhenExceptionThrown()
         {
-            _mediatorMock.Setup(m => m.Send(It.Is<GetAttributesQuery>(q => q != null), CancellationToken.None)).ThrowsAsync(new Exception("fail"));
+            var boom = new InvalidOperationException("boom");
+            _mediatorMock
+                .Setup(m => m.Send(It.Is<GetAttributesQuery>(q => q != null), CancellationToken.None))
+                .ThrowsAsync(boom);
 
             var result = await _controller.GetAll();
 
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
             var statusResult = result as StatusCodeResult;
             Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
-            _loggerMock.Verify(
-                l => l.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error attempting to retrieve attributes")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
+
+            _loggerMock.VerifyLogErrorContains("Error attempting to retrieve attributes.", boom, Times.Once());
         }
     }
 }

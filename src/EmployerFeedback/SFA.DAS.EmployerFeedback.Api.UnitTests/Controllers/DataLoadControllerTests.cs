@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
+using SFA.DAS.EmployerFeedback.Api.UnitTests.Extensions;
 using SFA.DAS.EmployerFeedback.Application.Commands.GenerateFeedbackSummaries;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
@@ -42,23 +43,18 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         [Test]
         public async Task GenerateFeedbackSummaries_ReturnsInternalServerError_AndLogs_WhenExceptionThrown()
         {
+            var boom = new InvalidOperationException("boom");
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<GenerateFeedbackSummariesCommand>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Exception("fail"));
+                .ThrowsAsync(boom);
 
             var result = await _controller.GenerateFeedbackSummaries();
 
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
             var statusResult = result as StatusCodeResult;
             Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
-            _loggerMock.Verify(
-                l => l.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Error generating feedback summaries.")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
+
+            _loggerMock.VerifyLogErrorContains("Error generating feedback summaries.", boom, Times.Once());
         }
     }
 }

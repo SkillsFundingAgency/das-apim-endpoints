@@ -34,4 +34,13 @@ public class RoatpV2TrainingProviderService : IRoatpV2TrainingProviderService
 
         return ApiResponseErrorChecking.IsSuccessStatusCode(actual.StatusCode) ? actual.Body : null;
     }
+
+    public async Task<GetProvidersResponse> GetProviders(bool live)
+    {
+        var actual =
+            await _roatpCourseManagementApiClient.GetWithResponseCode<GetProvidersResponse>(
+                new GetRoatpProvidersRequest { Live = live});
+
+        return ApiResponseErrorChecking.IsSuccessStatusCode(actual.StatusCode) ? actual.Body : null;
+    }
 }
