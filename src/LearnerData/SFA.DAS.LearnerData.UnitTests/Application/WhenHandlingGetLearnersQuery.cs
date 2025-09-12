@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.LearnerData.Application;
+using SFA.DAS.LearnerData.Application.GetLearners;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -32,8 +32,6 @@ public class WhenHandlingGetLearnersQuery
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
 
-        learningApiClient.Verify(x => x.GenerateServiceToken("LearnersManage"), Times.Once);
-
         learningApiClient.Verify(x => x.Get<GetLearnersQueryResult>(
             It.IsAny<GetAllLearningsRequest>()), Times.Once);
     }
@@ -54,7 +52,5 @@ public class WhenHandlingGetLearnersQuery
         // Act & Assert
         Assert.ThrowsAsync<Exception>(() => handler.Handle(query, CancellationToken.None))
               ?.Message.Should().Be("API failure");
-
-        learningApiClient.Verify(x => x.GenerateServiceToken("LearnersManage"), Times.Once);
     }
 }

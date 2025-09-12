@@ -47,11 +47,11 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.CompletionDate }, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()))
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -62,7 +62,7 @@ public class WhenHandlingUpdateLearnerCommand
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
                 It.Is<UpdateLearningApiPutRequest>(r => r.Data.Learner.CompletionDate == expectedCompletionDate)), Times.Once);
 
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveCompletionApiPutRequest>(
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveCompletionApiPatchRequest>(
             r => r.Data.CompletionDate == expectedCompletionDate)), Times.Once);
     }
 
@@ -78,7 +78,7 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()), Times.Never);
+        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()), Times.Never);
     }
 
     [Test]
@@ -99,12 +99,12 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate;
-        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
+        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.MathsAndEnglish }, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()))
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -124,12 +124,12 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses.SelectMany(x=>x.LearningSupport).ToList();
+        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
         expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse { LearningUpdateChanges.LearningSupport }, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPutRequest>()))
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
@@ -166,7 +166,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         return request.Count == courses.Count &&
                request.All(r => courses.Any(c => c.StartDate == r.StartDate &&
-                                                 c.PlannedEndDate == r.EndDate &&
+                                                 c.EndDate == r.EndDate &&
                                                  c.Course == r.Course &&
                                                  c.Amount == r.Amount &&
                                                  c.WithdrawalDate == r.WithdrawalDate &&
