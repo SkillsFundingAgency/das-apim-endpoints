@@ -12,11 +12,11 @@ namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 public class LearnersController(IMediator mediator, ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("learners")]
-    public async Task<IActionResult> GetAllLearners([FromQuery] int page = 1, [FromQuery] int? pagesize = 100, [FromQuery] bool excludeApproved = true)
+    public async Task<IActionResult> GetAllLearners([FromQuery] int page = 1, [FromQuery] int pagesize = 100, [FromQuery] bool excludeApproved = true)
     {
         logger.LogInformation("GetAllLearners for page {Page}, pageSize {PageSize}, excludeApproved {ExcludeApproved}", page, pagesize, excludeApproved);
         
-        if (pagesize.HasValue && pagesize.Value > 1000)
+        if (pagesize > 1000)
         {
             return BadRequest("Page size cannot exceed 1000");
         }

@@ -30,7 +30,7 @@ public class GetAllLearnersQueryHandler(
                 return new GetAllLearnersResponse
                 {
                     Page = request.Page,
-                    PageSize = request.PageSize ?? 100,
+                    PageSize = request.PageSize,
                     TotalItems = 0,
                     TotalPages = 0,
                     Data = new List<LearnerDataApiResponse>()
@@ -50,7 +50,7 @@ public class GetAllLearnersQueryHandler(
             return new GetAllLearnersResponse
             {
                 Page = request.Page,
-                PageSize = request.PageSize ?? 100,
+                PageSize = request.PageSize,
                 TotalItems = 0,
                 TotalPages = 0,
                 Data = new List<LearnerDataApiResponse>()
