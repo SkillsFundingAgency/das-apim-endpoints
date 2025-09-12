@@ -1,10 +1,7 @@
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.OpenApi.Expressions;
-using Newtonsoft.Json;
-using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -100,7 +97,7 @@ public class VacancyReviewDto
             HashedAccountId = source.HashedAccountId,
             EmployerLocations = source.EmployerLocations,
             EmployerLocationOption = source.EmployerLocationOption,
-            VacancyId = source.VacancyId
+            VacancyId = source.VacancyId,
         };
     }
 }
