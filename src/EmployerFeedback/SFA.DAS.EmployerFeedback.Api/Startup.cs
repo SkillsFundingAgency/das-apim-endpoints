@@ -10,6 +10,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
+using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
@@ -71,6 +72,23 @@ public class Startup
             services.AddHealthChecks()
                  .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription);
         }
+        
+        if (_configuration.IsLocalOrDev())
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            var configuration = _configuration
+                .GetSection(nameof(EmployerFeedbackConfiguration))
+                .Get<EmployerFeedbackConfiguration>();
+
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+            });
+        }
+
         services
             .AddControllers()
             .AddJsonOptions(options =>

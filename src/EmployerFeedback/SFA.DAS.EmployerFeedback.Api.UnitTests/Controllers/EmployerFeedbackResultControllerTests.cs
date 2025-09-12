@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
+using SFA.DAS.EmployerFeedback.Api.UnitTests.Extensions;
 using SFA.DAS.EmployerFeedback.Application.Commands.SubmitEmployerFeedback;
 using SFA.DAS.EmployerFeedback.Models;
 
@@ -62,9 +63,10 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         [Test]
         public async Task SubmitEmployerFeedback_ReturnsInternalServerError_AndLogs_WhenExceptionThrown()
         {
+            var boom = new InvalidOperationException("boom");
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<SubmitEmployerFeedbackCommand>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Exception("fail"));
+                .ThrowsAsync(boom);
 
             var request = new SubmitEmployerFeedbackRequest
             {
@@ -81,14 +83,8 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
             var statusResult = result as StatusCodeResult;
             Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
-            _loggerMock.Verify(
-                l => l.Log(
-                    LogLevel.Error,
-                    It.IsAny<EventId>(),
-                    It.Is<It.IsAnyType>((v, t) => v.ToString().Contains("Unhandled error submitting employer feedback.")),
-                    It.IsAny<Exception>(),
-                    It.IsAny<Func<It.IsAnyType, Exception, string>>()),
-                Times.Once);
+
+            _loggerMock.VerifyLogErrorContains("Unhandled error submitting employer feedback.", boom, Times.Once());
         }
     }
 }
