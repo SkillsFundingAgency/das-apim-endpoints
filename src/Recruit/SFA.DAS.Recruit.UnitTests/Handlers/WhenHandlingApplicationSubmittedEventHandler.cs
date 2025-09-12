@@ -4,11 +4,14 @@ using SFA.DAS.Recruit.Enums;
 using SFA.DAS.Recruit.Events;
 using SFA.DAS.Recruit.Handlers;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
+using InnerResponses = SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Recruit.Domain;
 using System;
+using System.Linq;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.UnitTests.Handlers;
 
@@ -35,7 +38,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         // assert
         capturedQuery.Should().NotBeNull();
         capturedQuery!.Id.Should().Be(@event.VacancyId);
-        apiClient.Verify(x => x.GetAll<RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()), Times.Never);
+        apiClient.Verify(x => x.GetAll<InnerResponses.RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()), Times.Never);
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
     }
 
@@ -58,7 +61,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         await sut.Handle(@event, CancellationToken.None);
 
         // assert
-        apiClient.Verify(x => x.GetAll<RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()), Times.Never);
+        apiClient.Verify(x => x.GetAll<InnerResponses.RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()), Times.Never);
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
     }
 
@@ -79,25 +82,26 @@ public class WhenHandlingApplicationSubmittedEventHandler
 
         GetEmployerRecruitUserNotificationPreferencesApiRequest? capturedRequest = null;
         apiClient
-            .Setup(x => x.GetAll<RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()))
+            .Setup(x => x.GetAll<InnerResponses.RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()))
             .Callback<IGetAllApiRequest>(x => capturedRequest = x as GetEmployerRecruitUserNotificationPreferencesApiRequest)
-            .ReturnsAsync([
-                new RecruitUserApiResponse
+            .ReturnsAsync(new[]
+            {
+                new InnerResponses.RecruitUserApiResponse
                 {
-                    NotificationPreferences = new NotificationPreferences
+                    NotificationPreferences = new InnerResponses.NotificationPreferences
                     {
-                        EventPreferences =
-                        [
-                            new EventPreference
+                        EventPreferences = new List<InnerResponses.EventPreference>
+                        {
+                            new InnerResponses.EventPreference
                             {
                                 Event = NotificationTypes.ApplicationSubmitted,
                                 Frequency = NotificationFrequency.Never,
                                 Scope = NotificationScope.OrganisationVacancies
                             }
-                        ]
+                        }
                     }
                 }
-            ]);
+            });
 
         // act
         await sut.Handle(@event, CancellationToken.None);
@@ -116,6 +120,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
+        [Frozen] EmailEnvironmentHelper emailHelper,
         [Greedy] ApplicationSubmittedEventHandler sut)
     {
         // arrange
@@ -124,31 +129,52 @@ public class WhenHandlingApplicationSubmittedEventHandler
             .Setup(x => x.Send(It.IsAny<GetVacancyByIdQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacancyResponse);
 
-        apiClient
-            .Setup(x => x.GetAll<RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()))
-            .ReturnsAsync([
-                new RecruitUserApiResponse
+        var user = new InnerResponses.RecruitUserApiResponse
+        {
+            Email = "notify@example.com",
+            Name = "Notify User",
+            NotificationPreferences = new InnerResponses.NotificationPreferences
+            {
+                EventPreferences = new List<InnerResponses.EventPreference>
                 {
-                    NotificationPreferences = new NotificationPreferences
+                    new InnerResponses.EventPreference
                     {
-                        EventPreferences =
-                        [
-                            new EventPreference
-                            {
-                                Event = NotificationTypes.ApplicationSubmitted,
-                                Frequency = NotificationFrequency.Immediately,
-                                Scope = NotificationScope.OrganisationVacancies
-                            }
-                        ]
+                        Event = NotificationTypes.ApplicationSubmitted,
+                        Frequency = NotificationFrequency.Immediately,
+                        Scope = NotificationScope.OrganisationVacancies
                     }
                 }
-            ]);
+            }
+        };
+
+        SendEmailCommand? capturedEmail = null;
+        apiClient
+            .Setup(x => x.GetAll<InnerResponses.RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()))
+            .ReturnsAsync(new[] { user });
+
+        notificationService
+            .Setup(x => x.Send(It.IsAny<SendEmailCommand>()))
+            .Callback<SendEmailCommand>(c => capturedEmail = c)
+            .Returns(Task.CompletedTask);
 
         // act
         await sut.Handle(@event, CancellationToken.None);
 
         // assert
-        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
+        capturedEmail.Should().NotBeNull();
+        capturedEmail!.TemplateId.Should().Be(emailHelper.ApplicationSubmittedTemplateId);
+        capturedEmail.RecipientsAddress.Should().Be(user.Email);
+
+        var keys = capturedEmail.Tokens.Keys.ToList();
+        keys.Should().ContainInOrder(new[] { "advertTitle", "firstName", "employerName", "manageAdvertURL", "notificationSettingsURL", "VACcode", "location" });
+
+        capturedEmail.Tokens["advertTitle"].Should().Be(vacancyResponse.Vacancy.Title);
+        capturedEmail.Tokens["firstName"].Should().Be(user.Name);
+        capturedEmail.Tokens["employerName"].Should().Be(vacancyResponse.Vacancy.EmployerName);
+        capturedEmail.Tokens["VACcode"].Should().Be(vacancyResponse.Vacancy.VacancyReference!.Value.ToString());
+        capturedEmail.Tokens["location"].Should().NotBeNull();
+        capturedEmail.Tokens["manageAdvertURL"].Should().Contain(vacancyResponse.Vacancy.Id.ToString());
+        capturedEmail.Tokens["notificationSettingsURL"].Should().Contain(vacancyResponse.Vacancy.AccountId.ToString());
     }
 
     [Test, MoqAutoData]
@@ -158,6 +184,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
+        [Frozen] EmailEnvironmentHelper emailHelper,
         [Greedy] ApplicationSubmittedEventHandler sut)
     {
         // arrange
@@ -169,31 +196,54 @@ public class WhenHandlingApplicationSubmittedEventHandler
             .Setup(x => x.Send(It.IsAny<GetVacancyByIdQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacancyResponse);
 
-        apiClient
-            .Setup(x => x.GetAll<RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()))
-            .ReturnsAsync([
-                new RecruitUserApiResponse
+        var user = new InnerResponses.RecruitUserApiResponse
+        {
+            Id = submittingUserId,
+            Email = "submitter@example.com",
+            Name = "Submitter User",
+            NotificationPreferences = new InnerResponses.NotificationPreferences
+            {
+                EventPreferences = new List<InnerResponses.EventPreference>
                 {
-                    Id = submittingUserId,
-                    NotificationPreferences = new NotificationPreferences
+                    new InnerResponses.EventPreference
                     {
-                        EventPreferences =
-                        [
-                            new EventPreference
-                            {
-                                Event = NotificationTypes.ApplicationSubmitted,
-                                Frequency = NotificationFrequency.Immediately,
-                                Scope = NotificationScope.UserSubmittedVacancies
-                            }
-                        ]
+                        Event = NotificationTypes.ApplicationSubmitted,
+                        Frequency = NotificationFrequency.Immediately,
+                        Scope = NotificationScope.UserSubmittedVacancies
                     }
                 }
-            ]);
+            }
+        };
+
+        SendEmailCommand? capturedEmail = null;
+        apiClient
+            .Setup(x => x.GetAll<InnerResponses.RecruitUserApiResponse>(It.IsAny<IGetAllApiRequest>()))
+            .ReturnsAsync(new[] { user });
+
+        notificationService
+            .Setup(x => x.Send(It.IsAny<SendEmailCommand>()))
+            .Callback<SendEmailCommand>(c => capturedEmail = c)
+            .Returns(Task.CompletedTask);
 
         // act
         await sut.Handle(@event, CancellationToken.None);
 
         // assert
+        capturedEmail.Should().NotBeNull();
+        capturedEmail!.TemplateId.Should().Be(emailHelper.ApplicationSubmittedTemplateId);
+        capturedEmail.RecipientsAddress.Should().Be(user.Email);
+
+        var keys = capturedEmail.Tokens.Keys.ToList();
+        keys.Should().ContainInOrder(new[] { "advertTitle", "firstName", "employerName", "manageAdvertURL", "notificationSettingsURL", "VACcode", "location" });
+
+        capturedEmail.Tokens["advertTitle"].Should().Be(vacancyResponse.Vacancy.Title);
+        capturedEmail.Tokens["firstName"].Should().Be(user.Name);
+        capturedEmail.Tokens["employerName"].Should().Be(vacancyResponse.Vacancy.EmployerName);
+        capturedEmail.Tokens["VACcode"].Should().Be(vacancyResponse.Vacancy.VacancyReference!.Value.ToString());
+        capturedEmail.Tokens["location"].Should().NotBeNull();
+        capturedEmail.Tokens["manageAdvertURL"].Should().Contain(vacancyResponse.Vacancy.Id.ToString());
+        capturedEmail.Tokens["notificationSettingsURL"].Should().Contain(vacancyResponse.Vacancy.AccountId.ToString());
+
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
     }
 }

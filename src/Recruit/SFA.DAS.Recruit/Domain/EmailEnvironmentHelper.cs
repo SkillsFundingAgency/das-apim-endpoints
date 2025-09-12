@@ -40,7 +40,7 @@ public class EmailEnvironmentHelper
         ReviewVacancyReviewInRecruitEmployerUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/check-answers/";
         ReviewVacancyReviewInRecruitProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/vacancies/{{1}}/check-answers/";
         ApplicationReviewSharedEmployerUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/applications/{{2}}/?vacancySharedByProvider=True";
-        ManageAdvertUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/manage/?vacancySharedByProvider=False";
+        ManageAdvertUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/manage/";
     }
     public string CandidateApplicationUrl { get; }
     public string LiveVacancyUrl { get; }

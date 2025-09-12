@@ -50,9 +50,8 @@ public class ApplicationSubmittedEventHandler(
                 NotificationTypes.ApplicationSubmitted));
 
         var usersToNotify = users?
-            .Where(x => x.NotificationPreferences.EventPreferences.Any(p =>
-                p.Event == NotificationTypes.ApplicationSubmitted && 
-                (p.Frequency == NotificationFrequency.Immediately || p.Frequency == NotificationFrequency.NotSet) &&
+            .Where(x => x.NotificationPreferences.EventPreferences.Any(p => 
+                p.Frequency == NotificationFrequency.Immediately || p.Frequency == NotificationFrequency.NotSet &&
                 (p.Scope == NotificationScope.OrganisationVacancies || 
                     (p.Scope == NotificationScope.UserSubmittedVacancies && x.Id == vacancy.SubmittedByUserId))))
             .ToList();
@@ -66,8 +65,8 @@ public class ApplicationSubmittedEventHandler(
                 vacancy.VacancyReference!.Value.ToString(),
                 vacancy.EmployerName,
                 location,
-                string.Format(emailHelper.NotificationsSettingsEmployerUrl, employerAccountId),
-                string.Format(emailHelper.ManageAdvertUrl, employerAccountId, vacancy.Id)))
+                string.Format(emailHelper.ManageAdvertUrl, employerAccountId, vacancy.Id),
+                string.Format(emailHelper.NotificationsSettingsEmployerUrl, employerAccountId)))
             .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
             .Select(notificationService.Send).ToList();
 
