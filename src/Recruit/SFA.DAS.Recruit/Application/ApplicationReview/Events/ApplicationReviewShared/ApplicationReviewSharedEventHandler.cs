@@ -23,10 +23,7 @@ public class ApplicationReviewSharedEventHandler(
 {
     public async Task Handle(ApplicationReviewSharedEvent request, CancellationToken cancellationToken)
     {
-        var employerReviewUrl = $"{helper.ApplicationReviewSharedEmployerUrl}"
-            .Replace("{0}", request.HashAccountId)
-            .Replace("{1}", request.VacancyId.ToString())
-            .Replace("{2}", request.ApplicationId.ToString());
+        var employerReviewUrl = string.Format(helper.ApplicationReviewSharedEmployerUrl, request.HashAccountId, request.VacancyId.ToString(), request.ApplicationId.ToString());
 
         var users = await apiClient.GetAll<RecruitUserApiResponse>(
             new GetEmployerRecruitUserNotificationPreferencesApiRequest(request.AccountId, NotificationTypes.ApplicationSharedWithEmployer));
