@@ -34,5 +34,6 @@ public class EditApprenticeshipApiRequestData
     public int? MinimumAgeAtApprenticeshipStart { get; set; }
     public int? MaximumAgeAtApprenticeshipStart { get; set; }
     public UserInfo UserInfo { get; set; }
-    public Party Party { get; set; }
+    public Party Party { get; set; }    
+    public string EmployerReference { get; set; }
 } 
