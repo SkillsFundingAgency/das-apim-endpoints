@@ -44,6 +44,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
             var expectedPutData = new PutApplicationApiRequest.PutApplicationApiRequestData
             { CandidateId = query.CandidateId, EmploymentLocation = location };
             var expectedPutRequest = new PutApplicationApiRequest(query.VacancyReference.TrimVacancyReference(), expectedPutData);
+            faaApiResponse.ApplicationUrl = "";
             faaApiResponse.ApprenticeshipType = ApprenticeshipTypes.Foundation;
 
             var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
@@ -77,6 +78,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             ApplyCommandHandler handler)
         {
+            faaApiResponse.ApplicationUrl = null;
             var addresses = new List<Address> { faaApiResponse.Address }.Concat(faaApiResponse.OtherAddresses!).ToList();
             var location = new LocationDto
             {
@@ -135,6 +137,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             ApplyCommandHandler handler)
         {
+            faaApiResponse.ApplicationUrl = "";
             var addresses = new List<Address> { faaApiResponse.Address }.Concat(faaApiResponse.OtherAddresses!).ToList();
             var location = new LocationDto
             {
@@ -178,6 +181,30 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Vacancies
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.ApplicationId.Should().Be(candidateApiResponse.Id);
+        }
+
+        [Test]
+        [MoqAutoData]
+        public async Task Then_If_The_Apprenticeship_Is_Not_Apply_Through_Faa_Error_Returned(
+            ApplyCommand query,
+            GetApprenticeshipVacancyItemResponse faaApiResponse,
+            [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> faaApiClient,
+            [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
+            ApplyCommandHandler handler)
+        {
+
+            faaApiResponse.ApplicationUrl = "https://SomeApplicationUrl";
+            var expectedGetRequest = new GetVacancyRequest(query.VacancyReference);
+            faaApiResponse.IsDisabilityConfident = true;
+            faaApiClient
+                .Setup(client => client.Get<GetApprenticeshipVacancyItemResponse>(It.Is<GetVacancyRequest>(r => r.GetUrl == expectedGetRequest.GetUrl)))
+                .ReturnsAsync(faaApiResponse);
+            
+            await handler.Handle(query, CancellationToken.None);
+            
+            candidateApiClient
+                .Verify(client => client.PutWithResponseCode<PutApplicationApiResponse>(
+                    It.IsAny<PutApplicationApiRequest>()), Times.Never);
         }
     }
 }
