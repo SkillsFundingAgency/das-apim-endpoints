@@ -58,6 +58,9 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
                     await earningsApiClient.UpdateLearningSupport(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
+                    await earningsApiClient.UpdatePrices(command, logger);
+                    break;
             }
         }
     }
@@ -69,6 +72,15 @@ public class UpdateLearnerCommandHandler(
             Learner = new LearningUpdateDetails
             {
                 CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
+            },
+            OnProgramme = new OnProgrammeDetails
+            {
+                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.Costs.Select(x =>  new Cost
+                {
+                    TrainingPrice = x.TrainingPrice,
+                    EpaoPrice = x.EpaoPrice,
+                    FromDate = x.FromDate.Value
+                }).ToList()
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails

@@ -58,6 +58,11 @@ internal static class EarningsApiClientExtensions
         }, "learning support", logger, command.LearningKey);
     }
 
+    internal static async Task UpdatePrices(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        throw new InvalidOperationException();
+    }
+
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)
     {
         logger.LogInformation("Calling Earnings Inner Api to update {updateTarget} for {learningKey}", updateTarget, learningKey);

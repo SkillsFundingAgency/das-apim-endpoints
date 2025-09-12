@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.Requests;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SFA.DAS.LearnerData.Requests;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -15,8 +17,16 @@ public class UpdateLearnerRequestDeliveryDetails
 
 public class OnProgrammeRequestDetails
 {
+    public List<CostDetails> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
+}
+
+public class CostDetails
+{
+    public int TrainingPrice { get; set; }
+    public int EpaoPrice { get; set; }
+    public DateTime? FromDate { get; set; }
 }
 
 public class MathsAndEnglish
