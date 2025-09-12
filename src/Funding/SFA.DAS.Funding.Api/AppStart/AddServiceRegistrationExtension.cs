@@ -20,7 +20,6 @@ namespace SFA.DAS.Funding.Api.AppStart
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-            services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
 
             services.AddTransient<IFundingApprenticeshipEarningsApiClient<FundingApprenticeshipEarningsConfiguration>, FundingApprenticeshipEarningsApiClient>();
             services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();

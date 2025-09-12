@@ -1,5 +1,6 @@
 using MediatR;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
 
@@ -19,4 +20,5 @@ public record GetSavedSearchVacanciesQuery(
     string? UnSubscribeToken,
     DateTime LastRunDateFilter,
     int PageNumber,
-    int PageSize) : IRequest<GetSavedSearchVacanciesQueryResult?>;
+    int PageSize,
+    List<ApprenticeshipTypes>? SelectedApprenticeshipTypes) : IRequest<GetSavedSearchVacanciesQueryResult?>;
