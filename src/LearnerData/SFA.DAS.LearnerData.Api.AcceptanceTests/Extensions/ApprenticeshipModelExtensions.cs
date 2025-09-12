@@ -15,7 +15,7 @@ public static class ApprenticeshipModelExtensions
             AgeAtStartOfApprenticeship = 18,
             StartDate = apprenticeshipModel.PriceEpisodes.Min(x => x.StartDate),
             PlannedEndDate = apprenticeshipModel.PriceEpisodes.Max(x => x.EndDate),
-            WithdrawnDate = null,
+            WithdrawnDate = apprenticeshipModel.WithdrawnDate,
             Uln = "123567",
             Episodes =
             [
