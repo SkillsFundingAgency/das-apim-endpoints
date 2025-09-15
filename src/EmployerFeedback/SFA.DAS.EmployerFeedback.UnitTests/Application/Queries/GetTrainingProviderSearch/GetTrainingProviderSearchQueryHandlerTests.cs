@@ -215,14 +215,14 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
                 .ReturnsAsync(new GetLatestEmployerFeedbackResponse());
 
             // Act
-            var result = await _sut.Handle(new GetTrainingProviderSearchQuery(1, Guid.NewGuid()), CancellationToken.None);
+            await _sut.Handle(new GetTrainingProviderSearchQuery(1, Guid.NewGuid()), CancellationToken.None);
 
             // Assert
             _roatp.Verify(r => r.GetProviders(It.IsAny<bool>()), Times.Never);
             _cache.Verify(c => c.SaveToCache(
                 GetTrainingProviderSearchQueryHandler.RoatpProvidersCacheKey,
                 It.IsAny<List<Provider>>(),
-                It.IsAny<int>()),
+                It.IsAny<int>(), null),
                 Times.Never);
         }
 
@@ -248,7 +248,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
 
             // Assert
             Assert.That(result.Providers, Is.Empty);
-            _cache.Verify(c => c.SaveToCache(It.IsAny<string>(), It.IsAny<List<Provider>>(), It.IsAny<int>()), Times.Never);
+            _cache.Verify(c => c.SaveToCache(It.IsAny<string>(), It.IsAny<List<Provider>>(), It.IsAny<int>(), null), Times.Never);
         }
 
         [Test]
