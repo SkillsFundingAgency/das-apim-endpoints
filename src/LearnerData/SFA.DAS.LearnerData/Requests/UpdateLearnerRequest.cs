@@ -25,7 +25,7 @@ public class OnProgrammeRequestDetails
 public class CostDetails
 {
     public int TrainingPrice { get; set; }
-    public int EpaoPrice { get; set; }
+    public int? EpaoPrice { get; set; }
     public DateTime? FromDate { get; set; }
 }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;
@@ -58,9 +59,27 @@ internal static class EarningsApiClientExtensions
         }, "learning support", logger, command.LearningKey);
     }
 
-    internal static async Task UpdatePrices(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task UpdatePrices(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, Guid apprenticeshipKey, UpdateLearnerApiPutResponse apiPutResponse, ILogger<UpdateLearnerCommandHandler> logger)
     {
-        throw new InvalidOperationException();
+        await LogAndExecute(async () =>
+        {
+            var data = new SavePricesRequest
+            {
+                ApprenticeshipEpisodeKey = apiPutResponse.LearningEpisodeKey,
+                Prices = apiPutResponse.Prices.Select(x => new PriceDetail
+                {
+                    Key = x.Key,
+                    StartDate = x.StartDate,
+                    EndDate = x.EndDate,
+                    TrainingPrice = x.TrainingPrice,
+                    EndPointAssessmentPrice = x.EndPointAssessmentPrice,
+                    TotalPrice = x.TotalPrice,
+                    FundingBandMaximum = x.FundingBandMaximum
+                }).ToList()
+            };
+
+            await earningsApiClient.Patch(new SavePricesApiPatchRequest(apprenticeshipKey, data));
+        }, "prices", logger, apprenticeshipKey);
     }
 
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)

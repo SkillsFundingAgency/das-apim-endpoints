@@ -68,3 +68,33 @@ public class LearningSupportPaymentDetail
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 }
+
+public class SavePricesApiPatchRequest : IPatchApiRequest<SavePricesRequest>
+{
+    public string PatchUrl { get; }
+
+    public SavePricesRequest Data { get; set; }
+
+    public SavePricesApiPatchRequest(Guid apprenticeshipKey, SavePricesRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/prices";
+        Data = data;
+    }
+}
+
+public class SavePricesRequest
+{
+    public Guid ApprenticeshipEpisodeKey { get; set; }
+    public List<PriceDetail> Prices { get; set; } = [];
+}
+
+public class PriceDetail
+{
+    public Guid Key { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public decimal TrainingPrice { get; set; }
+    public decimal? EndPointAssessmentPrice { get; set; }
+    public decimal TotalPrice { get; set; }
+    public int FundingBandMaximum { get; set; }
+}
