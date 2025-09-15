@@ -73,7 +73,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 StandardInfoUrl = course.StandardInfoUrl,
                 ContactUsPhoneNumber = course.ContactUsPhoneNumber,
                 ContactUsEmail = course.ContactUsEmail,
-                ContactUsPageUrl = course.ContactUsPageUrl,
                 ProviderCourseLocations = locations,
                 IsApprovedByRegulator = course.IsApprovedByRegulator,
                 IsRegulatedForProvider = course.IsRegulatedForProvider,
