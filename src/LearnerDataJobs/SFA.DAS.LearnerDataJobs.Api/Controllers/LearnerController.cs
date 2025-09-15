@@ -30,4 +30,27 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
     }
+
+
+    [HttpPatch]
+    [Route("providers/{providerId}/learners/{learnerDataId}/apprenticeshipId")]
+    public async Task<IActionResult> PatchLearnerDataApprenticeshipId([FromRoute] long providerId, long learnerDataId, [FromBody] LearnerDataApprenticeshipIdRequest request)
+    {
+        try
+        {
+            logger.LogTrace("Calling AssignApprenticeshipIdCommand");
+            var succeeded = await mediator.Send(new AssignApprenticeshipIdCommand { ProviderId = providerId, LearnerDataId = learnerDataId, PatchRequest = request });
+            if (succeeded)
+            {
+                return Ok();
+            }
+            return StatusCode((int)HttpStatusCode.FailedDependency);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "APIM error whilst attempting to assign ");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
 }

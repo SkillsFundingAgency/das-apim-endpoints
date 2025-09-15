@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
@@ -216,6 +218,94 @@ public class ApprenticesController(
         }
     }
 
+    [HttpPut]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> EditApprenticeshipProvider(long providerId, long apprenticeshipId,
+        [FromBody] EditApprenticeshipRequest request)
+    {
+        return await EditApprenticeshipInternal(apprenticeshipId, providerId, request.EmployerAccountId, request);
+    }
+
+    [HttpPut]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}")]
+    public async Task<IActionResult> EditApprenticeshipEmployer(long accountId, long apprenticeshipId,
+        [FromBody] EditApprenticeshipRequest request)
+    {
+        logger.LogInformation("=== APIM CONTROLLER: EditApprenticeshipEmployer called ===");
+        logger.LogInformation("AccountId: {AccountId}, ApprenticeshipId: {ApprenticeshipId}", accountId, apprenticeshipId);
+        
+        // Log all incoming headers
+        logger.LogInformation("=== INCOMING REQUEST HEADERS ===");
+        if (Request?.Headers != null)
+        {
+            foreach (var header in Request.Headers)
+            {
+                logger.LogInformation("Header: {HeaderKey} = {HeaderValue}", header.Key, header.Value);
+            }
+        }
+        else
+        {
+            logger.LogInformation("Request or Headers is null (unit test context)");
+        }
+        
+        // Log authentication context
+        if (User?.Identity?.IsAuthenticated == true)
+        {
+            logger.LogInformation("User is authenticated: {UserName}", User.Identity.Name);
+            logger.LogInformation("User claims:");
+            foreach (var claim in User.Claims)
+            {
+                logger.LogInformation("Claim: {ClaimType} = {ClaimValue}", claim.Type, claim.Value);
+            }
+        }
+        else
+        {
+            logger.LogWarning("User is NOT authenticated or User is null!");
+        }
+        
+        return await EditApprenticeshipInternal(apprenticeshipId, request.ProviderId, accountId, request);
+    }
+
+    private async Task<IActionResult> EditApprenticeshipInternal(
+        long apprenticeshipId, 
+        long? providerId, 
+        long? employerAccountId, 
+        EditApprenticeshipRequest request)
+    {
+        var command = new EditApprenticeshipCommand
+        {
+            ApprenticeshipId = apprenticeshipId,
+            EmployerAccountId = employerAccountId,
+            ProviderId = providerId,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            Email = request.Email,
+            DateOfBirth = request.DateOfBirth,
+            ULN = request.ULN,
+            CourseCode = request.CourseCode,
+            Version = request.Version,
+            Option = request.Option,
+            Cost = request.Cost,
+            EmployerReference = request.EmployerReference,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
+            DeliveryModel = request.DeliveryModel,
+            ProviderReference = request.ProviderReference,
+            EmploymentEndDate = request.EmploymentEndDate,
+            EmploymentPrice = request.EmploymentPrice
+        };
+
+        var result = await mediator.Send(command);
+
+        return Ok(new EditApprenticeshipResponse
+        {
+            ApprenticeshipId = result.ApprenticeshipId,
+            HasOptions = result.HasOptions,
+            Version = result.Version,
+            CourseOrStartDateChange =  result.CourseOrStartDateChanged
+        });
+    }
+
     [HttpGet]
     [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/delivery-model")]
     [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit/delivery-model")]
@@ -355,6 +445,26 @@ public class ApprenticesController(
     }
 
     [HttpPost]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/confirm")]
+    public async Task<IActionResult> ConfirmEditApprenticeshipProvider(
+        [FromRoute] long providerId, 
+        [FromRoute] long apprenticeshipId, 
+        [FromBody] ConfirmEditApprenticeshipRequest request)
+    {
+        return await ConfirmEditApprenticeshipInternal(apprenticeshipId, providerId, null, request);
+    }
+
+    [HttpPost]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit/confirm")]
+    public async Task<IActionResult> ConfirmEditApprenticeshipEmployer(
+        [FromRoute] long accountId, 
+        [FromRoute] long apprenticeshipId, 
+        [FromBody] ConfirmEditApprenticeshipRequest request)
+    {
+        return await ConfirmEditApprenticeshipInternal(apprenticeshipId, null, accountId, request);
+    }
+
+    [HttpPost]
     [Route("/provider/{providerId}/apprenticeships/download")]
     public async Task<IActionResult> GetApprenticeshipsCSV(long providerId, [FromBody] PostApprenticeshipsCSVRequest request)
     {
@@ -392,6 +502,50 @@ public class ApprenticesController(
             logger.LogError(ex, "Error in GetApprenticeshipsCSV for provider Id: {providerId}", providerId);
             return BadRequest();
         }
-       
+    }
+    
+    private async Task<IActionResult> ConfirmEditApprenticeshipInternal(
+        long apprenticeshipId, 
+        long? providerId, 
+        long? accountId, 
+        ConfirmEditApprenticeshipRequest request)
+    {
+        try
+        {
+            var command = new ConfirmEditApprenticeshipCommand
+            {
+                ApprenticeshipId = apprenticeshipId,
+                AccountId = accountId,
+                ProviderId = providerId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                DateOfBirth = request.DateOfBirth,
+                Cost = request.Cost,
+                ProviderReference = request.ProviderReference,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                DeliveryModel = request.DeliveryModel,
+                EmploymentEndDate = request.EmploymentEndDate,
+                EmploymentPrice = request.EmploymentPrice,
+                CourseCode = request.CourseCode,
+                Version = request.Version,
+                Option = request.Option,
+                UserInfo = request.UserInfo
+            };
+
+            var result = await mediator.Send(command);
+
+            return Ok(new ConfirmEditApprenticeshipResponse
+            {
+                ApprenticeshipId = result.ApprenticeshipId,
+                NeedReapproval = result.NeedReapproval
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Error confirming edit apprenticeship {apprenticeshipId}");
+            return BadRequest();
+        }
     }
 }

@@ -7,6 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.ApprenticeCommitments.Extensions;
+using SFA.DAS.ApprenticeCommitments.Types;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 
@@ -67,7 +69,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
                 EmploymentEndDate = apprenticeship.EmploymentEndDate,
                 RecognisePriorLearning = apprenticeship.RecognisePriorLearning,
                 DurationReducedByHours = apprenticeship.DurationReducedByHours,
-                DurationReducedBy = apprenticeship.DurationReducedBy
+                DurationReducedBy = apprenticeship.DurationReducedBy,
+                ApprenticeshipType = apprenticeship.ApprenticeshipType
             });
 
             return default;
@@ -78,7 +81,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
         {
             var apprenticeship = await _commitmentsService.GetApprenticeshipDetails(
                 command.CommitmentsApprenticeshipId);
-
+            
             if (IsNullOrEmpty(apprenticeship.Email))
             {
                 _logger.LogInformation("Apprenticeship {apprenticeshipId} does not have an email, no point in continuing", apprenticeship.Id);
@@ -88,10 +91,12 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
             var courseCode = apprenticeship.GetCourseCode(_logger);
             if (courseCode is null) return default;
 
-            var course = _coursesService.GetCourse(courseCode);
+            var course = await _coursesService.GetCourse(courseCode);
             var provider = _trainingProviderService.GetTrainingProviderDetails(apprenticeship.ProviderId);
-
-            return (apprenticeship, await provider, await course);
+            
+            apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
+            
+            return (apprenticeship, await provider, course);
         }
     }
 }

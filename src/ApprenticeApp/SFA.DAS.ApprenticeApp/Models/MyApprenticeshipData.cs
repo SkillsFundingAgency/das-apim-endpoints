@@ -19,5 +19,6 @@ namespace SFA.DAS.ApprenticeApp.Models
         public string TrainingCode { get; set; }
         public string StandardUId { get; set; }
         public int Level { get; set; }
+        public int? ApprenticeshipType { get; set; }
     }
 }

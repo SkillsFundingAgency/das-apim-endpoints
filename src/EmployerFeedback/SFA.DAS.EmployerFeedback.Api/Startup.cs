@@ -10,6 +10,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
 using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
@@ -18,13 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.EmployerFeedback.Api;
-
-[ExcludeFromCodeCoverage]
-public class Startup
+namespace SFA.DAS.EmployerFeedback.Api
 {
-    private readonly IConfiguration _configuration;
-    private readonly IWebHostEnvironment _env;
+    [ExcludeFromCodeCoverage]
+    public class Startup
+    {
+        private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
 
     public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
@@ -50,22 +51,22 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
-        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAttributesQuery).Assembly));
-        services.AddServiceRegistration();
+            services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly));
+            services.AddServiceRegistration();
 
-        services.Configure<RouteOptions>(options =>
-            {
-                options.LowercaseUrls = true;
-                options.LowercaseQueryStrings = true;
-            }).AddMvc(o =>
-            {
-                if (!_configuration.IsLocalOrDev())
+            services.Configure<RouteOptions>(options =>
                 {
-                    o.Filters.Add(new AuthorizeFilter("default"));
-                }
-            })
-            .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                    options.LowercaseUrls = true;
+                    options.LowercaseQueryStrings = true;
+                }).AddMvc(o =>
+                {
+                    if (!_configuration.IsLocalOrDev())
+                    {
+                        o.Filters.Add(new AuthorizeFilter("default"));
+                    }
+                })
+                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
 
         if (_configuration["Environment"] != "DEV")
         {
@@ -97,7 +98,7 @@ public class Startup
                     new System.Text.Json.Serialization.JsonStringEnumConverter());
             });
 
-        services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
         services.AddSwaggerGen(c =>
         {
@@ -105,34 +106,35 @@ public class Startup
         });
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-    {
-
-        if (env.IsDevelopment())
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseDeveloperExceptionPage();
-        }
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
         app.UseAuthentication();
 
-        if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
-        {
-            app.UseHealthChecks();
+            if (!_configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+            {
+                app.UseHealthChecks();
+            }
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "api/{controller=Account}/{action=index}/{id?}");
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerFeedbackOuterApi");
+                c.RoutePrefix = string.Empty;
+            });
         }
-
-        app.UseRouting();
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "api/{controller=Account}/{action=index}/{id?}");
-        });
-
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerFeedbackOuterApi");
-            c.RoutePrefix = string.Empty;
-        });
     }
 }

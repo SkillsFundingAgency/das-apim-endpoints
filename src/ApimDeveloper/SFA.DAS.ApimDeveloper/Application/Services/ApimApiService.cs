@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.InnerApi.Requests;
@@ -13,28 +14,30 @@ namespace SFA.DAS.ApimDeveloper.Application.Services
         private readonly IApimDeveloperApiClient<ApimDeveloperApiConfiguration> _apimDeveloperApiClient;
         private readonly ICacheStorageService _cacheStorageService;
 
-        public ApimApiService (IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient, ICacheStorageService cacheStorageService)
+        public ApimApiService (
+            IApimDeveloperApiClient<ApimDeveloperApiConfiguration> apimDeveloperApiClient,
+            ICacheStorageService cacheStorageService)
         {
             _apimDeveloperApiClient = apimDeveloperApiClient;
             _cacheStorageService = cacheStorageService;
         }
         public async Task<GetAvailableApiProductsResponse> GetAvailableProducts(string accountType)
         {
-            var cachedProducts = await _cacheStorageService.RetrieveFromCache<GetAvailableApiProductsResponse>($"{accountType}-{nameof(GetAvailableApiProductsResponse)}");
+            var key = $"{accountType}-{nameof(GetAvailableApiProductsResponse)}";
 
+            var cachedProducts = await _cacheStorageService.RetrieveFromCache<GetAvailableApiProductsResponse>(key);
             if (cachedProducts != null)
             {
                 return cachedProducts;
             }
-            
-            var products =
-                await _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
-                    new GetAvailableApiProductsRequest(accountType));
 
-            await _cacheStorageService.SaveToCache($"{accountType}-{nameof(GetAvailableApiProductsResponse)}", products,
-                CachedProductExpiryTimeInHours);
-            
+            var products = await _apimDeveloperApiClient.Get<GetAvailableApiProductsResponse>(
+                new GetAvailableApiProductsRequest(accountType));
+
+            await _cacheStorageService.SaveToCache(key, products, TimeSpan.FromHours(CachedProductExpiryTimeInHours), "DocumentationKeys");
+
             return products;
+
         }
     }
 }
