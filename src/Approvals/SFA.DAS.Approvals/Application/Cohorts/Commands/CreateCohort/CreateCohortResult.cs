@@ -1,8 +1,7 @@
-﻿namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
+﻿namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+
+public class CreateCohortResult
 {
-    public class CreateCohortResult
-    {
-        public long CohortId { get; set; }
-        public string CohortReference { get; set; }
-    }
+    public long CohortId { get; set; }
+    public string CohortReference { get; set; }
 }

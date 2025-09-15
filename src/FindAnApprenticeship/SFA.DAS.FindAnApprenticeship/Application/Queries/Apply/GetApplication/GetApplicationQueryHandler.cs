@@ -89,6 +89,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication
                 EmployerName = vacancy.EmployerName,
                 VacancyTitle = vacancy.Title,
                 IsDisabilityConfident = application.DisabilityConfidenceStatus != "NotRequired",
+                ApprenticeshipType = vacancy.ApprenticeshipType,
                 EducationHistory = new GetApplicationQueryResult.EducationHistorySection
                 {
                     QualificationsStatus = application.QualificationsStatus,

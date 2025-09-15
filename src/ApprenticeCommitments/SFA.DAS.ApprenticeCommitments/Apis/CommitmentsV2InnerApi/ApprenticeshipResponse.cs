@@ -32,5 +32,6 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
         public int? DurationReducedByHours { get; set; }
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
+        public int? ApprenticeshipType { get; set; }
     }
 }

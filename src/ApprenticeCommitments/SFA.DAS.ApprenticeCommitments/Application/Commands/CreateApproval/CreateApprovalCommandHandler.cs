@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.ApprenticeCommitments.Extensions;
+using SFA.DAS.ApprenticeCommitments.Types;
 using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.ApprovalCreatedRequestData;
 
 #nullable enable
@@ -72,7 +74,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
                 CommitmentsApprovedOn = command.CommitmentsApprovedOn,
                 RecognisePriorLearning = apprentice.RecognisePriorLearning,
                 DurationReducedByHours = apprentice.DurationReducedByHours,
-                DurationReducedBy = apprentice.DurationReducedBy
+                DurationReducedBy = apprentice.DurationReducedBy,
+                ApprenticeshipType = apprentice.ApprenticeshipType
             });
 
             var res = new CreateApprovalResponse
@@ -105,12 +108,14 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             var courseCode = apprenticeship.GetCourseCode(_logger);
             if (courseCode is null) return default;
 
-            var course = _coursesService.GetCourse(courseCode);
+            var course = await _coursesService.GetCourse(courseCode);
+            
+            apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
 
             var provider = _trainingProviderService.GetTrainingProviderDetails(
                 command.TrainingProviderId);
 
-            return (apprenticeship, await provider, await course);
+            return (apprenticeship, await provider, course);
         }
 
         private static string ProviderName(TrainingProviderResponse trainingProvider)

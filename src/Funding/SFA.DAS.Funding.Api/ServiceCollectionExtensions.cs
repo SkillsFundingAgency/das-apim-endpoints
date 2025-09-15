@@ -1,27 +1,17 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NLog.Extensions.Logging;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 
 namespace SFA.DAS.Funding.Api
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddNLog(this IServiceCollection serviceCollection)
+        public static IServiceCollection AddLogging(this IServiceCollection serviceCollection)
         {
-            var nLogConfiguration = new NLogConfiguration();
-
-            serviceCollection.AddLogging((options) =>
+            serviceCollection.AddLogging(builder =>
             {
-                options.AddFilter(typeof(Startup).Namespace, LogLevel.Information);
-                options.SetMinimumLevel(LogLevel.Trace);
-                options.AddNLog(new NLogProviderOptions
-                {
-                    CaptureMessageTemplates = true,
-                    CaptureMessageProperties = true
-                });
-                options.AddConsole();
-
-                nLogConfiguration.ConfigureNLog();
+                builder.AddFilter<ApplicationInsightsLoggerProvider>(string.Empty, LogLevel.Information);
+                builder.AddFilter<ApplicationInsightsLoggerProvider>("Microsoft", LogLevel.Information);
             });
 
             return serviceCollection;
