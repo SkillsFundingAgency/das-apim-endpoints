@@ -77,7 +77,7 @@ public class SharedApplicationReviewedEventHandler(IMediator mediator,
         return users.Select(user =>
         {
             var email = new SharedApplicationsReturnedEmailTemplate(
-                emailEnvironmentHelper.ApplicationReviewSharedEmailTemplatedId,
+                emailEnvironmentHelper.SharedApplicationsReturned,
                 user.Email,
                 vacancy.Title,
                 user.FirstName,
