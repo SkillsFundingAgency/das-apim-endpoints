@@ -68,15 +68,15 @@ public class UpdateLearnerCommandHandler(
         {
             Learner = new LearningUpdateDetails
             {
-                CompletionDate = command.UpdateLearnerRequest.Delivery.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
             },
-            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses.Select(x =>
+            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
                 {
                     Amount = x.Amount,
                     CompletionDate = x.CompletionDate,
                     Course = x.Course,
-                    PlannedEndDate = x.PlannedEndDate,
+                    PlannedEndDate = x.EndDate,
                     PriorLearningPercentage = x.PriorLearningPercentage,
                     StartDate = x.StartDate,
                     WithdrawalDate = x.WithdrawalDate

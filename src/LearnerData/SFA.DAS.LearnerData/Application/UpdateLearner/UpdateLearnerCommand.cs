@@ -31,7 +31,7 @@ internal static class UpdateLearnerCommandExtensions
         if (onProgrammeLearningSupport != null && onProgrammeLearningSupport.Any())
             combinedLearningSupport.AddRange(onProgrammeLearningSupport);
 
-        var mathsAndEnglishLearningSupport = command.UpdateLearnerRequest.Delivery.MathsAndEnglishCourses?
+        var mathsAndEnglishLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths?
             .SelectMany(x => x.LearningSupport != null
                 ? x.LearningSupport.Select(ls => new LearningSupportUpdatedDetails
                 {
