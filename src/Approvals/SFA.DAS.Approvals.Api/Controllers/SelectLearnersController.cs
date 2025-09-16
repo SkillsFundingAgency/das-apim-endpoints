@@ -20,7 +20,10 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
         [FromQuery] string sortColumn,
         [FromQuery] bool sortDescending,
         [FromQuery] int page,
-        [FromQuery] int? pageSize)
+        [FromQuery] int? pageSize,
+        [FromQuery] int? startMonth,
+        [FromQuery] int startYear
+        )
     {
         try
         {
@@ -34,7 +37,9 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
                 SortField = sortColumn,
                 SortDescending = sortDescending,
                 Page = page,
-                PageSize = pageSize
+                PageSize = pageSize, 
+                StartMonth = startMonth,
+                StartYear = startYear
             });
             return Ok(result);
         }

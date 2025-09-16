@@ -1,10 +1,10 @@
 using System.Globalization;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Extensions;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.VacancyServices.Wage;
+using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;
 
@@ -21,6 +21,7 @@ public class GetSavedSearchVacanciesQueryResult
     public bool? ExcludeNational { get; set; }
     public string? UnSubscribeToken { get; set; }
     public List<ApprenticeshipVacancy> Vacancies { get; set; } = [];
+    public List<ApprenticeshipTypes>? ApprenticeshipTypes { get; set; } = [];
     
     public class Category
     {
@@ -51,27 +52,29 @@ public class GetSavedSearchVacanciesQueryResult
         public string? TrainingCourse { get; set; }
         public decimal? Distance { get; set; }
         public string? VacancySource { get; set; }
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; }
 
         public static implicit operator ApprenticeshipVacancy(GetVacanciesListItem source)
         {
             return new ApprenticeshipVacancy
             {
-                Id = source.Id,
-                VacancyReference = source.VacancyReference,
+                Address = source.Address,
+                ApprenticeshipType = source.ApprenticeshipType,
                 ClosingDate = DateTimeExtension.GetClosingDate(source.ClosingDate, !string.IsNullOrEmpty(source.ApplicationUrl)),
+                Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,
+                EmployerName = source.EmployerName,
+                EmploymentLocationInformation = source.EmploymentLocationInformation,
+                EmploymentLocationOption = source.EmploymentLocationOption,
+                Id = source.Id,
+                OtherAddresses = source.OtherAddresses,
                 StartDate = source.StartDate.ToString("d MMMM yyyy", CultureInfo.InvariantCulture),
                 Title = source.Title,
-                EmployerName = source.EmployerName,
-                Wage = source.WageText,
-                WageUnit = ((WageUnit)source.WageUnit).ToString(),
-                WageType = ((WageType)source.WageType).ToString(),
-                Address = source.Address,
-                OtherAddresses = source.OtherAddresses,
-                EmploymentLocationOption = source.EmploymentLocationOption,
-                EmploymentLocationInformation = source.EmploymentLocationInformation,
                 TrainingCourse = $"{source.CourseTitle} (level {source.CourseLevel})",
-                Distance = source.Distance.HasValue ? Math.Round(source.Distance.Value, 1) : null,
+                VacancyReference = source.VacancyReference,
                 VacancySource = source.VacancySource,
+                Wage = source.WageText,
+                WageType = ((WageType)source.WageType).ToString(),
+                WageUnit = ((WageUnit)source.WageUnit).ToString(),
             };
         }
     }

@@ -53,10 +53,7 @@ internal class WhenHandlingApplicationReviewSharedCommand
 
         await handler.Handle(command, CancellationToken.None);
 
-        var employerReviewUrl = $"{emailEnvironmentHelper.ApplicationReviewSharedEmployerUrl}"
-            .Replace("{0}", command.HashAccountId)
-            .Replace("{1}", command.VacancyId.ToString())
-            .Replace("{2}", command.ApplicationId.ToString());
+        var employerReviewUrl = string.Format(emailEnvironmentHelper.ApplicationReviewSharedEmployerUrl, command.HashAccountId, command.VacancyId.ToString(), command.ApplicationId.ToString());
 
         notificationService.Verify(x => x.Send(
             It.Is<SendEmailCommand>(c =>
