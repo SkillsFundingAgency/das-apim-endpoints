@@ -22,4 +22,5 @@ public class ConfirmEditApprenticeshipRequest
     public string Version { get; set; }
     public string Option { get; set; }
     public UserInfo UserInfo { get; set; }
+    public string EmployerReference { get; set; }
 } 
