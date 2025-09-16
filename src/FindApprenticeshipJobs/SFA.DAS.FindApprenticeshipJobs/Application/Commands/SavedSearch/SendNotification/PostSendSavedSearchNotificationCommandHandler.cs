@@ -43,7 +43,9 @@ public record PostSendSavedSearchNotificationCommandHandler(
             command.Distance,
             command.Location,
             command.Categories != null && command.Categories.Any() ? command.Categories?.Select(cat => cat.Name).ToList() : null,
-            command.Levels != null && command.Levels.Any() ? command.Levels.Select(lev => lev.Name).ToList() : null,
+            command.Levels != null && command.Levels.Any() 
+                ? command.Levels.Select(lev => $"Level {lev.Code}").ToList() as List<string?> 
+                : null,
             command.DisabilityConfident,
             command.ExcludeNational,
             command.ApprenticeshipTypes);
