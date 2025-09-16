@@ -163,11 +163,13 @@ public class WhenHandlingUpdateLearnerCommand
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
         var expectedEpisodeKey = Guid.NewGuid();
+        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
         var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
             Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices },
+            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
             LearningEpisodeKey = expectedEpisodeKey,
             Prices = expectedCosts
         }, HttpStatusCode.OK);
@@ -185,6 +187,7 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Patch(It.Is<SavePricesApiPatchRequest>(
             r => 
                 r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
+                r.Data.AgeAtStartOfLearning == expectedAgeAtStartOfLearning &&
                 r.Data.Prices.HasEquivalentItems(expectedCosts, (actual, expected) =>
                 actual.StartDate == expected.StartDate &&
                 actual.EndDate == expected.EndDate &&

@@ -85,6 +85,7 @@ public class SavePricesApiPatchRequest : IPatchApiRequest<SavePricesRequest>
 public class SavePricesRequest
 {
     public Guid ApprenticeshipEpisodeKey { get; set; }
+    public int AgeAtStartOfLearning { get; set; }
     public List<PriceDetail> Prices { get; set; } = [];
 }
 

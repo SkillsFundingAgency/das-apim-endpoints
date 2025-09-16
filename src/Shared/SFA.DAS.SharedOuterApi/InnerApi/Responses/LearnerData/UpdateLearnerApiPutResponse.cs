@@ -7,6 +7,7 @@ public class UpdateLearnerApiPutResponse
 {
     public List<LearningUpdateChanges> Changes { get; set; } = [];
     public Guid LearningEpisodeKey { get; set; }
+    public int AgeAtStartOfLearning { get; set; }
     public List<EpisodePrice> Prices { get; set; } = [];
 
     public class EpisodePrice

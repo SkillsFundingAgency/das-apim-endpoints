@@ -66,6 +66,7 @@ internal static class EarningsApiClientExtensions
             var data = new SavePricesRequest
             {
                 ApprenticeshipEpisodeKey = apiPutResponse.LearningEpisodeKey,
+                AgeAtStartOfLearning = apiPutResponse.AgeAtStartOfLearning,
                 Prices = apiPutResponse.Prices.Select(x => new PriceDetail
                 {
                     Key = x.Key,
