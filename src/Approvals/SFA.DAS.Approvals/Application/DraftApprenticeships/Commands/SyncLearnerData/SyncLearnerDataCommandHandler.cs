@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -59,7 +60,7 @@ public class SyncLearnerDataCommandHandler(
             Email = draftApprenticeship.Email,
             Uln = draftApprenticeship.Uln,
             CourseCode = draftApprenticeship.CourseCode,
-            DeliveryModel = draftApprenticeship.DeliveryModel,
+            DeliveryModel = learnerData.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular,
             TrainingCourseName = draftApprenticeship.TrainingCourseName,
             TrainingCourseVersion = draftApprenticeship.TrainingCourseVersion,
             TrainingCourseOption = draftApprenticeship.TrainingCourseOption,
