@@ -33,6 +33,13 @@ public class EmailEnvironmentHelper
         ApplicationSubmittedTemplateId =
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase)
                 ? "e07a6992-4d17-4167-b526-2ead6fe9ad4d" : "8aedd294-fd12-4b77-b4b8-2066744e1fdc";
+        ProviderAddedToEmployerVacancy =
+            environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase)
+                ? "ce5df943-09ad-4f6c-b10a-42584f88046d" : "b00a94c3-4b6e-48df-b28b-a768600fe7a5";
+        SharedApplicationsReturned = environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase)
+            ? "2f1b70d4-c722-4815-85a0-80a080eac642" : "feb4191d-a373-4040-9bc6-93c09d8039b5";
+
+
         CandidateApplicationUrl = $"{GetBaseUrl(environmentName)}applications";
         LiveVacancyUrl = $"{GetBaseUrl(environmentName)}apprenticeship/{{0}}";
         NotificationsSettingsProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/notifications-manage/";
@@ -41,6 +48,7 @@ public class EmailEnvironmentHelper
         ReviewVacancyReviewInRecruitProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/vacancies/{{1}}/check-your-answers/";
         ApplicationReviewSharedEmployerUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/applications/{{2}}/?vacancySharedByProvider=True";
         ManageAdvertUrl = $"{GetRecruitBaseUrlEmployer(environmentName)}accounts/{{0}}/vacancies/{{1}}/manage/";
+        ManageVacancyProviderUrl = $"{GetRecruitBaseUrlProvider(environmentName)}{{0}}/vacancies/{{1}}/manage/";
     }
     public string CandidateApplicationUrl { get; }
     public string LiveVacancyUrl { get; }
@@ -49,6 +57,7 @@ public class EmailEnvironmentHelper
     public string ReviewVacancyReviewInRecruitEmployerUrl { get; }
     public string ReviewVacancyReviewInRecruitProviderUrl { get; }
     public string ApplicationReviewSharedEmployerUrl { get; }
+    public string ManageVacancyProviderUrl { get; }
     public string SuccessfulApplicationEmailTemplateId { get; }
     public string UnsuccessfulApplicationEmailTemplateId { get; }
     public string VacancyReviewApprovedEmployerTemplateId { get; }
@@ -60,6 +69,9 @@ public class EmailEnvironmentHelper
     public string AdvertApprovedByDfeTemplateId { get; }
     public string ApplicationSubmittedTemplateId {  get; }
     public string ManageAdvertUrl { get; }
+    public string ProviderAddedToEmployerVacancy { get; }
+    public string SharedApplicationsReturned { get; }
+
 
     private static string GetBaseUrl(string environmentName)
     {

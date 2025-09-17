@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Azure.Core;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 
@@ -54,7 +55,8 @@ public class ConfirmEditApprenticeshipCommandHandler(
             UserInfo = command.UserInfo,
             Party = serviceParameters.CallingParty != Shared.Enums.Party.None 
                 ? serviceParameters.CallingParty 
-                : Shared.Enums.Party.None
+                : Shared.Enums.Party.None,
+            EmployerReference = command.EmployerReference
         };
 
         var editApiRequest = new EditApprenticeshipApiRequest(editRequestData);

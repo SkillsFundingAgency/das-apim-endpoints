@@ -31,7 +31,8 @@ public class SaveSearchCommandHandler(
                     request.SelectedLevelIds,
                     request.Location,
                     location?.GeoPoint[0].ToString(CultureInfo.InvariantCulture),
-                    location?.GeoPoint[1].ToString(CultureInfo.InvariantCulture))
+                    location?.GeoPoint[1].ToString(CultureInfo.InvariantCulture),
+                    request.ApprenticeshipTypes)
             }));
 
         return response is not null && response.StatusCode == HttpStatusCode.OK

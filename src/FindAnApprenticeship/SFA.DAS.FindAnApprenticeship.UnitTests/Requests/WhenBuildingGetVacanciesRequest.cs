@@ -1,8 +1,6 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Requests;
 
@@ -22,7 +20,8 @@ public class WhenBuildingGetVacanciesRequest
         List<int> levels,
         bool disabilityConfident,
         List<VacancyDataSource> additionalDataSources,
-        bool? excludeNational)
+        bool? excludeNational,
+        List<ApprenticeshipTypes> apprenticeshipTypes)
     {
         // arrange
         var expectedUrl = $"/api/vacancies?" +
@@ -38,10 +37,11 @@ public class WhenBuildingGetVacanciesRequest
                           $"&disabilityConfident={disabilityConfident}" +
                           $"&skipWageType={skipWageType}" +
                           $"&additionalDataSources={string.Join("&additionalDataSources=", additionalDataSources)}" +
-                          $"&excludeNational={excludeNational}";
+                          $"&excludeNational={excludeNational}" +
+                          $"&apprenticeshipTypes={string.Join("&apprenticeshipTypes=", apprenticeshipTypes)}";
         
         // act
-        var actual = new GetVacanciesRequest(lat, lon, distance,whatSearchTerm, pageNumber, pageSize, categories, levels, sort, skipWageType, disabilityConfident, additionalDataSources, excludeNational);
+        var actual = new GetVacanciesRequest(lat, lon, distance,whatSearchTerm, pageNumber, pageSize, categories, levels, sort, skipWageType, disabilityConfident, additionalDataSources, excludeNational, apprenticeshipTypes);
 
         actual.GetUrl.Should().Be(expectedUrl);
         actual.Version.Should().Be("2.0");
