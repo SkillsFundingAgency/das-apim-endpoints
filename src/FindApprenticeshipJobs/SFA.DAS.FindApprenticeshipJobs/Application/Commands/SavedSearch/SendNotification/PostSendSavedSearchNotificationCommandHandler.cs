@@ -5,7 +5,6 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
@@ -37,14 +36,16 @@ public record PostSendSavedSearchNotificationCommandHandler(
             EmailEnvironmentHelper,
             command.Vacancies,
             command.Location != null);
-        
+
         var searchParamsEmailSnippet = EmailTemplateBuilder.GetSavedSearchSearchParams(
             command.SearchTerm,
             command.Distance,
             command.Location,
-            command.Categories != null && command.Categories.Any() ? command.Categories?.Select(cat => cat.Name).ToList() : null,
-            command.Levels != null && command.Levels.Any() 
-                ? command.Levels.Select(lev => $"Level {lev.Code}").ToList() as List<string?> 
+            command.Categories?.Any() == true 
+                ? command.Categories?.Select(cat => cat.Name!).ToList() 
+                : null,
+            command.Levels?.Any() == true 
+                ? command.Levels.Select(lev => $"Level {lev.Code}").ToList() 
                 : null,
             command.DisabilityConfident,
             command.ExcludeNational,
