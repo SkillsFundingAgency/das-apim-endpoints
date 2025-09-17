@@ -1,14 +1,18 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Vacancies.Api.ApiRequests.Base;
 
-namespace SFA.DAS.Vacancies.Api
+namespace SFA.DAS.Vacancies.Api.ApiRequests
 {
-    public class SearchVacancyRequestV2 : SearchVacancyRequest
+    public class SearchVacancyRequestV2 : BaseSearchVacancyRequest
     {
         /// <summary>
-        /// The search term to use when searching for vacancies. This can be a keyword, location, or other criteria. #TODO: Description will be updated in the future.
+        /// If not set returns all
+        /// If `true` returns non Nation Wide apprenticeship adverts only 
+        /// If `false` returns all apprenticeship adverts including Nation Wide
         /// </summary>
+        [FromQuery]
+        public bool? ExcludeRecruitingNationally { get; set; } = null;
+        
         [FromQuery]
         public string EmployerName { get; set; }
     }
