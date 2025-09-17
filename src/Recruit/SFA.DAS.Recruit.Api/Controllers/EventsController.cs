@@ -49,6 +49,14 @@ public class EventsController(
         return NoContent();
     }
 
+    [HttpPost, Route("application-submitted")]
+    public async Task<IActionResult> OnApplicationSubmitted([FromBody] PostApplicationSubmittedEventModel body)
+    {
+        logger.LogInformation("ApplicationSubmitted for VacancyId: {VacancyId}, ApplicationId: {ApplicationId}", body.VacancyId, body.ApplicationId);
+        await mediator.Publish(new ApplicationSubmittedEvent(body.ApplicationId, body.VacancyId));
+        return NoContent();
+    }
+
     [HttpPost, Route("shared-application-reviewed")]
     public async Task<IActionResult> OnSharedApplicationReviewed([FromBody] PostSharedApplicationReviewedEventModel payload)
     {
