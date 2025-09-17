@@ -10,7 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
-using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControllerTests
@@ -21,14 +21,12 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
         [Test, MoqAutoData]
         public async Task SyncLearnerData_WhenSuccessful_ReturnsOkResult(
             [Frozen] Mock<IMediator> mediator,
-            SyncLearnerDataCommandResult commandResult,
+            GetDraftApprenticeshipResponse updatedDraftApprenticeship,
             [Greedy] DraftApprenticeshipController controller)
         {
             // Arrange
-            commandResult.Success = true;
-            commandResult.Message = "Test success message";
             mediator.Setup(x => x.Send(It.IsAny<SyncLearnerDataCommand>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(commandResult);
+                .ReturnsAsync(updatedDraftApprenticeship);
 
             // Act
             var result = await controller.SyncLearnerData(1, 2, 3);
@@ -39,20 +37,18 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
             okResult.Value.Should().BeOfType<SyncLearnerDataResponse>();
             var response = okResult.Value as SyncLearnerDataResponse;
             response.Success.Should().BeTrue();
-            response.Message.Should().Be(commandResult.Message);
+            response.Message.Should().Be("Learner data has been successfully merged");
+            response.UpdatedDraftApprenticeship.Should().Be(updatedDraftApprenticeship);
         }
 
         [Test, MoqAutoData]
-        public async Task SyncLearnerData_WhenFailed_ReturnsOkResultWithFailure(
+        public async Task SyncLearnerData_WhenLearnerDataSyncException_ReturnsOkWithFailure(
             [Frozen] Mock<IMediator> mediator,
-            SyncLearnerDataCommandResult commandResult,
             [Greedy] DraftApprenticeshipController controller)
         {
             // Arrange
-            commandResult.Success = false;
-            commandResult.Message = "Test failure message";
             mediator.Setup(x => x.Send(It.IsAny<SyncLearnerDataCommand>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(commandResult);
+                .ThrowsAsync(new LearnerDataSyncException("Failed to retrieve learner data"));
 
             // Act
             var result = await controller.SyncLearnerData(1, 2, 3);
@@ -63,7 +59,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
             okResult.Value.Should().BeOfType<SyncLearnerDataResponse>();
             var response = okResult.Value as SyncLearnerDataResponse;
             response.Success.Should().BeFalse();
-            response.Message.Should().Be(commandResult.Message);
+            response.Message.Should().Be("Failed to retrieve learner data");
         }
 
         [Test, MoqAutoData]
@@ -90,26 +86,21 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControl
         [Test, MoqAutoData]
         public async Task SyncLearnerData_VerifiesCommandParameters(
             [Frozen] Mock<IMediator> mediator,
-            SyncLearnerDataCommandResult commandResult,
+            GetDraftApprenticeshipResponse updatedDraftApprenticeship,
             [Greedy] DraftApprenticeshipController controller)
         {
             // Arrange
-            const long providerId = 123;
-            const long cohortId = 456;
-            const long draftApprenticeshipId = 789;
-
             mediator.Setup(x => x.Send(It.IsAny<SyncLearnerDataCommand>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(commandResult);
+                .ReturnsAsync(updatedDraftApprenticeship);
 
             // Act
-            await controller.SyncLearnerData(providerId, cohortId, draftApprenticeshipId);
+            await controller.SyncLearnerData(1, 2, 3);
 
             // Assert
-            mediator.Verify(x => x.Send(It.Is<SyncLearnerDataCommand>(c =>
-                    c.ProviderId == providerId &&
-                    c.CohortId == cohortId &&
-                    c.DraftApprenticeshipId == draftApprenticeshipId),
-                It.IsAny<CancellationToken>()), Times.Once);
+            mediator.Verify(x => x.Send(It.Is<SyncLearnerDataCommand>(c => 
+                c.ProviderId == 1 && 
+                c.CohortId == 2 && 
+                c.DraftApprenticeshipId == 3), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
