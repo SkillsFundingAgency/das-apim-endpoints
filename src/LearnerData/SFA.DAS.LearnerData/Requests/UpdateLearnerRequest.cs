@@ -9,22 +9,22 @@ public class UpdateLearnerRequest
 }
 public class UpdateLearnerRequestDeliveryDetails
 {
-    public DateTime? CompletionDate { get; set; }
     public OnProgrammeRequestDetails OnProgramme { get; set; }
 
-    public List<MathsAndEnglish> MathsAndEnglishCourses { get; set; }
+    public List<MathsAndEnglish> EnglishAndMaths { get; set; }
 }
 
 public class OnProgrammeRequestDetails
 {
-    public List<LearningSupportRequestDetails> LearningSupport{ get; set; }
+    public DateTime? CompletionDate { get; set; }
+    public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 
 public class MathsAndEnglish
 {
     public string Course { get; set; }
     public DateTime StartDate { get; set; }
-    public DateTime PlannedEndDate { get; set; }
+    public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public int? PriorLearningPercentage { get; set; }

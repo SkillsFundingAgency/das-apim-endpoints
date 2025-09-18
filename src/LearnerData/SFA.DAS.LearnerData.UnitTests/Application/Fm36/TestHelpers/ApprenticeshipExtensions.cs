@@ -1,6 +1,8 @@
-﻿using SFA.DAS.LearnerData.Extensions;
+﻿using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
@@ -19,7 +21,18 @@ internal static class ApprenticeshipExtensions
     /// </summary>
     internal static DateTime? SetWithdrawalDate(this Learning learning, WithdrawalDate withdrawalDate)
     {
-        var qualifyingPeriod = SharedOuterApi.Common.Constants.QualifyingPeriod;
+        var duration = 1 + (learning.PlannedEndDate - learning.StartDate).Days;
+
+        var qualifyingPeriod = 42;
+        switch (duration)
+        {
+            case < 14: qualifyingPeriod =  1;
+                break;
+            case < 167: qualifyingPeriod = 14;
+                break;
+            default:
+                break;
+        }
 
         EpisodePrice? nextPriceEpisode = null;
         if (withdrawalDate == WithdrawalDate.AfterNextPriceEpisodeStart || withdrawalDate == WithdrawalDate.BeforeNextPriceEpisodeStart)
@@ -38,11 +51,11 @@ internal static class ApprenticeshipExtensions
             case WithdrawalDate.None:
                 break;
             case WithdrawalDate.DuringQualifyingPeriod:
-                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod - 1);
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod - 2);
                 learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.AfterQualifyingPeriod:
-                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod + 1);
+                learning.WithdrawnDate = learning.StartDate.AddDays(qualifyingPeriod - 1);
                 learning.Episodes.First().LastDayOfLearning = learning.WithdrawnDate;
                 break;
             case WithdrawalDate.BeforeNextPriceEpisodeStart:
