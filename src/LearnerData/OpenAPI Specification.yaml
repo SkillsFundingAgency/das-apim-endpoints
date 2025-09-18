@@ -424,6 +424,8 @@ components:
                   withdrawalDate:
                     type: string
                     format: date
+                  priorLearningPercentage:
+                    type: integer
                   learningSupport:
                     type: array
                     items:
