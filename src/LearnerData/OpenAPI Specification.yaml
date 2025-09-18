@@ -327,6 +327,8 @@ components:
     apprenticeshipLearning:
       type: object
       properties:
+        consumerReference:
+          type: string
         learner:
           type: object
           properties:
@@ -422,6 +424,8 @@ components:
                   withdrawalDate:
                     type: string
                     format: date
+                  priorLearningPercentage:
+                    type: integer
                   learningSupport:
                     type: array
                     items:

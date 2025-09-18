@@ -7,10 +7,11 @@ namespace SFA.DAS.LearnerData.Requests;
 public class StubUpdateLearnerRequest
 {
     [Required]
+    public string ConsumerReference { get; set; }
+    [Required]
     public StubLearner Learner { get; set; }
     [Required]
     public StubDelivery Delivery { get; set; }
-
 }
 
 public class StubLearner
