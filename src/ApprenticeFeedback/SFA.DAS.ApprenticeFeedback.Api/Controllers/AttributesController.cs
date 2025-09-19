@@ -28,7 +28,7 @@ namespace SFA.DAS.ApprenticeFeedback.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetAttributesQuery() { AttributeType = "Feedback" });
+                var result = await _mediator.Send(new GetAttributesQuery() { AttributeType = "Feedback_v2" });
 
                 if(result.Attributes?.Count == 0)
                 {
