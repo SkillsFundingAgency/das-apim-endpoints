@@ -32,6 +32,31 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
         string employerName = null;
         int futureMonths = 0;
 
+        if (request.AccountLegalEntityId.HasValue)
+        {
+            logger.LogInformation("Getting Account Legal Entity");
+            accountLegalEntityId = request.AccountLegalEntityId.Value;
+            var legalEntityResponse = await commitmentsClient.GetWithResponseCode<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+            if (!string.IsNullOrEmpty(legalEntityResponse.ErrorContent))
+            {
+                throw new ApplicationException($"Getting Legal Entity Data Failed. Status Code {legalEntityResponse.StatusCode} Error : {legalEntityResponse.ErrorContent}");
+            }
+            employerName = legalEntityResponse.Body.LegalEntityName;
+
+            if (legalEntityResponse.Body.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+            {
+                var get = new GetAvailableDatesRequest(accountLegalEntityId);
+                var response = await _reservationsApiClient.Get<GetAvailableDatesResponse>(get);
+                if (response.AvailableDates is not null)
+                {
+                    futureMonths = response.AvailableDates.Count(x => x.StartDate > DateTime.Now) + 1;
+
+                    var maxStartDate = response.AvailableDates.Max(x => x.StartDate).AddMonths(1);
+                    request.MaxStartDate = maxStartDate;
+                }
+            }
+        }
+
         var learnerDataTask = GetLearnerData(request);
         var standardsTask = GetStandardsData();
 
@@ -52,38 +77,7 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             employerName = cohortResponse.Body.LegalEntityName;
             accountLegalEntityId = cohortResponse.Body.AccountLegalEntityId;
         }
-
-        if (request.AccountLegalEntityId.HasValue)
-        {
-            logger.LogInformation("Getting Account Legal Entity");
-            accountLegalEntityId = request.AccountLegalEntityId.Value;
-            var legalEntityResponse = await commitmentsClient.GetWithResponseCode<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
-            if (!string.IsNullOrEmpty(legalEntityResponse.ErrorContent))
-            {
-                throw new ApplicationException($"Getting Legal Entity Data Failed. Status Code {legalEntityResponse.StatusCode} Error : {legalEntityResponse.ErrorContent}");
-            }
-            employerName = legalEntityResponse.Body.LegalEntityName;
-
-            if (legalEntityResponse.Body.LevyStatus == ApprenticeshipEmployerType.NonLevy)
-            {
-                var get = new GetAvailableDatesRequest(accountLegalEntityId);
-                var response = await _reservationsApiClient.Get<GetAvailableDatesResponse>(get);
-                if (response.AvailableDates is not null)
-                {
-                    futureMonths = response.AvailableDates.Count(x => x.StartDate > DateTime.Now);
-
-                    if (learnerData.TotalItems > 0)
-                    {
-                        var maxDate = response.AvailableDates.Max(x => x.StartDate).AddMonths(1);
-
-                        learnerData.Data = learnerData.Data.Where(x => x.StartDate < maxDate);
-                        learnerData.TotalItems = learnerData.Data.Count();
-                        learnerData.TotalPages = (int)Math.Ceiling((double)learnerData.Data.Count() / learnerData.PageSize);
-                    }
-                }
-            }
-        }
-
+        
         logger.LogInformation("Building Learner Data result");
 
         return new GetLearnersForProviderQueryResult
@@ -113,7 +107,8 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
                 request.Page,
                 request.PageSize, 
                 request.StartMonth,
-                request.StartYear
+                request.StartYear,
+                request.MaxStartDate
             ));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
