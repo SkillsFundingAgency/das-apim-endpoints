@@ -119,7 +119,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
             {
                 var roatpProvidersResponse = await _roatpV2TrainingProviderService.GetProviders(true);
                 var providers = roatpProvidersResponse?.RegisteredProviders?.Where(p => p.ProviderTypeId == 1).ToList() ?? [];
-                await _cacheStorageService.SaveToCache(RoatpProvidersCacheKey, providers, 24);
+                await _cacheStorageService.SaveToCache(RoatpProvidersCacheKey, providers, 4);
                 return providers;
             }
             catch (Exception)
