@@ -28,7 +28,7 @@ public class RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiCli
 
     public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
     {
-        throw new System.NotImplementedException();
+        return apiClient.GetAll<TResponse>(request);
     }
 
     public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)

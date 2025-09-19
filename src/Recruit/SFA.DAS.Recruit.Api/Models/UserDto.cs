@@ -19,9 +19,9 @@ public class UserDto
     public DateTime? ClosedVacanciesWithdrawnByQaAlertDismissedOn { get; set; }
     public string? DfEUserId { get; set; }
     
-    public static explicit operator InnerApi.Requests.UserDto(UserDto source)
+    public static explicit operator InnerApi.Recruit.Requests.UserDto(UserDto source)
     {
-        return new InnerApi.Requests.UserDto
+        return new InnerApi.Recruit.Requests.UserDto
         {
             Name = source.Name,
             IdamsUserId = source.IdamsUserId,
