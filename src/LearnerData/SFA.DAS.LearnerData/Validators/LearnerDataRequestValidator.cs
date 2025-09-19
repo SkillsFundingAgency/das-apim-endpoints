@@ -3,57 +3,86 @@ using SFA.DAS.LearnerData.Requests;
 
 namespace SFA.DAS.LearnerData.Validators;
 
-public class LearnerDataRequestValidator : AbstractValidator<LearnerDataRequest>
+public class LearnerDataRequestValidator : AbstractValidator<CreateLearnerRequest>
 {
-    public LearnerDataRequestValidator(long providerId, int academicYear)
+    public LearnerDataRequestValidator()
     {
         // Commenting until agreed move forwards: https://skillsfundingagency.atlassian.net/browse/APPMAN-1697
         // RuleFor(model => model.StartDate).Must(startdate => startdate.IsInAcademicYear(academicYear))
         //     .WithMessage(model => $"Learner data contains a StartDate {model.StartDate} that is not in the academic year {academicYear}");
 
-        RuleFor(model => model.ULN).Must(uln => uln is > 1000000000 or > 9999999999)
-            .WithMessage(model => $"Learner data contains incorrect ULN {model.ULN}");
+        RuleFor(model => model.Learner.Uln).Must(uln => ValidateUln(uln))
+            .WithMessage(model => $"Learner data contains incorrect ULN {model.Learner.Uln}");
 
-        RuleFor(model => model.UKPRN).Must(ukprn => providerId == ukprn)
-            .WithMessage($"Learner data contains different UKPRN to {providerId}");
-        RuleFor(model => model.UKPRN).Must(ukprn => ukprn is > 10000000 and < 9999999999)
-            .WithMessage(model => $"Learner data contains incorrect UKPRN {model.UKPRN}");
+        RuleForEach(model => model.Delivery.OnProgramme.Costs)
+            .ChildRules(cost =>
+            {
+                cost.RuleFor(c => c.EpaoPrice).GreaterThanOrEqualTo(0)
+                    .WithMessage(c => $"Learner data contains a negative EpaoPrice {c.EpaoPrice}");
 
-        RuleFor(model => model.EpaoPrice).GreaterThanOrEqualTo(0)
-            .WithMessage(model => $"Learner data contains a negative EpaoPrice {model.EpaoPrice}");
+                cost.RuleFor(c => c.TrainingPrice).GreaterThanOrEqualTo(0)
+                    .WithMessage(c => $"Learner data contains a negative TrainingPrice {c.TrainingPrice}");
+            });
 
-        RuleFor(model => model.TrainingPrice).GreaterThanOrEqualTo(0)
-            .WithMessage(model => $"Learner data contains a negative TrainingPrice {model.TrainingPrice}");
 
-        RuleFor(model => model.PlannedOTJTrainingHours).GreaterThanOrEqualTo(0)
-            .WithMessage(model => $"Learner data contains a negative PlannedOTJTrainingHours {model.PlannedOTJTrainingHours}");
+        // What should this be, OffTheJobHours? If so that property is nullable so need to handle that too.
+        //RuleFor(model => model.PlannedOTJTrainingHours).GreaterThanOrEqualTo(0)
+        //    .WithMessage(model => $"Learner data contains a negative PlannedOTJTrainingHours {model.PlannedOTJTrainingHours}");
 
-        RuleFor(model => model.StandardCode).GreaterThanOrEqualTo(0)
-            .WithMessage(model => $"Learner data contains a negative StandardCode {model.StandardCode}");
+        RuleFor(model => model.Delivery.OnProgramme.StandardCode).GreaterThanOrEqualTo(0)
+            .WithMessage(model => $"Learner data contains a negative StandardCode {model.Delivery.OnProgramme.StandardCode}");
 
-        RuleFor(model => model.ConsumerReference)
-            .MaximumLength(100)
-            .WithMessage("ConsumerReference cannot be more then 100 characters long");
+       RuleFor(model => model.ConsumerReference)
+           .MaximumLength(100)
+           .WithMessage("ConsumerReference cannot be more then 100 characters long");
 
-        RuleFor(model => model.FirstName)
+       RuleFor(model => model.Learner.Firstname)
             .NotEmpty()
-            .WithMessage("FirstName is required")
+            .WithMessage("Firstname is required")
             .MaximumLength(100)
-            .WithMessage("FirstName cannot be more then 100 characters long");
+            .WithMessage("Firstname cannot be more then 100 characters long");
 
-        RuleFor(model => model.LastName)
+        RuleFor(model => model.Learner.Lastname)
             .NotEmpty()
-            .WithMessage("LastName is required")
+            .WithMessage("Lastname is required")
             .MaximumLength(100)
-            .WithMessage("LastName cannot be more then 100 characters long");
+            .WithMessage("Lastname cannot be more then 100 characters long");
 
-        RuleFor(model => model.LearnerEmail)
+        RuleFor(model => model.Learner.Dob)
+            .NotNull()
+            .WithMessage("Dob is required");
+
+        RuleFor(model => model.Learner.Email)
             .MaximumLength(200)
             .WithMessage("Email cannot be more then 200 characters long")
-            .EmailAddress().When(model => model.LearnerEmail != null);
+            .EmailAddress().When(model => model.Learner.Email != null);
 
-        RuleFor(model => model.AgreementId)
+        RuleFor(model => model.Delivery.OnProgramme.AgreementId)
             .MaximumLength(20)
-            .WithMessage("AgreementId cannot be more then 20 characters long");
+            .WithMessage("OnProgramme AgreementId cannot be more then 20 characters long");
+
+        RuleFor(model => model.Delivery.OnProgramme.StartDate)
+            .NotNull()
+            .WithMessage("OnProgramme StartDate is required");
+
+        RuleFor(model => model.Delivery.OnProgramme.ExpectedEndDate)
+            .NotNull()
+            .WithMessage("OnProgramme ExpectedEndDate is required");
+
+        RuleFor(model => model.Delivery.OnProgramme.IsFlexiJob)
+            .NotNull()
+            .WithMessage("OnProgramme IsFlexiJob is required");
     }
+
+    private bool ValidateUln(string uln)
+    {
+        if(long.TryParse(uln, out var ulnAsLong))
+        {
+            return ulnAsLong is > 1000000000 or > 999999999;
+        }
+        else
+        {
+            return false;
+        }
+    } 
 }

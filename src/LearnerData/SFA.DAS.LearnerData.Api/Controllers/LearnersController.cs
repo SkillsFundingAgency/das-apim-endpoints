@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.LearnerData.Application.ProcessLearners;
+using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
@@ -17,7 +17,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<IEnumerable<LearnerDataRequest>> validator,
+    IValidator<CreateLearnerRequest> validator,
     ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
@@ -41,13 +41,12 @@ public class LearnersController(
         return Ok((GetLearnersResponse)response);
     }
 
-    [HttpPut]
-    [Route("/provider/{ukprn}/academicyears/{academicyear}/learners")]
-    public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
-        [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
+    [HttpPost]
+    [Route("/providers/{ukprn}/learners")]
+    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
     {
 
-        var validatorResult = await validator.ValidateAsync(dataRequests);
+        var validatorResult = await validator.ValidateAsync(dataRequest);
 
         if (!validatorResult.IsValid)
         {
@@ -57,10 +56,12 @@ public class LearnersController(
         try
         {
             var correlationId = Guid.NewGuid();
-            await mediator.Send(new ProcessLearnersCommand
+            await mediator.Send(new CreateLearnerCommand
             {
-                CorrelationId = correlationId, ReceivedOn = DateTime.Now, AcademicYear = academicyear,
-                Learners = dataRequests
+                CorrelationId = correlationId, 
+                ReceivedOn = DateTime.Now, 
+                Request = dataRequest,
+                Ukprn = ukprn
             });
             return Accepted(new CorrelationResponse {CorrelationId = correlationId});
         }
