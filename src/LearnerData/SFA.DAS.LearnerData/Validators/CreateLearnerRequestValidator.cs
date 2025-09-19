@@ -3,14 +3,10 @@ using SFA.DAS.LearnerData.Requests;
 
 namespace SFA.DAS.LearnerData.Validators;
 
-public class LearnerDataRequestValidator : AbstractValidator<CreateLearnerRequest>
+public class CreateLearnerRequestValidator : AbstractValidator<CreateLearnerRequest>
 {
-    public LearnerDataRequestValidator()
+    public CreateLearnerRequestValidator()
     {
-        // Commenting until agreed move forwards: https://skillsfundingagency.atlassian.net/browse/APPMAN-1697
-        // RuleFor(model => model.StartDate).Must(startdate => startdate.IsInAcademicYear(academicYear))
-        //     .WithMessage(model => $"Learner data contains a StartDate {model.StartDate} that is not in the academic year {academicYear}");
-
         RuleFor(model => model.Learner.Uln).Must(uln => ValidateUln(uln))
             .WithMessage(model => $"Learner data contains incorrect ULN {model.Learner.Uln}");
 
@@ -24,19 +20,14 @@ public class LearnerDataRequestValidator : AbstractValidator<CreateLearnerReques
                     .WithMessage(c => $"Learner data contains a negative TrainingPrice {c.TrainingPrice}");
             });
 
-
-        // What should this be, OffTheJobHours? If so that property is nullable so need to handle that too.
-        //RuleFor(model => model.PlannedOTJTrainingHours).GreaterThanOrEqualTo(0)
-        //    .WithMessage(model => $"Learner data contains a negative PlannedOTJTrainingHours {model.PlannedOTJTrainingHours}");
-
         RuleFor(model => model.Delivery.OnProgramme.StandardCode).GreaterThanOrEqualTo(0)
             .WithMessage(model => $"Learner data contains a negative StandardCode {model.Delivery.OnProgramme.StandardCode}");
 
-       RuleFor(model => model.ConsumerReference)
+        RuleFor(model => model.ConsumerReference)
            .MaximumLength(100)
            .WithMessage("ConsumerReference cannot be more then 100 characters long");
 
-       RuleFor(model => model.Learner.Firstname)
+        RuleFor(model => model.Learner.Firstname)
             .NotEmpty()
             .WithMessage("Firstname is required")
             .MaximumLength(100)

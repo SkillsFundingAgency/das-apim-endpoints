@@ -228,7 +228,7 @@ public class WhenValidatingLearnerData
 
     private Task<ValidationResult> RunValidation(CreateLearnerRequest request)
     {
-        var sut = new LearnerDataRequestValidator();
+        var sut = new CreateLearnerRequestValidator();
 
         return sut.ValidateAsync(request);
     }

@@ -85,7 +85,7 @@ builder.Services.AddHealthChecks()
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateLearnerCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddScoped<IValidator<CreateLearnerRequest>, LearnerDataRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateLearnerRequest>, CreateLearnerRequestValidator>();
 
 builder.Services.AddServices();
 
