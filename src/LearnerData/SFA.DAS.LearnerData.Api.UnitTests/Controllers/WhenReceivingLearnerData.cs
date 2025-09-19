@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Api.Controllers;
-using SFA.DAS.LearnerData.Application;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.Testing.AutoFixture;

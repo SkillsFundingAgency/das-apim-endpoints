@@ -1,4 +1,5 @@
 using Azure.Monitor.OpenTelemetry.AspNetCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -50,5 +51,12 @@ public static class AddOpenTelemetryExtensions
                         serviceNamespace))
                     .AddMeter(serviceMeterName));
         }
+    }
+
+    public static IServiceCollection AddOpenTelemetryRegistration(this IServiceCollection services, IConfiguration configuration)
+    {
+        var appInsightsConnectionString = configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+        services.AddOpenTelemetryRegistration(appInsightsConnectionString);
+        return services;
     }
 }

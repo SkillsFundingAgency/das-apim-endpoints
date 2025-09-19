@@ -31,7 +31,8 @@ public record GetUnsubscribeSavedSearchQueryResult(SavedSearch SavedSearch, IEnu
                 source.SearchParameters.SelectedLevelIds,
                 source.SearchParameters.Location,
                 source.SearchParameters.Latitude,
-                source.SearchParameters.Longitude
+                source.SearchParameters.Longitude,
+                source.SearchParameters.SelectedApprenticeshipTypes
             )
         );
     }
