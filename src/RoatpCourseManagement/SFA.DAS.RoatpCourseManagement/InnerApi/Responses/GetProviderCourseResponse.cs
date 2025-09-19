@@ -14,7 +14,6 @@
         public string StandardInfoUrl { get; set; }
         public string ContactUsPhoneNumber { get; set; }
         public string ContactUsEmail { get; set; }
-        public string ContactUsPageUrl { get; set; }
         public bool? IsApprovedByRegulator { get; set; }
         public bool IsRegulatedForProvider { get; set; }
         public bool HasLocations { get; set; }

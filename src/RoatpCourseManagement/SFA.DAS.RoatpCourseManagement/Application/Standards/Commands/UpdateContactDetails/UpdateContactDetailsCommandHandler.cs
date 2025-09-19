@@ -1,12 +1,12 @@
-﻿using MediatR;
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails
 {
@@ -30,12 +30,11 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateCon
                 UserDisplayName = command.UserDisplayName,
                 ContactUsEmail = command.ContactUsEmail,
                 ContactUsPhoneNumber = command.ContactUsPhoneNumber,
-                ContactUsPageUrl = command.ContactUsPageUrl,
                 StandardInfoUrl = command.StandardInfoUrl
             };
-    
+
             var patchRequest = new PatchProviderCourseRequest(patchUpdateProviderCourse);
-            var response =  await _innerApiClient.PatchWithResponseCode(patchRequest);
+            var response = await _innerApiClient.PatchWithResponseCode(patchRequest);
             if (response.StatusCode != HttpStatusCode.NoContent)
             {
                 _logger.LogError("Update provider course details for larscode:{larscode} ukprn: {ukprn} did not come back with successful response", command.LarsCode, command.Ukprn);
