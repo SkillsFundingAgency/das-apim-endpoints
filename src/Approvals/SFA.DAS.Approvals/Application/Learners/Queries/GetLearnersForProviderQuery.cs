@@ -15,6 +15,6 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries
         public int? PageSize { get; set; }
         public int? StartMonth { get; set; }
         public int StartYear { get; set; }
-        public DateTime MaxStartDate { get; set; }
+        public DateTime? MaxStartDate { get; set; }
     }
 }
