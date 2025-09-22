@@ -34,7 +34,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.TrainingCourses.Queries
 
             //Assert
             actual.Routes.Should().BeEquivalentTo(apiResponse.Routes);
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetRoutesListResponse), apiResponse, 23));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetRoutesListResponse), apiResponse, 23, null));
         }
 
         [Test, MoqAutoData]

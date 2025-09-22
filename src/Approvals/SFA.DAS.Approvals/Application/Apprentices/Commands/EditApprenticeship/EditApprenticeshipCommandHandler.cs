@@ -17,7 +17,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 
 public class EditApprenticeshipCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
-    ICourseTypeRulesService courseTypeRulesService)
+    ICourseTypeRulesService courseTypeRulesService,
+    ServiceParameters serviceParameters)
     : IRequestHandler<EditApprenticeshipCommand, EditApprenticeshipResult>
 {
     public async Task<EditApprenticeshipResult> Handle(EditApprenticeshipCommand command, CancellationToken cancellationToken)
@@ -85,6 +86,9 @@ public class EditApprenticeshipCommandHandler(
             EmploymentPrice = command.EmploymentPrice,
             MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
             MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
+            Party = serviceParameters.CallingParty != Shared.Enums.Party.None
+                ? serviceParameters.CallingParty
+                : Shared.Enums.Party.None,
         };
 
         var validateApiRequest = new ValidateApprenticeshipForEditApiRequest(validateRequest);

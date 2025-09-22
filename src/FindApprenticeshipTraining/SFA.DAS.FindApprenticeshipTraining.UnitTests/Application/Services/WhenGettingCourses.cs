@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services
                 service.SaveToCache(
                     nameof(GetStandardsListResponse),
                     coursesFromApi,
-                    expectedExpirationInHours));
+                    expectedExpirationInHours, null));
         }
     }
 }
