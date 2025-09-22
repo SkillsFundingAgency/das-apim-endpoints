@@ -1,4 +1,8 @@
-﻿using MediatR;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
@@ -8,10 +12,6 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
