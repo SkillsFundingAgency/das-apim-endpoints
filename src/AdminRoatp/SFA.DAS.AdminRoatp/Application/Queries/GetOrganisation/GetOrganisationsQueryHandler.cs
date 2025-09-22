@@ -12,9 +12,9 @@ public class GetOrganisationsQueryHandler(IRoatpServiceApiClient<RoatpConfigurat
 {
     public async Task<GetOrganisationsQueryResponse> Handle(GetOrganisationsQuery request, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetWithResponseCode<SearchOrganisationResponse>(new SearchOrganisationRequest(request.SearchTerm));
+        _logger.LogInformation("Get Organisations request received for search term {SearchTerm}", request.SearchTerm);
 
-        // check if response was ok
+        var response = await _apiClient.GetWithResponseCode<SearchOrganisationResponse>(new SearchOrganisationRequest(request.SearchTerm));
 
         response.EnsureSuccessStatusCode();
 

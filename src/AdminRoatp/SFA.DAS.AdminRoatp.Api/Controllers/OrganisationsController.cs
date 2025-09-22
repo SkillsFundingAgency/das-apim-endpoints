@@ -25,6 +25,7 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
     public async Task<IActionResult> GetOrganisations([FromQuery] string searchTerm, CancellationToken cancellationToken)
     {
+        _logger.LogInformation("Received request to get organisations with Search Term: {searchTerm}", searchTerm);
         GetOrganisationsQueryResponse response = await _mediator.Send(new GetOrganisationsQuery(searchTerm), cancellationToken);
         return Ok(response);
     }

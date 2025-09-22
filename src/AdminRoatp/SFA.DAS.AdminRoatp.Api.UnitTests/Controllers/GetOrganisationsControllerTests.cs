@@ -23,6 +23,7 @@ public class GetOrganisationsControllerTests
         var result = await sut.GetOrganisations(request.SearchTerm, It.IsAny<CancellationToken>());
         var response = (OkObjectResult)result;
 
+        mediatorMock.Verify(m => m.Send(It.Is<GetOrganisationsQuery>(r => r.SearchTerm == request.SearchTerm), It.IsAny<CancellationToken>()), Times.Once());
         response.Value.Should().BeEquivalentTo(expectedResponse);
     }
 }
