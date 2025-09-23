@@ -59,6 +59,7 @@ public class UpdateLearnerCommandHandler(
                     await earningsApiClient.UpdateLearningSupport(command, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
                     await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
                     break;
             }
@@ -75,6 +76,7 @@ public class UpdateLearnerCommandHandler(
             },
             OnProgramme = new OnProgrammeDetails
             {
+                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.ExpectedEndDate,
                 Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.Costs.Select(x =>  new Cost
                 {
                     TrainingPrice = x.TrainingPrice,
