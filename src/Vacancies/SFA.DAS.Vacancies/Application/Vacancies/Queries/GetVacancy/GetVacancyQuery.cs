@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
+namespace SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy
 {
     public class GetVacancyQuery : IRequest<GetVacancyQueryResult>
     {

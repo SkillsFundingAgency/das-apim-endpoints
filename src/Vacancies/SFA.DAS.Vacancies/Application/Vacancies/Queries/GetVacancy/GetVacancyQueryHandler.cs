@@ -11,7 +11,7 @@ using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
 
-namespace SFA.DAS.Vacancies.Application.Vacancies.Queries
+namespace SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy
 {
     public class GetVacancyQueryHandler : IRequestHandler<GetVacancyQuery, GetVacancyQueryResult>
     {
