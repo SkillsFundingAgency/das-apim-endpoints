@@ -1,9 +1,49 @@
-﻿using SFA.DAS.Recruit.Application.Queries.Base;
+﻿using SFA.DAS.Recruit.Domain;
+using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn;
 
-public record GetDashboardByUkprnQueryResult : DashboardBaseModel
+public record GetDashboardByUkprnQueryResult
 {
-    public static implicit operator GetDashboardByUkprnQueryResult(InnerApi.Responses.GetDashboardApiResponse response) =>
-        Map(response, () => new GetDashboardByUkprnQueryResult());
+    public int NewApplicationsCount { get; set; } = 0;
+    public int EmployerReviewedApplicationsCount { get; set; } = 0;
+    public int SharedApplicationsCount { get; set; } = 0;
+    public int AllSharedApplicationsCount { get; set; } = 0;
+    public int SuccessfulApplicationsCount { get; set; } = 0;
+    public int UnsuccessfulApplicationsCount { get; set; } = 0;
+    public bool HasNoApplications { get; set; } = false;
+    public int ClosedVacanciesCount { get; set; } = 0;
+    public int DraftVacanciesCount { get; set; } = 0;
+    public int ReviewVacanciesCount { get; set; } = 0;
+    public int ReferredVacanciesCount { get; set; } = 0;
+    public int LiveVacanciesCount { get; set; } = 0;
+    public int SubmittedVacanciesCount { get; set; } = 0;
+    public int ClosingSoonVacanciesCount { get; set; } = 0;
+    public int ClosingSoonWithNoApplications { get; set; } = 0;
+    public ProviderTransferredVacanciesAlertModel ProviderTransferredVacanciesAlert { get; set; } = new();
+    public WithdrawnVacanciesAlertModel WithdrawnVacanciesAlert { get; set; } = new();
+
+    public static implicit operator GetDashboardByUkprnQueryResult(GetProviderDashboardApiResponse source)
+    {
+        return new GetDashboardByUkprnQueryResult
+        {
+            NewApplicationsCount = source.NewApplicationsCount,
+            EmployerReviewedApplicationsCount = source.EmployerReviewedApplicationsCount,
+            SharedApplicationsCount = source.SharedApplicationsCount,
+            AllSharedApplicationsCount = source.AllSharedApplicationsCount,
+            SuccessfulApplicationsCount = source.SuccessfulApplicationsCount,
+            UnsuccessfulApplicationsCount = source.UnsuccessfulApplicationsCount,
+            HasNoApplications = source.HasNoApplications,
+            ClosedVacanciesCount = source.ClosedVacanciesCount,
+            DraftVacanciesCount = source.DraftVacanciesCount,
+            ReviewVacanciesCount = source.ReviewVacanciesCount,
+            ReferredVacanciesCount = source.ReferredVacanciesCount,
+            LiveVacanciesCount = source.LiveVacanciesCount,
+            SubmittedVacanciesCount = source.SubmittedVacanciesCount,
+            ClosingSoonVacanciesCount = source.ClosingSoonVacanciesCount,
+            ClosingSoonWithNoApplications = source.ClosingSoonWithNoApplications,
+            ProviderTransferredVacanciesAlert = source.ProviderTransferredVacanciesAlert,
+            WithdrawnVacanciesAlert = source.WithdrawnVacanciesAlert,
+        };
+    }
 }

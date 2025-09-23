@@ -13,14 +13,14 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetDashboardByAccountId
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Data_Returned(
             GetDashboardByAccountIdQuery query,
-            GetDashboardApiResponse apiResponse,
+            GetEmployerDashboardApiResponse apiResponse,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
             GetDashboardByAccountIdQueryHandler handler)
         {
             //Arrange
-            var expectedGetUrl = new GetDashboardByAccountIdApiRequest(query.AccountId);
+            var expectedGetUrl = new GetDashboardByAccountIdApiRequest(query.AccountId, query.UserId);
             recruitApiClient
-                .Setup(x => x.Get<GetDashboardApiResponse>(
+                .Setup(x => x.Get<GetEmployerDashboardApiResponse>(
                     It.Is<GetDashboardByAccountIdApiRequest>(c => c.GetUrl.Equals(expectedGetUrl.GetUrl))))
                 .ReturnsAsync(apiResponse);
 

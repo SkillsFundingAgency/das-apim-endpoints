@@ -1,6 +1,5 @@
-﻿namespace SFA.DAS.Recruit.InnerApi.Responses;
-
-public record GetDashboardApiResponse
+﻿namespace SFA.DAS.Recruit.InnerApi.Responses.Base;
+public record DashboardApiResponse
 {
     public int NewApplicationsCount { get; set; } = 0;
     public int EmployerReviewedApplicationsCount { get; set; } = 0;
