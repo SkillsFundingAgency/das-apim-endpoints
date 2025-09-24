@@ -45,13 +45,9 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SyncEmployerAc
             _feedbackApiClientMock.Setup(x => x.Put<UpdateSettingsData>(It.IsAny<UpdateSettingsRequest>()))
                 .Returns(Task.CompletedTask);
 
-            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
-                await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None));
-
-            Assert.That(ex.Message, Is.EqualTo("Failed to retrieve accounts data for page 1"));
+            await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None);
 
             _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Never);
-            _feedbackApiClientMock.Verify(x => x.Put<UpdateSettingsData>(It.IsAny<UpdateSettingsRequest>()), Times.Never);
         }
 
         [Test]

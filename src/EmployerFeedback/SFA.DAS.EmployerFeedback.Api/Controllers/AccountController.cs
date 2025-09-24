@@ -1,10 +1,10 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerFeedback.Api.TaskQueue;
+using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
+using SFA.DAS.EmployerFeedback.Extensions;
 using System;
 using System.Net;
-using System.Threading.Tasks;
-using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
 
 namespace SFA.DAS.EmployerFeedback.Api.Controllers
 {
@@ -13,20 +13,31 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
     public class AccountController : ControllerBase
     {
         private readonly ILogger<AccountController> _logger;
-        private readonly IMediator _mediator;
+        private readonly IBackgroundTaskQueue _backgroundTaskQueue;
 
-        public AccountController(ILogger<AccountController> logger, IMediator mediator)
+        public AccountController(
+            ILogger<AccountController> logger,
+            IBackgroundTaskQueue backgroundTaskQueue)
         {
             _logger = logger;
-            _mediator = mediator;
+            _backgroundTaskQueue = backgroundTaskQueue;
         }
 
         [HttpPost("update")]
-        public async Task<IActionResult> UpdateEmployerAccounts()
+        public IActionResult SyncEmployerAccounts()
         {
+            var requestName = "Sync employer accounts";
             try
             {
-                await _mediator.Send(new SyncEmployerAccountsCommand());
+                _logger.LogInformation($"Received request to {requestName}");
+                _backgroundTaskQueue.QueueBackgroundRequest(
+                    new SyncEmployerAccountsCommand(), requestName, (response, duration, log) =>
+                    {
+                        log.LogInformation($"Completed request to {requestName}: Request completed in {duration.ToReadableString()}");
+                    });
+
+                _logger.LogInformation($"Queued request to {requestName}");
+
                 return NoContent();
             }
             catch (Exception ex)

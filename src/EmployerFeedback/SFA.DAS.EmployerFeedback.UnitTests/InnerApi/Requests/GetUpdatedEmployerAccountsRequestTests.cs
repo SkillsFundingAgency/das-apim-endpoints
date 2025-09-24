@@ -15,8 +15,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Requests
             Assert.That(request.SinceDate, Is.EqualTo(since));
             Assert.That(request.PageNumber, Is.EqualTo(2));
             Assert.That(request.PageSize, Is.EqualTo(50));
-            Assert.That(request.GetUrl, Does.Contain($"SinceDate={since:O}"));
-            Assert.That(request.GetUrl, Does.Contain("page=2"));
+            Assert.That(request.GetUrl, Does.Contain($"sinceDate={since:O}"));
+            Assert.That(request.GetUrl, Does.Contain("pageNumber=2"));
             Assert.That(request.GetUrl, Does.Contain("pageSize=50"));
         }
 
@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Requests
             Assert.That(request.SinceDate, Is.Null);
             Assert.That(request.PageNumber, Is.EqualTo(1));
             Assert.That(request.PageSize, Is.EqualTo(10));
-            Assert.That(request.GetUrl, Is.EqualTo("api/accounts/update?page=1&pageSize=10"));
+            Assert.That(request.GetUrl, Is.EqualTo("api/accounts/update?pageNumber=1&pageSize=10"));
         }
     }
 }

@@ -42,15 +42,19 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
                 var accountsResponse = await GetAccountsPageAsync(lastSyncDate, page, cancellationToken);
                 if (accountsResponse == null)
                 {
-                    _logger.LogError("SyncEmployerAccounts: Received null response when fetching page {Page}", page);
-                    throw new InvalidOperationException($"Failed to retrieve accounts data for page {page}");
+                    _logger.LogInformation(
+                        "SyncEmployerAccounts: Received null response when fetching page {Page}. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
+                        page, lastSyncDate, syncStartTime);
+                    break;
                 }
                 totalPages = accountsResponse.TotalPages;
                 var updatedAccounts = accountsResponse.Data;
                 if (updatedAccounts == null || updatedAccounts.Count == 0)
                 {
-                    _logger.LogError("SyncEmployerAccounts: No accounts returned on page {Page}", page);
-                    throw new InvalidOperationException($"No accounts returned for page {page}");
+                    _logger.LogInformation(
+                        "SyncEmployerAccounts: No accounts returned on page {Page}. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
+                        page, lastSyncDate, syncStartTime);
+                    break;
                 }
                 await UpsertAccountsAsync(updatedAccounts, cancellationToken);
                 page++;
