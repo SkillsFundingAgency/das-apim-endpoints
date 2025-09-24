@@ -42,7 +42,7 @@ public sealed class GetCourseProviderQueryHandler(
             )
         );
 
-        if (courseProviderDetailsResponse.StatusCode == HttpStatusCode.NotFound)
+        if (courseProviderDetailsResponse.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
         {
             // If the course provider details are not found, return null so a not found response can be returned
             return null;

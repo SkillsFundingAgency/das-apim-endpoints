@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -24,6 +25,30 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
     public async Task<GetCourseByLarsCodeQueryResult> Handle(GetCourseByLarsCodeQuery query, CancellationToken cancellationToken)
     {
+        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
+
+        var courseTrainingProvidersCountResponse =
+            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                new GetCourseTrainingProvidersCountRequest(
+                    [query.LarsCode],
+                    query.Distance,
+                    locationItem?.Latitude,
+                    locationItem?.Longitude
+                )
+            );
+
+        if (courseTrainingProvidersCountResponse.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+        {
+            return null;
+        }
+
+        courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
+
+        CourseTrainingProviderCountModel trainingCourseCountDetails =
+            courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ?
+                courseTrainingProvidersCountResponse.Body.Courses[0] :
+                null;
+
         var coursesApiStandardResponse = await _coursesApiClient.GetWithResponseCode<StandardDetailResponse>(
             new GetStandardDetailsByIdRequest(
                 query.LarsCode.ToString()
@@ -37,26 +62,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding?.Count > 0 ?
             standardDetails.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() :
         null;
-
-        LocationItem locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(query.Location);
-
-        var courseTrainingProvidersCountResponse =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
-                new GetCourseTrainingProvidersCountRequest(
-                    [query.LarsCode],
-                    query.Distance,
-                    locationItem?.Latitude,
-                    locationItem?.Longitude
-                )
-        );
-
-        courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
-
-        CourseTrainingProviderCountModel trainingCourseCountDetails =
-            courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ?
-                courseTrainingProvidersCountResponse.Body.Courses[0] :
-                null;
-
+        
         GetCourseByLarsCodeQueryResult result = standardDetails;
 
         result.MaxFunding = apprenticeshipFunding?.MaxEmployerLevyCap ?? 0;

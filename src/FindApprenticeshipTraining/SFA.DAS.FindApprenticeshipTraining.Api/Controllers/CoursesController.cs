@@ -60,6 +60,9 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
             ShortlistUserId = model.ShortlistUserId
         });
 
+        if (result == null)
+            return NotFound();
+
         return Ok(result);
     }
 
@@ -86,9 +89,7 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
         });
 
         if (result == null)
-        {
             return NotFound();
-        }
 
         return Ok(result);
     }
