@@ -1,4 +1,5 @@
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches;
 
@@ -24,24 +25,26 @@ public record GetSavedSearchesQueryResult
         public string? Latitude { get; set; }
         public List<int>? SelectedLevelIds { get; set; } = [];
         public List<int>? SelectedRouteIds { get; set; } = [];
+        public List<ApprenticeshipTypes>? SelectedApprenticeshipTypes { get; set; } = [];
         public string? UnSubscribeToken { get; set; }
 
         public static implicit operator SearchResult(GetSavedSearchesApiResponse.SavedSearch savedSearch)
         {
             return new SearchResult
             {
-                Id= savedSearch.Id,
-                UserId = savedSearch.UserReference,
-                Distance = savedSearch.SearchParameters.Distance,
-                SearchTerm = savedSearch.SearchParameters.SearchTerm,
-                Location = savedSearch.SearchParameters.Location,
                 DisabilityConfident = savedSearch.SearchParameters.DisabilityConfident,
+                Distance = savedSearch.SearchParameters.Distance,
                 ExcludeNational = savedSearch.SearchParameters.ExcludeNational,
-                UnSubscribeToken = savedSearch.UnSubscribeToken,
-                Longitude = savedSearch.SearchParameters.Longitude,
+                Id= savedSearch.Id,
                 Latitude = savedSearch.SearchParameters.Latitude,
+                Location = savedSearch.SearchParameters.Location,
+                Longitude = savedSearch.SearchParameters.Longitude,
+                SearchTerm = savedSearch.SearchParameters.SearchTerm,
+                SelectedApprenticeshipTypes = savedSearch.SearchParameters.SelectedApprenticeshipTypes,
                 SelectedLevelIds =savedSearch.SearchParameters.SelectedLevelIds,
                 SelectedRouteIds =savedSearch.SearchParameters.SelectedRouteIds,
+                UnSubscribeToken = savedSearch.UnSubscribeToken,
+                UserId = savedSearch.UserReference,
             };
         }
     }

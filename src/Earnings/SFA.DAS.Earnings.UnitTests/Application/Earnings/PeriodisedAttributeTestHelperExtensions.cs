@@ -1,4 +1,5 @@
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+using Newtonsoft.Json.Linq;
 
 namespace SFA.DAS.Earnings.UnitTests.Application.Earnings;
 
@@ -23,5 +24,21 @@ public static class PeriodisedAttributeTestHelperExtensions
             && attribute.Period10 == value
             && attribute.Period11 == value
             && attribute.Period12 == value;
+    }
+
+    public static bool HasExactPeriodValues(this PeriodisedAttribute? attribute, decimal[] values)
+    {
+        return attribute.Period1 == values[0]
+            && attribute.Period2 == values[1]
+            && attribute.Period3 == values[2]
+            && attribute.Period4 == values[3]
+            && attribute.Period5 == values[4]
+            && attribute.Period6 == values[5]
+            && attribute.Period7 == values[6]
+            && attribute.Period8 == values[7]
+            && attribute.Period9 == values[8]
+            && attribute.Period10 == values[9]
+            && attribute.Period11 == values[10]
+            && attribute.Period12 == values[11];
     }
 }

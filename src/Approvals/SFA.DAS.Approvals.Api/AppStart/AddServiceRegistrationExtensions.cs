@@ -17,8 +17,7 @@ public static class AddServiceRegistrationExtensions
 {
     private static void AddCommitmentApiInternalClient(IServiceCollection services, IConfiguration configuration)
     {
-        bool useLocalDevClient =
-            configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "True";
+        bool useLocalDevClient = configuration.IsLocalOrDev() && configuration["UseLocalDevCommitmentApiClient"] == "true";
 
         if (useLocalDevClient)
         {
@@ -38,7 +37,6 @@ public static class AddServiceRegistrationExtensions
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-        services.AddTransient(typeof(ITokenPassThroughInternalApiClient<>), typeof(TokenPassThroughInternalApiClient<>));
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<IFjaaApiClient<FjaaApiConfiguration>, FjaaApiClient>();
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();

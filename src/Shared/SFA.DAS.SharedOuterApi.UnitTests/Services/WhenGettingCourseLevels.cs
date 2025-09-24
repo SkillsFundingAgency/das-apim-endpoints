@@ -31,7 +31,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 
             //Assert
             actual.Should().BeEquivalentTo(apiResponse);
-            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetCourseLevelsListResponse), apiResponse, 23));
+            cacheStorageService.Verify(x=>x.SaveToCache(nameof(GetCourseLevelsListResponse), apiResponse, 23, null));
         }
 
         [Test, MoqAutoData]

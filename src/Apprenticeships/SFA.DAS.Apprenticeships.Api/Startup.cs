@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
@@ -28,7 +29,7 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddNLog();
+        services.AddLogging();
         services.AddOptions();
         services.AddSingleton(_env);
 
