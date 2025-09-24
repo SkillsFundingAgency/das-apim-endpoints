@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
 using System;
-using System.Globalization;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Responses
 {
@@ -9,31 +8,21 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Responses
     public class GetSettingsResponseTests
     {
         [Test]
-        public void RefreshALELastRunDate_ReturnsDate_WhenPresentAndValid()
+        public void Value_ReturnsDate_WhenPresentAndValid()
         {
             var date = DateTime.UtcNow;
             var response = new GetSettingsResponse
             {
-                new GetSettingsItem { Name = SettingsKey.RefreshALELastRunDate.ToString(), Value = date.ToString("o", CultureInfo.InvariantCulture) }
+                Value = date
             };
-            Assert.That(response.RefreshALELastRunDate, Is.EqualTo(date.ToLocalTime()).Within(TimeSpan.FromSeconds(1)));
+            Assert.That(response.Value, Is.EqualTo(date));
         }
 
         [Test]
-        public void RefreshALELastRunDate_ReturnsNull_WhenNotPresent()
+        public void Value_ReturnsNull_WhenNotPresent()
         {
             var response = new GetSettingsResponse();
-            Assert.That(response.RefreshALELastRunDate, Is.Null);
-        }
-
-        [Test]
-        public void RefreshALELastRunDate_ReturnsNull_WhenValueIsInvalid()
-        {
-            var response = new GetSettingsResponse
-            {
-                new GetSettingsItem { Name = SettingsKey.RefreshALELastRunDate.ToString(), Value = "not-a-date" }
-            };
-            Assert.That(response.RefreshALELastRunDate, Is.Null);
+            Assert.That(response.Value, Is.Null);
         }
     }
 }

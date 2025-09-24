@@ -3,12 +3,12 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
 {
@@ -42,13 +42,15 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
                 var accountsResponse = await GetAccountsPageAsync(lastSyncDate, page, cancellationToken);
                 if (accountsResponse == null)
                 {
-                    break;
+                    _logger.LogError("SyncEmployerAccounts: Received null response when fetching page {Page}", page);
+                    throw new InvalidOperationException($"Failed to retrieve accounts data for page {page}");
                 }
                 totalPages = accountsResponse.TotalPages;
                 var updatedAccounts = accountsResponse.Data;
                 if (updatedAccounts == null || updatedAccounts.Count == 0)
                 {
-                    break;
+                    _logger.LogError("SyncEmployerAccounts: No accounts returned on page {Page}", page);
+                    throw new InvalidOperationException($"No accounts returned for page {page}");
                 }
                 await UpsertAccountsAsync(updatedAccounts, cancellationToken);
                 page++;
@@ -82,8 +84,8 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
             }
             await ExecuteWithRetry(async () =>
             {
-                var response = await _feedbackApiClient.PostWithResponseCode<List<UpsertAccountsData>, object>(
-                    new UpsertAccountsRequest(upsertData), false);
+                var response = await _feedbackApiClient.PostWithResponseCode<AccountsData, object>(
+                    new UpsertAccountsRequest(new AccountsData { Accounts = upsertData }), false);
                 response.EnsureSuccessStatusCode();
                 return response;
             }, MaxRetryAttempts, cancellationToken);
@@ -93,10 +95,8 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
         {
             await ExecuteWithRetry(async () =>
             {
-                var response = await _feedbackApiClient.PostWithResponseCode<UpdateSettingsData, object>(
-                    new UpdateSettingsRequest(SettingsKey.RefreshALELastRunDate.ToString(), syncStartTime), false);
-                response.EnsureSuccessStatusCode();
-                return response;
+                await _feedbackApiClient.Put(new UpdateSettingsRequest(syncStartTime));
+                return true;
             }, MaxRetryAttempts, cancellationToken);
         }
 
@@ -104,13 +104,8 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
         {
             var settings = await _feedbackApiClient.GetWithResponseCode<GetSettingsResponse>(new GetSettingsRequest());
             settings.EnsureSuccessStatusCode();
-            if (settings?.Body.RefreshALELastRunDate != null)
-            {
-                return settings.Body.RefreshALELastRunDate.Value.AddMinutes(-1);
-            }
-            return null;
+            return settings.Body.Value?.AddMinutes(-1);
         }
-
         private async Task<T> ExecuteWithRetry<T>(Func<Task<T>> func, int maxAttempts, CancellationToken cancellationToken)
         {
             int attempt = 0;

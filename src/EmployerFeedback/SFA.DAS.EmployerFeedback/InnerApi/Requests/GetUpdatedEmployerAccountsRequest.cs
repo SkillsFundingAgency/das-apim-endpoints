@@ -16,7 +16,8 @@ namespace SFA.DAS.EmployerFeedback.InnerApi.Requests
         public int PageSize { get; }
         public string GetUrl =>
             SinceDate.HasValue
-                ? $"api/accounts/update?SinceDate={SinceDate:O}&page={PageNumber}&pageSize={PageSize}"
+                ? $"api/accounts/update?SinceDate={SinceDate.Value.ToUniversalTime():yyyy-MM-ddTHH:mm:ss.fffffffZ}&page={PageNumber}&pageSize={PageSize}"
                 : $"api/accounts/update?page={PageNumber}&pageSize={PageSize}";
+
     }
 }

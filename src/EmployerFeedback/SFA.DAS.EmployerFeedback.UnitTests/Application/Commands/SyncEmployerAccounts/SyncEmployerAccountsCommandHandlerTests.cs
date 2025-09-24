@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -37,17 +38,20 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SyncEmployerAc
         public async Task Handle_WhenNoAccountsReturned_DoesNotCallUpsertAccountsData()
         {
             _accountsApiClientMock.Setup(x => x.GetWithResponseCode<GetUpdatedEmployerAccountsResponse>(It.IsAny<GetUpdatedEmployerAccountsRequest>()))
-                .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
-                    new GetUpdatedEmployerAccountsResponse { Data = new List<UpdatedEmployerAccounts>(), Page = 1, TotalPages = 1 }, HttpStatusCode.OK, null));
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
+                    null, HttpStatusCode.OK, null));
             _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetSettingsResponse>(It.IsAny<GetSettingsRequest>()))
                 .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<GetSettingsResponse>(new GetSettingsResponse(), HttpStatusCode.OK, null));
-            _feedbackApiClientMock.Setup(x => x.PostWithResponseCode<UpdateSettingsData, object>(It.IsAny<UpdateSettingsRequest>(), false))
-                .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<object>(null, HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.Put<UpdateSettingsData>(It.IsAny<UpdateSettingsRequest>()))
+                .Returns(Task.CompletedTask);
 
-            await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None);
+            var ex = Assert.ThrowsAsync<InvalidOperationException>(async () =>
+                await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None));
 
-            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<List<UpsertAccountsData>, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Never);
-            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<UpdateSettingsData, object>(It.IsAny<UpdateSettingsRequest>(), false), Times.Once);
+            Assert.That(ex.Message, Is.EqualTo("Failed to retrieve accounts data for page 1"));
+
+            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Never);
+            _feedbackApiClientMock.Verify(x => x.Put<UpdateSettingsData>(It.IsAny<UpdateSettingsRequest>()), Times.Never);
         }
 
         [Test]
@@ -59,15 +63,15 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SyncEmployerAc
                     new GetUpdatedEmployerAccountsResponse { Data = updatedAccounts, Page = 1, TotalPages = 1 }, HttpStatusCode.OK, null));
             _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetSettingsResponse>(It.IsAny<GetSettingsRequest>()))
                 .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<GetSettingsResponse>(new GetSettingsResponse(), HttpStatusCode.OK, null));
-            _feedbackApiClientMock.Setup(x => x.PostWithResponseCode<List<UpsertAccountsData>, object>(It.IsAny<UpsertAccountsRequest>(), false))
+            _feedbackApiClientMock.Setup(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false))
                 .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<object>(null, HttpStatusCode.OK, null));
-            _feedbackApiClientMock.Setup(x => x.PostWithResponseCode<UpdateSettingsData, object>(It.IsAny<UpdateSettingsRequest>(), false))
-                .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<object>(null, HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.Put<UpdateSettingsData>(It.IsAny<UpdateSettingsRequest>()))
+                .Returns(Task.CompletedTask);
 
             await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None);
 
-            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<List<UpsertAccountsData>, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Once);
-            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<UpdateSettingsData, object>(It.IsAny<UpdateSettingsRequest>(), false), Times.Once);
+            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Once);
+            _feedbackApiClientMock.Verify(x => x.Put<UpdateSettingsData>(It.IsAny<UpdateSettingsRequest>()), Times.Once);
         }
     }
 }

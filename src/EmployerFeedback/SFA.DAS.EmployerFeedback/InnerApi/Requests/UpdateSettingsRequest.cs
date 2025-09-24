@@ -3,19 +3,18 @@ using System;
 
 namespace SFA.DAS.EmployerFeedback.InnerApi.Requests
 {
-    public class UpdateSettingsRequest : IPostApiRequest<UpdateSettingsData>
+    public class UpdateSettingsRequest : IPutApiRequest<UpdateSettingsData>
     {
-        public UpdateSettingsRequest(string name, DateTime value)
+        public UpdateSettingsRequest(DateTime value)
         {
-            Data = new UpdateSettingsData { Name = name, Value = value };
+            Data = new UpdateSettingsData { Value = value };
         }
-        public string PostUrl => "api/settings";
+        public string PutUrl => "api/settings/RefreshALELastRunDate";
         public UpdateSettingsData Data { get; set; }
     }
 
     public class UpdateSettingsData
     {
-        public string Name { get; set; }
         public DateTime Value { get; set; }
     }
 }

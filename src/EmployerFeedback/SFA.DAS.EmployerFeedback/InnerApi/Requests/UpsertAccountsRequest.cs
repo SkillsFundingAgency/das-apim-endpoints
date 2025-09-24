@@ -3,14 +3,18 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerFeedback.InnerApi.Requests
 {
-    public class UpsertAccountsRequest : IPostApiRequest<List<UpsertAccountsData>>
+    public class UpsertAccountsRequest : IPostApiRequest<AccountsData>
     {
-        public UpsertAccountsRequest(List<UpsertAccountsData> accounts)
+        public UpsertAccountsRequest(AccountsData accounts)
         {
             Data = accounts;
         }
-        public string PostUrl => "api/account";
-        public List<UpsertAccountsData> Data { get; set; }
+        public string PostUrl => "api/accounts";
+        public AccountsData Data { get; set; }
+    }
+    public class AccountsData
+    {
+        public List<UpsertAccountsData> Accounts { get; set; }
     }
     public class UpsertAccountsData
     {

@@ -10,7 +10,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Requests
         public void GetUrl_ReturnsExpectedValue()
         {
             var request = new GetSettingsRequest();
-            Assert.That(request.GetUrl, Is.EqualTo("api/settings"));
+            Assert.That(request.GetUrl, Is.EqualTo("api/settings/RefreshALELastRunDate"));
         }
     }
 }

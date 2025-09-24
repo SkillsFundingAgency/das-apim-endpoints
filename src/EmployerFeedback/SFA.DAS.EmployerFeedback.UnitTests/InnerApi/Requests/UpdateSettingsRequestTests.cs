@@ -11,10 +11,9 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Requests
         public void Constructor_SetsDataProperty()
         {
             var now = DateTime.UtcNow;
-            var request = new UpdateSettingsRequest("TestName", now);
-            Assert.That(request.Data.Name, Is.EqualTo("TestName"));
+            var request = new UpdateSettingsRequest(now);
             Assert.That(request.Data.Value, Is.EqualTo(now));
-            Assert.That(request.PostUrl, Is.EqualTo("api/settings"));
+            Assert.That(request.PutUrl, Is.EqualTo("api/settings/RefreshALELastRunDate"));
         }
     }
 }
