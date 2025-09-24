@@ -55,18 +55,19 @@ namespace SFA.DAS.EmployerFeedback.Api
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly));
             services.AddServiceRegistration();
 
-            services.Configure<RouteOptions>(options =>
-                {
-                    options.LowercaseUrls = true;
-                    options.LowercaseQueryStrings = true;
-                }).AddMvc(o =>
+            services
+                .AddControllers(o =>
                 {
                     if (!_configuration.IsLocalOrDev())
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
