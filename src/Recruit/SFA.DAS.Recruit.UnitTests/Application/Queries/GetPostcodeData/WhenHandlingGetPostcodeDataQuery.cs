@@ -9,24 +9,21 @@ public class WhenHandlingGetPostcodeDataQuery
 {
     [Test, MoqAutoData]
     public async Task Then_The_Postcode_Info_Is_Returned(
-        LocationItem locationItem,
+        PostcodeInfo postcodeInfo,
         GetPostcodeDataQuery getPostcodeDataQuery,
         [Frozen] Mock<ILocationLookupService> locationLookupService,
         [Greedy] GetPostcodeDataQueryHandler sut)
     {
         // arrange
-        string? expectedPostcode = null;
         locationLookupService
-            .Setup(x => x.GetLocationInformation(It.IsAny<string>(), 0, 0, false))
-            .Callback<string, double, double, bool>((x, _, _, _) => expectedPostcode = x)
-            .ReturnsAsync(locationItem); 
+            .Setup(x => x.GetPostcodeInfoAsync(getPostcodeDataQuery.Postcode))
+            .ReturnsAsync(postcodeInfo); 
         
         // act
         var result = await sut.Handle(getPostcodeDataQuery, CancellationToken.None);
 
         // assert
-        expectedPostcode.Should().Be(getPostcodeDataQuery.Postcode);
-        result.Should().BeEquivalentTo(locationItem, options => options.ExcludingMissingMembers());
+        result.Should().BeEquivalentTo(postcodeInfo, options => options.ExcludingMissingMembers());
     }
     
     [Test, MoqAutoData]
@@ -38,8 +35,8 @@ public class WhenHandlingGetPostcodeDataQuery
     {
         // arrange
         locationLookupService
-            .Setup(x => x.GetLocationInformation(It.IsAny<string>(), 0, 0, false))
-            .ReturnsAsync((LocationItem)null!); 
+            .Setup(x => x.GetPostcodeInfoAsync(getPostcodeDataQuery.Postcode))
+            .ReturnsAsync((PostcodeInfo)null!);
         
         // act
         var result = await sut.Handle(getPostcodeDataQuery, CancellationToken.None);
