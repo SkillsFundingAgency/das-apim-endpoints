@@ -1,4 +1,4 @@
-﻿using SFA.DAS.AdminRoatp.Application.Organisation.Queries;
+﻿using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -12,7 +12,7 @@ public static class AddServiceRegistrationsExtension
 {
     public static IServiceCollection AddServiceRegistrations(this IServiceCollection services)
     {
-        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetOrganisationQuery).Assembly));
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetOrganisationsQuery).Assembly));
         services.AddHttpClient();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
