@@ -5,9 +5,10 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.AdminRoatp.Api.AppStart;
-
+[ExcludeFromCodeCoverage]
 public static class AddServiceRegistrationsExtension
 {
     public static IServiceCollection AddServiceRegistrations(this IServiceCollection services)
