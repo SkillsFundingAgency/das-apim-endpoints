@@ -10,6 +10,8 @@ public static class AddConfigurationOptionsExtension
         services.AddOptions();
         services.Configure<RoatpConfiguration>(configuration.GetSection("RoatpApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>()!.Value);
+        services.Configure<ApplyApiConfiguration>(configuration.GetSection("ApplyApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<ApplyApiConfiguration>>()!.Value);
         return services;
     }
 }
