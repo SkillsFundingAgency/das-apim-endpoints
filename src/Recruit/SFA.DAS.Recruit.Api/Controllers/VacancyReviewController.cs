@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
 using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
-using SFA.DAS.Recruit.InnerApi.Responses;
+using System;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 

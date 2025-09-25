@@ -13,6 +13,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
             long accountId,
+            string userId,
             GetDashboardByAccountIdQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerAccountsController controller)
@@ -23,7 +24,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetDashboard(accountId) as ObjectResult;
+            var controllerResult = await controller.GetDashboard(accountId, userId) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -35,6 +36,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             long accountId,
+            string userId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] EmployerAccountsController controller)
         {
@@ -44,7 +46,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
                     It.IsAny<CancellationToken>()))
                .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetDashboard(accountId) as BadRequestResult;
+            var controllerResult = await controller.GetDashboard(accountId, userId) as BadRequestResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
