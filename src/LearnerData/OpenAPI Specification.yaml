@@ -372,8 +372,6 @@ components:
                   format: date
                 OffTheJobHours:
                   type: integer
-                percentageOfTrainingLeft:
-                  type: integer
                 costs:
                   type: array
                   items:

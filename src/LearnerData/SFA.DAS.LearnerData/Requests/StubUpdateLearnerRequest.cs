@@ -54,8 +54,6 @@ public class StubOnProgramme
     [Required]
     public int? OffTheJobHours { get; set; }
     [Required]
-    public int? PercentageOfTrainingLeft { get; set; }
-    [Required]
     public List<StubCost> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
