@@ -45,6 +45,8 @@ public class UpdateLearnerCommandHandler(
 
     private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
     {
+        var updatePrices = false;
+
         foreach (var change in updateLearningApiPutResponse.Changes)
         {
             switch (change)
@@ -60,9 +62,14 @@ public class UpdateLearnerCommandHandler(
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
-                    await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
+                    updatePrices = true;
                     break;
             }
+        }
+
+        if (updatePrices)
+        {
+            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
         }
     }
 
