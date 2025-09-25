@@ -101,13 +101,14 @@ public class WhenHandlingUpsertVacancyReviewCommand
     }
 
     [Test, MoqAutoData]
-    public async Task Then_The_OwnerType_Employer_Command_Is_Handled_And_Api_Called_For_Providers(
+    public async Task Then_The_OwnerType_Employer_Command_Is_Handled_And_Api_Called_For_Providers_Attached_To_Vacancy(
         GetVacancyByIdQueryResult vacancyResponse,
         GetStandardsListResponse standardResponse,
         UpsertVacancyReviewCommand command,
         RecruitUserApiResponse userApiResponse1,
         RecruitUserApiResponse userApiResponse2,
         RecruitUserApiResponse userApiResponse3,
+        RecruitUserApiResponse userApiResponse4,
         [Frozen] EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -155,6 +156,16 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 Scope = NotificationScope.OrganisationVacancies
             }
         ];
+        userApiResponse4.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Immediately,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            }
+        ];
         command.VacancyReview.ManualOutcome = "Approved";
         command.VacancyReview.OwnerType = "Employer";
         command.VacancyReview.EmployerLocationOption = AvailableWhere.AcrossEngland;
@@ -167,7 +178,12 @@ public class WhenHandlingUpsertVacancyReviewCommand
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
-                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse1, userApiResponse3, userApiResponse2]);
+                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse2,userApiResponse4]);
+        var expectedGetUrlEmployer = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId);
+        recruitApiClient
+            .Setup(x => x.GetAll<RecruitUserApiResponse>(
+                It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
+                    c.GetAllUrl.Equals(expectedGetUrlEmployer.GetAllUrl)))).ReturnsAsync([userApiResponse1, userApiResponse3]);
 
         mediator.Setup(x => x.Send(It.Is<GetVacancyByIdQuery>(c => c.Id == command.VacancyReview.VacancyId), CancellationToken.None)).ReturnsAsync(vacancyResponse);
         courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>("ActiveStandards")).ReturnsAsync(standardResponse);
@@ -181,12 +197,12 @@ public class WhenHandlingUpsertVacancyReviewCommand
         notificationService.Verify(x => x.Send(
             It.Is<SendEmailCommand>(c =>
                 c.RecipientsAddress == userApiResponse1.Email
-                && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedProviderTemplateId
+                && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedEmployerTemplateId
                 && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
                 && c.Tokens["firstName"] == "firstName"
                 && c.Tokens["employerName"] == command.VacancyReview.EmployerName
                 && c.Tokens["FindAnApprenticeshipAdvertURL"] == string.Format(emailEnvironmentHelper.LiveVacancyUrl, command.VacancyReview.VacancyReference.ToString())
-                && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsProviderUrl, command.VacancyReview.Ukprn)
+                && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsEmployerUrl, command.VacancyReview.HashedAccountId)
                 && c.Tokens["VACcode"] == command.VacancyReview.VacancyReference.ToString()
                 && c.Tokens["location"] == "Recruiting nationally"
             )
@@ -210,6 +226,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsProviderUrl, command.VacancyReview.Ukprn)
             )
         ), Times.Once);
+        notificationService.Verify(x=>x.Send(It.IsAny<SendEmailCommand>()), Times.Exactly(2));
     }
 
     [Test, MoqAutoData]
