@@ -26,6 +26,7 @@ public class UpdateLearnerApiPutResponse
         CompletionDate = 0,
         MathsAndEnglish = 1,
         LearningSupport = 2,
-        Prices = 3
+        Prices = 3,
+        ExpectedEndDate = 4
     }
 }
