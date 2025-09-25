@@ -10,6 +10,7 @@ using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -18,6 +19,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 public class LearnersController(
     IMediator mediator, 
     IValidator<CreateLearnerRequest> validator,
+    IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
@@ -39,6 +41,38 @@ public class LearnersController(
         HttpContext.SetPageLinksInResponseHeaders(query, response);
 
         return Ok((GetLearnersResponse)response);
+    }
+
+    [HttpPut]
+    [Route("/provider/{ukprn}/academicyears/{academicyear}/learners")]
+    public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
+        [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
+    {
+
+        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
+
+        if (!validatorResult.IsValid)
+        {
+            return BuildErrorResponse(validatorResult.Errors);
+        }
+
+        try
+        {
+            var correlationId = Guid.NewGuid();
+            await mediator.Send(new ProcessLearnersCommand
+            {
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.Now,
+                AcademicYear = academicyear,
+                Learners = dataRequests
+            });
+            return Accepted(new CorrelationResponse { CorrelationId = correlationId });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when processing learners list");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
     }
 
     [HttpPost]
