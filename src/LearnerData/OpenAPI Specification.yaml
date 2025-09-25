@@ -424,7 +424,9 @@ components:
                   withdrawalDate:
                     type: string
                     format: date
-                  priorLearningPercentage:
+                  priorLearningAdjustment:
+                    type: integer
+                  otherFundingAdjustment:
                     type: integer
                   learningSupport:
                     type: array
