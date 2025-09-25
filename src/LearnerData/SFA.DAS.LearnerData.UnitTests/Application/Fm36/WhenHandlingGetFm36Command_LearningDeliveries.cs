@@ -1,9 +1,9 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Application.Fm36.Common;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using static SFA.DAS.LearnerData.Application.Fm36.EarningsFM36Constants;
+using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 

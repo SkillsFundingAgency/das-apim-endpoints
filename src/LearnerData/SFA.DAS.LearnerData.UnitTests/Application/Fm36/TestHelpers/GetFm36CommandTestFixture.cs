@@ -27,7 +27,7 @@ internal class GetFm36CommandTestFixture
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
     internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
     internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
-    internal GetAllEarningsQueryResult Result;
+    internal GetFm36Result Result;
 
     private GetFm36CommandHandler _handler;
     private GetFm36Command _query;
