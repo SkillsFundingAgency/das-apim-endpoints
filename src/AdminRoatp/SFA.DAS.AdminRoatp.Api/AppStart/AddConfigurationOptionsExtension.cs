@@ -1,8 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.SharedOuterApi.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.AdminRoatp.Api.AppStart;
-
+[ExcludeFromCodeCoverage]
 public static class AddConfigurationOptionsExtension
 {
     public static IServiceCollection AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
