@@ -25,7 +25,7 @@ public class OnProgrammeRequestDetails
 
 public class CostDetails
 {
-    public int TrainingPrice { get; set; }
+    public int? TrainingPrice { get; set; }
     public int? EpaoPrice { get; set; }
     public DateTime? FromDate { get; set; }
 }
@@ -37,7 +37,8 @@ public class MathsAndEnglish
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
-    public int? PriorLearningPercentage { get; set; }
+    public int? PriorLearningAdjustment { get; set; }
+    public int? OtherFundingAdjustment { get; set; }
     public decimal Amount { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
