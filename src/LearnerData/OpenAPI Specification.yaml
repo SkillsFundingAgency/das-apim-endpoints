@@ -327,6 +327,8 @@ components:
     apprenticeshipLearning:
       type: object
       properties:
+        consumerReference:
+          type: string
         learner:
           type: object
           properties:
@@ -369,8 +371,6 @@ components:
                   type: string
                   format: date
                 OffTheJobHours:
-                  type: integer
-                percentageOfTrainingLeft:
                   type: integer
                 costs:
                   type: array
@@ -422,6 +422,10 @@ components:
                   withdrawalDate:
                     type: string
                     format: date
+                  priorLearningAdjustment:
+                    type: integer
+                  otherFundingAdjustment:
+                    type: integer
                   learningSupport:
                     type: array
                     items:

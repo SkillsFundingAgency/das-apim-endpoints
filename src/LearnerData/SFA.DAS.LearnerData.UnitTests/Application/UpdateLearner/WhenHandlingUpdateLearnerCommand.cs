@@ -221,7 +221,7 @@ public class WhenHandlingUpdateLearnerCommand
                                                  c.Course == r.Course &&
                                                  c.Amount == r.Amount &&
                                                  c.WithdrawalDate == r.WithdrawalDate &&
-                                                 c.PriorLearningPercentage == r.PriorLearningAdjustmentPercentage &&
+                                                 c.PriorLearningAdjustment == r.PriorLearningAdjustmentPercentage &&
                                                  c.CompletionDate == r.ActualEndDate));
     }
 }

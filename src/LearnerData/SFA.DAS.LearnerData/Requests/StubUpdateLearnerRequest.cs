@@ -7,10 +7,11 @@ namespace SFA.DAS.LearnerData.Requests;
 public class StubUpdateLearnerRequest
 {
     [Required]
+    public string ConsumerReference { get; set; }
+    [Required]
     public StubLearner Learner { get; set; }
     [Required]
     public StubDelivery Delivery { get; set; }
-
 }
 
 public class StubLearner
@@ -53,8 +54,6 @@ public class StubOnProgramme
     [Required]
     public int? OffTheJobHours { get; set; }
     [Required]
-    public int? PercentageOfTrainingLeft { get; set; }
-    [Required]
     public List<StubCost> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
@@ -74,8 +73,8 @@ public class StubCare
 
 public class StubCost
 {
-    public int TrainingPrice { get; set; }
-    public int EpaoPrice { get; set; }
+    public int? TrainingPrice { get; set; }
+    public int? EpaoPrice { get; set; }
     [Required]
     public DateTime? FromDate { get; set; }
 }
@@ -97,7 +96,9 @@ public class StubEnglishAndMaths
     [Required]
     public int? CourseCode { get; set; }
     [Required]
-    public int? PriorLearningPercentage { get; set; }
+    public int? PriorLearningAdjustment { get; set; }
+    [Required]
+    public int? OtherFundingAdjustment { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
 
