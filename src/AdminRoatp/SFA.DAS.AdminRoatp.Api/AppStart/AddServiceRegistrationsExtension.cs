@@ -1,4 +1,4 @@
-﻿using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
+﻿using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
