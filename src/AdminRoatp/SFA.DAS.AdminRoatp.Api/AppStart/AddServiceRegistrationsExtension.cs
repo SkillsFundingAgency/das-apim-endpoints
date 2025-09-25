@@ -18,6 +18,7 @@ public static class AddServiceRegistrationsExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
 
         services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
+        services.AddTransient<IApplyApiClient<ApplyApiConfiguration>, ApplyApiClient>();
 
         return services;
     }
