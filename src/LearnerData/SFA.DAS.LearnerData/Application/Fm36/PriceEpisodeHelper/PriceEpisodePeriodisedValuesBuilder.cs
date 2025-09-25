@@ -1,6 +1,7 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.LearnerData.Application.Fm36.Common;
 
-namespace SFA.DAS.LearnerData.Application.Fm36;
+namespace SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 
 public static class PriceEpisodePeriodisedValuesBuilder
 {
@@ -74,9 +75,9 @@ public static class PriceEpisodePeriodisedValuesBuilder
 
     public static void AddAdditionalPaymentPerPeriodValues(
         this List<PriceEpisodePeriodisedValues> list,
+        string attributeName,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
-        string attributeName,
         string additionalPaymentType)
     {
         try
@@ -115,9 +116,9 @@ public static class PriceEpisodePeriodisedValuesBuilder
 
     public static void AddInstallmentAmountValues(
         this List<PriceEpisodePeriodisedValues> list,
+        string attributeName,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
-        string attributeName,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
         try
@@ -139,9 +140,9 @@ public static class PriceEpisodePeriodisedValuesBuilder
 
     public static void AddCoInvestmentValues(
         this List<PriceEpisodePeriodisedValues> list,
+        string attributeName,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
-        string attributeName,
         decimal multiplier,
         InstalmentType instalmentType = InstalmentType.Regular)
     {

@@ -1,6 +1,7 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.LearnerData.Application.Fm36.Common;
 
-namespace SFA.DAS.LearnerData.Application.Fm36;
+namespace SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 
 public static class LearningDeliveryPeriodisedValuesBuilder
 {
@@ -73,10 +74,10 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     }
 
     public static void AddInstallmentAmountValues(
-        this List<LearningDeliveryPeriodisedValues>
-        list, JoinedEarningsApprenticeship apprenticeship,
-        short academicYear,
+        this List<LearningDeliveryPeriodisedValues> list,
         string attributeName,
+        JoinedEarningsApprenticeship apprenticeship,
+        short academicYear,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
         try
@@ -93,9 +94,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static void AddCoInvestmentValues(
         this List<LearningDeliveryPeriodisedValues> list,
+        string attributeName,
         JoinedEarningsApprenticeship apprenticeship,
         short academicYear,
-        string attributeName,
         decimal multiplier,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
@@ -135,9 +136,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static void AddNthIncentivePaymentValues(
         this List<LearningDeliveryPeriodisedValues> list,
+        string attributeName,
         JoinedEarningsApprenticeship apprenticeship,
         short academicYear,
-        string attributeName,
         string additionalPaymentType,
         int n)
     {
@@ -183,9 +184,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static void AddAdditionalPaymentPerPeriodValues(
         this List<LearningDeliveryPeriodisedValues> list,
+        string attributeName,
         JoinedEarningsApprenticeship apprenticeship,
         short academicYear,
-        string attributeName,
         string additionalPaymentType)
     {
         try
@@ -224,9 +225,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static void AddAdditionalPaymentPerPeriodIndicators(
         this List<LearningDeliveryPeriodisedValues> list,
+        string attributeName,
         JoinedEarningsApprenticeship apprenticeship,
         short academicYear,
-        string attributeName,
         string additionalPaymentType)
     {
         try
