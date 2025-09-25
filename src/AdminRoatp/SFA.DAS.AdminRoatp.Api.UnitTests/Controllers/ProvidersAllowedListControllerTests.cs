@@ -11,8 +11,7 @@ namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers;
 public class ProvidersAllowedListControllerTests
 {
     [Test, MoqAutoData]
-
-    public async Task GetAllowedList(
+    public async Task GetAllowedList_ReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProvidersAllowedListController sut,
         GetProvidersAllowedListQuery request,
