@@ -38,18 +38,15 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
 
             int page = 1;
             int totalPages;
-            bool encounteredError = false;
             do
             {
                 var accountsResponse = await GetAccountsPageAsync(lastSyncDate, page, cancellationToken);
                 var updatedAccounts = accountsResponse?.Data;
                 if (updatedAccounts == null)
                 {
-                    _logger.LogError(
-                        "SyncEmployerAccounts: Error response from Accounts API on page {Page}. accountsResponse or Data is null. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
-                        page, lastSyncDate, syncStartTime);
-                    encounteredError = true;
-                    break;
+                    var message = $"SyncEmployerAccounts: Error response from Accounts API on page {page}. accountsResponse or Data is null. LastSyncDate={lastSyncDate}, SyncStartTime={syncStartTime}";
+                    _logger.LogError(message);
+                    throw new InvalidOperationException(message);
                 }
 
                 totalPages = accountsResponse.TotalPages;
@@ -64,10 +61,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
                 page++;
             } while (page <= totalPages);
 
-            if (!encounteredError)
-            {
-                await UpsertRefreshALELastRunDateSettingAsync(syncStartTime, cancellationToken);
-            }
+            await UpsertRefreshALELastRunDateSettingAsync(syncStartTime, cancellationToken);
         }
 
         private async Task<GetUpdatedEmployerAccountsResponse> GetAccountsPageAsync(DateTime? lastSyncDate, int page, CancellationToken cancellationToken)
