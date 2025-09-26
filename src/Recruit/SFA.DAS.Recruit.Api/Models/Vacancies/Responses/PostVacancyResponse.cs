@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
 
