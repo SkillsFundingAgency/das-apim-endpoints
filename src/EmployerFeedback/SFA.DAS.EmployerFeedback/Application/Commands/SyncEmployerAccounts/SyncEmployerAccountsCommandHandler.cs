@@ -43,7 +43,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
             {
                 var accountsResponse = await GetAccountsPageAsync(lastSyncDate, page, cancellationToken);
                 var updatedAccounts = accountsResponse?.Data;
-                if (accountsResponse == null || updatedAccounts == null)
+                if (updatedAccounts == null)
                 {
                     _logger.LogError(
                         "SyncEmployerAccounts: Error response from Accounts API on page {Page}. accountsResponse or Data is null. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
@@ -58,10 +58,9 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
                     _logger.LogInformation(
                         "SyncEmployerAccounts: No accounts returned on page {Page}. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
                         page, lastSyncDate, syncStartTime);
-                    // No accounts to upsert, but this is a successful response. Proceed to update sync date.
-                    break;
                 }
-                await UpsertAccountsAsync(updatedAccounts, cancellationToken);
+                else
+                    await UpsertAccountsAsync(updatedAccounts, cancellationToken);
                 page++;
             } while (page <= totalPages);
 
