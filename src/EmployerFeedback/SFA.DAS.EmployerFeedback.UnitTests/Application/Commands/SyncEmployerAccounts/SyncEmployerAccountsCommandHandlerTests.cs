@@ -39,8 +39,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SyncEmployerAc
             _accountsApiClientMock.Setup(x => x.GetWithResponseCode<GetUpdatedEmployerAccountsResponse>(It.IsAny<GetUpdatedEmployerAccountsRequest>()))
                 .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
                     null, HttpStatusCode.OK, null));
-            _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetSettingsResponse>(It.IsAny<GetRefreshALELastRunDateSettingRequest>()))
-                .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<GetSettingsResponse>(new GetSettingsResponse(), HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetRefreshALELastRunDateSettingResponse>(It.IsAny<GetRefreshALELastRunDateSettingRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetRefreshALELastRunDateSettingResponse>(new GetRefreshALELastRunDateSettingResponse(), HttpStatusCode.OK, null));
             _feedbackApiClientMock.Setup(x => x.Put<UpsertRefreshALELastRunDateSettingData>(It.IsAny<UpsertRefreshALELastRunDateSettingRequest>()))
                 .Returns(Task.CompletedTask);
 
@@ -54,10 +54,10 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SyncEmployerAc
         {
             var updatedAccounts = new List<UpdatedEmployerAccounts> { new UpdatedEmployerAccounts { AccountId = 1, AccountName = "Test" } };
             _accountsApiClientMock.Setup(x => x.GetWithResponseCode<GetUpdatedEmployerAccountsResponse>(It.IsAny<GetUpdatedEmployerAccountsRequest>()))
-                .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
                     new GetUpdatedEmployerAccountsResponse { Data = updatedAccounts, Page = 1, TotalPages = 1 }, HttpStatusCode.OK, null));
-            _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetSettingsResponse>(It.IsAny<GetRefreshALELastRunDateSettingRequest>()))
-                .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<GetSettingsResponse>(new GetSettingsResponse(), HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetRefreshALELastRunDateSettingResponse>(It.IsAny<GetRefreshALELastRunDateSettingRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetRefreshALELastRunDateSettingResponse>(new GetRefreshALELastRunDateSettingResponse(), HttpStatusCode.OK, null));
             _feedbackApiClientMock.Setup(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false))
                 .ReturnsAsync(new SFA.DAS.SharedOuterApi.Models.ApiResponse<object>(null, HttpStatusCode.OK, null));
             _feedbackApiClientMock.Setup(x => x.Put<UpsertRefreshALELastRunDateSettingData>(It.IsAny<UpsertRefreshALELastRunDateSettingRequest>()))
@@ -66,6 +66,53 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SyncEmployerAc
             await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None);
 
             _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Once);
+            _feedbackApiClientMock.Verify(x => x.Put<UpsertRefreshALELastRunDateSettingData>(It.IsAny<UpsertRefreshALELastRunDateSettingRequest>()), Times.Once);
+        }
+
+        [Test]
+        public async Task Handle_WhenAccountsResponseBodyIsNull_DoesNotCallUpsertOrUpdateSyncDate()
+        {
+            _accountsApiClientMock.Setup(x => x.GetWithResponseCode<GetUpdatedEmployerAccountsResponse>(It.IsAny<GetUpdatedEmployerAccountsRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
+                    null, HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetRefreshALELastRunDateSettingResponse>(It.IsAny<GetRefreshALELastRunDateSettingRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetRefreshALELastRunDateSettingResponse>(new GetRefreshALELastRunDateSettingResponse(), HttpStatusCode.OK, null));
+
+            await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None);
+
+            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Never);
+            _feedbackApiClientMock.Verify(x => x.Put<UpsertRefreshALELastRunDateSettingData>(It.IsAny<UpsertRefreshALELastRunDateSettingRequest>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Handle_WhenAccountsResponseDataIsNull_DoesNotCallUpsertOrUpdateSyncDate()
+        {
+            _accountsApiClientMock.Setup(x => x.GetWithResponseCode<GetUpdatedEmployerAccountsResponse>(It.IsAny<GetUpdatedEmployerAccountsRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
+                    new GetUpdatedEmployerAccountsResponse { Data = null, Page = 1, TotalPages = 1 }, HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetRefreshALELastRunDateSettingResponse>(It.IsAny<GetRefreshALELastRunDateSettingRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetRefreshALELastRunDateSettingResponse>(new GetRefreshALELastRunDateSettingResponse(), HttpStatusCode.OK, null));
+
+            await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None);
+
+            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Never);
+            _feedbackApiClientMock.Verify(x => x.Put<UpsertRefreshALELastRunDateSettingData>(It.IsAny<UpsertRefreshALELastRunDateSettingRequest>()), Times.Never);
+        }
+
+        [Test]
+        public async Task Handle_WhenAccountsResponseDataIsEmpty_UpdatesSyncDateButDoesNotCallUpsert()
+        {
+            _accountsApiClientMock.Setup(x => x.GetWithResponseCode<GetUpdatedEmployerAccountsResponse>(It.IsAny<GetUpdatedEmployerAccountsRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetUpdatedEmployerAccountsResponse>(
+                    new GetUpdatedEmployerAccountsResponse { Data = new List<UpdatedEmployerAccounts>(), Page = 1, TotalPages = 1 }, HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.GetWithResponseCode<GetRefreshALELastRunDateSettingResponse>(It.IsAny<GetRefreshALELastRunDateSettingRequest>()))
+                .ReturnsAsync(new SharedOuterApi.Models.ApiResponse<GetRefreshALELastRunDateSettingResponse>(new GetRefreshALELastRunDateSettingResponse(), HttpStatusCode.OK, null));
+            _feedbackApiClientMock.Setup(x => x.Put<UpsertRefreshALELastRunDateSettingData>(It.IsAny<UpsertRefreshALELastRunDateSettingRequest>()))
+                .Returns(Task.CompletedTask);
+
+            await _handler.Handle(new SyncEmployerAccountsCommand(), CancellationToken.None);
+
+            _feedbackApiClientMock.Verify(x => x.PostWithResponseCode<AccountsData, object>(It.IsAny<UpsertAccountsRequest>(), false), Times.Never);
             _feedbackApiClientMock.Verify(x => x.Put<UpsertRefreshALELastRunDateSettingData>(It.IsAny<UpsertRefreshALELastRunDateSettingRequest>()), Times.Once);
         }
     }

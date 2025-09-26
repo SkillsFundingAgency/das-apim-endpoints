@@ -38,30 +38,37 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
 
             int page = 1;
             int totalPages;
+            bool encounteredError = false;
             do
             {
                 var accountsResponse = await GetAccountsPageAsync(lastSyncDate, page, cancellationToken);
-                if (accountsResponse == null)
+                var updatedAccounts = accountsResponse?.Data;
+                if (accountsResponse == null || updatedAccounts == null)
                 {
-                    _logger.LogInformation(
-                        "SyncEmployerAccounts: Received null response when fetching page {Page}. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
+                    _logger.LogError(
+                        "SyncEmployerAccounts: Error response from Accounts API on page {Page}. accountsResponse or Data is null. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
                         page, lastSyncDate, syncStartTime);
+                    encounteredError = true;
                     break;
                 }
+
                 totalPages = accountsResponse.TotalPages;
-                var updatedAccounts = accountsResponse.Data;
-                if (updatedAccounts == null || updatedAccounts.Count == 0)
+                if (updatedAccounts.Count == 0)
                 {
                     _logger.LogInformation(
                         "SyncEmployerAccounts: No accounts returned on page {Page}. LastSyncDate={LastSyncDate}, SyncStartTime={SyncStartTime}",
                         page, lastSyncDate, syncStartTime);
+                    // No accounts to upsert, but this is a successful response. Proceed to update sync date.
                     break;
                 }
                 await UpsertAccountsAsync(updatedAccounts, cancellationToken);
                 page++;
             } while (page <= totalPages);
 
-            await UpsertRefreshALELastRunDateSettingAsync(syncStartTime, cancellationToken);
+            if (!encounteredError)
+            {
+                await UpsertRefreshALELastRunDateSettingAsync(syncStartTime, cancellationToken);
+            }
         }
 
         private async Task<GetUpdatedEmployerAccountsResponse> GetAccountsPageAsync(DateTime? lastSyncDate, int page, CancellationToken cancellationToken)
@@ -106,7 +113,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
 
         private async Task<DateTime?> GetLastSyncDateAsync(CancellationToken cancellationToken)
         {
-            var settings = await _feedbackApiClient.GetWithResponseCode<GetSettingsResponse>(new GetRefreshALELastRunDateSettingRequest());
+            var settings = await _feedbackApiClient.GetWithResponseCode<GetRefreshALELastRunDateSettingResponse>(new GetRefreshALELastRunDateSettingRequest());
             settings.EnsureSuccessStatusCode();
             return settings.Body.Value?.AddMinutes(-1);
         }
