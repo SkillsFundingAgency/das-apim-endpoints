@@ -26,7 +26,7 @@ public class GetProvidersAllowedListQueryHandlerTests
         var logger = new Mock<ILogger<GetProvidersAllowedListQueryHandler>>();
         var sut = new GetProvidersAllowedListQueryHandler(apiClientMock.Object, logger.Object);
         var query = new GetProvidersAllowedListQuery(sortColumn, sortOrder);
-        var apiResponse = new List<AllowedProvider> { new AllowedProvider() { Ukprn = 1234, StartDateTime = DateTime.MinValue, EndDateTime = DateTime.MinValue } };
+        var apiResponse = new List<AllowedProvider> { new AllowedProvider() { Ukprn = 1234, StartDateTime = DateTime.MinValue, EndDateTime = DateTime.MinValue, AddedDateTime = DateTime.MinValue } };
         var request = new GetAllowedProvidersListRequest(sortColumn, sortOrder);
         var expectedUrl = $"AllowedProviders?sortColumn={query.sortColumn}&sortOrder={query.sortOrder}";
         var expectedResponse = new GetProvidersAllowedListQueryResponse { Providers = apiResponse };
