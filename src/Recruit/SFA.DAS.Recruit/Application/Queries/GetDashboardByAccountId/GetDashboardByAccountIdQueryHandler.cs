@@ -14,8 +14,17 @@ namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId
     {
         public async Task<GetDashboardByAccountIdQueryResult> Handle(GetDashboardByAccountIdQuery request, CancellationToken cancellationToken)
         {
-            return await recruitApiClient.Get<GetEmployerDashboardApiResponse>(
-                new GetDashboardByAccountIdApiRequest(request.AccountId, request.UserId));
+            var dashboardCountTask = recruitApiClient.Get<GetEmployerDashboardApiResponse>(
+                new GetDashboardByAccountIdApiRequest(request.AccountId));
+            var dashboardAlertsTask = recruitApiClient.Get<GetEmployerAlertsApiResponse>(
+                new GetEmployerAlertsApiRequest(request.AccountId, request.UserId));
+
+            await Task.WhenAll(dashboardCountTask, dashboardAlertsTask);
+
+            var dashboardCount = await dashboardCountTask;
+            var dashboardAlerts = await dashboardAlertsTask;
+
+            return GetDashboardByAccountIdQueryResult.FromResponses(dashboardCount, dashboardAlerts);
         }
     }
 }

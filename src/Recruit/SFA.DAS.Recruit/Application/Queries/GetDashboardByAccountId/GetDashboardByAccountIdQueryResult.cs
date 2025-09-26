@@ -25,7 +25,9 @@ public record GetDashboardByAccountIdQueryResult
     public BlockedProviderAlertModel BlockedProviderAlert { get; set; } = new();
     public WithdrawnVacanciesAlertModel WithDrawnByQaVacanciesAlert { get; set; } = new();
 
-    public static implicit operator GetDashboardByAccountIdQueryResult(GetEmployerDashboardApiResponse source)
+    public static GetDashboardByAccountIdQueryResult FromResponses(
+        GetEmployerDashboardApiResponse source,
+        GetEmployerAlertsApiResponse alertsSource)
     {
         return new GetDashboardByAccountIdQueryResult
         {
@@ -44,10 +46,14 @@ public record GetDashboardByAccountIdQueryResult
             SubmittedVacanciesCount = source.SubmittedVacanciesCount,
             ClosingSoonVacanciesCount = source.ClosingSoonVacanciesCount,
             ClosingSoonWithNoApplications = source.ClosingSoonWithNoApplications,
-            EmployerRevokedTransferredVacanciesAlert = source.EmployerRevokedTransferredVacanciesAlert ?? new EmployerTransferredVacanciesAlertModel(),
-            BlockedProviderTransferredVacanciesAlert = source.BlockedProviderTransferredVacanciesAlert ?? new EmployerTransferredVacanciesAlertModel(),
-            BlockedProviderAlert = source.BlockedProviderAlert ?? new BlockedProviderAlertModel(),
-            WithDrawnByQaVacanciesAlert = source.WithDrawnByQaVacanciesAlert ?? new WithdrawnVacanciesAlertModel()
+            EmployerRevokedTransferredVacanciesAlert = alertsSource.EmployerRevokedTransferredVacanciesAlert
+                                                       ?? new EmployerTransferredVacanciesAlertModel(),
+            BlockedProviderTransferredVacanciesAlert = alertsSource.BlockedProviderTransferredVacanciesAlert
+                                                       ?? new EmployerTransferredVacanciesAlertModel(),
+            BlockedProviderAlert = alertsSource.BlockedProviderAlert
+                                   ?? new BlockedProviderAlertModel(),
+            WithDrawnByQaVacanciesAlert = alertsSource.WithDrawnByQaVacanciesAlert
+                                          ?? new WithdrawnVacanciesAlertModel()
         };
     }
 }

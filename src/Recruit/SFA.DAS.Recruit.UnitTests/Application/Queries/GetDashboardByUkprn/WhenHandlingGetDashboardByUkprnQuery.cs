@@ -14,21 +14,29 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetDashboardByUkprn
         public async Task Then_The_Query_Is_Handled_And_Data_Returned(
             GetDashboardByUkprnQuery query,
             GetProviderDashboardApiResponse apiResponse,
+            GetProviderAlertsApiResponse alertsApiResponse,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
             GetDashboardByUkprnQueryHandler handler)
         {
             //Arrange
-            var expectedGetUrl = new GetDashboardByUkprnApiRequest(query.Ukprn, query.UserId);
+            var expectedGetUrl = new GetDashboardByUkprnApiRequest(query.Ukprn);
             recruitApiClient
                 .Setup(x => x.Get<GetProviderDashboardApiResponse>(
                     It.Is<GetDashboardByUkprnApiRequest>(c => c.GetUrl.Equals(expectedGetUrl.GetUrl))))
                 .ReturnsAsync(apiResponse);
+            var expectedAlertsUrl = new GetProviderAlertsApiRequest(query.Ukprn, query.UserId);
+            recruitApiClient
+                .Setup(x => x.Get<GetProviderAlertsApiResponse>(
+                    It.Is<GetProviderAlertsApiRequest>(c => c.GetUrl.Equals(expectedAlertsUrl.GetUrl))))
+                .ReturnsAsync(alertsApiResponse);
 
             //Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.Should().BeEquivalentTo(apiResponse);
+            actual.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
+            actual.ProviderTransferredVacanciesAlert.Should().Be(alertsApiResponse.ProviderTransferredVacanciesAlert);
+            actual.WithdrawnVacanciesAlert.Should().Be(alertsApiResponse.WithdrawnVacanciesAlert);
         }
     }
 }

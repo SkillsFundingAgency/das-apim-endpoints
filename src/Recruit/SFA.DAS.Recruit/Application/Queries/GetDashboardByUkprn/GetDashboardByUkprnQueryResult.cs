@@ -23,7 +23,9 @@ public record GetDashboardByUkprnQueryResult
     public ProviderTransferredVacanciesAlertModel ProviderTransferredVacanciesAlert { get; set; } = new();
     public WithdrawnVacanciesAlertModel WithdrawnVacanciesAlert { get; set; } = new();
 
-    public static implicit operator GetDashboardByUkprnQueryResult(GetProviderDashboardApiResponse source)
+    public static GetDashboardByUkprnQueryResult FromResponses(
+        GetProviderDashboardApiResponse source,
+        GetProviderAlertsApiResponse alertsSource)
     {
         return new GetDashboardByUkprnQueryResult
         {
@@ -42,8 +44,8 @@ public record GetDashboardByUkprnQueryResult
             SubmittedVacanciesCount = source.SubmittedVacanciesCount,
             ClosingSoonVacanciesCount = source.ClosingSoonVacanciesCount,
             ClosingSoonWithNoApplications = source.ClosingSoonWithNoApplications,
-            ProviderTransferredVacanciesAlert = source.ProviderTransferredVacanciesAlert,
-            WithdrawnVacanciesAlert = source.WithdrawnVacanciesAlert,
+            ProviderTransferredVacanciesAlert = alertsSource.ProviderTransferredVacanciesAlert ?? new ProviderTransferredVacanciesAlertModel(),
+            WithdrawnVacanciesAlert = alertsSource.WithdrawnVacanciesAlert ?? new WithdrawnVacanciesAlertModel(),
         };
     }
 }
