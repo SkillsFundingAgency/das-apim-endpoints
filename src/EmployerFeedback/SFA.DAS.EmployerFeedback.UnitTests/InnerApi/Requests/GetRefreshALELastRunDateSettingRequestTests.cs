@@ -4,12 +4,12 @@ using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Requests
 {
     [TestFixture]
-    public class GetSettingsRequestTests
+    public class GetRefreshALELastRunDateSettingRequestTests
     {
         [Test]
         public void GetUrl_ReturnsExpectedValue()
         {
-            var request = new GetSettingsRequest();
+            var request = new GetRefreshALELastRunDateSettingRequest();
             Assert.That(request.GetUrl, Is.EqualTo("api/settings/RefreshALELastRunDate"));
         }
     }

@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -60,7 +61,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
                 page++;
             } while (page <= totalPages);
 
-            await UpdateSyncSettingsAsync(syncStartTime, cancellationToken);
+            await UpsertRefreshALELastRunDateSettingAsync(syncStartTime, cancellationToken);
         }
 
         private async Task<GetUpdatedEmployerAccountsResponse> GetAccountsPageAsync(DateTime? lastSyncDate, int page, CancellationToken cancellationToken)
@@ -77,15 +78,14 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
 
         private async Task UpsertAccountsAsync(List<UpdatedEmployerAccounts> updatedAccounts, CancellationToken cancellationToken)
         {
-            var upsertData = new List<UpsertAccountsData>();
-            foreach (var acc in updatedAccounts)
-            {
-                upsertData.Add(new UpsertAccountsData
+            var upsertData = updatedAccounts
+                .Select(acc => new UpsertAccountsData
                 {
                     AccountId = acc.AccountId,
                     AccountName = acc.AccountName
-                });
-            }
+                })
+                .ToList();
+
             await ExecuteWithRetry(async () =>
             {
                 var response = await _feedbackApiClient.PostWithResponseCode<AccountsData, object>(
@@ -95,18 +95,18 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts
             }, MaxRetryAttempts, cancellationToken);
         }
 
-        private async Task UpdateSyncSettingsAsync(DateTime syncStartTime, CancellationToken cancellationToken)
+        private async Task UpsertRefreshALELastRunDateSettingAsync(DateTime syncStartTime, CancellationToken cancellationToken)
         {
             await ExecuteWithRetry(async () =>
             {
-                await _feedbackApiClient.Put(new UpdateSettingsRequest(syncStartTime));
+                await _feedbackApiClient.Put(new UpsertRefreshALELastRunDateSettingRequest(syncStartTime));
                 return true;
             }, MaxRetryAttempts, cancellationToken);
         }
 
         private async Task<DateTime?> GetLastSyncDateAsync(CancellationToken cancellationToken)
         {
-            var settings = await _feedbackApiClient.GetWithResponseCode<GetSettingsResponse>(new GetSettingsRequest());
+            var settings = await _feedbackApiClient.GetWithResponseCode<GetSettingsResponse>(new GetRefreshALELastRunDateSettingRequest());
             settings.EnsureSuccessStatusCode();
             return settings.Body.Value?.AddMinutes(-1);
         }

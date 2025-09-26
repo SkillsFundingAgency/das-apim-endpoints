@@ -5,13 +5,13 @@ using System;
 namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Requests
 {
     [TestFixture]
-    public class UpdateSettingsRequestTests
+    public class UpsertRefreshALELastRunDateSettingRequestTests
     {
         [Test]
         public void Constructor_SetsDataProperty()
         {
             var now = DateTime.UtcNow;
-            var request = new UpdateSettingsRequest(now);
+            var request = new UpsertRefreshALELastRunDateSettingRequest(now);
             Assert.That(request.Data.Value, Is.EqualTo(now));
             Assert.That(request.PutUrl, Is.EqualTo("api/settings/RefreshALELastRunDate"));
         }
