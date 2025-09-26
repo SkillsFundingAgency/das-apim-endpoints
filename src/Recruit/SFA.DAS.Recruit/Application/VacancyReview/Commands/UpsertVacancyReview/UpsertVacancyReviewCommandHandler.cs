@@ -68,11 +68,14 @@ public class UpsertVacancyReviewCommandHandler(
                 .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
                 .Select(notificationService.Send).ToList();
 
-            emailTasks.AddRange(providerUsersToNotifyOnVacancyApprovedOrRejected
-                .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome, false))
-                .Where(c => c != null)
-                .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
-                .Select(notificationService.Send).ToList());
+            if (request.VacancyReview.OwnerType.Equals("Provider", StringComparison.CurrentCultureIgnoreCase))
+            {
+                emailTasks.AddRange(providerUsersToNotifyOnVacancyApprovedOrRejected
+                    .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome, false))
+                    .Where(c => c != null)
+                    .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
+                    .Select(notificationService.Send).ToList());    
+            }
 
             if (request.VacancyReview.ManualOutcome.Equals("Approved", StringComparison.CurrentCultureIgnoreCase) &&
                 request.VacancyReview.OwnerType == "Employer" &&
