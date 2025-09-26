@@ -79,5 +79,8 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
 
         public DateTime EffectiveFrom { get; set; }
         public int Duration { get; set; }
+        public int? FoundationAppFirstEmpPayment { get; set; }
+        public int? FoundationAppSecondEmpPayment { get; set; }
+        public int? FoundationAppThirdEmpPayment { get; set; }
     }
 }

@@ -1,15 +1,12 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using Azure.Security.KeyVault.Certificates;
-using Azure.Identity;
-using SFA.DAS.EarlyConnect.Services.Interfaces;
 using SFA.DAS.EarlyConnect.Services.Configuration;
+using SFA.DAS.EarlyConnect.Services.Interfaces;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
 {
@@ -18,13 +15,14 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         private IInternalApiClient<LepsLaApiConfiguration> _apiClient;
         protected LepsLaApiConfiguration Configuration;
         protected HttpClient HttpClient;
-        public LepsLaApiClient(IInternalApiClient<LepsLaApiConfiguration> apiClient,
+        public LepsLaApiClient(
+            IHttpClientFactory httpClientFactory,
             LepsLaApiConfiguration apiConfiguration)
         {
-            _apiClient = apiClient;
+            HttpClient = httpClientFactory.CreateClient();
+            HttpClient.BaseAddress = new Uri(apiConfiguration.Url);
             Configuration = apiConfiguration;
         }
-
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _apiClient.Get<TResponse>(request);
@@ -58,7 +56,7 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             requestMessage.AddVersion(request.Version);
             requestMessage.Content = stringContent;
 
-            AddAuthenticationCertificate();
+            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Basic", Configuration.ApiKey);
 
             var response = await HttpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
@@ -111,9 +109,14 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
         {
             return _apiClient.Put(request);
         }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
-            throw new NotImplementedException();
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+        {
+            throw new System.NotImplementedException();
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
@@ -134,32 +137,12 @@ namespace SFA.DAS.EarlyConnect.Services.LepsApiClients
             return json;
         }
 
-        private void AddAuthenticationCertificate()
+        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
         {
-            try
-            {
-                var defaultAzureCredentialOptions = new DefaultAzureCredentialOptions();
-                var certificateClient = new CertificateClient(vaultUri: new Uri(Configuration.KeyVaultIdentifier), credential: new DefaultAzureCredential(defaultAzureCredentialOptions));
-                var certificate = certificateClient.DownloadCertificate(Configuration.CertificateName);
-
-                if (certificate == null || certificate.Value == null)
-                {
-                    throw new Exception("Certificate was not properly returned from the Key Vault.");
-                }
-                var httpClientHandler = new HttpClientHandler();
-                httpClientHandler.ClientCertificates.Add(certificate);
-
-                HttpClient = new HttpClient(httpClientHandler);
-                HttpClient.BaseAddress = new Uri(Configuration.Url);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("An error occurred while reading certificate: " + ex.Message);
-                throw;
-            }
+            throw new NotImplementedException();
         }
 
-        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
         {
             throw new NotImplementedException();
         }

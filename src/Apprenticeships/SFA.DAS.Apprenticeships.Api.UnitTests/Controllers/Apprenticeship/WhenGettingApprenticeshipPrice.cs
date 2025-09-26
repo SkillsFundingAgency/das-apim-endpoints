@@ -23,7 +23,7 @@ namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship
             ApprenticeshipPriceResponse expectedResponse,
             Mock<ILogger<ApprenticeshipController>> mockLogger,
             Mock<IMediator> mockMediator,
-            Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> mockApprenticeshipsApiClient)
+            Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient)
         {
             //  Arrange
             mockMediator.Setup(x => x.Send(It.IsAny<GetApprenticeshipPriceQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);

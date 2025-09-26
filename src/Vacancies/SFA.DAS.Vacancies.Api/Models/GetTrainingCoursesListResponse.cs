@@ -23,6 +23,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public string Route { get ; set ; }
+        public string Type { get; set; }
 
 
         public static implicit operator GetTrainingCoursesListResponseItem(GetStandardsListItem source)
@@ -31,7 +32,8 @@ namespace SFA.DAS.Vacancies.Api.Models
             {
                 LarsCode = source.LarsCode,
                 Title = $"{source.Title} (level {source.Level})",
-                Route = source.Route
+                Route = source.Route,
+                Type = source.ApprenticeshipType.ToString()
             };
         }
     }

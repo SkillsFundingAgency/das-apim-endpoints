@@ -1,10 +1,10 @@
 ﻿using MediatR;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using System.Net;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.UpdateProviderLocationDetails
 {
@@ -23,10 +23,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.UpdatePro
                 Id = command.Id,
                 UserId = command.UserId,
                 UserDisplayName = command.UserDisplayName,
-                LocationName = command.LocationName,
-                Website = command.Website,
-                Email = command.Email,
-                Phone = command.Phone
+                LocationName = command.LocationName
             };
 
             var request = new ProviderLocationUpdateRequest(updateProviderLocation);

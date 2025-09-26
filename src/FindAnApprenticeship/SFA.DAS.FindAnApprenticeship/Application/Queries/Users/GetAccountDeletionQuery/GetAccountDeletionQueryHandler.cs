@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -10,6 +9,7 @@ using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using static System.Enum;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery
 {
@@ -28,7 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
                     x.Status == ApplicationStatus.Submitted.ToString())
                 .ToList();
 
-            var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
+            var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference.TrimVacancyReference()}").ToList();
 
             var vacancies = await VacancyService.GetVacancies(vacancyReferences);
 
@@ -38,21 +38,24 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
             {
                 var vacancy = vacancies.FirstOrDefault(v =>
                     v.VacancyReference.TrimVacancyReference() == application.VacancyReference);
-                Enum.TryParse<ApplicationStatus>(application.Status, out var status);
+                
+                TryParse<ApplicationStatus>(application.Status, out var status);
+
                 result.SubmittedApplications.Add(new GetAccountDeletionQueryResult.Application
                 {
-                    Id = application.Id,
                     Address = vacancy?.Address,
-                    OtherAddresses = vacancy?.OtherAddresses,
-                    EmployerLocationOption = vacancy?.EmployerLocationOption,
-                    EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
-                    VacancyReference = vacancy?.VacancyReference,
-                    EmployerName = vacancy?.EmployerName,
-                    Title = vacancy?.Title,
+                    ApprenticeshipType = vacancy.ApprenticeshipType,
                     ClosingDate = vacancy?.ClosedDate ?? vacancy!.ClosingDate,
                     CreatedDate = application.CreatedDate,
+                    EmployerLocationOption = vacancy?.EmployerLocationOption,
+                    EmployerName = vacancy?.EmployerName,
+                    EmploymentLocationInformation = vacancy?.EmploymentLocationInformation,
+                    Id = application.Id,
+                    OtherAddresses = vacancy?.OtherAddresses,
                     Status = status,
                     SubmittedDate = application.SubmittedDate,
+                    Title = vacancy?.Title,
+                    VacancyReference = vacancy?.VacancyReference,
                 });
             }
 

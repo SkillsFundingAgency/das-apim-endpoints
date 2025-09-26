@@ -10,23 +10,20 @@ using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using InnerApiRequest = SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships.PatchApproveApprenticeshipPriceChangeRequest;
-using InnerApiResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships.PatchApproveApprenticeshipPriceChangeResponse;
-using OuterApiRequest = SFA.DAS.Apprenticeships.Api.Models.ApprovePriceChangeRequest;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 
 public class WhenApproveDateChange
 {
     private readonly Fixture _fixture;
-    private readonly Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _mockApiClient;
+    private readonly Mock<ILearningApiClient<LearningApiConfiguration>> _mockApiClient;
     private readonly ILogger<ApprenticeshipController> _mockedLogger;
     private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _mockedCommitmentsV2ApiClient;
     private readonly Mock<IMediator> _mockMediator;
@@ -34,7 +31,7 @@ public class WhenApproveDateChange
     public WhenApproveDateChange()
     {
         _fixture = new Fixture();
-        _mockApiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        _mockApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockedLogger = Mock.Of<ILogger<ApprenticeshipController>>();
         _mockedCommitmentsV2ApiClient = Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
         _mockMediator = new Mock<IMediator>();

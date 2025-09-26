@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 #pragma warning disable CS861
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
@@ -23,12 +24,16 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
         public decimal CompletionPayment { get; set; }
         public decimal OnProgramTotal { get; set; }
     }
+    
+    [DebuggerDisplay("AY {AcademicYear} DP {DeliveryPeriod} Amount: {Amount} EpisodePriceKey: {EpisodePriceKey}")]
 
     public class Instalment
     {
         public short AcademicYear { get; set; }
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
+        public Guid EpisodePriceKey { get; set; }
+        public string InstalmentType { get; set; }
     }
 
     public class AdditionalPayment

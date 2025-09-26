@@ -1,6 +1,7 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
+using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Models;
 
@@ -107,6 +108,7 @@ public class GetLiveVacanciesApiResponse
                 AdditionalQuestion2 = source.AdditionalQuestion2,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                 SearchTags = source.SearchTags,
+                ApprenticeshipType = source.ApprenticeshipType,
             };
         }
 
@@ -169,7 +171,7 @@ public class GetLiveVacanciesApiResponse
         public string? OwnerType { get; set; }
         public string? AdditionalTrainingDescription { get; set; }
         public string? SearchTags { get; set; }
-
+        public ApprenticeshipTypes? ApprenticeshipType { get; set; }
     }
 
     public class Wage

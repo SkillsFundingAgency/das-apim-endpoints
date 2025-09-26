@@ -26,7 +26,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         public string EmployerReference { get; set; }
         public string ProviderReference { get; set; }
         public short Status { get; set; }
@@ -52,7 +52,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
         public int? DurationReducedBy { get; set; }
         public int? PriceReducedBy { get; set; }
         public long? TransferSenderId { get; set; }
-        public bool? IsOnFlexiPaymentPilot { get; set; }
         public int? DurationReducedByHours { get; set; }
         public int? TrainingTotalHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }

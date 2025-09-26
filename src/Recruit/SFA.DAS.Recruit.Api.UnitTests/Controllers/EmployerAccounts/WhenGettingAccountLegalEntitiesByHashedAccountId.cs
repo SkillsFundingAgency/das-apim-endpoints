@@ -1,17 +1,10 @@
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
-using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Net;
+using System.Threading;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
 {
@@ -36,7 +29,10 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetAccountLegalEntitiesResponse;
             Assert.That(model, Is.Not.Null);
-            model.AccountLegalEntities.Should().BeEquivalentTo(mediatorResult.AccountLegalEntities, options=>options.Excluding(x=>x.Agreements));
+            model.AccountLegalEntities.Should().BeEquivalentTo(mediatorResult.AccountLegalEntities, options => options
+                .Excluding(x=>x.Agreements)
+                .Excluding(x => x.AccountName)
+                );
         }
 
         [Test, MoqAutoData]

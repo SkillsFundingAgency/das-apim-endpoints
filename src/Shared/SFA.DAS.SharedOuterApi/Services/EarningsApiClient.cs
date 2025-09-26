@@ -59,6 +59,11 @@ public class EarningsApiClient : IEarningsApiClient<EarningsApiConfiguration>
         await _apiClient.Delete(request);
     }
 
+    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+    {
+        return _apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
+    }
+
     public async Task Patch<TData>(IPatchApiRequest<TData> request)
     {
         await _apiClient.Patch(request);
@@ -84,12 +89,17 @@ public class EarningsApiClient : IEarningsApiClient<EarningsApiConfiguration>
         return await _apiClient.PatchWithResponseCode(request);
     }
 
-    public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+    public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
     {
         return await _apiClient.PutWithResponseCode<TResponse>(request);
     }
 
     public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
         throw new NotImplementedException();
     }

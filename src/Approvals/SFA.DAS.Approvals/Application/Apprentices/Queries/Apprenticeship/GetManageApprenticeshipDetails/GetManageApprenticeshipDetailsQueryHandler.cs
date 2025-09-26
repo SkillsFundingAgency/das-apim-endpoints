@@ -7,7 +7,6 @@ using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.Extensions;
-using SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
@@ -15,17 +14,12 @@ using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using GetApprenticeshipKeyRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetApprenticeshipKey.GetApprenticeshipKeyRequest;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
-using GetPendingPriceChangeRequest = SFA.DAS.Approvals.InnerApi.ApprenticeshipsApi.GetPendingPriceChange.GetPendingPriceChangeRequest;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 
@@ -33,7 +27,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IDeliveryModelService deliveryModelService,
     ServiceParameters serviceParameters,
-    IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
     ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
     : IRequestHandler<GetManageApprenticeshipDetailsQuery, GetManageApprenticeshipDetailsQueryResult>
 {
@@ -58,28 +51,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         if (!apprenticeship.CheckParty(serviceParameters))
         {
             throw new UnauthorizedAccessException($"You do not permissions to access apprenticeship {request.ApprenticeshipId}");
-        }
-
-        ApiResponse<GetPendingPriceChangeResponse> pendingPriceChangeResponse = null;
-        ApiResponse<GetPendingStartDateChangeApiResponse> pendingStartDateResponse = null;
-        ApiResponse<GetLearnerStatusResponse> learnerStatusResponse = null;
-        ApiResponse<GetPaymentStatusApiResponse> paymentStatusResponse = null;
-        
-        if (apprenticeship.IsOnFlexiPaymentPilot is true)
-        {
-            var apprenticeshipKeyResponse = await apprenticeshipsApiClient.GetWithResponseCode<Guid>(new GetApprenticeshipKeyRequest(request.ApprenticeshipId));
-
-            var pendingPriceChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingPriceChangeResponse>(new GetPendingPriceChangeRequest(apprenticeshipKeyResponse.Body));
-            var pendingStartDateChangeTask = apprenticeshipsApiClient.GetWithResponseCode<GetPendingStartDateChangeApiResponse>(new GetPendingStartDateChangeRequest(apprenticeshipKeyResponse.Body));
-            var paymentStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetPaymentStatusApiResponse>(new GetPaymentStatusRequest(apprenticeshipKeyResponse.Body));
-            var learnerStatusTask = apprenticeshipsApiClient.GetWithResponseCode<GetLearnerStatusResponse>(new GetLearnerStatusRequest(apprenticeshipKeyResponse.Body));
-
-            await Task.WhenAll(pendingPriceChangeTask, pendingStartDateChangeTask, paymentStatusTask, learnerStatusTask);
-
-            pendingPriceChangeResponse = pendingPriceChangeTask.Result;
-            pendingStartDateResponse = pendingStartDateChangeTask.Result;
-            paymentStatusResponse = paymentStatusTask.Result;
-            learnerStatusResponse = learnerStatusTask.Result;
         }
 
         var priceEpisodesResponseTask = apiClient.GetWithResponseCode<GetPriceEpisodesResponse>(new GetPriceEpisodesRequest(apprenticeship.Id));
@@ -126,74 +97,12 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body?.OverlappingTrainingDateRequest;
         result.HasMultipleDeliveryModelOptions = deliveryModel?.Count > 1;
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
-        result.PendingPriceChange = pendingPriceChangeResponse == null ? null : ToResponse(pendingPriceChangeResponse.Body);
-        result.PendingStartDateChange = pendingStartDateResponse == null ? null : ToResponse(pendingStartDateResponse.Body);
-        result.PaymentsStatus = ToResponse(paymentStatusResponse?.Body);
-        result.LearnerStatusDetails = ToResponse(learnerStatusResponse?.Body);
+        result.PendingPriceChange = null;
+        result.PendingStartDateChange = null;
+        result.PaymentsStatus = new PaymentsStatus { PaymentsFrozen = false };
+        result.LearnerStatusDetails = new LearnerStatusDetails { LearnerStatus = LearnerStatus.None };
 
         return result;
-    }
-
-    private static PendingPriceChange ToResponse(GetPendingPriceChangeResponse pendingPriceChangeResponse)
-    {
-        if (pendingPriceChangeResponse is not { HasPendingPriceChange: true })
-        {
-            return null;
-        }
-
-        var pendingPriceChange = new PendingPriceChange
-        {
-            Cost = pendingPriceChangeResponse.PendingPriceChange.PendingTotalPrice,
-            EndPointAssessmentPrice = pendingPriceChangeResponse.PendingPriceChange.PendingAssessmentPrice,
-            TrainingPrice = pendingPriceChangeResponse.PendingPriceChange.PendingTrainingPrice,
-            ProviderApprovedDate = pendingPriceChangeResponse.PendingPriceChange.ProviderApprovedDate,
-            EmployerApprovedDate = pendingPriceChangeResponse.PendingPriceChange.EmployerApprovedDate,
-            Initiator = pendingPriceChangeResponse.PendingPriceChange.Initiator
-        };
-
-        return pendingPriceChange;
-    }
-
-    private static PendingStartDateChange ToResponse(GetPendingStartDateChangeApiResponse pendingStartDateChangeResponse)
-    {
-        if (pendingStartDateChangeResponse is not { HasPendingStartDateChange: true }) return null;
-
-        var pendingStartDateChange = new PendingStartDateChange
-        {
-            PendingActualStartDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingActualStartDate,
-            PendingPlannedEndDate = pendingStartDateChangeResponse.PendingStartDateChange.PendingPlannedEndDate,
-            ProviderApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.ProviderApprovedDate,
-            EmployerApprovedDate = pendingStartDateChangeResponse.PendingStartDateChange.EmployerApprovedDate,
-            Initiator = pendingStartDateChangeResponse.PendingStartDateChange.Initiator
-        };
-
-        return pendingStartDateChange;
-    }
-
-    private static PaymentsStatus ToResponse(GetPaymentStatusApiResponse source)
-    {
-        if (source == null) return new PaymentsStatus { PaymentsFrozen = false };
-
-        return new PaymentsStatus
-        {
-            FrozenOn = source.FrozenOn,
-            PaymentsFrozen = source.PaymentsFrozen,
-            ReasonFrozen = source.ReasonFrozen
-        };
-    }
-
-    private LearnerStatusDetails ToResponse(GetLearnerStatusResponse source)
-    {
-        if (source?.LearnerStatus == null) return new LearnerStatusDetails{ LearnerStatus = LearnerStatus.None };
-
-        return new LearnerStatusDetails
-        {
-            LearnerStatus = source.LearnerStatus.Value,
-            WithdrawalChangedDate = source.WithdrawalChangedDate,
-            WithdrawalReason = source.WithdrawalReason,
-            LastCensusDateOfLearning = source.LastCensusDateOfLearning,
-            LastDayOfLearning = source.LastDayOfLearning
-        };
     }
 
     private async Task<bool?> CanActualStartDateBeChanged(DateTime? actualStartDate)

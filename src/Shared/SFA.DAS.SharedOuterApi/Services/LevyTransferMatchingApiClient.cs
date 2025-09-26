@@ -51,6 +51,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _client.Delete(request);
         }
 
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            return _client.DeleteWithResponseCode<TResponse>(request, includeResponse);
+        }
+
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             return _client.Patch(request);
@@ -80,12 +85,17 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _client.GetPaged<TResponse>(request);
         }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             throw new System.NotImplementedException();
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }

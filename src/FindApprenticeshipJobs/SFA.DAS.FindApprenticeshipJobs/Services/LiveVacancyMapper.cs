@@ -105,7 +105,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
-                SearchTags = string.Empty
+                SearchTags = string.Empty,
+                ApprenticeshipType = source.ApprenticeshipType,
             };
         }
 

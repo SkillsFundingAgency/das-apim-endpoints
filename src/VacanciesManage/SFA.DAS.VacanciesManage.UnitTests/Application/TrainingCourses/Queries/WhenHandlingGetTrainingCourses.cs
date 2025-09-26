@@ -1,61 +1,58 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
+using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 
-namespace SFA.DAS.VacanciesManage.UnitTests.Application.TrainingCourses.Queries
+namespace SFA.DAS.VacanciesManage.UnitTests.Application.TrainingCourses.Queries;
+
+public class WhenHandlingGetTrainingCourses
 {
-    public class WhenHandlingGetTrainingCourses
+    [Test, MoqAutoData]
+    public async Task And_Courses_Returned_From_Service(
+        GetStandardsListResponse coursesFromCache,
+        [Frozen] Mock<ICourseService> mockCacheService,
+        GetTrainingCoursesQueryHandler handler)
     {
-        [Test, MoqAutoData]
-        public async Task And_Courses_Cached_Then_Gets_Courses_From_Cache(
-            GetTrainingCoursesQuery query,
-            GetStandardsListResponse coursesFromCache,
-            [Frozen] Mock<ICacheStorageService> mockCacheService,
-            GetTrainingCoursesQueryHandler handler)
-        {
-            mockCacheService
-                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
-                .ReturnsAsync(coursesFromCache);
+        mockCacheService
+            .Setup(service => service.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+            .ReturnsAsync(coursesFromCache);
 
-            var result = await handler.Handle(query, CancellationToken.None);
+        var result = await handler.Handle(new GetTrainingCoursesQuery(), CancellationToken.None);
 
-            result.TrainingCourses.Should().BeEquivalentTo(coursesFromCache.Standards);
-        }
+        result.TrainingCourses.Should().BeEquivalentTo(coursesFromCache.Standards);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Courses_Are_Filtered_To_The_Training_Provider(
+        int ukprn,
+        GetStandardsListResponse coursesFromCache,
+        [Frozen] Mock<ICourseService> mockCacheService,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpCourseManagementApiClient,
+        GetTrainingCoursesQueryHandler handler)
+    {
+        // arrange
+        mockCacheService
+            .Setup(service => service.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+            .ReturnsAsync(coursesFromCache);
 
-        [Test, MoqAutoData]
-        public async Task And_Courses_Not_Cached_Then_Gets_From_Api_And_Stores_In_Cache(
-            GetTrainingCoursesQuery query,
-            GetStandardsListResponse coursesFromApi,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            [Frozen] Mock<ICacheStorageService> mockCacheService,
-            GetTrainingCoursesQueryHandler handler)
-        {
-            var expectedExpirationInHours = 3;
-            mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.IsAny<GetActiveStandardsListRequest>()))
-                .ReturnsAsync(coursesFromApi);
-            mockCacheService
-                .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
-                .ReturnsAsync((GetStandardsListResponse)null);
+        GetProviderAdditionalStandardsRequest? capturedRequest = null;
+        roatpCourseManagementApiClient
+            .Setup(x => x.Get<List<GetRoatpProviderAdditionalStandardsItem>>(It.IsAny<GetProviderAdditionalStandardsRequest>()))
+            .Callback<IGetApiRequest>(x => capturedRequest = x as GetProviderAdditionalStandardsRequest)
+            .ReturnsAsync([new GetRoatpProviderAdditionalStandardsItem() { LarsCode = coursesFromCache.Standards.First().LarsCode}]);
+        
+        // act
+        var result = await handler.Handle(new GetTrainingCoursesQuery(ukprn), CancellationToken.None);
 
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            result.TrainingCourses.Should().BeEquivalentTo(coursesFromApi.Standards);
-            mockCacheService.Verify(service =>
-                service.SaveToCache(
-                    nameof(GetStandardsListResponse),
-                    coursesFromApi,
-                    expectedExpirationInHours));
-        }
+        // assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest!.GetUrl.Should().Be($"api/providers/{ukprn}/courses");
+        
+        result.TrainingCourses.Should().BeEquivalentTo([coursesFromCache.Standards.First()]);
     }
 }

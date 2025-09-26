@@ -22,5 +22,7 @@ namespace SFA.DAS.ApimDeveloper.InnerApi.Responses
         public string Description { get; set; }
         [JsonPropertyName("documentation")]
         public string Documentation { get; set; }
+        [JsonPropertyName("documents")]
+        public Dictionary<string,string> Documents { get; set; }
     }
 }

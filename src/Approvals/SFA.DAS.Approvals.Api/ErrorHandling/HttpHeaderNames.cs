@@ -1,7 +1,6 @@
-﻿namespace SFA.DAS.Approvals.ErrorHandling
+﻿namespace SFA.DAS.Approvals.ErrorHandling;
+
+public static class HttpHeaderNames
 {
-    public static class HttpHeaderNames
-    {
-        public const string SubStatusCode = "X-Sfa-Sub-Status-Code";
-    }
+    public const string SubStatusCode = "X-Sfa-Sub-Status-Code";
 }

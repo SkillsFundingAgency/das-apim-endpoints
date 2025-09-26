@@ -8,94 +8,88 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort
-{
-    public class CreateCohortCommandHandler : IRequestHandler<CreateCohortCommand, CreateCohortResult>
-    {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IAutoReservationsService _autoReservationService;
-        private readonly IReservationApiClient<ReservationApiConfiguration> _reservationsApiClient;
+namespace SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 
-        public CreateCohortCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IAutoReservationsService autoReservationService)
+public class CreateCohortCommandHandler(
+    ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
+    IAutoReservationsService autoReservationService,
+    ICourseTypeRulesService courseTypeRulesService)
+    : IRequestHandler<CreateCohortCommand, CreateCohortResult>
+{
+    public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
+    {
+        var autoReservationCreated = false;
+
+        if (!request.ReservationId.HasValue || request.ReservationId.Value == Guid.Empty)
         {
-            _apiClient = apiClient;
-            _autoReservationService = autoReservationService;
+            if (request.TransferSenderId != null)
+            {
+                throw new ApplicationException("When creating a auto reservation, the TransferSenderId must be null");
+            }
+
+            request.ReservationId = await autoReservationService.CreateReservation(new AutoReservation
+            {
+                AccountId = request.AccountId,
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                CourseCode = request.CourseCode,
+                StartDate = request.StartDate,
+                UserInfo = request.UserInfo
+            });
+            autoReservationCreated = true;
         }
 
-        public async Task<CreateCohortResult> Handle(CreateCohortCommand request, CancellationToken cancellationToken)
+        try
         {
-            var autoReservationCreated = false;
+            var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(request.CourseCode);
 
-            if (!request.ReservationId.HasValue || request.ReservationId.Value == default)
+            var createCohortRequest = new CreateCohortRequest
             {
-                if (request.TransferSenderId != null)
-                {
-                    throw new ApplicationException("When creating a auto reservation, the TransferSenderId must be null");
-                }
+                AccountId = request.AccountId,
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                ProviderId = request.ProviderId,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                DateOfBirth = request.DateOfBirth,
+                Uln = request.Uln,
+                CourseCode = request.CourseCode,
+                DeliveryModel = request.DeliveryModel,
+                Cost = request.Cost,
+                TrainingPrice = request.TrainingPrice,
+                EndPointAssessmentPrice = request.EndPointAssessmentPrice,
+                StartDate = request.StartDate,
+                ActualStartDate = request.ActualStartDate,
+                EndDate = request.EndDate,
+                OriginatorReference = request.OriginatorReference,
+                ReservationId = request.ReservationId,
+                TransferSenderId = request.TransferSenderId,
+                PledgeApplicationId = request.PledgeApplicationId,
+                EmploymentPrice = request.EmploymentPrice,
+                EmploymentEndDate = request.EmploymentEndDate,
+                IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
+                IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
+                LearnerDataId = request.LearnerDataId,
+                MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
+                MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
+                UserInfo = request.UserInfo,
+                RequestingParty = request.RequestingParty
+            };
 
-                request.ReservationId = await _autoReservationService.CreateReservation(new AutoReservation
-                {
-                    AccountId = request.AccountId,
-                    AccountLegalEntityId = request.AccountLegalEntityId,
-                    CourseCode = request.CourseCode,
-                    StartDate = request.StartDate,
-                    UserInfo = request.UserInfo
+            var createCohortResponse = await apiClient.PostWithResponseCode<CreateCohortResponse>(new PostCreateCohortRequest(createCohortRequest));
 
-                });
-                autoReservationCreated = true;
-            }
-
-            try
+            return new CreateCohortResult
             {
-                var createCohortRequest = new CreateCohortRequest
-                {
-                    AccountId = request.AccountId,
-                    AccountLegalEntityId = request.AccountLegalEntityId,
-                    ActualStartDate = request.ActualStartDate,
-                    Cost = request.Cost,
-                    TrainingPrice = request.TrainingPrice,
-                    EndPointAssessmentPrice = request.EndPointAssessmentPrice,
-                    CourseCode = request.CourseCode,
-                    DateOfBirth = request.DateOfBirth,
-                    DeliveryModel = request.DeliveryModel,
-                    Email = request.Email,
-                    EmploymentEndDate = request.EmploymentEndDate,
-                    EmploymentPrice = request.EmploymentPrice,
-                    EndDate = request.EndDate,
-                    FirstName = request.FirstName,
-                    IgnoreStartDateOverlap = request.IgnoreStartDateOverlap,
-                    IsOnFlexiPaymentPilot = request.IsOnFlexiPaymentPilot,
-                    LastName = request.LastName,
-                    OriginatorReference = request.OriginatorReference,
-                    PledgeApplicationId = request.PledgeApplicationId,
-                    ProviderId = request.ProviderId,
-                    ReservationId = request.ReservationId,
-                    StartDate = request.StartDate,
-                    TransferSenderId = request.TransferSenderId,
-                    Uln = request.Uln,
-                    UserInfo = request.UserInfo,
-                    RequestingParty = request.RequestingParty
-                };
-
-                var createCohortResponse =
-                    await _apiClient.PostWithResponseCode<CreateCohortResponse>(
-                        new PostCreateCohortRequest(createCohortRequest));
-
-                return new CreateCohortResult
-                {
-                    CohortId = createCohortResponse.Body.CohortId,
-                    CohortReference = createCohortResponse.Body.CohortReference
-                };
-            }
-            catch
+                CohortId = createCohortResponse.Body.CohortId,
+                CohortReference = createCohortResponse.Body.CohortReference
+            };
+        }
+        catch
+        {
+            if (autoReservationCreated)
             {
-                if (autoReservationCreated)
-                {
-                    await _autoReservationService.DeleteReservation(request.ReservationId.Value);
-                }
-                throw;
+                await autoReservationService.DeleteReservation(request.ReservationId.Value);
             }
+            throw;
         }
     }
 }

@@ -90,12 +90,40 @@
                 "description": "Enables alerting on app insights failed requests"
             }
         },
+        "enableResponseTimeAlert": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Enables alerting on app insights response times"
+            }
+        },
+        "disableResponseTimeAlertNotifications": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Deploys alerting on app insights response times"
+            }
+        },
+        "disableFailedRequestAlertNotifications": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Deploys alerting on app insights response times"
+            }
+        },
         "productShortName": {
             "type": "string",
             "defaultValue": ""
         },
         "preProdAlertActionGroupResourceId": {
             "type": "string"
+        },
+        "deployPrivateLinkedScopedResource": {
+            "type": "bool"
+        },
+        "vnetRouteAllEnabled": {
+            "type": "bool",
+            "defaultValue": false
         }
     },
     "variables": {
@@ -103,8 +131,9 @@
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "appServicePlanName": "[if(empty(parameters('appServicePlanName')), concat(variables('resourceNamePrefix'), '-asp'), parameters('appServicePlanName'))]",
-        "alertActionGroupResourceId": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]"
-
+        "alertActionGroupResourceIdFailedRequests": "[if(and(equals(parameters('environmentName'), 'PROD'), equals(parameters('productShortName'), 'ea')), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
+        "alertActionGroupResourceIdResponseTime": "[if(and(equals(parameters('environmentName'), 'PROD'), or(equals(parameters('productShortName'), 'faa'), equals(parameters('productShortName'), 'ea'))), parameters('preProdAlertActionGroupResourceId'), parameters('alertActionGroupResourceId'))]",
+        "privateLinkScopeName": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-shared-ampls'))]"
     },
     "resources": [
         {
@@ -151,6 +180,31 @@
                     },
                     "logAnalyticsWorkspaceId": {
                         "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[parameters('deployPrivateLinkedScopedResource')]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat(parameters('appServiceName'), '-private-link-scoped-')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'private-linked-scoped-resource.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "privateLinkScopeName": {
+                        "value": "[variables('privateLinkScopeName')]"
+                    },
+                    "scopedResourceName": {
+                        "value": "[parameters('appServiceName')]"
+                    },
+                    "scopedResourceId": {
+                        "value": "[reference(concat('api-application-insights-', parameters('appServiceName'))).outputs.AppInsightsResourceId.value]"
                     }
                 }
             }
@@ -230,6 +284,9 @@
                     },
                     "subnetResourceId": {
                         "value": "[parameters('apimEndpointsSubnetResourceId')]"
+                    },
+                    "vnetRouteAllEnabled": {
+                        "value": "[parameters('vnetRouteAllEnabled')]"
                     }
                 }
             }
@@ -285,7 +342,7 @@
         {
             "condition": "[and( equals(parameters('enableFailedRequestAlert'), true()), greater(length(parameters('applicationInsightsResourceId')), 0) )]",
             "apiVersion": "2021-04-01",
-            "name": "[concat('application-insights-', parameters('appServiceName'), '-alert-')]",
+            "name": "[concat('application-insights-', parameters('appServiceName'), '-alert')]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[variables('resourceGroupName')]",
             "properties": {
@@ -302,7 +359,38 @@
                         "value": "[parameters('applicationInsightsResourceId')]"
                     },
                     "alertActionGroupResourceId": {
-                        "value": "[variables('alertActionGroupResourceId')]"
+                        "value": "[variables('alertActionGroupResourceIdFailedRequests')]"
+                    },
+                    "enabled": {
+                        "value": "[if(parameters('disableFailedRequestAlertNotifications'), false(), true())]"
+                    }
+                }
+            }
+        },
+        {
+            "condition": "[and( equals(parameters('enableResponseTimeAlert'), true()), greater(length(parameters('applicationInsightsResourceId')), 0) )]",
+            "apiVersion": "2021-04-01",
+            "name": "[concat('ai-', parameters('appServiceName'), '-response-time-alert')]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights-response-time-alert.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "serviceName": {
+                        "value": "[parameters('appServiceName')]"
+                    },
+                    "applicationInsightsResourceId": {
+                        "value": "[parameters('applicationInsightsResourceId')]"
+                    },
+                    "alertActionGroupResourceId": {
+                        "value": "[variables('alertActionGroupResourceIdResponseTime')]"
+                    },
+                    "enabled": {
+                        "value": "[if(parameters('disableResponseTimeAlertNotifications'), false(), true())]"
                     }
                 }
             }

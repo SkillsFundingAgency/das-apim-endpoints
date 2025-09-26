@@ -1,7 +1,7 @@
-﻿using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+﻿using System;
 using System.Collections.Generic;
-using System;
 using System.Linq;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 
 namespace SFA.DAS.Approvals.Extensions
 {

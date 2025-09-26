@@ -67,7 +67,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
                     var allTasks = providerTasks.Concat(new Task[] { standardTask, settingsTask }).ToList();
                     await Task.WhenAll(allTasks);
 
-                    var providerResponses = await Task.WhenAll(providerTasks); 
+                    var providerResponses = await Task.WhenAll(providerTasks);
                     var standardResult = await standardTask;
                     var settings = await settingsTask;
 
@@ -153,7 +153,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 
                     await _mediator.Send(command);
                 }
-                
+
                 return Ok();
             }
             catch (Exception e)
@@ -274,6 +274,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
         {
             try
             {
+                _logger.LogInformation("GetEmployerRequestsForResponseNotification call initiated");
                 var employerRequestResult = await _mediator.Send(new GetEmployerRequestsForResponseNotificationQuery());
                 return Ok(employerRequestResult.EmployerRequests);
             }
@@ -293,7 +294,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.Controllers
 
                 bool canUserReceiveNotifications = await _mediator.Send(new CanUserReceiveNotificationsQuery { UserId = parameters.RequestedBy, AccountId = parameters.AccountId });
 
-                if(canUserReceiveNotifications) 
+                if (canUserReceiveNotifications)
                 {
                     await _mediator.Send(new SendResponseNotificationCommand()
                     {

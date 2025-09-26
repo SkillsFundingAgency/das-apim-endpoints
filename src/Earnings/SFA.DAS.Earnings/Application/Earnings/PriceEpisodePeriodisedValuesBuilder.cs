@@ -1,12 +1,18 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using Microsoft.Azure.Amqp.Framing;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
 
 public static class PriceEpisodePeriodisedValuesBuilder
 {
-    public static PriceEpisodePeriodisedValues BuildWithSameValues(string attributeName, decimal value)
+    public static void AddWithSamePeriodisedValues(
+        this List<PriceEpisodePeriodisedValues> list,
+        string attributeName,
+        decimal value)
+    {
+        list.Add(BuildWithSameValues(attributeName, value));
+    }
+
+    private static PriceEpisodePeriodisedValues BuildWithSameValues(string attributeName, decimal value)
     {
         return new PriceEpisodePeriodisedValues
         {
@@ -26,9 +32,27 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
 
-    public static PriceEpisodePeriodisedValues BuildPriceEpisodeInstalmentsThisPeriodValues(Apprenticeship earningsApprenticeship, short academicYear)
+    public static void AddPriceEpisodeInstalmentsThisPeriodValues(
+        this List<PriceEpisodePeriodisedValues> list,
+        JoinedPriceEpisode joinedPriceEpisode,
+        short academicYear,
+        InstalmentType instalmentType = InstalmentType.Regular)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        try
+        {
+            list.Add(BuildPriceEpisodeInstalmentsThisPeriodValues(joinedPriceEpisode, instalmentType, academicYear));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add PriceEpisodeInstalmentsThisPeriodValues {EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeInstalmentsThisPeriod} to PriceEpisodePeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static PriceEpisodePeriodisedValues BuildPriceEpisodeInstalmentsThisPeriodValues(JoinedPriceEpisode joinedPriceEpisode, InstalmentType instalmentType, short academicYear)
+    {
+        var instalments = GetInstalmentsForAcademicYear(joinedPriceEpisode, instalmentType, academicYear);
 
         return new PriceEpisodePeriodisedValues
         {
@@ -48,14 +72,94 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
 
-    public static PriceEpisodePeriodisedValues BuildInstallmentAmountValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName)
+    public static void AddAdditionalPaymentPerPeriodValues(
+        this List<PriceEpisodePeriodisedValues> list,
+        JoinedPriceEpisode joinedPriceEpisode, 
+        short academicYear, 
+        string attributeName, 
+        string additionalPaymentType)
     {
-        return BuildCoInvestmentValues(earningsApprenticeship, academicYear, attributeName, 1);
+        try
+        {
+            list.Add(BuildAdditionalPaymentPerPeriodValues(joinedPriceEpisode, academicYear, attributeName, additionalPaymentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add AdditionalPaymentPerPeriodValues {attributeName} to PriceEpisodePeriodisedValues list.",
+                ex);
+        }
     }
 
-    public static PriceEpisodePeriodisedValues BuildCoInvestmentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, decimal multiplier)
+    private static PriceEpisodePeriodisedValues BuildAdditionalPaymentPerPeriodValues(JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        var additionalPayments = GetAdditionalPayments(joinedPriceEpisode, additionalPaymentType);
+
+        return new PriceEpisodePeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 1)?.Amount ?? 0,
+            Period2 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 2)?.Amount ?? 0,
+            Period3 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 3)?.Amount ?? 0,
+            Period4 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 4)?.Amount ?? 0,
+            Period5 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 5)?.Amount ?? 0,
+            Period6 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 6)?.Amount ?? 0,
+            Period7 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 7)?.Amount ?? 0,
+            Period8 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 8)?.Amount ?? 0,
+            Period9 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 9)?.Amount ?? 0,
+            Period10 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 10)?.Amount ?? 0,
+            Period11 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 11)?.Amount ?? 0,
+            Period12 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 12)?.Amount ?? 0
+        };
+    }
+
+    public static void AddInstallmentAmountValues(
+        this List<PriceEpisodePeriodisedValues> list,
+        JoinedPriceEpisode joinedPriceEpisode,
+        short academicYear, 
+        string attributeName,
+        InstalmentType instalmentType = InstalmentType.Regular)
+    {
+        try
+        {
+            list.Add(BuildInstallmentAmountValues(joinedPriceEpisode, instalmentType, academicYear, attributeName));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add InstallmentAmountValues {attributeName} to PriceEpisodePeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static PriceEpisodePeriodisedValues BuildInstallmentAmountValues(JoinedPriceEpisode joinedPriceEpisode, InstalmentType instalmentType, short academicYear, string attributeName)
+    {
+        return BuildCoInvestmentValues(joinedPriceEpisode, instalmentType, academicYear, attributeName, 1);
+    }
+
+    public static void AddCoInvestmentValues(
+        this List<PriceEpisodePeriodisedValues> list,
+        JoinedPriceEpisode joinedPriceEpisode,
+        short academicYear, 
+        string attributeName, 
+        decimal multiplier,
+        InstalmentType instalmentType = InstalmentType.Regular)
+    {
+        try
+        {
+            list.Add(BuildCoInvestmentValues(joinedPriceEpisode, instalmentType, academicYear, attributeName,multiplier));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add CoInvestmentValues {attributeName} to PriceEpisodePeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static PriceEpisodePeriodisedValues BuildCoInvestmentValues(JoinedPriceEpisode joinedPriceEpisode, InstalmentType instalmentType, short academicYear, string attributeName, decimal multiplier)
+    {
+        var instalments = GetInstalmentsForAcademicYear(joinedPriceEpisode, instalmentType, academicYear);
 
         return new PriceEpisodePeriodisedValues
         {
@@ -74,16 +178,44 @@ public static class PriceEpisodePeriodisedValuesBuilder
             Period12 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * multiplier).GetValueOrDefault()
         };
     }
-    
-    public static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
-    {
-        var additionalPayments = GetAdditionalPayments(earningsApprenticeship, additionalPaymentType);
 
-        var nthPayment = additionalPayments
+    public static void AddNthIncentivePaymentValues(
+        this List<PriceEpisodePeriodisedValues> list,
+        JoinedEarningsApprenticeship joinedApprenticeship, 
+        JoinedPriceEpisode joinedPriceEpisode, 
+        short academicYear, 
+        string attributeName, 
+        string additionalPaymentType, 
+        int n)
+    {
+        try
+        {
+            list.Add(BuildNthIncentivePaymentValues(joinedApprenticeship,joinedPriceEpisode,academicYear,attributeName,additionalPaymentType,n));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add NthIncentivePaymentValues {attributeName} to PriceEpisodePeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship joinedApprenticeship, JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
+    {
+        var allAdditionalPayments = joinedApprenticeship.Episodes.SelectMany(x =>
+            x.AdditionalPayments.Where(y => y.AdditionalPaymentType == additionalPaymentType))
             .OrderBy(i => i.AcademicYear)
             .ThenBy(i => i.DeliveryPeriod)
+            .ToList();
+
+        var nthPayment = allAdditionalPayments
             .Skip(n - 1)
             .FirstOrDefault();
+
+        if (nthPayment != null && (nthPayment.DueDate < joinedPriceEpisode.StartDate || nthPayment.DueDate > joinedPriceEpisode.EndDate))
+        {
+            nthPayment = null;
+        }
 
         return new PriceEpisodePeriodisedValues
         {
@@ -103,18 +235,16 @@ public static class PriceEpisodePeriodisedValuesBuilder
         };
     }
 
-    private static List<Instalment> GetInstalmentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear)
+    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedPriceEpisode joinedPriceEpisode, InstalmentType instalmentType, short academicYear)
     {
-        return earningsApprenticeship.Episodes
-            .SelectMany(episode => episode.Instalments)
-            .Where(i => i.AcademicYear == academicYear)
+        return joinedPriceEpisode.Instalments
+            .Where(i => i.AcademicYear == academicYear && i.InstalmentType == instalmentType)
             .ToList();
     }
 
-    private static List<AdditionalPayment> GetAdditionalPayments(Apprenticeship earningsApprenticeship, string additionalPaymentType)
+    private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedPriceEpisode joinedPriceEpisode, string additionalPaymentType)
     {
-        return earningsApprenticeship.Episodes
-            .SelectMany(episode => episode.AdditionalPayments)
+        return joinedPriceEpisode.AdditionalPayments
             .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
     }

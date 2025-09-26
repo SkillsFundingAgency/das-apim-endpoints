@@ -82,10 +82,7 @@ namespace SFA.DAS.ProviderRequestApprenticeTraining.Api
                 options.LowercaseQueryStrings = true;
             });
 
-            services.AddApplicationInsightsTelemetry(options =>
-            {
-                options.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
-            });
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(opt =>
             {

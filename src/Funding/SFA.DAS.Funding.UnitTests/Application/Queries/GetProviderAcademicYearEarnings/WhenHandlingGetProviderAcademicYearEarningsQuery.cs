@@ -36,10 +36,10 @@ namespace SFA.DAS.Funding.UnitTests.Application.Queries.GetProviderAcademicYearE
             var learner3 = _fixture.Build<LearnerDto>().With(x => x.Uln, "1003").Create();
             var earningsResponse = new AcademicYearEarningsDto() { Learners = new List<LearnerDto>() { learner1, learner2, learner3 } };
 
-            var apprentice1 = _fixture.Build<ApprenticeshipDto>().With(x => x.Uln, "1001").Create();
-            var apprentice2 = _fixture.Build<ApprenticeshipDto>().With(x => x.Uln, "1002").Create();
-            var apprentice3 = _fixture.Build<ApprenticeshipDto>().With(x => x.Uln, "6666").Create();
-            var apprenticeshipsResponse = new ApprenticeshipsDto() { Apprenticeships = new List<ApprenticeshipDto>() { apprentice1, apprentice2, apprentice3 } };
+            var apprentice1 = _fixture.Build<LearningDto>().With(x => x.Uln, "1001").Create();
+            var apprentice2 = _fixture.Build<LearningDto>().With(x => x.Uln, "1002").Create();
+            var apprentice3 = _fixture.Build<LearningDto>().With(x => x.Uln, "6666").Create();
+            var apprenticeshipsResponse = new ApprenticeshipsDto() { Apprenticeships = new List<LearningDto>() { apprentice1, apprentice2, apprentice3 } };
 
             earningsService.Setup(x => x.GetAcademicYearEarnings(query.Ukprn)).ReturnsAsync(earningsResponse);
             apprenticeshipsService.Setup(x => x.GetAll(query.Ukprn)).ReturnsAsync(apprenticeshipsResponse);

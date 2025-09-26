@@ -8,7 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
-using SFA.DAS.ToolsSupport.Application.Queries;
+using SFA.DAS.ToolsSupport.Application.Queries.SearchEmployerAccounts;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.Controllers;
 
@@ -19,19 +19,19 @@ public class WhenGettingEmployerAccounts
     public async Task Then_EmployerAccountsResponse_Returned_From_Mediator(
         long accountId,
         string payRef,
-        GetEmployerAccountsQueryResult mockQueryResult,
+        SearchEmployerAccountsQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] EmployerAccountsController sut)
     {
-        mockMediator.Setup(x => x.Send(It.Is<GetEmployerAccountsQuery>(p=>p.AccountId == accountId && p.PayeSchemeRef == payRef), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
+        mockMediator.Setup(x => x.Send(It.Is<SearchEmployerAccountsQuery>(p=>p.AccountId == accountId && p.PayeSchemeRef == payRef), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
-        var actual = await sut.Get(accountId, payRef) as ObjectResult;
+        var actual = await sut.Get(accountId, payRef, null) as ObjectResult;
 
         using (new AssertionScope())
         {
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().BeOfType<GetEmployerAccountsQueryResult>()
-                .Which.Accounts.Should().BeEquivalentTo(mockQueryResult.Accounts);
+            actual.Value.Should().BeOfType<SearchEmployerAccountsQueryResult>()
+                .Which.EmployerAccounts.Should().BeEquivalentTo(mockQueryResult.EmployerAccounts);
         }
     }
 
@@ -39,13 +39,13 @@ public class WhenGettingEmployerAccounts
     public async Task And_Exception_Returned_Then_Returns_Internal_Server_Error(
         long accountId,
         string payRef,
-        GetEmployerAccountsQueryResult mockQueryResult,
+        SearchEmployerAccountsQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] EmployerAccountsController sut)
     {
-        mockMediator.Setup(x => x.Send(It.IsAny<GetEmployerAccountsQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
+        mockMediator.Setup(x => x.Send(It.IsAny<SearchEmployerAccountsQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 
-        var actual = await sut.Get(accountId, payRef) as StatusCodeResult;
+        var actual = await sut.Get(accountId, payRef, null) as StatusCodeResult;
 
         actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }

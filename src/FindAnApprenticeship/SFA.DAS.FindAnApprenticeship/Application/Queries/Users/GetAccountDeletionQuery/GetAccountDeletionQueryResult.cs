@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDeletionQuery
@@ -23,6 +24,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetAccountDelet
             public List<Address> OtherAddresses { get; set; } = [];
             public string? EmploymentLocationInformation { get; set; }
             public AvailableWhere? EmployerLocationOption { get; set; }
+            public ApprenticeshipTypes ApprenticeshipType { get; set; }
         }
     }
 }

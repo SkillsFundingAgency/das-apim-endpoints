@@ -36,7 +36,7 @@ public class GetApplicationsQueryHandler(
             return new GetApplicationsQueryResult();
         }
 
-        var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference}").ToList();
+        var vacancyReferences = applicationList.Select(x => $"{x.VacancyReference.TrimVacancyReference()}").ToList();
         
         var vacancies = await vacancyService.GetVacancies(vacancyReferences);
 
@@ -45,8 +45,8 @@ public class GetApplicationsQueryHandler(
         foreach (var application in applicationList)
         {
             var vacancy = vacancies.FirstOrDefault(v => v.VacancyReference.TrimVacancyReference() == application.VacancyReference);
-            
-            if(vacancy is null) continue;
+
+            if (vacancy is null) continue;
 
             TryParse<ApplicationStatus>(application.Status, out var status);
             result.Applications.Add(new GetApplicationsQueryResult.Application
@@ -67,6 +67,7 @@ public class GetApplicationsQueryHandler(
                 EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
                 EmployerLocationOption = vacancy.EmployerLocationOption,
                 OtherAddresses = vacancy.OtherAddresses?.ToList(),
+                ApprenticeshipType = vacancy.ApprenticeshipType,
             });
         }
 

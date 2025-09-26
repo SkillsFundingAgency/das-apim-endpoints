@@ -1,31 +1,35 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Asp.Versioning;
+using Asp.Versioning.ApiExplorer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.Vacancies.Api.AppStart;
+using SFA.DAS.Vacancies.Api.OpenApi;
 using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Services;
+using SFA.DAS.Vacancies.Telemetry;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
-using SFA.DAS.Vacancies.Services;
-using SFA.DAS.Vacancies.Telemetry;
 
 namespace SFA.DAS.Vacancies.Api;
 
 public static class Startup
 {
     public static void ConfigureServices(
-        IServiceCollection services, 
-        IWebHostEnvironment environment, 
+        IServiceCollection services,
+        IWebHostEnvironment environment,
         IConfigurationRoot configuration)
     {
         services.AddSingleton(environment);
@@ -90,30 +94,46 @@ public static class Startup
 
         if (!string.IsNullOrEmpty(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]))
         {
-            services.AddSingleton<IMetrics, VacancyMetrics>();    
+            services.AddSingleton<IMetrics, VacancyMetrics>();
         }
         else
         {
             services.AddSingleton<IMetrics, MockVacancyMetrics>();
         }
-        
-        services.AddSwaggerGen(c =>
+
+        services.AddSwaggerGen(options =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = "Display advert API", Version = "v1", Description = @"
-### Get and display adverts from Find an apprenticeship. ### 
-**Note.** It is not recommended to use The Display Advert API directly from a browser and as such we have not enabled CORS for this API.  Instead, we recommend you call the API intermittently to retrieve the latest vacancies, store those vacancies in your own data store, and then change your website to read those vacancies from your own data store."
-            });
-            var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Startup).Namespace}.xml");
-            c.IncludeXmlComments(filePath);
+            var fileName = typeof(Program).Assembly.GetName().Name + ".xml";
+            var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
+
+            // integrate xml comments
+            options.IncludeXmlComments(filePath);
         });
+        services.AddApiVersioning(options =>
+        {
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1);
+            options.ReportApiVersions = true;
 
-
+            //Use URL segment versioning, header versioning, or query string versioning
+            options.ApiVersionReader = ApiVersionReader.Combine(
+                new UrlSegmentApiVersionReader(),
+                new HeaderApiVersionReader("X-Version"),
+                new MediaTypeApiVersionReader("ver"));
+        })
+            .AddMvc()
+            .AddApiExplorer(options =>
+            {
+                options.GroupNameFormat = "'v'VVV"; // e.g., v1
+                options.SubstituteApiVersionInUrl = true;
+            });
+        services.AddControllers();
+        services.AddEndpointsApiExplorer();
+        services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerGenOptions>();
     }
 
     public static void ConfigureApp(
-        IApplicationBuilder app, 
+        IApplicationBuilder app,
         IConfigurationRoot configuration)
     {
         app.UseAuthentication();
@@ -122,22 +142,25 @@ public static class Startup
         {
             app.UseHealthChecks();
         }
-                
+
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
-            endpoints.MapControllerRoute(
-                name: "default",
-                pattern: "api/{controller=vacancy}/{action=index}/{id?}");
+            endpoints.MapControllers();
         });
-            
+
         app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "VacanciesOuterApi");
-            c.RoutePrefix = string.Empty;
-        });
 
-
+        var apiVersionDescriptionProvider = app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>();
+        app.UseSwaggerUI(
+            options =>
+            {
+                foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions)
+                {
+                    var url = $"/swagger/{description.GroupName}/swagger.json";
+                    options.SwaggerEndpoint(url, "VacanciesOuterApi");
+                }
+                options.RoutePrefix = string.Empty;
+            });
     }
 }

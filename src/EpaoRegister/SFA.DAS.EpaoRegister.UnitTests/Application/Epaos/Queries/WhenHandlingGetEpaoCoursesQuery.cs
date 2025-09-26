@@ -57,64 +57,49 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
         }
 
         [Test, MoqAutoData]
-        public async Task Then_Gets_EpaoCourses_From_Assessor_Api(
+        public async Task Then_Returns_Only_Matching_Active_Courses_For_Epao(
             GetEpaoCoursesQuery query,
-            List<GetEpaoCoursesListItem> apiResponse,
-            GetStandardsListResponse getStandardResponses,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             GetEpaoCoursesQueryHandler handler)
         {
+            // Arrange
+            var epaoStandardCodes = new List<int> { 101, 102, 103 };
+
+            var epaoCourses = epaoStandardCodes
+                .Select(code => new GetEpaoCoursesListItem { StandardCode = code })
+                .ToList();
+
+            var activeStandards = new List<GetStandardResponse>
+            {
+                new() { LarsCode = 101, }, // match
+                new() { LarsCode = 102, }, // match
+                new() { LarsCode = 999, }, // no match
+                new() { LarsCode = 103, }  // match
+            };
+
+            var getStandardResponses = new GetStandardsListResponse
+            {
+                Standards = activeStandards
+            };
+
             mockAssessorsApiClient
                 .Setup(client => client.GetAll<GetEpaoCoursesListItem>(
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(epaoCourses);
+
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.IsAny<GetActiveStandardsListRequest>()))
                 .ReturnsAsync(getStandardResponses);
 
+            // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
+            // Assert
             result.EpaoId.Should().Be(query.EpaoId);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_Gets_Courses_From_Api(
-            GetEpaoCoursesQuery query,
-            List<GetEpaoCoursesListItem> apiResponse,
-            List<GetStandardResponse> matchingStandards,
-            GetStandardResponse nonMatchedStandard,
-            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            [Frozen] Mock<ICacheStorageService> mockCacheStorageService,
-            [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
-            GetEpaoCoursesQueryHandler handler)
-        {
-            var i = 0;
-            foreach (var course in matchingStandards)
-            {
-                course.LarsCode = apiResponse[i].StandardCode;
-                i++;
-            }
-            var allStandards = new List<GetStandardResponse>(); 
-            allStandards.AddRange(matchingStandards);
-            allStandards.Add(nonMatchedStandard);
-            
-            mockAssessorsApiClient
-                .Setup(client => client.GetAll<GetEpaoCoursesListItem>(
-                    It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
-                .ReturnsAsync(apiResponse);
-            
-            foreach (var standard in allStandards)
-            {
-                mockCoursesApiClient
-                    .Setup(client => client.Get<GetStandardResponse>(It.Is<GetStandardRequest>(c=>c.StandardId.Equals(standard.LarsCode))))
-                    .ReturnsAsync(standard);    
-            }
-            
-            var result = await handler.Handle(query, CancellationToken.None);
-
-            result.EpaoId.Should().Be(query.EpaoId);
-            result.Courses.Should().BeEquivalentTo(matchingStandards);
+            result.Courses.Should().HaveCount(3);
+            result.Courses.Select(c => c.LarsCode).Should().BeEquivalentTo([101, 102, 103]);
         }
         
         [Test, MoqAutoData]
@@ -129,40 +114,42 @@ namespace SFA.DAS.EpaoRegister.UnitTests.Application.Epaos.Queries
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             GetEpaoCoursesQueryHandler handler)
         {
-            var i = 0;
-            foreach (var course in matchingStandards)
+            // Arrange
+            var epaoStandardCodes = new List<int> { 101, 102, 103 };
+
+            var epaoCourses = epaoStandardCodes
+                .Select(code => new GetEpaoCoursesListItem { StandardCode = code })
+                .ToList();
+
+            var activeStandards = new List<GetStandardResponse>
             {
-                course.LarsCode = apiResponse[i].StandardCode;
-                i++;
-            }
-            apiResponse.Add(additionalItem);
-            var allStandards = new List<GetStandardResponse>(); 
-            allStandards.AddRange(matchingStandards);
-            allStandards.Add(nonMatchedStandard);
-            
+                new() { LarsCode = 101, }, // match
+                new() { LarsCode = 999, }, // no match
+                new() { LarsCode = 103, }  // match
+            };
+
+            var getStandardResponses = new GetStandardsListResponse
+            {
+                Standards = activeStandards
+            };
+
             mockAssessorsApiClient
                 .Setup(client => client.GetAll<GetEpaoCoursesListItem>(
                     It.Is<GetEpaoCoursesRequest>(request => request.EpaoId == query.EpaoId)))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(epaoCourses);
+
             mockCoursesApiClient
-                .Setup(client => client.Get<GetStandardResponse>(
-                    It.IsAny<GetStandardRequest>()))
-                .ReturnsAsync((GetStandardResponse)null);   
-            
-            foreach (var standard in matchingStandards)
-            {
-                mockCoursesApiClient
-                    .Setup(client => client.Get<GetStandardResponse>(
-                        It.Is<GetStandardRequest>(c=>c.StandardId.Equals(standard.LarsCode))))
-                    .ReturnsAsync(standard);    
-            }
-            
+                .Setup(client => client.Get<GetStandardsListResponse>(
+                    It.IsAny<GetActiveStandardsListRequest>()))
+                .ReturnsAsync(getStandardResponses);
+
+            // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
+            // Assert
             result.EpaoId.Should().Be(query.EpaoId);
-            result.Courses.Should().BeEquivalentTo(matchingStandards);
-            result.Courses.SingleOrDefault(c => c.LarsCode.Equals(additionalItem.StandardCode)).Should().BeNull();
-            
+            result.Courses.Should().HaveCount(2);
+            result.Courses.Select(c => c.LarsCode).Should().BeEquivalentTo([101, 103]);
         }
     }
 }

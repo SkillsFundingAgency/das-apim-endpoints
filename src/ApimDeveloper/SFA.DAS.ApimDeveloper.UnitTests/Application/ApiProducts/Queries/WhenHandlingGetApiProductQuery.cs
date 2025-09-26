@@ -22,7 +22,7 @@ namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiProducts.Queries
             GetApiProductQueryHandler handler)
         {
             //Arrange
-            serviceResponse.Products.First().Name = query.ProductName.ToLower();
+            serviceResponse.Products.First().Documents.Add(query.ProductName,"test");
             apimApiService.Setup(x => x.GetAvailableProducts("Documentation")).ReturnsAsync(serviceResponse);
             
             //Act

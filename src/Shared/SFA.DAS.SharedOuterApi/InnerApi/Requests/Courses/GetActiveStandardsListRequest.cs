@@ -1,31 +1,57 @@
-﻿using System;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
+
+public class GetActiveStandardsListRequest : IGetApiRequest
 {
-    public class GetActiveStandardsListRequest : IGetApiRequest
+    public List<int> RouteIds { get; set; } = [];
+    public List<int> Levels { get; set; } = [];
+    public string ApprenticeshipType { get; set; }
+    public string Keyword { get; set; } = string.Empty;
+    public CoursesOrderBy OrderBy { get; set; } = CoursesOrderBy.Score;
+
+    public string GetUrl => BuildUrl();
+
+    private const string _BASE_URL = "api/courses/standards";
+
+    private string BuildUrl()
     {
-        public List<Guid> RouteIds { get ; set ; }
-        public List<int> Levels { get ; set ; }
-        public string GetUrl => BuildUrl();
+        var queryParams = new List<string>();
 
-        private string BuildUrl()
+        if (!string.IsNullOrWhiteSpace(Keyword))
         {
-            var url = $"api/courses/standards?filter=Active";
-
-            if (RouteIds != null && RouteIds.Any())
-            {
-                url += "&routeIds=" + string.Join("&routeIds=", RouteIds);
-            }
-
-            if (Levels != null && Levels.Any())
-            {
-                url += "&levels=" + string.Join("&levels=", Levels);
-            }
-
-            return url;
+            queryParams.Add($"keyword={Uri.EscapeDataString(Keyword)}");
         }
+
+        if (RouteIds != null && RouteIds.Count > 0)
+        {
+            foreach (int routeId in RouteIds)
+            {
+                queryParams.Add($"routeIds={routeId}");
+            }
+        }
+
+        if (Levels != null && Levels.Count > 0)
+        {
+            foreach (int level in Levels)
+            {
+                queryParams.Add($"levels={level}");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(ApprenticeshipType))
+        {
+            queryParams.Add($"apprenticeshipType={ApprenticeshipType}");
+        }
+
+        queryParams.Add("filter=Active");
+
+        queryParams.Add($"orderby={OrderBy}");
+
+        var queryString = string.Join("&", queryParams);
+
+        return $"{_BASE_URL}{(queryString.Length > 0 ? "?" + queryString : string.Empty)}";
     }
 }

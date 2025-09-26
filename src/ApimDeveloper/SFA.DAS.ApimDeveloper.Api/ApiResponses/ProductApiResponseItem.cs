@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 
 namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
@@ -9,6 +10,7 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
         public string DisplayName { get ; set ; }
         public string Name { get ; set ; }
         public string Documentation { get; set; }
+        public Dictionary<string,string> Documents { get; set; }
 
         public static implicit operator ProductApiResponseItem(GetAvailableApiProductItem source)
         {
@@ -23,7 +25,8 @@ namespace SFA.DAS.ApimDeveloper.Api.ApiResponses
                 Description = source.Description,
                 Documentation = source.Documentation,
                 Name = source.Name,
-                DisplayName = source.DisplayName
+                DisplayName = source.DisplayName,
+                Documents = source.Documents
             };
         }
     }

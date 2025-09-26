@@ -14,7 +14,7 @@ namespace SFA.DAS.Vacancies.Api.AppStart
         public static void AddServiceRegistration(this IServiceCollection services)
         {
             services.AddHttpClient();
-            services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
+            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
 

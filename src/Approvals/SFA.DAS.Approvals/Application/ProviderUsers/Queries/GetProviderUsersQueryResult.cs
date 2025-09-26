@@ -1,5 +1,5 @@
-﻿using SFA.DAS.Approvals.InnerApi.Responses;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SFA.DAS.Approvals.InnerApi.Responses;
 
 
 namespace SFA.DAS.Approvals.Application.ProviderUsers.Queries

@@ -1,3 +1,4 @@
+using System;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
@@ -14,16 +15,19 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
 
 public class SubmitApplicationCommandHandler(
     IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, 
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client, 
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
     IVacancyService vacancyService,
     INotificationService notificationService,
     IMetrics metrics,
-    EmailEnvironmentHelper helper) 
+    EmailEnvironmentHelper helper)
     : IRequestHandler<SubmitApplicationCommand, bool>
 {
     public async Task<bool> Handle(SubmitApplicationCommand request, CancellationToken cancellationToken)
@@ -33,23 +37,33 @@ public class SubmitApplicationCommandHandler(
                 new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
 
         if (application == null || application.Status == ApplicationStatus.Submitted)
-        {
             return false;
-        }
 
         var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
             new PostSubmitApplicationRequest(request.CandidateId, application), false);
 
         if (response.StatusCode != HttpStatusCode.NoContent)
-        {
             return false;
-        }
-
+        
         if (await vacancyService.GetVacancy(application.VacancyReference) is not GetApprenticeshipVacancyItemResponse vacancy)
-        {
             return false;
-        }
-
+        
+        // Create in the new SQL Recruit Db - this should be a temporary call
+        int.TryParse(vacancy.Ukprn, out var ukprn);
+        var createApplicationReviewRequestData = new CreateApplicationReviewRequestData(
+            vacancy.AccountId!.Value,
+            vacancy.AccountLegalEntityId!.Value,
+            application.Id,
+            application.CandidateId,
+            ukprn,
+            vacancy.VacancyReference.ConvertVacancyReferenceToLong(),
+            vacancy.Title,
+            vacancy.AdditionalQuestion1,
+            vacancy.AdditionalQuestion2,
+            DateTime.UtcNow);
+        
+        await recruitApiV2Client.PutWithResponseCode<NullResponse>(new CreateApplicationReviewRequest(application.Id, createApplicationReviewRequestData));
+        
         var email = new SubmitApplicationEmail(
             helper.SubmitApplicationEmailTemplateId,
             application.Candidate.Email,

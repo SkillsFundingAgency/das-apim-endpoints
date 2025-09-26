@@ -17,6 +17,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.PublicSectorReporting\SFA.DAS.PublicSectorReporting.csproj" />
+      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
     </ItemGroup>
     <ItemGroup>
         <Content Update="appsettings.json">
@@ -25,5 +26,9 @@
         <Content Update="appsettings.Development.json">
             <CopyToPublishDirectory>Never</CopyToPublishDirectory>
         </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Controllers\" />
+      <Folder Include="Models\" />
     </ItemGroup>
 </Project>

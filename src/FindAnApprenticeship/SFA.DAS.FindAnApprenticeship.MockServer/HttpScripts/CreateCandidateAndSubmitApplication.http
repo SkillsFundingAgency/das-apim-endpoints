@@ -1,0 +1,309 @@
+###
+PUT {{baseUrl}}/candidates/{{$random.uuid}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "email": "test-integration@{{$random.uuid}}.com"
+}
+> {%
+    client.global.set("candidateId", response.body.id);
+    client.global.set("candidateEmail", response.body.email);
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+PUT {{baseUrl}}/users/{{candidateId}}/create-account/add-details
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "firstName": "Integration",
+  "lastName": "Test"
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/users/{{candidateId}}/create-account/date-of-birth
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "dateOfBirth": "2005-07-16T00:00:00.000Z"
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/users/{{candidateId}}/create-account/select-address
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "uprn": "10095513875",
+  "addressLine1": "Cheylsmore House",
+  "addressLine2": "5 Quinton Road",
+  "addressLine3": "Coventry",
+  "addressLine4": null,
+  "postcode": "CV1 2WT",
+  "email": "{{candidateEmail}}"
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/users/{{candidateId}}/create-account/phone-number
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "phoneNumber": "07777777777"
+}
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+GET {{baseUrl}}/users/{{candidateId}}/create-account/candidate-preferences
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+> {%
+    client.global.set("preferenceId", response.body.candidatePreferences[0].preferenceId)
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/users/{{candidateId}}/create-account/candidate-preferences
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "candidatePreferences": [
+    {
+      "preferenceId": "{{preferenceId}}",
+      "preferenceMeaning": "A vacancy is closing soon",
+      "preferenceHint": "",
+      "contactMethodsAndStatus": [
+        {
+          "contactMethod": "Email",
+          "status": true
+        }
+      ]
+    }
+  ]
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/users/{{candidateId}}/create-account/check-answers
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/vacancies/{{vacancyReference}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "candidateId": "{{candidateId}}"
+}
+> {%
+    client.global.set("applicationId", response.body.applicationId)
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/{{candidateId}}/work-history
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "workHistorySectionStatus": 3
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/{{candidateId}}/training-courses
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "trainingCoursesSectionStatus": 3
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/{{candidateId}}/volunteering-and-work-experience
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "volunteeringAndWorkExperienceSectionStatus": 3
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/{{candidateId}}/disability-confidence
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "isSectionCompleted": true
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/interviewAdjustments
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "candidateId" : "{{candidateId}}",
+  "interviewAdjustmentsSectionStatus": 3
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/qualifications
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "candidateId" : "{{candidateId}}",
+  "isComplete": true
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 204, "Response status is not 204 it is " + response.status);
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/skillsAndStrengths
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "candidateId" : "{{candidateId}}",
+  "skillsAndStrengths": "I have some skills",
+  "skillsAndStrengthsSectionStatus": 3
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 201, "Response status is not 201");
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/what-interests-you
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+{
+  "candidateId" : "{{candidateId}}",
+  "answerText": "Making this works interests me",
+  "isComplete": true
+}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 204 , "Response status is not 204 it is " + response.status);
+    });
+%}
+
+###
+POST {{baseUrl}}/applications/{{applicationId}}/preview?candidateId={{candidateId}}
+Content-Type: application/json
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 204, "Response status is not 204 it is " + response.status);
+    });
+%}
+
+###
+GET {{baseUrl}}/applications/{{applicationId}}/submitted?candidateId={{candidateId}}
+X-Version: 1
+Ocp-Apim-Subscription-Key: {{subscriptionKey}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200 it is " + response.status);
+    });
+%}

@@ -80,9 +80,13 @@ public class PostSubmitApplicationRequestData
                 QuestionText = source.AdditionalQuestions.LastOrDefault().QuestionText,
             } : null,
             Support = source.Support,
-            DisabilityConfidenceStatus = source.DisabilityConfidenceStatus
+            DisabilityConfidenceStatus = source.DisabilityConfidenceStatus,
+            MigrationDate = DateTime.UtcNow,
         };
     }
+
+    public DateTime MigrationDate { get; set; }
+
     public Guid ApplicationId { get; set; }
     public Guid CandidateId { get; set; }
     public string VacancyReference { get; set; }

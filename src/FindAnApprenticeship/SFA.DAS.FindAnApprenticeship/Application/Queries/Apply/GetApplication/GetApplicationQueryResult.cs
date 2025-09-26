@@ -1,11 +1,14 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication;
 
 public record GetApplicationQueryResult
 {
+    public ApprenticeshipTypes ApprenticeshipType { get; set; }
     public bool IsDisabilityConfident { get; set; }
     public Candidate CandidateDetails { get; set; }
     public AboutYouSection AboutYou { get; set; }
@@ -15,7 +18,12 @@ public record GetApplicationQueryResult
     public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
     public DisabilityConfidenceSection DisabilityConfidence { get; set; }
     public WhatIsYourInterestSection WhatIsYourInterest { get; set; }
+    public EmploymentLocationSection? EmploymentLocation { get; set; }
     public bool IsApplicationComplete { get; set; }
+    public DateTime ClosingDate { get; set; }
+    public DateTime? ClosedDate { get; set; }
+    public string VacancyTitle { get; set; }
+    public string EmployerName { get; set; }
 
 
     public record Candidate
@@ -184,6 +192,11 @@ public record GetApplicationQueryResult
             public string QuestionLabel { get; set; }
             public string Answer { get; set; }
         }
+    }
+    
+    public record EmploymentLocationSection : LocationDto
+    {
+        public string EmploymentLocationStatus { get; set; }
     }
 
     public record InterviewAdjustmentsSection

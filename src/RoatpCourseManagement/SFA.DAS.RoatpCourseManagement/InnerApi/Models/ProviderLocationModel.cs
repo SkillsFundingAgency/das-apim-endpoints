@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models
 {
@@ -15,10 +16,8 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models
         public string County { get; set; }
         public decimal? Latitude { get; set; }
         public decimal? Longitude { get; set; }
-        public string Email { get; set; }
-        public string Website { get; set; }
-        public string Phone { get; set; }
         public bool IsImported { get; set; }
         public LocationType LocationType { get; set; }
+        public List<LocationStandardModel> Standards { get; set; }
     }
 }

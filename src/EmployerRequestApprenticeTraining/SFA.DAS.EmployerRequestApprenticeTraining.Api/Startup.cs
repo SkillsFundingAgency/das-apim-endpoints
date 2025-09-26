@@ -50,7 +50,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 };
 
                 services.AddAuthentication(azureAdConfiguration, policies);
-            
+
                 services.AddHealthChecks()
                     .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription)
@@ -85,10 +85,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Api
                 options.LowercaseQueryStrings = true;
             });
 
-            services.AddApplicationInsightsTelemetry(options =>
-            {
-                options.ConnectionString = _configuration["APPINSIGHTS_INSTRUMENTATIONKEY"];
-            });
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
             services.AddSwaggerGen(opt =>
             {

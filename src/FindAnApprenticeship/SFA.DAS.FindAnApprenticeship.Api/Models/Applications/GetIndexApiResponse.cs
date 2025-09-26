@@ -1,5 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
 {
@@ -7,8 +12,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
     {
         public string VacancyReference { get; set; }
         public string VacancyTitle { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; set; }
         public string EmployerName { get; set; }
         public DateTime ClosingDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
         public bool IsMigrated { get; set; }
         public bool IsDisabilityConfident { get; set; }
         public bool IsApplicationComplete { get; set; }
@@ -18,6 +25,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
         public InterviewAdjustmentsSection InterviewAdjustments { get; set; }
         public DisabilityConfidenceSection DisabilityConfidence { get; set; }
         public PreviousApplicationDetails PreviousApplication { get; set; }
+        public EmploymentLocationSection? EmploymentLocation { get; set; }
 
         public class EducationHistorySection
         {
@@ -30,6 +38,24 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                 {
                     Qualifications = source.Qualifications,
                     TrainingCourses = source.TrainingCourses
+                };
+            }
+        }
+        
+        public record EmploymentLocationSection : LocationDto
+        {
+            public string EmploymentLocationStatus { get; set; }
+            public static implicit operator EmploymentLocationSection(GetIndexQueryResult.EmploymentLocationSection? source)
+            {
+                if (source is null) return null;
+
+                return new EmploymentLocationSection
+                {
+                    Id = source.Id,
+                    Addresses = source.Addresses,
+                    EmploymentLocationInformation = source.EmploymentLocationInformation,
+                    EmployerLocationOption = source.EmployerLocationOption,
+                    EmploymentLocationStatus = source.EmploymentLocationStatus
                 };
             }
         }
@@ -107,17 +133,20 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
             {
                 VacancyReference = source.VacancyReference,
                 VacancyTitle = source.VacancyTitle,
+                ApprenticeshipType = source.ApprenticeshipType,
                 EmployerName = source.EmployerName,
                 ClosingDate = source.ClosingDate,
+                ClosedDate = source.ClosedDate,
                 IsMigrated = source.IsMigrated,
                 IsDisabilityConfident = source.IsDisabilityConfident,
                 IsApplicationComplete = source.IsApplicationComplete,
                 EducationHistory = source.EducationHistory,
+                EmploymentLocation = source.EmploymentLocation,
                 WorkHistory = source.WorkHistory,
                 ApplicationQuestions = source.ApplicationQuestions,
                 InterviewAdjustments = source.InterviewAdjustments,
                 DisabilityConfidence = source.DisabilityConfidence,
-                PreviousApplication = source.PreviousApplication
+                PreviousApplication = source.PreviousApplication,
             };
         }
 
@@ -138,6 +167,33 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications
                     SubmissionDate = source.SubmissionDate,
                     VacancyTitle = source.VacancyTitle
                 };
+            }
+        }
+
+        public record AddressDto(
+            string? AddressLine1,
+            string? AddressLine2,
+            string? AddressLine3,
+            string? AddressLine4,
+            string? Postcode,
+            double? Latitude = null,
+            double? Longitude = null)
+        {
+            public static AddressDto? From(SFA.DAS.SharedOuterApi.Models.Address? source)
+            {
+                if (source is null)
+                {
+                    return null;
+                }
+                
+                return new AddressDto(
+                    source.AddressLine1,
+                    source.AddressLine2,
+                    source.AddressLine3,
+                    source.AddressLine4,
+                    source.Postcode,
+                    source.Latitude,
+                    source.Longitude);
             }
         }
     }

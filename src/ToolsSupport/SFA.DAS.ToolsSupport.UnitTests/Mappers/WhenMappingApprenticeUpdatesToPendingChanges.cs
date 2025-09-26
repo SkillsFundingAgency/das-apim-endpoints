@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Extensions;

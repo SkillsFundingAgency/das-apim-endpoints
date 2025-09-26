@@ -1,19 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
 using SFA.DAS.Vacancies.Configuration;
+using SFA.DAS.Vacancies.Enums;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 {
@@ -46,7 +48,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 
             actual.Vacancy.Should().BeEquivalentTo(apiApiResponse);
             actual.Vacancy.VacancyUrl.Should()
-                .Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{actual.Vacancy.VacancyReference}");
+                .Be($"{findAnApprenticeshipBaseUrl}/apprenticeship/reference/{actual.Vacancy.VacancyReference.TrimVacancyReference()}");
             actual.Vacancy.CourseLevel.Should().Be(courseResponse.Level);
             actual.Vacancy.CourseTitle.Should().Be(courseResponse.Title);
             actual.Vacancy.Route.Should().Be(courseResponse.Route);
@@ -66,7 +68,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         {
             vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
             courseResponse.LarsCode = vacancyApiResponse.StandardLarsCode!.Value;
-            vacancyApiResponse.VacancySource = "NhS";
+            vacancyApiResponse.VacancySource = DataSource.Nhs;
             vacancyApiResponse.VacancyReference = vacancyReference.ToString();
             standardsService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
                 { Standards = new List<GetStandardsListItem> { courseResponse } });

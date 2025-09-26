@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
+﻿using SFA.DAS.SharedOuterApi.Common;
+
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
     public class GetStandardResponse
     {
@@ -8,6 +10,7 @@
         public string Title { get; set; }
         public int Level { get; set; }
         public string Version { get; set; }
+        public ApprenticeshipType ApprenticeshipType { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }

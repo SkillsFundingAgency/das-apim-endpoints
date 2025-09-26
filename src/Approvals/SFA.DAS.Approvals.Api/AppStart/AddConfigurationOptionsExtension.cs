@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi;
+using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.Approvals.Api.AppStart;
@@ -50,11 +52,15 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
         services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection("ProviderCoursesApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
-        services.Configure<ApprenticeshipsApiConfiguration>(configuration.GetSection("ApprenticeshipsApiConfiguration"));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeshipsApiConfiguration>>().Value);
+        services.Configure<LearningApiConfiguration>(configuration.GetSection("LearningApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LearningApiConfiguration>>().Value);
         services.Configure<CollectionCalendarApiConfiguration>(configuration.GetSection("CollectionCalendarApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CollectionCalendarApiConfiguration>>().Value);
         services.Configure<FinanceApiConfiguration>(configuration.GetSection("FinanceApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<FinanceApiConfiguration>>().Value);
+        services.Configure<LearnerDataInnerApiConfiguration>(configuration.GetSection("LearnerDataInnerApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerDataInnerApiConfiguration>>().Value);
+        services.Configure<CourseTypesApiConfiguration>(configuration.GetSection("CourseTypesApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CourseTypesApiConfiguration>>().Value);
     }
 }

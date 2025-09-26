@@ -7,12 +7,12 @@ using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.ChangeUserRole;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportCreateInvitation;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
-using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountFinance;
 using SFA.DAS.ToolsSupport.Application.Queries.GetAccountOrganisations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetEmployerAccountDetails;
 using SFA.DAS.ToolsSupport.Application.Queries.GetPayeSchemeLevyDeclarations;
 using SFA.DAS.ToolsSupport.Application.Queries.GetTeamMembers;
+using SFA.DAS.ToolsSupport.Application.Queries.SearchEmployerAccounts;
 
 namespace SFA.DAS.ToolsSupport.Api.Controllers;
 
@@ -21,19 +21,16 @@ namespace SFA.DAS.ToolsSupport.Api.Controllers;
 public class EmployerAccountsController(IMediator mediator, ILogger<EmployerAccountsController> logger) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] long? accountId, [FromQuery] string? payeSchemeRef)
+    public async Task<IActionResult> Get([FromQuery] long? accountId, [FromQuery] string? payeSchemeRef, [FromQuery] string? employerName)
     {
-
         try
         {
-            var response = await mediator.Send(new GetEmployerAccountsQuery { AccountId = accountId, PayeSchemeRef = payeSchemeRef });
-
+            var response = await mediator.Send(new SearchEmployerAccountsQuery { AccountId = accountId, PayeSchemeRef = payeSchemeRef, EmployerName = employerName });
             return Ok(response);
-
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error attempting to query Employer Account using accountId {accountId} or PayeSchemeRef {payeSchemeRef}", accountId, payeSchemeRef);
+            logger.LogError(ex, "Error attempting to query Employer Account using accountId {accountId}, payeSchemeRef {payeSchemeRef}, or employerName {employerName}", accountId, payeSchemeRef, employerName);
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }

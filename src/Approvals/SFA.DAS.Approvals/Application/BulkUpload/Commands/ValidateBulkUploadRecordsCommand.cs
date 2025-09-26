@@ -1,6 +1,6 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
-using System.Collections.Generic;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands
 {

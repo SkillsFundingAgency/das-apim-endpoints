@@ -1,6 +1,6 @@
-﻿using SFA.DAS.Approvals.Application.Shared.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 
 namespace SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses
 {

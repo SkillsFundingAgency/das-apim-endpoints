@@ -5,7 +5,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Funding.Application.Services;
-using SFA.DAS.Funding.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.Funding.InnerApi.Requests.Learning;
 using SFA.DAS.Funding.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -18,14 +18,14 @@ namespace SFA.DAS.Funding.UnitTests.Application.Services.ApprenticeshipsServiceT
         [Test, MoqAutoData]
         public async Task Then_The_Api_Is_Called_Returning_The_Apprenticeships(
             long ukprn,
-            IEnumerable<ApprenticeshipDto> apiResponse,
-            [Frozen] Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> client,
+            IEnumerable<LearningDto> apiResponse,
+            [Frozen] Mock<ILearningApiClient<LearningApiConfiguration>> client,
             ApprenticeshipsService service
         )
         {
             client.Setup(x =>
-                    x.GetAll<ApprenticeshipDto>(
-                        It.Is<GetApprenticeshipsRequest>(c => c.GetAllUrl.Contains(ukprn.ToString()))))
+                    x.GetAll<LearningDto>(
+                        It.Is<GetLearningsRequest>(c => c.GetAllUrl.Contains(ukprn.ToString()))))
                 .ReturnsAsync(apiResponse);
 
             var actual = await service.GetAll(ukprn);

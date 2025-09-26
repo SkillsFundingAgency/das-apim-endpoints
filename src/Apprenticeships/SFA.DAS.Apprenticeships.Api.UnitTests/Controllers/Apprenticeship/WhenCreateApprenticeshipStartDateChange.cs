@@ -13,7 +13,7 @@ using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -32,7 +32,7 @@ public class WhenCreateApprenticeshipStartDateChange
     public async Task ThenCreatesApprenticeshipStartDateChangeUsingApiClient()
     {
         // Arrange
-        var apiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        var apiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         var logger = new Mock<ILogger<ApprenticeshipController>>();
         var mediator = new Mock<IMediator>();
         var sut = new ApprenticeshipController(logger.Object, apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mediator.Object);
@@ -59,7 +59,7 @@ public class WhenCreateApprenticeshipStartDateChange
     public async Task IfRequestFailsReturnsBadRequest()
     {
         // Arrange
-        var apiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        var apiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         var logger = new Mock<ILogger<ApprenticeshipController>>();
         var mediator = new Mock<IMediator>();
         var sut = new ApprenticeshipController(logger.Object, apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mediator.Object);
@@ -83,7 +83,7 @@ public class WhenCreateApprenticeshipStartDateChange
     public async Task IfSendNotificationFailsReturnsBadRequest()
     {
         // Arrange
-        var apiClient = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+        var apiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         var logger = new Mock<ILogger<ApprenticeshipController>>();
         var mediator = new Mock<IMediator>();
         var sut = new ApprenticeshipController(logger.Object, apiClient.Object, Mock.Of<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>(), mediator.Object);

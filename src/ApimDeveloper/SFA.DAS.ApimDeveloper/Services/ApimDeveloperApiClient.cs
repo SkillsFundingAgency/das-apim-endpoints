@@ -12,11 +12,11 @@ namespace SFA.DAS.ApimDeveloper.Services
     {
         private readonly IInternalApiClient<ApimDeveloperApiConfiguration> _apiClient;
 
-        public ApimDeveloperApiClient (IInternalApiClient<ApimDeveloperApiConfiguration> apiClient)
+        public ApimDeveloperApiClient(IInternalApiClient<ApimDeveloperApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
-        
+
         public Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
             return _apiClient.Get<TResponse>(request);
@@ -81,7 +81,13 @@ namespace SFA.DAS.ApimDeveloper.Services
         {
             throw new System.NotImplementedException();
         }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }
@@ -90,6 +96,10 @@ namespace SFA.DAS.ApimDeveloper.Services
         {
             throw new System.NotImplementedException();
         }
+
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
-            

@@ -44,7 +44,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProv
                         LarsCode = c.LarsCode,
                         ApprovalBody = c.ApprovalBody,
                         Version = c.Version,
-                        IsApprovedByRegulator = c.IsApprovedByRegulator
+                        IsApprovedByRegulator = c.IsApprovedByRegulator,
+                        IsRegulatedForProvider = c.IsRegulatedForProvider,
+                        HasLocations = c.HasLocations
                     };
                     results.Add(course);
                 }

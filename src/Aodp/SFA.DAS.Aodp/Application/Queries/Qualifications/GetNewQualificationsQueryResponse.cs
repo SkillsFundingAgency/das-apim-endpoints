@@ -10,7 +10,6 @@
     }
     public class NewQualification
     {
-        public int Id { get; set; }
         public string? Title { get; set; }
         public string? Reference { get; set; }
         public string? AwardingOrganisation { get; set; }

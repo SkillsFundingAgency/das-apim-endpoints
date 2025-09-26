@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,20 +11,15 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.SelectDirectTransferConnection.Queries;
-public class GetSelectDirectTransferConnectionQueryHandler : IRequestHandler<GetSelectDirectTransferConnectionQuery, GetSelectDirectTransferConnectionQueryResult>
+public class GetSelectDirectTransferConnectionQueryHandler(
+    IFinanceApiClient<FinanceApiConfiguration> financeApiClient,
+    IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+    : IRequestHandler<GetSelectDirectTransferConnectionQuery, GetSelectDirectTransferConnectionQueryResult>
 {
-    private readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
-    private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
-
-    public GetSelectDirectTransferConnectionQueryHandler(IFinanceApiClient<FinanceApiConfiguration> financeApiClient, IAccountsApiClient<AccountsConfiguration> accountsApiClient)
-    {
-        _financeApiClient = financeApiClient;
-        _accountsApiClient = accountsApiClient;
-    }
     public async Task<GetSelectDirectTransferConnectionQueryResult> Handle(GetSelectDirectTransferConnectionQuery request, CancellationToken cancellationToken)
     {
-        var accountTask = _accountsApiClient.Get<GetAccountResponse>(new GetAccountRequest(request.AccountId.ToString()));
-        var connectionsTask = _financeApiClient.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(new GetTransferConnectionsRequest { AccountId = request.AccountId });
+        var accountTask = accountsApiClient.Get<GetAccountResponse>(new GetAccountRequest(request.AccountId.ToString()));
+        var connectionsTask = financeApiClient.Get<IEnumerable<GetTransferConnectionsResponse.TransferConnection>>(new GetTransferConnectionsRequest { AccountId = request.AccountId });
 
         await Task.WhenAll(accountTask, connectionsTask);
 

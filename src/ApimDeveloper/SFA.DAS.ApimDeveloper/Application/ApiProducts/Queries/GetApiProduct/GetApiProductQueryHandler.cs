@@ -19,8 +19,9 @@ namespace SFA.DAS.ApimDeveloper.Application.ApiProducts.Queries.GetApiProduct
         public async Task<GetApiProductQueryResult> Handle(GetApiProductQuery request, CancellationToken cancellationToken)
         {
             var result = await _apimApiService.GetAvailableProducts("Documentation");
-            var product = result.Products.FirstOrDefault(c => c.Name.Equals(request.ProductName, StringComparison.CurrentCultureIgnoreCase));
-
+            var product = result.Products.FirstOrDefault(c => c.Documents.ContainsKey(request.ProductName));
+            
+            
             return new GetApiProductQueryResult
             {
                 Product = product

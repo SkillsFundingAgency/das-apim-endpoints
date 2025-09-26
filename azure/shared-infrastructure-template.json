@@ -8,6 +8,12 @@
         "serviceName": {
             "type": "string"
         },
+        "serviceAppServicePlanSuffixes": {
+            "type": "array"
+        },
+        "serviceSubnetNames": {
+            "type": "array"
+        },
         "appServicePlanSku": {
             "type": "object",
             "defaultValue": {
@@ -31,6 +37,17 @@
             ],
             "metadata": {
                 "description": "Takes an array of objects: '[{\"identifier\": 0,\"tier\": \"Basic\",\"size\": \"1\",\"instances\": 1}]. Removing the backslash. The identifier helps map the values to the deployed ASP."
+            }
+        },
+        "serviceAppServicePlansSku": {
+            "type": "object",
+            "defaultValue": {
+                "tier": "Standard",
+                "size": "1",
+                "instances": 1
+            },
+            "metadata": {
+                "description": "SKU information for the Service APIM ASPs."
             }
         },
         "tags": {
@@ -103,8 +120,23 @@
                         "routeTable": "[variables('emptyObject')]"
                     }
                 }
+            },
+            {
+                "name": "serviceSubnetCopy",
+                "count": "[length(parameters('serviceSubnetNames'))]",
+                "input": {
+                    "name": "[parameters('serviceSubnetNames')[copyIndex('serviceSubnetCopy')]]",
+                    "properties": {
+                        "addressPrefix": "[blocks.getNextAddressRange(parameters('sharedEnvVirtualNetworkAddressPrefix'), 220, copyIndex('serviceSubnetCopy'), parameters('subnetAddressSpaceCIDR'))]",
+                        "serviceEndpointList": "[parameters('subnetServiceEndpointList')]",
+                        "delegations": "[parameters('subnetDelegations')]",
+                        "networkSecurityGroup": "[variables('emptyObject')]",
+                        "routeTable": "[variables('emptyObject')]"
+                    }
+                }
             }
         ],
+
         "apimSubnets": "[if(greater(parameters('subnetCount'), 0), variables('subnetCopy'), variables('emptyArray'))]",
         "subnetConfiguration": "[variables('apimSubnets')]"
     },
@@ -178,7 +210,38 @@
         {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2022-09-01",
-            "name": "[concat('apim-endpoint-app-service-plan-', copyIndex(), '-', parameters('utcValue'))]",
+            "name": "[concat( parameters('serviceAppServicePlanSuffixes')[copyIndex('serviceAppServicePlanNames')], '-', parameters('utcValue'))]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "copy": {
+                "name": "serviceAppServicePlanNames",
+                "count": "[length(parameters('serviceAppServicePlanSuffixes'))]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('deploymentUrlBase'),'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[toLower(concat('das-', parameters('resourceEnvironmentName'), '-', parameters('serviceAppServicePlanSuffixes')[copyIndex('serviceAppServicePlanNames')]))]"
+                    },
+                    "aspSize": {
+                        "value": "[parameters('serviceAppServicePlansSku').size]"
+                    },
+                    "aspInstances": {
+                        "value": "[parameters('serviceAppServicePlansSku').instances]"
+                    },
+                    "nonASETier": {
+                        "value": "[parameters('serviceAppServicePlansSku').tier]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2022-09-01",
+            "name": "[concat('apim-endpoint-app-service-plan-', copyIndex('appServicePlanLoop'), '-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "copy": {
                 "name": "appServicePlanLoop",
@@ -192,23 +255,24 @@
                 },
                 "parameters": {
                     "appServicePlanName": {
-                        "value": "[concat(variables('appServicePlanNamePrefix'), copyIndex())]"
+                        "value": "[concat(variables('appServicePlanNamePrefix'), copyIndex('appServicePlanLoop'))]"
+
                     },
                     "aspSize": {
-                        "value": "[parameters('appServicePlanSkus')[copyIndex()].size]"
+                        "value": "[parameters('appServicePlanSkus')[copyIndex('appServicePlanLoop')].size]"
                     },
                     "aspInstances": {
-                        "value": "[parameters('appServicePlanSkus')[copyIndex()].instances]"
+                        "value": "[parameters('appServicePlanSkus')[copyIndex('appServicePlanLoop')].instances]"
                     },
                     "nonASETier": {
-                        "value": "[parameters('appServicePlanSkus')[copyIndex()].tier]"
+                        "value": "[parameters('appServicePlanSkus')[copyIndex('appServicePlanLoop')].tier]"
                     }
                 }
             }
         },
         {
             "apiVersion": "2022-09-01",
-            "name": "[concat(variables('subnetNamePrefix'), copyIndex(), '-', parameters('utcValue'))]",
+            "name": "[concat(variables('subnetConfiguration')[copyIndex('subnetLoop')].name, '-', parameters('utcValue'))]",
             "type": "Microsoft.Resources/deployments",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "copy": {
@@ -227,22 +291,66 @@
                         "value": "[parameters('sharedEnvVirtualNetworkName')]"
                     },
                     "subnetName": {
-                        "value": "[variables('subnetConfiguration')[copyIndex()].name]"
+                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].name]"
                     },
                     "subnetAddressPrefix": {
-                        "value": "[variables('subnetConfiguration')[copyIndex()].properties.addressPrefix]"
+                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.addressPrefix]"
                     },
                     "serviceEndpointList": {
-                        "value": "[variables('subnetConfiguration')[copyIndex()].properties.serviceEndpointList]"
+                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.serviceEndpointList]"
                     },
                     "delegations": {
-                        "value": "[variables('subnetConfiguration')[copyIndex()].properties.delegations]"
+                        "value": "[variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.delegations]"
                     },
                     "networkSecurityGroup": {
-                        "value": "[if(empty(variables('subnetConfiguration')[copyIndex()].properties.networkSecurityGroup), variables('emptyObject'), variables('subnetConfiguration')[copyIndex()].properties.networkSecurityGroup)]"
+                        "value": "[if(empty(variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.networkSecurityGroup), variables('emptyObject'), variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.networkSecurityGroup)]"
                     },
                     "routeTable": {
-                        "value": "[if(empty(variables('subnetConfiguration')[copyIndex()].properties.routeTable), variables('emptyObject'), variables('subnetConfiguration')[copyIndex()].properties.routeTable)]"
+                        "value": "[if(empty(variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.routeTable), variables('emptyObject'), variables('subnetConfiguration')[copyIndex('subnetLoop')].properties.routeTable)]"
+                    }
+                }
+            },
+            "dependsOn": [
+                "[variables('resourceGroupName')]"
+            ]
+        },
+        {
+            "apiVersion": "2022-09-01",
+            "name": "[concat(copyIndex('serviceSubnetLoop'), '-', parameters('utcValue'))]",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "copy": {
+                "name": "serviceSubnetLoop",
+                "count": "[length(parameters('serviceSubnetNames'))]",
+                "mode": "Serial"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('deploymentUrlBase'),'subnet.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "virtualNetworkName": {
+                        "value": "[parameters('sharedEnvVirtualNetworkName')]"
+                    },
+                    "subnetName": {
+                        "value": "[variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].name]"
+                    },
+                    "subnetAddressPrefix": {
+                        "value": "[variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].properties.addressPrefix]"
+                    },
+                    "serviceEndpointList": {
+                        "value": "[variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].properties.serviceEndpointList]"
+                    },
+                    "delegations": {
+                        "value": "[variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].properties.delegations]"
+                    },
+                    "networkSecurityGroup": {
+                        "value": "[if(empty(variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].properties.networkSecurityGroup), variables('emptyObject'), variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].properties.networkSecurityGroup)]"
+                    },
+                    "routeTable": {
+                        "value": "[if(empty(variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].properties.routeTable), variables('emptyObject'), variables('serviceSubnetCopy')[copyIndex('serviceSubnetLoop')].properties.routeTable)]"
                     }
                 }
             },

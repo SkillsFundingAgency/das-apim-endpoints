@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.Vacancies.Enums;
 
 namespace SFA.DAS.Vacancies.InnerApi.Responses;
 
@@ -26,6 +27,9 @@ public class GetVacanciesListItem
 
     [JsonPropertyName("apprenticeshipLevel")]
     public string ApprenticeshipLevel { get; set; }
+
+    [JsonPropertyName("apprenticeshipType")]
+    public string ApprenticeshipType { get; set; }
 
     [JsonPropertyName("category")]
     public string Category { get; set; }
@@ -134,13 +138,19 @@ public class GetVacanciesListItem
         
     [JsonPropertyName("otherAddresses")]
     public List<Address>? OtherAddresses { get; set; }
-        
+
+    [JsonPropertyName("employmentLocationInformation")]
+    public string EmploymentLocationInformation { get; set; }
+
     [JsonPropertyName("distance")]
     public decimal? Distance { get; set; }
         
     [JsonPropertyName("vacancySource")]
-    public string VacancySource { get; set; }
-        
+    public DataSource VacancySource { get; set; }
+
+    [JsonPropertyName("applicationUrl")]
+    public string ApplicationUrl { get; set; }
+
     [JsonIgnore]
     public string CourseTitle { get ; set ; }
     [JsonIgnore]
@@ -149,6 +159,7 @@ public class GetVacanciesListItem
     public int CourseLevel { get ; set ; }
     [JsonIgnore]
     public string VacancyUrl { get ; set ; }
+
 }
 
 public class Address

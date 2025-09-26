@@ -1,68 +1,125 @@
-﻿using System.Threading;
+﻿using System;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
+using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
+using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
+namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands;
+
+[TestFixture]
+public class UpdateDraftApprenticeshipCommandHandlerTests
 {
-    [TestFixture]
-    public class UpdateDraftApprenticeshipCommandHandlerTests
+    [Test, MoqAutoData]
+    public async Task Handle_Update_Draft_Apprenticeship(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
+        GetStandardsListItem standardResponse,
+        GetLearnerAgeResponse learnerAgeResponse,
+        UpdateDraftApprenticeshipCommand request,
+        UpdateDraftApprenticeshipCommandHandler handler)
     {
-        private UpdateDraftApprenticeshipCommandHandler _handler;
-        private UpdateDraftApprenticeshipCommand _request;
-        private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _commitmentsApiClient;
-        private Fixture _fixture;
+        // Arrange
+        standardResponse.ApprenticeshipType = "Apprenticeship";
+            
+        courseTypeRulesService
+            .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ReturnsAsync(new CourseTypeRulesResult
+            {
+                Standard = standardResponse,
+                LearnerAgeRules = learnerAgeResponse
+            });
 
-        [SetUp]
-        public void Setup()
-        {
-            _fixture = new Fixture();
-            _request = _fixture.Create<UpdateDraftApprenticeshipCommand>();
+        commitmentsApiClient.Setup(x => x.PutWithResponseCode<NullResponse>(
+            It.Is<PutUpdateDraftApprenticeshipRequest>(r =>
+                r.CohortId == request.CohortId &&
+                r.ApprenticeshipId == request.ApprenticeshipId &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).ActualStartDate == request.ActualStartDate &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).Cost == request.Cost &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).TrainingPrice == request.TrainingPrice &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).EndPointAssessmentPrice == request.EndPointAssessmentPrice &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).CourseCode == request.CourseCode &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).DateOfBirth == request.DateOfBirth &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).DeliveryModel == request.DeliveryModel &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).Email == request.Email &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).EmploymentEndDate == request.EmploymentEndDate &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).EmploymentPrice == request.EmploymentPrice &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).EndDate == request.EndDate &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).FirstName == request.FirstName &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).IgnoreStartDateOverlap == request.IgnoreStartDateOverlap &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).IsOnFlexiPaymentPilot == request.IsOnFlexiPaymentPilot &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).LastName == request.LastName &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).CourseOption == request.CourseOption &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).Reference == request.Reference &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).ReservationId == request.ReservationId &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).StartDate == request.StartDate &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).Uln == request.Uln &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).UserInfo == request.UserInfo &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).RequestingParty == request.RequestingParty &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).MinimumAgeAtApprenticeshipStart ==
+                learnerAgeResponse.MinimumAge &&
+                ((UpdateDraftApprenticeshipRequest)r.Data).MaximumAgeAtApprenticeshipStart ==
+                learnerAgeResponse.MaximumAge
+            ))).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.OK, string.Empty))
+            .Verifiable(Times.Once());
 
-            _commitmentsApiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+        // Act
+        await handler.Handle(request, CancellationToken.None);
 
-            _handler = new UpdateDraftApprenticeshipCommandHandler(_commitmentsApiClient.Object);
-        }
+        // Assert
+        commitmentsApiClient.Verify();
+        courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
+    }
 
-        [Test]
-        public async Task Handle_Update_Draft_Apprenticeship()
-        {
-            await _handler.Handle(_request, CancellationToken.None);
+    [Test, MoqAutoData]
+    public async Task Handle_WhenNoStandardDetails_DoNotUpdateDraftApprenticeship(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
+        UpdateDraftApprenticeshipCommand request,
+        UpdateDraftApprenticeshipCommandHandler handler)
+    {
+        // Arrange
+        courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ThrowsAsync(new Exception($"Standard not found for course ID {request.CourseCode}"));
 
-            _commitmentsApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(
-                    It.Is<PutUpdateDraftApprenticeshipRequest>(r =>
-                            r.CohortId == _request.CohortId &&
-                            r.ApprenticeshipId == _request.ApprenticeshipId &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).ActualStartDate == _request.ActualStartDate &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).Cost == _request.Cost &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).TrainingPrice == _request.TrainingPrice &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).EndPointAssessmentPrice == _request.EndPointAssessmentPrice &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).CourseCode == _request.CourseCode &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).DateOfBirth == _request.DateOfBirth &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).DeliveryModel == _request.DeliveryModel &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).Email == _request.Email &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).EmploymentEndDate == _request.EmploymentEndDate &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).EmploymentPrice == _request.EmploymentPrice &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).EndDate == _request.EndDate &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).FirstName == _request.FirstName &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).IgnoreStartDateOverlap == _request.IgnoreStartDateOverlap &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).IsOnFlexiPaymentPilot == _request.IsOnFlexiPaymentPilot &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).LastName == _request.LastName &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).CourseOption == _request.CourseOption &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).Reference == _request.Reference &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).ReservationId == _request.ReservationId &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).StartDate == _request.StartDate &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).Uln == _request.Uln &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).UserInfo == _request.UserInfo &&
-                            ((UpdateDraftApprenticeshipRequest)r.Data).RequestingParty == _request.RequestingParty
-                        )
-                ), Times.Once);
-        }
+        // Act
+        var act = () => handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<Exception>()
+            .WithMessage($"Standard not found for course ID {request.CourseCode}");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_WhenNoLearnerAgeRules_DoNotUpdateDraftApprenticeship(
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
+        [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
+        GetStandardsListItem standardResponse,
+        UpdateDraftApprenticeshipCommand request,
+        UpdateDraftApprenticeshipCommandHandler handler)
+    {
+        // Arrange
+        standardResponse.ApprenticeshipType = "Apprenticeship";
+        courseTypeRulesService.Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
+            .ThrowsAsync(new Exception("Learner age rules not found for apprenticeship type Standard"));
+
+        // Act
+        var act = () => handler.Handle(request, CancellationToken.None);
+
+        // Assert
+        await act.Should().ThrowAsync<Exception>()
+            .WithMessage("Learner age rules not found for apprenticeship type Standard");
     }
 }

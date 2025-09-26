@@ -28,6 +28,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.Configure<CandidateApiConfiguration>(configuration.GetSection(nameof(CandidateApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<CandidateApiConfiguration>>().Value);
+            services.Configure<RecruitApiConfiguration>(configuration.GetSection("RecruitAltApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
             services.Configure<BusinessMetricsConfiguration>(configuration.GetSection(nameof(BusinessMetricsConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<BusinessMetricsConfiguration>>().Value);
         }

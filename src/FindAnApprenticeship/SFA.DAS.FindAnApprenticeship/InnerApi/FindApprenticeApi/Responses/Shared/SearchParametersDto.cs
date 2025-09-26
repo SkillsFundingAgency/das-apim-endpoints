@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 
@@ -13,7 +14,8 @@ public record SearchParametersDto(
     List<int>? SelectedLevelIds,
     string? Location,
     string? Latitude,
-    string? Longitude
+    string? Longitude,
+    List<ApprenticeshipTypes>? SelectedApprenticeshipTypes
 )
 {
     public virtual bool Equals(SearchParametersDto other)
@@ -22,22 +24,31 @@ public record SearchParametersDto(
         {
             return false;
         }
-        
-        var routesEqual = SelectedRouteIds is not null && other.SelectedRouteIds is not null
-            ? (SelectedRouteIds.Count == other.SelectedRouteIds.Count) && !SelectedRouteIds.Except(other.SelectedRouteIds).Any()
-            : SelectedRouteIds == other.SelectedRouteIds;
 
+        var thisRoutes = SelectedRouteIds ?? [];
+        var otherRoutes = other.SelectedRouteIds ?? [];
+        var routesEqual = thisRoutes.Count == otherRoutes.Count && !thisRoutes.Except(otherRoutes).Any(); 
+        
         if (routesEqual is false)
         {
             return false;
         }
         
-        var levelsEqual = SelectedLevelIds is not null && other.SelectedLevelIds is not null
-            ? (SelectedLevelIds.Count == other.SelectedLevelIds.Count) && !SelectedLevelIds.Except(other.SelectedLevelIds).Any()
-            : SelectedLevelIds == other.SelectedLevelIds;
+        var thisLevels = SelectedLevelIds ?? [];
+        var otherLevels = other.SelectedLevelIds ?? [];
+        var levelsEqual = thisLevels.Count == otherLevels.Count && !thisLevels.Except(otherLevels).Any();
+        
+        if (levelsEqual is false)
+        {
+            return false;
+        }
+        
+        var thisAppTypes = SelectedApprenticeshipTypes ?? [];
+        var otherAppTypes = other.SelectedApprenticeshipTypes ?? [];
+        var appTypesEqual = thisAppTypes.Count == otherAppTypes.Count && !thisAppTypes.Except(otherAppTypes).Any();
         
         return
-            levelsEqual
+            appTypesEqual
             && SearchTerm == other.SearchTerm
             && Distance == other.Distance
             && DisabilityConfident == other.DisabilityConfident
@@ -49,6 +60,11 @@ public record SearchParametersDto(
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(SearchTerm, SelectedRouteIds, Distance, DisabilityConfident, SelectedLevelIds, Location, Latitude, Longitude);
+        var routesValue = string.Join(",", (SelectedRouteIds ?? []).Order());
+        var levelsValue = string.Join(",", (SelectedLevelIds ?? []).Order());
+        var appTypesValue = string.Join(",", (SelectedApprenticeshipTypes ?? []).Order());
+        var hash = HashCode.Combine(routesValue, levelsValue, appTypesValue);
+        
+        return HashCode.Combine(SearchTerm, Distance, DisabilityConfident, Location, Latitude, Longitude, hash);
     }
 }

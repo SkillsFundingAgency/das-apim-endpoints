@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
 {
@@ -20,6 +21,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public string AdditionalQuestion2Status { get; set; }
         public string InterviewAdjustmentsStatus { get; set; }
         public string DisabilityConfidenceStatus { get; set; }
+        public string EmploymentLocationStatus { get; set; }
         public List<Question> AdditionalQuestions { get; set; } = [];
         public string WhatIsYourInterest { get; set; }
         public bool? ApplyUnderDisabilityConfidentScheme { get; set; }
@@ -29,6 +31,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses
         public List<Qualification> Qualifications { get; set; } = [];
         public List<GetWorkHistoryItemApiResponse> WorkHistory { get; set; } = [];
         public AboutYouItem AboutYou { get; set; }
+        public LocationDto? EmploymentLocation { get; set; }
         public GetCandidateApiResponse Candidate { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime? SubmittedDate { get; set; }

@@ -38,6 +38,7 @@ public class WithdrawApplicationQueryHandler(
             OtherAddresses = vacancy.OtherAddresses,
             EmployerLocationOption = vacancy.EmployerLocationOption,
             EmploymentLocationInformation = vacancy.EmploymentLocationInformation,
+            ApprenticeshipType = vacancy.ApprenticeshipType
         };
     }
 }

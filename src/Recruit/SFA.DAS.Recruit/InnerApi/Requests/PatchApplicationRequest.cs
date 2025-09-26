@@ -1,5 +1,6 @@
 using System;
 using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.Recruit.Enums;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Recruit.InnerApi.Requests;
@@ -26,12 +27,4 @@ public class Application
 {
     public string ResponseNotes { get; set; }
     public ApplicationStatus Status { get; set; }
-}
-public enum ApplicationStatus
-{
-    Draft = 0,
-    Submitted = 1,
-    Withdrawn = 2,
-    Successful = 3,
-    UnSuccessful = 4,
 }

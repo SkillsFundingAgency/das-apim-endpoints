@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
+﻿using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -8,22 +6,19 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.Vacancies.Application.Providers.Queries.GetProviderAccountLegalEntities;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Vacancies.Api.Controllers
 {
+    [ApiVersion("1")]
+    [ApiVersion("2")]
     [ApiController]
     [Route("[controller]/")]
-    public class AccountLegalEntitiesController : ControllerBase
+    public class AccountLegalEntitiesController(IMediator mediator, ILogger<AccountLegalEntitiesController> logger)
+        : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<AccountLegalEntitiesController> _logger;
-
-        public AccountLegalEntitiesController (IMediator mediator, ILogger<AccountLegalEntitiesController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
         /// <summary>
         /// GET list of Account Legal Entities.
         /// </summary>
@@ -52,11 +47,11 @@ namespace SFA.DAS.Vacancies.Api.Controllers
                 switch (account.AccountType)
                 {
                     case AccountType.Employer:
-                        var employerQueryResponse = await _mediator.Send(new GetLegalEntitiesForEmployerQuery
+                        var employerQueryResponse = await mediator.Send(new GetLegalEntitiesForEmployerQuery
                             {EncodedAccountId = account.AccountHashedId});
                         return Ok((GetAccountLegalEntitiesListResponse) employerQueryResponse);
                     case AccountType.Provider:
-                        var providerQueryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
+                        var providerQueryResponse = await mediator.Send(new GetProviderAccountLegalEntitiesQuery
                             {Ukprn = account.Ukprn.Value});
                         return Ok((GetAccountLegalEntitiesListResponse) providerQueryResponse);    
                     default:
@@ -65,7 +60,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"Unable to get account legal entities for {accountIdentifier}", e);
+                logger.LogError($"Unable to get account legal entities for {accountIdentifier}", e);
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }

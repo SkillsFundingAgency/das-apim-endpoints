@@ -1,0 +1,73 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 119
+@LarsCodeNoResults = 136
+@LarsCodeInvalid = 99999
+@OrderByDistance = Distance
+@OrderByInvalidValue = Name
+@OrderByAchievementRate = AchievementRate
+@OrderByEmployerProviderRating = EmployerProviderRating
+@OrderByApprenticeProviderRating = ApprenticeProviderRating
+
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance
+
+### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers
+ # expect to work returning page 1, 10 (or less results), ordered by distance
+### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCodeInvalid}}/providers?OrderBy={{OrderByDistance}}
+# Bad request
+###
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByInvalidValue}}
+
+# expect validation error as OrderBy value is not acceptable
+# {
+#   "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+#   "title": "One or more validation errors occurred.",
+#   "status": 400,
+#   "errors": {
+#     "OrderBy": [
+#       "The value 'Name' is not valid for OrderBy."
+#     ]
+#   },
+#   "traceId": ...
+# }
+###
+
+GET {{Api_HostAddress}}/courses/{{LarsCodeNoResults}}/providers?OrderBy={{OrderByDistance}}
+
+ # expect to work returning no providers, page 1, pagesize 1, totalPages 0, totalCount 0, the standard name,
+ # and the qarPeriod and reviewPeriod
+
+ ###
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByAchievementRate}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by achievement rate
+
+  ###
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByEmployerProviderRating}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by employer provider rating
+
+  ###
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByApprenticeProviderRating}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by apprentice provider rating
+
+
+ ###
+
+GET {{Api_HostAddress}}/courses/{{LarsCodeNoResults}}/providers?OrderBy={{OrderByDistance}}
+
+ # expect to work returning no providers, page 1, pagesize 1, totalPages 0, totalCount 0, the standard name,
+ # and the qarPeriod and reviewPeriod
+

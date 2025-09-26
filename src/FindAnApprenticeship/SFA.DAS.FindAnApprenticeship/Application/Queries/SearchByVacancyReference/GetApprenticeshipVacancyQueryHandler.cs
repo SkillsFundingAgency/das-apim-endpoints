@@ -10,12 +10,14 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {
     public class GetApprenticeshipVacancyQueryHandler(
+        ILogger<GetApprenticeshipVacancyQueryHandler> logger,
         ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
         ICourseService courseService,
         IVacancyService vacancyService,
@@ -45,6 +47,12 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                 };
             }
 
+            if (vacancy.CourseId <= 0)
+            {
+                logger.LogWarning("Vacancy '{vacancyReference}' has an unknown course", vacancy.VacancyReference);
+                return null;
+            }
+            
             var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
             var courseLevels = await courseService.GetLevels();
 
@@ -65,7 +73,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     new GetCandidateApiRequest(request.CandidateId.Value.ToString()));
 
                 var savedVacancy = candidateApiClient.Get<GetSavedVacancyApiResponse>(
-                    new GetSavedVacancyApiRequest(request.CandidateId.Value, vacancyReference));
+                    new GetSavedVacancyApiRequest(request.CandidateId.Value, null, vacancyReference));
 
                 await Task.WhenAll(application, candidate, savedVacancy);
 

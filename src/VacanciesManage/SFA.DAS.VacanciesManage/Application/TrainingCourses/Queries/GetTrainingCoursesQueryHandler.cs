@@ -1,45 +1,33 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 
-namespace SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries
+namespace SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
+
+public class GetTrainingCoursesQueryHandler(ICourseService courseService,
+    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient)
+    : IRequestHandler<GetTrainingCoursesQuery, GetTrainingCoursesQueryResult>
 {
-    public class GetTrainingCoursesQueryHandler : IRequestHandler<GetTrainingCoursesQuery, GetTrainingCoursesQueryResult>
+    public async Task<GetTrainingCoursesQueryResult> Handle(GetTrainingCoursesQuery query, CancellationToken cancellationToken)
     {
-        private const int CourseCacheDurationInHours = 3;
-        private readonly ICacheStorageService _cacheStorageService;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-
-        public GetTrainingCoursesQueryHandler (ICacheStorageService cacheStorageService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+        var courses = await courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+        var standards = courses.Standards;
+        if (query.Ukprn is null)
         {
-            _cacheStorageService = cacheStorageService;
-            _coursesApiClient = coursesApiClient;
+            return new GetTrainingCoursesQueryResult { TrainingCourses = standards };
         }
-        public async Task<GetTrainingCoursesQueryResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
-        {
-            var courses =
-                await _cacheStorageService.RetrieveFromCache<GetStandardsListResponse>(
-                    nameof(GetStandardsListResponse));
+        
+        var providerCourseDetails = await roatpCourseManagementApiClient
+            .Get<List<GetRoatpProviderAdditionalStandardsItem>>(new GetProviderAdditionalStandardsRequest(query.Ukprn.Value));
+        var larsCodes = providerCourseDetails?.Select(x => x.LarsCode) ?? [];
+        standards = standards.Where(x => larsCodes.Contains(x.LarsCode));
 
-            if (courses != null)
-            {
-                return new GetTrainingCoursesQueryResult
-                {
-                    TrainingCourses = courses.Standards
-                };
-            }
-            
-            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
-            await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, CourseCacheDurationInHours);
-
-            return new GetTrainingCoursesQueryResult
-            {
-                TrainingCourses = courses.Standards
-            };
-        }
+        return new GetTrainingCoursesQueryResult { TrainingCourses = standards };
     }
 }

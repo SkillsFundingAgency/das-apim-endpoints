@@ -11,6 +11,6 @@ namespace SFA.DAS.AODP.Domain.Qualifications.Requests
             _qualificationReference = qualificationReference;
         }
 
-        public string GetUrl => $"api/qualifications/{_qualificationReference}";
+        public string GetUrl => $"api/qualifications/{_qualificationReference}/detail";
     }
 }

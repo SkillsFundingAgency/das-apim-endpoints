@@ -5,9 +5,9 @@ using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -26,29 +26,29 @@ public class GetApprenticeshipStartDateQuery : IRequest<ApprenticeshipStartDateR
 public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprenticeshipStartDateQuery, ApprenticeshipStartDateResponse?>
 {
 	private readonly ILogger<GetApprenticeshipStartDateQueryHandler> _logger;
-	private readonly IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> _apprenticeshipsApiClient;
+	private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
 	private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiCommitmentsClient;
 	private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
 
     public GetApprenticeshipStartDateQueryHandler(
 		ILogger<GetApprenticeshipStartDateQueryHandler> logger,
-		IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration> apprenticeshipsApiClient,
+		ILearningApiClient<LearningApiConfiguration> learningApiClient,
 		ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiCommitmentsClient,
 		ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
 	{
 		_logger = logger;
-		_apprenticeshipsApiClient = apprenticeshipsApiClient;
+		_learningApiClient = learningApiClient;
 		_apiCommitmentsClient = apiCommitmentsClient;
 		_collectionCalendarApiClient = collectionCalendarApiClient;
     }
 
 	public async Task<ApprenticeshipStartDateResponse?> Handle(GetApprenticeshipStartDateQuery request, CancellationToken cancellationToken)
 	{
-		var apprenticeStartDateInnerModel = await _apprenticeshipsApiClient.Get<GetApprenticeshipStartDateResponse>(new GetApprenticeshipStartDateRequest { ApprenticeshipKey = request.ApprenticeshipKey });
+		var apprenticeStartDateInnerModel = await _learningApiClient.Get<GetLearningStartDateResponse>(new GetLearningStartDateRequest { LearningKey = request.ApprenticeshipKey });
 
 		if (apprenticeStartDateInnerModel == null)
 		{
-			_logger.LogWarning("No ApprenticeshipStartDate returned from innerApi for apprenticeshipKey:{key}", request.ApprenticeshipKey);
+			_logger.LogWarning("No Learning StartDate returned from innerApi for learning key:{key}", request.ApprenticeshipKey);
 			return null; 
 		}
 
@@ -71,7 +71,7 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 
         var apprenticeshipStartDateOuterModel = new ApprenticeshipStartDateResponse
 		{
-			ApprenticeshipKey = apprenticeStartDateInnerModel.ApprenticeshipKey,
+			ApprenticeshipKey = apprenticeStartDateInnerModel.LearningKey,
 			ActualStartDate = apprenticeStartDateInnerModel.ActualStartDate,
 			PlannedEndDate = apprenticeStartDateInnerModel.PlannedEndDate,
 			EmployerName = employerName,
@@ -97,11 +97,11 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
         return apprenticeshipStartDateOuterModel;
 	}
 
-	private async Task<string?> GetEmployerName(GetApprenticeshipStartDateResponse apprenticeStartDateInnerModel)
+	private async Task<string?> GetEmployerName(GetLearningStartDateResponse apprenticeStartDateInnerModel)
 	{
 		if (!apprenticeStartDateInnerModel.AccountLegalEntityId.HasValue)
 		{
-			_logger.LogError("No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.ApprenticeshipKey);
+			_logger.LogError("No AccountLegalEntityId returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.LearningKey);
 			return null;
 		}
 
@@ -109,18 +109,18 @@ public class GetApprenticeshipStartDateQueryHandler : IRequestHandler<GetApprent
 		
 		if(employer == null)
 		{
-			_logger.LogError("No AccountLegalEntity returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.ApprenticeshipKey);
+			_logger.LogError("No AccountLegalEntity returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.LearningKey);
 			return null;
 		}
 
 		return employer.LegalEntityName;
 	}
 
-	private async Task<string?> GetProviderName(GetApprenticeshipStartDateResponse apprenticeStartDateInnerModel)
+	private async Task<string?> GetProviderName(GetLearningStartDateResponse apprenticeStartDateInnerModel)
 	{
 		if (apprenticeStartDateInnerModel.UKPRN < 1)
 		{
-			_logger.LogError("Invalid UKPRN '{UKPRN}' returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.UKPRN, apprenticeStartDateInnerModel.ApprenticeshipKey);
+			_logger.LogError("Invalid UKPRN '{UKPRN}' returned from innerApi for apprenticeshipKey:{key}", apprenticeStartDateInnerModel.UKPRN, apprenticeStartDateInnerModel.LearningKey);
 			return null;
 		}
 

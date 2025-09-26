@@ -1,6 +1,5 @@
-﻿namespace SFA.DAS.SharedOuterApi.Infrastructure
+﻿namespace SFA.DAS.SharedOuterApi.Infrastructure;
+
+public class NullResponse
 {
-    public class NullResponse
-    {
-    }
 }

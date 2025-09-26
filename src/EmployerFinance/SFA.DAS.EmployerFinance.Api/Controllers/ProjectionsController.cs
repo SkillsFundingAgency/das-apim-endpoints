@@ -6,39 +6,29 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFinance.Api.Models;
 using SFA.DAS.EmployerFinance.Application.Queries.GetAccountProjectionSummary;
 
-namespace SFA.DAS.EmployerFinance.Api.Controllers
+namespace SFA.DAS.EmployerFinance.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class ProjectionsController(IMediator mediator, ILogger<ProjectionsController> logger) : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class ProjectionsController : ControllerBase
+    [HttpGet]
+    [Route("{accountId}")]
+    public async Task<IActionResult> GetAccountProjectionSummary(long accountId)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<ProjectionsController> _logger;
-
-        public ProjectionsController(IMediator mediator, ILogger<ProjectionsController> logger)
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var response = await mediator.Send(new GetAccountProjectionSummaryQuery
+            {
+                AccountId = accountId,
+            });
+
+            return Ok((GetAccountProjectionSummaryResponse)response);
         }
-
-        [HttpGet]
-        [Route("{accountId}")]
-        public async Task<IActionResult> GetAccountProjectionSummary(long accountId)
+        catch (Exception e)
         {
-            try
-            {
-                var response = await _mediator.Send(new GetAccountProjectionSummaryQuery
-                {
-                    AccountId = accountId,
-                });
-
-                return Ok((GetAccountProjectionSummaryResponse)response);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, "Error getting projections");
-                return BadRequest();
-            }
+            logger.LogError(e, "Error getting projections");
+            return BadRequest();
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -113,6 +114,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
         public decimal? Between18AndUnder21NationalMinimumWage { get; set; }
         public decimal? Under18NationalMinimumWage { get; set; }
         public DateTime? CandidateDateOfBirth { get; set; }
+        public ApprenticeshipTypes ApprenticeshipType { get; init; }
 
         public static implicit operator GetApprenticeshipVacancyApiResponse(GetApprenticeshipVacancyQueryResult source)
         {
@@ -124,7 +126,12 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Application = (CandidateApplication)source.Application,
                 ApplicationInstructions = source.ApprenticeshipVacancy.ApplicationInstructions,
                 ApplicationUrl = source.ApprenticeshipVacancy.ApplicationUrl,
+                ApprenticeMinimumWage = source.ApprenticeshipVacancy.ApprenticeMinimumWage,
                 ApprenticeshipLevel = source.ApprenticeshipVacancy.ApprenticeshipLevel,
+                ApprenticeshipType = source.ApprenticeshipVacancy.ApprenticeshipType,
+                Between18AndUnder21NationalMinimumWage = source.ApprenticeshipVacancy.Between18AndUnder21NationalMinimumWage,
+                Between21AndUnder25NationalMinimumWage = source.ApprenticeshipVacancy.Between21AndUnder25NationalMinimumWage,
+                CandidateDateOfBirth = source.CandidateDateOfBirth,
                 CandidatePostcode = source.CandidatePostcode,
                 Category = source.ApprenticeshipVacancy.Category,
                 CategoryCode = source.ApprenticeshipVacancy.CategoryCode,
@@ -143,10 +150,10 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 EmployerContactName = source.ApprenticeshipVacancy.EmployerContactName,
                 EmployerContactPhone = source.ApprenticeshipVacancy.EmployerContactPhone,
                 EmployerDescription = source.ApprenticeshipVacancy.EmployerDescription,
+                EmployerLocationOption = source.ApprenticeshipVacancy.EmployerLocationOption,
                 EmployerName = source.ApprenticeshipVacancy.EmployerName,
                 EmployerWebsiteUrl = source.ApprenticeshipVacancy.EmployerWebsiteUrl,
                 EmploymentLocationInformation = source.ApprenticeshipVacancy.EmploymentLocationInformation,
-                EmployerLocationOption = source.ApprenticeshipVacancy.EmployerLocationOption,
                 ExpectedDuration = source.ApprenticeshipVacancy.ExpectedDuration,
                 FrameworkLarsCode = source.ApprenticeshipVacancy.FrameworkLarsCode,
                 HoursPerWeek = source.ApprenticeshipVacancy.HoursPerWeek,
@@ -163,6 +170,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 NumberOfPositions = source.ApprenticeshipVacancy.NumberOfPositions,
                 OtherAddresses = source.ApprenticeshipVacancy.OtherAddresses?.Select(a => (AddressApiResponse) a).ToList(),
                 OutcomeDescription = source.ApprenticeshipVacancy.OutcomeDescription,
+                Over25NationalMinimumWage = source.ApprenticeshipVacancy.Over25NationalMinimumWage,
                 PostedDate = source.ApprenticeshipVacancy.PostedDate,
                 ProviderContactEmail = source.ApprenticeshipVacancy.ProviderContactEmail,
                 ProviderContactName = source.ApprenticeshipVacancy.ProviderContactName,
@@ -180,6 +188,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 Title = source.ApprenticeshipVacancy.Title,
                 TrainingDescription = source.ApprenticeshipVacancy.TrainingDescription,
                 Ukprn = source.ApprenticeshipVacancy.Ukprn,
+                Under18NationalMinimumWage = source.ApprenticeshipVacancy.Under18NationalMinimumWage,
                 VacancyLocationType = source.ApprenticeshipVacancy.VacancyLocationType,
                 VacancyReference = source.ApprenticeshipVacancy.VacancyReference,
                 VacancySource = source.ApprenticeshipVacancy.VacancySource,
@@ -191,12 +200,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.Models
                 WageType = source.ApprenticeshipVacancy.WageType,
                 WageUnit = source.ApprenticeshipVacancy.WageUnit,
                 WorkingWeek = source.ApprenticeshipVacancy.WorkingWeek,
-                Under18NationalMinimumWage = source.ApprenticeshipVacancy.Under18NationalMinimumWage,
-                Between18AndUnder21NationalMinimumWage = source.ApprenticeshipVacancy.Between18AndUnder21NationalMinimumWage,
-                Between21AndUnder25NationalMinimumWage = source.ApprenticeshipVacancy.Between21AndUnder25NationalMinimumWage,
-                Over25NationalMinimumWage = source.ApprenticeshipVacancy.Over25NationalMinimumWage,
-                ApprenticeMinimumWage = source.ApprenticeshipVacancy.ApprenticeMinimumWage,
-                CandidateDateOfBirth = source.CandidateDateOfBirth
             };
         }
     }

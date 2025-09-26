@@ -4,6 +4,7 @@ using SFA.DAS.EmployerAan.Application.User.GetUserAccounts;
 
 namespace SFA.DAS.EmployerAan.Api.Controllers;
 
+[Obsolete("Use referenced shared controller action in Employer.Gov.Auth project AccountUsers/{userId}/accounts?email={email}")]
 [ApiController]
 [Route("[controller]")]
 public class EmployerAccountsController : ControllerBase

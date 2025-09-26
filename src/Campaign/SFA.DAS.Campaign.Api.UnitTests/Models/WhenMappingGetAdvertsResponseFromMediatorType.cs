@@ -20,14 +20,17 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
             {
                 vacancy.IsEmployerAnonymous = false;
             }
-            
+
             //Act
             var actual = (GetAdvertsResponse)source;
 
             //Assert
-            actual.Routes.Should().BeEquivalentTo(source.Routes.Select(c=>new {Route = c.Name}).ToList());
+            actual.Routes.Should().BeEquivalentTo(source.Routes.Select(c => new { Route = c.Name }).ToList());
             actual.TotalFound.Should().Be(source.TotalFound);
-            actual.Location.Should().BeEquivalentTo(source.Location);
+            actual.Location.Should()
+                .BeEquivalentTo(source.Location, options => options
+                    .Excluding(l => l.Latitude)
+                    .Excluding(l => l.Longitude));
             actual.Vacancies.Should()
                 .BeEquivalentTo(source.Vacancies, options => options
                     .Excluding(c => c.AnonymousEmployerName)
@@ -45,15 +48,15 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
                 vacancy.IsEmployerAnonymous = true;
                 vacancy.AnonymousEmployerName = anonEmployerName;
             }
-            
+
             //Act
             var actual = (GetAdvertsResponse)source;
-            
+
             //Assert
-            actual.Vacancies.ToList().TrueForAll(c => 
+            actual.Vacancies.ToList().TrueForAll(c =>
                 c.EmployerName.Equals(anonEmployerName)
                 ).Should().BeTrue();
-            
+
         }
 
         [Test, AutoData]
@@ -70,12 +73,29 @@ namespace SFA.DAS.Campaign.Api.UnitTests.Models
 
             //Act
             var actual = (GetAdvertsResponse)source;
-            
+
             //Assert
             actual.TotalFound.Should().Be(0);
-            actual.Routes.Should().BeEquivalentTo(routes.Select(c=>new {Route = c.Name}).ToList());
+            actual.Routes.Should().BeEquivalentTo(routes.Select(c => new { Route = c.Name }).ToList());
             actual.Vacancies.Should().BeEmpty();
             actual.Location.Should().BeNull();
+        }
+        
+        [Test, AutoData]
+        public void Then_If_National_Vacancy_Response_Returned_Then_Mapped(GetAdvertsQueryResult source)
+        {
+            //Arrange
+            //Arrange
+            foreach (var vacancy in source.Vacancies)
+            {
+                vacancy.Location = null;
+            }
+
+            //Act
+            var actual = (GetAdvertsResponse)source;
+
+            //Assert
+            actual.Vacancies.ToList().TrueForAll(c=>c.Location.Lat == 0 && c.Location.Lon == 0).Should().BeTrue();
         }
     }
 }

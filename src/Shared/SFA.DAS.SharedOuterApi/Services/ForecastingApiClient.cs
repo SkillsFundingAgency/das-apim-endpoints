@@ -5,89 +5,92 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.SharedOuterApi.Services
+namespace SFA.DAS.SharedOuterApi.Services;
+
+public class ForecastingApiClient(IInternalApiClient<ForecastingApiConfiguration> client) : IForecastingApiClient<ForecastingApiConfiguration>
 {
-    public class ForecastingApiClient : IForecastingApiClient<ForecastingApiConfiguration>
+    public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        private readonly IInternalApiClient<ForecastingApiConfiguration> _client;
+        return client.Get<TResponse>(request);
+    }
 
-        public ForecastingApiClient(IInternalApiClient<ForecastingApiConfiguration> client)
-        {
-            _client = client;
-        }
+    public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
+    {
+        return client.GetAll<TResponse>(request);
+    }
 
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
-        {
-            return _client.Get<TResponse>(request);
-        }
+    public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+    {
+        return client.GetResponseCode(request);
+    }
 
-        public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
-        {
-            return _client.GetAll<TResponse>(request);
-        }
+    public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+    {
+        return client.GetWithResponseCode<TResponse>(request);
+    }
 
-        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
-        {
-            return _client.GetResponseCode(request);
-        }
+    public Task<TResponse> Post<TResponse>(IPostApiRequest request)
+    {
+        return client.Post<TResponse>(request);
+    }
 
-        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
-        {
-            return _client.GetWithResponseCode<TResponse>(request);
-        }
+    public Task Post<TData>(IPostApiRequest<TData> request)
+    {
+        return client.Post(request);
+    }
 
-        public Task<TResponse> Post<TResponse>(IPostApiRequest request)
-        {
-            return _client.Post<TResponse>(request);
-        }
+    public Task Delete(IDeleteApiRequest request)
+    {
+        return client.Delete(request);
+    }
 
-        public Task Post<TData>(IPostApiRequest<TData> request)
-        {
-            return _client.Post(request);
-        }
+    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request,
+        bool includeResponse = false)
+    {
+        return client.DeleteWithResponseCode<TResponse>(request, includeResponse);
+    }
 
-        public Task Delete(IDeleteApiRequest request)
-        {
-            return _client.Delete(request);
-        }
+    public Task Patch<TData>(IPatchApiRequest<TData> request)
+    {
+        return client.Patch(request);
+    }
 
-        public Task Patch<TData>(IPatchApiRequest<TData> request)
-        {
-            return _client.Patch(request);
-        }
+    public Task Put(IPutApiRequest request)
+    {
+        return client.Put(request);
+    }
 
-        public Task Put(IPutApiRequest request)
-        {
-            return _client.Put(request);
-        }
+    public Task Put<TData>(IPutApiRequest<TData> request)
+    {
+        return client.Put(request);
+    }
 
-        public Task Put<TData>(IPutApiRequest<TData> request)
-        {
-            return _client.Put(request);
-        }
+    public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
+    {
+        return client.PostWithResponseCode<TResponse>(request, includeResponse);
+    }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
-        {
-            return _client.PostWithResponseCode<TResponse>(request, includeResponse);
-        }
+    public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+    {
+        return client.PatchWithResponseCode(request);
+    }
 
-        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
-        {
-            return _client.PatchWithResponseCode(request);
-        }
+    public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+    {
+        return client.GetPaged<TResponse>(request);
+    }
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+    {
+        throw new System.NotImplementedException();
+    }
 
-        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
-        {
-            return _client.GetPaged<TResponse>(request);
-        }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new System.NotImplementedException();
+    }
 
-        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+    {
+        throw new System.NotImplementedException();
     }
 }

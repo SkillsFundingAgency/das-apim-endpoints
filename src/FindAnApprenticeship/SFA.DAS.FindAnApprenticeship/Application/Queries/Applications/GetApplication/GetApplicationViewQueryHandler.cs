@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
@@ -8,7 +9,6 @@ using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplication
 {
@@ -121,6 +121,15 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
                     PhoneNumber = candidate.PhoneNumber,
                     Address = address
                 },
+                EmploymentLocation = application.EmploymentLocation is not null
+                    ? new GetApplicationViewQueryResult.EmploymentLocationSection
+                    {
+                        Id = application.EmploymentLocation.Id,
+                        Addresses = application.EmploymentLocation.Addresses,
+                        EmploymentLocationInformation = application.EmploymentLocation.EmploymentLocationInformation,
+                        EmployerLocationOption = application.EmploymentLocation.EmployerLocationOption,
+                    }
+                    : null,
                 AboutYou = new GetApplicationViewQueryResult.AboutYouSection
                 {
                     SkillsAndStrengths = application.Strengths,
@@ -133,6 +142,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetAppli
                 ApplicationStatus = application.Status.ToString(),
                 WithdrawnDate = application.WithdrawnDate,
                 MigrationDate = application.MigrationDate,
+                ApprenticeshipType = vacancy.ApprenticeshipType,
             };
         }
     }

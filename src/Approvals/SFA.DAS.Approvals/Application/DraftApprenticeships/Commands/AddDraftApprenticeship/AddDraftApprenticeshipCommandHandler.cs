@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
@@ -10,31 +11,27 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftApprenticeship
 {
-    public class AddDraftApprenticeshipCommandHandler : IRequestHandler<AddDraftApprenticeshipCommand, AddDraftApprenticeshipResult>
+    public class AddDraftApprenticeshipCommandHandler(
+        ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
+        IAutoReservationsService autoReservationService,
+        ICourseTypeRulesService courseTypeRulesService,
+        ILogger<AddDraftApprenticeshipCommandHandler> logger)
+        : IRequestHandler<AddDraftApprenticeshipCommand, AddDraftApprenticeshipResult>
     {
-        private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IAutoReservationsService _autoReservationService;
-
-        public AddDraftApprenticeshipCommandHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient, IAutoReservationsService autoReservationService)
-        {
-            _apiClient = apiClient;
-            _autoReservationService = autoReservationService;
-        }
-
         public async Task<AddDraftApprenticeshipResult> Handle(AddDraftApprenticeshipCommand request, CancellationToken cancellationToken)
         {
             var autoReservationCreated = false;
+            
+            var cohort = await apiClient.Get<GetCohortResponse>(new GetCohortRequest(request.CohortId));
 
-            var cohort = await _apiClient.Get<GetCohortResponse>(new GetCohortRequest(request.CohortId));
-
-            if (!request.ReservationId.HasValue || request.ReservationId.Value == default)
+            if (!request.ReservationId.HasValue || request.ReservationId.Value == Guid.Empty)
             {
                 if (cohort.TransferSenderId.HasValue)
                 {
                     throw new ApplicationException("When creating an auto reservation, the TransferSenderId must not present");
                 }
 
-                request.ReservationId = await _autoReservationService.CreateReservation(new AutoReservation
+                request.ReservationId = await autoReservationService.CreateReservation(new AutoReservation
                 {
                     AccountId = cohort.AccountId,
                     AccountLegalEntityId = cohort.AccountLegalEntityId,
@@ -47,6 +44,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
 
             try
             {
+                var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(request.CourseCode);
+                
                 var addDraftApprenticeshipRequest = new AddDraftApprenticeshipRequest
                 {
                     ActualStartDate = request.ActualStartDate,
@@ -71,9 +70,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
                     Uln = request.Uln,
                     UserInfo = request.UserInfo,
                     UserId = request.UserId,
-                    RequestingParty = request.RequestingParty
+                    RequestingParty = request.RequestingParty,
+                    LearnerDataId = request.LearnerDataId,
+                    MinimumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MinimumAge,
+                    MaximumAgeAtApprenticeshipStart = courseTypeRules.LearnerAgeRules.MaximumAge,
                 };
-                var response = await _apiClient.PostWithResponseCode<AddDraftApprenticeshipResponse>(
+                var response = await apiClient.PostWithResponseCode<AddDraftApprenticeshipResponse>(
                     new PostAddDraftApprenticeshipRequest(request.CohortId, addDraftApprenticeshipRequest));
 
                 return new AddDraftApprenticeshipResult
@@ -85,7 +87,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddDraftAp
             {
                 if (autoReservationCreated)
                 {
-                    await _autoReservationService.DeleteReservation(request.ReservationId.Value);
+                    await autoReservationService.DeleteReservation(request.ReservationId.Value);
                 }
                 throw;
             }

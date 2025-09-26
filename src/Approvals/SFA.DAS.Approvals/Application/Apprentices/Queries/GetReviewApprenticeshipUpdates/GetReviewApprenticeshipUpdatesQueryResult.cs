@@ -1,5 +1,5 @@
-﻿using SFA.DAS.Approvals.InnerApi;
-using System;
+﻿using System;
+using SFA.DAS.Approvals.InnerApi;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates
 {

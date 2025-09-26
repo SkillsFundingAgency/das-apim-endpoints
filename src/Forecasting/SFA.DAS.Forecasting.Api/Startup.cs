@@ -14,6 +14,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Forecasting.Api.AppStart;
 using SFA.DAS.Forecasting.Application.Courses.Queries.GetFrameworkCoursesList;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Forecasting.Api;
@@ -54,6 +55,7 @@ public class Startup
         }
 
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetFrameworkCoursesQuery).Assembly));
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
                 
         services.AddServiceRegistration();
 

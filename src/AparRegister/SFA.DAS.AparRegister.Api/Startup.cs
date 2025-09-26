@@ -45,9 +45,9 @@ namespace SFA.DAS.AparRegister.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
             }
 
-            
+
             services.AddServiceRegistration();
-            
+
             services.Configure<RouteOptions>(options =>
                 {
                     options.LowercaseUrls = true;
@@ -65,20 +65,22 @@ namespace SFA.DAS.AparRegister.Api
             {
                 services.AddHealthChecks();
             }
-            
+
             services.AddApplicationInsightsTelemetry();
+
+            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "AparRegisterOuterApi", Version = "v1" });
-                var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
+                var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Startup).Namespace}.xml");
                 c.IncludeXmlComments(filePath);
             });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -90,7 +92,7 @@ namespace SFA.DAS.AparRegister.Api
             {
                 app.UseHealthChecks();
             }
-            
+
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -98,7 +100,7 @@ namespace SFA.DAS.AparRegister.Api
                     name: "default",
                     pattern: "api/{controller=Account}/{action=index}/{id?}");
             });
-        
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
+using SFA.DAS.Vacancies.InnerApi.Responses;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
-using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
@@ -16,7 +16,7 @@ namespace SFA.DAS.Vacancies.Api.Models
 
         public static implicit operator GetVacanciesListResponse(GetVacanciesQueryResult source)
         {
-            return new GetVacanciesListResponse()
+            return new GetVacanciesListResponse
             {
                 Vacancies = source.Vacancies.Select(c => (GetVacanciesListResponseItem)c).ToList(),
                 Total = source.Total,
@@ -26,7 +26,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         }
     }
     
-    public class GetVacanciesListResponseItem
+    public record GetVacanciesListResponseItem
     {
         /// <summary>
         /// The title for the apprenticeship vacancy. Will be less than or equal to 100 characters.
@@ -67,15 +67,17 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         /// <example>21 months</example>
         public string ExpectedDuration { get ; set ; }
-        
+
         // Note: this documentation will appear once OpenApi 3.1 is supported.
         /// <summary>
-        /// The address of where the apprentice will work. If the apprenticeship is available at just one location, you’ll get just an address. If the address is available at more than one location, you’ll get an address and otherAddresses.
+        /// The address of where the apprentice will work.
+        /// If the address is available at more than one location, you'll get an address and otherAddresses.If you included a lat and long when requesting, these will be returned in order of distance.
+        /// If isNationalVacancy is true, there will be no address provided. 
         /// </summary>
         public GetVacancyAddressItem Address { get; set; }
-        
+
         /// <summary>
-        /// If the apprenticeship is available at more than one location, there will be up to 9 otherAddresses. The API will also give you separate vacancies where each location is the set address and location with a corresponding distance.
+        /// If the apprenticeship is available at more than one location, there will be up to 9 otherAddresses. The API will also give you separate vacancies where each location is the set address and location with a corresponding distance. 
         /// </summary>
         public List<GetVacancyAddressItem> OtherAddresses { get; set; }
         public VacancyLocation Location { get; set; }
@@ -84,7 +86,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         public decimal? Distance { get ; set ; }
         /// <summary>
-        /// The name of the company the apprentice will work at.
+        /// Use this to get vacancies from a specific employer. The name does not need to be exact, as we’ll match it to the closest employer we have adverts for.
         /// </summary>
         public string EmployerName { get; set; }
         /// <summary>
@@ -128,10 +130,23 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// The unique reference code for the vacancy on Find an apprenticeship.
         /// </summary>
         public string VacancyReference { get; set; }
-        public  bool IsNationalVacancy { get; set; }
-        
+        /// <summary>
+        /// If the apprenticeship is available to applicants across the entirety of England. For example, if the apprenticeship is available in many locations across England, remote working or provides live-in accommodation. When isNationalVacancy is true, there will be no address. When true, there will be isNationalVacancyDetails.
+        /// </summary>
+        public bool IsNationalVacancy { get; set; }
+
+        /// <summary>
+        /// Only provided when isNationalVacancy is true. Includes details about why an apprenticeship is recruiting nationally and where an apprentice will work. 
+        /// </summary>
+        [MaxLength(500)]
+        public string IsNationalVacancyDetails { get; set; }
+
         public static implicit operator GetVacanciesListResponseItem(GetVacanciesListItem source)
         {
+            var isRecruitNationally = source.VacancyLocationType != null &&
+                                      source.VacancyLocationType.Equals("National",
+                                          StringComparison.CurrentCultureIgnoreCase);
+
             return new GetVacanciesListResponseItem
             {
                 ClosingDate = source.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
@@ -139,7 +154,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
                 HoursPerWeek = source.HoursPerWeek,
                 IsDisabilityConfident = source.IsDisabilityConfident,
-                IsNationalVacancy = source.VacancyLocationType != null && source.VacancyLocationType.Equals("National", StringComparison.CurrentCultureIgnoreCase),
+                IsNationalVacancy = isRecruitNationally,
+                IsNationalVacancyDetails = isRecruitNationally ? source.EmploymentLocationInformation : string.Empty,
                 NumberOfPositions = source.NumberOfPositions,
                 PostedDate = source.PostedDate,
                 ProviderName = source.ProviderName,

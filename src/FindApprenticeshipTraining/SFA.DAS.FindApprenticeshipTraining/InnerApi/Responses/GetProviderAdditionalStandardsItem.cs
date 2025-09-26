@@ -7,5 +7,6 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
         public int Level { get; set; }
         public bool? IsApprovedByRegulator { get; set; }
         public string ApprovalBody { get; set; }
+        public string IfateReferenceNumber { get; set; }
     }
 }

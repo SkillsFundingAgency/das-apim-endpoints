@@ -3,7 +3,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System;
 using FluentAssertions.Common;
 using AutoFixture;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Apprenticeships;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using FluentAssertions;
 using SFA.DAS.Encoding;
 
@@ -24,7 +24,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
         private Fixture _fixture;
         private Mock<ILogger<ExtendedNotificationService>> _loggerMock;
         private Mock<IAccountsApiClient<AccountsConfiguration>> _accountsApiClientMock;
-        private Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>> _apprenticeshipsApiClientMock;
+        private Mock<ILearningApiClient<LearningApiConfiguration>> _apprenticeshipsApiClientMock;
         private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiCommitmentsClientMock;
         private Mock<IEncodingService> _encodingServiceMock;
         private Mock<INotificationService> _notificationServiceMock;
@@ -37,7 +37,7 @@ namespace SFA.DAS.Apprenticeships.UnitTests.Application.Notifications
             _fixture = new Fixture();
             _loggerMock = new Mock<ILogger<ExtendedNotificationService>>();
             _accountsApiClientMock = new Mock<IAccountsApiClient<AccountsConfiguration>>();
-            _apprenticeshipsApiClientMock = new Mock<IApprenticeshipsApiClient<ApprenticeshipsApiConfiguration>>();
+            _apprenticeshipsApiClientMock = new Mock<ILearningApiClient<LearningApiConfiguration>>();
             _apiCommitmentsClientMock = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
             _encodingServiceMock = new Mock<IEncodingService>();
             _notificationServiceMock = new Mock<INotificationService>();

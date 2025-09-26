@@ -12,6 +12,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
     }
     public class PostSavedVacancyApiRequestData
     {
+        public string VacancyId { get; set; }
         public string VacancyReference { get; set; }
         public DateTime CreatedOn { get; set; }
     }

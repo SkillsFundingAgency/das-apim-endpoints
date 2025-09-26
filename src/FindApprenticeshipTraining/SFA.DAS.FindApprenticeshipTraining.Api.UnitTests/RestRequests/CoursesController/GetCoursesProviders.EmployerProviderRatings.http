@@ -1,0 +1,57 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 119
+@OrderByDistance = Distance
+@ProviderRatingsExcellent = Excellent
+@ProviderRatingsInvalidValue = Swordfish
+@ProviderRatingsNotYetReviewed = NotYetReviewed
+@ProviderRatingsGood = Good
+@ProviderRatingsPoor = Poor
+@ProviderRatingsVeryPoor = VeryPoor
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&EmployerProviderRatings={{ProviderRatingsExcellent}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for expected apprentice provider ratings
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&EmployerProviderRatings={{ProviderRatingsNotYetReviewed}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for expected apprentice provider ratings
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&EmployerProviderRatings={{ProviderRatingsGood}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for expected apprentice provider ratings
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&EmployerProviderRatings={{ProviderRatingsPoor}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for expected apprentice provider ratings
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&EmployerProviderRatings={{ProviderRatingsVeryPoor}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for expected apprentice provider ratings
+
+### 
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&EmployerProviderRatings={{ProviderRatingsExcellent}}&EmployerProviderRatings={{ProviderRatingsNotYetReviewed}}&EmployerProviderRatings={{ProviderRatingsGood}}&EmployerProviderRatings={{ProviderRatingsPoor}}&EmployerProviderRatings={{ProviderRatingsVeryPoor}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, for expected apprentice provider ratings
+
+### 
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&EmployerProviderRatings={{ProviderRatingsInvalidValue}}
+
+# expect validation error as EmployerProviderRatings value  is not acceptable
+# {
+#   "type": "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+#   "title": "One or more validation errors occurred.",
+#   "status": 400,
+#   "errors": {
+#     "EmployerProviderRatings": [
+#       "The value 'Swordfish' is not valid."
+#     ]
+#   },
+#   "traceId": ...
+# }
+###

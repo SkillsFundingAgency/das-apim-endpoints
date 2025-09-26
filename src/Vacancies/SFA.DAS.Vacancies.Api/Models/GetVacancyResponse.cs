@@ -1,12 +1,14 @@
+using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
+using SFA.DAS.Vacancies.Enums;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
-    public class GetVacancyResponse : GetVacanciesListResponseItem
+    public record GetVacancyResponse : GetVacanciesListResponseItem
     {
         /// <summary>
         /// A description of the company the apprentice will work at. Will be less than or equal to 4000 characters.
@@ -37,6 +39,11 @@ namespace SFA.DAS.Vacancies.Api.Models
             {
                 return null;
             }
+
+            var isRecruitNationally = source.Vacancy.VacancyLocationType != null &&
+                                      source.Vacancy.VacancyLocationType.Equals("National",
+                                          StringComparison.CurrentCultureIgnoreCase);
+
             return new GetVacancyResponse
             {
                 AdditionalTrainingDescription = source.Vacancy.AdditionalTrainingDescription,
@@ -57,7 +64,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 FullDescription = source.Vacancy.LongDescription,
                 HoursPerWeek = source.Vacancy.HoursPerWeek,
                 IsDisabilityConfident = source.Vacancy.IsDisabilityConfident,
-                IsNationalVacancy = source.Vacancy.VacancyLocationType?.Equals("National", StringComparison.CurrentCultureIgnoreCase) ?? false,
+                IsNationalVacancy = isRecruitNationally,
+                IsNationalVacancyDetails = isRecruitNationally ? source.Vacancy.EmploymentLocationInformation : string.Empty,
                 Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation { Lat = source.Vacancy.Location.Lat, Lon = source.Vacancy.Location.Lon } : null,
                 NumberOfPositions = source.Vacancy.NumberOfPositions,
                 OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
@@ -71,7 +79,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Title = source.Vacancy.Title,
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 Ukprn = int.Parse(source.Vacancy.Ukprn),
-                VacancyReference = source.Vacancy.VacancySource.Equals("NHS", StringComparison.CurrentCultureIgnoreCase) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.Replace("VAC",""),
+                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Nhs) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.TrimVacancyReference(),
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Wage = source.Vacancy,
             };

@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.Services
     {
         private readonly IInternalApiClient<LocationApiConfiguration> _client;
 
-        public LocationApiClient (IInternalApiClient<LocationApiConfiguration> client)
+        public LocationApiClient(IInternalApiClient<LocationApiConfiguration> client)
         {
             _client = client;
         }
@@ -39,6 +39,12 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             throw new System.NotImplementedException();
         }
+
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            return _client.DeleteWithResponseCode<TResponse>(request, includeResponse);
+        }
+
 
         public Task Delete(IDeleteApiRequest request)
         {
@@ -79,12 +85,17 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             throw new System.NotImplementedException();
         }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             throw new System.NotImplementedException();
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }

@@ -1,11 +1,18 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
 namespace SFA.DAS.Earnings.Application.Earnings;
 
 public static class LearningDeliveryPeriodisedValuesBuilder
 {
-    public static LearningDeliveryPeriodisedValues BuildWithSameValues(string attributeName, decimal value)
+    public static void AddWithSamePeriodisedValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        string attributeName, 
+        decimal value)
+    {
+        list.Add(BuildWithSameValues(attributeName, value));
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildWithSameValues(string attributeName, decimal value)
     {
         return new LearningDeliveryPeriodisedValues
         {
@@ -25,9 +32,27 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(Apprenticeship earningsApprenticeship, short academicYear)
+    public static void AddInstPerPeriodValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        InstalmentType instalmentType = InstalmentType.Regular)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        try
+        {
+            list.Add(BuildInstPerPeriodValues(apprenticeship, academicYear, instalmentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add InstPerPeriodValues {EarningsFM36Constants.PeriodisedAttributes.InstPerPeriod} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, InstalmentType instalmentType)
+    {
+        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear, instalmentType);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -47,14 +72,48 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildInstallmentAmountValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName)
+    public static void AddInstallmentAmountValues(
+        this List<LearningDeliveryPeriodisedValues> 
+        list, JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        InstalmentType instalmentType = InstalmentType.Regular)
     {
-        return BuildCoInvestmentValues(earningsApprenticeship, academicYear, attributeName, 1);
+        try
+        {
+            list.Add(BuildCoInvestmentValues(apprenticeship, academicYear, attributeName, 1, instalmentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add InstallmentAmountValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
     }
 
-    public static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, decimal multiplier)
+    public static void AddCoInvestmentValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        decimal multiplier,
+        InstalmentType instalmentType = InstalmentType.Regular)
     {
-        var instalments = GetInstalmentsForAcademicYear(earningsApprenticeship, academicYear);
+        try
+        {
+            list.Add(BuildCoInvestmentValues(apprenticeship, academicYear, attributeName, multiplier, instalmentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add CoInvestmentValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, decimal multiplier, InstalmentType instalmentType)
+    {
+        var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear, instalmentType);
 
         return new LearningDeliveryPeriodisedValues
         {
@@ -74,9 +133,29 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    public static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(Apprenticeship earningsApprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
+    public static void AddNthIncentivePaymentValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        string additionalPaymentType, 
+        int n)
     {
-        var additionalPayments = GetAdditionalPayments(earningsApprenticeship, additionalPaymentType);
+        try
+        {
+            list.Add(BuildNthIncentivePaymentValues(apprenticeship, academicYear, attributeName, additionalPaymentType, n));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add NthIncentivePaymentValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType, int n)
+    {
+        var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
 
         var nthPayment = additionalPayments
             .OrderBy(i => i.AcademicYear)
@@ -102,17 +181,99 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         };
     }
 
-    private static List<Instalment> GetInstalmentsForAcademicYear(Apprenticeship earningsApprenticeship, short academicYear)
+    public static void AddAdditionalPaymentPerPeriodValues(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship,
+        short academicYear,
+        string attributeName,
+        string additionalPaymentType)
     {
-        return earningsApprenticeship.Episodes
+        try
+        {
+            list.Add(BuildAdditionalPaymentPerPeriodValues(apprenticeship, academicYear, attributeName, additionalPaymentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add AdditionalPaymentPerPeriodValues {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodValues(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType)
+    {
+        var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
+
+        return new LearningDeliveryPeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 1)?.Amount ?? 0,
+            Period2 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 2)?.Amount ?? 0,
+            Period3 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 3)?.Amount ?? 0,
+            Period4 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 4)?.Amount ?? 0,
+            Period5 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 5)?.Amount ?? 0,
+            Period6 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 6)?.Amount ?? 0,
+            Period7 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 7)?.Amount ?? 0,
+            Period8 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 8)?.Amount ?? 0,
+            Period9 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 9)?.Amount ?? 0,
+            Period10 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 10)?.Amount ?? 0,
+            Period11 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 11)?.Amount ?? 0,
+            Period12 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 12)?.Amount ?? 0
+        };
+    }
+
+    public static void AddAdditionalPaymentPerPeriodIndicators(
+        this List<LearningDeliveryPeriodisedValues> list,
+        JoinedEarningsApprenticeship apprenticeship, 
+        short academicYear, 
+        string attributeName, 
+        string additionalPaymentType)
+    {
+        try
+        {
+            list.Add(BuildAdditionalPaymentPerPeriodIndicators(apprenticeship, academicYear, attributeName, additionalPaymentType));
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException(
+                $"Failed to Add AdditionalPaymentPerPeriodIndicators {attributeName} to LearningDeliveryPeriodisedValues list.",
+                ex);
+        }
+    }
+
+    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodIndicators(JoinedEarningsApprenticeship apprenticeship, short academicYear, string attributeName, string additionalPaymentType)
+    {
+        var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
+
+        return new LearningDeliveryPeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 1) ? 1 : 0,
+            Period2 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 2) ? 1 : 0,
+            Period3 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 3) ? 1 : 0,
+            Period4 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 4) ? 1 : 0,
+            Period5 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 5) ? 1 : 0,
+            Period6 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 6) ? 1 : 0,
+            Period7 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 7) ? 1 : 0,
+            Period8 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 8) ? 1 : 0,
+            Period9 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 9) ? 1 : 0,
+            Period10 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 10) ? 1 : 0,
+            Period11 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 11) ? 1 : 0,
+            Period12 = additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 12) ? 1 : 0
+        };
+    }
+
+    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedEarningsApprenticeship apprenticeship, short academicYear, InstalmentType instalmentType)
+    {
+        return apprenticeship.Episodes
             .SelectMany(episode => episode.Instalments)
-            .Where(i => i.AcademicYear == academicYear)
+            .Where(i => i.AcademicYear == academicYear && i.InstalmentType == instalmentType)
             .ToList();
     }
 
-    private static List<AdditionalPayment> GetAdditionalPayments(Apprenticeship earningsApprenticeship, string additionalPaymentType)
+    private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedEarningsApprenticeship apprenticeship, string additionalPaymentType)
     {
-        return earningsApprenticeship.Episodes
+        return apprenticeship.Episodes
             .SelectMany(episode => episode.AdditionalPayments)
             .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();

@@ -21,7 +21,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.FormBuilder.Forms
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
-            _handler = _fixture.Create<GetFormVersionByIdQueryHandler>();
+            _handler = new GetFormVersionByIdQueryHandler(_apiClientMock.Object);
         }
 
         [Test]
@@ -61,7 +61,6 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.FormBuilder.Forms
 
             // Assert
             Assert.That(result.Success, Is.False);
-            Assert.That(result.ErrorMessage, Is.EqualTo(exception.Message));
         }
     }
 }

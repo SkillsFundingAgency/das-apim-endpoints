@@ -11,7 +11,7 @@ namespace SFA.DAS.SharedOuterApi.Services
     {
         private readonly IInternalApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
 
-        public ProviderRelationshipsApiClient (IInternalApiClient<ProviderRelationshipsApiConfiguration> apiClient)
+        public ProviderRelationshipsApiClient(IInternalApiClient<ProviderRelationshipsApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
@@ -56,6 +56,11 @@ namespace SFA.DAS.SharedOuterApi.Services
             throw new System.NotImplementedException();
         }
 
+        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+        {
+            return _apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
+        }
+
         public Task Patch<TData>(IPatchApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
@@ -80,12 +85,17 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             throw new System.NotImplementedException();
         }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             throw new System.NotImplementedException();
         }
 
         public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
             throw new System.NotImplementedException();
         }

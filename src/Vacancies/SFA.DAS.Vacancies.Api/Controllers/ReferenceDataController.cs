@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Asp.Versioning;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,19 +11,13 @@ using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;
 
 namespace SFA.DAS.Vacancies.Api.Controllers
 {
+    [ApiVersion("1")]
+    [ApiVersion("2")]
     [ApiController]
     [Route("[controller]/")]
-    public class ReferenceDataController : ControllerBase
+    public class ReferenceDataController(IMediator mediator, ILogger<ReferenceDataController> logger)
+        : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<ReferenceDataController> _logger;
-
-        public ReferenceDataController (IMediator mediator, ILogger<ReferenceDataController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-        
         /// <summary>
         /// GET list of courses. 
         /// </summary>
@@ -34,14 +29,14 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         {
             try
             {
-                var queryResponse = await _mediator.Send(new GetTrainingCoursesQuery());
+                var queryResponse = await mediator.Send(new GetTrainingCoursesQuery());
 
                 return Ok((GetTrainingCoursesListResponse) queryResponse);
 
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get training courses");
+                logger.LogError(e, "Error attempting to get training courses");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
@@ -57,7 +52,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
         {
             try
             {
-                var response = await _mediator.Send(new GetRoutesQuery());
+                var response = await mediator.Send(new GetRoutesQuery());
                 return Ok(new GetRoutesResponse
                 {
                     Routes = response.Routes.Select(c=>(GetRouteResponseItem)c).ToList()
@@ -65,7 +60,7 @@ namespace SFA.DAS.Vacancies.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error attempting to get course routes");
+                logger.LogError(e, "Error attempting to get course routes");
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }

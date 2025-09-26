@@ -1,0 +1,12 @@
+﻿@Api_HostAddress = https://localhost:5003
+
+@LarsCode = 1
+@OrderByDistance = Distance
+@Location = CV2 Coventry
+@Distance = 500
+
+GET {{Api_HostAddress}}/courses/{{LarsCode}}/providers?OrderBy={{OrderByDistance}}&Location={{Location}}&Distance={{Distance}}
+
+ # expect to work returning page 1, 10 (or less results), ordered by distance, with distance measurements
+
+### 

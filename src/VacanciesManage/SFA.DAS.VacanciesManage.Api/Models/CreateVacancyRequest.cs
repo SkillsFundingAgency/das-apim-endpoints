@@ -1,10 +1,11 @@
+using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
 
 namespace SFA.DAS.VacanciesManage.Api.Models
 {
@@ -61,9 +62,9 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 NumberOfPositions = source.NumberOfPositions,
                 OutcomeDescription = source.OutcomeDescription,
                 ProgrammeId = source.ProgrammeId,
-                Qualifications = source.Qualifications.Select(c=>(PostCreateVacancyQualificationData)c).ToList(),
+                Qualifications = source.Qualifications != null ? source.Qualifications.Select(c => (PostCreateVacancyQualificationData)c).ToList() : [],
                 ShortDescription = source.ShortDescription,
-                Skills = source.Skills,
+                Skills = source.Skills != null ? source.Skills.ToList() : [],
                 StartDate = source.StartDate,
                 ThingsToConsider = source.ThingsToConsider,
                 Title = source.Title,
@@ -182,7 +183,9 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [MaxLength(4000)]
         public string AdditionalTrainingDescription { get; set; }
         /// <summary>
-        /// The code from the learning aim reference service (LARS) for the apprenticeship’s training course (also known as a ‘standard’). See all codes using `GET referencedata/courses`.
+        /// The code from the learning aim reference service (LARS) for the apprenticeship’s training course. 
+        /// If the LARS code is for a foundation apprenticeship, you cannot submit any `qualifications` or `skills` as a foundation apprenticeship cannot have these application requirements. 
+        /// See all codes using `GET referencedata/courses`.
         /// </summary>
         /// <example>119</example>
         [JsonPropertyName("standardLarsCode")]
@@ -232,15 +235,16 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         /// Skills and qualities an apprentice should have for this apprenticeship. We’ll show this on the vacancy.
         /// If `applicationMethod` is `ThroughFindAnApprenticeship`, we’ll also ask applicants for examples of when they’ve used these skills.
         /// Use `GET referencedata/skills` to see our default selection of skills or add your own.
+        /// If `standardsLarsCode` is for a foundation apprenticeship, you cannot submit any data for this field. This is because foundations cannot have application requirements.
         /// </summary>
         [JsonPropertyName("skills")]
-        [Required]
         public List<string> Skills { get ; set ; }
         /// <summary>
-        /// Qualifications obtained from `GET referendata/qualifications`. You must supply at least one qualification required.
+        /// Qualifications obtained from `GET referendata/qualifications`. 
+        /// If standardsLarsCode is for a foundation apprenticeship, you cannot submit any data for this field. 
+        /// This is because foundations cannot have application requirements. Otherwise, you must supply at least one qualification required.
         /// </summary>
         [JsonPropertyName("qualifications")]
-        [Required]
         public List<CreateVacancyQualification> Qualifications { get; set; }
         /// <summary>
         /// Other requirements for the applicant, such as needing a Disclosure and Barring Service (DBS) check.

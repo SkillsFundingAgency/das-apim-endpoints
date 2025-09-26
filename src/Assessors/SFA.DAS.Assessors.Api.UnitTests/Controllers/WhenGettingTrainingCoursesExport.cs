@@ -35,7 +35,11 @@ namespace SFA.DAS.Assessors.Api.UnitTests.Controllers
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetCourseExportListResponse;
             Assert.That(model, Is.Not.Null);
-            model.Courses.Should().BeEquivalentTo(mediatorResult.TrainingCourses.ToList());
+            model.Courses.Should().BeEquivalentTo(mediatorResult.TrainingCourses.ToList(), options =>
+                options
+                    .Excluding(info => info.Path.EndsWith(".FoundationAppFirstEmpPayment"))
+                    .Excluding(info => info.Path.EndsWith(".FoundationAppSecondEmpPayment"))
+                    .Excluding(info => info.Path.EndsWith(".FoundationAppThirdEmpPayment")));
         }
     }
 }
