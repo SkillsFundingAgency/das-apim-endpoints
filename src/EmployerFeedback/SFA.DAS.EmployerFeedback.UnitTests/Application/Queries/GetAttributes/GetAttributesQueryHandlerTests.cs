@@ -28,15 +28,15 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAttributes
         [Test]
         public async Task Handle_ReturnsAttributes_WhenApiResponseIsSuccess()
         {
-            var attributes = new List<Attribute>
+            var attributes = new List<GetAttributesResponse>
             {
-                new Attribute { AttributeId = 1, AttributeName = "Test" }
+                new GetAttributesResponse { AttributeId = 1, AttributeName = "Test" }
             };
-            var apiResponse = new ApiResponse<List<Attribute>>(attributes, HttpStatusCode.OK, string.Empty);
+            var apiResponse = new ApiResponse<List<GetAttributesResponse>>(attributes, HttpStatusCode.OK, string.Empty);
             var expectedRequest = new GetAttributesRequest();
 
             _apiClientMock
-                .Setup(x => x.GetWithResponseCode<List<Attribute>>(It.Is<GetAttributesRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .Setup(x => x.GetWithResponseCode<List<GetAttributesResponse>>(It.Is<GetAttributesRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
                 .ReturnsAsync(apiResponse);
 
             var result = await _handler.Handle(new GetAttributesQuery(), CancellationToken.None);
@@ -48,11 +48,11 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAttributes
         [Test]
         public void Handle_ThrowsException_WhenApiResponseIsNotSuccess()
         {
-            var apiResponse = new ApiResponse<List<Attribute>>(null, HttpStatusCode.InternalServerError, "Error");
+            var apiResponse = new ApiResponse<List<GetAttributesResponse>>(null, HttpStatusCode.InternalServerError, "Error");
             var expectedRequest = new GetAttributesRequest();
 
             _apiClientMock
-                .Setup(x => x.GetWithResponseCode<List<Attribute>>(It.Is<GetAttributesRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .Setup(x => x.GetWithResponseCode<List<GetAttributesResponse>>(It.Is<GetAttributesRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
                 .ReturnsAsync(apiResponse);
 
             var handler = new GetAttributesQueryHandler(_apiClientMock.Object);
@@ -64,11 +64,11 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAttributes
         [Test]
         public async Task Handle_ReturnsNullAttributes_WhenApiResponseBodyIsNullButStatusIsSuccess()
         {
-            var apiResponse = new ApiResponse<List<Attribute>>(null, HttpStatusCode.OK, string.Empty);
+            var apiResponse = new ApiResponse<List<GetAttributesResponse>>(null, HttpStatusCode.OK, string.Empty);
             var expectedRequest = new GetAttributesRequest();
 
             _apiClientMock
-                .Setup(x => x.GetWithResponseCode<List<Attribute>>(It.Is<GetAttributesRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
+                .Setup(x => x.GetWithResponseCode<List<GetAttributesResponse>>(It.Is<GetAttributesRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
                 .ReturnsAsync(apiResponse);
 
             var result = await _handler.Handle(new GetAttributesQuery(), CancellationToken.None);

@@ -11,10 +11,10 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAttributes
         [Test]
         public void CanSetAndGetAttributes()
         {
-            var attributes = new List<Attribute>
+            var attributes = new List<GetAttributesResponse>
             {
-                new Attribute { AttributeId = 1, AttributeName = "Test1" },
-                new Attribute { AttributeId = 2, AttributeName = "Test2" }
+                new GetAttributesResponse { AttributeId = 1, AttributeName = "Test1" },
+                new GetAttributesResponse { AttributeId = 2, AttributeName = "Test2" }
             };
             var result = new GetAttributesResult { Attributes = attributes };
             Assert.That(result.Attributes, Is.EqualTo(attributes));

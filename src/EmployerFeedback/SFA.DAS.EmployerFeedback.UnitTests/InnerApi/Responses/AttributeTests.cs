@@ -9,7 +9,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Responses
         [Test]
         public void CanSetAndGetProperties()
         {
-            var attribute = new Attribute
+            var attribute = new GetAttributesResponse
             {
                 AttributeId = 123,
                 AttributeName = "Test Attribute"
@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Responses
         [Test]
         public void DefaultValues_AreSet()
         {
-            var attribute = new Attribute();
+            var attribute = new GetAttributesResponse();
             Assert.That(attribute.AttributeId, Is.EqualTo(0));
             Assert.That(attribute.AttributeName, Is.Null);
         }
