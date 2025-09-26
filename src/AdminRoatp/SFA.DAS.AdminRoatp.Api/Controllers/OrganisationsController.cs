@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
+using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;

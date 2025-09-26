@@ -4,11 +4,11 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
-using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
+using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers;
-public class GetOrganisationsControllerTests
+public class OrganisationsControllerTests
 {
     [Test, MoqAutoData]
 

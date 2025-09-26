@@ -1,6 +1,6 @@
 ﻿using InnerResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 
-namespace SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
+namespace SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 public class GetOrganisationsQueryResponse
 {
     public IEnumerable<Organisation> Organisations { get; set; } = Enumerable.Empty<Organisation>();

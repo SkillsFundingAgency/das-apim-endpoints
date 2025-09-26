@@ -1,7 +1,7 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
+using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
@@ -11,7 +11,7 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 
-namespace SFA.DAS.AdminRoatp.UnitTests.Application.Queries.GetOrganisation;
+namespace SFA.DAS.AdminRoatp.UnitTests.Application.Queries.GetOrganisations;
 public class GetOrganisationsQueryHandlerTests
 {
     [Test, MoqAutoData]
@@ -22,7 +22,7 @@ public class GetOrganisationsQueryHandlerTests
         GetOrganisationsQueryHandler sut
         )
     {
-        var expectedResponse = new GetOrganisationsQueryResponse { Organisations = apiResponse.SearchResults.Select(c => (AdminRoatp.Application.Queries.GetOrganisation.Organisation)c) };
+        var expectedResponse = new GetOrganisationsQueryResponse { Organisations = apiResponse.SearchResults.Select(c => (AdminRoatp.Application.Queries.GetOrganisations.Organisation)c) };
         apiClientMock.Setup(a => a.GetWithResponseCode<SearchOrganisationResponse>(It.Is<SearchOrganisationRequest>(c => c.GetUrl.Equals(new SearchOrganisationRequest(query.SearchTerm).GetUrl)))).ReturnsAsync(new ApiResponse<SearchOrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
 
         var result = await sut.Handle(query, CancellationToken.None);
