@@ -82,7 +82,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         [HttpGet]
         [Route("vacancies")]
         public async Task<IActionResult> GetVacancies([FromRoute] long accountId,
-            [FromQuery][Required] string userId,
+            [FromQuery] string userId = null,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 25,
             [FromQuery] string sortColumn = "CreatedDate",

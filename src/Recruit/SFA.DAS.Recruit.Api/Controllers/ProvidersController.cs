@@ -78,7 +78,7 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error getting employer dashboard stats");
+            logger.LogError(e, "Error getting provider dashboard stats");
             return BadRequest();
         }
     }
@@ -86,7 +86,7 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
     [HttpGet]
     [Route("{ukprn:int}/vacancies")]
     public async Task<IActionResult> GetVacancies([FromRoute] int ukprn,
-        [FromQuery][Required] string userId,
+        [FromQuery] string userId = null,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 25,
         [FromQuery] string sortColumn = "CreatedDate",
@@ -147,7 +147,7 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Error getting employer application reviews stats");
+            logger.LogError(e, "Error getting provider application reviews stats");
             return BadRequest();
         }
     }
