@@ -5,7 +5,6 @@ namespace SFA.DAS.Recruit.Application.Queries.GetVacanciesByAccountId;
 
 public record GetVacanciesByAccountIdQuery(
     long AccountId,
-    string UserId,
     int Page = 1,
     int PageSize = 25,
     string SortColumn = "",

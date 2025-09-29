@@ -14,17 +14,10 @@ namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn
     {
         public async Task<GetDashboardByUkprnQueryResult> Handle(GetDashboardByUkprnQuery request, CancellationToken cancellationToken)
         {
-            var dashboardCountTask = recruitApiClient.Get<GetProviderDashboardApiResponse>(
+            var dashboardCount = await recruitApiClient.Get<GetProviderDashboardApiResponse>(
                 new GetDashboardByUkprnApiRequest(request.Ukprn));
-            var dashboardAlertsTask = recruitApiClient.Get<GetProviderAlertsApiResponse>(
-                new GetProviderAlertsApiRequest(request.Ukprn, request.UserId));
 
-            await Task.WhenAll(dashboardCountTask, dashboardAlertsTask);
-
-            var dashboardCount = await dashboardCountTask;
-            var dashboardAlerts = await dashboardAlertsTask;
-
-            return GetDashboardByUkprnQueryResult.FromResponses(dashboardCount, dashboardAlerts);
+            return GetDashboardByUkprnQueryResult.FromResponses(dashboardCount);
         }
     }
 }

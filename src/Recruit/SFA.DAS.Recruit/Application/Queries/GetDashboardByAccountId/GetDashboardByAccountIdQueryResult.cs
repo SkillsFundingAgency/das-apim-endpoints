@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Recruit.Domain;
-using SFA.DAS.Recruit.InnerApi.Responses;
+﻿using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
 
@@ -20,14 +19,9 @@ public record GetDashboardByAccountIdQueryResult
     public int SubmittedVacanciesCount { get; set; } = 0;
     public int ClosingSoonVacanciesCount { get; set; } = 0;
     public int ClosingSoonWithNoApplications { get; set; } = 0;
-    public EmployerTransferredVacanciesAlertModel EmployerRevokedTransferredVacanciesAlert { get; set; } = new();
-    public EmployerTransferredVacanciesAlertModel BlockedProviderTransferredVacanciesAlert { get; set; } = new();
-    public BlockedProviderAlertModel BlockedProviderAlert { get; set; } = new();
-    public WithdrawnVacanciesAlertModel WithDrawnByQaVacanciesAlert { get; set; } = new();
 
     public static GetDashboardByAccountIdQueryResult FromResponses(
-        GetEmployerDashboardApiResponse source,
-        GetEmployerAlertsApiResponse alertsSource)
+        GetEmployerDashboardApiResponse source)
     {
         return new GetDashboardByAccountIdQueryResult
         {
@@ -46,14 +40,6 @@ public record GetDashboardByAccountIdQueryResult
             SubmittedVacanciesCount = source.SubmittedVacanciesCount,
             ClosingSoonVacanciesCount = source.ClosingSoonVacanciesCount,
             ClosingSoonWithNoApplications = source.ClosingSoonWithNoApplications,
-            EmployerRevokedTransferredVacanciesAlert = alertsSource.EmployerRevokedTransferredVacanciesAlert
-                                                       ?? new EmployerTransferredVacanciesAlertModel(),
-            BlockedProviderTransferredVacanciesAlert = alertsSource.BlockedProviderTransferredVacanciesAlert
-                                                       ?? new EmployerTransferredVacanciesAlertModel(),
-            BlockedProviderAlert = alertsSource.BlockedProviderAlert
-                                   ?? new BlockedProviderAlertModel(),
-            WithDrawnByQaVacanciesAlert = alertsSource.WithDrawnByQaVacanciesAlert
-                                          ?? new WithdrawnVacanciesAlertModel()
         };
     }
 }

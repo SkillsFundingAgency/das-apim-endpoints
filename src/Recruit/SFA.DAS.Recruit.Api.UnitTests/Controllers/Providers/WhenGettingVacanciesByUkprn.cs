@@ -14,7 +14,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
             int ukprn,
-            string userId,
             int page,
             int pageSize,
             string sortColumn,
@@ -28,7 +27,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesByUkprnQuery>(c => c.Ukprn.Equals(ukprn) &&
-                                                             c.UserId.Equals(userId) &&
                                                              c.Page.Equals(page) &&
                                                              c.PageSize.Equals(pageSize) && 
                                                              c.SortColumn.Equals(sortColumn) &&
@@ -38,7 +36,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetVacancies(ukprn, userId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as ObjectResult;
+            var controllerResult = await controller.GetVacancies(ukprn, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -50,7 +48,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             int ukprn,
-            string userId,
             int page,
             int pageSize,
             string sortColumn,
@@ -64,7 +61,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesByUkprnQuery>(c => c.Ukprn.Equals(ukprn) &&
-                                                             c.UserId.Equals(userId) &&
                                                              c.Page.Equals(page) &&
                                                              c.PageSize.Equals(pageSize) &&
                                                              c.SortColumn.Equals(sortColumn) &&
@@ -73,7 +69,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Providers
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetVacancies(ukprn, userId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as BadRequestResult;
+            var controllerResult = await controller.GetVacancies(ukprn, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as BadRequestResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

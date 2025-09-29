@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.Queries.GetAlertsByAccountId;
 using SFA.DAS.Recruit.Application.Queries.GetVacanciesByAccountId;
 
 namespace SFA.DAS.Recruit.Api.Controllers
@@ -63,12 +64,11 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("dashboard")]
-        public async Task<IActionResult> GetDashboard([FromRoute] long accountId,
-            [FromQuery][Required] string userId)
+        public async Task<IActionResult> GetDashboard([FromRoute] long accountId)
         {
             try
             {
-                var queryResult = await mediator.Send(new GetDashboardByAccountIdQuery(accountId, userId));
+                var queryResult = await mediator.Send(new GetDashboardByAccountIdQuery(accountId));
 
                 return Ok(queryResult);
             }
@@ -82,7 +82,6 @@ namespace SFA.DAS.Recruit.Api.Controllers
         [HttpGet]
         [Route("vacancies")]
         public async Task<IActionResult> GetVacancies([FromRoute] long accountId,
-            [FromQuery] string userId = null,
             [FromQuery] int page = 1,
             [FromQuery] int pageSize = 25,
             [FromQuery] string sortColumn = "CreatedDate",
@@ -93,13 +92,32 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             try
             {
-                var queryResult = await mediator.Send(new GetVacanciesByAccountIdQuery(accountId, userId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm), token);
+                var queryResult = await mediator.Send(new GetVacanciesByAccountIdQuery(accountId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm), token);
 
                 return Ok(queryResult);
             }
             catch (Exception e)
             {
                 logger.LogError(e, "Error getting employer vacancies");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("alerts")]
+        public async Task<IActionResult> GetEmployerAlerts([FromRoute] long accountId,
+            [FromQuery] string userId = null,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetAlertsByAccountIdQuery(accountId, userId), token);
+
+                return Ok(queryResult);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting employer alerts");
                 return BadRequest();
             }
         }

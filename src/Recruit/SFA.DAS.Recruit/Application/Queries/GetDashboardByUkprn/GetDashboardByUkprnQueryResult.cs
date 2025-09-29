@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Recruit.Domain;
-using SFA.DAS.Recruit.InnerApi.Responses;
+﻿using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn;
 
@@ -20,12 +19,9 @@ public record GetDashboardByUkprnQueryResult
     public int SubmittedVacanciesCount { get; set; } = 0;
     public int ClosingSoonVacanciesCount { get; set; } = 0;
     public int ClosingSoonWithNoApplications { get; set; } = 0;
-    public ProviderTransferredVacanciesAlertModel ProviderTransferredVacanciesAlert { get; set; } = new();
-    public WithdrawnVacanciesAlertModel WithdrawnVacanciesAlert { get; set; } = new();
 
     public static GetDashboardByUkprnQueryResult FromResponses(
-        GetProviderDashboardApiResponse source,
-        GetProviderAlertsApiResponse alertsSource)
+        GetProviderDashboardApiResponse source)
     {
         return new GetDashboardByUkprnQueryResult
         {
@@ -44,8 +40,6 @@ public record GetDashboardByUkprnQueryResult
             SubmittedVacanciesCount = source.SubmittedVacanciesCount,
             ClosingSoonVacanciesCount = source.ClosingSoonVacanciesCount,
             ClosingSoonWithNoApplications = source.ClosingSoonWithNoApplications,
-            ProviderTransferredVacanciesAlert = alertsSource.ProviderTransferredVacanciesAlert ?? new ProviderTransferredVacanciesAlertModel(),
-            WithdrawnVacanciesAlert = alertsSource.WithdrawnVacanciesAlert ?? new WithdrawnVacanciesAlertModel(),
         };
     }
 }

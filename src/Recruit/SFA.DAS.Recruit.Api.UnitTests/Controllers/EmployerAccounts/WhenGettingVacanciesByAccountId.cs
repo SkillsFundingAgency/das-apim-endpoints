@@ -9,12 +9,11 @@ using System.Threading;
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
 {
     [TestFixture]
-    public class WhenGettingVacanciesByUkprn
+    public class WhenGettingVacanciesByAccountId
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Account_From_Mediator(
             long accountId,
-            string userId,
             int page,
             int pageSize,
             string sortColumn,
@@ -28,7 +27,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesByAccountIdQuery>(c => c.AccountId.Equals(accountId) &&
-                                                             c.UserId.Equals(userId) &&
                                                              c.Page.Equals(page) &&
                                                              c.PageSize.Equals(pageSize) && 
                                                              c.SortColumn.Equals(sortColumn) &&
@@ -38,7 +36,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetVacancies(accountId, userId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as ObjectResult;
+            var controllerResult = await controller.GetVacancies(accountId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
@@ -50,7 +48,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             long accountId,
-            string userId,
             int page,
             int pageSize,
             string sortColumn,
@@ -64,7 +61,6 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetVacanciesByAccountIdQuery>(c => c.AccountId.Equals(accountId) &&
-                                                             c.UserId.Equals(userId) &&
                                                              c.Page.Equals(page) &&
                                                              c.PageSize.Equals(pageSize) &&
                                                              c.SortColumn.Equals(sortColumn) &&
@@ -73,7 +69,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.EmployerAccounts
                     It.IsAny<CancellationToken>()))
                 .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetVacancies(accountId, userId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as BadRequestResult;
+            var controllerResult = await controller.GetVacancies(accountId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm) as BadRequestResult;
 
             controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }

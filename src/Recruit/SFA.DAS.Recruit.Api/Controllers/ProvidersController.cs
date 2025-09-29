@@ -15,6 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.Queries.GetAlertsByUkprn;
 using SFA.DAS.Recruit.Application.Queries.GetProvidersByLarsCode;
 using SFA.DAS.Recruit.Application.Queries.GetVacanciesByUkprn;
 
@@ -67,12 +68,11 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
 
     [HttpGet]
     [Route("{ukprn:int}/dashboard")]
-    public async Task<IActionResult> GetDashboard([FromRoute] int ukprn,
-        [FromQuery][Required] string userId)
+    public async Task<IActionResult> GetDashboard([FromRoute] int ukprn)
     {
         try
         {
-            var queryResult = await mediator.Send(new GetDashboardByUkprnQuery(ukprn, userId));
+            var queryResult = await mediator.Send(new GetDashboardByUkprnQuery(ukprn));
 
             return Ok(queryResult);
         }
@@ -86,7 +86,6 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
     [HttpGet]
     [Route("{ukprn:int}/vacancies")]
     public async Task<IActionResult> GetVacancies([FromRoute] int ukprn,
-        [FromQuery] string userId = null,
         [FromQuery] int page = 1,
         [FromQuery] int pageSize = 25,
         [FromQuery] string sortColumn = "CreatedDate",
@@ -97,13 +96,32 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
     {
         try
         {
-            var queryResult = await mediator.Send(new GetVacanciesByUkprnQuery(ukprn, userId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm), token);
+            var queryResult = await mediator.Send(new GetVacanciesByUkprnQuery(ukprn, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm), token);
 
             return Ok(queryResult);
         }
         catch (Exception e)
         {
             logger.LogError(e, "Error getting provider vacancies");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("{ukprn:int}/alerts")]
+    public async Task<IActionResult> GetProviderAlerts([FromRoute] int ukprn,
+        [FromQuery] string userId = null,
+        CancellationToken token = default)
+    {
+        try
+        {
+            var queryResult = await mediator.Send(new GetAlertsByUkprnQuery(ukprn, userId), token);
+
+            return Ok(queryResult);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting provider alerts");
             return BadRequest();
         }
     }

@@ -13,7 +13,6 @@ internal class WhenHandlingGetVacanciesByUkprnQuery
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         GetVacanciesByAccountIdQuery query,
         GetPagedVacancySummaryApiResponse apiResponse,
-        GetEmployerAlertsApiResponse alertsApiResponse,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         GetVacanciesByAccountIdQueryHandler handler)
     {
@@ -24,20 +23,10 @@ internal class WhenHandlingGetVacanciesByUkprnQuery
                 It.Is<GetVacanciesByAccountIdApiRequest>(c => c.GetUrl.Equals(expectedGetUrl.GetUrl))))
             .ReturnsAsync(apiResponse);
 
-        var expectedAlertsUrl = new GetEmployerAlertsApiRequest(query.AccountId, query.UserId);
-        recruitApiClient
-            .Setup(x => x.Get<GetEmployerAlertsApiResponse>(
-                It.Is<GetEmployerAlertsApiRequest>(c => c.GetUrl.Equals(expectedAlertsUrl.GetUrl))))
-            .ReturnsAsync(alertsApiResponse);
-
         //Act
         var actual = await handler.Handle(query, CancellationToken.None);
 
         //Assert
         actual.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        actual.BlockedProviderAlert.Should().Be(alertsApiResponse.BlockedProviderAlert);
-        actual.BlockedProviderTransferredVacanciesAlert.Should().Be(alertsApiResponse.BlockedProviderTransferredVacanciesAlert);
-        actual.EmployerRevokedTransferredVacanciesAlert.Should().Be(alertsApiResponse.EmployerRevokedTransferredVacanciesAlert);
-        actual.WithDrawnByQaVacanciesAlert.Should().Be(alertsApiResponse.WithDrawnByQaVacanciesAlert);
     }
 }

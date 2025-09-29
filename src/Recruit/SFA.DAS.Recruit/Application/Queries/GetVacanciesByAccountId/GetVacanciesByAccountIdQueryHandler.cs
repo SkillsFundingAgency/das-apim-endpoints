@@ -7,11 +7,13 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetVacanciesByAccountId;
-public class GetVacanciesByAccountIdQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) : IRequestHandler<GetVacanciesByAccountIdQuery, GetVacanciesByAccountIdQueryResult>
+public class GetVacanciesByAccountIdQueryHandler(
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+    : IRequestHandler<GetVacanciesByAccountIdQuery, GetVacanciesByAccountIdQueryResult>
 {
     public async Task<GetVacanciesByAccountIdQueryResult> Handle(GetVacanciesByAccountIdQuery request, CancellationToken cancellationToken)
     {
-        var vacanciesResponseTask = recruitApiClient.Get<GetPagedVacancySummaryApiResponse>(
+        var vacanciesResponse = await recruitApiClient.Get<GetPagedVacancySummaryApiResponse>(
             new GetVacanciesByAccountIdApiRequest(request.AccountId,
                 request.Page,
                 request.PageSize,
@@ -19,11 +21,6 @@ public class GetVacanciesByAccountIdQueryHandler(IRecruitApiClient<RecruitApiCon
                 request.SortOrder,
                 request.FilterBy,
                 request.SearchTerm));
-        var alertsResponseTask = recruitApiClient.Get<GetEmployerAlertsApiResponse>(
-            new GetEmployerAlertsApiRequest(request.AccountId, request.UserId));
-        await Task.WhenAll(vacanciesResponseTask, alertsResponseTask);
-        var vacanciesResponse = await vacanciesResponseTask;
-        var alertsResponse = await alertsResponseTask;
-        return GetVacanciesByAccountIdQueryResult.FromResponses(vacanciesResponse, alertsResponse);
+        return GetVacanciesByAccountIdQueryResult.FromResponses(vacanciesResponse);
     }
 }

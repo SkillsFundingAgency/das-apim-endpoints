@@ -7,19 +7,20 @@ public record GetVacanciesByUkprnQueryResult
 {
     public GetPagedVacancySummaryApiResponse.Info PageInfo { get; set; }
     public List<VacancySummary> VacancySummaries { get; set; }
-    public ProviderTransferredVacanciesAlertModel ProviderTransferredVacanciesAlert { get; set; } = new();
-    public WithdrawnVacanciesAlertModel WithdrawnVacanciesAlert { get; set; } = new();
 
     public static GetVacanciesByUkprnQueryResult FromResponses(
-        GetPagedVacancySummaryApiResponse source,
-        GetProviderAlertsApiResponse alertsSource)
+        GetPagedVacancySummaryApiResponse source)
     {
+        if (source is null) return new GetVacanciesByUkprnQueryResult
+        {
+            PageInfo = new GetPagedVacancySummaryApiResponse.Info(),
+            VacancySummaries = []
+        };
+
         return new GetVacanciesByUkprnQueryResult
         {
             PageInfo = source.PageInfo,
             VacancySummaries = source.Items,
-            ProviderTransferredVacanciesAlert = alertsSource.ProviderTransferredVacanciesAlert ?? new ProviderTransferredVacanciesAlertModel(),
-            WithdrawnVacanciesAlert = alertsSource.WithdrawnVacanciesAlert ?? new WithdrawnVacanciesAlertModel(),
         };
     }
 }
