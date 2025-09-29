@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -107,7 +106,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
-            throw new NotImplementedException();
+            return _apiClient.PutWithResponseCode<TData, TResponse>(request);
         }
     }
 }

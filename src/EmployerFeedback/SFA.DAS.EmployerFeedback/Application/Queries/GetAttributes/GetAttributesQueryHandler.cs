@@ -21,7 +21,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes
 
         public async Task<GetAttributesResult> Handle(GetAttributesQuery request, CancellationToken cancellationToken)
         {
-            var attributes = await _apiClient.GetWithResponseCode<List<Attribute>>(new GetAttributesRequest());
+            var attributes = await _apiClient.GetWithResponseCode<List<GetAttributesResponse>>(new GetAttributesRequest());
             attributes.EnsureSuccessStatusCode();
 
             return new GetAttributesResult
