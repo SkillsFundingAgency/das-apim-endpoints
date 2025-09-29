@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,12 +9,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Recruit.Api.AppStart;
-using SFA.DAS.Recruit.Jobs.Api.AppStart;
+using SFA.DAS.RecruitJobs.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 
-namespace SFA.DAS.Recruit.Jobs.Api;
+namespace SFA.DAS.RecruitJobs.Api;
 
 public static class Startup
 {
@@ -40,7 +37,6 @@ public static class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        //services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingProgrammesQuery).Assembly));
         services.AddServiceRegistration(configuration);
 
         services.Configure<RouteOptions>(options =>

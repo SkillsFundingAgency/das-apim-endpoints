@@ -1,18 +1,16 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using SFA.DAS.Recruit.Jobs.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 
-namespace SFA.DAS.Recruit.Api.AppStart
+namespace SFA.DAS.RecruitJobs.Api.AppStart;
+
+public static class AddConfigurationOptionsExtension
 {
-    public static class AddConfigurationOptionsExtension
+    public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddOptions();
-            services.Configure<RecruitJobsConfiguration>(configuration.GetSection(nameof(RecruitJobsConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitJobsConfiguration>>().Value);
-            
-        }
+        services.AddOptions();
+        services.Configure<RecruitApiConfiguration>(configuration.GetSection(nameof(RecruitApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
     }
 }
