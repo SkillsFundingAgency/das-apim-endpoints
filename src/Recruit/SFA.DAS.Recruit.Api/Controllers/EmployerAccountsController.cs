@@ -61,11 +61,12 @@ namespace SFA.DAS.Recruit.Api.Controllers
 
         [HttpGet]
         [Route("dashboard")]
-        public async Task<IActionResult> GetDashboard([FromRoute] long accountId)
+        public async Task<IActionResult> GetDashboard([FromRoute] long accountId,
+            [FromQuery] string? userId = null)
         {
             try
             {
-                var queryResult = await mediator.Send(new GetDashboardByAccountIdQuery(accountId));
+                var queryResult = await mediator.Send(new GetDashboardByAccountIdQuery(accountId, userId));
 
                 return Ok(queryResult);
             }

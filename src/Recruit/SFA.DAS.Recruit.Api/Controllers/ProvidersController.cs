@@ -65,11 +65,12 @@ public class ProvidersController(IMediator mediator, ILogger<ProvidersController
 
     [HttpGet]
     [Route("{ukprn:int}/dashboard")]
-    public async Task<IActionResult> GetDashboard([FromRoute] int ukprn)
+    public async Task<IActionResult> GetDashboard([FromRoute] int ukprn,
+        [FromQuery] string userId)
     {
         try
         {
-            var queryResult = await mediator.Send(new GetDashboardByUkprnQuery(ukprn));
+            var queryResult = await mediator.Send(new GetDashboardByUkprnQuery(ukprn, userId));
 
             return Ok(queryResult);
         }
