@@ -1,9 +1,8 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests
+namespace SFA.DAS.Recruit.InnerApi.Requests;
+
+public record GetDashboardByUkprnApiRequest(int Ukprn) : IGetApiRequest
 {
-    public record GetDashboardByUkprnApiRequest(int Ukprn, string UserId) : IGetApiRequest
-    {
-        public string GetUrl => $"api/provider/{Ukprn}/applicationReviews/dashboard?userId={UserId}";
-    }
+    public string GetUrl => $"api/provider/{Ukprn}/applicationReviews/dashboard";
 }

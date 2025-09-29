@@ -18,7 +18,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetDashboardByUkprn
             GetDashboardByUkprnQueryHandler handler)
         {
             //Arrange
-            var expectedGetUrl = new GetDashboardByUkprnApiRequest(query.Ukprn, query.UserId);
+            var expectedGetUrl = new GetDashboardByUkprnApiRequest(query.Ukprn);
             recruitApiClient
                 .Setup(x => x.Get<GetProviderDashboardApiResponse>(
                     It.Is<GetDashboardByUkprnApiRequest>(c => c.GetUrl.Equals(expectedGetUrl.GetUrl))))
@@ -28,7 +28,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetDashboardByUkprn
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.Should().BeEquivalentTo(apiResponse);
+            actual.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
         }
     }
 }

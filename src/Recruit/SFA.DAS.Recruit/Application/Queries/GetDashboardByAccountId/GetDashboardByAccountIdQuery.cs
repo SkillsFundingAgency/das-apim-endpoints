@@ -2,6 +2,6 @@
 
 namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId
 {
-    public record GetDashboardByAccountIdQuery(long AccountId, string UserId)
+    public record GetDashboardByAccountIdQuery(long AccountId)
         : IRequest<GetDashboardByAccountIdQueryResult>;
 }
