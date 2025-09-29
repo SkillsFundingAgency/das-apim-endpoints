@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +8,7 @@ using SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
 {
