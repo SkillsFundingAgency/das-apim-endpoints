@@ -14,7 +14,7 @@ using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
-internal class GetFm36CommandTestFixture
+internal class GetFm36QueryTestFixture
 {
 
     internal readonly Fixture Fixture = new();
@@ -29,10 +29,10 @@ internal class GetFm36CommandTestFixture
     internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
     internal GetFm36Result Result;
 
-    private GetFm36CommandHandler _handler;
-    private GetFm36Command _query;
+    private GetFm36QueryHandler _handler;
+    private GetFm36Query _query;
 
-    internal GetFm36CommandTestFixture(TestScenario scenario)
+    internal GetFm36QueryTestFixture(TestScenario scenario)
     {
         // Arrange
         MockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
@@ -52,8 +52,8 @@ internal class GetFm36CommandTestFixture
         CollectionCalendarResponse = BuildCollectionCalendarResponse(LearningsResponse);
         SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
-        _handler = new GetFm36CommandHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetFm36CommandHandler>>());
-        _query = new GetFm36Command(Ukprn, CollectionYear, CollectionPeriod);
+        _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
+        _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod);
     }
 
     internal GetAcademicYearsResponse BuildCollectionCalendarResponse(GetLearningsResponse learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)

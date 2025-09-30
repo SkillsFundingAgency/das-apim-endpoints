@@ -2,9 +2,9 @@
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
-public class GetFm36Command : IRequest<GetFm36Result>
+public class GetFm36Query : IRequest<GetFm36Result>
 {
-    public GetFm36Command(long ukprn, int collectionYear, byte collectionPeriod)
+    public GetFm36Query(long ukprn, int collectionYear, byte collectionPeriod)
     {
         Ukprn = ukprn;
         CollectionYear = collectionYear;

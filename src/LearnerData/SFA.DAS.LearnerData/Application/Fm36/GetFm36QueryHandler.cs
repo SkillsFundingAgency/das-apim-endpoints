@@ -15,19 +15,19 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
-public class GetFm36CommandHandler : IRequestHandler<GetFm36Command, GetFm36Result>
+public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 {
     const int SimplificationEarningsPlatform = 2;
 
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
-    private readonly ILogger<GetFm36CommandHandler> _logger;
+    private readonly ILogger<GetFm36QueryHandler> _logger;
 
-    public GetFm36CommandHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
+    public GetFm36QueryHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
         ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
-        ILogger<GetFm36CommandHandler> logger)
+        ILogger<GetFm36QueryHandler> logger)
     {
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
@@ -35,7 +35,7 @@ public class GetFm36CommandHandler : IRequestHandler<GetFm36Command, GetFm36Resu
         _logger = logger;
     }
 
-    public async Task<GetFm36Result> Handle(GetFm36Command request, CancellationToken cancellationToken)
+    public async Task<GetFm36Result> Handle(GetFm36Query request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 
