@@ -5,7 +5,7 @@ trigger:
       - "master"
   paths:
     include:
-    - src/Learner
+    - src/Learning
     exclude:
     - azure
     - pipeline-templates
@@ -18,7 +18,7 @@ pr:
       - "master"
   paths:
     include:
-    - src/Learner
+    - src/Learning
     - Directory.Packages.props
     exclude:
     - azure
@@ -51,4 +51,4 @@ resources:
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
-    OuterApiName: Learner
+    OuterApiName: Learning
