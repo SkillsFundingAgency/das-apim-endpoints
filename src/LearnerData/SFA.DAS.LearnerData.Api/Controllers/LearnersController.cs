@@ -4,12 +4,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.LearnerData.Application.ProcessLearners;
+using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
@@ -18,7 +19,8 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<IEnumerable<LearnerDataRequest>> validator,
+    IValidator<CreateLearnerRequest> validator,
+    IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
@@ -48,7 +50,7 @@ public class LearnersController(
         [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
     {
 
-        var validatorResult = await validator.ValidateAsync(dataRequests);
+        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
 
         if (!validatorResult.IsValid)
         {
@@ -60,8 +62,41 @@ public class LearnersController(
             var correlationId = Guid.NewGuid();
             await mediator.Send(new ProcessLearnersCommand
             {
-                CorrelationId = correlationId, ReceivedOn = DateTime.Now, AcademicYear = academicyear,
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.Now,
+                AcademicYear = academicyear,
                 Learners = dataRequests
+            });
+            return Accepted(new CorrelationResponse { CorrelationId = correlationId });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when processing learners list");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    [Route("/providers/{ukprn}/learners")]
+    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
+    {
+
+        var validatorResult = await validator.ValidateAsync(dataRequest);
+
+        if (!validatorResult.IsValid)
+        {
+            return BuildErrorResponse(validatorResult.Errors);
+        }
+
+        try
+        {
+            var correlationId = Guid.NewGuid();
+            await mediator.Send(new CreateLearnerCommand
+            {
+                CorrelationId = correlationId, 
+                ReceivedOn = DateTime.Now, 
+                Request = dataRequest,
+                Ukprn = ukprn
             });
             return Accepted(new CorrelationResponse {CorrelationId = correlationId});
         }
