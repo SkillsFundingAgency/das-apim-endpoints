@@ -12,7 +12,7 @@ public static class AddConfigurationOptionsExtension
     public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions();
-        services.Configure<RecruitApiConfiguration>(configuration.GetSection(nameof(RecruitApiConfiguration)));
+        services.Configure<RecruitApiConfiguration>(configuration.GetSection("RecruitAltApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
     }
 }
