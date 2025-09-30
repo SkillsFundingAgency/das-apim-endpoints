@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
@@ -45,7 +46,7 @@ namespace SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice
                 ApprenticeId = apprentice.ApprenticeId,
                 FirstName = apprentice.FirstName,
                 LastName = apprentice.LastName,
-                DateOfBirth = apprentice.DateOfBirth,
+                DateOfBirth = apprentice.DateOfBirth ?? DateTime.MinValue,
                 Email = apprentice.Email,
                 TermsOfUseAccepted = apprentice.TermsOfUseAccepted,
                 ReacceptTermsOfUseRequired = apprentice.ReacceptTermsOfUseRequired,

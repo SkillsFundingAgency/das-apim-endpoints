@@ -3,9 +3,10 @@
 namespace SFA.DAS.LearnerData.Requests;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
 public class StubUpdateLearnerRequest
 {
+    [Required]
+    public string ConsumerReference { get; set; }
     [Required]
     public StubLearner Learner { get; set; }
     [Required]
