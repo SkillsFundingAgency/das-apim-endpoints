@@ -23,9 +23,7 @@ public class DelayedNotificationsController: ControllerBase
         [FromQuery, Required] DateTime? dateTime)
     {
         var results = await recruitApiClient.Get<GetDelayedNotificationsByDateResponse>(new GetDelayedNotificationsByDateRequest(dateTime!.Value));
-        return results is null
-            ? Results.NotFound()
-            : TypedResults.Ok(results.Emails.ToGetResponse());
+        return TypedResults.Ok(results?.Emails.ToGetResponse() ?? []);
     }
     
     [HttpPost, Route("delete")]

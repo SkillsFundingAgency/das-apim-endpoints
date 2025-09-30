@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,7 @@ using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.RecruitJobs.Api;
 
+[ExcludeFromCodeCoverage]
 public static class Startup
 {
     public static void ConfigureServices(

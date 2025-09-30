@@ -18,6 +18,6 @@ public static class DelayedNotificationExtensions
     
     public static List<NotificationEmail> ToGetResponse(this List<InnerApi.Responses.DelayedNotifications.NotificationEmail> notifications)
     {
-        return notifications?.Select(ToResponseDto).ToList();
+        return notifications?.Select(ToResponseDto).ToList() ?? [];
     }
 }

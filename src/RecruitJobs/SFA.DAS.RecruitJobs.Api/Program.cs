@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
@@ -18,3 +19,7 @@ Startup.ConfigureServices(builder.Services, builder.Environment, configuration);
 var app = builder.Build();
 Startup.ConfigureApp(app, configuration);
 app.Run();
+
+
+[ExcludeFromCodeCoverage]
+public partial class Program { }

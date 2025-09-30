@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -9,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.RecruitJobs.Api.AppStart;
 
+[ExcludeFromCodeCoverage]
 public static class AddServiceRegistrationExtension
 {
     public static void AddServiceRegistration(this IServiceCollection services, IConfiguration configuration)
