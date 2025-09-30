@@ -6,7 +6,7 @@ using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
-[Route("[controller]")]
+[Route("organisations")]
 [ApiController]
 public class OrganisationController(IMediator _mediator, ILogger<OrganisationController> _logger) : ControllerBase
 {
