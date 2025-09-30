@@ -92,7 +92,7 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
         testContext.EarningsApi.MockServer
             .Given(
                 Request.Create()
-                    .WithPath($"/{learnerKey}/withdraw")
+                    .WithPath($"/apprenticeship/{learnerKey}/withdraw")
                     .UsingPatch()
             )
             .RespondWith(

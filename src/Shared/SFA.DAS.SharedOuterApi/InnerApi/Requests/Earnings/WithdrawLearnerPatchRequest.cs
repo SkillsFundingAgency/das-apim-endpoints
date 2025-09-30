@@ -15,7 +15,7 @@ public class WithdrawLearnerPatchRequest : IPatchApiRequest<WithdrawLearnerReque
     }
 
     public Guid LearningKey { get; set; }
-    public string PatchUrl => $"{LearningKey}/withdraw";
+    public string PatchUrl => $"apprenticeship/{LearningKey}/withdraw";
     public WithdrawLearnerRequest Data { get; set; }
 }
 
