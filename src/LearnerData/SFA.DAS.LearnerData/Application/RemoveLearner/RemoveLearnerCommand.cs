@@ -25,26 +25,23 @@ public class RemoveLearnerCommandHandler(
     {
         logger.LogInformation("Removing learner with key {LearningKey}", command.LearningKey);
 
-        var startDateRequest = new GetLearningStartDateRequest { LearningKey = command.LearningKey };
-
-        var startDateResponse = await learningApiClient.Get<GetLearningStartDateResponse>(startDateRequest);
-        var startDate = startDateResponse?.ActualStartDate;
-
-        if (startDate == null)
-        {
-            throw new Exception($"No start date data found for learner with key {command.LearningKey}.");
-        }
-
         var removeRequest = new RemoveLearnerApiDeleteRequest(command.LearningKey, command.Ukprn);
 
-        var response = await learningApiClient.DeleteWithResponseCode<string>(removeRequest);
+        var response = await learningApiClient.DeleteWithResponseCode<RemoveLearnerResponse>(removeRequest, true);
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
             throw new Exception($"Failed to remove learner with key {command.LearningKey}. Status code: {response.StatusCode}.");
         }
 
-        var withdrawRequest = new WithdrawLearnerPatchRequest(command.LearningKey, startDate.Value);
+        var lastDayOfLearning = response.Body?.LastDayOfLearning;
+
+        if (lastDayOfLearning == null)
+        {
+            throw new Exception($"LastDayOfLearning returned from learning inner not found. Cannot withdraw from earnings.");
+        }
+
+        var withdrawRequest = new WithdrawLearnerPatchRequest(command.LearningKey, lastDayOfLearning.Value);
         var earningsResponse = await earningsApiClient.PatchWithResponseCode(withdrawRequest);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())

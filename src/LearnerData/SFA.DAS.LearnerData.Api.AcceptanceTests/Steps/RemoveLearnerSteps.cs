@@ -2,6 +2,7 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using System.Net;
 using TechTalk.SpecFlow;
+using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -16,7 +17,6 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
     [When(@"the learner is removed")]
     public async Task WhenTheLearnerIsRemoved()
     {
-        ConfigureGetLearningStartDateApi();
         ConfigureRemoveLearningApi();
         ConfigureWithdrawLearnerEarningsApi();
 
@@ -45,33 +45,15 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
             "Expected a withdraw request to the Earnings domain for the learner");
     }
 
-    private void ConfigureGetLearningStartDateApi()
-    {
-        var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
-
-        var response = new GetLearningStartDateResponse
-        {
-            LearningKey = learnerKey,
-            ActualStartDate = DateTime.UtcNow
-        };
-
-        testContext.ApprenticeshipsApi.MockServer
-            .Given(
-                Request.Create()
-                    .WithPath($"/{learnerKey}/startDate")
-                    .UsingGet()
-            )
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(response)
-            );
-    }
-
     private void ConfigureRemoveLearningApi()
     {
         var learningKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
+
+        var responseBody = new RemoveLearnerResponse
+        {
+            LastDayOfLearning = DateTime.UtcNow
+        };
 
         testContext.ApprenticeshipsApi.MockServer
             .Given(
@@ -81,9 +63,12 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
             )
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(HttpStatusCode.NoContent)
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(responseBody)
             );
     }
+
 
     private void ConfigureWithdrawLearnerEarningsApi()
     {
