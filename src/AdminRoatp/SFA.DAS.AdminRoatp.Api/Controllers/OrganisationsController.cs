@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using System.Net;
 
@@ -7,7 +8,7 @@ namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsController> _logger) : ControllerBase
+public class OrganisationController(IMediator _mediator, ILogger<OrganisationController> _logger) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(List<GetOrganisationsQueryResponse>))]
@@ -16,6 +17,17 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     {
         _logger.LogInformation("Received request to get organisations with Search Term: {SearchTerm}", searchTerm);
         GetOrganisationsQueryResponse response = await _mediator.Send(new GetOrganisationsQuery(searchTerm), cancellationToken);
+        return Ok(response);
+    }
+
+    [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOrganisationQueryResponse))]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
+    [Route("ukprn")]
+    public async Task<IActionResult> GetOrganisation([FromQuery] int ukprn, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Received request to get organisation for Ukprn: {Ukprn}", ukprn);
+        GetOrganisationQueryResponse response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
         return Ok(response);
     }
 }
