@@ -10,6 +10,7 @@ using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
+using SFA.DAS.LearnerData.Application.RemoveLearner;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -87,6 +88,36 @@ public class LearnersController(
         catch (Exception e)
         {
             logger.LogError(e, $"Internal error occurred when updating learner {learningKey}");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpDelete("/providers/{ukprn}/learning/{learningKey}")]
+    public async Task<IActionResult> RemoveLearner(
+        [FromRoute] long ukprn,
+        [FromRoute] Guid learningKey)
+    {
+        logger.LogInformation(
+            "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
+            ukprn,
+            learningKey);
+
+        try
+        {
+            var command = new RemoveLearnerCommand
+            {
+                LearningKey = learningKey,
+                Ukprn = ukprn
+            };
+
+            await mediator.Send(command);
+
+            return NoContent();
+
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Internal error occurred when removing learner {learningKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
