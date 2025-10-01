@@ -34,6 +34,20 @@ public class GetOrganisationQueryHandlerTests
     }
 
     [Test, MoqAutoData]
+    public async Task Handle_Unsuccessful404Response_ReturnNullResponse(
+    [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
+    GetOrganisationQuery query,
+    GetOrganisationQueryHandler sut)
+    {
+        var apiResponse = new ApiResponse<GetOrganisationResponse>(It.IsAny<GetOrganisationResponse>(), HttpStatusCode.NotFound, "");
+        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationResponse>(It.IsAny<GetOrganisationRequest>())).ReturnsAsync(apiResponse);
+
+        var result = await sut.Handle(query, It.IsAny<CancellationToken>());
+
+        result.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
     public async Task Handle_UnsuccessfulResponse_ThrowsException(
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
         GetOrganisationQuery query,
