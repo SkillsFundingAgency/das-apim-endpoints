@@ -12,7 +12,7 @@ namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers;
 public class OrganisationsControllerTests
 {
     [Test, MoqAutoData]
-    public async Task GetOrganisations(
+    public async Task GetOrganisations_ReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] OrganisationController sut,
         GetOrganisationsQuery request,
@@ -28,7 +28,7 @@ public class OrganisationsControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetOrganisation(
+    public async Task GetOrganisationReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] OrganisationController sut,
         GetOrganisationQuery request,
@@ -41,5 +41,21 @@ public class OrganisationsControllerTests
 
         mediatorMock.Verify(m => m.Send(It.Is<GetOrganisationQuery>(r => r.ukprn == request.ukprn), It.IsAny<CancellationToken>()), Times.Once());
         response.Value.Should().BeEquivalentTo(expectedResponse);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetOrganisationReturnNotFoundResponse(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] OrganisationController sut,
+        GetOrganisationQuery request)
+    {
+        GetOrganisationQueryResponse? expectedResponse = null;
+        mediatorMock.Setup(m => m.Send(It.IsAny<GetOrganisationQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
+
+        var result = await sut.GetOrganisation(request.ukprn, It.IsAny<CancellationToken>());
+        var response = (NotFoundResult)result;
+
+        mediatorMock.Verify(m => m.Send(It.Is<GetOrganisationQuery>(r => r.ukprn == request.ukprn), It.IsAny<CancellationToken>()), Times.Once());
+        response.Should().BeOfType<NotFoundResult>();
     }
 }

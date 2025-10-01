@@ -27,7 +27,7 @@ public class OrganisationController(IMediator _mediator, ILogger<OrganisationCon
     public async Task<IActionResult> GetOrganisation([FromQuery] int ukprn, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Received request to get organisation for Ukprn: {Ukprn}", ukprn);
-        GetOrganisationQueryResponse response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
-        return Ok(response);
+        GetOrganisationQueryResponse? response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
+        return response == null ? NotFound() : Ok(response);
     }
 }

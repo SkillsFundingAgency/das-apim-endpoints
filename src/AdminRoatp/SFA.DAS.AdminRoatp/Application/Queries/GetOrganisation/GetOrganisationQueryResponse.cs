@@ -1,4 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using OrganisationStatus = SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Types.OrganisationStatus;
+using ProviderType = SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Types.ProviderType;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 public class GetOrganisationQueryResponse
@@ -11,11 +13,11 @@ public class GetOrganisationQueryResponse
     public string? CharityNumber { get; set; }
     public DateTime? ApplicationDeterminedDate { get; set; }
     public DateTime? LastUpdatedDate { get; set; }
-    public OrganisationStatusEnum Status { get; set; }
+    public OrganisationStatus Status { get; set; }
     public DateTime? RemovedDate { get; set; }
     public int? RemovedReasonId { get; set; }
     public string? RemovedReason { get; set; }
-    public ProviderTypeEnum ProviderType { get; set; }
+    public ProviderType ProviderType { get; set; }
     public int? OrganisationTypeId { get; set; }
     public string? OrganisationType { get; set; }
     public IEnumerable<AllowedCourseType> AllowedCourseTypes { get; set; } = Enumerable.Empty<AllowedCourseType>();
