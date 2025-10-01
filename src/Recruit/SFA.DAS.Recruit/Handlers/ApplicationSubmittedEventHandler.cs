@@ -40,6 +40,11 @@ public class ApplicationSubmittedEventHandler(
             logger.LogError("ApplicationSubmittedEventHandler: Vacancy does not have an associated employer account '{VacancyId}'", @event.VacancyId);
             return;
         }
+        if (vacancy.VacancyReference is not long vacancyReference)
+        {
+            logger.LogError("ApplicationSubmittedEventHandler: Vacancy does not have a VacancyReference '{VacancyId}'", @event.VacancyId);
+            return;
+        }
 
         var location = vacancy.EmployerLocationOption == AvailableWhere.AcrossEngland
             ? "Recruiting nationally"
@@ -51,7 +56,7 @@ public class ApplicationSubmittedEventHandler(
 
         var usersToNotify = users?
             .Where(x => x.NotificationPreferences.EventPreferences.Any(p => 
-                p.Frequency == NotificationFrequency.Immediately || p.Frequency == NotificationFrequency.NotSet &&
+                p.Frequency == NotificationFrequency.Immediately &&
                 (p.Scope == NotificationScope.OrganisationVacancies || 
                     (p.Scope == NotificationScope.UserSubmittedVacancies && x.Id == vacancy.SubmittedByUserId))))
             .ToList();
@@ -61,8 +66,8 @@ public class ApplicationSubmittedEventHandler(
                 emailHelper.ApplicationSubmittedTemplateId,
                 x.Email,
                 vacancy.Title,
-                x.Name,
-                vacancy.VacancyReference!.Value.ToString(),
+                x.FirstName,
+                vacancyReference.ToString(),
                 vacancy.EmployerName,
                 location,
                 string.Format(emailHelper.ManageAdvertUrl, employerAccountId, vacancy.Id),
@@ -70,7 +75,7 @@ public class ApplicationSubmittedEventHandler(
             .Select(email => new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens))
             .Select(notificationService.Send).ToList();
 
-        if (emailTasks?.Count != 0)
+        if (emailTasks?.Count > 0)
         {
             await Task.WhenAll(emailTasks!);
         }

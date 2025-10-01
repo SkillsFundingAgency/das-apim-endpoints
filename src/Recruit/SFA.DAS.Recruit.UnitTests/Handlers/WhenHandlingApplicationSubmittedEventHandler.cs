@@ -132,13 +132,12 @@ public class WhenHandlingApplicationSubmittedEventHandler
         var user = new InnerResponses.RecruitUserApiResponse
         {
             Email = "notify@example.com",
-            Name = "Notify User",
+            Name = "Notify",
             NotificationPreferences = new InnerResponses.NotificationPreferences
             {
                 EventPreferences = new List<InnerResponses.EventPreference>
                 {
-                    new InnerResponses.EventPreference
-                    {
+                    new() {
                         Event = NotificationTypes.ApplicationSubmitted,
                         Frequency = NotificationFrequency.Immediately,
                         Scope = NotificationScope.OrganisationVacancies
@@ -169,7 +168,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         keys.Should().ContainInOrder(new[] { "advertTitle", "firstName", "employerName", "manageAdvertURL", "notificationSettingsURL", "VACcode", "location" });
 
         capturedEmail.Tokens["advertTitle"].Should().Be(vacancyResponse.Vacancy.Title);
-        capturedEmail.Tokens["firstName"].Should().Be(user.Name);
+        capturedEmail.Tokens["firstName"].Should().Be(user.FirstName);
         capturedEmail.Tokens["employerName"].Should().Be(vacancyResponse.Vacancy.EmployerName);
         capturedEmail.Tokens["VACcode"].Should().Be(vacancyResponse.Vacancy.VacancyReference!.Value.ToString());
         capturedEmail.Tokens["location"].Should().NotBeNull();
@@ -200,13 +199,12 @@ public class WhenHandlingApplicationSubmittedEventHandler
         {
             Id = submittingUserId,
             Email = "submitter@example.com",
-            Name = "Submitter User",
+            Name = "Submitter",
             NotificationPreferences = new InnerResponses.NotificationPreferences
             {
                 EventPreferences = new List<InnerResponses.EventPreference>
                 {
-                    new InnerResponses.EventPreference
-                    {
+                    new() {
                         Event = NotificationTypes.ApplicationSubmitted,
                         Frequency = NotificationFrequency.Immediately,
                         Scope = NotificationScope.UserSubmittedVacancies
@@ -237,7 +235,7 @@ public class WhenHandlingApplicationSubmittedEventHandler
         keys.Should().ContainInOrder(new[] { "advertTitle", "firstName", "employerName", "manageAdvertURL", "notificationSettingsURL", "VACcode", "location" });
 
         capturedEmail.Tokens["advertTitle"].Should().Be(vacancyResponse.Vacancy.Title);
-        capturedEmail.Tokens["firstName"].Should().Be(user.Name);
+        capturedEmail.Tokens["firstName"].Should().Be(user.FirstName);
         capturedEmail.Tokens["employerName"].Should().Be(vacancyResponse.Vacancy.EmployerName);
         capturedEmail.Tokens["VACcode"].Should().Be(vacancyResponse.Vacancy.VacancyReference!.Value.ToString());
         capturedEmail.Tokens["location"].Should().NotBeNull();
