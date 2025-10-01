@@ -29,7 +29,6 @@ public class GetOrganisationQueryHandlerTests
         var result = await sut.Handle(request, CancellationToken.None);
 
         result.Should().BeEquivalentTo(apiResponse);
-        result.Should().NotBeNull();
         apiRequest.GetUrl.Should().Be(expectedUrl);
     }
 
