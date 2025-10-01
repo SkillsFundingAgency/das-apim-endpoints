@@ -7,10 +7,13 @@ using SFA.DAS.Recruit.Api.Models.Vacancies;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
 using SFA.DAS.Recruit.Application.Queries.GetNextVacancyReference;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using GetNextVacancyReferenceResponse = SFA.DAS.Recruit.Api.Models.Vacancies.Responses.GetNextVacancyReferenceResponse;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
@@ -33,7 +36,7 @@ public class VacanciesController(
     [HttpPost, Route("{vacancyId:guid}")]
     public async Task<IActionResult> PostOne([FromRoute] Guid vacancyId, [FromBody] PostVacancyRequest vacancy)
     {
-        var response = await recruitApiClient.PutWithResponseCode<InnerApi.Responses.PutVacancyResponse>(new InnerApi.Requests.PutVacancyRequest(vacancyId, vacancyMapper.ToInnerDto(vacancy)));
+        var response = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancyId, vacancyMapper.ToInnerDto(vacancy)));
         try
         {
             response.EnsureSuccessStatusCode();
