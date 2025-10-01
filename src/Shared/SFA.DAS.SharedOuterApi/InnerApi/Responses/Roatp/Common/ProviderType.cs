@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Types;
+﻿namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 public enum ProviderType
 {
     Main = 1,

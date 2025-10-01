@@ -5,34 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
-using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers;
-public class OrganisationsControllerTests
+namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers.OrganisationsControllerTests;
+public class OrganisationsControllerGetOrganisationTests
 {
     [Test, MoqAutoData]
-    public async Task GetOrganisations_ReturnSuccessfulResponse(
-        [Frozen] Mock<IMediator> mediatorMock,
-        [Greedy] OrganisationController sut,
-        GetOrganisationsQuery request,
-        GetOrganisationsQueryResponse expectedResponse)
-    {
-        mediatorMock.Setup(m => m.Send(It.IsAny<GetOrganisationsQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
-
-        var result = await sut.GetOrganisations(request.SearchTerm, It.IsAny<CancellationToken>());
-        var response = (OkObjectResult)result;
-
-        mediatorMock.Verify(m => m.Send(It.Is<GetOrganisationsQuery>(r => r.SearchTerm == request.SearchTerm), It.IsAny<CancellationToken>()), Times.Once());
-        response.Value.Should().BeEquivalentTo(expectedResponse);
-    }
-
-    [Test, MoqAutoData]
-    public async Task GetOrganisationReturnSuccessfulResponse(
+    public async Task GetOrganisationByUkprn_ReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] OrganisationController sut,
         GetOrganisationQuery request,
-        GetOrganisationQueryResponse expectedResponse)
+        GetOrganisationResponse expectedResponse)
     {
         mediatorMock.Setup(m => m.Send(It.IsAny<GetOrganisationQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
@@ -44,18 +28,17 @@ public class OrganisationsControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetOrganisationReturnNotFoundResponse(
+    public async Task GetOrganisationByUkprn_ReturnNotFoundResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] OrganisationController sut,
         GetOrganisationQuery request)
     {
-        GetOrganisationQueryResponse? expectedResponse = null;
+        GetOrganisationResponse? expectedResponse = null;
         mediatorMock.Setup(m => m.Send(It.IsAny<GetOrganisationQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
         var result = await sut.GetOrganisation(request.ukprn, It.IsAny<CancellationToken>());
-        var response = (NotFoundResult)result;
 
         mediatorMock.Verify(m => m.Send(It.Is<GetOrganisationQuery>(r => r.ukprn == request.ukprn), It.IsAny<CancellationToken>()), Times.Once());
-        response.Should().BeOfType<NotFoundResult>();
+        result.Should().BeOfType<NotFoundResult>();
     }
 }

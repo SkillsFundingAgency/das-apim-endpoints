@@ -8,9 +8,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
-public class GetOrganisationQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _apiClient, ILogger<GetOrganisationQueryHandler> _logger) : IRequestHandler<GetOrganisationQuery, GetOrganisationQueryResponse?>
+public class GetOrganisationQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _apiClient, ILogger<GetOrganisationQueryHandler> _logger) : IRequestHandler<GetOrganisationQuery, GetOrganisationResponse?>
 {
-    public async Task<GetOrganisationQueryResponse?> Handle(GetOrganisationQuery request, CancellationToken cancellationToken)
+    public async Task<GetOrganisationResponse?> Handle(GetOrganisationQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get Organisation request received for Ukprn {Ukprn}", request.ukprn);
 
