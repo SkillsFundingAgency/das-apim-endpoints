@@ -20,7 +20,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
         {
             _ukprn = model.Ukprn;
             _larsCode = model.LarsCode;
-            _userId = model.UserId; 
+            _userId = model.UserId;
             _userDisplayName = model.UserDisplayName;
             Data = BuildDataPatchFromModel(model);
         }
@@ -30,20 +30,17 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
             var data = new List<PatchOperation>();
 
             if (model.ContactUsEmail != null)
-                data.Add(new PatchOperation { Path = "ContactUsEmail", Value = model.ContactUsEmail, Op=Replace });
-
-            if (model.ContactUsPageUrl != null)
-                data.Add(new PatchOperation { Path = "ContactUsPageUrl", Value = model.ContactUsPageUrl, Op=Replace });
+                data.Add(new PatchOperation { Path = "ContactUsEmail", Value = model.ContactUsEmail, Op = Replace });
 
             if (model.ContactUsPhoneNumber != null)
-                data.Add(new PatchOperation { Path = "ContactUsPhoneNumber", Value = model.ContactUsPhoneNumber, Op=Replace });
+                data.Add(new PatchOperation { Path = "ContactUsPhoneNumber", Value = model.ContactUsPhoneNumber, Op = Replace });
 
             if (model.StandardInfoUrl != null)
-                data.Add(new PatchOperation { Path = "StandardInfoUrl", Value = model.StandardInfoUrl, Op=Replace });
+                data.Add(new PatchOperation { Path = "StandardInfoUrl", Value = model.StandardInfoUrl, Op = Replace });
 
             if (model.IsApprovedByRegulator != null)
-                data.Add(new PatchOperation { Path = "IsApprovedByRegulator", Value = model.IsApprovedByRegulator, Op=Replace });
-            
+                data.Add(new PatchOperation { Path = "IsApprovedByRegulator", Value = model.IsApprovedByRegulator, Op = Replace });
+
             return data;
         }
     }
