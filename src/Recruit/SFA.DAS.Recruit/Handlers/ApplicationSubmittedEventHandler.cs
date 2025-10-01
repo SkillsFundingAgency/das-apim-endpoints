@@ -56,7 +56,7 @@ public class ApplicationSubmittedEventHandler(
 
         var usersToNotify = users?
             .Where(x => x.NotificationPreferences.EventPreferences.Any(p => 
-                p.Frequency == NotificationFrequency.Immediately &&
+                (p.Frequency == NotificationFrequency.Immediately || p.Frequency == NotificationFrequency.NotSet) && 
                 (p.Scope == NotificationScope.OrganisationVacancies || 
                     (p.Scope == NotificationScope.UserSubmittedVacancies && x.Id == vacancy.SubmittedByUserId))))
             .ToList();
