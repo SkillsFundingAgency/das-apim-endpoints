@@ -5,6 +5,7 @@ public record GetQaDashboardQueryResult
     public int TotalVacanciesBrokenSla { get; init; }
     public int TotalVacanciesResubmitted { get; init; }
     public int TotalVacanciesSubmittedTwelveTwentyFourHours { get; init; }
+    public int TotalVacanciesSubmittedLastTwelveHours { get; init; }
 
     public static GetQaDashboardQueryResult FromInnerApiResponse(InnerApi.Responses.GetQaDashboardApiResponse response)
     {
@@ -13,7 +14,8 @@ public record GetQaDashboardQueryResult
             TotalVacanciesForReview = response.TotalVacanciesForReview,
             TotalVacanciesBrokenSla = response.TotalVacanciesBrokenSla,
             TotalVacanciesResubmitted = response.TotalVacanciesResubmitted,
-            TotalVacanciesSubmittedTwelveTwentyFourHours = response.TotalVacanciesSubmittedTwelveTwentyFourHours
+            TotalVacanciesSubmittedTwelveTwentyFourHours = response.TotalVacanciesSubmittedTwelveTwentyFourHours,
+            TotalVacanciesSubmittedLastTwelveHours = response.TotalVacanciesSubmittedLastTwelveHours,
         };
     }
 }
