@@ -25,7 +25,7 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOrganisationResponse))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
-    [Route("ukprn")]
+    [Route("{ukprn}")]
     public async Task<IActionResult> GetOrganisation([FromRoute] int ukprn, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Received request to get organisation for Ukprn: {Ukprn}", ukprn);
