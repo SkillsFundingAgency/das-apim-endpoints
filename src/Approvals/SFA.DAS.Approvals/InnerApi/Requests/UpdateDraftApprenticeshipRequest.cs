@@ -29,4 +29,6 @@ public class UpdateDraftApprenticeshipRequest
     public bool? IsOnFlexiPaymentPilot { get; set; }
     public int MinimumAgeAtApprenticeshipStart { get; set; }
     public int MaximumAgeAtApprenticeshipStart { get; set; }
+    public bool HasLearnerDataChanges { get; set; }
+    public DateTime? LastLearnerDataSync { get; set; }
 }
