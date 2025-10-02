@@ -44,7 +44,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost("identity")]
-        public async Task<IActionResult> SubmitEmployerRequest([FromBody] CreateOrUpdateUserRequest request)
+        public async Task<IActionResult> CreateOrUpdateUser([FromBody] CreateOrUpdateUserRequest request)
         {
             try
             {
