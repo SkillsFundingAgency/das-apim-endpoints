@@ -7,9 +7,9 @@ using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
-[Route("organisations")]
+[Route("[controller]")]
 [ApiController]
-public class OrganisationController(IMediator _mediator, ILogger<OrganisationController> _logger) : ControllerBase
+public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsController> _logger) : ControllerBase
 {
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(List<GetOrganisationsQueryResponse>))]
