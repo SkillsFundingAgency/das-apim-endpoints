@@ -55,26 +55,10 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     {
         var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear, instalmentType);
 
-        var periodFunction = (int period) =>
-            (instalments.SingleOrDefault(i => i.DeliveryPeriod == period)?.Amount).GetValueOrDefault() != 0 ? 1 : 0;
-
-        return new LearningDeliveryPeriodisedValues
-        {
-            AttributeName = EarningsFM36Constants.PeriodisedAttributes.InstPerPeriod,
-            Period1 = periodFunction(1),
-            Period2 = periodFunction(2),
-            Period3 = periodFunction(3),
-            Period4 = periodFunction(4),
-            Period5 = periodFunction(5),
-            Period6 = periodFunction(6),
-            Period7 = periodFunction(7),
-            Period8 = periodFunction(8),
-            Period9 = periodFunction(9),
-            Period10 = periodFunction(10),
-            Period11 = periodFunction(11),
-            Period12 = periodFunction(12)
-        };
-
+        return BuildLearningDeliveryPeriodisedValuesFromFunc(
+            EarningsFM36Constants.PeriodisedAttributes.InstPerPeriod,
+            period => (instalments.SingleOrDefault(i => i.DeliveryPeriod == period)?.Amount).GetValueOrDefault() != 0 ? 1 : 0
+        );
     }
 
     public static void AddInstallmentAmountValues(
@@ -120,26 +104,10 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     {
         var instalments = GetInstalmentsForAcademicYear(apprenticeship, academicYear, instalmentType);
 
-        var periodFunction = (int period) =>
-            (instalments.SingleOrDefault(i => i.DeliveryPeriod == period)?.Amount * multiplier).GetValueOrDefault();
-
-        return new LearningDeliveryPeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = periodFunction(1),
-            Period2 = periodFunction(2),
-            Period3 = periodFunction(3),
-            Period4 = periodFunction(4),
-            Period5 = periodFunction(5),
-            Period6 = periodFunction(6),
-            Period7 = periodFunction(7),
-            Period8 = periodFunction(8),
-            Period9 = periodFunction(9),
-            Period10 = periodFunction(10),
-            Period11 = periodFunction(11),
-            Period12 = periodFunction(12)
-        };
-
+        return BuildLearningDeliveryPeriodisedValuesFromFunc(
+            attributeName,
+            period => (instalments.SingleOrDefault(i => i.DeliveryPeriod == period)?.Amount * multiplier).GetValueOrDefault()
+        );
     }
 
     public static void AddNthIncentivePaymentValues(
@@ -172,26 +140,10 @@ public static class LearningDeliveryPeriodisedValuesBuilder
             .Skip(n - 1)
             .FirstOrDefault();
 
-        var periodFunction = (int period) =>
-            nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == period ? nthPayment.Amount : 0;
-
-        return new LearningDeliveryPeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = periodFunction(1),
-            Period2 = periodFunction(2),
-            Period3 = periodFunction(3),
-            Period4 = periodFunction(4),
-            Period5 = periodFunction(5),
-            Period6 = periodFunction(6),
-            Period7 = periodFunction(7),
-            Period8 = periodFunction(8),
-            Period9 = periodFunction(9),
-            Period10 = periodFunction(10),
-            Period11 = periodFunction(11),
-            Period12 = periodFunction(12)
-        };
-
+        return BuildLearningDeliveryPeriodisedValuesFromFunc(
+            attributeName,
+            period => nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == period ? nthPayment.Amount : 0
+        );
     }
 
     public static void AddAdditionalPaymentPerPeriodValues(
@@ -217,26 +169,10 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     {
         var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
 
-        var periodFunction = (int period) =>
-            additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == period)?.Amount ?? 0;
-
-        return new LearningDeliveryPeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = periodFunction(1),
-            Period2 = periodFunction(2),
-            Period3 = periodFunction(3),
-            Period4 = periodFunction(4),
-            Period5 = periodFunction(5),
-            Period6 = periodFunction(6),
-            Period7 = periodFunction(7),
-            Period8 = periodFunction(8),
-            Period9 = periodFunction(9),
-            Period10 = periodFunction(10),
-            Period11 = periodFunction(11),
-            Period12 = periodFunction(12)
-        };
-
+        return BuildLearningDeliveryPeriodisedValuesFromFunc(
+            attributeName,
+            period => additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == period)?.Amount ?? 0
+        );
     }
 
     public static void AddAdditionalPaymentPerPeriodIndicators(
@@ -262,26 +198,10 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     {
         var additionalPayments = GetAdditionalPayments(apprenticeship, additionalPaymentType);
 
-        var periodFunction = (int period) =>
-            additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == period) ? 1 : 0;
-
-        return new LearningDeliveryPeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = periodFunction(1),
-            Period2 = periodFunction(2),
-            Period3 = periodFunction(3),
-            Period4 = periodFunction(4),
-            Period5 = periodFunction(5),
-            Period6 = periodFunction(6),
-            Period7 = periodFunction(7),
-            Period8 = periodFunction(8),
-            Period9 = periodFunction(9),
-            Period10 = periodFunction(10),
-            Period11 = periodFunction(11),
-            Period12 = periodFunction(12)
-        };
-
+        return BuildLearningDeliveryPeriodisedValuesFromFunc(
+            attributeName,
+            period => additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == period) ? 1 : 0
+        );
     }
 
     private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedEarningsApprenticeship apprenticeship, short academicYear, InstalmentType instalmentType)
@@ -298,5 +218,27 @@ public static class LearningDeliveryPeriodisedValuesBuilder
             .SelectMany(episode => episode.AdditionalPayments)
             .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
+    }
+
+    public static LearningDeliveryPeriodisedValues BuildLearningDeliveryPeriodisedValuesFromFunc(
+        string attributeName,
+        Func<byte, decimal> valueFunc)
+    {
+        return new LearningDeliveryPeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = valueFunc(1),
+            Period2 = valueFunc(2),
+            Period3 = valueFunc(3),
+            Period4 = valueFunc(4),
+            Period5 = valueFunc(5),
+            Period6 = valueFunc(6),
+            Period7 = valueFunc(7),
+            Period8 = valueFunc(8),
+            Period9 = valueFunc(9),
+            Period10 = valueFunc(10),
+            Period11 = valueFunc(11),
+            Period12 = valueFunc(12)
+        };
     }
 }
