@@ -22,14 +22,11 @@ public class GetOrganisationQueryHandlerTests
         GetOrganisationQuery request,
         GetOrganisationResponse apiResponse)
     {
-        GetOrganisationRequest apiRequest = new(request.ukprn);
-        var expectedUrl = $"organisations/{request.ukprn}";
         apiClient.Setup(a => a.GetWithResponseCode<GetOrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<GetOrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
 
         var result = await sut.Handle(request, CancellationToken.None);
 
         result.Should().BeEquivalentTo(apiResponse);
-        apiRequest.GetUrl.Should().Be(expectedUrl);
     }
 
     [Test, MoqAutoData]

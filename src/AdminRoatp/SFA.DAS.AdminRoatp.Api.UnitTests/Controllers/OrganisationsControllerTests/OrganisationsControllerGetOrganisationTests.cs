@@ -14,7 +14,7 @@ public class OrganisationsControllerGetOrganisationTests
     [Test, MoqAutoData]
     public async Task GetOrganisationByUkprn_ReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
-        [Greedy] OrganisationController sut,
+        [Greedy] OrganisationsController sut,
         GetOrganisationQuery request,
         GetOrganisationResponse expectedResponse)
     {
@@ -30,7 +30,7 @@ public class OrganisationsControllerGetOrganisationTests
     [Test, MoqAutoData]
     public async Task GetOrganisationByUkprn_ReturnNotFoundResponse(
         [Frozen] Mock<IMediator> mediatorMock,
-        [Greedy] OrganisationController sut,
+        [Greedy] OrganisationsController sut,
         GetOrganisationQuery request)
     {
         GetOrganisationResponse? expectedResponse = null;

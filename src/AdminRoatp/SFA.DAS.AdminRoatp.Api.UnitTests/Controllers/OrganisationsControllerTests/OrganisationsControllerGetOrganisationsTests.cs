@@ -13,7 +13,7 @@ public class OrganisationsControllerGetOrganisationsTests
     [Test, MoqAutoData]
     public async Task GetOrganisations_ReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
-        [Greedy] OrganisationController sut,
+        [Greedy] OrganisationsController sut,
         GetOrganisationsQuery request,
         GetOrganisationsQueryResponse expectedResponse)
     {
