@@ -239,6 +239,43 @@ public class WhenHandlingUpdateLearnerCommand
                 ))), Times.Once);
     }
 
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_PersonalDetails_Changes()
+    {
+        var fixture = new Fixture();
+
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var expectedEpisodeKey = Guid.NewGuid();
+        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
+        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails },
+            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
+            LearningEpisodeKey = expectedEpisodeKey,
+            Prices = expectedCosts
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.Is<UpdateLearningApiPutRequest>(
+                r => r.Data.Learner.FirstName == command.UpdateLearnerRequest.Learner.FirstName
+                && r.Data.Learner.LastName == command.UpdateLearnerRequest.Learner.LastName
+                && r.Data.Learner.EmailAddress == command.UpdateLearnerRequest.Learner.Email
+                )), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SavePricesApiPatchRequest>()), Times.Never());
+    }
+
     private static void MockLearningApiResponse(
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,
