@@ -7,7 +7,16 @@ namespace SFA.DAS.LearnerData.Requests;
 public class UpdateLearnerRequest
 {
     public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
+    public LearnerRequestDetails Learner { get; set; }
 }
+
+public class LearnerRequestDetails
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string? Email { get; set; }
+}
+
 public class UpdateLearnerRequestDeliveryDetails
 {
     public OnProgrammeRequestDetails OnProgramme { get; set; }
