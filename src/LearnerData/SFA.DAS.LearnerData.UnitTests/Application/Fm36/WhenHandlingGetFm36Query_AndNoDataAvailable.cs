@@ -5,17 +5,17 @@ using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
 [TestFixture]
-public class WhenHandlingGetFm36Command_HistoricEarningOutputValues
+public class WhenHandlingGetFm36Query_AndNoDataAvailable
 {
 #pragma warning disable CS8618 // initialised in setup
-    private GetFm36CommandTestFixture _testFixture;
+    private GetFm36QueryTestFixture _testFixture;
 #pragma warning restore CS8618 // initialised in setup
 
     [SetUp]
     public async Task SetUp()
     {
         // Arrange
-        _testFixture = new GetFm36CommandTestFixture(TestScenario.AllData);
+        _testFixture = new GetFm36QueryTestFixture(TestScenario.NoData);
 
         // Act
         await _testFixture.CallSubjectUnderTest();
@@ -25,6 +25,7 @@ public class WhenHandlingGetFm36Command_HistoricEarningOutputValues
     public void EmptyArrayIsReturned()
     {
         // Assert
-        _testFixture.Result.FM36Learners.Should().AllSatisfy(x => x.HistoricEarningOutputValues.Should().BeEmpty());
+        _testFixture.Result.Should().NotBeNull();
+        _testFixture.Result.FM36Learners.Should().BeEmpty();
     }
 }

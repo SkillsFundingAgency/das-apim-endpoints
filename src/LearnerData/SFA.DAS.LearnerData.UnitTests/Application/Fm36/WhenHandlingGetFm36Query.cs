@@ -9,17 +9,17 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
-public class WhenHandlingGetFm36Command
+public class WhenHandlingGetFm36Query
 {
 #pragma warning disable CS8618 // initialised in setup
-    private GetFm36CommandTestFixture _testFixture;
+    private GetFm36QueryTestFixture _testFixture;
 #pragma warning restore CS8618 // initialised in setup
 
     [SetUp]
     public async Task SetUp()
     {
         // Arrange
-        _testFixture = new GetFm36CommandTestFixture(TestScenario.AllData);
+        _testFixture = new GetFm36QueryTestFixture(TestScenario.AllData);
 
         // Act
         await _testFixture.CallSubjectUnderTest();

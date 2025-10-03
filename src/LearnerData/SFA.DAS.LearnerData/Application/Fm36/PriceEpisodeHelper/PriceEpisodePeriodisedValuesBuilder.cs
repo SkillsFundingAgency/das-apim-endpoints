@@ -1,6 +1,7 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using SFA.DAS.LearnerData.Application.Fm36.Common;
 
-namespace SFA.DAS.LearnerData.Application.Fm36;
+namespace SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 
 public static class PriceEpisodePeriodisedValuesBuilder
 {
@@ -54,29 +55,17 @@ public static class PriceEpisodePeriodisedValuesBuilder
     {
         var instalments = GetInstalmentsForAcademicYear(joinedPriceEpisode, instalmentType, academicYear);
 
-        return new PriceEpisodePeriodisedValues
-        {
-            AttributeName = EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeInstalmentsThisPeriod,
-            Period1 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period2 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period3 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period4 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period5 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period6 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period7 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period8 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period9 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period10 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period11 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-            Period12 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault() != 0 ? 1 : 0,
-        };
+        return BuildPriceEpisodePeriodisedValuesFromFunc(
+            EarningsFM36Constants.PeriodisedAttributes.PriceEpisodeInstalmentsThisPeriod,
+            period => (instalments.SingleOrDefault(i => i.DeliveryPeriod == period)?.Amount).GetValueOrDefault() != 0 ? 1 : 0
+        );
     }
 
     public static void AddAdditionalPaymentPerPeriodValues(
         this List<PriceEpisodePeriodisedValues> list,
+        string attributeName,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
-        string attributeName,
         string additionalPaymentType)
     {
         try
@@ -95,29 +84,18 @@ public static class PriceEpisodePeriodisedValuesBuilder
     {
         var additionalPayments = GetAdditionalPayments(joinedPriceEpisode, additionalPaymentType);
 
-        return new PriceEpisodePeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 1)?.Amount ?? 0,
-            Period2 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 2)?.Amount ?? 0,
-            Period3 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 3)?.Amount ?? 0,
-            Period4 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 4)?.Amount ?? 0,
-            Period5 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 5)?.Amount ?? 0,
-            Period6 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 6)?.Amount ?? 0,
-            Period7 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 7)?.Amount ?? 0,
-            Period8 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 8)?.Amount ?? 0,
-            Period9 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 9)?.Amount ?? 0,
-            Period10 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 10)?.Amount ?? 0,
-            Period11 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 11)?.Amount ?? 0,
-            Period12 = additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == 12)?.Amount ?? 0
-        };
+        return BuildPriceEpisodePeriodisedValuesFromFunc(
+            attributeName,
+            period => additionalPayments.SingleOrDefault(x => x.AcademicYear == academicYear && x.DeliveryPeriod == period)?.Amount ?? 0
+        );
+
     }
 
     public static void AddInstallmentAmountValues(
         this List<PriceEpisodePeriodisedValues> list,
+        string attributeName,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
-        string attributeName,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
         try
@@ -139,9 +117,9 @@ public static class PriceEpisodePeriodisedValuesBuilder
 
     public static void AddCoInvestmentValues(
         this List<PriceEpisodePeriodisedValues> list,
+        string attributeName,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
-        string attributeName,
         decimal multiplier,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
@@ -161,22 +139,10 @@ public static class PriceEpisodePeriodisedValuesBuilder
     {
         var instalments = GetInstalmentsForAcademicYear(joinedPriceEpisode, instalmentType, academicYear);
 
-        return new PriceEpisodePeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount * multiplier).GetValueOrDefault(),
-            Period2 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount * multiplier).GetValueOrDefault(),
-            Period3 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount * multiplier).GetValueOrDefault(),
-            Period4 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount * multiplier).GetValueOrDefault(),
-            Period5 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount * multiplier).GetValueOrDefault(),
-            Period6 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount * multiplier).GetValueOrDefault(),
-            Period7 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount * multiplier).GetValueOrDefault(),
-            Period8 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount * multiplier).GetValueOrDefault(),
-            Period9 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount * multiplier).GetValueOrDefault(),
-            Period10 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount * multiplier).GetValueOrDefault(),
-            Period11 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount * multiplier).GetValueOrDefault(),
-            Period12 = (instalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount * multiplier).GetValueOrDefault()
-        };
+        return BuildPriceEpisodePeriodisedValuesFromFunc(
+            attributeName,
+            (period) => (instalments.SingleOrDefault(i => i.DeliveryPeriod == period)?.Amount * multiplier).GetValueOrDefault()
+        );
     }
 
     public static void AddNthIncentivePaymentValues(
@@ -217,22 +183,10 @@ public static class PriceEpisodePeriodisedValuesBuilder
             nthPayment = null;
         }
 
-        return new PriceEpisodePeriodisedValues
-        {
-            AttributeName = attributeName,
-            Period1 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 1 ? nthPayment.Amount : 0,
-            Period2 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 2 ? nthPayment.Amount : 0,
-            Period3 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 3 ? nthPayment.Amount : 0,
-            Period4 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 4 ? nthPayment.Amount : 0,
-            Period5 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 5 ? nthPayment.Amount : 0,
-            Period6 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 6 ? nthPayment.Amount : 0,
-            Period7 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 7 ? nthPayment.Amount : 0,
-            Period8 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 8 ? nthPayment.Amount : 0,
-            Period9 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 9 ? nthPayment.Amount : 0,
-            Period10 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 10 ? nthPayment.Amount : 0,
-            Period11 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 11 ? nthPayment.Amount : 0,
-            Period12 = nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == 12 ? nthPayment.Amount : 0
-        };
+        return BuildPriceEpisodePeriodisedValuesFromFunc(
+            attributeName,
+            (period) => nthPayment?.AcademicYear == academicYear && nthPayment.DeliveryPeriod == period ? nthPayment.Amount : 0
+        );
     }
 
     private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedPriceEpisode joinedPriceEpisode, InstalmentType instalmentType, short academicYear)
@@ -247,5 +201,27 @@ public static class PriceEpisodePeriodisedValuesBuilder
         return joinedPriceEpisode.AdditionalPayments
             .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
+    }
+
+    public static PriceEpisodePeriodisedValues BuildPriceEpisodePeriodisedValuesFromFunc(
+        string attributeName,
+        Func<byte, decimal> valueFunc)
+    {
+        return new PriceEpisodePeriodisedValues
+        {
+            AttributeName = attributeName,
+            Period1 = valueFunc(1),
+            Period2 = valueFunc(2),
+            Period3 = valueFunc(3),
+            Period4 = valueFunc(4),
+            Period5 = valueFunc(5),
+            Period6 = valueFunc(6),
+            Period7 = valueFunc(7),
+            Period8 = valueFunc(8),
+            Period9 = valueFunc(9),
+            Period10 = valueFunc(10),
+            Period11 = valueFunc(11),
+            Period12 = valueFunc(12)
+        };
     }
 }

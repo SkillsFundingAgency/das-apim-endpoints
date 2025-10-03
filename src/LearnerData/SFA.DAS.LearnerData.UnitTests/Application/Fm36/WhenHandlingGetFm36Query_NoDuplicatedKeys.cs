@@ -2,27 +2,22 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
 // This makes sure that properties like LearningDeliveryPeriodisedValues which are an array of objects with a key
 // do not have duplicated keys.
-public class WhenHandlingGetFm36Command_NoDuplicatedKeys
+public class WhenHandlingGetFm36Query_NoDuplicatedKeys
 {
 #pragma warning disable CS8618 // initialised in setup
-    private GetFm36CommandTestFixture _testFixture;
+    private GetFm36QueryTestFixture _testFixture;
 #pragma warning restore CS8618 // initialised in setup
 
     [SetUp]
     public async Task SetUp()
     {
         // Arrange
-        _testFixture = new GetFm36CommandTestFixture(TestScenario.AllData);
+        _testFixture = new GetFm36QueryTestFixture(TestScenario.AllData);
 
         // Act
         await _testFixture.CallSubjectUnderTest();
