@@ -10,6 +10,10 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewById;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewByVacancyReferenceAndCandidateId;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByIds;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReferenceAndStatus;
+using SFA.DAS.Recruit.Enums;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -61,6 +65,52 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("vacancyReference/{vacancyReference:long}/candidate/{candidateId:guid}")]
+        public async Task<IActionResult> GetByVacancyReferenceAndCandidateId(
+            [FromRoute, Required] long vacancyReference,
+            [FromRoute, Required] Guid candidateId,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetApplicationReviewByVacancyReferenceAndCandidateIdQuery(vacancyReference, candidateId), token);
+
+                if (result.ApplicationReview == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting application review by vacancy reference and candidate id");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("vacancyReference/{vacancyReference:long}/status/{status}")]
+        public async Task<IActionResult> GetByVacancyReferenceAndStatus(
+            [FromRoute, Required] long vacancyReference,
+            [FromRoute, Required] ApplicationReviewStatus status,
+            [FromQuery] bool includeTemporaryStatus = false,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetApplicationReviewsByVacancyReferenceAndStatusQuery(vacancyReference, status, includeTemporaryStatus), token);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting application review by vacancy reference and status");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpPost]
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateApplicationReview(
@@ -82,6 +132,25 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Error posting application review");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost]
+        [Route("ManyByApplicationIds")]
+        public async Task<IActionResult> GetManyByApplicationIds(
+            [FromBody] GetManyApplicationReviewsApiRequest request,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetApplicationReviewsByIdsQuery(request.ApplicationReviewIds), token);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting application reviews by given Ids");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
