@@ -10,6 +10,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using FluentAssertions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -259,9 +261,6 @@ public class WhenHandlingUpdateLearnerCommand
             Prices = expectedCosts
         }, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
@@ -273,7 +272,7 @@ public class WhenHandlingUpdateLearnerCommand
                 && r.Data.Learner.EmailAddress == command.UpdateLearnerRequest.Learner.Email
                 )), Times.Once);
 
-        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SavePricesApiPatchRequest>()), Times.Never());
+        _earningsApiClient.Invocations.Count.Should().Be(0);
     }
 
     private static void MockLearningApiResponse(
