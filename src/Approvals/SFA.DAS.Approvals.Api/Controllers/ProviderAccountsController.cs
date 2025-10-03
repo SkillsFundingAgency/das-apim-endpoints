@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
+using SFA.DAS.Approvals.Application.Providers.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -36,6 +37,26 @@ namespace SFA.DAS.Approvals.Api.Controllers
             catch (Exception)
             {
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("providerStatus/{ukprn}")]
+        public async Task<IActionResult> GetProvider([FromRoute] int ukprn)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetRoatpV2ProviderStatusQuery
+                {
+                    Ukprn = ukprn
+                });
+
+                return Ok(new ProviderAccountDetailsResponse { ProviderStatusType = result.ProviderStatusType  });
+
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }
