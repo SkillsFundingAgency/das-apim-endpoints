@@ -29,15 +29,10 @@ namespace SFA.DAS.EmployerProfiles.Api.AppStart
                 .AddJwtBearer(auth =>
                 {
                     auth.Authority =
-                        $"https://login.microsoftonline.com/{config.Tenant}";
+                        $"https://login.microsoftonline.com/{config.Tenant}/v2.0";
                     auth.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
-                        ValidAudiences = config.Identifier.Split(","),
-                        ValidIssuers =
-                        [
-                            $"https://login.microsoftonline.com/{config.Tenant}/",
-                            $"https://sts.windows.net/{config.Tenant}/"
-                        ]
+                        ValidAudiences = config.Identifier.Split(",")
                     };
                 });
 
