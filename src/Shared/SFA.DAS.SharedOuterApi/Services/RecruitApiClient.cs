@@ -53,7 +53,7 @@ public class RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiCli
 
     public async Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
     {
-        throw new NotImplementedException();
+        return await apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
     }
 
     public Task Patch<TData>(IPatchApiRequest<TData> request)
