@@ -51,7 +51,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     Ukprn = ukprn
                 });
 
-                return Ok(new ProviderAccountDetailsResponse { ProviderStatusType = result.ProviderStatusType  });
+                return Ok(new ProviderAccountDetailsResponse { ProviderStatusTypeId = result.ProviderStatusTypeId  });
 
             }
             catch (Exception)

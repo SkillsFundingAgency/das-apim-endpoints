@@ -63,7 +63,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ProviderAccounts
 
             Assert.That(actual, Is.Not.Null);
             var actualModel = actual.Value as ProviderAccountDetailsResponse;
-            actualModel.ProviderStatusType.Should().Be(result.ProviderStatusType);
+            actualModel.ProviderStatusTypeId.Should().Be(result.ProviderStatusTypeId);
         }
 
         [Test, MoqAutoData]

@@ -1,6 +1,7 @@
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
@@ -38,8 +39,8 @@ public class RoatpV2TrainingProviderService : IRoatpV2TrainingProviderService
     public async Task<GetProviderStatusResponse> GetProvider(int ukprn)
     {
         var actual =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<GetProviderStatusResponse>(
-                new GetRoatpProviderRequest(ukprn));
+             await _roatpCourseManagementApiClient.GetWithResponseCode<GetProviderStatusResponse>(
+                 new GetRoatpProviderRequest(ukprn));
 
         return ApiResponseErrorChecking.IsSuccessStatusCode(actual.StatusCode) ? actual.Body : null;
     }

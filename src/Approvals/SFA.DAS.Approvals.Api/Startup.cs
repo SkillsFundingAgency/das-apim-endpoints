@@ -121,7 +121,9 @@ namespace SFA.DAS.Approvals.Api
                     pattern: "api/{controller=TrainingCourses}/{action=GetList}/{id?}");
             });
 
-            app.UseSwagger();
+            app.UseSwagger((c =>
+            {
+                c.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0;}));
 
             app.UseSwaggerUI(c =>
             {

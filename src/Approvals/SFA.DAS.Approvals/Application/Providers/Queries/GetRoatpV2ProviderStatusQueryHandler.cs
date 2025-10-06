@@ -16,9 +16,9 @@ public class GetRoatpV2ProviderStatusQueryHandler : IRequestHandler<GetRoatpV2Pr
 
     public async Task<GetRoatpV2ProviderStatusQueryResult> Handle(GetRoatpV2ProviderStatusQuery request, CancellationToken cancellationToken)
     {
-        var result = await _roatpV2TrainingProviderService.GetProvider(request.Ukprn);
+        var result = await _roatpV2TrainingProviderService.GetProviderSummary(request.Ukprn);
 
-        return result;
+        return new GetRoatpV2ProviderStatusQueryResult() { ProviderStatusTypeId = result.StatusId };
     }
 }
 
