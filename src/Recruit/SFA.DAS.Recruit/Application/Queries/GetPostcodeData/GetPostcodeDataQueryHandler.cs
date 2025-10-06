@@ -9,9 +9,9 @@ public class GetPostcodeDataQueryHandler(ILocationLookupService locationLookupSe
 {
     public async Task<GetPostcodeDataResult> Handle(GetPostcodeDataQuery request, CancellationToken cancellationToken)
     {
-        var location = await locationLookupService.GetLocationInformation(request.Postcode, 0, 0);
-        return location is null
+        var postcodeInfo = await locationLookupService.GetPostcodeInfoAsync(request.Postcode);
+        return postcodeInfo is null
             ? GetPostcodeDataResult.None
-            : new GetPostcodeDataResult(location.Name, location.Country, location.GeoPoint[0], location.GeoPoint[1]);
+            : new GetPostcodeDataResult(postcodeInfo.Postcode, postcodeInfo.Country, postcodeInfo.Latitude, postcodeInfo.Longitude);
     }
 }
