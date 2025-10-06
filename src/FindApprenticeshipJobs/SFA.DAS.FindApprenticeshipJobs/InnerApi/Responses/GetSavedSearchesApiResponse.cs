@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 {
@@ -71,6 +72,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses
 
             [JsonProperty("excludeNational")]
             public bool? ExcludeNational { get; set; }
+            
+            [JsonProperty("selectedApprenticeshipTypes")]
+            public List<ApprenticeshipTypes>? SelectedApprenticeshipTypes { get; set; }
         }
     }
 }

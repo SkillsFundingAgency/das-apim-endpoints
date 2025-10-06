@@ -114,7 +114,8 @@ public class SearchApprenticeshipsController(ILogger<SearchApprenticeshipsContro
                 apiRequest.SearchTerm,
                 apiRequest.SelectedLevelIds,
                 apiRequest.SelectedRouteIds,
-                apiRequest.UnSubscribeToken
+                apiRequest.UnSubscribeToken,
+                apiRequest.ApprenticeshipTypes
             ));
 
             return response == SaveSearchCommandResult.None
