@@ -1,12 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
+using SFA.DAS.EmployerFeedback.Api.UnitTests.Extensions;
 using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetAccountsBatch;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
@@ -15,6 +21,7 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
     {
         private Mock<IBackgroundTaskQueue> _backgroundTaskQueueMock;
         private Mock<ILogger<AccountController>> _loggerMock;
+        private Mock<IMediator> _mediatorMock;
         private AccountController _controller;
 
         [SetUp]
@@ -22,7 +29,8 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         {
             _backgroundTaskQueueMock = new Mock<IBackgroundTaskQueue>();
             _loggerMock = new Mock<ILogger<AccountController>>();
-            _controller = new AccountController(_loggerMock.Object, _backgroundTaskQueueMock.Object);
+            _mediatorMock = new Mock<IMediator>();
+            _controller = new AccountController(_loggerMock.Object, _backgroundTaskQueueMock.Object, _mediatorMock.Object);
         }
 
         [Test]
@@ -59,6 +67,70 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
+        }
+
+        [Test]
+        public async Task GetAccountsBatch_ReturnsOk_WhenAccountIdsAreNotNull()
+        {
+            var batchSize = 10;
+            var accountIds = new List<long> { 1, 2, 3, 4, 5 };
+            var resultObj = new GetAccountsBatchResult { AccountIds = accountIds };
+            _mediatorMock.Setup(m => m.Send(It.Is<GetAccountsBatchQuery>(q => q.BatchSize == batchSize), CancellationToken.None)).ReturnsAsync(resultObj);
+
+            var result = await _controller.GetAccountsBatch(batchSize);
+
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            var response = okResult.Value;
+            Assert.That(response, Is.Not.Null);
+            var accountIdsProperty = response.GetType().GetProperty("AccountIds");
+            Assert.That(accountIdsProperty, Is.Not.Null);
+            Assert.That(accountIdsProperty.GetValue(response), Is.EqualTo(accountIds));
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAccountsBatch_ReturnsNotFound_WhenAccountIdsAreNull()
+        {
+            var batchSize = 10;
+            var resultObj = new GetAccountsBatchResult { AccountIds = null };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), CancellationToken.None)).ReturnsAsync(resultObj);
+
+            var result = await _controller.GetAccountsBatch(batchSize);
+
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAccountsBatch_ReturnsNotFound_WhenResultIsNull()
+        {
+            var batchSize = 10;
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), CancellationToken.None)).ReturnsAsync((GetAccountsBatchResult)null);
+
+            var result = await _controller.GetAccountsBatch(batchSize);
+
+            Assert.That(result, Is.InstanceOf<NotFoundResult>());
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAccountsBatch_ReturnsInternalServerError_AndLogs_WhenExceptionThrown()
+        {
+            var batchSize = 10;
+            var boom = new InvalidOperationException("test");
+            _mediatorMock
+                .Setup(m => m.Send(It.Is<GetAccountsBatchQuery>(q => q.BatchSize == batchSize), CancellationToken.None))
+                .ThrowsAsync(boom);
+
+            var result = await _controller.GetAccountsBatch(batchSize);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = result as StatusCodeResult;
+            Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+
+            _loggerMock.VerifyLogErrorContains("Error getting accounts batch.", boom, Times.Once());
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

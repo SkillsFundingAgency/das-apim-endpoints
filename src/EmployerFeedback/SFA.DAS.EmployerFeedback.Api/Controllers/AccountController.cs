@@ -1,10 +1,13 @@
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
 using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetAccountsBatch;
 using SFA.DAS.EmployerFeedback.Extensions;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFeedback.Api.Controllers
 {
@@ -14,13 +17,16 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
     {
         private readonly ILogger<AccountController> _logger;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
+        private readonly IMediator _mediator;
 
         public AccountController(
             ILogger<AccountController> logger,
-            IBackgroundTaskQueue backgroundTaskQueue)
+            IBackgroundTaskQueue backgroundTaskQueue,
+            IMediator mediator)
         {
             _logger = logger;
             _backgroundTaskQueue = backgroundTaskQueue;
+            _mediator = mediator;
         }
 
         [HttpPost("update")]
@@ -43,6 +49,30 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error syncing employer accounts.");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("")]
+        public async Task<IActionResult> GetAccountsBatch([FromQuery] int batchsize)
+        {
+            try
+            {
+                _logger.LogInformation($"Received request to get accounts batch with batch size: {batchsize}");
+
+                var result = await _mediator.Send(new GetAccountsBatchQuery(batchsize));
+
+                if (result?.AccountIds != null)
+                {
+                    var response = new { result.AccountIds };
+                    return Ok(response);
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting accounts batch.");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
