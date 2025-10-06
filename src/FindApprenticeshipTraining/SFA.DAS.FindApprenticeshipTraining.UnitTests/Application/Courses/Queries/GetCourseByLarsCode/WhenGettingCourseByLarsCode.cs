@@ -748,4 +748,40 @@ public sealed class WhenGettingCourseByLarsCode
             Assert.That(sut.IncentivePayment, Is.EqualTo(expectedIncentivePayment));
         });
     }
+
+    [TestCase(HttpStatusCode.NotFound)]
+    [TestCase(HttpStatusCode.BadRequest)]
+    public async Task Handle_Returns_Null_When_Training_Providers_Returns_404_Or_400(HttpStatusCode statusCode)
+    {
+        _coursesApiClientMock
+            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
+                It.IsAny<GetStandardDetailsByIdRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<StandardDetailResponse>(
+                    new StandardDetailResponse(),
+                    HttpStatusCode.OK,
+                    string.Empty
+                )
+            );
+
+        _roatpCourseManagementApiClientMock
+            .Setup(x =>
+                x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
+                )
+            )
+            .ReturnsAsync(
+                new ApiResponse<GetCourseTrainingProvidersCountResponse>(
+                    null,
+                    statusCode,
+                    string.Empty
+                )
+            );
+
+        var sut = await _handler.Handle(new GetCourseByLarsCodeQuery(), CancellationToken.None);
+
+        Assert.That(sut, Is.Null);
+    }
 }

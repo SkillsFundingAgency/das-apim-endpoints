@@ -22,7 +22,7 @@ public class WhenReceivingLearnerData
         int academicYear,
         List<LearnerDataRequest> learners,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen]  Mock<IValidator<IEnumerable<LearnerDataRequest>>> mockValidator,
+        [Frozen] Mock<IValidator<IEnumerable<LearnerDataRequest>>> mockValidator,
         [Greedy] LearnersController sut)
     {
         long ukprn = 12345678;
@@ -45,7 +45,7 @@ public class WhenReceivingLearnerData
         mockMediator.Verify(
             x => x.Send(
                 It.Is<ProcessLearnersCommand>(p =>
-                    p.Learners == learners && 
+                    p.Learners == learners &&
                     p.CorrelationId == response.CorrelationId &&
                     p.AcademicYear == academicYear), It.IsAny<CancellationToken>()), Times.Once);
     }
