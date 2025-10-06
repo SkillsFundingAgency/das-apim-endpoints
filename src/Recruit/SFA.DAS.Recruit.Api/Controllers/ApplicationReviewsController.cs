@@ -3,17 +3,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewById;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewByVacancyReferenceAndCandidateId;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByIds;
 using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReference;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReferenceAndTempStatus;
+using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewStatsByVacancyReference;
+using SFA.DAS.Recruit.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewById;
-using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewByVacancyReferenceAndCandidateId;
-using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByIds;
-using SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReferenceAndStatus;
-using SFA.DAS.Recruit.Enums;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -91,22 +92,40 @@ namespace SFA.DAS.Recruit.Api.Controllers
         }
 
         [HttpGet]
-        [Route("vacancyReference/{vacancyReference:long}/status/{status}")]
+        [Route("vacancyReference/{vacancyReference:long}/temp-status/{status}")]
         public async Task<IActionResult> GetByVacancyReferenceAndStatus(
             [FromRoute, Required] long vacancyReference,
             [FromRoute, Required] ApplicationReviewStatus status,
-            [FromQuery] bool includeTemporaryStatus = false,
             CancellationToken token = default)
         {
             try
             {
-                var result = await mediator.Send(new GetApplicationReviewsByVacancyReferenceAndStatusQuery(vacancyReference, status, includeTemporaryStatus), token);
+                var result = await mediator.Send(new GetApplicationReviewsByVacancyReferenceAndTempStatusQuery(vacancyReference, status), token);
 
                 return Ok(result);
             }
             catch (Exception e)
             {
-                logger.LogError(e, "Error getting application review by vacancy reference and status");
+                logger.LogError(e, "Error getting application review by vacancy reference and temp status");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("vacancyReference/{vacancyReference:long}/count")]
+        public async Task<IActionResult> GetStatusCountByVacancyReference(
+            [FromRoute, Required] long vacancyReference,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetApplicationReviewStatsByVacancyReferenceQuery(vacancyReference), token);
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting application reviews count by vacancy reference");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

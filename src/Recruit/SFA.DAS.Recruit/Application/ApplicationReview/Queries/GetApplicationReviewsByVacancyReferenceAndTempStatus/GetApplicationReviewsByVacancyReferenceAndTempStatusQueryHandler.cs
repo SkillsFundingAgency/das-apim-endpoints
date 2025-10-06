@@ -1,21 +1,22 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReferenceAndStatus;
-public class GetApplicationReviewsByVacancyReferenceAndStatusQueryHandler(
+namespace SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReferenceAndTempStatus;
+public class GetApplicationReviewsByVacancyReferenceAndTempStatusQueryHandler(
     IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
-    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient) : IRequestHandler<GetApplicationReviewsByVacancyReferenceAndStatusQuery, GetApplicationReviewsByVacancyReferenceAndStatusQueryResult>
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient) 
+    : IRequestHandler<GetApplicationReviewsByVacancyReferenceAndTempStatusQuery, GetApplicationReviewsByVacancyReferenceAndTempStatusQueryResult>
 {
-    public async Task<GetApplicationReviewsByVacancyReferenceAndStatusQueryResult> Handle(GetApplicationReviewsByVacancyReferenceAndStatusQuery request, CancellationToken cancellationToken)
+    public async Task<GetApplicationReviewsByVacancyReferenceAndTempStatusQueryResult> Handle(GetApplicationReviewsByVacancyReferenceAndTempStatusQuery request, CancellationToken cancellationToken)
     {
         var recruitApiTask = recruitApiClient.Get<List<Domain.ApplicationReview>>(
-            new GetApplicationReviewsByVacancyReferenceAndStatusApiRequest(request.VacancyReference, request.Status, request.IncludeTemporaryStatus));
+            new GetApplicationReviewsByVacancyReferenceAndTempStatusApiRequest(request.VacancyReference, request.Status));
 
         var candidateApiTask = candidateApiClient.Get<GetApplicationsByVacancyReferenceApiResponse>(
             new GetApplicationsByVacancyReferenceApiRequest(request.VacancyReference));
@@ -34,9 +35,9 @@ public class GetApplicationReviewsByVacancyReferenceAndStatusQueryHandler(
                 applicationReview.Application = application;
             }
 
-            return new GetApplicationReviewsByVacancyReferenceAndStatusQueryResult(recruitResponse);
+            return new GetApplicationReviewsByVacancyReferenceAndTempStatusQueryResult(recruitResponse);
         }
 
-        return new GetApplicationReviewsByVacancyReferenceAndStatusQueryResult([]);
+        return new GetApplicationReviewsByVacancyReferenceAndTempStatusQueryResult([]);
     }
 }

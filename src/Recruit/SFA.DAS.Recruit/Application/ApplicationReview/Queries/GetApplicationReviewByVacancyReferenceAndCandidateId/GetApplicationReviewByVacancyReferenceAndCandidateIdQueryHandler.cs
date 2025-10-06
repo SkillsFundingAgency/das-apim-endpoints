@@ -31,7 +31,7 @@ public class GetApplicationReviewByVacancyReferenceAndCandidateIdQueryHandler(
                     candidateResponse?.Applications?.Find(a => a.Id == recruitResponse.ApplicationId);
                 recruitResponse.Application = application;
 
-            return new GetApplicationReviewByVacancyReferenceAndCandidateIdQueryResult()
+            return new GetApplicationReviewByVacancyReferenceAndCandidateIdQueryResult
             {
                 ApplicationReview = recruitResponse
             };
