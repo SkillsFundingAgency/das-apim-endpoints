@@ -33,7 +33,7 @@ namespace SFA.DAS.Approvals.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_env);       
+            services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
 
@@ -94,7 +94,7 @@ namespace SFA.DAS.Approvals.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseMiddleware<SecurityHeadersMiddleware>();
 
             app.Use(async (context, next) =>
@@ -121,9 +121,7 @@ namespace SFA.DAS.Approvals.Api
                     pattern: "api/{controller=TrainingCourses}/{action=GetList}/{id?}");
             });
 
-            app.UseSwagger((c =>
-            {
-                c.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0;}));
+            app.UseSwagger();
 
             app.UseSwaggerUI(c =>
             {
