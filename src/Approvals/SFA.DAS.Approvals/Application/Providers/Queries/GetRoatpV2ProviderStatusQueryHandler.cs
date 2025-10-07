@@ -1,7 +1,7 @@
-﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Providers.Queries;
 

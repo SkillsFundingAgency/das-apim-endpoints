@@ -12,7 +12,6 @@ using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
 using SFA.DAS.Approvals.Application.Providers.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ProviderAccounts
