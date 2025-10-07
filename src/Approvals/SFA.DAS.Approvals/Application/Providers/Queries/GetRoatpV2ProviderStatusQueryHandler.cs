@@ -18,7 +18,7 @@ public class GetRoatpV2ProviderStatusQueryHandler : IRequestHandler<GetRoatpV2Pr
     {
         var result = await _roatpV2TrainingProviderService.GetProviderSummary(request.Ukprn);
 
-        return new GetRoatpV2ProviderStatusQueryResult() { ProviderStatusTypeId = result.StatusId };
+        return new GetRoatpV2ProviderStatusQueryResult(result.StatusId);
     }
 }
 

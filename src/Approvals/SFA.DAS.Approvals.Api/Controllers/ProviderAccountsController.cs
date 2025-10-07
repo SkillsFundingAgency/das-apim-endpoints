@@ -46,12 +46,9 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var result = await _mediator.Send(new GetRoatpV2ProviderStatusQuery
-                {
-                    Ukprn = ukprn
-                });
+                var result = await _mediator.Send(new GetRoatpV2ProviderStatusQuery(ukprn));
 
-                return Ok(new ProviderAccountDetailsResponse { ProviderStatusTypeId = result.ProviderStatusTypeId  });
+                return Ok(new ProviderAccountDetailsResponse(result.ProviderStatusTypeId));
 
             }
             catch (Exception)
