@@ -79,6 +79,9 @@ public class UpdateLearnerCommandHandler(
         {
             Learner = new LearningUpdateDetails
             {
+                FirstName = command.UpdateLearnerRequest.Learner.FirstName,
+                LastName = command.UpdateLearnerRequest.Learner.LastName,
+                EmailAddress = command.UpdateLearnerRequest.Learner.Email,
                 CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
             },
             OnProgramme = new OnProgrammeDetails
