@@ -60,7 +60,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.ProviderAccounts
 
             var actual = await controller.GetProvider(ukprn) as OkObjectResult;
 
-            Assert.That(actual, Is.Not.Null);
+            actual.Should().NotBeNull();
             var actualModel = actual.Value as ProviderAccountDetailsResponse;
             actualModel.ProviderStatusTypeId.Should().Be(result.ProviderStatusTypeId);
         }

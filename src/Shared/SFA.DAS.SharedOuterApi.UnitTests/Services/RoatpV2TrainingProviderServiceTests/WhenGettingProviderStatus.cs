@@ -13,16 +13,16 @@ public class WhenGettingProviderStatus
     [Test, MoqAutoData]
     public async Task Then_If_Response_Is_Successful_Then_Provider_Status_Returned(
         int ukprn,
-        GetProviderStatusResponse apiResponse,
+        GetProviderSummaryResponse apiResponse,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
         RoatpV2TrainingProviderService service)
     {
         apiClient.Setup(x =>
-                x.GetWithResponseCode<GetProviderStatusResponse>(
+                x.GetWithResponseCode<GetProviderSummaryResponse>(
                     It.IsAny<GetRoatpProviderRequest>()))
-            .ReturnsAsync(new ApiResponse<GetProviderStatusResponse>(apiResponse, HttpStatusCode.OK, ""));
+            .ReturnsAsync(new ApiResponse<GetProviderSummaryResponse>(apiResponse, HttpStatusCode.OK, ""));
 
-        var actual = await service.GetProvider(ukprn);
+        var actual = await service.GetProviderSummary(ukprn);
 
         actual.Should().BeEquivalentTo(apiResponse);
     }
@@ -39,11 +39,11 @@ public class WhenGettingProviderStatus
             .ReturnsAsync(new ApiResponse<GetProvidersResponse>(null, HttpStatusCode.NotFound, "Error"));
 
         apiClient.Setup(x =>
-               x.GetWithResponseCode<GetProviderStatusResponse>(
+               x.GetWithResponseCode<GetProviderSummaryResponse>(
                    It.IsAny<GetRoatpProviderRequest>()))
-           .ReturnsAsync(new ApiResponse<GetProviderStatusResponse>(null, HttpStatusCode.NotFound, "Some Error"));
+           .ReturnsAsync(new ApiResponse<GetProviderSummaryResponse>(null, HttpStatusCode.NotFound, "Some Error"));
 
-        var actual = await service.GetProvider(ukprn);
+        var actual = await service.GetProviderSummary(ukprn);
         actual.Should().BeNull();
     }
 }

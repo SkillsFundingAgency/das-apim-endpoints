@@ -8,5 +8,4 @@ public interface IRoatpV2TrainingProviderService
 {
     Task<GetProviderSummaryResponse> GetProviderSummary(int ukprn);
     Task<GetProvidersResponse> GetProviders(CancellationToken cancellationToken);
-    Task<GetProviderStatusResponse> GetProvider(int ukprn);
 }
