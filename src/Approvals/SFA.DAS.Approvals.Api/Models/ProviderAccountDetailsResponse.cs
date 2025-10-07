@@ -1,10 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-using System;
+﻿namespace SFA.DAS.Approvals.Api.Models;
 
-namespace SFA.DAS.Approvals.Api.Models
+public class ProviderAccountDetailsResponse(int providerStatusTypeId)
 {
-    public class ProviderAccountDetailsResponse
-    {
-        public int ProviderStatusTypeId { get; set; }
-    }
+    public int ProviderStatusTypeId { get; } = providerStatusTypeId;
 }
