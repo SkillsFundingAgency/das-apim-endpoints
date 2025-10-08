@@ -25,3 +25,9 @@ Scenario: LearningSupport updated
 	And the LearningSupport passed is different to the value in the learners domain
 	When the learner is updated
 	Then a LearningSupport update request is sent to the earnings domain
+
+Scenario: Prices updated
+	Given there is a learner
+	And the Prices passed is different to the value in the learners domain
+	When the learner is updated
+	Then a Prices update request is sent to the earnings domain

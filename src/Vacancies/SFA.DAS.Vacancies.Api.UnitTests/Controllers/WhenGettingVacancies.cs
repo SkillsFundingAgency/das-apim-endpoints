@@ -11,9 +11,11 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Vacancies.Api.ApiRequests;
+using SFA.DAS.Vacancies.Api.ApiRequests.Base;
 using SFA.DAS.Vacancies.Api.Controllers.v1;
 using SFA.DAS.Vacancies.Api.Models;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
 {
