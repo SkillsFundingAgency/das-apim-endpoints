@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.LearnerData.Application.Fm36;
+﻿namespace SFA.DAS.LearnerData.Application.Fm36.Common;
 
 public class EarningsFM36Constants
 {

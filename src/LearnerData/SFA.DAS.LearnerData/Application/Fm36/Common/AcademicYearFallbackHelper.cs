@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 
-namespace SFA.DAS.LearnerData.Application.Fm36;
+namespace SFA.DAS.LearnerData.Application.Fm36.Common;
 
 public static class AcademicYearFallbackHelper
 {

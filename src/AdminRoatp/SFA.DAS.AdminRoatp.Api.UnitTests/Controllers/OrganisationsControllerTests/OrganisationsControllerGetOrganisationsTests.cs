@@ -7,12 +7,11 @@ using SFA.DAS.AdminRoatp.Api.Controllers;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers;
-public class OrganisationsControllerTests
+namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers.OrganisationsControllerTests;
+public class OrganisationsControllerGetOrganisationsTests
 {
     [Test, MoqAutoData]
-
-    public async Task GetOrganisations(
+    public async Task GetOrganisations_ReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] OrganisationsController sut,
         GetOrganisationsQuery request,
