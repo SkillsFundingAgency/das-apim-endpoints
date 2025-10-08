@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -11,11 +7,15 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
 using SFA.DAS.Vacancies.Configuration;
 using SFA.DAS.Vacancies.Enums;
 using SFA.DAS.Vacancies.InnerApi.Requests;
 using SFA.DAS.Vacancies.InnerApi.Responses;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 {
