@@ -46,7 +46,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("wageAmountUpperBound")]
         public decimal? WageAmountUpperBound { get; init; }
         [JsonProperty("wageUnit")]
-        public DurationUnit WageUnit { get; init; }
+        public DurationUnit? WageUnit { get; init; }
         [JsonProperty("wageAdditionalInformation")]
         public string WageAdditionalInformation { get; init; }
         [JsonProperty("workingWeek")]

@@ -292,7 +292,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     WageAmountUpperBound = source.WageAmountUpperBound,
                     WageText = source.WageText,
                     WageType = source.WageType,
-                    WageUnit = (int)source.WageUnit,
+                    WageUnit = (short)(source.WageUnit ?? 0),
                     WorkingWeek = source.WorkingWeek,
                     Under18NationalMinimumWage = source.Under18NationalMinimumWage,
                     Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,
