@@ -38,23 +38,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
-        }
-
-        [HttpGet]
-        [Route("{ukprn}/status")]
-        public async Task<IActionResult> GetProvider([FromRoute] int ukprn)
-        {
-            try
-            {
-                var result = await _mediator.Send(new GetRoatpV2ProviderStatusQuery(ukprn));
-
-                return Ok(new ProviderAccountDetailsResponse(result.ProviderStatusTypeId));
-
-            }
-            catch (Exception)
-            {
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-            }
-        }
+        }        
     }
 }
