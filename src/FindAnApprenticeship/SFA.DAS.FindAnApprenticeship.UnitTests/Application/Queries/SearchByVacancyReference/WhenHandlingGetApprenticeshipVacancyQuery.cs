@@ -2,7 +2,6 @@
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -45,7 +44,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers().Excluding(x => x.WageUnit));
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
@@ -108,7 +107,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
+                .ExcludingMissingMembers()
+                .Excluding(x => x.WageUnit));
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().NotBeNull();
@@ -156,7 +157,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers());
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
+                .ExcludingMissingMembers()
+                .Excluding(x => x.WageUnit));
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();

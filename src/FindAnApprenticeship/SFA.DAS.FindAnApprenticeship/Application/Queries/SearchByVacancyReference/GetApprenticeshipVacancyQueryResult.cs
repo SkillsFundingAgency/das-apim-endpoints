@@ -130,7 +130,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             private static Vacancy From(GetClosedVacancyResponse source, GetStandardsListItemResponse courseResult)
             {
-                var durationUnit = (DurationUnit)source.Wage.DurationUnit;
+                var durationUnit = source.Wage.DurationUnit ?? default;
+
                 return new Vacancy
                 {
                     AdditionalTrainingDescription = source.AdditionalTrainingDescription,
@@ -182,7 +183,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                         QualificationType = q.QualificationType,
                         Subject = q.Subject,
                         Grade = q.Grade,
-                        Weighting = (Weighting)q.Weighting
+                        Weighting = q.Weighting != null ? (Weighting)q.Weighting : default
                     }),
                     Skills = source.Skills,
                     StartDate = source.StartDate,
@@ -193,8 +194,8 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     VacancyLocationType = source.VacancyLocationType,
                     VacancyReference = source.VacancyReference.TrimVacancyReference(),
                     WageAdditionalInformation = source.Wage.WageAdditionalInformation,
-                    WageType = source.Wage.WageType,
-                    WageUnit = source.Wage.DurationUnit,
+                    WageType = (short)(source.Wage.WageType ?? 0),
+                    WageUnit = (short)(source.Wage.DurationUnit ?? 0),
                     WageText = source.Wage.ToDisplayText(source.StartDate),
                     WorkingWeek = source.Wage.WorkingWeekDescription,
                     VacancySource = source.VacancySource,
@@ -291,7 +292,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     WageAmountUpperBound = source.WageAmountUpperBound,
                     WageText = source.WageText,
                     WageType = source.WageType,
-                    WageUnit = source.WageUnit,
+                    WageUnit = (int)source.WageUnit,
                     WorkingWeek = source.WorkingWeek,
                     Under18NationalMinimumWage = source.Under18NationalMinimumWage,
                     Between18AndUnder21NationalMinimumWage = source.Between18AndUnder21NationalMinimumWage,

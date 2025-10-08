@@ -143,7 +143,7 @@ namespace SFA.DAS.FindAnApprenticeship.Api
                     pattern: "api/{controller=Locations}/{action=index}/{query?}");
             });
         
-            app.UseSwagger();
+            app.UseSwagger(options => options.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0);
             app.UseSwaggerUI(c =>
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "FindAnApprenticeshipOuterApi");
