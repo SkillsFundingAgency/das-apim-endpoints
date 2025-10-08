@@ -22,7 +22,7 @@ internal class GetFm36QueryTestFixture
     internal byte CollectionPeriod;
     internal int CollectionYear;
     internal GetLearningsResponse LearningsResponse;
-    internal GetFm36DataResponse EarningsResponse;
+    internal Dictionary<TestScenario, GetFm36DataResponse> EarningsResponses;
     internal GetAcademicYearsResponse CollectionCalendarResponse;
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
     internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
@@ -47,13 +47,13 @@ internal class GetFm36QueryTestFixture
         dataGenerator.GenerateData(scenario);
 
         LearningsResponse = dataGenerator.GetLearningsResponse;
-        EarningsResponse = dataGenerator.GetFm36DataResponse;
+        EarningsResponses = dataGenerator.GetFm36DataResponses;
 
         CollectionCalendarResponse = BuildCollectionCalendarResponse(LearningsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+        SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponses, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
         _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
-        _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod);
+        _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, null, null);
     }
 
     internal GetAcademicYearsResponse BuildCollectionCalendarResponse(GetLearningsResponse learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
@@ -71,7 +71,7 @@ internal class GetFm36QueryTestFixture
         Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient,
         GetLearningsResponse learningsResponse,
         Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
-        GetFm36DataResponse earningsResponse,
+        Dictionary<TestScenario, GetFm36DataResponse> earningsResponses,
         Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
         GetAcademicYearsResponse collectionCalendarResponse)
     {
@@ -79,9 +79,13 @@ internal class GetFm36QueryTestFixture
             .Setup(x => x.Get<GetLearningsResponse>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
             .ReturnsAsync(learningsResponse);
 
-        mockEarningsApiClient
-            .Setup(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(earningsResponse);
+        foreach (var earningsResponse in earningsResponses.Values)
+        {
+            mockEarningsApiClient
+                .Setup(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == ukprn && r.LearningKey == earningsResponse.Apprenticeship.Key)))
+                .ReturnsAsync(earningsResponse);
+        }
+
 
         MockCollectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{CollectionYear}")))

@@ -6,5 +6,5 @@ namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 public class InnerApiResponses
 {
     public GetLearningsResponse LearningsInnerApiResponse { get; set; } = new();
-    public GetFm36DataResponse EarningsInnerApiResponse { get; set; } = new();
+    public List<GetFm36DataResponse> EarningsInnerApiResponses { get; set; } = new();
 }

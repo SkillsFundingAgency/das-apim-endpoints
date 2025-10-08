@@ -53,15 +53,18 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
                     .WithBodyAsJson(apiResponses.LearningsInnerApiResponse)
             );
 
-        testContext.EarningsApi.MockServer
-            .Given(
-                Request.Create().WithPath($"/{10005077}/fm36/{academicYear}/{deliveryPeriod}")
-                    .UsingGet())
-            .RespondWith(
-                Response.Create()
-                    .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(apiResponses.EarningsInnerApiResponse)
-            );
+        foreach (var earningsResponse in apiResponses.EarningsInnerApiResponses)
+        {
+            testContext.EarningsApi.MockServer
+                .Given(
+                    Request.Create().WithPath($"/{10005077}/fm36/{academicYear}/{deliveryPeriod}/{earningsResponse.Apprenticeship.Key}")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode(HttpStatusCode.OK)
+                        .WithBodyAsJson(earningsResponse)
+                );
+        }
 
         var response = await testContext.OuterApiClient.GetAsync($"/learners/providers/10005077/collectionPeriod/{academicYear}/{deliveryPeriod}/fm36Data");
         var contentString = await response.Content.ReadAsStringAsync();

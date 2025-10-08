@@ -96,7 +96,7 @@ public static class ApprenticeshipModelExtensions
                 Ukprn = 10005077,
                 Learnings = [learning]
             },
-            EarningsInnerApiResponse = [earnings]
+            EarningsInnerApiResponses = new List<GetFm36DataResponse> { new GetFm36DataResponse { Apprenticeship = earnings } }
         };
     }
 }

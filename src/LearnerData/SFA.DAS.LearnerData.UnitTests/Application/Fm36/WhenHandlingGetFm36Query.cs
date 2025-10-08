@@ -36,7 +36,7 @@ public class WhenHandlingGetFm36Query
     public void ThenCallsEarningsApi()
     {
         //Assert
-        _testFixture.MockEarningsApiClient.Verify(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Once);
+        _testFixture.MockEarningsApiClient.Verify(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Exactly(2));
     }
 
     [Test]
@@ -47,7 +47,7 @@ public class WhenHandlingGetFm36Query
 
         foreach (var apprenticeship in _testFixture.LearningsResponse.Learnings)
         {
-            _testFixture.Result.FM36Learners.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == "9999999999");
+            _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == "9999999999");
         }
     }
 }
