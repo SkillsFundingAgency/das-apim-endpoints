@@ -8,5 +8,6 @@ public enum WageType
     FixedWage,
     NationalMinimumWageForApprentices,
     NationalMinimumWage,
-    CompetitiveSalary
+    CompetitiveSalary,
+    Unspecified
 }
