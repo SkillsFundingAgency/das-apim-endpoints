@@ -44,7 +44,10 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options.ExcludingMissingMembers().Excluding(x => x.WageUnit));
+            result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
+                .ExcludingMissingMembers()
+                .Excluding(x => x.WageUnit));
+            result.ApprenticeshipVacancy.WageUnit.Should().Be((int)vacancy.WageUnit!);
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
@@ -110,7 +113,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
                 .ExcludingMissingMembers()
                 .Excluding(x => x.WageUnit));
-            result.ApprenticeshipVacancy.WageType.Should().Be((int)vacancy.WageType);
+            result.ApprenticeshipVacancy.WageUnit.Should().Be((int)vacancy.WageUnit!);
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().NotBeNull();
@@ -161,7 +164,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.ApprenticeshipVacancy.Should().BeEquivalentTo(vacancy, options => options
                 .ExcludingMissingMembers()
                 .Excluding(x => x.WageUnit));
-            result.ApprenticeshipVacancy.WageType.Should().Be(vacancy.WageType);
+            result.ApprenticeshipVacancy.WageUnit.Should().Be((int)vacancy.WageUnit!);
             result.CourseDetail.Should().BeEquivalentTo(courseResponse);
             result.Levels.Should().BeEquivalentTo(courseLevelsResponse.Levels);
             result.Application.Should().BeNull();
