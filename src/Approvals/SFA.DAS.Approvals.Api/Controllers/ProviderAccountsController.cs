@@ -41,7 +41,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("providerStatus/{ukprn}")]
+        [Route("{ukprn}/status")]
         public async Task<IActionResult> GetProvider([FromRoute] int ukprn)
         {
             try
