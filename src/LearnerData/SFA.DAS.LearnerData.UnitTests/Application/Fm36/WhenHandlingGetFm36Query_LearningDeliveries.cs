@@ -1,20 +1,20 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Application.Fm36.Common;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using static SFA.DAS.LearnerData.Application.Fm36.EarningsFM36Constants;
+using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
 #pragma warning disable CS8602 // Defrerred nullability warnings for test cases
-public class WhenHandlingGetFm36Command_LearningDeliveries
+public class WhenHandlingGetFm36Query_LearningDeliveries
 {
     [Test]
     public async Task ThenALearningDeliveryIsCreatedForEachApprenticeship()
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(TestScenario.AllData);
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.AllData);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -31,7 +31,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsLearningDeliveryValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -132,7 +132,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsDefaultedLearningDeliveryPeriodisedValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -177,7 +177,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsLearningSupportValues(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -227,7 +227,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsInstPerPeriodValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -264,7 +264,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsProgrammeAimOnProgPaymentValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -302,7 +302,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsProgrammeAimProgFundIndMaxEmpContValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -343,7 +343,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsProgrammeAimProgFundIndMinCoInvestValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -384,7 +384,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsProgrammeAimTotProgFundValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -422,7 +422,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsLearningDeliveryPeriodisedTextValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -449,7 +449,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelFirstProv1618PayValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -494,7 +494,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelSecondProv1618PayValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -539,7 +539,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelFirstEmp1618PayValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -584,7 +584,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelSecondEmp1618PayValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(scenario);
+        var testFixture = new GetFm36QueryTestFixture(scenario);
 
         // Act
         await testFixture.CallSubjectUnderTest();
@@ -630,7 +630,7 @@ public class WhenHandlingGetFm36Command_LearningDeliveries
     public async Task ThenReturnsCorrectFundStartValueForApprenticeship(WithdrawalDate withdrawalDate, bool expectedFundingStart)
     {
         // Arrange
-        var testFixture = new GetFm36CommandTestFixture(TestScenario.SimpleApprenticeship);
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
         testFixture.LearningsResponse.Learnings.First().SetWithdrawalDate(withdrawalDate);
 
         // Act

@@ -167,7 +167,7 @@ public class LearnersController(
     {
         try
         {
-            var queryResult = await mediator.Send(new GetFm36Command(ukprn, collectionYear, collectionPeriod));
+            var queryResult = await mediator.Send(new GetFm36Query(ukprn, collectionYear, collectionPeriod));
 
             var model = queryResult.FM36Learners;
 
