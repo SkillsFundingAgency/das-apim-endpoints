@@ -3,26 +3,15 @@
 namespace SFA.DAS.LearnerData.Requests;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
 public class StubUpdateLearnerRequest
 {
     [Required]
-    public StubHeader Header { get; set; }
+    public string ConsumerReference { get; set; }
     [Required]
     public StubLearner Learner { get; set; }
     [Required]
-    public List<StubDelivery> Delivery { get; set; }
+    public StubDelivery Delivery { get; set; }
 
-}
-
-public class StubHeader
-{
-    [Required]
-    public string Ukprn { get; set; }
-    [Required]
-    public string LearningType { get; set; }
-    [Required]
-    public string ConsumerReference { get; set; }
 }
 
 public class StubLearner
@@ -57,8 +46,7 @@ public class StubOnProgramme
     public StubCare Care { get; set; }
     [Required]
     public int? StandardCode { get; set; }
-    [Required]
-    public string AgreementId { get; set; }
+    public string? AgreementId { get; set; }
     [Required]
     public DateTime? StartDate { get; set; }
     [Required]
@@ -73,6 +61,8 @@ public class StubOnProgramme
     public DateTime? WithdrawalDate { get; set; }
     [Required]
     public List<StubLearningSupport> LearningSupport { get; set; }
+    [Required]
+    public bool? IsFlexiJob { get; set; }
 }
 
 public class StubCare
@@ -104,7 +94,7 @@ public class StubEnglishAndMaths
     [Required]
     public DateTime? StartDate { get; set; }
     [Required]
-    public DateTime? PlannedEndDate { get; set; }
+    public DateTime? EndDate { get; set; }
     [Required]
     public int? CourseCode { get; set; }
     [Required]

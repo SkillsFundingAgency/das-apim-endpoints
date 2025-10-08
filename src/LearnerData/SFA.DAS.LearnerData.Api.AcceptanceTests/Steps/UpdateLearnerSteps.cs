@@ -18,21 +18,23 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private readonly Fixture _fixture = new Fixture();
     private const string ChangesKey = "Changes";
     private const string LearnerKey = "LearnerKey";
+    private const string UkprnKey = "UkprnKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
     {
         scenarioContext.Set(Guid.NewGuid(), LearnerKey);
+        scenarioContext.Set(_fixture.Create<long>(), UkprnKey);
     }
 
     [Given(@"the (.*) passed is different to the value in the learners domain")]
-    public void GivenTheCompletionDatePassedIsDifferentToTheValueInTheLearnersDomain(LearningUpdateChanges change)
+    public void GivenTheCompletionDatePassedIsDifferentToTheValueInTheLearnersDomain(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
     {
-        List<LearningUpdateChanges> changes;
+        List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes;
 
         if (!scenarioContext.TryGetValue(ChangesKey, out changes))
         {
-            changes = new List<LearningUpdateChanges>();
+            changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>();
         }
 
         changes.Add(change);
@@ -43,7 +45,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     [Given(@"the details passed in are the same as the existing learner details")]
     public void GivenTheDetailsPassedInAreTheSameAsTheExistingLearnerDetails()
     {
-        scenarioContext.Set(new List<LearningUpdateChanges>(), ChangesKey); // an empty list will be returned to indicate no changes
+        scenarioContext.Set(new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>(), ChangesKey); // an empty list will be returned to indicate no changes
     }
 
     [When(@"the learner is updated")]
@@ -55,7 +57,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     }
 
     [Then(@"a (.*) update request is sent to the earnings domain")]
-    public void ThenARequestIsSentToTheEarningsDomain(LearningUpdateChanges updateRequestType)
+    public void ThenARequestIsSentToTheEarningsDomain(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
     {
         var requestUrl = GetEarningsRequestUrl(updateRequestType);
         var requests = testContext.EarningsApi.MockServer.LogEntries;
@@ -73,13 +75,13 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
 
     private void ConfigureLearnerInnerApi()
     {
-        var changes = scenarioContext.Get<List<LearningUpdateChanges>>(ChangesKey);
+        var changes = scenarioContext.Get<List<UpdateLearnerApiPutResponse.LearningUpdateChanges>>(ChangesKey);
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
 
         var response = new UpdateLearnerApiPutResponse();
         if (changes.Any())
         {
-            response.AddRange(changes);
+            response.Changes.AddRange(changes);
         }
 
         testContext.ApprenticeshipsApi.MockServer
@@ -112,24 +114,27 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private async Task CallUpdateLearnerEndpoint()
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<UpdateLearnerRequest>();
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
-        var response = await testContext.OuterApiClient.PutAsync($"/learners/{learnerKey}", httpContent);
+        var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();
         response.IsSuccessStatusCode.Should().BeTrue($"Expected successful response from outer Api call, but got {response.StatusCode}. Content: {contentString}");
     }
 
-    private string GetEarningsRequestUrl(LearningUpdateChanges updateRequestType)
+    private string GetEarningsRequestUrl(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         switch (updateRequestType)
         {
-            case LearningUpdateChanges.CompletionDate:
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
                 return $"apprenticeship/{learnerKey.ToString()}/completion";
-            case LearningUpdateChanges.MathsAndEnglish:
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
                 return $"/apprenticeship/{learnerKey}/mathsAndEnglish";
-            case LearningUpdateChanges.LearningSupport:
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
                 return $"/apprenticeship/{learnerKey.ToString()}/learningSupport";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
+                return $"/apprenticeship/{learnerKey.ToString()}/prices";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

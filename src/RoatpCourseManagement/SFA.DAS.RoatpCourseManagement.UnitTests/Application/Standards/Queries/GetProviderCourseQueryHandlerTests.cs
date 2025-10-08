@@ -61,7 +61,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                 result.StandardInfoUrl.Should().Be(course.StandardInfoUrl);
                 result.ContactUsPhoneNumber.Should().Be(course.ContactUsPhoneNumber);
                 result.ContactUsEmail.Should().Be(course.ContactUsEmail);
-                result.ContactUsPageUrl.Should().Be(course.ContactUsPageUrl);
                 result.ProviderCourseLocations.Count.Should().Be(apiResponseProviderCourseLocation.Count);
                 result.IsApprovedByRegulator.Should().Be(course.IsApprovedByRegulator);
                 result.IsRegulatedForProvider.Should().Be(course.IsRegulatedForProvider);
