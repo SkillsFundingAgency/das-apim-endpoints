@@ -10,15 +10,15 @@ namespace SFA.DAS.AdminRoatp.Api.Controllers;
 public class OrganisationCourseTypesController(IMediator mediator, ILogger<OrganisationCourseTypesController> _logger) : ControllerBase
 {
     [HttpPut]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
-    [Route("{ukprn}/allowed-short-courses")]
+    [Route("{ukprn}/allowed-course-types")]
 
     public async Task<IActionResult> UpdateCourseTypes([FromRoute] int ukprn, [FromBody] UpdateCourseTypesModel model, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Received request to update course types for Ukprn: {Ukprn}", ukprn);
         UpdateOrganisationCourseTypesCommand command = new(ukprn, model.CourseTypeIds, model.UserId);
-        HttpStatusCode response = await mediator.Send(command, cancellationToken);
-        return Ok(response);
+        await mediator.Send(command, cancellationToken);
+        return NoContent();
     }
 }

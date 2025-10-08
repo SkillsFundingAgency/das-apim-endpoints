@@ -8,18 +8,18 @@ public class UpdateOrganisationCourseTypesCommandTests
 {
     [Test, MoqAutoData]
 
-    public void UpdateCourseTypesRequest_ReturnsCorrectGetUrl(
+    public void UpdateCourseTypesRequest_ValidatesPutUrl(
         UpdateOrganisationCourseTypesCommand command,
         UpdateCourseTypesModel model)
     {
-        var expectedUrl = $"/organisations/{command.ukprn}/allowed-short-courses";
+        var expectedUrl = $"/organisations/{command.ukprn}/allowed-course-types";
 
         UpdateCourseTypesRequest apiRequest = new(command.ukprn, model);
 
         apiRequest.PutUrl.Should().Be(expectedUrl);
     }
 
-    public void UpdateCourseTypesRequest_ReturnsCorrectDataModell(
+    public void UpdateCourseTypesRequest_ValidatesDataModell(
         UpdateOrganisationCourseTypesCommand command,
         UpdateCourseTypesModel model)
     {

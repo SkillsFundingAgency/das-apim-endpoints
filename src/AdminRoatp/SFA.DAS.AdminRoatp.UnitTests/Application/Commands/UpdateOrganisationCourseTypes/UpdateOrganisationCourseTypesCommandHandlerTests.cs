@@ -16,7 +16,7 @@ public class UpdateOrganisationCourseTypesCommandHandlerTests
 {
     [Test, MoqAutoData]
 
-    public async Task Handle_CallsApiClient_ReturnsOkResponse(
+    public async Task Handle_CallsApiClient_EnsuresSuccessResponse(
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
         UpdateOrganisationCourseTypesCommandHandler sut,
         UpdateOrganisationCourseTypesCommand command,
@@ -26,9 +26,9 @@ public class UpdateOrganisationCourseTypesCommandHandlerTests
         var apiRequest = new UpdateCourseTypesRequest(command.ukprn, updateCourseTypes);
         apiClientMock.Setup(a => a.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r => r.PutUrl.Equals(apiRequest.PutUrl)))).ReturnsAsync(new ApiResponse<NullResponse>(apiResponse, HttpStatusCode.OK, ""));
 
-        var result = await sut.Handle(command, CancellationToken.None);
+        Func<Task> result = () => sut.Handle(command, CancellationToken.None);
 
-        result.Should().Be(HttpStatusCode.OK);
+        await result.Should().NotThrowAsync();
         apiClientMock.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<UpdateCourseTypesRequest>(r => r.PutUrl.Equals(apiRequest.PutUrl))), Times.Once);
     }
 
