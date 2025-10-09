@@ -13,14 +13,12 @@ public class GetLearnersQuery : PagedQuery, IRequest<GetLearnersQueryResult>
 }
 
 public class GetLearnersQueryHandler(
-    ILearningApiClient<LearningApiConfiguration> LearnerApiClient)
+    ILearningApiClient<LearningApiConfiguration> learnerApiClient)
     : IRequestHandler<GetLearnersQuery, GetLearnersQueryResult>
 {
     public async Task<GetLearnersQueryResult> Handle(GetLearnersQuery request, CancellationToken cancellationToken)
     {
-        LearnerApiClient.GenerateServiceToken("LearnersManage");
-
-        var applicationsResponse = await LearnerApiClient.Get<GetLearnersQueryResult>(
+        var applicationsResponse = await learnerApiClient.Get<GetLearnersQueryResult>(
             new GetAllLearningsRequest(
                 request.Ukprn,
                 request.AcademicYear,

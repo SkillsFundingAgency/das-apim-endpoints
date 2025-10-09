@@ -15,12 +15,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply;
 
 public class ApplyCommandHandler(
     IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
-    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
+    ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
+    ILogger<ApplyCommandHandler> logger)
     : IRequestHandler<ApplyCommand, ApplyCommandResponse>
 {
     public async Task<ApplyCommandResponse> Handle(ApplyCommand request, CancellationToken cancellationToken)
@@ -29,6 +31,12 @@ public class ApplyCommandHandler(
             await findApprenticeshipApiClient.Get<GetApprenticeshipVacancyItemResponse>(
                 new GetVacancyRequest(request.VacancyReference));
 
+        if (!string.IsNullOrEmpty(result.ApplicationUrl))
+        {
+            logger.LogWarning("Application attempted to be created for {VacancyReference} with application url {ApplicationUrl}", request.VacancyReference, result.ApplicationUrl);
+            return null;
+        }
+        
         var additionalQuestions = new List<KeyValuePair<int, string>>();
         if (result.AdditionalQuestion1 != null) { additionalQuestions.Add(new KeyValuePair<int, string>(1, result.AdditionalQuestion1)); }
         if (result.AdditionalQuestion2 != null) { additionalQuestions.Add(new KeyValuePair<int, string>(2, result.AdditionalQuestion2)); }

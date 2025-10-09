@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId
+﻿using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
+
+namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId
 {
     public record GetDashboardByAccountIdQueryResult
     {
@@ -10,7 +12,7 @@
         public int UnsuccessfulApplicationsCount { get; set; } = 0;
         public bool HasNoApplications { get; set; } = false;
 
-        public static implicit operator GetDashboardByAccountIdQueryResult(InnerApi.Responses.GetDashboardApiResponse response)
+        public static implicit operator GetDashboardByAccountIdQueryResult(GetDashboardApiResponse response)
         {
             return new GetDashboardByAccountIdQueryResult
             {

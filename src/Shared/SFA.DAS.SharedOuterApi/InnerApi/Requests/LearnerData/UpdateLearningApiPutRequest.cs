@@ -19,14 +19,29 @@ public class UpdateLearningApiPutRequest : IPutApiRequest<UpdateLearningRequestB
 
 public class UpdateLearningRequestBody
 {
+    public Delivery Delivery { get; set; }
     public LearningUpdateDetails Learner { get; set; }
     public List<MathsAndEnglishDetails> MathsAndEnglishCourses { get; set; }
     public List<LearningSupportUpdatedDetails> LearningSupport { get; set; }
+    public OnProgrammeDetails OnProgramme { get; set; }
 }
 
 public class LearningUpdateDetails
 {
     public DateTime? CompletionDate { get; set; }
+}
+
+public class OnProgrammeDetails
+{
+    public DateTime ExpectedEndDate { get; set; }
+    public List<Cost> Costs { get; set; }
+}
+
+public class Cost
+{
+    public int TrainingPrice { get; set; }
+    public int? EpaoPrice { get; set; }
+    public DateTime FromDate { get; set; }
 }
 
 public class MathsAndEnglishDetails
@@ -44,4 +59,9 @@ public class LearningSupportUpdatedDetails
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+}
+
+public class Delivery
+{
+    public DateTime? WithdrawalDate { get; set; }
 }

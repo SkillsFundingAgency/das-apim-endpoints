@@ -94,7 +94,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Queries
             actual.ApprenticeId.Should().Be(response.ApprenticeId);
             actual.FirstName.Should().Be(response.FirstName);
             actual.LastName.Should().Be(response.LastName);
-            actual.DateOfBirth.Should().Be(response.DateOfBirth);
+            actual.DateOfBirth.Should().Be(response.DateOfBirth ?? DateTime.MinValue);
             actual.Email.Should().Be(response.Email);
             actual.TermsOfUseAccepted.Should().Be(response.TermsOfUseAccepted);
             actual.ReacceptTermsOfUseRequired.Should().Be(response.ReacceptTermsOfUseRequired);

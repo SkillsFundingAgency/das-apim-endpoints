@@ -1,10 +1,10 @@
-﻿using System;
-using System.Linq;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.Vacancies.Api.Models;
-using SFA.DAS.Vacancies.Application.Vacancies.Queries;
-using FluentAssertions;
+using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
+using System;
+using System.Linq;
 
 namespace SFA.DAS.Vacancies.Api.UnitTests.Models
 {
