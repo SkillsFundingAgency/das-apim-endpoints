@@ -130,6 +130,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate = null;
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x => x.CompletionDate = null);
         var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
         expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
 
@@ -150,6 +152,48 @@ public class WhenHandlingUpdateLearnerCommand
 
         _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
             r => r.Data.HasEquivalentItems(expectedLearningSupport,(actual,expected) => 
+                actual.StartDate == expected.StartDate &&
+                actual.EndDate == expected.EndDate
+            ))), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_LearningSupport_Changes_OnCompletion()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        
+        var completionDate = new[]
+        {
+            command.UpdateLearnerRequest.Delivery.OnProgramme.LearningSupport.Min(x => x.EndDate).AddDays(-1),
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Min(y => y.EndDate).AddDays(-1)
+        }.Min();
+
+        command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate = completionDate;
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x => x.CompletionDate = completionDate);
+
+        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x => x.LearningSupport).ToList();
+        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
+        expectedLearningSupport.ForEach(x => x.EndDate = completionDate);
+
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
+            r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
                 actual.StartDate == expected.StartDate &&
                 actual.EndDate == expected.EndDate
             ))), Times.Once);
