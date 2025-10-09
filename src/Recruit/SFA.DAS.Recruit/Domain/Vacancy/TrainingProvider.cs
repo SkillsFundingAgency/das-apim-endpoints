@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.Recruit.Domain.Vacancy;
+﻿using SFA.DAS.SharedOuterApi.Models;
+
+namespace SFA.DAS.Recruit.Domain.Vacancy;
 
 public class TrainingProvider
 {
