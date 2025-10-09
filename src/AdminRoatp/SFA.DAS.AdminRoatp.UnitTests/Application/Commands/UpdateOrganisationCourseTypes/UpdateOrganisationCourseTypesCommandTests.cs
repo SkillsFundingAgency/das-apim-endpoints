@@ -7,7 +7,6 @@ namespace SFA.DAS.AdminRoatp.UnitTests.Application.Commands.UpdateOrganisationCo
 public class UpdateOrganisationCourseTypesCommandTests
 {
     [Test, MoqAutoData]
-
     public void UpdateCourseTypesRequest_ValidatesPutUrl(
         UpdateOrganisationCourseTypesCommand command,
         UpdateCourseTypesModel model)
@@ -19,7 +18,8 @@ public class UpdateOrganisationCourseTypesCommandTests
         apiRequest.PutUrl.Should().Be(expectedUrl);
     }
 
-    public void UpdateCourseTypesRequest_ValidatesDataModell(
+    [Test, MoqAutoData]
+    public static void UpdateCourseTypesRequest_ValidatesDataModell(
         UpdateOrganisationCourseTypesCommand command,
         UpdateCourseTypesModel model)
     {
