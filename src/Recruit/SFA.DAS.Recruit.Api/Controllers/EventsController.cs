@@ -64,4 +64,12 @@ public class EventsController(
         await mediator.Publish(new SharedApplicationReviewedEvent(payload.VacancyId, payload.VacancyReference));
         return NoContent();
     }
+    
+    [HttpPost, Route("vacancy-rejected")]
+    public async Task<IActionResult> OnVacancyRejected([FromBody] PostVacancyRejectedEventModel payload, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("OnSharedApplicationReviewed triggered for vacancy {VacancyId})", payload.VacancyId);
+        await mediator.Publish(new VacancyRejectedEvent(payload.VacancyId), cancellationToken);
+        return NoContent();
+    }
 }
