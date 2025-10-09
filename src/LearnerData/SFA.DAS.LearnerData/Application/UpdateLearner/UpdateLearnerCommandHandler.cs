@@ -64,6 +64,9 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
                     updatePrices = true;
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
+                    await earningsApiClient.WithdrawLearner(command, logger);
+                    break;
             }
         }
 
@@ -77,6 +80,10 @@ public class UpdateLearnerCommandHandler(
     {
         var body = new UpdateLearningRequestBody
         {
+            Delivery = new Delivery
+            {
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate
+            },
             Learner = new LearningUpdateDetails
             {
                 CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
