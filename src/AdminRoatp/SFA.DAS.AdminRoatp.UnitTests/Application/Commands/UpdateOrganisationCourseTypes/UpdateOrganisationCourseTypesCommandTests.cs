@@ -19,7 +19,7 @@ public class UpdateOrganisationCourseTypesCommandTests
     }
 
     [Test, MoqAutoData]
-    public static void UpdateCourseTypesRequest_ValidatesDataModell(
+    public void UpdateCourseTypesRequest_ValidatesDataModell(
         UpdateOrganisationCourseTypesCommand command,
         UpdateCourseTypesModel model)
     {
