@@ -10,6 +10,8 @@ using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Candidates.Commands;
 
