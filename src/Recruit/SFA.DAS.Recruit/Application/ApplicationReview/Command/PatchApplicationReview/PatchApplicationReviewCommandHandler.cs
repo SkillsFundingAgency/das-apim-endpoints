@@ -8,6 +8,7 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
 namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview
 {
@@ -16,7 +17,7 @@ namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplication
     {
         public async Task Handle(PatchApplicationReviewCommand command, CancellationToken cancellationToken)
         {
-            var jsonPatchApplicationReviewDocument = new JsonPatchDocument<InnerApi.Requests.ApplicationReview>();
+            var jsonPatchApplicationReviewDocument = new JsonPatchDocument<InnerApi.Recruit.Requests.ApplicationReview>();
             jsonPatchApplicationReviewDocument.Replace(x => x.Status, command.Status);
             jsonPatchApplicationReviewDocument.Replace(x => x.HasEverBeenEmployerInterviewing, command.HasEverBeenEmployerInterviewing);
             jsonPatchApplicationReviewDocument.Replace(x => x.StatusUpdatedDate, DateTime.UtcNow);
