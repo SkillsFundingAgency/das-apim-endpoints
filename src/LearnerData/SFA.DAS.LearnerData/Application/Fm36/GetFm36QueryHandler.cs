@@ -1,10 +1,10 @@
-﻿using Azure.Core;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.Fm36.Common;
 using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
+using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
@@ -41,13 +41,13 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         _logger.LogInformation("Handling GetAllEarningsQuery for provider {ukprn}", request.Ukprn);
 
         var currentAcademicYear = await GetCurrentAcademicYear(request);
-        var learnings = await GetLearnings(request);
+        var (learnings, totalLearners) = await GetLearnings(request);
         var earnings = await GetRelatedEarnings(request, learnings);
         var joinedApprenticeships = JoinLearningAndEarningData(learnings, earnings, currentAcademicYear);
 
         var fm36Learners = TransformToFm36Learners(joinedApprenticeships, currentAcademicYear, request.CollectionPeriod);
 
-        return BuildResult(request, fm36Learners);
+        return BuildResult(request, fm36Learners, totalLearners);
     }
 
     private async Task<GetAcademicYearsResponse> GetCurrentAcademicYear(GetFm36Query request)
@@ -62,16 +62,43 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         return currentAcademicYear;
     }
 
-    private async Task<List<Learning>> GetLearnings(GetFm36Query request)
+    private async Task<(List<Learning>, int)> GetLearnings(GetFm36Query request)
     {
-        var learningData = await _learningApiClient.Get<GetLearningsResponse>(new GetLearningsRequest { Ukprn = request.Ukprn, CollectionYear = request.CollectionYear, CollectionPeriod = request.CollectionPeriod });
-        if (learningData == null || learningData.Learnings == null || !learningData.Learnings.Any())
+        List<Learning>? learners = null;
+        int totalItems = 0;
+
+        var innerRequest = new GetLearningsRequest { 
+            Ukprn = request.Ukprn, 
+            CollectionYear = request.CollectionYear, 
+            CollectionPeriod = request.CollectionPeriod 
+        };
+
+        if(request.IsPaged)
         {
-            _logger.LogWarning("No learning data returned for {ukprn} from Learnings Inner", request.Ukprn);
-            return new List<Learning>();
+            innerRequest.Page = request.Page;
+            innerRequest.PageSize = request.PageSize;
+            var pagedlearners = await _learningApiClient.Get<GetPagedLearnersFromLearningInner>(innerRequest);
+            if(pagedlearners != null)
+            {
+                learners = pagedlearners.Items;
+                totalItems = pagedlearners.TotalItems;
+            }
+
+        }
+        else
+        {
+            learners = await _learningApiClient.Get<List<Learning>>(innerRequest);
+            totalItems = learners.Count;
         }
 
-        return learningData.Learnings;
+        
+        if (learners == null || !learners.Any())
+        {
+            learners = new List<Learning>();
+            _logger.LogWarning("No learning data returned for {ukprn} from Learnings Inner", request.Ukprn);
+        }
+
+        return (learners!, totalItems);
     }
 
     private async Task<List<Apprenticeship>> GetRelatedEarnings(GetFm36Query request, List<Learning> learnings)
@@ -152,7 +179,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         return learners;
     }
 
-    private GetFm36Result BuildResult(GetFm36Query query, List<FM36Learner> fm36Learners)
+    private GetFm36Result BuildResult(GetFm36Query query, List<FM36Learner> fm36Learners, int totalItems)
     {
         var result = new GetFm36Result { Items = fm36Learners };
         
@@ -160,7 +187,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         {
             result.Page = query.Page;
             result.PageSize = query.PageSize!.Value;
-            //result.TotalItems = Get from learning inner result;
+            result.TotalItems = totalItems;
         }
 
         return result;

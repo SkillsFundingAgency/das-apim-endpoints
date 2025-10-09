@@ -50,7 +50,7 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(apiResponses.LearningsInnerApiResponse)
+                    .WithBodyAsJson(apiResponses.UnPagedLearningsInnerApiResponse)
             );
 
         foreach (var earningsResponse in apiResponses.EarningsInnerApiResponses)

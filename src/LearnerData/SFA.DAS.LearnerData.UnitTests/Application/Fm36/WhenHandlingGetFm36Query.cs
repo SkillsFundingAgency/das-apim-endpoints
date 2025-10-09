@@ -29,7 +29,7 @@ public class WhenHandlingGetFm36Query
     public void ThenCallsApprenticeshipsApi()
     {
         //Assert
-        _testFixture.MockApprenticeshipsApiClient.Verify(x => x.Get<GetLearningsResponse>(It.Is<GetLearningsRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Once);
+        _testFixture.MockApprenticeshipsApiClient.Verify(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Once);
     }
 
     [Test]
@@ -45,7 +45,7 @@ public class WhenHandlingGetFm36Query
         // Assert
         _testFixture.Result.Should().NotBeNull();
 
-        foreach (var apprenticeship in _testFixture.LearningsResponse.Learnings)
+        foreach (var apprenticeship in _testFixture.UnpagedLearningsResponse)
         {
             _testFixture.Result.Items.Should().Contain(learner => learner.ULN == long.Parse(apprenticeship.Uln) && learner.LearnRefNumber == "9999999999");
         }

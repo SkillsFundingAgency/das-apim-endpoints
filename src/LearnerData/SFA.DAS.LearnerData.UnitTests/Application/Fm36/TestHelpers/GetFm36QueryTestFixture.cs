@@ -21,7 +21,7 @@ internal class GetFm36QueryTestFixture
     internal long Ukprn;
     internal byte CollectionPeriod;
     internal int CollectionYear;
-    internal GetLearningsResponse LearningsResponse;
+    internal List<Learning> UnpagedLearningsResponse;
     internal Dictionary<TestScenario, GetFm36DataResponse> EarningsResponses;
     internal GetAcademicYearsResponse CollectionCalendarResponse;
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
@@ -46,17 +46,17 @@ internal class GetFm36QueryTestFixture
         var dataGenerator = new MockDataGenerator();
         dataGenerator.GenerateData(scenario);
 
-        LearningsResponse = dataGenerator.GetLearningsResponse;
+        UnpagedLearningsResponse = dataGenerator.UnpagedLearningsResponse;
         EarningsResponses = dataGenerator.GetFm36DataResponses;
 
-        CollectionCalendarResponse = BuildCollectionCalendarResponse(LearningsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponses, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+        CollectionCalendarResponse = BuildCollectionCalendarResponse(UnpagedLearningsResponse);
+        SetupMocks(Ukprn, MockApprenticeshipsApiClient, UnpagedLearningsResponse, MockEarningsApiClient, EarningsResponses, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
         _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
         _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, null, null);
     }
 
-    internal GetAcademicYearsResponse BuildCollectionCalendarResponse(GetLearningsResponse learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
+    internal GetAcademicYearsResponse BuildCollectionCalendarResponse(List<Learning> learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
     {
         return new GetAcademicYearsResponse
         {
@@ -69,14 +69,14 @@ internal class GetFm36QueryTestFixture
     internal void SetupMocks(
         long ukprn,
         Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient,
-        GetLearningsResponse learningsResponse,
+        List<Learning> learningsResponse,
         Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
         Dictionary<TestScenario, GetFm36DataResponse> earningsResponses,
         Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
         GetAcademicYearsResponse collectionCalendarResponse)
     {
         mockApprenticeshipsApiClient
-            .Setup(x => x.Get<GetLearningsResponse>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
+            .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
             .ReturnsAsync(learningsResponse);
 
         foreach (var earningsResponse in earningsResponses.Values)
