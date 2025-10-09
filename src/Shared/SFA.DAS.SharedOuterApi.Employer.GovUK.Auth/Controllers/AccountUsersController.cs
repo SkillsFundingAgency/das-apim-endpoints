@@ -38,7 +38,7 @@ namespace SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Unable to get user accounts for userId {userId}, email {email}");
+                _logger.LogError(ex, "Unable to get user accounts for userId {UserId}", userId);
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
         }
