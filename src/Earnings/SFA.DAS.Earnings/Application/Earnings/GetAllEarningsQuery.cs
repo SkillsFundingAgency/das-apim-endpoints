@@ -145,7 +145,7 @@ public class GetAllEarningsQueryHandler : IRequestHandler<GetAllEarningsQuery, G
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedApprenticeship.Uln);
+                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedApprenticeship.Key);
                     return null;
                 }
 
