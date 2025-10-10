@@ -13,19 +13,19 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Recruit.Handlers;
 
-public class VacancySubmittedEventHandler(
-    ILogger<VacancySubmittedEventHandler> logger,
+public class VacancyRejectedEventHandler(
+    ILogger<VacancyRejectedEventHandler> logger,
     IRecruitApiClient<RecruitApiConfiguration> apiClient,
-    INotificationService notificationService): INotificationHandler<VacancySubmittedEvent>
+    INotificationService notificationService): INotificationHandler<VacancyRejectedEvent>
 {
-    public async Task Handle(VacancySubmittedEvent @event, CancellationToken cancellationToken)
+    public async Task Handle(VacancyRejectedEvent @event, CancellationToken cancellationToken)
     {
         var response = await apiClient.PostWithResponseCode<PostCreateVacancyNotificationsResponse>(
-            new PostCreateVacancyNotificationsRequest(@event.VacancyId));
+            new PostCreateVacancyNotificationsRequest(@event.Id));
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
-            logger.LogError("Failed to create notifications for vacancy id '{VacancyId}' with error '{ErrorContent}'", @event.VacancyId, response.ErrorContent);
+            logger.LogError("Failed to create notifications for vacancy id '{Id}' with error '{ErrorContent}'", @event.Id, response.ErrorContent);
             return;
         }
 
