@@ -2,6 +2,7 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
+using SFA.DAS.LearnerData.Application.Fm36;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
