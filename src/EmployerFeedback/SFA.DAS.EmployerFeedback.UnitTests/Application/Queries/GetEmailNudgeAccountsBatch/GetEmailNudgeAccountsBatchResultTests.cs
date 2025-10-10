@@ -1,17 +1,17 @@
 using System.Collections.Generic;
 using NUnit.Framework;
-using SFA.DAS.EmployerFeedback.Application.Queries.GetAccountsBatch;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetEmailNudgeAccountsBatch;
 
-namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAccountsBatch
+namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetEmailNudgeAccountsBatch
 {
     [TestFixture]
-    public class GetAccountsBatchResultTests
+    public class GetEmailNudgeAccountsBatchResultTests
     {
         [Test]
         public void AccountIds_CanBeSetAndRetrieved()
         {
             var accountIds = new List<long> { 1, 2, 3, 4, 5 };
-            var result = new GetAccountsBatchResult
+            var result = new GetEmailNudgeAccountsBatchResult
             {
                 AccountIds = accountIds
             };
@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAccountsBatc
         [Test]
         public void AccountIds_CanBeNull()
         {
-            var result = new GetAccountsBatchResult
+            var result = new GetEmailNudgeAccountsBatchResult
             {
                 AccountIds = null
             };
@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAccountsBatc
         public void AccountIds_CanBeEmptyList()
         {
             var accountIds = new List<long>();
-            var result = new GetAccountsBatchResult
+            var result = new GetEmailNudgeAccountsBatchResult
             {
                 AccountIds = accountIds
             };

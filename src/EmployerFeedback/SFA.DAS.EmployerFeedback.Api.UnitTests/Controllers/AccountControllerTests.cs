@@ -12,7 +12,7 @@ using SFA.DAS.EmployerFeedback.Api.Controllers;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
 using SFA.DAS.EmployerFeedback.Api.UnitTests.Extensions;
 using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
-using SFA.DAS.EmployerFeedback.Application.Queries.GetAccountsBatch;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetEmailNudgeAccountsBatch;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
@@ -70,14 +70,14 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         }
 
         [Test]
-        public async Task GetAccountsBatch_ReturnsOk_WhenAccountIdsAreNotNull()
+        public async Task GetEmailNudgeAccountsBatch_ReturnsOk_WhenAccountIdsAreNotNull()
         {
             var batchSize = 10;
             var accountIds = new List<long> { 1, 2, 3, 4, 5 };
-            var resultObj = new GetAccountsBatchResult { AccountIds = accountIds };
-            _mediatorMock.Setup(m => m.Send(It.Is<GetAccountsBatchQuery>(q => q.BatchSize == batchSize), CancellationToken.None)).ReturnsAsync(resultObj);
+            var resultObj = new GetEmailNudgeAccountsBatchResult { AccountIds = accountIds };
+            _mediatorMock.Setup(m => m.Send(It.Is<GetEmailNudgeAccountsBatchQuery>(q => q.BatchSize == batchSize), CancellationToken.None)).ReturnsAsync(resultObj);
 
-            var result = await _controller.GetAccountsBatch(batchSize);
+            var result = await _controller.GetEmailNudgeAccountsBatch(batchSize);
 
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
             var okResult = result as OkObjectResult;
@@ -86,51 +86,51 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
             var accountIdsProperty = response.GetType().GetProperty("AccountIds");
             Assert.That(accountIdsProperty, Is.Not.Null);
             Assert.That(accountIdsProperty.GetValue(response), Is.EqualTo(accountIds));
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetEmailNudgeAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
-        public async Task GetAccountsBatch_ReturnsNotFound_WhenAccountIdsAreNull()
+        public async Task GetEmailNudgeAccountsBatch_ReturnsNotFound_WhenAccountIdsAreNull()
         {
             var batchSize = 10;
-            var resultObj = new GetAccountsBatchResult { AccountIds = null };
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), CancellationToken.None)).ReturnsAsync(resultObj);
+            var resultObj = new GetEmailNudgeAccountsBatchResult { AccountIds = null };
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetEmailNudgeAccountsBatchQuery>(), CancellationToken.None)).ReturnsAsync(resultObj);
 
-            var result = await _controller.GetAccountsBatch(batchSize);
+            var result = await _controller.GetEmailNudgeAccountsBatch(batchSize);
 
             Assert.That(result, Is.InstanceOf<NotFoundResult>());
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetEmailNudgeAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
-        public async Task GetAccountsBatch_ReturnsNotFound_WhenResultIsNull()
+        public async Task GetEmailNudgeAccountsBatch_ReturnsNotFound_WhenResultIsNull()
         {
             var batchSize = 10;
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), CancellationToken.None)).ReturnsAsync((GetAccountsBatchResult)null);
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetEmailNudgeAccountsBatchQuery>(), CancellationToken.None)).ReturnsAsync((GetEmailNudgeAccountsBatchResult)null);
 
-            var result = await _controller.GetAccountsBatch(batchSize);
+            var result = await _controller.GetEmailNudgeAccountsBatch(batchSize);
 
             Assert.That(result, Is.InstanceOf<NotFoundResult>());
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetEmailNudgeAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
-        public async Task GetAccountsBatch_ReturnsInternalServerError_AndLogs_WhenExceptionThrown()
+        public async Task GetEmailNudgeAccountsBatch_ReturnsInternalServerError_AndLogs_WhenExceptionThrown()
         {
             var batchSize = 10;
             var boom = new InvalidOperationException("test");
             _mediatorMock
-                .Setup(m => m.Send(It.Is<GetAccountsBatchQuery>(q => q.BatchSize == batchSize), CancellationToken.None))
+                .Setup(m => m.Send(It.Is<GetEmailNudgeAccountsBatchQuery>(q => q.BatchSize == batchSize), CancellationToken.None))
                 .ThrowsAsync(boom);
 
-            var result = await _controller.GetAccountsBatch(batchSize);
+            var result = await _controller.GetEmailNudgeAccountsBatch(batchSize);
 
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
             var statusResult = result as StatusCodeResult;
             Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
 
             _loggerMock.VerifyLogErrorContains("Error getting accounts batch.", boom, Times.Once());
-            _mediatorMock.Verify(m => m.Send(It.IsAny<GetAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(m => m.Send(It.IsAny<GetEmailNudgeAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
