@@ -30,7 +30,7 @@ public class CreateLearnerCommandHandler(
             StartDate = command.Request.Delivery.OnProgramme.StartDate!.Value,
             PlannedEndDate = command.Request.Delivery.OnProgramme.ExpectedEndDate!.Value,
             PercentageLearningToBeDelivered = command.Request.Delivery.OnProgramme.PercentageOfTrainingLeft,
-            EpaoPrice = command.Request.Delivery.OnProgramme.Costs.Single().EpaoPrice,
+            EpaoPrice = command.Request.Delivery.OnProgramme.Costs.Single().EpaoPrice ?? 0,
             TrainingPrice = command.Request.Delivery.OnProgramme.Costs.Single().TrainingPrice,
             AgreementId = command.Request.Delivery.OnProgramme.AgreementId,
             IsFlexiJob = command.Request.Delivery.OnProgramme.IsFlexiJob!.Value,
