@@ -79,6 +79,10 @@ internal class GetFm36QueryTestFixture
             .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
             .ReturnsAsync(learningsResponse);
 
+        mockApprenticeshipsApiClient
+            .Setup(x => x.Get<GetPagedLearnersFromLearningInner>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
+            .ReturnsAsync(new GetPagedLearnersFromLearningInner { Items = learningsResponse, Page = 1, PageSize = learningsResponse.Count, TotalItems = learningsResponse.Count });
+
         foreach (var earningsResponse in earningsResponses.Values)
         {
             mockEarningsApiClient
@@ -92,8 +96,20 @@ internal class GetFm36QueryTestFixture
             .ReturnsAsync(collectionCalendarResponse);
     }
 
-    internal async Task CallSubjectUnderTest()
+    public enum QueryType
     {
+        Paged,
+        Unpaged
+    }
+
+    internal async Task CallSubjectUnderTest(QueryType queryType = QueryType.Unpaged)
+    {
+        if(queryType == QueryType.Paged)
+        {
+            _query.Page = 1;
+            _query.PageSize = 1;
+        }
+
         // Act
         Result = await _handler.Handle(_query, CancellationToken.None);
     }
