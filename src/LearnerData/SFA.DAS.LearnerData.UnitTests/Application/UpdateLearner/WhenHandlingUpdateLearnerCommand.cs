@@ -310,6 +310,32 @@ public class WhenHandlingUpdateLearnerCommand
             r => r.Data.WithdrawalDate == expectedWithdrawalDate)), Times.Once);
     }
 
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_Reverse_Withdrawal()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate;
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.Is<UpdateLearningApiPutRequest>(r => r.Data.Delivery.WithdrawalDate == expectedWithdrawalDate)), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()), Times.Once);
+    }
+
     private static void MockLearningApiResponse(
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,
