@@ -7,7 +7,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests
     {
         public object Data { get; set; } = body;
 
-        public string PostUrl => $"api/closedvacancies";
+        public string PostUrl => "api/vacancies/closed";
     }
 
     public class PostGetClosedVacanciesByReferenceApiRequestBody

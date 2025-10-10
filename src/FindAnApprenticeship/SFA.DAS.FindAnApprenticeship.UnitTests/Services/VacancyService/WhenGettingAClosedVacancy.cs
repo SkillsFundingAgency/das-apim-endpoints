@@ -13,7 +13,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
             long vacancyReference,
             GetClosedVacancyResponse closedVacancyResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
             FindAnApprenticeship.Services.VacancyService service)
         {
             // Arrange

@@ -50,9 +50,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
         [Test, MoqAutoData]
         public async Task Then_The_Vacancies_Are_Returned_From_Recruit_If_Not_Found_In_FindApprenticeshipApi(
             List<long> vacancyReferences,
-            GetClosedVacanciesByReferenceResponse closedVacancyResponse,
+            List<GetClosedVacancyResponse> closedVacancyResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
             FindAnApprenticeship.Services.VacancyService service)
         {
             // Arrange
@@ -69,9 +69,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
             });
 
             recruitApiClient.Setup(x =>
-                    x.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(
+                    x.PostWithResponseCode<List<GetClosedVacancyResponse>>(
                         It.Is<PostGetClosedVacanciesByReferenceApiRequest>(x => x.PostUrl == expectedRecruitApiRequest.PostUrl), true))
-                .ReturnsAsync(new ApiResponse<GetClosedVacanciesByReferenceResponse>(closedVacancyResponse, HttpStatusCode.OK, ""));
+                .ReturnsAsync(new ApiResponse<List<GetClosedVacancyResponse>>(closedVacancyResponse, HttpStatusCode.OK, ""));
 
             // Act
             var result = await service.GetVacancies(vacancyReferences.Select(x => x.ToString()).ToList());
@@ -79,7 +79,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Services.VacancyService
             // Assert
             result.Should().BeOfType<List<IVacancy>>();
             result.Should().AllBeAssignableTo<GetClosedVacancyResponse>();
-            result.Should().BeEquivalentTo(closedVacancyResponse.Vacancies);
+            result.Should().BeEquivalentTo(closedVacancyResponse);
         }
 
         [Test, MoqAutoData]
