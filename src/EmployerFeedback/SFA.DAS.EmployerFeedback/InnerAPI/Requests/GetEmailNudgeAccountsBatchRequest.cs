@@ -2,9 +2,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerFeedback.InnerApi.Requests
 {
-    public class GetAccountsBatchRequest : IGetApiRequest
+    public class GetEmailNudgeAccountsBatchRequest : IGetApiRequest
     {
-        public GetAccountsBatchRequest(int batchSize)
+        public GetEmailNudgeAccountsBatchRequest(int batchSize)
         {
             BatchSize = batchSize;
         }

@@ -5,13 +5,13 @@ using SFA.DAS.EmployerFeedback.InnerApi.Responses;
 namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Responses
 {
     [TestFixture]
-    public class GetAccountsBatchResponseTests
+    public class GetEmailNudgeAccountsBatchResponseTests
     {
         [Test]
         public void AccountIds_CanBeSetAndRetrieved()
         {
             var accountIds = new List<long> { 1, 2, 3, 4, 5 };
-            var response = new GetAccountsBatchResponse
+            var response = new GetEmailNudgeAccountsBatchResponse
             {
                 AccountIds = accountIds
             };
@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Responses
         [Test]
         public void AccountIds_CanBeNull()
         {
-            var response = new GetAccountsBatchResponse
+            var response = new GetEmailNudgeAccountsBatchResponse
             {
                 AccountIds = null
             };
@@ -34,7 +34,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Responses
         public void AccountIds_CanBeEmptyList()
         {
             var accountIds = new List<long>();
-            var response = new GetAccountsBatchResponse
+            var response = new GetEmailNudgeAccountsBatchResponse
             {
                 AccountIds = accountIds
             };
