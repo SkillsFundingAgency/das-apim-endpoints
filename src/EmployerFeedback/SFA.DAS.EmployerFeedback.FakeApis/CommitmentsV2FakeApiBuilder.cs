@@ -1,12 +1,11 @@
 ﻿using System.Net;
-using SFA.DAS.EmployerFeedback.FakeApis;
 using SFA.DAS.EmployerFeedback.FakeApis.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
-namespace SFA.DAS.Approvals.FakeApis
+namespace SFA.DAS.EmployerFeedback.FakeApis
 {
     public class CommitmentsV2FakeApiBuilder : FakeApiBuilder<CommitmentsV2FakeApiBuilder>
     {

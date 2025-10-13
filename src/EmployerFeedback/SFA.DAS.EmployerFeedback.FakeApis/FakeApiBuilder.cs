@@ -4,7 +4,6 @@ using AutoFixture;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using WireMock.Server;
-using WireMock.Settings;
 
 namespace SFA.DAS.EmployerFeedback.FakeApis
 {

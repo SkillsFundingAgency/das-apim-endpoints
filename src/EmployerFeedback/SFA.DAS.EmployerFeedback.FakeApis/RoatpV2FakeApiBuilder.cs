@@ -1,12 +1,11 @@
 ﻿using System.Net;
-using SFA.DAS.EmployerFeedback.FakeApis;
 using SFA.DAS.EmployerFeedback.FakeApis.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
-namespace SFA.DAS.Approvals.FakeApis
+namespace SFA.DAS.EmployerFeedback.FakeApis
 {
     public class RoatpV2FakeApiBuilder : FakeApiBuilder<RoatpV2FakeApiBuilder>
     {
