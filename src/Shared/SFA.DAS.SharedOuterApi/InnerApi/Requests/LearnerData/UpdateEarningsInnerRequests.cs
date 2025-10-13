@@ -99,3 +99,21 @@ public class PriceDetail
     public decimal TotalPrice { get; set; }
     public int FundingBandMaximum { get; set; }
 }
+
+public class WithdrawApiPatchRequest : IPatchApiRequest<WithdrawRequest>
+{
+    public string PatchUrl { get; }
+
+    public WithdrawRequest Data { get; set; }
+
+    public WithdrawApiPatchRequest(Guid apprenticeshipKey, WithdrawRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/withdraw";
+        Data = data;
+    }
+}
+
+public class WithdrawRequest
+{
+    public DateTime WithdrawalDate { get; set; }
+}

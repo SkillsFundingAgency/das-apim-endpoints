@@ -1,0 +1,123 @@
+﻿using AutoFixture;
+using Microsoft.Extensions.Logging;
+using Moq;
+using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
+
+namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
+
+internal class GetFm36QueryTestFixture
+{
+
+    internal readonly Fixture Fixture = new();
+    internal long Ukprn;
+    internal byte CollectionPeriod;
+    internal int CollectionYear;
+    internal GetLearningsResponse LearningsResponse;
+    internal GetFm36DataResponse EarningsResponse;
+    internal GetAcademicYearsResponse CollectionCalendarResponse;
+    internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
+    internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
+    internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
+    internal GetFm36Result Result;
+
+    private GetFm36QueryHandler _handler;
+    private GetFm36Query _query;
+
+    internal GetFm36QueryTestFixture(TestScenario scenario)
+    {
+        // Arrange
+        MockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
+        MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+        MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
+
+        Ukprn = Fixture.Create<long>();
+        CollectionPeriod = 2;
+        CollectionYear = 2425;
+
+        var dataGenerator = new MockDataGenerator();
+        dataGenerator.GenerateData(scenario);
+
+        LearningsResponse = dataGenerator.GetLearningsResponse;
+        EarningsResponse = dataGenerator.GetFm36DataResponse;
+
+        CollectionCalendarResponse = BuildCollectionCalendarResponse(LearningsResponse);
+        SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+
+        _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
+        _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod);
+    }
+
+    internal GetAcademicYearsResponse BuildCollectionCalendarResponse(GetLearningsResponse learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
+    {
+        return new GetAcademicYearsResponse
+        {
+            AcademicYear = "2021",
+            StartDate = new DateTime(2020, 8, 1),
+            EndDate = new DateTime(2021, 7, 31)
+        };
+    }
+
+    internal void SetupMocks(
+        long ukprn,
+        Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient,
+        GetLearningsResponse learningsResponse,
+        Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
+        GetFm36DataResponse earningsResponse,
+        Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
+        GetAcademicYearsResponse collectionCalendarResponse)
+    {
+        mockApprenticeshipsApiClient
+            .Setup(x => x.Get<GetLearningsResponse>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
+            .ReturnsAsync(learningsResponse);
+
+        mockEarningsApiClient
+            .Setup(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == ukprn)))
+            .ReturnsAsync(earningsResponse);
+
+        MockCollectionCalendarApiClient
+            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{CollectionYear}")))
+            .ReturnsAsync(collectionCalendarResponse);
+    }
+
+    internal async Task CallSubjectUnderTest()
+    {
+        // Act
+        Result = await _handler.Handle(_query, CancellationToken.None);
+    }
+
+    internal IEnumerable<(Episode Episode, EpisodePrice Price)> GetExpectedPriceEpisodesSplitByAcademicYear(List<Episode> apprenticeshipEpisodes)
+    {
+        foreach (var episodePrice in apprenticeshipEpisodes
+                     .SelectMany(episode => episode.Prices.Select(price => (Episode: episode, Price: price))))
+        {
+            if (episodePrice.Price.StartDate < CollectionCalendarResponse.StartDate)
+            {
+                var price = new EpisodePrice
+                {
+                    Key = episodePrice.Price.Key,
+                    StartDate = CollectionCalendarResponse.StartDate,
+                    EndDate = episodePrice.Price.EndDate,
+                    EndPointAssessmentPrice = episodePrice.Price.EndPointAssessmentPrice,
+                    FundingBandMaximum = episodePrice.Price.FundingBandMaximum,
+                    TotalPrice = episodePrice.Price.TotalPrice,
+                    TrainingPrice = episodePrice.Price.TrainingPrice
+                };
+
+                yield return new ValueTuple<Episode, EpisodePrice>(episodePrice.Episode, price);
+            }
+            else
+            {
+                yield return episodePrice;
+            }
+        }
+    }
+}
