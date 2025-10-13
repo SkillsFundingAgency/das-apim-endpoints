@@ -41,7 +41,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccount
         {
             await mediator.Send(new UpsertVacancyReviewCommand
             {
-                VacancyReview = (InnerApi.Requests.VacancyReviewDto)vacancyReview,
+                VacancyReview = (InnerApi.Recruit.Requests.VacancyReviewDto)vacancyReview,
                 Id = id
             });
             return Created();
