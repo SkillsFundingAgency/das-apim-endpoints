@@ -31,3 +31,9 @@ Scenario: Prices updated
 	And the Prices passed is different to the value in the learners domain
 	When the learner is updated
 	Then a Prices update request is sent to the earnings domain
+
+Scenario: Withdrawal
+	Given there is a learner
+	And the Withdrawal passed is different to the value in the learners domain
+	When the learner is updated
+	Then a Withdrawal update request is sent to the earnings domain

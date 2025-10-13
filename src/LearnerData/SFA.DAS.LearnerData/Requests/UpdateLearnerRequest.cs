@@ -22,6 +22,8 @@ public class UpdateLearnerRequestDeliveryDetails
     public OnProgrammeRequestDetails OnProgramme { get; set; }
 
     public List<MathsAndEnglish> EnglishAndMaths { get; set; }
+
+    public DateTime? WithdrawalDate { get; set; }
 }
 
 public class OnProgrammeRequestDetails
