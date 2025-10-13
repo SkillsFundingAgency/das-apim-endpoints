@@ -99,3 +99,33 @@ public class PriceDetail
     public decimal TotalPrice { get; set; }
     public int FundingBandMaximum { get; set; }
 }
+
+public class WithdrawApiPatchRequest : IPatchApiRequest<WithdrawRequest>
+{
+    public string PatchUrl { get; }
+
+    public WithdrawRequest Data { get; set; }
+
+    public WithdrawApiPatchRequest(Guid apprenticeshipKey, WithdrawRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/withdraw";
+        Data = data;
+    }
+}
+
+public class WithdrawRequest
+{
+    public DateTime WithdrawalDate { get; set; }
+}
+
+public class ReverseWithdrawalRequest
+{
+}
+
+public class ReverseWithdrawalApiPatchRequest(Guid apprenticeshipKey) : IPatchApiRequest<ReverseWithdrawalRequest>
+{
+    public string PatchUrl { get; } = $"apprenticeship/{apprenticeshipKey}/reverse-withdrawal";
+
+    public ReverseWithdrawalRequest Data { get; set; } = new();
+}
+

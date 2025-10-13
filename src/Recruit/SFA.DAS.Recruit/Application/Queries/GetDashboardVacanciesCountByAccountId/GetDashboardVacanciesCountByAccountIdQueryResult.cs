@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Recruit.InnerApi.Responses;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
 public record GetDashboardVacanciesCountByAccountIdQueryResult
