@@ -67,6 +67,9 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
                     await earningsApiClient.WithdrawLearner(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
+                    await earningsApiClient.ReverseWithdrawal(command, logger);
+                    break;
             }
         }
 
