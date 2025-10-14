@@ -403,6 +403,13 @@ components:
                         format: date
                 isFlexiJob:
                   type: boolean
+                pauseDate:
+                  type: string
+                  format: date
+                aimSequenceNumber:
+                  type: integer
+                learnerAimRef:
+                  type: string
             englishAndMaths:
               type: array
               items:
@@ -437,6 +444,8 @@ components:
                         endDate:
                           type: string
                           format: date
+                  aimSequenceNumber:
+                    type: integer
 
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
