@@ -14,7 +14,6 @@ public class UpdateLearnerRequestDeliveryDetails
 
     public List<MathsAndEnglish> EnglishAndMaths { get; set; }
 
-    public DateTime? WithdrawalDate { get; set; }
 }
 
 public class OnProgrammeRequestDetails
@@ -22,6 +21,7 @@ public class OnProgrammeRequestDetails
     public DateTime ExpectedEndDate { get; set; }
     public List<CostDetails> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 

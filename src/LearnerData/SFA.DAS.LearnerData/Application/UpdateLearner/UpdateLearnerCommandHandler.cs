@@ -85,7 +85,7 @@ public class UpdateLearnerCommandHandler(
         {
             Delivery = new Delivery
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate
             },
             Learner = new LearningUpdateDetails
             {
