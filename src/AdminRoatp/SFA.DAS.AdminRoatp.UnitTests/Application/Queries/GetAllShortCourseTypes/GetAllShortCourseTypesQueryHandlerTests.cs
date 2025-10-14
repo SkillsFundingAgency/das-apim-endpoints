@@ -27,7 +27,8 @@ public class GetAllShortCourseTypesQueryHandlerTests
             CourseTypes = new List<CourseTypeSummary>
             {
                 new CourseTypeSummary (1,"Standard Course",LearningType.Standard),
-                new CourseTypeSummary (2,"Short Course",LearningType.ShortCourse)
+                new CourseTypeSummary (2,"Short Course",LearningType.ShortCourse),
+                new CourseTypeSummary (3,"Short Course 2",LearningType.ShortCourse)
             }
         };
 
@@ -37,8 +38,8 @@ public class GetAllShortCourseTypesQueryHandlerTests
         var result = await sut.Handle(query, CancellationToken.None);
 
         // Assert
-        Assert.That(result.CourseTypes.Count(), Is.EqualTo(1));
-        result.CourseTypes.Should().OnlyContain(ct => ct.LearningType == LearningType.ShortCourse);
+        Assert.That(result.CourseTypes.Count(), Is.EqualTo(2));
+        result.CourseTypes.Should().OnlyContain(c => c.LearningType == LearningType.ShortCourse);
         apiClient.Verify(x => x.GetWithResponseCode<GetAllCourseTypesResponse>(It.Is<GetAllCourseTypesRequest>(r => r.GetUrl.Equals(new GetAllCourseTypesRequest().GetUrl))), Times.Once);
     }
 
