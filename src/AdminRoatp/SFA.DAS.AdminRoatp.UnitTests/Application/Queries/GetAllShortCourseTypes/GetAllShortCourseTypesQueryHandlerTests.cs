@@ -22,13 +22,16 @@ public class GetAllShortCourseTypesQueryHandlerTests
         GetAllShortCourseTypesQuery query)
     {
         // Arrange
-        var apiResponse = new List<CourseTypeSummary>
+        var apiResponse = new GetAllCourseTypesResponse()
         {
-            new CourseTypeSummary (1,"Standard Course",LearningType.Standard),
-            new CourseTypeSummary (2,"Short Course",LearningType.ShortCourse)
+            CourseTypes = new List<CourseTypeSummary>
+            {
+                new CourseTypeSummary (1,"Standard Course",LearningType.Standard),
+                new CourseTypeSummary (2,"Short Course",LearningType.ShortCourse)
+            }
         };
 
-        apiClient.Setup(a => a.GetWithResponseCode<List<CourseTypeSummary>>(It.Is<GetAllCourseTypesRequest>(r => r.GetUrl.Equals(new GetAllCourseTypesRequest().GetUrl)))).ReturnsAsync(new ApiResponse<List<CourseTypeSummary>>(apiResponse, HttpStatusCode.OK, ""));
+        apiClient.Setup(a => a.GetWithResponseCode<GetAllCourseTypesResponse>(It.Is<GetAllCourseTypesRequest>(r => r.GetUrl.Equals(new GetAllCourseTypesRequest().GetUrl)))).ReturnsAsync(new ApiResponse<GetAllCourseTypesResponse>(apiResponse, HttpStatusCode.OK, ""));
 
         // Act
         var result = await sut.Handle(query, CancellationToken.None);
@@ -36,7 +39,7 @@ public class GetAllShortCourseTypesQueryHandlerTests
         // Assert
         Assert.That(result.CourseTypes.Count(), Is.EqualTo(1));
         result.CourseTypes.Should().OnlyContain(ct => ct.LearningType == LearningType.ShortCourse);
-        apiClient.Verify(x => x.GetWithResponseCode<List<CourseTypeSummary>>(It.Is<GetAllCourseTypesRequest>(r => r.GetUrl.Equals(new GetAllCourseTypesRequest().GetUrl))), Times.Once);
+        apiClient.Verify(x => x.GetWithResponseCode<GetAllCourseTypesResponse>(It.Is<GetAllCourseTypesRequest>(r => r.GetUrl.Equals(new GetAllCourseTypesRequest().GetUrl))), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -47,9 +50,9 @@ public class GetAllShortCourseTypesQueryHandlerTests
         GetAllShortCourseTypesQuery query)
     {
         // Arrange
-        var apiResponse = new List<CourseTypeSummary>();
+        var apiResponse = new GetAllCourseTypesResponse();
 
-        apiClient.Setup(a => a.GetWithResponseCode<List<CourseTypeSummary>>(It.Is<GetAllCourseTypesRequest>(r => r.GetUrl.Equals(new GetAllCourseTypesRequest().GetUrl)))).ReturnsAsync(new ApiResponse<List<CourseTypeSummary>>(apiResponse, HttpStatusCode.OK, ""));
+        apiClient.Setup(a => a.GetWithResponseCode<GetAllCourseTypesResponse>(It.Is<GetAllCourseTypesRequest>(r => r.GetUrl.Equals(new GetAllCourseTypesRequest().GetUrl)))).ReturnsAsync(new ApiResponse<GetAllCourseTypesResponse>(apiResponse, HttpStatusCode.OK, ""));
 
         // Act
         var result = await sut.Handle(query, CancellationToken.None);
