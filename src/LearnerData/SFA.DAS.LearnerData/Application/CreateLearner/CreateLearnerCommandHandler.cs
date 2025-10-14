@@ -28,7 +28,7 @@ public class CreateLearnerCommandHandler(
             Email = command.Request.Learner.Email,
             DoB = command.Request.Learner.Dob!.Value,
             StartDate = command.Request.Delivery.OnProgramme.StartDate!.Value,
-            PlannedEndDate = command.Request.Delivery.OnProgramme.ExpectedEndDate!.Value,
+            PlannedEndDate = command.Request.Delivery.OnProgramme.ExpectedEndDate,
             EpaoPrice = command.Request.Delivery.OnProgramme.Costs.Single().EpaoPrice ?? 0,
             TrainingPrice = command.Request.Delivery.OnProgramme.Costs.Single().TrainingPrice ?? 0,
             AgreementId = command.Request.Delivery.OnProgramme.AgreementId,

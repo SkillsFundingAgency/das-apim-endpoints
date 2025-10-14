@@ -78,7 +78,7 @@ public class WhenCreatingLearners
             Email = request.Learner.Email,
             DoB = request.Learner.Dob!.Value,
             StartDate = request.Delivery.OnProgramme.StartDate!.Value,
-            PlannedEndDate = request.Delivery.OnProgramme.ExpectedEndDate!.Value,
+            PlannedEndDate = request.Delivery.OnProgramme.ExpectedEndDate,
             EpaoPrice = request.Delivery.OnProgramme.Costs.Single().EpaoPrice,
             TrainingPrice = request.Delivery.OnProgramme.Costs.Single().TrainingPrice,
             AgreementId = request.Delivery.OnProgramme.AgreementId,
@@ -99,7 +99,7 @@ public class WhenCreatingLearners
         }
 
         command.Request.Learner.Uln = $"{_fixture.Create<ulong>()}";
-        command.Request.Delivery.OnProgramme.Costs = new List<StubCost> { _fixture.Create<StubCost>() };
+        command.Request.Delivery.OnProgramme.Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
 
         return command;
     }

@@ -23,7 +23,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
 
         [HttpPost]
         [Route("providers/{ukprn}/learners")]
-        public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
+        public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] StubUpdateLearnerRequest payload)
         {
             return Ok();
         }
