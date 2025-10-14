@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
@@ -45,7 +46,7 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
         [JsonProperty("wageAmountUpperBound")]
         public decimal? WageAmountUpperBound { get; init; }
         [JsonProperty("wageUnit")]
-        public int WageUnit { get; init; }
+        public DurationUnit? WageUnit { get; init; }
         [JsonProperty("wageAdditionalInformation")]
         public string WageAdditionalInformation { get; init; }
         [JsonProperty("workingWeek")]
