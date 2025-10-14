@@ -95,7 +95,10 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         if (learners == null || !learners.Any())
         {
             learners = new List<Learning>();
-            _logger.LogWarning("No learning data returned for {ukprn} from Learnings Inner", request.Ukprn);
+            if(request.IsPaged)
+                _logger.LogWarning("No learning data returned for {ukprn} from Learnings Paged Inner {pageNumber} {pageSize}", request.Ukprn, request.Page, request.PageSize);
+            else
+                _logger.LogWarning("No learning data returned for {ukprn} from Learnings Inner", request.Ukprn);
         }
 
         return (learners!, totalItems);
