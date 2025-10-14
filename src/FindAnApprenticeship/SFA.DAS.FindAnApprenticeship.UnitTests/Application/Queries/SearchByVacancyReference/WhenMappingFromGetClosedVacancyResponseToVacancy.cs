@@ -14,7 +14,7 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
     public void Then_The_Fields_Are_Mapped_For_Closed_Vacancy(GetClosedVacancyResponse source)
     {
         // arrange
-        source.Wage.DurationUnit = (int)DurationUnit.Year;
+        source.Wage.DurationUnit = DurationUnit.Year;
         source.ProgrammeId = "1";
         foreach (var sourceQualification in source.Qualifications)
         {
@@ -72,8 +72,8 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.VacancyLocationType.Should().Be(source.VacancyLocationType);
         actual.VacancyReference.Should().Be(source.VacancyReference.TrimVacancyReference());
         actual.WageAdditionalInformation.Should().Be(source.Wage.WageAdditionalInformation);
-        actual.WageType.Should().Be(source.Wage.WageType);
-        actual.WageUnit.Should().Be(source.Wage.DurationUnit);
+        actual.WageType.Should().Be((int)source.Wage.WageType);
+        actual.WageUnit.Should().Be((int)source.Wage.DurationUnit);
         actual.WageText.Should().Be(source.Wage.ToDisplayText(source.StartDate));
         actual.WorkingWeek.Should().Be(source.Wage.WorkingWeekDescription);
     }
