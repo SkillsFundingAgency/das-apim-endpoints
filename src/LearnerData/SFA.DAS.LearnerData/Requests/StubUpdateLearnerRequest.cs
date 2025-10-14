@@ -76,7 +76,7 @@ public class StubCare
 public class StubCost
 {
     public int TrainingPrice { get; set; }
-    public int EpaoPrice { get; set; }
+    public int? EpaoPrice { get; set; }
     [Required]
     public DateTime? FromDate { get; set; }
 }
