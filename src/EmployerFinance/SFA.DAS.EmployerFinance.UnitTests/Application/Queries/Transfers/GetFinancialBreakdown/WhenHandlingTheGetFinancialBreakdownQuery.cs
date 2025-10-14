@@ -1,24 +1,18 @@
 ﻿using AutoFixture;
-using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown;
 using SFA.DAS.EmployerFinance.Models.Constants;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFinancialBreakdown
+namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFinancialBreakdown;
+
+public class WhenHandlingTheGetFinancialBreakdownQuery
 {
-    public class WhenHandlingTheGetFinancialBreakdownQuery
-    {
         [Test, MoqAutoData]
         public async Task And_AccountId_Specified_Then_Projection_Returned(
            long accountId,
@@ -57,8 +51,7 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFin
             {
                 Breakdown = breakDownList,
                 AccountId = accountId,                
-                AmountPledged = 20,
-                ProjectionStartDate = DateTime.Now
+                AmountPledged = 20
             };
 
             forecastingApiConfiguration
@@ -71,17 +64,11 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFin
 
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
-            Assert.That(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount), Is.EqualTo(results.AmountPledged));
-            Assert.That(getTransferFinancialBreakdownResponse.ProjectionStartDate, Is.EqualTo(results.ProjectionStartDate));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections), Is.EqualTo(results.TransferConnections));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications), Is.EqualTo(results.AcceptedPledgeApplications));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications), Is.EqualTo(results.ApprovedPledgeApplications));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments), Is.EqualTo(results.PledgeOriginatedCommitments));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), Is.EqualTo(results.Commitments));            
-            Assert.That((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
-                getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) 
-                + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)
-                + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections)), Is.EqualTo(results.CurrentYearEstimatedCommittedSpend));
+            results.AmountPledged.Should().Be(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount));
+            results.TransferConnections.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections));
+            results.AcceptedPledgeApplications.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications));
+            results.ApprovedPledgeApplications.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications));
+            results.PledgeOriginatedCommitments.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments));
+            results.Commitments.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments));
         }
-    }
 }

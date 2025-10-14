@@ -58,10 +58,6 @@ public class TransfersController(IMediator mediator, ILogger<TransfersController
                 ApprovedPledgeApplications = response.ApprovedPledgeApplications,                    
                 PledgeOriginatedCommitments =  response.PledgeOriginatedCommitments,
                 Commitments = response.Commitments,
-                ProjectionStartDate = response.ProjectionStartDate,                    
-                CurrentYearEstimatedCommittedSpend = response.CurrentYearEstimatedCommittedSpend,
-                NextYearEstimatedCommittedSpend = response.NextYearEstimatedCommittedSpend,                    
-                YearAfterNextYearEstimatedCommittedSpend  = response.YearAfterNextYearEstimatedCommittedSpend,
                 AmountPledged = response.AmountPledged
             };
 
