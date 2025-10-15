@@ -6,7 +6,6 @@ namespace SFA.DAS.LearnerData.Requests;
 
 public class UpdateLearnerRequest
 {
-    public string ConsumerReference { get; set; }
     public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
 }
 public class UpdateLearnerRequestDeliveryDetails
@@ -23,6 +22,7 @@ public class OnProgrammeRequestDetails
     public DateTime ExpectedEndDate { get; set; }
     public List<CostDetails> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
+    public int? PercentageOfTrainingLeft { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 

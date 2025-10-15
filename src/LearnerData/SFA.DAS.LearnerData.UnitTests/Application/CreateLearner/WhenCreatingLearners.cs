@@ -79,6 +79,7 @@ public class WhenCreatingLearners
             DoB = request.Learner.Dob!.Value,
             StartDate = request.Delivery.OnProgramme.StartDate!.Value,
             PlannedEndDate = request.Delivery.OnProgramme.ExpectedEndDate,
+            PercentageLearningToBeDelivered = request.Delivery.OnProgramme.PercentageOfTrainingLeft,
             EpaoPrice = request.Delivery.OnProgramme.Costs.Single().EpaoPrice,
             TrainingPrice = request.Delivery.OnProgramme.Costs.Single().TrainingPrice,
             AgreementId = request.Delivery.OnProgramme.AgreementId,

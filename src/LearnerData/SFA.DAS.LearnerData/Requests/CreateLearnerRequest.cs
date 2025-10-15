@@ -4,6 +4,7 @@ namespace SFA.DAS.LearnerData.Requests;
 
 public class CreateLearnerRequest : UpdateLearnerRequest
 {
+    public string ConsumerReference { get; set; }
     public LearnerDetails Learner { get; set; }
 
     public new DeliveryDetails Delivery { get; set; }
