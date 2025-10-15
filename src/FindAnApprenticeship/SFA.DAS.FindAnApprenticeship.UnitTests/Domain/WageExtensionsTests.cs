@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Domain;
@@ -43,9 +44,9 @@ public class WageExtensionsTests
         var wage = new Wage
         {
             Duration = duration,
-            DurationUnit = durationUnit,
+            DurationUnit = (DurationUnit)durationUnit,
             FixedWageYearlyAmount = amount,
-            WageType = wageType,
+            WageType = (WageType)wageType,
             WeeklyHours = (decimal?)weeklyHours,
         };
 
