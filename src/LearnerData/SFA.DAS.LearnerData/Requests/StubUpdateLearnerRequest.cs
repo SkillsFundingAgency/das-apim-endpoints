@@ -15,6 +15,7 @@ public class StubUpdateLearnerRequest
     public StubDelivery Delivery { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubLearner
 {
     [Required]
@@ -33,6 +34,7 @@ public class StubLearner
     public bool? HasEhcp { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubDelivery
 {
     [Required]
@@ -41,6 +43,7 @@ public class StubDelivery
     public List<StubEnglishAndMaths> EnglishAndMaths { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubOnProgramme
 {
     [Required]
@@ -70,6 +73,7 @@ public class StubOnProgramme
     public string LearnerAimRef { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubCare
 {
     [Required]
@@ -78,6 +82,7 @@ public class StubCare
     public bool? EmployerConsent { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubCost
 {
     public int? TrainingPrice { get; set; }
@@ -85,6 +90,7 @@ public class StubCost
     public DateTime? FromDate { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubLearningSupport
 {
     [Required]
@@ -93,6 +99,7 @@ public class StubLearningSupport
     public DateTime? EndDate { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubEnglishAndMaths
 {
     [Required]
