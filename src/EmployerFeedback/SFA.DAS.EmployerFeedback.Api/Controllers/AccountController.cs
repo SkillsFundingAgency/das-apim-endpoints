@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
 using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
+using SFA.DAS.EmployerFeedback.Application.Commands.UpsertFeedbackTransaction;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetEmailNudgeAccountsBatch;
 using SFA.DAS.EmployerFeedback.Extensions;
 using System;
@@ -50,6 +51,21 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
             {
                 _logger.LogError(ex, "Error syncing employer accounts.");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{id}/feedbacktransaction")]
+        public async Task<IActionResult> UpsertFeedbackTransaction([FromRoute] long id)
+        {
+            try
+            {
+                await _mediator.Send(new UpsertFeedbackTransactionCommand { AccountId = id });
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error upserting feedback transaction for account {AccountId}", id);
+                return StatusCode((int)HttpStatusCode.InternalServerError);
             }
         }
 

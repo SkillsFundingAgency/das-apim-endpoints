@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -12,7 +7,14 @@ using SFA.DAS.EmployerFeedback.Api.Controllers;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
 using SFA.DAS.EmployerFeedback.Api.UnitTests.Extensions;
 using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
+using SFA.DAS.EmployerFeedback.Application.Commands.UpsertFeedbackTransaction;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetEmailNudgeAccountsBatch;
+
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
@@ -131,6 +133,35 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 
             _loggerMock.VerifyLogErrorContains("Error getting accounts batch.", boom, Times.Once());
             _mediatorMock.Verify(m => m.Send(It.IsAny<GetEmailNudgeAccountsBatchQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpsertFeedbackTransaction_ReturnsNoContent_WhenSuccessful()
+        {
+            var accountId = 12345L;
+            _mediatorMock.Setup(m => m.Send(It.Is<UpsertFeedbackTransactionCommand>(c => c.AccountId == accountId), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.UpsertFeedbackTransaction(accountId);
+
+            Assert.That(result, Is.InstanceOf<NoContentResult>());
+            _mediatorMock.Verify(m => m.Send(It.Is<UpsertFeedbackTransactionCommand>(c => c.AccountId == accountId), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpsertFeedbackTransaction_ReturnsInternalServerError_WhenExceptionThrown()
+        {
+            var accountId = 12345L;
+            var exception = new InvalidOperationException("Test exception");
+            _mediatorMock.Setup(m => m.Send(It.Is<UpsertFeedbackTransactionCommand>(c => c.AccountId == accountId), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+
+            var result = await _controller.UpsertFeedbackTransaction(accountId);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = result as StatusCodeResult;
+            Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+            _mediatorMock.Verify(m => m.Send(It.Is<UpsertFeedbackTransactionCommand>(c => c.AccountId == accountId), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
