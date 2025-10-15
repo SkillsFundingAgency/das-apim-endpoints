@@ -96,7 +96,7 @@ public class UpdateLearnerCommandHandler(
                 ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.ExpectedEndDate,
                 Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.Costs.Select(x =>  new Cost
                 {
-                    TrainingPrice = x.TrainingPrice ?? 0,
+                    TrainingPrice = x.TrainingPrice,
                     EpaoPrice = x.EpaoPrice,
                     FromDate = x.FromDate.Value
                 }).ToList()
@@ -108,7 +108,7 @@ public class UpdateLearnerCommandHandler(
                     CompletionDate = x.CompletionDate,
                     Course = x.Course,
                     PlannedEndDate = x.EndDate,
-                    PriorLearningPercentage = x.PriorLearningAdjustment,
+                    PriorLearningPercentage = x.PriorLearningPercentage,
                     StartDate = x.StartDate,
                     WithdrawalDate = x.WithdrawalDate
                 }).ToList(),

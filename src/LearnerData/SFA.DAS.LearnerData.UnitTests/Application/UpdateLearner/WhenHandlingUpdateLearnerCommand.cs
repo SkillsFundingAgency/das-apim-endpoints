@@ -360,7 +360,7 @@ public class WhenHandlingUpdateLearnerCommand
                                                  c.Course == r.Course &&
                                                  c.Amount == r.Amount &&
                                                  c.WithdrawalDate == r.WithdrawalDate &&
-                                                 c.PriorLearningAdjustment == r.PriorLearningAdjustmentPercentage &&
+                                                 c.PriorLearningPercentage == r.PriorLearningAdjustmentPercentage &&
                                                  c.CompletionDate == r.ActualEndDate));
     }
 }

@@ -35,6 +35,7 @@ public class CreateLearnerRequest : UpdateLearnerRequest
 
     public class OnProgrammeDetails : OnProgrammeRequestDetails
     {
+        public int PercentageOfTrainingLeft { get; set; }
         public DateTime? StartDate { get; set; }
         public bool? IsFlexiJob { get; set; }
         public int? StandardCode { get; set; }

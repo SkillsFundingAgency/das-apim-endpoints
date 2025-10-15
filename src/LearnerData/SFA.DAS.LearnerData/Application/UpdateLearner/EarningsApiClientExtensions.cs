@@ -35,7 +35,7 @@ internal static class EarningsApiClientExtensions
                 Course = x.Course,
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
-                PriorLearningAdjustmentPercentage = x.PriorLearningAdjustment,
+                PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
                 ActualEndDate = x.CompletionDate
             }).ToList());
 
