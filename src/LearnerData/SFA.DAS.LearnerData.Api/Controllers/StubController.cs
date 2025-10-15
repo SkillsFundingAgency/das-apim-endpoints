@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Requests;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.LearnerData.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [ExcludeFromCodeCoverage]
     public class StubController : ControllerBase
     {
         [HttpPut("providers/{ukprn}/learning/{learningKey}")]
