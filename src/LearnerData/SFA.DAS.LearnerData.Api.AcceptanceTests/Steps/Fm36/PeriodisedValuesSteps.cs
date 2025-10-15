@@ -1,8 +1,8 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using FluentAssertions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
+using Reqnroll.Assist;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 
@@ -10,7 +10,7 @@ namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 public class PeriodisedValuesSteps(TestContext testContext, ScenarioContext scenarioContext)
 {
     [Then(@"the Price Episode Periodised Values are as follows:")]
-    public void ThenThePriceEpisodePeriodisedValuesAreAsFollows(Table table)
+    public void ThenThePriceEpisodePeriodisedValuesAreAsFollows(DataTable table)
     {
         var expected = table.CreateSet<Models.PeriodisedValuesModel>().ToList();
 
@@ -56,7 +56,7 @@ public class PeriodisedValuesSteps(TestContext testContext, ScenarioContext scen
     }
 
     [Then(@"the Learning Delivery Periodised Values are as follows:")]
-    public void ThenTheLearningDeliveryPeriodisedValuesAreAsFollows(Table table)
+    public void ThenTheLearningDeliveryPeriodisedValuesAreAsFollows(DataTable table)
     {
         var expected = table.CreateSet<Models.PeriodisedValuesModel>().ToList();
 
