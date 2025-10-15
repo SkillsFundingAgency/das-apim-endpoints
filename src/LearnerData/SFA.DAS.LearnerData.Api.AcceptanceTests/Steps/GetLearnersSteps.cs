@@ -5,7 +5,6 @@ using SFA.DAS.LearnerData.Application.GetLearners;
 using System.Net;
 using System.Net.Http.Headers;
 using Reqnroll;
-using Reqnroll.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

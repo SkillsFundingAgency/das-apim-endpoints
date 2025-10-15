@@ -2,7 +2,6 @@
 using FluentAssertions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using Reqnroll;
-using Reqnroll.Assist;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 

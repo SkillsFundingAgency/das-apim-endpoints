@@ -4,7 +4,6 @@ using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using System.Net;
 using Reqnroll;
-using Reqnroll.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

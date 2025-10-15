@@ -2,7 +2,6 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using System.Net;
 using Reqnroll;
-using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
