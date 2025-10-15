@@ -11,6 +11,7 @@ using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
+using Microsoft.AspNetCore.Http;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 {
@@ -355,6 +356,60 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetQualificationOutputFile_ReturnsOkResult_WithZipPayload()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            var payload = _fixture.Build<GetQualificationOutputFileResponse>()
+                                  .With(p => p.FileName, "25-10-14_qualifications_export.zip")
+                                  .With(p => p.ZipFileContent, new byte[] { 1, 2, 3 })
+                                  .Create();
+
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
+                                        .With(r => r.Success, true)
+                                        .With(r => r.Value, payload)
+                                        .Create();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualificationOutputFile();
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var ok = (OkObjectResult)result;
+
+            Assert.That(ok.Value, Is.AssignableFrom<GetQualificationOutputFileResponse>());
+            var model = (GetQualificationOutputFileResponse)ok.Value!;
+            Assert.That(model.FileName, Is.EqualTo(payload.FileName));
+            Assert.That(model.ZipFileContent, Is.Not.Null);
+            Assert.That(model.ZipFileContent!.Length, Is.GreaterThan(0));
+        }
+
+        [Test]
+        public async Task GetQualificationOutputFile_ReturnsNotFound_WhenQueryFails()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
+                                        .With(r => r.Success, false)
+                                        .With(r => r.ErrorMessage, "No qualifications found for output file.")
+                                        .Create();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualificationOutputFile();
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
         }
 
     }

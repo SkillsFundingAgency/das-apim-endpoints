@@ -5,21 +5,21 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
-    public class GetQualificationExportFileQueryHandler : IRequestHandler<GetQualificationsExportFileQuery, BaseMediatrResponse<GetQualificationExportFileResponse>>
+    public class GetQualificationOutputFileQueryHandler : IRequestHandler<GetQualificationOutputFileQuery, BaseMediatrResponse<GetQualificationOutputFileResponse>>
     {
         private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
 
-        public GetQualificationExportFileQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
+        public GetQualificationOutputFileQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
-        public async Task<BaseMediatrResponse<GetQualificationExportFileResponse>> Handle(GetQualificationsExportFileQuery request, CancellationToken cancellationToken)
+        public async Task<BaseMediatrResponse<GetQualificationOutputFileResponse>> Handle(GetQualificationOutputFileQuery request, CancellationToken cancellationToken)
         {
-            var response = new BaseMediatrResponse<GetQualificationExportFileResponse>();
+            var response = new BaseMediatrResponse<GetQualificationOutputFileResponse>();
             try
             {
-                var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationExportFileResponse>>(
-                    new GetQualificationExportFileApiRequest());
+                var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                    new GetQualificationOutputFileApiRequest());
 
                 if (!result.Success || result?.Value == null ||
                     result.Value.ZipFileContent == null || result.Value.ZipFileContent.Length == 0)
@@ -29,7 +29,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                 }
                 else
                 {
-                    response.Value = new GetQualificationExportFileResponse
+                    response.Value = new GetQualificationOutputFileResponse
                     {
                         FileName = result.Value.FileName,
                         ZipFileContent = result.Value.ZipFileContent,
