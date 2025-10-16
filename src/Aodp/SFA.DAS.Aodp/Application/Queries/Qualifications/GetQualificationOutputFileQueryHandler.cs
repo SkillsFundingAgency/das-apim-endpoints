@@ -21,11 +21,11 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                 var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
                     new GetQualificationOutputFileApiRequest());
 
-                if (!result.Success || result?.Value == null ||
+                if (!result.Success || result.Value == null ||
                     result.Value.ZipFileContent == null || result.Value.ZipFileContent.Length == 0)
                 {
                     response.Success = false;
-                    response.ErrorMessage = result?.ErrorMessage ?? "Export file not available.";
+                    response.ErrorMessage = result.ErrorMessage ?? "Export file not available.";
                 }
                 else
                 {

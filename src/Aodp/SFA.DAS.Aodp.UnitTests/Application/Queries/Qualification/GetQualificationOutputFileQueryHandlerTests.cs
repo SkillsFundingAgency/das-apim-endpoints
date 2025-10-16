@@ -52,11 +52,14 @@ public class GetQualificationOutputFileQueryHandlerTests
             x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
             Times.Once);
 
-        Assert.That(result.Success, Is.True);
-        Assert.That(result.Value, Is.Not.Null);
-        Assert.That(result.Value.FileName, Is.EqualTo(apiResponse.Value.FileName));
-        Assert.That(result.Value.ZipFileContent, Is.Not.Null.And.Not.Empty);
-        Assert.That(result.Value.ContentType, Is.EqualTo("application/zip"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.Value, Is.Not.Null);
+            Assert.That(result.Value.FileName, Is.EqualTo(apiResponse.Value.FileName));
+            Assert.That(result.Value.ZipFileContent, Is.Not.Null.And.Not.Empty);
+            Assert.That(result.Value.ContentType, Is.EqualTo("application/zip"));
+        });
     }
 
 
@@ -86,8 +89,11 @@ public class GetQualificationOutputFileQueryHandlerTests
             x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
             Times.Once);
 
-        Assert.That(result.Success, Is.False);
-        Assert.That(result.ErrorMessage, Is.EqualTo("Something went wrong"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.ErrorMessage, Is.EqualTo("Something went wrong"));
+        });
     }
 
 
@@ -112,8 +118,11 @@ public class GetQualificationOutputFileQueryHandlerTests
             x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
             Times.Once);
 
-        Assert.That(result.Success, Is.False);
-        Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
+        Assert.Multiple(() => 
+        {
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
+        });
     }
 
 

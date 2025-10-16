@@ -381,14 +381,17 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var result = await controller.GetQualificationOutputFile();
 
             // Assert
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
-            var ok = (OkObjectResult)result;
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                var ok = (OkObjectResult)result;
 
-            Assert.That(ok.Value, Is.AssignableFrom<GetQualificationOutputFileResponse>());
-            var model = (GetQualificationOutputFileResponse)ok.Value!;
-            Assert.That(model.FileName, Is.EqualTo(payload.FileName));
-            Assert.That(model.ZipFileContent, Is.Not.Null);
-            Assert.That(model.ZipFileContent!.Length, Is.GreaterThan(0));
+                Assert.That(ok.Value, Is.AssignableFrom<GetQualificationOutputFileResponse>());
+                var model = (GetQualificationOutputFileResponse)ok.Value!;
+                Assert.That(model.FileName, Is.EqualTo(payload.FileName));
+                Assert.That(model.ZipFileContent, Is.Not.Null);
+                Assert.That(model.ZipFileContent, Is.Not.Empty);
+            });
         }
 
         [Test]
