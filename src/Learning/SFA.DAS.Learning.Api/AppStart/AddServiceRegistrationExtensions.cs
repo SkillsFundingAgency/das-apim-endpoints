@@ -30,6 +30,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
         services.AddTransient<IExtendedNotificationService, ExtendedNotificationService>();
+        services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
 
 
         services.AddSingleton(new UrlBuilder(configuration["ResourceEnvironmentName"]));
