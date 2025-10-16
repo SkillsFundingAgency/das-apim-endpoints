@@ -29,6 +29,7 @@ public class UpdateLearnerApiPutResponse
         Prices = 3,
         ExpectedEndDate = 4,
         Withdrawal = 5,
-        ReverseWithdrawal = 6
+        ReverseWithdrawal = 6,
+		PersonalDetails = 7
     }
 }

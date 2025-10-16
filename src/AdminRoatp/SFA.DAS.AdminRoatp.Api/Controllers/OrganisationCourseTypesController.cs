@@ -12,7 +12,7 @@ public class OrganisationCourseTypesController(IMediator mediator, ILogger<Organ
     [HttpPut]
     [ProducesResponseType((int)HttpStatusCode.NoContent)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
-    [Route("{ukprn}/allowed-course-types")]
+    [Route("{ukprn}/course-types")]
 
     public async Task<IActionResult> UpdateCourseTypes([FromRoute] int ukprn, [FromBody] UpdateCourseTypesModel model, CancellationToken cancellationToken)
     {
