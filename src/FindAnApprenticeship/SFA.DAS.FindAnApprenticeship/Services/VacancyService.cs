@@ -14,8 +14,10 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Services
 {
-    public class VacancyService(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
-        IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) : IVacancyService
+    public class VacancyService(
+        IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
+        IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient) 
+        : IVacancyService
     {
         public async Task<IVacancy> GetVacancy(string vacancyReference)
         {
@@ -52,9 +54,9 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 });
 
             var recruitResponse =
-                await recruitApiClient.PostWithResponseCode<GetClosedVacanciesByReferenceResponse>(recruitRequest);
+                await recruitApiClient.PostWithResponseCode<List<GetClosedVacancyResponse>>(recruitRequest);
 
-            result.AddRange(recruitResponse.Body.Vacancies.Select(AnonymizeClosedVacancy));
+            result.AddRange(recruitResponse.Body.Select(AnonymizeClosedVacancy));
 
             return result;
         }

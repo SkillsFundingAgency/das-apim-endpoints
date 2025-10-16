@@ -89,7 +89,7 @@ internal static class EarningsApiClientExtensions
         {
             var data = new WithdrawRequest()
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate.GetValueOrDefault()
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate.GetValueOrDefault()
             };
 
             await earningsApiClient.Patch(new WithdrawApiPatchRequest(command.LearningKey, data));
