@@ -11,7 +11,7 @@ public class UpdateOrganisationCourseTypesCommandTests
         UpdateOrganisationCourseTypesCommand command,
         UpdateCourseTypesModel model)
     {
-        var expectedUrl = $"/organisations/{command.ukprn}/allowed-course-types";
+        var expectedUrl = $"/organisations/{command.ukprn}/course-types";
 
         UpdateCourseTypesRequest apiRequest = new(command.ukprn, model);
 

@@ -8,16 +8,17 @@ using System.Threading.Tasks;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 
-namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId
+namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByAccountId;
+
+public class GetDashboardByAccountIdQueryHandler(
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) 
+    : IRequestHandler<GetDashboardByAccountIdQuery, GetDashboardByAccountIdQueryResult>
 {
-    public class GetDashboardByAccountIdQueryHandler(
-        IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) 
-        : IRequestHandler<GetDashboardByAccountIdQuery, GetDashboardByAccountIdQueryResult>
+    public async Task<GetDashboardByAccountIdQueryResult> Handle(GetDashboardByAccountIdQuery request, CancellationToken cancellationToken)
     {
-        public async Task<GetDashboardByAccountIdQueryResult> Handle(GetDashboardByAccountIdQuery request, CancellationToken cancellationToken)
-        {
-            return await recruitApiClient.Get<GetDashboardApiResponse>(
-                new GetDashboardByAccountIdApiRequest(request.AccountId));
-        }
+        var dashboardCount = await recruitApiClient.Get<GetEmployerDashboardApiResponse>(
+            new GetDashboardByAccountIdApiRequest(request.AccountId));
+
+        return GetDashboardByAccountIdQueryResult.FromResponses(dashboardCount);
     }
 }
