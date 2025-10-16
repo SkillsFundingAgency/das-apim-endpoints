@@ -27,6 +27,9 @@ public class UpdateLearnerApiPutResponse
         MathsAndEnglish = 1,
         LearningSupport = 2,
         Prices = 3,
-        ExpectedEndDate = 4
+        ExpectedEndDate = 4,
+        Withdrawal = 5,
+        ReverseWithdrawal = 6,
+		PersonalDetails = 7
     }
 }
