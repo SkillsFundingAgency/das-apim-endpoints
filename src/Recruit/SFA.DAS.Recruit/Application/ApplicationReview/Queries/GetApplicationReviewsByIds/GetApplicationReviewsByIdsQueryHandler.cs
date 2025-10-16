@@ -1,25 +1,48 @@
 ﻿using MediatR;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByIds;
 public class GetApplicationReviewsByIdsQueryHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) :
-    IRequestHandler<GetApplicationReviewsByIdsQuery, GetApplicationReviewsByIdsQueryResult>
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, ICandidateApiClient<CandidateApiConfiguration> candidateApiClient)
+    : IRequestHandler<GetApplicationReviewsByIdsQuery, GetApplicationReviewsByIdsQueryResult>
 {
     public async Task<GetApplicationReviewsByIdsQueryResult> Handle(GetApplicationReviewsByIdsQuery request, CancellationToken cancellationToken)
     {
         var recruitApiResponse = await recruitApiClient.PostWithResponseCode<List<Domain.ApplicationReview>>(
             new GetApplicationReviewsByIdsApiRequest(request.ApplicationIds));
 
-        recruitApiResponse.EnsureSuccessStatusCode();
+        // If the API itself failed or returned nothing
+        if (recruitApiResponse?.Body == null ||
+            recruitApiResponse.Body.Count == 0)
+        {
+            return new GetApplicationReviewsByIdsQueryResult
+            {
+                ApplicationReviews = []
+            };
+        }
 
-        if (recruitApiResponse == null) return new GetApplicationReviewsByIdsQueryResult();
+        foreach (var applicationReview in recruitApiResponse.Body)
+        {
+            if (applicationReview?.ApplicationId == null)
+                continue;
+
+            var candidateApiResponse = await candidateApiClient.Get<Domain.Application>(
+                new GetApplicationByIdApiRequest(
+                    applicationReview.ApplicationId.Value,
+                    applicationReview.CandidateId));
+
+            var target = recruitApiResponse.Body
+                .FirstOrDefault(x => x.ApplicationId == applicationReview.ApplicationId);
+
+            if (target != null)
+                target.Application = candidateApiResponse;
+        }
 
         return new GetApplicationReviewsByIdsQueryResult
         {
