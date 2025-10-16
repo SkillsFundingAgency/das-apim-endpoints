@@ -28,6 +28,8 @@ public class LearnerDataApiResponse
     public string ConsumerReference { get; set; } = string.Empty;
     public Guid CorrelationId { get; set; }
     public DateTime ReceivedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public DateTime? UpdatedDate { get; set; }
     public int StandardCode { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
