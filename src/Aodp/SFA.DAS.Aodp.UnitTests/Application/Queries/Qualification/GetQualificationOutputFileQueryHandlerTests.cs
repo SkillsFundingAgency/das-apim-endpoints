@@ -13,13 +13,12 @@ public class GetQualificationOutputFileQueryHandlerTests
 {
     private IFixture _fixture;
     private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-    private GetChangedQualificationsQueryHandler _handler;
+
     [SetUp]
     public void SetUp()
     {
         _fixture = new Fixture().Customize(new AutoMoqCustomization());
         _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
-        _handler = _fixture.Create<GetChangedQualificationsQueryHandler>();
     }
 
     [Test]
@@ -102,7 +101,7 @@ public class GetQualificationOutputFileQueryHandlerTests
     {
         // Arrange
         var query = _fixture.Create<GetQualificationOutputFileQuery>();
-        var exceptionMessage = "Something exploded in the API";
+        var exceptionMessage = "Something went wrong";
 
         _apiClientMock
             .Setup(x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()))
