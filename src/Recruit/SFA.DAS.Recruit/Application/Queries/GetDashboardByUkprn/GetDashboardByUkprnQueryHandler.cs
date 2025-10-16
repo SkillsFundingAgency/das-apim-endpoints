@@ -1,6 +1,8 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -14,8 +16,10 @@ namespace SFA.DAS.Recruit.Application.Queries.GetDashboardByUkprn
     {
         public async Task<GetDashboardByUkprnQueryResult> Handle(GetDashboardByUkprnQuery request, CancellationToken cancellationToken)
         {
-            return await recruitApiClient.Get<GetDashboardApiResponse>(
+            var dashboardCount = await recruitApiClient.Get<GetProviderDashboardApiResponse>(
                 new GetDashboardByUkprnApiRequest(request.Ukprn));
+
+            return GetDashboardByUkprnQueryResult.FromResponses(dashboardCount);
         }
     }
 }
