@@ -29,6 +29,8 @@ variables:
 - group: RELEASE das-apim-endpoints-FindAnApprenticeship
 - name: ProductShortName
   value: faa
+- name: RunTests
+  value: true
 
 resources:
   repositories:

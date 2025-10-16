@@ -1,0 +1,9 @@
+parameters:
+  ServiceConnection:
+  
+jobs:
+- job: tests
+  pool:
+    name: DAS - APIM Continuous Deployment Agents
+  steps:
+    - bash: echo "running tests"

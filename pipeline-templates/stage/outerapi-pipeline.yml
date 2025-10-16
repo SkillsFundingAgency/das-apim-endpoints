@@ -67,6 +67,19 @@ stages:
       CheckClientCert: ${{ parameters.CheckClientCert }}
       MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
+- ${{ if eq(variables.RunTests, true) }}:
+  - stage: Run_Tests_AT
+    dependsOn: Deploy_AT
+    displayName: Run Integration tests
+    variables:
+    - group: DevTest Management Resources
+    - group: AT DevTest Shared Resources
+    - group: AT das-apim-endpoints
+    jobs:
+    - template: ../../pipeline-templates/job/integration_tests.yml
+      parameters:
+        ServiceConnection: SFA-DAS-DevTest-ARM
+
 - stage: Deploy_TEST
   dependsOn: Build
   displayName: Deploy to TEST
