@@ -13,10 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Learning.Api.UnitTe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{FD29B479-371F-106A-99CA-4AB92D8E5B88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Employer.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj", "{A5A83116-5DAD-BC79-2B61-339EBE131F9A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests.csproj", "{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,14 +39,6 @@ Global
 		{FD29B479-371F-106A-99CA-4AB92D8E5B88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD29B479-371F-106A-99CA-4AB92D8E5B88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD29B479-371F-106A-99CA-4AB92D8E5B88}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

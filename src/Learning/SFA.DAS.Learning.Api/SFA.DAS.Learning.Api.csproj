@@ -12,7 +12,6 @@
 	</ItemGroup>
 	
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
     <ProjectReference Include="..\SFA.DAS.Learning\SFA.DAS.Learning.csproj" />
   </ItemGroup>
 
