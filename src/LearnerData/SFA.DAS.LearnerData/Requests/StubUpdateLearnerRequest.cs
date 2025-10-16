@@ -108,9 +108,7 @@ public class StubEnglishAndMaths
     public DateTime? EndDate { get; set; }
     [Required]
     public int? CourseCode { get; set; }
-    [Required]
     public int? PriorLearningAdjustment { get; set; }
-    [Required]
     public int? OtherFundingAdjustment { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
