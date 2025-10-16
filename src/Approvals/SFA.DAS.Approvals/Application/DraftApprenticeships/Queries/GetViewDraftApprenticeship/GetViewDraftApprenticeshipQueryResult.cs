@@ -17,6 +17,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraf
         public string TrainingCourseOption { get; set; }
         public bool TrainingCourseVersionConfirmed { get; set; }
         public string StandardUId { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public int? Cost { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
