@@ -3,12 +3,6 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
-public class GetLearningsResponse
-{
-    public long Ukprn { get; set; }
-    public List<Learning> Learnings { get; set; }
-}
-
 public class Learning
 {
     public Guid Key { get; set; }

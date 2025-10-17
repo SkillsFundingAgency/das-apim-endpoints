@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings
 {
@@ -7,14 +8,16 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings
         public long Ukprn { get; }
         public int CollectionYear { get; set; }
         public byte CollectionPeriod { get; set; }
+        public Guid LearningKey { get; set; }
 
-        public string GetUrl => $"{Ukprn}/fm36/{CollectionYear}/{CollectionPeriod}";
+        public string GetUrl => $"{Ukprn}/fm36/{CollectionYear}/{CollectionPeriod}/{LearningKey}";
 
-        public GetFm36DataRequest(long ukprn, int collectionYear, byte collectionPeriod)
+        public GetFm36DataRequest(long ukprn, int collectionYear, byte collectionPeriod, Guid learningKey)
         {
             Ukprn = ukprn;
             CollectionYear = collectionYear;
             CollectionPeriod = collectionPeriod;
+            LearningKey = learningKey;
         }
     }
 }
