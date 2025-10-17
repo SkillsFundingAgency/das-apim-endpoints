@@ -3,6 +3,8 @@ parameters:
   
 jobs:
 - job: tests
+  workspace:
+    clean:
   pool:
     name: DAS - APIM Continuous Deployment Agents
   steps:
