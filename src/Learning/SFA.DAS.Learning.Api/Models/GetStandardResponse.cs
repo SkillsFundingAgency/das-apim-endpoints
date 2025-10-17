@@ -1,9 +1,11 @@
 ﻿using SFA.DAS.Learning.InnerApi;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.Learning.Api.Models;
 
 #pragma warning disable CS8618
+[ExcludeFromCodeCoverage]
 public class GetStandardResponse
 {
     public string StandardUId { get; set; }
