@@ -34,7 +34,7 @@
     <PackageVersion Include="Faker.Net" Version="2.0.163" />
     <PackageVersion Include="FluentValidation" Version="11.9.0" />
     <PackageVersion Include="Google.Protobuf" Version="3.15.0" />
-    <PackageVersion Include="MediatR" Version="12.4.1" />
+    <PackageVersion Include="MediatR" Version="12.5.0" />
     <PackageVersion Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="5.1.0" />
     <PackageVersion Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="12.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.Abstractions" Version="2.2.0" />
@@ -77,7 +77,7 @@
     <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageVersion Include="SpecFlow.NUnit" Version="3.9.74" />
     <PackageVersion Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.8.1" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     <PackageVersion Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
     <PackageVersion Include="System.Drawing.Common" Version="8.0.2" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
@@ -87,7 +87,7 @@
     <PackageVersion Include="WireMock.Net" Version="1.8.9" />
     <PackageVersion Include="WireMock.Net.FluentAssertions" Version="1.8.9" />
     <PackageVersion Include="WireMock.Net.StandAlone" Version="1.8.9" />
-    <PackageVersion Include="FluentAssertions" Version="7.1.0" />
+    <PackageVersion Include="FluentAssertions" Version="7.2.0" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.2.1" />
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.10" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.8" />
