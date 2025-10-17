@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.LearnerData.Requests;
 
@@ -40,6 +41,11 @@ public class CreateLearnerRequest : UpdateLearnerRequest
         public bool? IsFlexiJob { get; set; }
         public int? StandardCode { get; set; }
         public string? AgreementId { get; set; }
+    }
+
+    public class MathsAndEnglishDetails : MathsAndEnglish
+    {
+        public string CourseCode { get; set; } = "";
     }
 }
 

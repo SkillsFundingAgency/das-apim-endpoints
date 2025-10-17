@@ -67,7 +67,7 @@ public class StubOnProgramme
     public bool? IsFlexiJob { get; set; }
     public DateTime? PauseDate { get; set; }
     [Required]
-    public int AimSequenceNumber { get; set; }
+    public int? AimSequenceNumber { get; set; }
     [Required]
     public string LearnerAimRef { get; set; }
 }
@@ -114,7 +114,7 @@ public class StubEnglishAndMaths
 
     public List<StubLearningSupport> LearningSupport { get; set; }
     [Required]
-    public int AimSequenceNumber { get; set; }
+    public int? AimSequenceNumber { get; set; }
 }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
