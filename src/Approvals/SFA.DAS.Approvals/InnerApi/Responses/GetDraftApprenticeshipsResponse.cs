@@ -36,5 +36,7 @@ public class DraftApprenticeship
     public bool? IsOnFlexiPaymentPilot { get; set; }
     public bool? EmailAddressConfirmed { get; set; }
     public int? DurationReducedByHours { get; set; }
+    public bool HasLearnerDataChanges { get; set; }
+    public DateTime? LastLearnerDataSync { get; set; }
     public long? LearnerDataId { get; set; }
 }
