@@ -65,7 +65,6 @@ public class StubOnProgramme
     public List<StubLearningSupport> LearningSupport { get; set; }
     [Required]
     public bool? IsFlexiJob { get; set; }
-    [Required]
     public DateTime? PauseDate { get; set; }
     [Required]
     public int AimSequenceNumber { get; set; }
