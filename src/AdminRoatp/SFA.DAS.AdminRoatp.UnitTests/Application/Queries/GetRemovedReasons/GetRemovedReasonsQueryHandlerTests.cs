@@ -15,7 +15,7 @@ public class GetRemovedReasonsQueryHandlerTests
 {
     [Test, MoqAutoData]
 
-    public async Task Handle_RemovedReasonsFound_ReturnRemovedReasons(
+    public async Task Handle_RemovedReasonsFound_ReturnsRemovedReasons(
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClient,
         GetRemovedReasonsQueryHandler sut,
         GetRemovedReasonsQuery query,
@@ -34,7 +34,7 @@ public class GetRemovedReasonsQueryHandlerTests
 
     [Test, MoqAutoData]
 
-    public async Task Handle_RemovedReasonsNotFound_ReturnEmpty(
+    public async Task Handle_RemovedReasonsNotFound_ReturnsEmpty(
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClient,
         GetRemovedReasonsQueryHandler sut,
         GetRemovedReasonsQuery query)

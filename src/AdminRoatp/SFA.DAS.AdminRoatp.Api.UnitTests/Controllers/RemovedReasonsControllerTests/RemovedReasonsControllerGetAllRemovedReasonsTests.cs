@@ -16,7 +16,6 @@ public class RemovedReasonsControllerGetAllRemovedReasonsTests
     public async Task GetAllRemovedReasons_ReturnsSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] RemovedReasonsController sut,
-        GetRemovedReasonsQuery query,
         GetRemovedReasonsResponse expectedResponse)
     {
         // Arrange
