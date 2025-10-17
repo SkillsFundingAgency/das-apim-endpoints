@@ -14,8 +14,7 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
         try
         {
             logger.LogInformation("Building PUT request to add new learner data");
-            var request = new PutLearnerDataRequest(command.LearnerData.UKPRN, command.LearnerData.ULN,
-                command.LearnerData.AcademicYear, command.LearnerData.StandardCode, command.LearnerData);
+            var request = new PutLearnerDataRequest(command.LearnerData.UKPRN, command.LearnerData.ULN, command.LearnerData);
 
             logger.LogInformation("Calling inner api to add new learner data");
             var response = await client.PutWithResponseCode<NullResponse>(request);

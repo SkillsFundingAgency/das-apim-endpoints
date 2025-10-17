@@ -21,7 +21,7 @@ public class AddLearnerDataCommandHandlerTests
     {
 
         var expectedUrl =
-            $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}/academicyears/{command.LearnerData.AcademicYear}/standardcodes/{command.LearnerData.StandardCode}";
+            $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
         client.Setup(x =>
                 x.PutWithResponseCode<NullResponse>(
                     It.Is<PutLearnerDataRequest>(p => p.Data == command.LearnerData && p.PutUrl == expectedUrl)))
