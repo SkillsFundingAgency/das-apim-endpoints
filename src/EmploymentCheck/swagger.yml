@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: Employment verification checks API
+  description: 'The API demonstrates the interface for fetching an existing check result'
+paths:
+  /info:
+    get:
+      description: information regarding this API. The version will be returned
+      responses:
+        '200':
+          $ref: '#/components/responses/infoResponse'  
+  /health:
+    get:
+      description: The system is fully ready to accept requests and all the dependencies are healthy
+      responses:
+        '200':
+          description: All health checks have passed
+          $ref: '#/components/responses/healthCheckResponse'
+        '503':
+          description: A health check has failed
+          $ref: '#/components/responses/healthCheckResponse'
+
+  /employment-check/employers/{employerId}/providers/{ukprn}/learner/{uln}:
+    get:
+      summary: Returns the latest check for this data
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: uln
+          in: path
+          required: true
+          example: 20
+          description: The uln of the user being checked
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/resultResponse'  
+        '404':
+          $ref: '#/components/responses/notFoundResponse'
+
+components:  
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Ocp-Apim-Subscription-Key
+      description: "Enter your API key in the `Ocp-Apim-Subscription-Key` header."
+  
+  responses:
+    notFoundResponse:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            type: string
+    
+    resultResponse:
+      description: A single response for a request for EVS check
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/evsCheck'
+
+    healthCheckResponse:
+      description: Results of a health check
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/healthcheckResults'
+
+    infoResponse:
+      description: Information response
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Leaner data APIM for the apprenticeship service - Version 3.0.2
+
+  schemas:
+    evsCheck:
+      type: object
+      properties:
+        employerId: 
+          type: integer
+        ukprn: 
+          type: string
+        uln: 
+          type: string
+        requestDate:
+          type: string
+          format: date-time
+        dateOfCheck:
+          type: string
+          format: date-time
+        result:
+          type: object
+          properties:
+            employed:
+              type: boolean
+            completionStatus:
+              type: integer
+              enum:
+              - 2
+              - 3
+            errorCode:
+              type: string
+              enum:
+              - HmrcFailure
+              - NinoAndPAYENotFound
+              - NinoFailure
+              - NinoInvalid
+              - NinoNotFound
+              - PAYENotFound
+          
+    healthcheckResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/healthcheck' 
+  
+    healthcheck:
+      type: object
+      properties:
+        description: 
+          type: string
+        result: 
+          type: string 
+
+security:
+  - ApiKeyAuth: []  # Apply API Key security globally
