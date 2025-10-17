@@ -1,12 +1,13 @@
 parameters:
   ServiceConnection:
+  Environment: AT
   
 jobs:
 - job: tests
   workspace:
     clean:
   pool:
-    name: DAS - APIM Continuous Deployment Agents
+    vmImage: ubuntu-latest
   steps:
     - checkout: self
       fetchDepth: 1
@@ -23,4 +24,10 @@ jobs:
         targetType: inline
         script: |
           ls
-    # - bash: ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=dev --out ./HttpScripts/generated.sh --exec
+    # - task: Bash@3
+    #   inputs:
+    #     targetType: inline
+    #     script: |
+    #       sed -i 's/<subscriptionKey>/$(subscriptionKey)/g' http-client.env.json
+    #       ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=${{ parameters.Environment }} --out ./HttpScripts/generated.sh --exec
+    # - bash: 
