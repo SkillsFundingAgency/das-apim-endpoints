@@ -28,8 +28,7 @@ public class StubLearner
     public string Lastname { get; set; }
     [Required]
     public DateTime? Dob { get; set; }
-    [Required]
-    public string Email { get; set; }
+    public string? Email { get; set; }
     [Required]
     public bool? HasEhcp { get; set; }
 }
