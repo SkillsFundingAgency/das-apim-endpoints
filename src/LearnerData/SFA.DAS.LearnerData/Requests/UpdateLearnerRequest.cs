@@ -43,13 +43,17 @@ public class CostDetails
 
 public class MathsAndEnglish
 {
-    public string Course { get; set; }
+    //These fields exist currently only for the PUT, until we do the work to look up the course from the course code and align the Update
+    //with the CreateLearner requests
+    public string Course { get; set; } = "";
+    public decimal Amount { get; set; } = 0;
+
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
-    public decimal Amount { get; set; }
+    
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 

@@ -196,7 +196,7 @@ public class WhenValidatingLearnerData
         return new CreateLearnerRequest
         {
             ConsumerReference = "AAAAA",
-            Learner = new StubLearner
+            Learner = new CreateLearnerRequest.LearnerDetails
             {
                 Uln = "1234567890",
                 Firstname = "First",
@@ -204,18 +204,18 @@ public class WhenValidatingLearnerData
                 Email = "Email@abcd.com",
                 Dob = new DateTime(2000, 02, 01)
             },
-            Delivery = new StubDelivery
+            Delivery = new CreateLearnerRequest.DeliveryDetails
             {
-                OnProgramme = new StubOnProgramme
+                OnProgramme = new CreateLearnerRequest.OnProgrammeDetails
                 {
                     AgreementId = "ABCD",
                     IsFlexiJob = false,
                     StartDate = new DateTime(2025, 02, 01),
                     ExpectedEndDate = new DateTime(2027, 02, 01),
                     StandardCode = 123,
-                    Costs = new List<StubCost>
+                    Costs = new List<CostDetails>
                     {
-                        new StubCost
+                        new CostDetails
                         {
                             EpaoPrice = 400,
                             TrainingPrice = 3200
