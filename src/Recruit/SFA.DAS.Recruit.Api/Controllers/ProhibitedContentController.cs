@@ -26,4 +26,18 @@ public class ProhibitedContentController(ILogger<ProhibitedContentController> lo
         logger.LogError("Failed to retrieve profanities list, response had status '{Status}' with content '{ErrorContent}'", response.StatusCode, response.ErrorContent);
         return Ok(new List<string>());
     }
+    
+    [HttpGet]
+    [Route("bannedPhrases")]
+    public async Task<IActionResult> GetBannedPhrases([FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitInnerClient)
+    {
+        var response = await recruitInnerClient.GetWithResponseCode<List<string>>(new GetBannedPhrasesRequest());
+        if (response.StatusCode.IsSuccessStatusCode())
+        {
+            return Ok(response.Body);
+        }
+
+        logger.LogError("Failed to retrieve banned phrases, response had status '{Status}' with content '{ErrorContent}'", response.StatusCode, response.ErrorContent);
+        return Ok(new List<string>());
+    }
 }
