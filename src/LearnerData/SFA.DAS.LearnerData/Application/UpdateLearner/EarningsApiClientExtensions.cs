@@ -83,6 +83,28 @@ internal static class EarningsApiClientExtensions
         }, "prices", logger, apprenticeshipKey);
     }
 
+    internal static async Task WithdrawLearner(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            var data = new WithdrawRequest()
+            {
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate.GetValueOrDefault()
+            };
+
+            await earningsApiClient.Patch(new WithdrawApiPatchRequest(command.LearningKey, data));
+        }, "withdraw", logger, command.LearningKey);
+    }
+
+    internal static async Task ReverseWithdrawal(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            await earningsApiClient.Patch(new ReverseWithdrawalApiPatchRequest(command.LearningKey));
+        }, "reverse-withdrawal", logger, command.LearningKey);
+    }
+
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)
     {
         logger.LogInformation("Calling Earnings Inner Api to update {updateTarget} for {learningKey}", updateTarget, learningKey);
