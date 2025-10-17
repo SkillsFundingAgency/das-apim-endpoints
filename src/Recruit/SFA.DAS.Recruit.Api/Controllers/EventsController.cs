@@ -52,7 +52,7 @@ public class EventsController(
     [HttpPost, Route("application-submitted")]
     public async Task<IActionResult> OnApplicationSubmitted([FromBody] PostApplicationSubmittedEventModel body)
     {
-        logger.LogInformation("ApplicationSubmitted for VacancyId: {VacancyId}, ApplicationId: {ApplicationId}", body.VacancyId, body.ApplicationId);
+        logger.LogInformation("OnApplicationSubmitted for VacancyId: {VacancyId}, ApplicationId: {ApplicationId}", body.VacancyId, body.ApplicationId);
         await mediator.Publish(new ApplicationSubmittedEvent(body.ApplicationId, body.VacancyId));
         return NoContent();
     }
@@ -65,10 +65,10 @@ public class EventsController(
         return NoContent();
     }
     
-    [HttpPost, Route("vacancy-rejected")]
-    public async Task<IActionResult> OnVacancyRejected([FromBody] PostVacancyRejectedEventModel payload, CancellationToken cancellationToken)
+    [HttpPost, Route("employer-rejected-vacancy")]
+    public async Task<IActionResult> OnEmployerRejectedVacancy([FromBody] PostVacancyRejectedEventModel payload, CancellationToken cancellationToken)
     {
-        logger.LogInformation("OnSharedApplicationReviewed triggered for vacancy {VacancyId})", payload.VacancyId);
+        logger.LogInformation("{EventName} triggered for vacancy {VacancyId})", nameof(OnEmployerRejectedVacancy), payload.VacancyId);
         await mediator.Publish(new VacancyRejectedEvent(payload.VacancyId), cancellationToken);
         return NoContent();
     }
