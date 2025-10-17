@@ -11,6 +11,7 @@ parameters:
   ConfigurationSecrets: {}
   useProductAppInsights: ''
   AzureArtifactsFeed: ''
+  RunTests: false
 
 stages:
 - stage: Build
@@ -67,7 +68,7 @@ stages:
       CheckClientCert: ${{ parameters.CheckClientCert }}
       MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
 
-- ${{ if eq(variables.RunTests, true) }}:
+- ${{ if eq(parameters.RunTests, true) }}:
   - stage: Run_Tests_AT
     dependsOn: Deploy_AT
     displayName: Run Integration tests
