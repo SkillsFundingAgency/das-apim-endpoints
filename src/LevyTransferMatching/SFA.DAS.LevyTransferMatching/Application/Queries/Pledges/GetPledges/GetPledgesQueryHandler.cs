@@ -20,7 +20,6 @@ namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetPledges
         private readonly IFinanceApiClient<FinanceApiConfiguration> _financeApiClient;
 
         public GetPledgesQueryHandler(ILevyTransferMatchingService levyTransferMatchingService,
-            IForecastingApiClient<ForecastingApiConfiguration> forecastingApiClient,
             IFinanceApiClient<FinanceApiConfiguration> financeApiClient)
         {
             _levyTransferMatchingService = levyTransferMatchingService;
