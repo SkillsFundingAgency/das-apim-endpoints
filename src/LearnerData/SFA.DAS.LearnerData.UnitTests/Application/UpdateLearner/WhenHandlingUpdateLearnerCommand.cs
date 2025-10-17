@@ -10,6 +10,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using FluentAssertions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -283,12 +285,49 @@ public class WhenHandlingUpdateLearnerCommand
                 ))), Times.Once);
     }
 
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_PersonalDetails_Changes()
+    {
+        var fixture = new Fixture();
+
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var expectedEpisodeKey = Guid.NewGuid();
+        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
+        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails },
+            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
+            LearningEpisodeKey = expectedEpisodeKey,
+            Prices = expectedCosts
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<WithdrawApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.Is<UpdateLearningApiPutRequest>(
+                r => r.Data.Learner.FirstName == command.UpdateLearnerRequest.Learner.FirstName
+                && r.Data.Learner.LastName == command.UpdateLearnerRequest.Learner.LastName
+                && r.Data.Learner.EmailAddress == command.UpdateLearnerRequest.Learner.Email
+                )), Times.Once);
+
+        _earningsApiClient.Invocations.Count.Should().Be(0);
+    }
+
     [Test]
     public async Task Then_Learner_Is_Updated_Successfully_With_Withdrawal()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate;
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -315,7 +354,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate;
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
