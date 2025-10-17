@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
+using SFA.DAS.EmployerFeedback.Models;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -41,6 +43,29 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error getting feedback transactions batch.");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{id}/send")]
+        public async Task<IActionResult> TriggerFeedbackEmails([FromRoute] long id, [FromBody] TriggerFeedbackEmailsRequest request)
+        {
+            try
+            {
+                _logger.LogInformation("Received request to trigger feedback emails for transaction {FeedbackTransactionId}", id);
+
+                await _mediator.Send(new TriggerFeedbackEmailsCommand(id, request));
+
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                _logger.LogWarning(ex, "Bad request for triggering feedback emails {FeedbackTransactionId}: {Message}", id, ex.Message);
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error triggering feedback emails {FeedbackTransactionId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
