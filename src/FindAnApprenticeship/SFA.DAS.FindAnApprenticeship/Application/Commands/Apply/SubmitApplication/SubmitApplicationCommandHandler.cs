@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
@@ -15,7 +16,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
@@ -27,7 +30,8 @@ public class SubmitApplicationCommandHandler(
     IVacancyService vacancyService,
     INotificationService notificationService,
     IMetrics metrics,
-    EmailEnvironmentHelper helper)
+    EmailEnvironmentHelper helper,
+    ILogger<SubmitApplicationCommandHandler> logger)
     : IRequestHandler<SubmitApplicationCommand, bool>
 {
     public async Task<bool> Handle(SubmitApplicationCommand request, CancellationToken cancellationToken)
@@ -81,8 +85,26 @@ public class SubmitApplicationCommandHandler(
         await candidateApiClient.PatchWithResponseCode(patchRequest);
 
         // increase the count of vacancy submitted counter metrics.
-        if(vacancy.VacancySource == VacancyDataSource.Raa) metrics.IncreaseVacancySubmitted(application.VacancyReference);
+        if (vacancy.VacancySource == VacancyDataSource.Raa)
+        {
+            metrics.IncreaseVacancySubmitted(application.VacancyReference);
+        }
 
+        var recruitNotificationResponse = await recruitApiV2Client.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
+            new PostCreateApplicationReviewNotificationsRequest(request.ApplicationId));
+
+        if (!recruitNotificationResponse.StatusCode.IsSuccessStatusCode())
+        {
+            logger.LogError("Failed to create application review notifications for application id '{Id}' with error '{ErrorContent}'", request.ApplicationId, response.ErrorContent);
+            return true;
+        }
+
+        var sendEmailTasks = recruitNotificationResponse.Body
+            .Select(x => notificationService.Send(new SendEmailCommand(x.TemplateId.ToString(), x.RecipientAddress, x.Tokens)))
+            .ToList();
+        await Task.WhenAll(sendEmailTasks);
+        
+        
         return true;
     }
 }
