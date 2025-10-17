@@ -1,28 +1,21 @@
-using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
+using Polly;
+using Polly.Retry;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using Polly;
-using Polly.Retry;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
-using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 
 public class ProcessVacancyClosedEarlyCommandHandler(
     IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, 
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
-    EmailEnvironmentHelper helper,
-    INotificationService notificationService,
     ILogger<ProcessVacancyClosedEarlyCommandHandler> logger) : IRequestHandler<ProcessVacancyClosedEarlyCommand, Unit>
 {
     public async Task<Unit> Handle(ProcessVacancyClosedEarlyCommand request, CancellationToken cancellationToken)
@@ -38,19 +31,12 @@ public class ProcessVacancyClosedEarlyCommandHandler(
             throw new Exception($"Vacancy not found: {request.VacancyReference} while processing closed vacancy handler");
         }
         
-        var allCandidateApplications = await candidateApiClient.Get<GetCandidateApplicationApiResponse>(new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(), null, false));
+        var allCandidateApplications = await candidateApiClient.Get<GetCandidateApplicationApiResponse>(
+            new GetCandidateApplicationsByVacancyRequest(request.VacancyReference.ToString(),
+                null,
+                false));
 
-        var notificationTasks = new List<Task>();
         var updateCandidate = new List<Task>();
-
-
-        var employmentWorkLocation = vacancy.Body.EmployerLocationOption switch
-        {
-            AvailableWhere.AcrossEngland => EmailTemplateBuilderConstants.RecruitingNationally,
-            AvailableWhere.MultipleLocations => EmailTemplateAddressExtension.GetEmploymentLocationCityNames(vacancy.Body.OtherAddresses),
-            AvailableWhere.OneLocation => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Body.Address),
-            _ => EmailTemplateAddressExtension.GetOneLocationCityName(vacancy.Body.Address)
-        };
 
         foreach (var candidate in allCandidateApplications.Candidates)
         {
@@ -58,20 +44,8 @@ public class ProcessVacancyClosedEarlyCommandHandler(
             jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Expired);
             var patchRequest = new PatchApplicationApiRequest(candidate.ApplicationId, candidate.Candidate.Id, jsonPatchDocument);
             updateCandidate.Add(candidateApiClient.PatchWithResponseCode(patchRequest));
-            var email = new SendVacancyClosedEarlyTemplate(
-                helper.VacancyClosedEarlyTemplateId,
-                candidate.Candidate.Email,
-                candidate.Candidate.FirstName,
-                vacancy.Body.Title,
-                helper.VacancyUrl,
-                vacancy.Body.EmployerName,
-                employmentWorkLocation, 
-                candidate.ApplicationCreatedDate,
-                helper.SettingsUrl);
-            notificationTasks.Add(notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens)));
         }
 
-        await Task.WhenAll(notificationTasks);
         await Task.WhenAll(updateCandidate);
         
         return new Unit();
