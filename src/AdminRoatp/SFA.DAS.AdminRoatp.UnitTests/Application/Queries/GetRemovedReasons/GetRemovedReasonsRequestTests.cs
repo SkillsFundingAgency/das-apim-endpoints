@@ -10,12 +10,12 @@ public class GetRemovedReasonsRequestTests
     {
         // Arrange
         GetRemovedReasonsRequest sut = new();
-        var exapectedUrl = "removed-reasons";
+        var expectedUrl = "removed-reasons";
 
         // Act
         var url = sut.GetUrl;
 
         // Assert
-        url.Should().Be(exapectedUrl);
+        url.Should().Be(expectedUrl);
     }
 }
