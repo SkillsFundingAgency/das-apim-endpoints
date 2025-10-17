@@ -77,7 +77,7 @@ stages:
     - group: AT DevTest Shared Resources
     - group: AT das-apim-endpoints
     jobs:
-    - template: ../../pipeline-templates/job/integration_tests.yml
+    - template: ../../pipeline-templates/job/integration-tests.yml
       parameters:
         ServiceConnection: SFA-DAS-DevTest-ARM
 
