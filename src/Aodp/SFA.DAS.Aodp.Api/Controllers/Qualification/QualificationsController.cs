@@ -171,11 +171,18 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationStatus);
         }
 
-        [HttpGet("outputfile")]
-        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationOutputFileResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetQualificationOutputFile()
+        [HttpGet("outputfile/{username}")]
+        [ProducesResponseType(typeof(GetQualificationOutputFileResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetQualificationOutputFile([FromRoute] string username)
         {
-            return await SendRequestAsync(new GetQualificationOutputFileQuery());
+            return await SendRequestAsync(new GetQualificationOutputFileQuery(username));
+        }
+
+        [HttpGet("outputfile/logs")]
+        [ProducesResponseType(typeof(GetQualificationOutputFileLogResponse), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetQualificationOutputFileLogs()
+        {
+            return await SendRequestAsync(new GetQualificationOutputFileLogQuery());
         }
 
         [HttpGet("export")]
