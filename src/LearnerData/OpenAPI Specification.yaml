@@ -327,6 +327,8 @@ components:
     apprenticeshipLearning:
       type: object
       properties:
+        consumerReference:
+          type: string
         learner:
           type: object
           properties:
@@ -370,8 +372,6 @@ components:
                   format: date
                 OffTheJobHours:
                   type: integer
-                percentageOfTrainingLeft:
-                  type: integer
                 costs:
                   type: array
                   items:
@@ -403,6 +403,13 @@ components:
                         format: date
                 isFlexiJob:
                   type: boolean
+                pauseDate:
+                  type: string
+                  format: date
+                aimSequenceNumber:
+                  type: integer
+                learnerAimRef:
+                  type: string
             englishAndMaths:
               type: array
               items:
@@ -422,6 +429,10 @@ components:
                   withdrawalDate:
                     type: string
                     format: date
+                  priorLearningAdjustment:
+                    type: integer
+                  otherFundingAdjustment:
+                    type: integer
                   learningSupport:
                     type: array
                     items:
@@ -433,6 +444,8 @@ components:
                         endDate:
                           type: string
                           format: date
+                  aimSequenceNumber:
+                    type: integer
 
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
