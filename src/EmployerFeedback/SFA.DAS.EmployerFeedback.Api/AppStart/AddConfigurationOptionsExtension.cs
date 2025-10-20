@@ -38,10 +38,6 @@ namespace SFA.DAS.EmployerFeedback.Api.AppStart
             var dasEncodingConfig = new EncodingConfig { Encodings = [] };
             configuration.GetSection(nameof(dasEncodingConfig.Encodings)).Bind(dasEncodingConfig.Encodings);
             services.AddSingleton(dasEncodingConfig);
-
-            //var encodingConfigJson = configuration.GetSection("SFA.DAS.Encoding").Value;
-            //var encodingConfig = JsonConvert.DeserializeObject<EncodingConfig>(encodingConfigJson);
-            //services.AddSingleton(encodingConfig);
         }
     }
 }
