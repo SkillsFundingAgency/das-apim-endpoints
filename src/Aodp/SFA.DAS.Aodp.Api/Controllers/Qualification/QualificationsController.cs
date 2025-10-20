@@ -175,8 +175,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationOutputFileResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetQualificationOutputFile()
         {
-            var response = await _mediator.Send(new GetQualificationOutputFileQuery());
-            return Ok(response);
+            return await SendRequestAsync(new GetQualificationOutputFileQuery());
         }
 
         [HttpGet("export")]
