@@ -19,7 +19,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
             try
             {
                 var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
-                    new GetQualificationOutputFileApiRequest());
+                    new GetQualificationOutputFileApiRequest(request.CurrentUsername));
 
                 if (!result.Success || result.Value == null ||
                     result.Value.ZipFileContent == null || result.Value.ZipFileContent.Length == 0)
