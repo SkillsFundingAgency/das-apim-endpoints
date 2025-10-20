@@ -13,6 +13,6 @@ public class WhenBuildingTheGetShortlistsForUserRequest
     {
         var actual = new GetShortlistsForUserRequest(shortlistUserId);
 
-        actual.GetUrl.Should().Be($"api/shortlists/users/{shortlistUserId}");
+        actual.GetUrl.Should().Be($"shortlists/users/{shortlistUserId}");
     }
 }
