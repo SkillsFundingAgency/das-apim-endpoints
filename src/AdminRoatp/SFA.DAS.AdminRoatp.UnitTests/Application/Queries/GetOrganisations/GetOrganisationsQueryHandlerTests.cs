@@ -30,7 +30,19 @@ public class GetOrganisationsQueryHandlerTests
 
         // Assert
         apiClientMock.Verify(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.Is<GetOrganisationsRequest>(c => c.GetUrl.Equals(new GetOrganisationsRequest().GetUrl))), Times.Once);
-        result.Organisations.Should().BeEquivalentTo(apiResponse.Organisations);
+        result.Organisations.Should().BeEquivalentTo(apiResponse.Organisations, o => o.ExcludingMissingMembers()
+        .Excluding(oi => oi.OrganisationId)
+        .Excluding(tn => tn.TradingName)
+        .Excluding(cn => cn.CompanyNumber)
+        .Excluding(chn => chn.CharityNumber)
+        .Excluding(pt => pt.ProviderType)
+        .Excluding(oti => oti.OrganisationTypeId)
+        .Excluding(ot => ot.OrganisationType)
+        .Excluding(s => s.Status)
+        .Excluding(ad => ad.ApplicationDeterminedDate)
+        .Excluding(rri => rri.RemovedReasonId)
+        .Excluding(rr => rr.RemovedReason)
+        .Excluding(act => act.AllowedCourseTypes));
     }
 
     [Test, MoqAutoData]

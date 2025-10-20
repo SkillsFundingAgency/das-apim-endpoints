@@ -8,9 +8,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 
-public class GetOrganisationsQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _apiClient, ILogger<GetOrganisationsQueryHandler> _logger) : IRequestHandler<GetOrganisationsQuery, GetOrganisationsResponse>
+public class GetOrganisationsQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _apiClient, ILogger<GetOrganisationsQueryHandler> _logger) : IRequestHandler<GetOrganisationsQuery, GetOrganisationsQueryResult>
 {
-    public async Task<GetOrganisationsResponse> Handle(GetOrganisationsQuery request, CancellationToken cancellationToken)
+    public async Task<GetOrganisationsQueryResult> Handle(GetOrganisationsQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handle GetOrganisations request");
 
@@ -18,6 +18,6 @@ public class GetOrganisationsQueryHandler(IRoatpServiceApiClient<RoatpConfigurat
 
         response.EnsureSuccessStatusCode();
 
-        return new() { Organisations = response.Body.Organisations };
+        return new() { Organisations = response.Body.Organisations.Select(o => (OrganisationSummary)o) };
     }
 }
