@@ -21,7 +21,40 @@ paths:
           description: A health check has failed
           $ref: '#/components/responses/healthCheckResponse'
 
-  /employment-check/employers/{employerId}/providers/{ukprn}/learner/{uln}:
+  /employment-check/employers/{employerId}/providers/{ukprn}/learners:
+    get:
+      summary: Returns the latest check for this data
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: employerId
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: ulns
+          in: query
+          required: true
+          description: The ulns of the users being checked
+          schema:
+            type: array
+            items:
+              type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/resultsResponse'  
+        '404':
+          $ref: '#/components/responses/notFoundResponse'
+  
+  
+  /employment-check/employers/{employerId}/providers/{ukprn}/learners/{uln}:
     get:
       summary: Returns the latest check for this data
       security:
@@ -70,6 +103,13 @@ components:
     
     resultResponse:
       description: A single response for a request for EVS check
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/evsCheck'
+
+    resultsResponse:
+      description: A multiple response for a request for EVS check
       content:
         application/json:
           schema:
