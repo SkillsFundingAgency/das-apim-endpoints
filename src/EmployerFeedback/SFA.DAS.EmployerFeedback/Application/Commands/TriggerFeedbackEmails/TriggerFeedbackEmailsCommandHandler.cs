@@ -131,14 +131,9 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails
             {
                 var tokens = CreateEmailTokens(user, feedbackTransaction, employerAccountsBaseUrl, hashedAccountId);
 
-                //var emailCommand = new SendEmailCommand(
-                //    templateId: template.TemplateId.ToString(),
-                //    recipientsAddress: user.Email,
-                //    tokens: tokens);
-
                 var emailCommand = new SendEmailCommand(
                     templateId: template.TemplateId.ToString(),
-                    recipientsAddress: "ratheesh.ri@education.gov.uk",
+                    recipientsAddress: user.Email,
                     tokens: tokens);
 
                 await _notificationService.Send(emailCommand);
