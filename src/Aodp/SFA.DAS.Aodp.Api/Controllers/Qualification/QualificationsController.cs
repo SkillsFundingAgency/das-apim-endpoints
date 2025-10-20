@@ -176,9 +176,9 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationOutputFile()
+        public async Task<IActionResult> GetQualificationOutputFile(GetQualificationOutputFileQuery query)
         {
-            return await SendRequestAsync(new GetQualificationOutputFileQuery());
+            return await SendRequestAsync(query);
         }
 
         [HttpGet("export")]
