@@ -6,7 +6,7 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
     {
         public string CurrentUsername { get; set; } = string.Empty;
 
-        public string GetUrl => "api/qualifications/output-file";
+        public string GetUrl => $"api/qualifications/outputfile/{CurrentUsername}";
 
         public GetQualificationOutputFileApiRequest(string username) 
         {
