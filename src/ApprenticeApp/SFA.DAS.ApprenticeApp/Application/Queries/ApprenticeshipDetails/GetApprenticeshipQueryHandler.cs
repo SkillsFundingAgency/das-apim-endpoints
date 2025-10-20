@@ -20,7 +20,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeshipDetails
         public async Task<GetApprenticeshipQueryResult> Handle(GetApprenticeshipQuery request, CancellationToken cancellationToken)
         {
             if (request == null) throw new ArgumentNullException(nameof(request)); 
-
             var task = await _commitmentsV2ApiClient.Get<GetApprenticeshipQueryResult>(new GetApprenticeshipDetailsRequest(request.ApprenticeshipId));
             
             if (task == null) throw new InvalidOperationException($"Apprenticeship ID {request.ApprenticeshipId} not found.");
