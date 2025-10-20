@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
-[ApiController]
+[ApiController, AllowAnonymous]
 [Route("[controller]/")]
 public class ApplicationReviewController(ILogger<ApplicationReviewController> logger) : ControllerBase
 {
