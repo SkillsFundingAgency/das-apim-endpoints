@@ -7,14 +7,14 @@
     <PackageReference Include="Swashbuckle.AspNetCore" />
 	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
   </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <Content Update="appsettings.json">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
     <Content Update="appsettings.Development.json">
       <CopyToPublishDirectory>Never</CopyToPublishDirectory>
     </Content>
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
     <ProjectReference Include="..\SFA.DAS.EmployerFeedback\SFA.DAS.EmployerFeedback.csproj" />
