@@ -18,18 +18,37 @@ public class GetOrganisationsQueryHandlerTests
     public async Task Handle_SuccessfulResponse_ReturnsData(
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
         GetOrganisationsQuery query,
-        SearchOrganisationResponse apiResponse,
+        GetOrganisationsResponse apiResponse,
         GetOrganisationsQueryHandler sut
         )
     {
-        var expectedResponse = new GetOrganisationsQueryResponse { Organisations = apiResponse.SearchResults.Select(c => (AdminRoatp.Application.Queries.GetOrganisations.Organisation)c) };
-        apiClientMock.Setup(a => a.GetWithResponseCode<SearchOrganisationResponse>(It.Is<SearchOrganisationRequest>(c => c.GetUrl.Equals(new SearchOrganisationRequest(query.SearchTerm).GetUrl)))).ReturnsAsync(new ApiResponse<SearchOrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
+        // Arrange
+        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.Is<GetOrganisationsRequest>(c => c.GetUrl.Equals(new GetOrganisationsRequest().GetUrl)))).ReturnsAsync(new ApiResponse<GetOrganisationsResponse>(apiResponse, HttpStatusCode.OK, ""));
 
+        // Act
         var result = await sut.Handle(query, CancellationToken.None);
 
-        apiClientMock.Verify(a => a.GetWithResponseCode<SearchOrganisationResponse>(It.Is<SearchOrganisationRequest>(c => c.GetUrl.Equals(new SearchOrganisationRequest(query.SearchTerm).GetUrl))), Times.Once);
-        result.Organisations.Should().BeEquivalentTo(expectedResponse.Organisations);
-        result.Should().NotBeNull();
+        // Assert
+        apiClientMock.Verify(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.Is<GetOrganisationsRequest>(c => c.GetUrl.Equals(new GetOrganisationsRequest().GetUrl))), Times.Once);
+        result.Organisations.Should().BeEquivalentTo(apiResponse.Organisations);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_SuccessfulResponse_ReturnsEmpty(
+        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
+        GetOrganisationsQuery query,
+        GetOrganisationsQueryHandler sut
+        )
+    {
+        // Arrange
+        GetOrganisationsResponse apiResponse = new();
+        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.Is<GetOrganisationsRequest>(c => c.GetUrl.Equals(new GetOrganisationsRequest().GetUrl)))).ReturnsAsync(new ApiResponse<GetOrganisationsResponse>(apiResponse, HttpStatusCode.OK, ""));
+
+        // Act
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.Organisations.Should().BeEmpty();
     }
 
     [Test, MoqAutoData]
@@ -38,11 +57,14 @@ public class GetOrganisationsQueryHandlerTests
         GetOrganisationsQuery query,
         GetOrganisationsQueryHandler sut)
     {
-        var apiResponse = new ApiResponse<SearchOrganisationResponse>(It.IsAny<SearchOrganisationResponse>(), HttpStatusCode.InternalServerError, "");
-        apiClientMock.Setup(a => a.GetWithResponseCode<SearchOrganisationResponse>(It.IsAny<SearchOrganisationRequest>())).ReturnsAsync(apiResponse);
+        // Arrange
+        var apiResponse = new ApiResponse<GetOrganisationsResponse>(It.IsAny<GetOrganisationsResponse>(), HttpStatusCode.InternalServerError, "");
+        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.IsAny<GetOrganisationsRequest>())).ReturnsAsync(apiResponse);
 
+        // Act
         Func<Task> result = () => sut.Handle(query, It.IsAny<CancellationToken>());
 
+        // Assert
         await result.Should().ThrowAsync<ApiResponseException>();
     }
 }

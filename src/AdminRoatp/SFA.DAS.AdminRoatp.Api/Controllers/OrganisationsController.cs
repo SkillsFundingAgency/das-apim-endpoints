@@ -12,12 +12,12 @@ namespace SFA.DAS.AdminRoatp.Api.Controllers;
 public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsController> _logger) : ControllerBase
 {
     [HttpGet]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(List<GetOrganisationsQueryResponse>))]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOrganisationsResponse))]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
-    public async Task<IActionResult> GetOrganisations([FromQuery] string searchTerm, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetOrganisations(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Received request to get organisations with Search Term: {SearchTerm}", searchTerm);
-        GetOrganisationsQueryResponse response = await _mediator.Send(new GetOrganisationsQuery(searchTerm), cancellationToken);
+        _logger.LogInformation("Received request for GetOrganisations.");
+        GetOrganisationsResponse response = await _mediator.Send(new GetOrganisationsQuery(), cancellationToken);
         return Ok(response);
     }
 

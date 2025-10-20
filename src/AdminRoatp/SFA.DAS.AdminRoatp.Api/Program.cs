@@ -1,7 +1,7 @@
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using SFA.DAS.AdminRoatp.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,7 +33,7 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
-app.UseSwagger();
+app.UseSwagger(c => c.OpenApiVersion = Microsoft.OpenApi.OpenApiSpecVersion.OpenApi2_0);
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "AdminRoatpOuterApi");
