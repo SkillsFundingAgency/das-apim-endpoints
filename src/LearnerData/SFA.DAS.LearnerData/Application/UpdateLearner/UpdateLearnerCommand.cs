@@ -21,11 +21,12 @@ internal static class UpdateLearnerCommandExtensions
     {
         var combinedLearningSupport = new List<LearningSupportUpdatedDetails>();
 
+        var onProgrammeCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
         var onProgrammeLearningSupport = command.UpdateLearnerRequest.Delivery.OnProgramme?.LearningSupport
             .Select(ls => new LearningSupportUpdatedDetails
             {
                 StartDate = ls.StartDate,
-                EndDate = ls.EndDate
+                EndDate = onProgrammeCompletionDate.HasValue && onProgrammeCompletionDate.Value < ls.EndDate ? onProgrammeCompletionDate.Value : ls.EndDate
             });
 
         if (onProgrammeLearningSupport != null && onProgrammeLearningSupport.Any())
@@ -36,7 +37,7 @@ internal static class UpdateLearnerCommandExtensions
                 ? x.LearningSupport.Select(ls => new LearningSupportUpdatedDetails
                 {
                     StartDate = ls.StartDate,
-                    EndDate = ls.EndDate
+                    EndDate = x.CompletionDate.HasValue && x.CompletionDate.Value < ls.EndDate ? x.CompletionDate.Value : ls.EndDate
                 })
                 : Enumerable.Empty<LearningSupportUpdatedDetails>());
 

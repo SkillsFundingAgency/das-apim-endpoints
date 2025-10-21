@@ -25,8 +25,8 @@ public static partial class EmailTemplateBuilder
         string? searchTerm,
         decimal? distance,
         string? location,
-        List<string?>? categories,
-        List<string?>? levels,
+        List<string>? categories,
+        List<string>? levels,
         bool? disabilityConfident,
         bool? excludeNational,
         List<ApprenticeshipTypes>? apprenticeshipTypes)

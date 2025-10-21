@@ -11,6 +11,8 @@ using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
+using SFA.DAS.LearnerData.Application.RemoveLearner;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -18,7 +20,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<CreateLearnerRequest> validator,
+    IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
@@ -42,18 +44,42 @@ public class LearnersController(
         return Ok((GetLearnersResponse)response);
     }
 
-    [HttpPost]
-    [Route("/providers/{ukprn}/learners")]
-    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
+    [HttpPut]
+    [Route("/provider/{ukprn}/academicyears/{academicyear}/learners")]
+    public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
+        [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
     {
 
-        var validatorResult = await validator.ValidateAsync(dataRequest);
+        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
 
         if (!validatorResult.IsValid)
         {
             return BuildErrorResponse(validatorResult.Errors);
         }
 
+        try
+        {
+            var correlationId = Guid.NewGuid();
+            await mediator.Send(new ProcessLearnersCommand
+            {
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.Now,
+                AcademicYear = academicyear,
+                Learners = dataRequests
+            });
+            return Accepted(new CorrelationResponse { CorrelationId = correlationId });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when processing learners list");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    [Route("/providers/{ukprn}/learners")]
+    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
+    {
         try
         {
             var correlationId = Guid.NewGuid();
@@ -89,6 +115,36 @@ public class LearnersController(
         catch (Exception e)
         {
             logger.LogError(e, $"Internal error occurred when updating learner {learningKey}");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpDelete("/providers/{ukprn}/learning/{learningKey}")]
+    public async Task<IActionResult> RemoveLearner(
+        [FromRoute] long ukprn,
+        [FromRoute] Guid learningKey)
+    {
+        logger.LogInformation(
+            "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
+            ukprn,
+            learningKey);
+
+        try
+        {
+            var command = new RemoveLearnerCommand
+            {
+                LearningKey = learningKey,
+                Ukprn = ukprn
+            };
+
+            await mediator.Send(command);
+
+            return NoContent();
+
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Internal error occurred when removing learner {learningKey}");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

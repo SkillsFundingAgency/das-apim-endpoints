@@ -1,6 +1,8 @@
 using System.Net;
 using System.Threading;
 using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
