@@ -1,14 +1,14 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.Application.Queries.GetOrganisations;
 public class GetOrganisationsQueryResultTests
 {
-    [Test, MoqAutoData]
+    [Test, AutoData]
 
-    public void GetOrganisationsQueryResult_MappsDataCorrectly(
+    public void GetOrganisationsQueryResult_MapsDataCorrectly(
         GetOrganisationDetails getOrganisationDetails)
     {
         // Arrange
