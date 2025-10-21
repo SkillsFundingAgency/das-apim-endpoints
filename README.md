@@ -417,8 +417,8 @@ The Employer Finance outer api relies on the following inner apis:
 
 * [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
 * [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/
-* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 das-apprentice-accounts-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 * [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
 * [das-levytransfermatching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
 * [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
