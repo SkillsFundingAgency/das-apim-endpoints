@@ -23,11 +23,12 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          ls
+          pwd
+          ls -lR
     # - task: Bash@3
     #   inputs:
     #     targetType: inline
     #     script: |
     #       sed -i 's/<subscriptionKey>/$(subscriptionKey)/g' http-client.env.json
-    #       ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=${{ parameters.Environment }} --out ./HttpScripts/generated.sh --exec
+    #       node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
     # - bash: 
