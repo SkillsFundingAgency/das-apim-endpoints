@@ -13,6 +13,7 @@ public class GetLearnersForProviderQueryResult
     public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
     public List<LearnerSummary> Learners { get; set; }
+    public int FutureMonths { get; set; }
 }
 
 public class LearnerSummary

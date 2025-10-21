@@ -14,6 +14,7 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -66,6 +67,116 @@ public class WhenGettingLearnersForProvider
         actual.Total.Should().Be(learnersResponse.TotalItems);
         actual.TotalPages.Should().Be(learnersResponse.TotalPages);
         actual.Learners.Should().BeEquivalentTo(learners);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Api_Is_Called_With_LegalEntityId_For_NonLevyEmp_And_Clients_Return_Responses_The_result_Is_Returned_And_FutureMonths_Is_Populated(
+        GetLearnersForProviderQuery query,
+        GetLearnersForProviderRequest learnersRequest,
+        GetLearnersForProviderResponse learnersResponse,
+        GetAccountLegalEntityRequest aleRequest,
+        GetAccountLegalEntityResponse aleResponse,
+        GetAllStandardsRequest coursesRequest,
+        GetAllStandardsResponse coursesResponse,
+        List<LearnerSummary> learners,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsClient,
+        [Frozen] Mock<IMapLearnerRecords> mapper,
+        [Greedy] GetLearnersForProviderQueryHandler handler
+    )
+    {
+        query.CohortId = null;
+        GetLearnersForProviderRequest input;
+        aleResponse.LevyStatus = ApprenticeshipEmployerType.NonLevy;
+
+        GetAvailableDatesResponse availableDatesResponse = new GetAvailableDatesResponse
+        {
+            AvailableDates = new List<AvailableDateStartWindow>
+            {
+                new AvailableDateStartWindow { StartDate = DateTime.Now },
+                new AvailableDateStartWindow { StartDate = DateTime.Now.AddMonths(1) },
+                new AvailableDateStartWindow { StartDate = DateTime.Now.AddMonths(2) }
+            }
+        };
+
+
+        learnerDataClient.Setup(x =>
+                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+            .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x =>
+                x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            .ReturnsAsync(new ApiResponse<GetAccountLegalEntityResponse>(aleResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
+
+        reservationsClient.Setup(x => x.Get<GetAvailableDatesResponse>(It.IsAny<GetAvailableDatesRequest>()))
+            .ReturnsAsync(availableDatesResponse);
+
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.Should().NotBeNull();
+        actual.AccountLegalEntityId.Should().Be(query.AccountLegalEntityId);
+        actual.EmployerName.Should().Be(aleResponse.LegalEntityName);
+        actual.LastSubmissionDate.Should().Be(learnersResponse.LastSubmissionDate);
+        actual.Page.Should().Be(learnersResponse.Page);
+        actual.PageSize.Should().Be(learnersResponse.PageSize);
+        actual.Total.Should().Be(learnersResponse.TotalItems);
+        actual.TotalPages.Should().Be(learnersResponse.TotalPages);
+        actual.Learners.Should().BeEquivalentTo(learners);
+        actual.FutureMonths.Should().Be(3);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_The_Api_Is_Called_With_LegalEntityId_For_LevyEmp_And_Clients_Return_Responses_The_result_Is_Returned_And_FutureMonths_Is_Zero(
+       GetLearnersForProviderQuery query,
+       GetLearnersForProviderRequest learnersRequest,
+       GetLearnersForProviderResponse learnersResponse,
+       GetAccountLegalEntityRequest aleRequest,
+       GetAccountLegalEntityResponse aleResponse,
+       GetAllStandardsRequest coursesRequest,
+       GetAllStandardsResponse coursesResponse,
+       List<LearnerSummary> learners,
+       [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+       [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+       [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsClient,
+       [Frozen] Mock<IMapLearnerRecords> mapper,
+       [Greedy] GetLearnersForProviderQueryHandler handler
+   )
+    {
+        query.CohortId = null;
+        GetLearnersForProviderRequest input;
+        aleResponse.LevyStatus = ApprenticeshipEmployerType.Levy;
+
+        learnerDataClient.Setup(x =>
+                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+            .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x =>
+                x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
+            .ReturnsAsync(new ApiResponse<GetAccountLegalEntityResponse>(aleResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
+
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        actual.Should().NotBeNull();
+        actual.AccountLegalEntityId.Should().Be(query.AccountLegalEntityId);
+        actual.EmployerName.Should().Be(aleResponse.LegalEntityName);
+        actual.LastSubmissionDate.Should().Be(learnersResponse.LastSubmissionDate);
+        actual.Page.Should().Be(learnersResponse.Page);
+        actual.PageSize.Should().Be(learnersResponse.PageSize);
+        actual.Total.Should().Be(learnersResponse.TotalItems);
+        actual.TotalPages.Should().Be(learnersResponse.TotalPages);
+        actual.Learners.Should().BeEquivalentTo(learners);
+        actual.FutureMonths.Should().Be(0);
     }
 
     [Test, MoqAutoData]
