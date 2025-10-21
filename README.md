@@ -105,9 +105,26 @@ Starting the API will then show the swagger definition with the available operat
 
 The Approvals outer api relies on the following inner apis:
 
+* [das-providerapprenticeshipsservice](https://github.com/SkillsFundingAgency/das-providerapprenticeshipsservice)
+* [das-assessor-service](https://github.com/SkillsFundingAgency/das-assessor-service)
+* [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-rofjaa-api](https://github.com/SkillsFundingAgency/das-rofjaa-api)
+* [das-pr-api](https://github.com/SkillsFundingAgency/das-pr-api)
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
-* [das-assessor-service](https://github.com/SkillsFundingAgency/das-assessor-service/)
+* [das-providerevents](https://github.com/SkillsFundingAgency/das-providerevents)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+* [das-learning](https://github.com/SkillsFundingAgency/das-learning)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+* [das-reservations-api](https://github.com/SkillsFundingAgency/das-reservations-api)
+* [das-apprentice-commitments-api](https://github.com/SkillsFundingAgency/das-apprentice-commitments-api)
+* [das-learner-data-api](https://github.com/SkillsFundingAgency/das-learner-data-api)
+* [das-collection-calendar](https://github.com/SkillsFundingAgency/das-collection-calendar)
+* [das-coursetypes-api](https://github.com/SkillsFundingAgency/das-coursetypes-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [CommitmentsV2](https://github.com/SkillsFundingAgency/das-commitments/)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
 
 You are able to run the API by doing the following:
 
@@ -117,17 +134,94 @@ You are able to run the API by doing the following:
 ParitionKey: LOCAL
 RowKey: SFA.DAS.Approvals.OuterApi_1.0
 Data: {
+    "ProviderAccountApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AssessorsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LevyTransferMatchingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "FjaaApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderRelationshipsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "FinanceApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderCoursesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
     "CoursesApiConfiguration": {
-        "url":"https://localhost:5001/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "ProviderEventsConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "AssessorsApiConfiguration" : {
-        "url":"http://localhost:59022/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "EmployerProfilesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LearningApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerUsersApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ReservationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ApprenticeCommitmentsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LearnerDataInnerApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CollectionCalendarApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CourseTypesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AzureAd": {
+        "tenant": "**********.onmicrosoft.com",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ApprenticeAccountsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "TrainingProviderApi": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****",
+        "tenant": "**********.onmicrosoft.com"
+    },
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AccountsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     }
 }
 ```
