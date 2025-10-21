@@ -1,6 +1,7 @@
 parameters:
-  ServiceConnection:
   Environment: AT
+  OuterApiName:
+  ServiceConnection:
   
 jobs:
 - job: tests
@@ -11,24 +12,18 @@ jobs:
   steps:
     - checkout: self
       fetchDepth: 1
-    # - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
-    #   parameters:
-    #     ServiceConnection: ${{ parameters.ServiceConnection }}
-    #     ApimResourceGroup: $(SharedApimResourceGroup)
-    #     ApimName: $(SharedApimName)
-    #     SubscriptionId: $(AppServiceName)
-    #     PipelineVariableName: ApprovalsApimSubscriptionKey
-    #     IsMultiRepoCheckout: true
+    - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
+      parameters:
+        ServiceConnection: ${{ parameters.ServiceConnection }}
+        ApimResourceGroup: $(SharedApimResourceGroup)
+        ApimName: $(SharedApimName)
+        SubscriptionId: $(AppServiceName)
+        PipelineVariableName: ApprovalsApimSubscriptionKey
+        IsMultiRepoCheckout: true
     - task: Bash@3
       inputs:
         targetType: inline
         script: |
-          pwd
-          ls -lR
-    # - task: Bash@3
-    #   inputs:
-    #     targetType: inline
-    #     script: |
-    #       sed -i 's/<subscriptionKey>/$(subscriptionKey)/g' http-client.env.json
-    #       node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
-    # - bash: 
+          sed -i 's/<subscriptionKey>/$(subscriptionKey)/g' http-client.env.json
+          node ./src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
+    - bash: 
