@@ -8,5 +8,5 @@ public class GetOrganisationsQueryResult
 
 public record OrganisationSummary(int Ukprn, string LegalName)
 {
-    public static implicit operator OrganisationSummary(GetOrganisationDetails source) => new(source.Ukprn, source.LegalName);
+    public static implicit operator OrganisationSummary(OrganisationModel source) => new(source.Ukprn, source.LegalName);
 }
