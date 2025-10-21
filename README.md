@@ -331,6 +331,86 @@ Data: {
 
 Starting the API will then show the swagger definition with the available operations. The outer API is used during payment processing for transaction information, adding metadata to the payments lines for Course and Provider information.
 
+### Employer Accounts
+
+The Employer Accounts outer api relies on the following inner apis:
+
+* [das-educational-organisations-api](https://github.com/SkillsFundingAgency/das-educational-organisations-api)
+* [das-public-sector-organisations-api](https://github.com/SkillsFundingAgency/das-public-sector-organisations-api)
+* [das-charities-api](https://github.com/SkillsFundingAgency/das-charities-api)
+* [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-reservations-api](https://github.com/SkillsFundingAgency/das-reservations-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [das-pr-api](https://github.com/SkillsFundingAgency/das-pr-api)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EmployerAccounts.OuterApi_1.0
+Data: {
+    "EducationalOrganisationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "PublicSectorOrganisationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CharitiesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerAccountsOuterOverrideDatetime": "\"\"",
+    "CompaniesHouseApiConfiguration": {
+        "url": "******",
+        "apiKey": "******"
+    },
+    "LevyTransferMatchingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "FinanceApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ReservationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AccountsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderRelationshipsApiConfiguration": {
+       "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AzureAd": {
+        "tenant": "******",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerProfilesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    }
+}
+```
+
+* Start the api project ```SFA.DAS.EmployerAccounts.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
+
 ### Employer Finance
 
 The Employer Finance outer api relies on the following inner apis:
