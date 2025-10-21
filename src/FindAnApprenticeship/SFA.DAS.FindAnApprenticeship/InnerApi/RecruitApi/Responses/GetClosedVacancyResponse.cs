@@ -107,7 +107,7 @@ public class GetClosedVacancyResponse: IVacancy
         public string QualificationType { get; set; }
         public string Subject { get; set; }
         public string Grade { get; set; }
-        public int Weighting { get; set; }
+        public QualificationWeighting? Weighting { get; set; }
     }
         
     public class ContactDetail
@@ -122,14 +122,10 @@ public class Wage
 {
     public decimal? FixedWageYearlyAmount { get; set; }
     public int Duration { get; set; }
-    public int DurationUnit { get; set; }
+    public DurationUnit? DurationUnit { get; set; }
     public string WageAdditionalInformation { get; set; }
-    public int WageType { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public WageType? WageType { get; set; }
     public decimal? WeeklyHours { get; set; }
     public string WorkingWeekDescription { get; set; }
-}
-
-public class GetClosedVacanciesByReferenceResponse
-{
-    public List<GetClosedVacancyResponse> Vacancies { get; set; } = [];
 }

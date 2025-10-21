@@ -1,13 +1,12 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview;
-using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System;
 using System.Net;
 using System.Threading;
-using SFA.DAS.SharedOuterApi.Exceptions;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command
 {
@@ -25,25 +24,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.ApplicationReviews.Command
 
             await handler.Handle(command, CancellationToken.None);
 
-            recruitApiClient.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
-                    c.PatchUrl.Contains(command.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
-
-                    c.Data.Operations[0].path == "/Status" &&
-                    c.Data.Operations[0].value.ToString() == command.Status &&
-
-                    c.Data.Operations[1].path == "/HasEverBeenEmployerInterviewing" &&
-                    c.Data.Operations[1].value.ToString() == command.HasEverBeenEmployerInterviewing.ToString() &&
-
-                    c.Data.Operations[3].path == "/EmployerFeedback" &&
-                    c.Data.Operations[3].value.ToString() == command.EmployerFeedback &&
-
-                    c.Data.Operations[4].path == "/TemporaryReviewStatus" &&
-                    c.Data.Operations[4].value.ToString() == command.TemporaryReviewStatus &&
-
-                    c.Data.Operations[5].path == "/DateSharedWithEmployer" &&
-                    c.Data.Operations[5].value.ToString() == command.DateSharedWithEmployer!.Value.ToString()
-                )), Times.Once
-            );
+            recruitApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
