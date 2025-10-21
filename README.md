@@ -123,8 +123,7 @@ The Approvals outer api relies on the following inner apis:
 * [das-collection-calendar](https://github.com/SkillsFundingAgency/das-collection-calendar)
 * [das-coursetypes-api](https://github.com/SkillsFundingAgency/das-coursetypes-api)
 * [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
-* []()
-* [CommitmentsV2](https://github.com/SkillsFundingAgency/das-commitments/tree/master/src/CommitmentsV2)
+* [CommitmentsV2](https://github.com/SkillsFundingAgency/das-commitments/)
 * [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
 
 You are able to run the API by doing the following:
