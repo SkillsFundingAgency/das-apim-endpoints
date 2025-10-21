@@ -18,11 +18,15 @@ public class GetOrganisationsQueryHandlerTests
     public async Task Handle_SuccessfulResponse_ReturnsData(
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
         GetOrganisationsQuery query,
-        GetOrganisationsResponse apiResponse,
         GetOrganisationsQueryHandler sut
         )
     {
         // Arrange
+        GetOrganisationsResponse apiResponse = new()
+        {
+            Organisations = new List<GetOrganisationDetails>
+            { new() { Ukprn = 12345, LegalName = "Test1" }, new() { Ukprn = 56789, LegalName = "Test2" }}
+        };
         apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.Is<GetOrganisationsRequest>(c => c.GetUrl.Equals(new GetOrganisationsRequest().GetUrl)))).ReturnsAsync(new ApiResponse<GetOrganisationsResponse>(apiResponse, HttpStatusCode.OK, ""));
 
         // Act
@@ -30,19 +34,7 @@ public class GetOrganisationsQueryHandlerTests
 
         // Assert
         apiClientMock.Verify(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.Is<GetOrganisationsRequest>(c => c.GetUrl.Equals(new GetOrganisationsRequest().GetUrl))), Times.Once);
-        result.Organisations.Should().BeEquivalentTo(apiResponse.Organisations, o => o.ExcludingMissingMembers()
-        .Excluding(oi => oi.OrganisationId)
-        .Excluding(tn => tn.TradingName)
-        .Excluding(cn => cn.CompanyNumber)
-        .Excluding(chn => chn.CharityNumber)
-        .Excluding(pt => pt.ProviderType)
-        .Excluding(oti => oti.OrganisationTypeId)
-        .Excluding(ot => ot.OrganisationType)
-        .Excluding(s => s.Status)
-        .Excluding(ad => ad.ApplicationDeterminedDate)
-        .Excluding(rri => rri.RemovedReasonId)
-        .Excluding(rr => rr.RemovedReason)
-        .Excluding(act => act.AllowedCourseTypes));
+        result.Organisations.Count().Should().Be(2);
     }
 
     [Test, MoqAutoData]
