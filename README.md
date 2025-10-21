@@ -509,10 +509,14 @@ Starting the API will then show the swagger definition with the available operat
 
 The Employer Finance outer api relies on the following inner apis:
 
-* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
-* [das-levytransfermatching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
 * [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/
+das-apprentice-accounts-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-levytransfermatching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 
 You are able to run the API by doing the following:
 
@@ -523,27 +527,39 @@ ParitionKey: LOCAL
 RowKey: SFA.DAS.EmployerFinance.OuterApi_1.0
 Data: {
          {
-            "CoursesApiConfiguration":{
-                "url":"https://localhost:5001/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsapi-as-ar"
+            "ForecastingApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "CourseDeliveryApiConfiguration":{
-                "url":"https://localhost:5006/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsdelapi-as-ar"
+            "AccountsApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "LevyTransferMatchingApiConfiguration":{
-                "url":"https://localhost:5002/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-ltmapi-as-ar"
+            "ProviderCoursesApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "AzureAd":{
-                "tenant":"citizenazuresfabisgov.onmicrosoft.com",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-empfapi-as-ar"
+            "FinanceApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "ForecastingApiConfiguration":{
-                "url":"https://localhost:5001/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-fcastapi-as-ar"
+            "LevyTransferMatchingApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
+            },
+            "AzureAd": {
+                "tenant": "citizenazuresfabisgov.onmicrosoft.com",
+                "identifier": "https://******.onmicrosoft.com/*****"
+            },
+            "EmployerProfilesApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
+            },
+            "CoursesApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             }
-         }
+        }
 }
 ```
 * Start the api project ```SFA.DAS.EmployerFinance.Api```
