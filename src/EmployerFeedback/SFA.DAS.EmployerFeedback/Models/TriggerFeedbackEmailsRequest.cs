@@ -7,6 +7,7 @@ namespace SFA.DAS.EmployerFeedback.Models
     {
         public List<NotificationTemplateRequest> NotificationTemplates { get; set; }
         public string EmployerAccountsBaseUrl { get; set; }
+        public string EmployerFeedbackBaseUrl { get; set; }
     }
 
     public class NotificationTemplateRequest

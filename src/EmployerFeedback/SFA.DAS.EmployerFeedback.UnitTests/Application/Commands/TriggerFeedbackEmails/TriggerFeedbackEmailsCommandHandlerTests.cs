@@ -62,7 +62,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                         TemplateId = templateId
                     }
                 },
-                EmployerAccountsBaseUrl = "https://employer-accounts.test"
+                EmployerAccountsBaseUrl = "https://employer-accounts.test",
+                EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
 
             var feedbackTransaction = new GetFeedbackTransactionResponse
@@ -130,7 +131,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
             var request = new TriggerFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>(),
-                EmployerAccountsBaseUrl = "https://employer-accounts.test"
+                EmployerAccountsBaseUrl = "https://employer-accounts.test",
+                EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
             var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
 
@@ -151,7 +153,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
             var request = new TriggerFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>(),
-                EmployerAccountsBaseUrl = "https://employer-accounts.test"
+                EmployerAccountsBaseUrl = "https://employer-accounts.test",
+                EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
 
             var feedbackTransaction = new GetFeedbackTransactionResponse
@@ -183,7 +186,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
             var request = new TriggerFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>(),
-                EmployerAccountsBaseUrl = "https://employer-accounts.test"
+                EmployerAccountsBaseUrl = "https://employer-accounts.test",
+                EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
 
             var feedbackTransaction = new GetFeedbackTransactionResponse
@@ -222,7 +226,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                         TemplateId = Guid.NewGuid()
                     }
                 },
-                EmployerAccountsBaseUrl = "https://employer-accounts.test"
+                EmployerAccountsBaseUrl = "https://employer-accounts.test",
+                EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
 
             var feedbackTransaction = new GetFeedbackTransactionResponse
@@ -263,7 +268,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                         TemplateId = templateId
                     }
                 },
-                EmployerAccountsBaseUrl = "https://employer-accounts.test"
+                EmployerAccountsBaseUrl = "https://employer-accounts.test",
+                EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
 
             var feedbackTransaction = new GetFeedbackTransactionResponse

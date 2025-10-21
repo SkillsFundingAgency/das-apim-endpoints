@@ -66,7 +66,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails
 
             await UpdateFeedbackTransaction(request.FeedbackTransactionId, matchingTemplate.TemplateId, accountUsers.Count);
 
-            await SendEmailsToUsers(accountUsers, feedbackTransaction, matchingTemplate, request.Request.EmployerAccountsBaseUrl);
+            await SendEmailsToUsers(accountUsers, feedbackTransaction, matchingTemplate, request.Request.EmployerAccountsBaseUrl, request.Request.EmployerFeedbackBaseUrl);
 
             _logger.LogInformation("Successfully sent {Count} email notifications for feedback transaction {FeedbackTransactionId}",
                 accountUsers.Count, request.FeedbackTransactionId);
@@ -123,13 +123,14 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails
             List<AccountUser> accountUsers,
             GetFeedbackTransactionResponse feedbackTransaction,
             NotificationTemplateRequest template,
-            string employerAccountsBaseUrl)
+            string employerAccountsBaseUrl,
+            string employerFeedbackBaseUrl)
         {
             var hashedAccountId = _encodingService.Encode(feedbackTransaction.AccountId, Encoding.EncodingType.AccountId);
 
             foreach (var user in accountUsers)
             {
-                var tokens = CreateEmailTokens(user, feedbackTransaction, employerAccountsBaseUrl, hashedAccountId);
+                var tokens = CreateEmailTokens(user, feedbackTransaction, employerAccountsBaseUrl, employerFeedbackBaseUrl, hashedAccountId);
 
                 var emailCommand = new SendEmailCommand(
                     templateId: template.TemplateId.ToString(),
@@ -147,13 +148,17 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails
             AccountUser user,
             GetFeedbackTransactionResponse feedbackTransaction,
             string employerAccountsBaseUrl,
+            string employerFeedbackBaseUrl,
             string hashedAccountId)
         {
+            var feedbackUrlWithAccountId = $"{employerFeedbackBaseUrl.TrimEnd('/')}/{hashedAccountId}";
+
             return new Dictionary<string, string>
             {
                 { "contact", user.FirstName },
                 { "employername", feedbackTransaction.AccountName },
-                { "employeraccountsweb", employerAccountsBaseUrl },
+                { "feedbackbaseurl", feedbackUrlWithAccountId },
+                { "accountsbaseurl", employerAccountsBaseUrl },
                 { "accounthashedid", hashedAccountId }
             };
         }

@@ -24,7 +24,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                         TemplateId = templateId
                     }
                 },
-                EmployerAccountsBaseUrl = "https://employer-accounts.test"
+                EmployerAccountsBaseUrl = "https://employer-accounts.test",
+                EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
 
             var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
@@ -35,6 +36,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
             Assert.That(command.Request.NotificationTemplates[0].TemplateName, Is.EqualTo("TestTemplate"));
             Assert.That(command.Request.NotificationTemplates[0].TemplateId, Is.EqualTo(templateId));
             Assert.That(command.Request.EmployerAccountsBaseUrl, Is.EqualTo("https://employer-accounts.test"));
+            Assert.That(command.Request.EmployerFeedbackBaseUrl, Is.EqualTo("https://employer-feedback.test"));
         }
     }
 }
