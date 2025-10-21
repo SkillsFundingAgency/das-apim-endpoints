@@ -5,9 +5,6 @@ public class EmailEnvironmentHelper(string environmentName)
     public string ApplicationReminderEmailTemplateId { get; } = environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
         ? "a0248572-0d33-46a3-8bb8-560a95cc6e69" : "00d36062-dbba-47b7-8442-10f80f42e127";
     
-    public string VacancyClosedEarlyTemplateId { get; } = environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
-        ? "47c904f5-685c-429c-bf3a-1cf23205740c" : "217c85c1-1fbf-4f61-ae84-e161a01aa791";
-
     public string SavedSearchEmailNotificationTemplateId { get; } = environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase)
         ? "668d5683-1252-43ac-ba57-8023a97813a3" : "4fa070f9-db70-4763-b3f7-04af5e08b167";
 
