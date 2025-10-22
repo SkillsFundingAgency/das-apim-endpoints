@@ -1,3 +1,4 @@
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -7,7 +8,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
     {
         public string Id { get; set; } = null!;
         public Guid VacancyId { get; set; }
-        public string VacancyReference { get; set; }
+        public required string VacancyReference { get; set; }
         public string Title { get; set; } = null!;
         public int NumberOfPositions { get; set; }
         public string? ApprenticeshipTitle { get; set; }
@@ -49,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
         public string? ProviderContactPhone { get; set; }
         public string? ApprenticeshipLevel { get; set; }
         public int Duration { get; set; }
-        public string? DurationUnit { get; set; }
+        public DurationUnit? DurationUnit { get; set; }
         public int RouteCode { get; set; }
         public string AccountPublicHashedId { get; set; } = null!;
         public string AccountLegalEntityPublicHashedId { get; set; } = null!;
