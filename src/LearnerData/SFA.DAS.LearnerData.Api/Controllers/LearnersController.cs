@@ -19,7 +19,6 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<CreateLearnerRequest> validator,
     IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
@@ -80,14 +79,6 @@ public class LearnersController(
     [Route("/providers/{ukprn}/learners")]
     public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
     {
-
-        var validatorResult = await validator.ValidateAsync(dataRequest);
-
-        if (!validatorResult.IsValid)
-        {
-            return BuildErrorResponse(validatorResult.Errors);
-        }
-
         try
         {
             var correlationId = Guid.NewGuid();

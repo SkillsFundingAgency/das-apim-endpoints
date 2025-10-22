@@ -327,7 +327,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate;
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -354,7 +354,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate;
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
