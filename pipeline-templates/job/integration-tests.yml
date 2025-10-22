@@ -6,6 +6,7 @@ parameters:
   
 jobs:
 - job: tests
+  displayName: Integration Tests
   workspace:
     clean:
   pool:
@@ -22,8 +23,10 @@ jobs:
         PipelineVariableName: ApimSubscriptionKey
         IsMultiRepoCheckout: true
     - task: Bash@3
+      displayName: Run Tests
       inputs:
         targetType: inline
         script: |
-          sed -i 's/<subscriptionKey>/$(ApimSubscriptionKey)/g' http-client.env.json
-          node ./src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
+          sed -i 's/<subscriptionKey>/$(ApimSubscriptionKey)/g' ./HttpScripts/http-client.env.json
+          node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
+        workingDirectory: ./src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
