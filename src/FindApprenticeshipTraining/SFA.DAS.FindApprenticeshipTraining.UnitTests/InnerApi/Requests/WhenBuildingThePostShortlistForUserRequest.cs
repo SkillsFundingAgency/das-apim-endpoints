@@ -16,6 +16,6 @@ public class WhenBuildingThePostShortlistForUserRequest
         };
 
         actual.Data.Should().BeEquivalentTo(source);
-        actual.PostUrl.Should().Be("api/shortlists");
+        actual.PostUrl.Should().Be("shortlists");
     }
 }
