@@ -4,6 +4,6 @@ namespace SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests
 {
     public class GetClosedVacancyRequest(string vacancyReference) : IGetApiRequest
     {
-        public string GetUrl => $"api/closedvacancies/{vacancyReference}";
+        public string GetUrl => $"api/vacancies/{vacancyReference}/closed";
     }
 }

@@ -45,6 +45,8 @@ public class UpdateLearnerCommandHandler(
 
     private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
     {
+        var updatePrices = false;
+
         foreach (var change in updateLearningApiPutResponse.Changes)
         {
             switch (change)
@@ -59,9 +61,21 @@ public class UpdateLearnerCommandHandler(
                     await earningsApiClient.UpdateLearningSupport(command, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
-                    await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
+                    updatePrices = true;
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
+                    await earningsApiClient.WithdrawLearner(command, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
+                    await earningsApiClient.ReverseWithdrawal(command, logger);
                     break;
             }
+        }
+
+        if (updatePrices)
+        {
+            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
         }
     }
 
@@ -69,12 +83,20 @@ public class UpdateLearnerCommandHandler(
     {
         var body = new UpdateLearningRequestBody
         {
+            Delivery = new Delivery
+            {
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate
+            },
             Learner = new LearningUpdateDetails
             {
+                FirstName = command.UpdateLearnerRequest.Learner.FirstName,
+                LastName = command.UpdateLearnerRequest.Learner.LastName,
+                EmailAddress = command.UpdateLearnerRequest.Learner.Email,
                 CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
             },
             OnProgramme = new OnProgrammeDetails
             {
+                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.ExpectedEndDate,
                 Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.Costs.Select(x =>  new Cost
                 {
                     TrainingPrice = x.TrainingPrice,
