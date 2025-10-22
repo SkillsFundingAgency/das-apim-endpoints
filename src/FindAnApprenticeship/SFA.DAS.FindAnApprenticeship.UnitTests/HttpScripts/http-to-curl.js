@@ -116,11 +116,13 @@ function runRequestBlock(block, output = []) {
                         const pass = Function("response", "body", `return ${condition};`)({ status: res.statusCode }, json);
 
                         if (!pass) {
-                            console.log(`##vso[task.logissue type=warning;]${method} ${url} → Assert failed: ${message}`);
+                            console.log(`##vso[task.logissue type=error;] ${method} ${url} → Assert failed: ${message}`);
                             allPass = false;
+                            process.exitCode = 1;
+                            return resolve();
                         }
                     } catch (err) {
-                        console.log(`##vso[task.logissue type=warning;]${method} ${url} → Error in assert: ${message}`);
+                        console.log(`##vso[task.logissue type=error;] ${method} ${url} → Error in assert: ${message}`);
                         allPass = false;
                     }
                 }
@@ -136,7 +138,8 @@ function runRequestBlock(block, output = []) {
         });
 
         req.on("error", (e) => {
-            console.error(`❌ Request failed: ${method} ${url}`, e.message);
+            console.error(`##vso[task.logissue type=error;] ${method} ${url}`, e.message);
+            process.exitCode = 1;
             resolve();
         });
 
