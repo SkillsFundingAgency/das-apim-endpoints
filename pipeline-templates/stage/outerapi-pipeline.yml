@@ -19,6 +19,7 @@ stages:
   jobs:
   - template: ../../pipeline-templates/job/code-build.yml
     parameters:
+      OuterApiName: ${{ parameters.OuterApiName }}
       SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_${{ parameters.OuterApiName }}
       TargetProjects: |
         src/${{ parameters.OuterApiName }}/**/*.csproj

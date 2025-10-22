@@ -12,8 +12,7 @@ jobs:
   pool:
     vmImage: ubuntu-latest
   steps:
-    - checkout: self
-      fetchDepth: 1
+    - task: DownloadPipelineArtifact@2
     - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
       parameters:
         ServiceConnection: ${{ parameters.ServiceConnection }}
@@ -29,4 +28,4 @@ jobs:
         script: |
           sed -i 's/<subscriptionKey>/$(ApimSubscriptionKey)/g' ./HttpScripts/http-client.env.json
           node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
-        workingDirectory: $(Build.SourcesDirectory)/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
+        workingDirectory: $(Pipeline.Workspace)//ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
