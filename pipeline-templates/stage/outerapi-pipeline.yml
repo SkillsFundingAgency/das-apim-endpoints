@@ -12,6 +12,7 @@ parameters:
   useProductAppInsights: ''
   AzureArtifactsFeed: ''
   RunTests: ''
+  SubscriptionId: ''
 
 stages:
 - stage: Build
@@ -81,6 +82,7 @@ stages:
       parameters:
         OuterApiName: ${{ parameters.OuterApiName }}
         ServiceConnection: SFA-DAS-DevTest-ARM
+        SubscriptionId: ${{ parameters.SubscriptionId }}
 
 - stage: Deploy_TEST
   dependsOn: Build
