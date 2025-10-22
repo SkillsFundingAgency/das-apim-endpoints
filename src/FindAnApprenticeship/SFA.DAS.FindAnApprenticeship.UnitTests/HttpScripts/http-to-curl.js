@@ -37,6 +37,20 @@ function extractVariable(code, responseJson) {
     }
 }
 
+function extractAsserts(block) {
+    // Matches: client.assert(response.status === 200, "Message")
+    const regex = /client\.assert\(([^,]+),\s*["'`](.+?)["'`]\)/g;
+    const asserts = [];
+    let match;
+    while ((match = regex.exec(block)) !== null) {
+        asserts.push({
+            condition: match[1].trim(),
+            message: match[2].trim()
+        });
+    }
+    return asserts;
+}
+
 function runRequestBlock(block, output = []) {
     const lines = block.trim().split("\n");
     const [method, url] = interpolate(lines[0].trim()).split(" ");
@@ -58,6 +72,8 @@ function runRequestBlock(block, output = []) {
             body += interpolate(line) + "\n";
         }
     }
+
+    const asserts = extractAsserts(block);
 
     const curl = [
         `curl -X ${method}`,
@@ -85,14 +101,36 @@ function runRequestBlock(block, output = []) {
             let data = "";
             res.on("data", (chunk) => (data += chunk));
             res.on("end", () => {
+                let json;
                 try {
-                    const json = JSON.parse(data);
+                    json = JSON.parse(data);
                     if (block.includes("client.global.set")) {
                         extractVariable(block, json);
-                        console.log("📦 Captured vars:", globalVars);
                     }
                 } catch {}
-                console.log(`✅ ${method} ${url} → ${res.statusCode}`);
+
+                let allPass = true;
+
+                for (const { condition, message } of asserts) {
+                    try {
+                        const pass = Function("response", "body", `return ${condition};`)({ status: res.statusCode }, json);
+
+                        if (!pass) {
+                            console.log(`##vso[task.logissue type=warning;]${method} ${url} → Assert failed: ${message}`);
+                            allPass = false;
+                        }
+                    } catch (err) {
+                        console.log(`##vso[task.logissue type=warning;]${method} ${url} → Error in assert: ${message}`);
+                        allPass = false;
+                    }
+                }
+
+                if (asserts.length === 0) {
+                    console.log(`ℹ️ ${method} ${url} → ${res.statusCode}`);
+                } else if (allPass) {
+                    console.log(`✅ ${method} ${url} → All asserts passed`);
+                }
+
                 resolve();
             });
         });
