@@ -29,4 +29,4 @@ jobs:
         script: |
           sed -i 's/<subscriptionKey>/$(ApimSubscriptionKey)/g' ./HttpScripts/http-client.env.json
           node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
-        workingDirectory: $(Pipeline.Workspace)//ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
+        workingDirectory: $(Pipeline.Workspace)/ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
