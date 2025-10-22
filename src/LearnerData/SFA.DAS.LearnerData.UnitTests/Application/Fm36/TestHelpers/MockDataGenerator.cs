@@ -13,7 +13,7 @@ internal class MockDataGenerator
     private const string AdditionalPaymentTypeLearningSupport = "LearningSupport";
 
     internal List<Learning> UnpagedLearningsResponse { get; private set; }
-    internal Dictionary<TestScenario, GetFm36DataResponse> GetFm36DataResponses { get; private set; }
+    internal GetFm36DataResponse GetFm36DataResponse { get; private set; }
     private Fixture Fixture { get; set; }
 
     internal MockDataGenerator()
@@ -26,7 +26,8 @@ internal class MockDataGenerator
         _ukprn = Fixture.Create<long>();
 
         UnpagedLearningsResponse = new List<Learning>();
-        GetFm36DataResponses = new Dictionary<TestScenario, GetFm36DataResponse>();
+        GetFm36DataResponse = new GetFm36DataResponse();
+        GetFm36DataResponse.Apprenticeships = new List<Apprenticeship>();
     }
 
     internal void GenerateData(TestScenario scenario)
@@ -128,7 +129,7 @@ internal class MockDataGenerator
         };
 
         UnpagedLearningsResponse.Add(simpleApprenticeship);
-        GetFm36DataResponses.Add(TestScenario.SimpleApprenticeship, new GetFm36DataResponse { Apprenticeship = earningsApprenticeship });
+        GetFm36DataResponse.Apprenticeships.Add(earningsApprenticeship);
     }
 
     private void AddApprenticeshipWithPriceChange()
@@ -222,6 +223,6 @@ internal class MockDataGenerator
         };
 
         UnpagedLearningsResponse.Add(apprenticeshipWithAPriceChange);
-        GetFm36DataResponses.Add( TestScenario.ApprenticeshipWithPriceChange, new GetFm36DataResponse { Apprenticeship = earnings });
+        GetFm36DataResponse.Apprenticeships.Add(earnings);
     }
 }

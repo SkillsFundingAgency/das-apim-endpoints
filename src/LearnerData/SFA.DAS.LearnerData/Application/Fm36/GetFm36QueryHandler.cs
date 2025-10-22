@@ -6,6 +6,7 @@ using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
@@ -106,18 +107,17 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
     private async Task<List<Apprenticeship>> GetRelatedEarnings(GetFm36Query request, List<Learning> learnings)
     {
-        var earningsData = new List<Apprenticeship>();
+        var learningKeys = request.IsPaged ? learnings.Select(x => x.Key).ToList() : new List<Guid>(); // only send keys if paged
+        var earningsRequest = new PostGetFm36DataRequest(request.Ukprn, request.CollectionYear, request.CollectionPeriod, learningKeys);
+        var result = await _earningsApiClient.PostWithResponseCode<GetFm36DataResponse>(earningsRequest);
 
-        var getEarningsTasks = learnings.Select(x => _earningsApiClient.Get<GetFm36DataResponse>(new GetFm36DataRequest(request.Ukprn, request.CollectionYear, request.CollectionPeriod, x.Key))).ToList();
-
-        await Task.WhenAll(getEarningsTasks);
-
-        foreach (var task in getEarningsTasks)
+        if (!result.StatusCode.IsSuccessStatusCode() || result.Body == null)
         {
-            earningsData.Add(task.Result.Apprenticeship);
+            _logger.LogWarning("No earnings data returned for {ukprn} from Earnings Inner", request.Ukprn);
+            return new List<Apprenticeship>();
         }
 
-        return earningsData;
+        return result.Body.Apprenticeships;
     }
 
     private List<JoinedEarningsApprenticeship> JoinLearningAndEarningData(List<Learning> learnings, List<Apprenticeship> earnings, GetAcademicYearsResponse currentAcademicYear)
@@ -137,6 +137,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             else
             {
                 _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");
+                throw new InvalidOperationException($"Earnings data missing for learning key: {learning.Key}");
             }
         }
 

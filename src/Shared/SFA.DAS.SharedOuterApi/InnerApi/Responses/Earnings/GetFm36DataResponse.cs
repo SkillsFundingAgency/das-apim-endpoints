@@ -7,7 +7,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
 {
     public class GetFm36DataResponse
     {
-        public Apprenticeship Apprenticeship { get; set; }
+        public List<Apprenticeship> Apprenticeships { get; set; }
     }
 
     public class Apprenticeship

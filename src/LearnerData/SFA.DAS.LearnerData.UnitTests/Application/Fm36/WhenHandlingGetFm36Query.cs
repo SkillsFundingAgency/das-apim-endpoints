@@ -42,7 +42,7 @@ public class WhenHandlingGetFm36Query
         await _testFixture.CallSubjectUnderTest();
 
         //Assert
-        _testFixture.MockEarningsApiClient.Verify(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Exactly(2));
+        _testFixture.MockEarningsApiClient.Verify(x => x.PostWithResponseCode<GetFm36DataResponse>(It.Is<PostGetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn), It.IsAny<bool>()), Times.Once);
     }
 
     [Test]
@@ -77,7 +77,7 @@ public class WhenHandlingGetFm36Query
         await _testFixture.CallSubjectUnderTest(QueryType.Paged);
 
         //Assert
-        _testFixture.MockEarningsApiClient.Verify(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn)), Times.Exactly(2));
+        _testFixture.MockEarningsApiClient.Verify(x => x.PostWithResponseCode<GetFm36DataResponse>(It.Is<PostGetFm36DataRequest>(r => r.Ukprn == _testFixture.Ukprn), It.IsAny<bool>()), Times.Once);
     }
 
     [Test]

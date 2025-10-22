@@ -3,6 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
@@ -27,6 +28,7 @@ public class PagingSteps(TestContext testContext, ScenarioContext scenarioContex
     public void GivenThereAreRecordsInTheSystem(int numberOfRecords)
     {
         var learnerResponses = new List<Learning>();
+        var earningsReponse = new GetFm36DataResponse { Apprenticeships = new List<Apprenticeship>() };
 
         for (var i = 0; i < numberOfRecords; i++)
         {
@@ -34,29 +36,27 @@ public class PagingSteps(TestContext testContext, ScenarioContext scenarioContex
             var apiResponses = apprenticeshipModel.GetInnerApiResponses();
 
             learnerResponses.Add(apiResponses.UnPagedLearningsInnerApiResponse.Single());
-
-            foreach (var earningsResponse in apiResponses.EarningsInnerApiResponses)
-            {
-                testContext.EarningsApi.MockServer
-                    .Given(
-                        Request.Create().WithPath($"/{10005077}/fm36/{_academicYear}/{_deliveryPeriod}/{earningsResponse.Apprenticeship.Key}")
-                            .UsingGet())
-                    .RespondWith(
-                        Response.Create()
-                            .WithStatusCode(HttpStatusCode.OK)
-                            .WithBodyAsJson(earningsResponse)
-                    );
-            }
+            earningsReponse.Apprenticeships.Add(apiResponses.EarningsInnerApiResponse.Apprenticeships.Single());
         }
 
+        testContext.EarningsApi.MockServer
+            .Given(
+                Request.Create().WithPath($"/{10005077}/fm36/{_academicYear}/{_deliveryPeriod}")
+                    .UsingPost())
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithBodyAsJson(earningsReponse)
+            );
+
         testContext.ApprenticeshipsApi.MockServer
-        .Given(
-            Request.Create().WithPath($"/{_ukprn}/{_academicYear}/{_deliveryPeriod}")
-                .UsingGet())
-        .RespondWith(
-            Response.Create()
-            .WithCallback(request => GetPagedResponse(request, learnerResponses))
-        );
+            .Given(
+                Request.Create().WithPath($"/{_ukprn}/{_academicYear}/{_deliveryPeriod}")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                .WithCallback(request => GetPagedResponse(request, learnerResponses))
+            );
 
     }
 
