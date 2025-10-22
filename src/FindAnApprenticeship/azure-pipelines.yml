@@ -52,7 +52,7 @@ resources:
 stages:
 - template: ../../pipeline-templates/stage/outerapi-pipeline.yml
   parameters:
-    OuterApiName: FindAnApprenticeship
+    OuterApiName: das-at-faav2ui-as
     ConfigurationSecrets:
       NServiceBusLicense: $(NServiceBusLicense)
       ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)

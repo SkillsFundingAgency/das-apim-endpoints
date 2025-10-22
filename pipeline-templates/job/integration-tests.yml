@@ -1,5 +1,6 @@
 parameters:
   Environment: AT
+  OuterApiName:
   ServiceConnection:
   
 jobs:
@@ -16,7 +17,7 @@ jobs:
         ServiceConnection: ${{ parameters.ServiceConnection }}
         ApimResourceGroup: $(SharedApimResourceGroup)
         ApimName: $(SharedApimName)
-        SubscriptionId: $(FindAnApprenticeshipAPIMSubscriptionId)
+        SubscriptionId: ${{ parameters.OuterApiName }}
         PipelineVariableName: ApimSubscriptionKey
         IsMultiRepoCheckout: true
     - task: Bash@3
