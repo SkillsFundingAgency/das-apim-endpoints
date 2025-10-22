@@ -13,6 +13,7 @@ jobs:
     vmImage: ubuntu-latest
   steps:
     - task: DownloadPipelineArtifact@2
+    - checkout: self
     - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
       parameters:
         ServiceConnection: ${{ parameters.ServiceConnection }}
