@@ -1,6 +1,5 @@
 parameters:
   Environment: AT
-  OuterApiName:
   ServiceConnection:
   
 jobs:
@@ -17,12 +16,12 @@ jobs:
         ServiceConnection: ${{ parameters.ServiceConnection }}
         ApimResourceGroup: $(SharedApimResourceGroup)
         ApimName: $(SharedApimName)
-        SubscriptionId: ${{ parameters.OuterApiName }}
-        PipelineVariableName: ApprovalsApimSubscriptionKey
+        SubscriptionId: $(FindAnApprenticeshipAPIMSubscriptionId)
+        PipelineVariableName: ApimSubscriptionKey
         IsMultiRepoCheckout: true
     - task: Bash@3
       inputs:
         targetType: inline
         script: |
-          sed -i 's/<subscriptionKey>/$(subscriptionKey)/g' http-client.env.json
+          sed -i 's/<subscriptionKey>/$(ApimSubscriptionKey)/g' http-client.env.json
           node ./src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec

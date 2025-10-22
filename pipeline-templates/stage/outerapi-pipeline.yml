@@ -79,7 +79,6 @@ stages:
     jobs:
     - template: ../../pipeline-templates/job/integration-tests.yml
       parameters:
-        OuterApiName: ${{ parameters.OuterApiName }}
         ServiceConnection: SFA-DAS-DevTest-ARM
 
 - stage: Deploy_TEST
