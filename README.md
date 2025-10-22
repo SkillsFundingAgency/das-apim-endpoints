@@ -599,9 +599,15 @@ Starting the API will then show the swagger definition with the available operat
 
 The Reservations outer api relies on the following inner apis:
 
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
+* [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
 * [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+* [das-pr-api](https://github.com/SkillsFundingAgency/das-pr-api)
+* [das-reservations-api](https://github.com/SkillsFundingAgency/das-reservations-api)
 
 You are able to run the API by doing the following:
 
@@ -611,20 +617,49 @@ You are able to run the API by doing the following:
 ParitionKey: LOCAL
 RowKey: SFA.DAS.Reservations.OuterApi_1.0
 Data: {
+    "FinanceApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AccountsInnerApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LevyTransferMatchingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AzureAd": {
+        "tenant": "citizenazuresfabisgov.onmicrosoft.com",
+        "identifier": "https://citizenazuresfabisgov.onmicrosoft.com/das-test-apimendp-rsrvapi-as-ar"
+    },
     "CoursesApiConfiguration": {
-        "url":"https://localhost:5001/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "RoatpConfiguration" : {
-        "url":"https://localhost:5111/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "EmployerProfilesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "FeatureToggles": {
-        "RoatpProvidersEnabled": true
+    "RoatpConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderRelationshipsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerUsersApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ReservationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     }
 }
 ```
