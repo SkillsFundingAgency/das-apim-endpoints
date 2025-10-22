@@ -92,7 +92,7 @@ function runRequestBlock(block, output = []) {
                         console.log("📦 Captured vars:", globalVars);
                     }
                 } catch {}
-                console.error(`✅ ${method} ${url} → ${res.statusCode}`);
+                console.log(`✅ ${method} ${url} → ${res.statusCode}`);
                 resolve();
             });
         });
