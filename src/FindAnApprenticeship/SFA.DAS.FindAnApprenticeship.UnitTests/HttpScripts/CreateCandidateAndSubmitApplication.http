@@ -245,7 +245,7 @@ Ocp-Apim-Subscription-Key: {{subscriptionKey}}
 
 > {%
     client.test("Request executed successfully", function () {
-        client.assert(response.status === 204, "Response status is not 204 it is " + response.status);
+        client.assert(response.status === 201, "Response status is not 201 it is " + response.status);
     });
 %}
 
@@ -281,7 +281,7 @@ Ocp-Apim-Subscription-Key: {{subscriptionKey}}
 
 > {%
     client.test("Request executed successfully", function () {
-        client.assert(response.status === 204 , "Response status is not 204 it is " + response.status);
+        client.assert(response.status === 201 , "Response status is not 201 it is " + response.status);
     });
 %}
 
@@ -293,7 +293,7 @@ Ocp-Apim-Subscription-Key: {{subscriptionKey}}
 
 > {%
     client.test("Request executed successfully", function () {
-        client.assert(response.status === 204, "Response status is not 204 it is " + response.status);
+        client.assert(response.status === 201, "Response status is not 201 it is " + response.status);
     });
 %}
 
