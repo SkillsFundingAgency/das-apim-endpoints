@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
@@ -19,7 +20,7 @@ namespace SFA.DAS.LearnerDataJobs.Application.Queries
             logger.LogTrace("Handling GetLearnerByIdQuery");
             var request = new GetLearnerByIdRequest(command.ukprn, command.Id);
 
-            var learner = await client.Get<GetLearnerDataByIdResponse>(request);
+            var learner = await client.GetWithResponseCode<GetLearnerDataByIdResponse>(request);
 
             if (learner == null)
             {
@@ -27,10 +28,9 @@ namespace SFA.DAS.LearnerDataJobs.Application.Queries
                 return new GetLearnerByIdResult();
             }
 
-            return new GetLearnerByIdResult
-            {
-                ApprenticeshipId = learner.ApprenticeshipId,
-            };
+            return new GetLearnerByIdResult() { ApprenticeshipId = learner.Body.ApprenticeshipId };
         }
+
+        
     }
 }

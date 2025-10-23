@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.Application.Queries;
@@ -27,10 +28,12 @@ namespace SFA.DAS.LearnerDataJobs.UnitTests.Application.Queries
 
             var expectedUrl =
                 $"providers/{command.ukprn}/learners/{command.Id}";
+
             client.Setup(x =>
-                    x.Get<GetLearnerDataByIdResponse>(
+                    x.GetWithResponseCode<GetLearnerDataByIdResponse>(
                         It.Is<GetLearnerByIdRequest>(p => p.GetUrl == expectedUrl)))
-                .ReturnsAsync(new GetLearnerDataByIdResponse() { ApprenticeshipId = 1  });
+                 .ReturnsAsync(new ApiResponse<GetLearnerDataByIdResponse>(new GetLearnerDataByIdResponse() { ApprenticeshipId=1 }, HttpStatusCode.OK,""));
+            
 
             var result = await handler.Handle(command, CancellationToken.None);
 
@@ -47,9 +50,11 @@ namespace SFA.DAS.LearnerDataJobs.UnitTests.Application.Queries
             var expectedUrl =
                 $"providers/{command.ukprn}/learners/{command.Id}";
             client.Setup(x =>
-                    x.Get<GetLearnerDataByIdResponse>(
+                    x.GetWithResponseCode<GetLearnerDataByIdResponse>(
                         It.Is<GetLearnerByIdRequest>(p => p.GetUrl == expectedUrl)))
-                .ReturnsAsync(new GetLearnerDataByIdResponse());
+                 .ReturnsAsync(new ApiResponse<GetLearnerDataByIdResponse>(new GetLearnerDataByIdResponse(), HttpStatusCode.NotFound, ""));
+
+
 
             var result = await handler.Handle(command, CancellationToken.None);
 
