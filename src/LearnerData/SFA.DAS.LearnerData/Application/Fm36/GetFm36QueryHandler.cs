@@ -169,7 +169,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedApprenticeship.Uln);
+                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedApprenticeship.Key);
                     return null;
                 }
 

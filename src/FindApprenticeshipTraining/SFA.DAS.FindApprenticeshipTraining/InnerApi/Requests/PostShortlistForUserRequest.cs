@@ -5,7 +5,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests
 {
     public class PostShortlistForUserRequest : IPostApiRequest
     {
-        public string PostUrl => "api/shortlists";
+        public string PostUrl => "shortlists";
         public object Data { get; set; }
     }
 
