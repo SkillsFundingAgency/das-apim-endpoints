@@ -22,6 +22,4 @@
     <PackageReference Include="SFA.DAS.Api.Common" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
-
-
 </Project>
