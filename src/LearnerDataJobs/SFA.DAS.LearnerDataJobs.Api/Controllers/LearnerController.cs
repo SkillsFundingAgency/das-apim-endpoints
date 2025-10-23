@@ -55,7 +55,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
     }
 
     [HttpGet]
-    [Route("{id:long}")]
+    [Route("providers/{providerId}/learners/{learnerDataId}")]
     public async Task<IActionResult> GetById(long ukprn, long id)
     {
         try

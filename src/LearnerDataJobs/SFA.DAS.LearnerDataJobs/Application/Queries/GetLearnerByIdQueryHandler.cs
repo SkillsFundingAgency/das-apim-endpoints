@@ -11,25 +11,26 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerDataJobs.Application.Queries
 {
-    public class GetLearnerByIdQueryHandler(IInternalApiClient<LearnerDataInnerApiConfiguration> client, ILogger<AddLearnerDataCommandHandler> logger)
+    public class GetLearnerByIdQueryHandler(IInternalApiClient<LearnerDataInnerApiConfiguration> client, ILogger<GetLearnerByIdQueryHandler> logger)
     : IRequestHandler<GetLearnerByIdQuery, GetLearnerByIdResult>
     {
         public async Task<GetLearnerByIdResult> Handle(GetLearnerByIdQuery command, CancellationToken cancellationToken)
-    {
-
+        {
+            logger.LogTrace("Handling GetLearnerByIdQuery");
             var request = new GetLearnerByIdRequest(command.ukprn, command.Id);
 
-        var learner = await client.Get<GetLearnerDataByIdResponse>(request);
+            var learner = await client.Get<GetLearnerDataByIdResponse>(request);
 
-        if (learner == null)
-        {
-            return new GetLearnerByIdResult();
+            if (learner == null)
+            {
+                logger.LogTrace($"Learner Data  does not exists for Id : {command.Id}");
+                return new GetLearnerByIdResult();
+            }
+
+            return new GetLearnerByIdResult
+            {
+                ApprenticeshipId = learner.ApprenticeshipId,
+            };
         }
-
-        return new GetLearnerByIdResult
-        {            
-            ApprenticeshipId = learner.ApprenticeshipId,
-        };
     }
-}
 }
