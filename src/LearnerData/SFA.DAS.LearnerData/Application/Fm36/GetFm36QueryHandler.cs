@@ -137,7 +137,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             else
             {
                 _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");
-                throw new InvalidOperationException($"Earnings data missing for learning key: {learning.Key}");
+                //throw new InvalidOperationException($"Earnings data missing for learning key: {learning.Key}");
             }
         }
 
