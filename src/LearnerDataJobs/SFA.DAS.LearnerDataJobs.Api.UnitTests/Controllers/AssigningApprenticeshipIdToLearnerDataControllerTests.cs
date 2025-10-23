@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.LearnerDataJobs.Api.Controllers;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
+using SFA.DAS.LearnerDataJobs.Application.Queries;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -74,4 +75,23 @@ public class AssigningApprenticeshipIdToLearnerDataControllerTests
 
         result.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Valid_ApprenticeshipId_With_No_Issues(
+       long providerId,
+       long learnerDataId,
+       GetLearnerByIdRequest request,
+       [Frozen] Mock<IMediator> mediator,
+       [Greedy] LearnersController controller)
+    {
+        mediator.Setup(x =>
+                x.Send(
+                    It.Is<GetLearnerByIdQuery>(p =>
+                        p.ukprn == providerId && p.Id == learnerDataId),CancellationToken.None))
+            .ReturnsAsync(new GetLearnerByIdResult() { ApprenticeshipId = 1 });
+
+        var result = await controller.GetById(providerId, learnerDataId);
+
+        result.Should().NotBeNull();
+    }   
 }
