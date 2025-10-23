@@ -59,4 +59,3 @@ stages:
     useProductAppInsights: 'True'
     CheckClientCert: $True
     RunTests: 'True'
-    APIMSubscriptionId: das-at-faav2ui-as

@@ -2,7 +2,6 @@ parameters:
   Environment: AT
   OuterApiName:
   ServiceConnection:
-  SubscriptionId:
   
 jobs:
 - job: tests
@@ -11,24 +10,35 @@ jobs:
   workspace:
     clean:
   pool:
-    vmImage: ubuntu-latest
+    name: DAS - APIM Continuous Integration Agents
   steps:
     - task: DownloadPipelineArtifact@2
     - checkout: self
+    - task: AzurePowerShell@5
+      displayName: Find APIM Subscription ID
+      inputs:
+        azureSubscription: ${{ parameters.ServiceConnection }}
+        scriptType: InlineScript
+        inline: |
+          $Context = New-AzApiManagementContext -ResourceGroupName das-at-apim-rg -ServiceName das-at-shared-apim
+          $Subscriptions = Get-AzApiManagementSubscription -Context $Context -Scope /products/FindAnApprenticeshipOuterApi | Where-Object { $_.UserId -eq 1 }
+          $ApimSubscriptionId = $Subscriptions.SubscriptionId
+          Write-Output "Setting value of Subscription ID to pipeline variable ApimSubscriptionId"
+          Write-Output "##vso[task.setvariable variable=ApimSubscriptionId]$ApimSubscriptionId"
     - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
       parameters:
         ServiceConnection: ${{ parameters.ServiceConnection }}
         ApimResourceGroup: $(SharedApimResourceGroup)
         ApimName: $(SharedApimName)
-        SubscriptionId: ${{ parameters.SubscriptionId }}
+        SubscriptionId: $(ApimSubscriptionId)
         PipelineVariableName: ApimSubscriptionKey
         IsMultiRepoCheckout: true
-    - task: Bash@3
+    - task: PowerShell@2
       displayName: Run Tests
       continueOnError: true
       inputs:
         targetType: inline
         script: |
-          sed -i 's/<subscriptionKey>/$(ApimSubscriptionKey)/g' ./HttpScripts/http-client.env.json
+          (Get-Content ./HttpScripts/http-client.env.json) -replace '<subscriptionKey>', $ApimSubscriptionKey | Set-Content ./HttpScripts/http-client.env.json
           node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
         workingDirectory: $(Pipeline.Workspace)/ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/

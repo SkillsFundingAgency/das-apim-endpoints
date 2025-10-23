@@ -1,5 +1,5 @@
 parameters:
-  OuterApiName:
+  OuterApiName: ''
   SandboxEnabled: $False
   AddXForwardedAuthorization: $False
   CheckClientCert: $False
@@ -12,7 +12,6 @@ parameters:
   useProductAppInsights: ''
   AzureArtifactsFeed: ''
   RunTests: ''
-  APIMSubscriptionId: ''
 
 stages:
 - stage: Build
@@ -81,7 +80,6 @@ stages:
     jobs:
     - template: ../../pipeline-templates/job/integration-tests.yml
       parameters:
-        APIMSubscriptionId: ${{ parameters.APIMSubscriptionId }}
         OuterApiName: ${{ parameters.OuterApiName }}
         ServiceConnection: SFA-DAS-DevTest-ARM
 
