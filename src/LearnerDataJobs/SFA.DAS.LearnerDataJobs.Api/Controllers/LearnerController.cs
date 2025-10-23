@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
+using SFA.DAS.LearnerDataJobs.Application.Queries;
 
 namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 
@@ -45,6 +46,32 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
                 return Ok();
             }
             return StatusCode((int)HttpStatusCode.FailedDependency);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "APIM error whilst attempting to assign ");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpGet]
+    [Route("{id:long}")]
+    public async Task<IActionResult> GetById(long ukprn, long id)
+    {
+        try
+        {
+            logger.LogTrace("Calling GetLearnerByIdQuery");
+            var command = new GetLearnerByIdQuery(ukprn, id);
+            logger.LogInformation($"Get learner data from API for {id}");
+
+            var result = await mediator.Send(command);
+
+            if (result is null)
+            {
+                logger.LogInformation("Getting learner data from APi is not succeful");
+                return new NotFoundResult();
+            }
+            return Ok(result);
         }
         catch (Exception ex)
         {
