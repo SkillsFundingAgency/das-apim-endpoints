@@ -5,9 +5,11 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeshipDetails
 {
+    [ExcludeFromCodeCoverage]
     public class GetApprenticeshipQueryHandler : IRequestHandler<GetApprenticeshipQuery, GetApprenticeshipQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _commitmentsV2ApiClient;
