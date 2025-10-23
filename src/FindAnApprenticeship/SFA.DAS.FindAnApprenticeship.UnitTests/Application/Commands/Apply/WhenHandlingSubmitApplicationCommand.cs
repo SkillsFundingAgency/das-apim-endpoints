@@ -24,6 +24,7 @@ public class WhenHandlingSubmitApplicationCommand
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
+        NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -57,6 +58,13 @@ public class WhenHandlingSubmitApplicationCommand
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.Created, ""));
+        
+        recruitV2ApiClient
+            .Setup(x => x.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
+                It.Is<PostCreateApplicationReviewNotificationsRequest>(c =>
+                    c.PostUrl.Contains(request.ApplicationId.ToString())), true))
+            .ReturnsAsync(new ApiResponse<PostCreateApplicationReviewNotificationsResponse>(
+                [applicationReviewNotificationsResponse], HttpStatusCode.Created, ""));
         
         // act
         var actual = await handler.Handle(request, CancellationToken.None);
@@ -235,6 +243,7 @@ public class WhenHandlingSubmitApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
+        NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -273,6 +282,13 @@ public class WhenHandlingSubmitApplicationCommand
                 It.Is<PostSubmitApplicationRequest>(c => 
                     c.PostUrl.Contains(request.CandidateId.ToString())
                 ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+        
+        recruitV2ApiClient
+            .Setup(x => x.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
+                It.Is<PostCreateApplicationReviewNotificationsRequest>(c =>
+                    c.PostUrl.Contains(request.ApplicationId.ToString())), true))
+            .ReturnsAsync(new ApiResponse<PostCreateApplicationReviewNotificationsResponse>(
+                [applicationReviewNotificationsResponse], HttpStatusCode.Created, ""));
         
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
@@ -314,6 +330,7 @@ public class WhenHandlingSubmitApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
+        NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -349,6 +366,13 @@ public class WhenHandlingSubmitApplicationCommand
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.Created, ""));
+        
+        recruitV2ApiClient
+            .Setup(x => x.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
+                It.Is<PostCreateApplicationReviewNotificationsRequest>(c =>
+                    c.PostUrl.Contains(request.ApplicationId.ToString())), true))
+            .ReturnsAsync(new ApiResponse<PostCreateApplicationReviewNotificationsResponse>(
+                [applicationReviewNotificationsResponse], HttpStatusCode.Created, ""));
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
@@ -385,6 +409,7 @@ public class WhenHandlingSubmitApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         GetApprenticeshipVacancyItemResponse vacancyResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
+        NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
@@ -427,6 +452,13 @@ public class WhenHandlingSubmitApplicationCommand
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.Created, ""));
+        
+        recruitV2ApiClient
+            .Setup(x => x.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
+                It.Is<PostCreateApplicationReviewNotificationsRequest>(c =>
+                    c.PostUrl.Contains(request.ApplicationId.ToString())), true))
+            .ReturnsAsync(new ApiResponse<PostCreateApplicationReviewNotificationsResponse>(
+                [applicationReviewNotificationsResponse], HttpStatusCode.Created, ""));
 
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
         vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, true)).Returns(expectedAddress);
