@@ -1,11 +1,9 @@
 parameters:
-  Environment: AT
   OuterApiName:
   ServiceConnection:
   
 jobs:
 - job: tests
-  condition: and(succeeded(), eq(parameters.Environment, 'AT'))
   displayName: Integration Tests
   workspace:
     clean:
