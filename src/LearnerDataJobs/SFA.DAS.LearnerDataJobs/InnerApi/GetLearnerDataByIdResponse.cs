@@ -2,5 +2,5 @@
 
 public class GetLearnerDataByIdResponse
 {
-    public long ApprenticeshipId { get; set; }
+    public long? ApprenticeshipId { get; set; }
 }
