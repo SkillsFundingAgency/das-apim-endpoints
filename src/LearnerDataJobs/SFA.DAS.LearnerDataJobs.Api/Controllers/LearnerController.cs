@@ -56,13 +56,13 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
 
     [HttpGet]
     [Route("providers/{providerId}/learners/{learnerDataId}")]
-    public async Task<IActionResult> GetById(long ukprn, long id)
+    public async Task<IActionResult> GetById([FromRoute] long providerId, long learnerDataId)
     {
         try
         {
             logger.LogTrace("Calling GetLearnerByIdQuery");
-            var command = new GetLearnerByIdQuery(ukprn, id);
-            logger.LogInformation($"Get learner data from API for {id}");
+            var command = new GetLearnerByIdQuery(providerId, learnerDataId);
+            logger.LogInformation($"Get learner data from API for {learnerDataId}");
 
             var result = await mediator.Send(command);
 
