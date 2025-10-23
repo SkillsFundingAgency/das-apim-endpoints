@@ -18,7 +18,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeshipDetails
         {
             _commitmentsV2ApiClient = commitmentsV2ApiClient;
         }
-
         public async Task<GetApprenticeshipQueryResult> Handle(GetApprenticeshipQuery request, CancellationToken cancellationToken)
         {
             if (request == null) throw new ArgumentNullException(nameof(request)); 
