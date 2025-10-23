@@ -53,7 +53,7 @@ namespace SFA.DAS.LearnerDataJobs.UnitTests.Application.Queries
 
             var result = await handler.Handle(command, CancellationToken.None);
 
-            result.ApprenticeshipId.Should().Be(0);
+            result.ApprenticeshipId.Should().BeNull();
         }
     }
 }
