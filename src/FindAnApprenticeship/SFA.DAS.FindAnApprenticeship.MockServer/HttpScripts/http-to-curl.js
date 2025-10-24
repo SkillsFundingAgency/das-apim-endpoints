@@ -10,6 +10,7 @@ const envFile = "HttpScripts/http-client.env.json";
 
 let envVars = {};
 let globalVars = {};
+let warnings = [];
 
 function uuid() {
     return crypto.randomUUID?.() || [4, 2, 2, 2, 6].map(len => [...Array(len)].map(() => Math.floor(Math.random() * 16).toString(16)).join("")).join("-");
@@ -37,6 +38,20 @@ function extractVariable(code, responseJson) {
     }
 }
 
+function extractAsserts(block) {
+    // Matches: client.assert(response.status === 200, "Message")
+    const regex = /client\.assert\(([^,]+),\s*["'`](.+?)["'`]\)/g;
+    const asserts = [];
+    let match;
+    while ((match = regex.exec(block)) !== null) {
+        asserts.push({
+            condition: match[1].trim(),
+            message: match[2].trim()
+        });
+    }
+    return asserts;
+}
+
 function runRequestBlock(block, output = []) {
     const lines = block.trim().split("\n");
     const [method, url] = interpolate(lines[0].trim()).split(" ");
@@ -58,11 +73,20 @@ function runRequestBlock(block, output = []) {
             body += interpolate(line) + "\n";
         }
     }
+    // Mask Ocp-Apim-Subscription-Key in Azure DevOps logs
+    if (headers["Ocp-Apim-Subscription-Key"]) {
+        console.log(`##vso[task.setvariable variable=SUB_KEY;issecret=true]`);
+    }
+    const asserts = extractAsserts(block);
+    
 
     const curl = [
         `curl -X ${method}`,
         `"${url}"`,
-        ...Object.entries(headers).map(([k, v]) => `-H "${k}: ${v}"`),
+        ...Object.entries(headers).map(([k, v]) => {
+            if (k.toLowerCase() === "ocp-apim-subscription-key") return `-H "${k}: ***"`;
+            return `-H "${k}: ${v}"`;
+        }),
         body.trim() ? `-d '${body.trim()}'` : "",
     ]
         .filter(Boolean)
@@ -85,14 +109,40 @@ function runRequestBlock(block, output = []) {
             let data = "";
             res.on("data", (chunk) => (data += chunk));
             res.on("end", () => {
+                let json;
                 try {
-                    const json = JSON.parse(data);
+                    json = JSON.parse(data);
                     if (block.includes("client.global.set")) {
                         extractVariable(block, json);
-                        console.log("📦 Captured vars:", globalVars);
                     }
                 } catch {}
-                console.log(`✅ ${method} ${url} → ${res.statusCode}`);
+
+                let allPass = true;
+
+                for (const { condition, message } of asserts) {
+                    try {
+                        const pass = Function("response", "body", `return ${condition};`)({ status: res.statusCode }, json);
+
+                        if (!pass) {
+                            const warnMsg = `${method} ${url} → Assert failed: ${message}`;
+                            console.log(`##vso[task.logissue type=warning;]${warnMsg}`);
+                            warnings.push(warnMsg);
+                            allPass = false;
+                        }
+                    } catch (err) {
+                        const warnMsg = `${method} ${url} → Error in assert: ${message}`;
+                        console.log(`##vso[task.logissue type=warning;]${warnMsg}`);
+                        warnings.push(warnMsg);
+                        allPass = false;
+                    }
+                }
+
+                if (asserts.length === 0) {
+                    console.log(`ℹ️ ${method} ${url} → ${res.statusCode}`);
+                } else if (allPass) {
+                    console.log(`✅ ${method} ${url} → All asserts passed`);
+                }
+                
                 resolve();
             });
         });
@@ -148,5 +198,11 @@ function runRequestBlock(block, output = []) {
         console.log(`💾 Output saved to ${args.out}`);
     } else {
         console.log(output.join("\n\n"));
+    }
+    if (warnings.length > 0) {
+        console.log(`\n⚠️ Total warnings: ${warnings.length}`);
+        warnings.forEach((w, i) => console.log(`  ${i + 1}. ${w}`));
+    } else {
+        console.log("\n✅ No warnings detected");
     }
 })();
