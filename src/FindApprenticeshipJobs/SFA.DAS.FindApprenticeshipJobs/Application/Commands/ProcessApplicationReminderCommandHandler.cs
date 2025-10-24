@@ -12,7 +12,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 
 public class ProcessApplicationReminderCommandHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, 
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient, 
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
     EmailEnvironmentHelper helper,
     INotificationService notificationService) : IRequestHandler<ProcessApplicationReminderCommand, Unit>

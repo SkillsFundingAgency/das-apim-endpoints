@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 public class GetLiveVacanciesQueryHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient,
     ILiveVacancyMapper liveVacancyMapper,
     ICourseService courseService)
     : IRequestHandler<GetLiveVacanciesQuery, GetLiveVacanciesQueryResult>
@@ -22,12 +22,12 @@ public class GetLiveVacanciesQueryHandler(
 
         return new GetLiveVacanciesQueryResult
         {
-            PageSize = vacanciesResponse.Body.PageSize,
-            PageNo = vacanciesResponse.Body.PageNo,
-            TotalLiveVacanciesReturned = vacanciesResponse.Body.TotalLiveVacanciesReturned,
-            TotalLiveVacancies = vacanciesResponse.Body.TotalLiveVacancies,
-            TotalPages = vacanciesResponse.Body.TotalPages,
-            Vacancies = vacanciesResponse.Body.Vacancies.Select(x => liveVacancyMapper.Map(x, standardsTask.Result))
+            PageSize = vacanciesResponse.Body.PageInfo.PageSize,
+            PageNo = vacanciesResponse.Body.PageInfo.PageIndex,
+            TotalLiveVacanciesReturned = vacanciesResponse.Body.Items.Count(),
+            TotalLiveVacancies = vacanciesResponse.Body.PageInfo.TotalCount,
+            TotalPages = vacanciesResponse.Body.PageInfo.TotalPages,
+            Vacancies = vacanciesResponse.Body.Items.Select(x => liveVacancyMapper.Map(x, standardsTask.Result))
         };
     }
 }
