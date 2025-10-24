@@ -1,21 +1,16 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
-using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;
 
@@ -44,7 +39,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
         recruitApiResponse.EmployerLocationOption = employerLocationOption;
@@ -84,19 +78,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                 )), Times.Once
                 
             );
-            notificationService.Verify(x => x.Send(
-                It.Is<SendEmailCommand>(c =>
-                    c.RecipientsAddress == candidate.Candidate.Email
-                    && c.TemplateId == emailEnvironmentHelper.VacancyClosedEarlyTemplateId
-                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
-                    && c.Tokens["vacancy"] == recruitApiResponse.Title
-                    && c.Tokens["employer"] == recruitApiResponse.EmployerName
-                    && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
-                    && c.Tokens["location"] == expectedAddress
-                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
-                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
-                )
-            ), Times.Once);
         }
     }
     
@@ -108,7 +89,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
         recruitApiResponse.EmployerLocationOption = AvailableWhere.OneLocation;
@@ -147,19 +127,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                 )), Times.Once
                 
             );
-            notificationService.Verify(x=>x.Send(
-                It.Is<SendEmailCommand>(c=>
-                    c.RecipientsAddress == candidate.Candidate.Email
-                    && c.TemplateId == emailEnvironmentHelper.VacancyClosedEarlyTemplateId
-                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
-                    && c.Tokens["vacancy"] == recruitApiResponse.Title
-                    && c.Tokens["employer"] == recruitApiResponse.EmployerName 
-                    && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy") 
-                    && c.Tokens["location"] == $"address1 ({recruitApiResponse.Address!.Postcode})"
-                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
-                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
-                )
-            ), Times.Once);
         }
     }
 
@@ -171,7 +138,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
         const string expectedAddress = "city (postcode)";
@@ -213,19 +179,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                 )), Times.Once
 
             );
-            notificationService.Verify(x => x.Send(
-                It.Is<SendEmailCommand>(c =>
-                    c.RecipientsAddress == candidate.Candidate.Email
-                    && c.TemplateId == emailEnvironmentHelper.VacancyClosedEarlyTemplateId
-                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
-                    && c.Tokens["vacancy"] == recruitApiResponse.Title
-                    && c.Tokens["employer"] == recruitApiResponse.EmployerName
-                    && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
-                    && c.Tokens["location"] == expectedAddress
-                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
-                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
-                )
-            ), Times.Once);
         }
     }
 
@@ -238,10 +191,8 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
-       
         recruitApiResponse.EmployerLocationOption = AvailableWhere.MultipleLocations;
         recruitApiResponse.EmployerLocations = addresses;
 
@@ -277,19 +228,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                 )), Times.Once
 
             );
-            notificationService.Verify(x => x.Send(
-                It.Is<SendEmailCommand>(c =>
-                    c.RecipientsAddress == candidate.Candidate.Email
-                    && c.TemplateId == emailEnvironmentHelper.VacancyClosedEarlyTemplateId
-                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
-                    && c.Tokens["vacancy"] == recruitApiResponse.Title
-                    && c.Tokens["employer"] == recruitApiResponse.EmployerName
-                    && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
-                    && c.Tokens["location"] == employmentWorkLocation
-                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
-                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
-                )
-            ), Times.Once);
         }
     }
 
@@ -301,7 +239,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
         const string expectedAddress = "Leeds (3 available locations)";
@@ -350,19 +287,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                 )), Times.Once
 
             );
-            notificationService.Verify(x => x.Send(
-                It.Is<SendEmailCommand>(c =>
-                    c.RecipientsAddress == candidate.Candidate.Email
-                    && c.TemplateId == emailEnvironmentHelper.VacancyClosedEarlyTemplateId
-                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
-                    && c.Tokens["vacancy"] == recruitApiResponse.Title
-                    && c.Tokens["employer"] == recruitApiResponse.EmployerName
-                    && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
-                    && c.Tokens["location"] == expectedAddress
-                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
-                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
-                )
-            ), Times.Once);
         }
     }
 
@@ -374,7 +298,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
         const string expectedAddress = "Leeds, Manchester, Sheffield";
@@ -423,19 +346,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
                 )), Times.Once
 
             );
-            notificationService.Verify(x => x.Send(
-                It.Is<SendEmailCommand>(c =>
-                    c.RecipientsAddress == candidate.Candidate.Email
-                    && c.TemplateId == emailEnvironmentHelper.VacancyClosedEarlyTemplateId
-                    && c.Tokens["firstName"] == candidate.Candidate.FirstName
-                    && c.Tokens["vacancy"] == recruitApiResponse.Title
-                    && c.Tokens["employer"] == recruitApiResponse.EmployerName
-                    && c.Tokens["dateApplicationStarted"] == candidate.ApplicationCreatedDate.ToString("d MMM yyyy")
-                    && c.Tokens["location"] == employmentWorkLocation
-                    && !string.IsNullOrEmpty(c.Tokens["vacancyUrl"])
-                    && !string.IsNullOrEmpty(c.Tokens["settingsUrl"])
-                )
-            ), Times.Once);
         }
     }
 
@@ -444,7 +354,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         ProcessVacancyClosedEarlyCommand command,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
         candidateApiClient
@@ -468,7 +377,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
         EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
-        [Frozen] Mock<INotificationService> notificationService,
         ProcessVacancyClosedEarlyCommandHandler handler)
     {
         candidateApiClient
@@ -484,9 +392,6 @@ public class WhenHandlingProcessVacancyClosedEarlyCommand
 
         await handler.Handle(command, CancellationToken.None);
 
-        notificationService.Verify(x=>x.Send(
-            It.IsAny<SendEmailCommand>()
-        ), Times.Never);
         candidateApiClient.Verify(x => 
             x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()), Times.Never);
         

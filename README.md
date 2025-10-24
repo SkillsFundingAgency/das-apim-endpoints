@@ -105,9 +105,26 @@ Starting the API will then show the swagger definition with the available operat
 
 The Approvals outer api relies on the following inner apis:
 
+* [das-providerapprenticeshipsservice](https://github.com/SkillsFundingAgency/das-providerapprenticeshipsservice)
+* [das-assessor-service](https://github.com/SkillsFundingAgency/das-assessor-service)
+* [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-rofjaa-api](https://github.com/SkillsFundingAgency/das-rofjaa-api)
+* [das-pr-api](https://github.com/SkillsFundingAgency/das-pr-api)
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
-* [das-assessor-service](https://github.com/SkillsFundingAgency/das-assessor-service/)
+* [das-providerevents](https://github.com/SkillsFundingAgency/das-providerevents)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+* [das-learning](https://github.com/SkillsFundingAgency/das-learning)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+* [das-reservations-api](https://github.com/SkillsFundingAgency/das-reservations-api)
+* [das-apprentice-commitments-api](https://github.com/SkillsFundingAgency/das-apprentice-commitments-api)
+* [das-learner-data-api](https://github.com/SkillsFundingAgency/das-learner-data-api)
+* [das-collection-calendar](https://github.com/SkillsFundingAgency/das-collection-calendar)
+* [das-coursetypes-api](https://github.com/SkillsFundingAgency/das-coursetypes-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
 
 You are able to run the API by doing the following:
 
@@ -117,17 +134,94 @@ You are able to run the API by doing the following:
 ParitionKey: LOCAL
 RowKey: SFA.DAS.Approvals.OuterApi_1.0
 Data: {
+    "ProviderAccountApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AssessorsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LevyTransferMatchingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "FjaaApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderRelationshipsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "FinanceApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderCoursesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
     "CoursesApiConfiguration": {
-        "url":"https://localhost:5001/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "ProviderEventsConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "AssessorsApiConfiguration" : {
-        "url":"http://localhost:59022/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "EmployerProfilesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LearningApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerUsersApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ReservationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ApprenticeCommitmentsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LearnerDataInnerApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CollectionCalendarApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CourseTypesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AzureAd": {
+        "tenant": "**********.onmicrosoft.com",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ApprenticeAccountsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "TrainingProviderApi": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****",
+        "tenant": "**********.onmicrosoft.com"
+    },
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AccountsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     }
 }
 ```
@@ -331,14 +425,98 @@ Data: {
 
 Starting the API will then show the swagger definition with the available operations. The outer API is used during payment processing for transaction information, adding metadata to the payments lines for Course and Provider information.
 
+### Employer Accounts
+
+The Employer Accounts outer api relies on the following inner apis:
+
+* [das-educational-organisations-api](https://github.com/SkillsFundingAgency/das-educational-organisations-api)
+* [das-public-sector-organisations-api](https://github.com/SkillsFundingAgency/das-public-sector-organisations-api)
+* [das-charities-api](https://github.com/SkillsFundingAgency/das-charities-api)
+* [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-reservations-api](https://github.com/SkillsFundingAgency/das-reservations-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/das-apprentice-accounts-api)
+* [das-pr-api](https://github.com/SkillsFundingAgency/das-pr-api)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.EmployerAccounts.OuterApi_1.0
+Data: {
+    "EducationalOrganisationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "PublicSectorOrganisationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CharitiesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerAccountsOuterOverrideDatetime": "\"\"",
+    "CompaniesHouseApiConfiguration": {
+        "url": "******",
+        "apiKey": "******"
+    },
+    "LevyTransferMatchingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "FinanceApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ReservationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AccountsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderRelationshipsApiConfiguration": {
+       "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AzureAd": {
+        "tenant": "******",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerProfilesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    }
+}
+```
+
+* Start the api project ```SFA.DAS.EmployerAccounts.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
+
 ### Employer Finance
 
 The Employer Finance outer api relies on the following inner apis:
 
-* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
-* [das-levytransfermatching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
 * [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
+* [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/
+das-apprentice-accounts-api)
+* [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-levytransfermatching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
 
 You are able to run the API by doing the following:
 
@@ -349,27 +527,39 @@ ParitionKey: LOCAL
 RowKey: SFA.DAS.EmployerFinance.OuterApi_1.0
 Data: {
          {
-            "CoursesApiConfiguration":{
-                "url":"https://localhost:5001/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsapi-as-ar"
+            "ForecastingApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "CourseDeliveryApiConfiguration":{
-                "url":"https://localhost:5006/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-crsdelapi-as-ar"
+            "AccountsApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "LevyTransferMatchingApiConfiguration":{
-                "url":"https://localhost:5002/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-ltmapi-as-ar"
+            "ProviderCoursesApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "AzureAd":{
-                "tenant":"citizenazuresfabisgov.onmicrosoft.com",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-empfapi-as-ar"
+            "FinanceApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             },
-            "ForecastingApiConfiguration":{
-                "url":"https://localhost:5001/",
-                "identifier":"https://citizenazuresfabisgov.onmicrosoft.com/das-at-fcastapi-as-ar"
+            "LevyTransferMatchingApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
+            },
+            "AzureAd": {
+                "tenant": "citizenazuresfabisgov.onmicrosoft.com",
+                "identifier": "https://******.onmicrosoft.com/*****"
+            },
+            "EmployerProfilesApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
+            },
+            "CoursesApiConfiguration": {
+                "url": "https://****:****/",
+                "identifier": "https://******.onmicrosoft.com/*****"
             }
-         }
+        }
 }
 ```
 * Start the api project ```SFA.DAS.EmployerFinance.Api```
@@ -409,9 +599,15 @@ Starting the API will then show the swagger definition with the available operat
 
 The Reservations outer api relies on the following inner apis:
 
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
+* [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
 * [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
+* [das-pr-api](https://github.com/SkillsFundingAgency/das-pr-api)
+* [das-reservations-api](https://github.com/SkillsFundingAgency/das-reservations-api)
 
 You are able to run the API by doing the following:
 
@@ -421,20 +617,49 @@ You are able to run the API by doing the following:
 ParitionKey: LOCAL
 RowKey: SFA.DAS.Reservations.OuterApi_1.0
 Data: {
+    "FinanceApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AccountsInnerApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LevyTransferMatchingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AzureAd": {
+        "tenant": "citizenazuresfabisgov.onmicrosoft.com",
+        "identifier": "https://citizenazuresfabisgov.onmicrosoft.com/das-test-apimendp-rsrvapi-as-ar"
+    },
     "CoursesApiConfiguration": {
-        "url":"https://localhost:5001/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "RoatpConfiguration" : {
-        "url":"https://localhost:5111/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
+    "EmployerProfilesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     },
-    "FeatureToggles": {
-        "RoatpProvidersEnabled": true
+    "RoatpConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ProviderRelationshipsApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerUsersApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ReservationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
     }
 }
 ```
@@ -671,3 +896,79 @@ See the dedicated readme for setup: https://github.com/SkillsFundingAgency/das-a
 ### Admin AAN
 
 See the dedicated readme for setup: https://github.com/SkillsFundingAgency/das-apim-endpoints/blob/master/src/AdminAan/README.md
+
+
+### Levy Transfer Matching 
+
+The Levy Transfer Matching outer api relies on the following inner apis:
+
+* [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
+* [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
+* [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
+* [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
+* [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
+* [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
+* [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
+* [das-commitments](https://github.com/SkillsFundingAgency/das-commitments)
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.LevyTransferMatching.OuterApi_1.0
+Data: {
+    "EmployerAccountsInnerApi": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "FinanceApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "ForecastingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "LevyTransferMatchingApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "NServiceBusConfiguration": {
+        "NServiceBusConnectionString": "*********",
+        "NServiceBusLicense": "*********"
+    },
+    "LocationApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "AzureAd": {
+        "identifier": "https://******.onmicrosoft.com/*****",
+        "tenant": "*********.onmicrosoft.com"
+    },
+    "AccountsInnerApi": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerUsersApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EmployerProfilesApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CoursesInnerApi": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "CommitmentsV2ApiConfiguration": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    }
+}
+```
+* Start the api project ```SFA.DAS.LevyTransferMatching.Api```
+
+Starting the API will then show the swagger definition with the available operations. 
