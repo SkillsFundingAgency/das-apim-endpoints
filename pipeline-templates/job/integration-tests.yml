@@ -23,7 +23,7 @@ jobs:
           $Subscriptions = Get-AzApiManagementSubscription -Context $Context -Scope /products/FindAnApprenticeshipOuterApi | Where-Object { $_.UserId -eq 1 }
           $ApimSubscriptionId = $Subscriptions.SubscriptionId
           Write-Output "Setting value of Subscription ID to pipeline variable ApimSubscriptionId"
-          Write-Output "##vso[task.setvariable variable=ApimSubscriptionId]$ApimSubscriptionId"
+          Write-Output "##vso[task.setvariable variable=ApimSubscriptionId;]$ApimSubscriptionId"
     - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
       parameters:
         ServiceConnection: ${{ parameters.ServiceConnection }}
