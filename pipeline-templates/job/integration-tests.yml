@@ -41,3 +41,5 @@ jobs:
           (Get-Content ./HttpScripts/http-client.env.json) -replace '<subscriptionKey>', $env:ApimSubscriptionKey | Set-Content ./HttpScripts/http-client.env.json
           node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
         workingDirectory: $(Pipeline.Workspace)/ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
+      env: 
+        ApimSubscriptionKey: $(ApimSubscriptionKey)
