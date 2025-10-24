@@ -38,6 +38,7 @@ jobs:
       inputs:
         targetType: inline
         script: |
-          (Get-Content ./HttpScripts/http-client.env.json) -replace '<subscriptionKey>', $ApimSubscriptionKey | Set-Content ./HttpScripts/http-client.env.json
-          node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
+          Write-Output $(ApimSubscriptionId)
+          # (Get-Content ./HttpScripts/http-client.env.json) -replace '<subscriptionKey>', $ApimSubscriptionKey | Set-Content ./HttpScripts/http-client.env.json
+          # node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
         workingDirectory: $(Pipeline.Workspace)/ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
