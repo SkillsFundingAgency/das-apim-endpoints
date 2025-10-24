@@ -43,6 +43,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
         var currentAcademicYear = await GetCurrentAcademicYear(request);
         var (learnings, totalLearners) = await GetLearnings(request);
+
         var earnings = await GetRelatedEarnings(request, learnings);
         var joinedApprenticeships = JoinLearningAndEarningData(learnings, earnings, currentAcademicYear);
 
@@ -89,7 +90,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         else
         {
             learners = await _learningApiClient.Get<List<Learning>>(innerRequest);
-            totalItems = learners.Count;
+            totalItems = learners != null ? learners.Count : 0;
         }
 
         
@@ -129,16 +130,10 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             // Find matching entries in earningsData
             var matchingEarnings = earnings.FirstOrDefault(e => e.Key == learning.Key);
 
-            if (matchingEarnings != null)
-            {
-                _logger.LogInformation($"Processing learning with key: {learning.Key}");
-                joinedApprenticeships.Add(new JoinedEarningsApprenticeship(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
-            }
-            else
-            {
-                _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");
-                throw new InvalidOperationException($"Earnings data missing for learning key: {learning.Key}");
-            }
+            if (matchingEarnings == null)
+                _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");  
+
+            joinedApprenticeships.Add(new JoinedEarningsApprenticeship(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
         }
 
         return joinedApprenticeships;
@@ -157,6 +152,14 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             {
                 try
                 {
+                    if (joinedApprenticeship.IsOrphaned)
+                    {
+                        return new FM36Learner
+                        {
+                            ULN = long.Parse(joinedApprenticeship.Uln)
+                        };
+                    }
+
                     return new FM36Learner
                     {
                         ULN = long.Parse(joinedApprenticeship.Uln),

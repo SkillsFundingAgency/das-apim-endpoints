@@ -29,18 +29,21 @@ public class JoinedEarningsApprenticeship
     public string FundingLineType { get; set; }
     /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
     public DateTime? CompletionDate { get; set; }
+    /// <summary> If true, indicates that there is no matching earnings record for this apprenticeship </summary>
+    internal bool IsOrphaned { get; set; }
 
-    internal JoinedEarningsApprenticeship(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
+    internal JoinedEarningsApprenticeship(Learning learning, EarningsApprenticeship? earningsApprenticeship, short academicYear)
     {
         Key = learning.Key;
         Uln = learning.Uln;
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
-        Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
+        Episodes = earningsApprenticeship != null ? JoinEpisodes(learning, earningsApprenticeship, academicYear) : new List<JoinedPriceEpisode>();
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
-        FundingLineType = earningsApprenticeship.FundingLineType;
+        FundingLineType = earningsApprenticeship != null ? earningsApprenticeship.FundingLineType : string.Empty;
         CompletionDate = learning.CompletionDate;
+        IsOrphaned = earningsApprenticeship == null;
     }
 
     private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
