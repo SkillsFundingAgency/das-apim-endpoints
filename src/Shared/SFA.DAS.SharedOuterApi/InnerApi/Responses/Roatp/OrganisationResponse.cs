@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-public class GetOrganisationResponse
+public class OrganisationResponse
 {
     public Guid OrganisationId { get; set; }
     public int Ukprn { get; set; }
@@ -14,10 +14,10 @@ public class GetOrganisationResponse
     public int OrganisationTypeId { get; set; }
     public string OrganisationType { get; set; }
     public Common.OrganisationStatus Status { get; set; }
-    public DateTime? LastUpdatedDate { get; set; }
     public DateTime? ApplicationDeterminedDate { get; set; }
     public int? RemovedReasonId { get; set; }
     public string RemovedReason { get; set; }
-    public DateTime? RemovedDate { get; set; }
+    public DateTime? StartDate { get; set; }
+    public DateTime? LastUpdatedDate { get; set; }
     public IEnumerable<AllowedCourseType> AllowedCourseTypes { get; set; } = [];
 }
