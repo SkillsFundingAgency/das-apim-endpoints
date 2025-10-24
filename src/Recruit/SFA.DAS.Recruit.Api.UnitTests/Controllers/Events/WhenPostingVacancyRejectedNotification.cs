@@ -22,7 +22,7 @@ public class WhenPostingVacancyRejectedNotification
             .Callback<INotification, CancellationToken>((x, _) => capturedEvent = x as VacancyRejectedEvent);
         
         // act
-        var actual = await sut.OnVacancyRejected(request, cts.Token) as NoContentResult;
+        var actual = await sut.OnEmployerRejectedVacancy(request, cts.Token) as NoContentResult;
 
         // assert
         actual.Should().NotBeNull();
