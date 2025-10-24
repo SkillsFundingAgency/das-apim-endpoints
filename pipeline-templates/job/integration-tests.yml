@@ -8,7 +8,7 @@ jobs:
   workspace:
     clean:
   pool:
-    name: DAS - APIM Continuous Integration Agents
+    name: DAS - APIM Continuous Deployment Agents
   steps:
     - task: DownloadPipelineArtifact@2
     - checkout: self
