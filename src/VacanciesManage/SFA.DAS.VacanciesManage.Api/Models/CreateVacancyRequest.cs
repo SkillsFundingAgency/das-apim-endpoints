@@ -152,7 +152,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [Required]
         public string ShortDescription { get ; set ; }
         /// <summary>
-        /// What the apprentice will do at work. We suggest including day-to-day duties. Must include at least 3 bullet points (written in HTML).
+        /// What the apprentice will do at work. We suggest including day-to-day duties. Use bullet points (written in HTML).
         /// </summary>
         /// <example>Your daily tasks could include: <ul><li> working within a team to deliver a menu of high-quality food each service</li> <li> prepare food in a way that meets food hygiene standards</li> <li> storing food correctly</li> </ul></example>
         [JsonPropertyName("description")]
