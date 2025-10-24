@@ -27,6 +27,7 @@ public class UpdateLearnerRequestDeliveryDetails
 
 public class OnProgrammeRequestDetails
 {
+    public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<CostDetails> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }

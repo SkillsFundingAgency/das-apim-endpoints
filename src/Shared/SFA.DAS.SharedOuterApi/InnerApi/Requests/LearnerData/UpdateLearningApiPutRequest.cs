@@ -36,6 +36,7 @@ public class LearningUpdateDetails
 
 public class OnProgrammeDetails
 {
+    public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<Cost> Costs { get; set; }
 }

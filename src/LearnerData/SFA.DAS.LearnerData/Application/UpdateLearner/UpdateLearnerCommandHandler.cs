@@ -70,6 +70,8 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
                     await earningsApiClient.ReverseWithdrawal(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.StartDate:
+                    break;
             }
         }
 
@@ -96,6 +98,7 @@ public class UpdateLearnerCommandHandler(
             },
             OnProgramme = new OnProgrammeDetails
             {
+                StartDate = command.UpdateLearnerRequest.Delivery.OnProgramme.StartDate,
                 ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.ExpectedEndDate,
                 Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.Costs.Select(x =>  new Cost
                 {
