@@ -55,7 +55,7 @@ jobs:
       inputs:
         Contents: |
           azure/**
-          src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/HttpScripts**
+          src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/**
         TargetFolder: '$(build.artifactstagingdirectory)/publish'
         OverWrite: true
 
