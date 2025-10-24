@@ -8,7 +8,6 @@ using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
 using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
-using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
 using SFA.DAS.NServiceBus.Configuration;
