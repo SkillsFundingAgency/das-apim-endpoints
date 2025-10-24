@@ -386,16 +386,20 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                 Assert.That(result, Is.InstanceOf<OkObjectResult>());
                 var ok = (OkObjectResult)result;
 
-                Assert.That(ok.Value, Is.AssignableFrom<GetQualificationOutputFileResponse>());
-                var model = (GetQualificationOutputFileResponse)ok.Value!;
-                Assert.That(model.FileName, Is.EqualTo(payload.FileName));
-                Assert.That(model.ZipFileContent, Is.Not.Null);
-                Assert.That(model.ZipFileContent, Is.Not.Empty);
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.True);
+                Assert.That(envelope.Value, Is.Not.Null);
+                Assert.That(envelope.Value!.FileName, Is.EqualTo(payload.FileName));
+                Assert.That(envelope.Value!.ZipFileContent, Is.Not.Null.And.Not.Empty);
             });
         }
 
+
+
         [Test]
-        public async Task GetQualificationOutputFile_ReturnsNotFound_WhenQueryFails()
+        public async Task GetQualificationOutputFile_ReturnsOkEnvelope_WhenQueryFails()
         {
             // Arrange
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
@@ -412,7 +416,17 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var result = await controller.GetQualificationOutputFile();
 
             // Assert
-            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                var ok = (OkObjectResult)result;
+
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.False);
+                Assert.That(envelope.ErrorMessage, Is.EqualTo("No qualifications found for output file."));
+            });
         }
 
     }
