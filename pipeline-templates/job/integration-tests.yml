@@ -15,6 +15,7 @@ jobs:
     - task: AzurePowerShell@5
       displayName: Find APIM Subscription ID
       inputs:
+        azurePowerShellVersion: LatestVersion
         azureSubscription: ${{ parameters.ServiceConnection }}
         scriptType: InlineScript
         inline: |
