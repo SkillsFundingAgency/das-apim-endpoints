@@ -19,7 +19,7 @@ jobs:
         azureSubscription: ${{ parameters.ServiceConnection }}
         scriptType: InlineScript
         inline: |
-          $Product = (${{ parameter.OuterApiName }} + "OuterApi")
+          $Product = (${{ parameters.OuterApiName }} + "OuterApi")
           $Context = New-AzApiManagementContext -ResourceGroupName das-at-apim-rg -ServiceName das-at-shared-apim
           $Subscriptions = Get-AzApiManagementSubscription -Context $Context -Scope /products/$Product | Where-Object { $_.UserId -eq 1 }
           $ApimSubscriptionId = $Subscriptions.SubscriptionId
