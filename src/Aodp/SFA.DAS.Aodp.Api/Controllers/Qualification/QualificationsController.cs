@@ -171,14 +171,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationStatus);
         }
 
-        [HttpGet("output-file")]
+        [HttpGet("outputfile")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationOutputFileResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualificationOutputFile()
         {
-            return await SendRequestAsync(new GetQualificationOutputFileQuery());
+            var response = await _mediator.Send(new GetQualificationOutputFileQuery());
+            return Ok(response);
         }
 
         [HttpGet("export")]
