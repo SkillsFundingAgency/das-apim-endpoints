@@ -18,15 +18,14 @@ namespace SFA.DAS.LearnerDataJobs.Application.Commands
                 logger.LogTrace($"Handling ApprenticeshipStopCommand");
                 var getLearnerrequest = new GetLearnerByIdRequest(command.ProviderId, command.LearnerDataId);
 
-                var learner = await client.GetWithResponseCode<GetLearnerDataByIdResponse>(getLearnerrequest);
-
-                logger.LogInformation($"learner details :{learner.Body.ApprenticeshipId}");
+                var learner = await client.GetWithResponseCode<GetLearnerDataByIdResponse>(getLearnerrequest);                
 
                 if (learner == null)
                 {
                     logger.LogInformation($"Learner Data  does not exists for Id : {command.LearnerDataId}");
                     return false;
                 }
+                logger.LogInformation($"learner details :{learner.Body.ApprenticeshipId}");
 
                 if (command.PatchRequest.ApprenticeshipId != 0 && command.PatchRequest.ApprenticeshipId == learner.Body.ApprenticeshipId && command.PatchRequest.IsWithDrawnAtStartOfCourse)
                 {
