@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
@@ -21,7 +22,7 @@ internal class GetFm36QueryTestFixture
     internal long Ukprn;
     internal byte CollectionPeriod;
     internal int CollectionYear;
-    internal GetLearningsResponse LearningsResponse;
+    internal List<Learning> UnpagedLearningsResponse;
     internal GetFm36DataResponse EarningsResponse;
     internal GetAcademicYearsResponse CollectionCalendarResponse;
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
@@ -46,17 +47,17 @@ internal class GetFm36QueryTestFixture
         var dataGenerator = new MockDataGenerator();
         dataGenerator.GenerateData(scenario);
 
-        LearningsResponse = dataGenerator.GetLearningsResponse;
+        UnpagedLearningsResponse = dataGenerator.UnpagedLearningsResponse;
         EarningsResponse = dataGenerator.GetFm36DataResponse;
 
-        CollectionCalendarResponse = BuildCollectionCalendarResponse(LearningsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, LearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+        CollectionCalendarResponse = BuildCollectionCalendarResponse(UnpagedLearningsResponse);
+        SetupMocks(Ukprn, MockApprenticeshipsApiClient, UnpagedLearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
         _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
-        _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod);
+        _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, null, null);
     }
 
-    internal GetAcademicYearsResponse BuildCollectionCalendarResponse(GetLearningsResponse learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
+    internal GetAcademicYearsResponse BuildCollectionCalendarResponse(List<Learning> learningsResponse, bool apprenticeshipStartedInCurrentAcademicYear = true)
     {
         return new GetAcademicYearsResponse
         {
@@ -69,27 +70,45 @@ internal class GetFm36QueryTestFixture
     internal void SetupMocks(
         long ukprn,
         Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient,
-        GetLearningsResponse learningsResponse,
+        List<Learning> learningsResponse,
         Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
         GetFm36DataResponse earningsResponse,
         Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
         GetAcademicYearsResponse collectionCalendarResponse)
     {
         mockApprenticeshipsApiClient
-            .Setup(x => x.Get<GetLearningsResponse>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
+            .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
             .ReturnsAsync(learningsResponse);
 
+        mockApprenticeshipsApiClient
+            .Setup(x => x.Get<GetPagedLearnersFromLearningInner>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
+            .ReturnsAsync(new GetPagedLearnersFromLearningInner { Items = learningsResponse, Page = 1, PageSize = learningsResponse.Count, TotalItems = learningsResponse.Count });
+
+
+        var response = new ApiResponse<GetFm36DataResponse>(earningsResponse, System.Net.HttpStatusCode.OK, string.Empty);
         mockEarningsApiClient
-            .Setup(x => x.Get<GetFm36DataResponse>(It.Is<GetFm36DataRequest>(r => r.Ukprn == ukprn)))
-            .ReturnsAsync(earningsResponse);
+            .Setup(x => x.PostWithResponseCode<GetFm36DataResponse>(
+                It.Is<PostGetFm36DataRequest>(r => r.Ukprn == ukprn), It.IsAny<bool>())).ReturnsAsync(response);
 
         MockCollectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{CollectionYear}")))
             .ReturnsAsync(collectionCalendarResponse);
     }
 
-    internal async Task CallSubjectUnderTest()
+    public enum QueryType
     {
+        Paged,
+        Unpaged
+    }
+
+    internal async Task CallSubjectUnderTest(QueryType queryType = QueryType.Unpaged)
+    {
+        if(queryType == QueryType.Paged)
+        {
+            _query.Page = 1;
+            _query.PageSize = 1;
+        }
+
         // Act
         Result = await _handler.Handle(_query, CancellationToken.None);
     }
