@@ -130,10 +130,16 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             // Find matching entries in earningsData
             var matchingEarnings = earnings.FirstOrDefault(e => e.Key == learning.Key);
 
-            if (matchingEarnings == null)
-                _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");  
-
-            joinedApprenticeships.Add(new JoinedEarningsApprenticeship(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
+            if (matchingEarnings != null)
+            {
+                _logger.LogInformation($"Processing learning with key: {learning.Key}");
+                joinedApprenticeships.Add(new JoinedEarningsApprenticeship(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
+            }
+            else
+            {
+                _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");
+                throw new InvalidOperationException($"Earnings data missing for learning key: {learning.Key}");
+            }
         }
 
         return joinedApprenticeships;
@@ -152,14 +158,6 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             {
                 try
                 {
-                    if (joinedApprenticeship.IsOrphaned)
-                    {
-                        return new FM36Learner
-                        {
-                            ULN = long.Parse(joinedApprenticeship.Uln)
-                        };
-                    }
-
                     return new FM36Learner
                     {
                         ULN = long.Parse(joinedApprenticeship.Uln),
