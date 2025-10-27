@@ -25,10 +25,7 @@ namespace SFA.DAS.LearnerDataJobs.Application.Commands
                     logger.LogInformation($"Learner Data  does not exists for Id : {command.LearnerDataId}");
                     return false;
                 }
-                logger.LogInformation($"learner details :{learner.Body.ApprenticeshipId}");
-                logger.LogInformation($"learner patch details apprencticehsip :{command.PatchRequest.ApprenticeshipId}");
-                logger.LogInformation($"learner patch details iswithdrwanatsource :{command.PatchRequest.IsWithDrawnAtStartOfCourse}");
-
+                
                 if (command.PatchRequest.ApprenticeshipId != 0 && command.PatchRequest.ApprenticeshipId == learner.Body.ApprenticeshipId && command.PatchRequest.IsWithDrawnAtStartOfCourse)
                 {
                     logger.LogInformation($"starting patch request");
