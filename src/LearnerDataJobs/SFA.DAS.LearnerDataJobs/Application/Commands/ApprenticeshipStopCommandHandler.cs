@@ -20,9 +20,11 @@ namespace SFA.DAS.LearnerDataJobs.Application.Commands
 
                 var learner = await client.GetWithResponseCode<GetLearnerDataByIdResponse>(getLearnerrequest);
 
+                logger.LogInformation($"learner details :{learner.Body.ApprenticeshipId}");
+
                 if (learner == null)
                 {
-                    logger.LogTrace($"Learner Data  does not exists for Id : {command.LearnerDataId}");
+                    logger.LogInformation($"Learner Data  does not exists for Id : {command.LearnerDataId}");
                     return false;
                 }
 
@@ -38,7 +40,7 @@ namespace SFA.DAS.LearnerDataJobs.Application.Commands
                     return ((int)response.StatusCode >= 200 && (int)response.StatusCode <= 299);
                 }
 
-                logger.LogTrace($"ApprenticeshipStopCommand not successful for LearnerDataId;{command.LearnerDataId}");
+                logger.LogInformation($"ApprenticeshipStopCommand not successful for LearnerDataId;{command.LearnerDataId}");
                 return false;
             }
             catch (Exception ex)

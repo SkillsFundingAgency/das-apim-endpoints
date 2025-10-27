@@ -69,7 +69,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
 
             if (!result)
             {
-                logger.LogInformation("Getting learner data from APi is not succeful");
+                logger.LogInformation("Getting learner data from APi is not successful");
                 return new NotFoundResult();
             }
             return Ok(result);
