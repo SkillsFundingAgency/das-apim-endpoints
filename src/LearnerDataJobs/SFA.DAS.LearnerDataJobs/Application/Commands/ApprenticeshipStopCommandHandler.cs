@@ -26,12 +26,17 @@ namespace SFA.DAS.LearnerDataJobs.Application.Commands
                     return false;
                 }
                 logger.LogInformation($"learner details :{learner.Body.ApprenticeshipId}");
+                logger.LogInformation($"learner patch details apprencticehsip :{command.PatchRequest.ApprenticeshipId}");
+                logger.LogInformation($"learner patch details iswithdrwanatsource :{command.PatchRequest.IsWithDrawnAtStartOfCourse}");
 
                 if (command.PatchRequest.ApprenticeshipId != 0 && command.PatchRequest.ApprenticeshipId == learner.Body.ApprenticeshipId && command.PatchRequest.IsWithDrawnAtStartOfCourse)
                 {
+                    logger.LogInformation($"starting patch request");
                     var request = new PatchLearnerDataApprenticeshipIdRequest(command.ProviderId, command.LearnerDataId, new LearnerDataApprenticeshipIdRequest() { ApprenticeshipId = null });
+                    
                     logger.LogInformation("Calling inner api to assign ApprenticeshipId");
                     var response = await client.PatchWithResponseCode(request);
+                    logger.LogInformation($"After Calling inner api to assign ApprenticeshipId response: {response.StatusCode}");
                     if (!string.IsNullOrWhiteSpace(response.ErrorContent))
                     {
                         logger.LogInformation("Assigning ApprenticeshipId returned status code {0} and error {1}", response.StatusCode, response.ErrorContent);
