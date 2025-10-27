@@ -60,8 +60,8 @@ public class EventsController(
     [HttpPost, Route("shared-application-reviewed")]
     public async Task<IActionResult> OnSharedApplicationReviewed([FromBody] PostSharedApplicationReviewedEventModel payload)
     {
-        logger.LogInformation("OnSharedApplicationReviewed triggered for vacancy {VacancyId} ({VacancyReference})", payload.VacancyId, payload.VacancyReference);
-        await mediator.Publish(new SharedApplicationReviewedEvent(payload.VacancyId, payload.VacancyReference));
+        logger.LogInformation("OnSharedApplicationReviewed triggered for application review '{ApplicationReviewId}'", payload.ApplicationReviewId);
+        await mediator.Publish(new SharedApplicationReviewedEvent(payload.ApplicationReviewId));
         return NoContent();
     }
     
