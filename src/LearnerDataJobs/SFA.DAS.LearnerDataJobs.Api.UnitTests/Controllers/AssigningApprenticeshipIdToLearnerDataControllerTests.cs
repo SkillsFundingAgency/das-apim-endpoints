@@ -74,24 +74,5 @@ public class AssigningApprenticeshipIdToLearnerDataControllerTests
         var result = await controller.PatchLearnerDataApprenticeshipId(providerId, learnerDataId, request) as StatusCodeResult;
 
         result.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_Gets_Valid_ApprenticeshipId_With_No_Issues(
-       long providerId,
-       long learnerDataId,
-       GetLearnerByIdRequest request,
-       [Frozen] Mock<IMediator> mediator,
-       [Greedy] LearnersController controller)
-    {
-        mediator.Setup(x =>
-                x.Send(
-                    It.Is<GetLearnerByIdQuery>(p =>
-                        p.ukprn == providerId && p.Id == learnerDataId),CancellationToken.None))
-            .ReturnsAsync(new GetLearnerByIdResult() { ApprenticeshipId = 1 });
-
-        var result = await controller.GetById(providerId, learnerDataId);
-
-        result.Should().NotBeNull();
     }   
 }

@@ -4,6 +4,7 @@ using System.Net;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.LearnerDataJobs.Application.Queries;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 
@@ -55,18 +56,18 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
     }
 
     [HttpGet]
-    [Route("providers/{providerId}/learners/{learnerDataId}")]
-    public async Task<IActionResult> GetById([FromRoute] long providerId, long learnerDataId)
+    [Route("providers/{providerId}/learner/{learnerDataId}/apprenticeship-stop")]
+    public async Task<IActionResult> ApprenticeshipStop([FromRoute] long providerId, long learnerDataId, [FromBody] ApprenticeshipStopRequest request)
     {
         try
         {
             logger.LogTrace("Calling GetLearnerByIdQuery");
-            var command = new GetLearnerByIdQuery(providerId, learnerDataId);
+            var command = new ApprenticeshipStopCommand(providerId, learnerDataId, request);
             logger.LogInformation($"Get learner data from API for {learnerDataId}");
 
-            var result = await mediator.Send(command);
+            var result = await mediator.Send(command);           
 
-            if (result is null)
+            if (!result)
             {
                 logger.LogInformation("Getting learner data from APi is not succeful");
                 return new NotFoundResult();
