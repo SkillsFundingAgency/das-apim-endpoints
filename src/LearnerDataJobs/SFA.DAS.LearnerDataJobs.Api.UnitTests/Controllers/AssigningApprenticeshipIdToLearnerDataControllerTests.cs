@@ -1,14 +1,13 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.LearnerDataJobs.Api.Controllers;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
-using SFA.DAS.LearnerDataJobs.Application.Queries;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.LearnerDataJobs.Api.UnitTests.Controllers;
 

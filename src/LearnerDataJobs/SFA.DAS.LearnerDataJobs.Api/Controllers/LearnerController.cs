@@ -1,10 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
-using SFA.DAS.LearnerDataJobs.Application.Queries;
-using Microsoft.AspNetCore.Mvc.Formatters;
+using System.Net;
 
 namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 
@@ -32,7 +30,6 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
     }
-
 
     [HttpPatch]
     [Route("providers/{providerId}/learners/{learnerDataId}/apprenticeshipId")]
@@ -80,5 +77,4 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
-
 }
