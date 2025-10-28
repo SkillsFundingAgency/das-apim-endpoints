@@ -7,7 +7,6 @@ using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
 
-
 namespace SFA.DAS.LearnerDataJobs.Api.UnitTests.Controllers;
 public class ApprenctieshipStopLearnerDataControllerTests
 {
