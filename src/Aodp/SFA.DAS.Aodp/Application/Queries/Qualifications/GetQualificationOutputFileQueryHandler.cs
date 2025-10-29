@@ -15,37 +15,54 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
         }
         public async Task<BaseMediatrResponse<GetQualificationOutputFileResponse>> Handle(GetQualificationOutputFileQuery request, CancellationToken cancellationToken)
         {
-            var response = new BaseMediatrResponse<GetQualificationOutputFileResponse>();
             try
             {
                 var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
                     new GetQualificationOutputFileApiRequest(request.CurrentUsername));
 
-                if (!result.Success || result.Value == null ||
-                    result.Value.ZipFileContent == null || result.Value.ZipFileContent.Length == 0)
+                if (result == null)
                 {
-                    response.Success = false;
-                    response.ErrorMessage = result.ErrorMessage ?? "Export file not available.";
+                    return new BaseMediatrResponse<GetQualificationOutputFileResponse>
+                    {
+                        Success = false,
+                        ErrorMessage = "No response received from inner API.",
+                        ErrorCode = ErrorCodes.UnexpectedError
+                    };
                 }
-                else
+
+                if (result.Value?.ZipFileContent == null || result.Value.ZipFileContent.Length == 0)
                 {
-                    response.Value = new GetQualificationOutputFileResponse
+                    return new BaseMediatrResponse<GetQualificationOutputFileResponse>
+                    {
+
+                        Success = false,
+                        ErrorMessage = result.ErrorMessage ?? "Export file not returned.",
+                        ErrorCode = result.ErrorCode ?? ErrorCodes.NoData
+
+                    };
+                }
+
+                return new BaseMediatrResponse<GetQualificationOutputFileResponse>
+                {
+                    Success = true,
+                    Value = new GetQualificationOutputFileResponse
                     {
                         FileName = result.Value.FileName,
                         ZipFileContent = result.Value.ZipFileContent,
                         ContentType = result.Value.ContentType
-                    };
-                    response.Success = true;
-                }
+                    }
+                };
             }
             catch (Exception ex)
             {
-                response.Success = false;
-                response.ErrorMessage = ex.Message;
+                return new BaseMediatrResponse<GetQualificationOutputFileResponse>
+                {
+                    Success = false,
+                    ErrorMessage = ex.Message,
+                    ErrorCode = ErrorCodes.UnexpectedError
+                };
             }
 
-
-            return response;
         }
     }
 }

@@ -172,17 +172,19 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         }
 
         [HttpGet("outputfile/{username}")]
-        [ProducesResponseType(typeof(GetQualificationOutputFileResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationOutputFileResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetQualificationOutputFile([FromRoute] string username)
         {
-            return await SendRequestAsync(new GetQualificationOutputFileQuery(username));
+            var result = await _mediator.Send(new GetQualificationOutputFileQuery(username));
+            return Ok(result);
         }
 
         [HttpGet("outputfile/logs")]
-        [ProducesResponseType(typeof(GetQualificationOutputFileLogResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationOutputFileLogResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetQualificationOutputFileLogs()
         {
-            return await SendRequestAsync(new GetQualificationOutputFileLogQuery());
+            var response = await _mediator.Send(new GetQualificationOutputFileLogQuery());
+            return Ok(response);
         }
 
         [HttpGet("export")]

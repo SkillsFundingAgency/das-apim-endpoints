@@ -398,8 +398,6 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             });
         }
 
-
-
         [Test]
         public async Task GetQualificationOutputFile_ReturnsOkEnvelope_WhenQueryFails()
         {
@@ -442,13 +440,13 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                                   .With(p => p.OutputFileLogs, logs)
                                   .Create();
 
-            var mediatorResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>()
-                                           .With(r => r.Success, true)
-                                           .With(r => r.Value, payload)
-                                           .Create();
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>()
+                                        .With(r => r.Success, true)
+                                        .With(r => r.Value, payload)
+                                        .Create();
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileLogQuery>(), default))
-                         .ReturnsAsync(mediatorResponse);
+                         .ReturnsAsync(queryResponse);
 
             // Act
             var result = await controller.GetQualificationOutputFileLogs();
@@ -458,27 +456,31 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             {
                 Assert.That(result, Is.InstanceOf<OkObjectResult>());
                 var ok = (OkObjectResult)result;
-                Assert.That(ok.Value, Is.AssignableFrom<GetQualificationOutputFileLogResponse>());
 
-                var model = (GetQualificationOutputFileLogResponse)ok.Value!;
-                Assert.That(model.OutputFileLogs, Is.Not.Null);
-                Assert.That(model.OutputFileLogs.Count(), Is.EqualTo(logs.Count));
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileLogResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.True);
+                Assert.That(envelope.Value, Is.Not.Null);
+                Assert.That(envelope.Value!.OutputFileLogs, Is.Not.Null);
+                Assert.That(envelope.Value!.OutputFileLogs.Count(), Is.EqualTo(logs.Count));
             });
         }
 
         [Test]
-        public async Task GetQualificationOutputFileLogs_ReturnsStatusCode_WhenQueryFails()
+        public async Task GetQualificationOutputFileLogs_ReturnsOkEnvelope_WhenQueryFails()
         {
             // Arrange
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
-            var mediatorResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>()
-                                           .With(r => r.Success, false)
-                                           .With(r => r.Value, (GetQualificationOutputFileLogResponse?)null)
-                                           .Create();
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>()
+                                        .With(r => r.Success, false)
+                                        .With(r => r.Value, (GetQualificationOutputFileLogResponse?)null)
+                                        .With(r => r.ErrorMessage, "No qualification output file logs found.")
+                                        .Create();
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileLogQuery>(), default))
-                         .ReturnsAsync(mediatorResponse);
+                         .ReturnsAsync(queryResponse);
 
             // Act
             var result = await controller.GetQualificationOutputFileLogs();
@@ -486,10 +488,17 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Assert
             Assert.Multiple(() =>
             {
-                Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                var ok = (OkObjectResult)result;
+
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileLogResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.False);
+                Assert.That(envelope.Value, Is.Null);
+                Assert.That(envelope.ErrorMessage, Is.EqualTo("No qualification output file logs found."));
             });
         }
-
 
     }
     public class DateOnlySpecimenBuilder : ISpecimenBuilder

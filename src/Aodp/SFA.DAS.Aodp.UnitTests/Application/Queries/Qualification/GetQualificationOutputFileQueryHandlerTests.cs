@@ -63,6 +63,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             Assert.Multiple(() =>
             {
                 Assert.That(result.Success, Is.True);
+                Assert.That(result.ErrorCode, Is.Null);
                 Assert.That(result.Value, Is.Not.Null);
                 Assert.That(result.Value!.FileName, Is.EqualTo(apiResponse.Value!.FileName));
                 Assert.That(result.Value.ZipFileContent, Is.Not.Null.And.Not.Empty);
@@ -79,6 +80,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             var apiResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
                 .With(r => r.Success, false)
                 .With(r => r.ErrorMessage, GenericError)
+                .With(r => r.ErrorCode, ErrorCodes.UnexpectedError)
                 .With(r => r.Value, (GetQualificationOutputFileResponse?)null)
                 .Create();
 
@@ -92,15 +94,54 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(
-                x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
-                Times.Once);
+            Assert.Multiple(() =>
+            {
+                _apiClientMock.Verify(
+                    x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
+                    Times.Once);
 
+                Assert.That(result.Success, Is.False);
+                Assert.That(result.ErrorMessage, Is.EqualTo(GenericError));
+                Assert.That(result.ErrorCode, Is.EqualTo(ErrorCodes.UnexpectedError));
+                Assert.That(result.Value, Is.Not.Null);
+            });
+        }
+
+        [Test]
+        public async Task Then_The_Api_Returns_Empty_ZipFile_And_Is_Treated_As_NoData()
+        {
+            // Arrange
+            var query = _fixture.Create<GetQualificationOutputFileQuery>();
+
+            var apiResponse = new BaseMediatrResponse<GetQualificationOutputFileResponse>
+            {
+                Success = true,
+                Value = new GetQualificationOutputFileResponse
+                {
+                    FileName = string.Empty,
+                    ZipFileContent = Array.Empty<byte>(), 
+                    ContentType = "application/zip"
+                },
+                ErrorMessage = GenericError,
+                ErrorCode = ErrorCodes.NoData
+            };
+
+            _apiClientMock
+                .Setup(x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()))
+                .ReturnsAsync(apiResponse);
+
+            var handler = new GetQualificationOutputFileQueryHandler(_apiClientMock.Object);
+
+            // Act
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            // Assert
             Assert.Multiple(() =>
             {
                 Assert.That(result.Success, Is.False);
+                Assert.That(result.ErrorCode, Is.EqualTo(ErrorCodes.NoData));
                 Assert.That(result.ErrorMessage, Is.EqualTo(GenericError));
-                Assert.That(result.Value, Is.Not.Null);
+                Assert.That(result.Value, Is.Not.Null); 
             });
         }
 
@@ -121,14 +162,14 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             var result = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            _apiClientMock.Verify(
-                x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
-                Times.Once);
-
             Assert.Multiple(() =>
             {
+                _apiClientMock.Verify(
+                    x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
+                    Times.Once);
                 Assert.That(result.Success, Is.False);
                 Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
+                Assert.That(result.ErrorCode, Is.EqualTo(ErrorCodes.UnexpectedError));
                 Assert.That(result.Value, Is.Not.Null);
             });
         }
