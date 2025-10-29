@@ -3,7 +3,7 @@ using SFA.DAS.SharedOuterApi.Domain;
 using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.Recruit.InnerApi.Requests.Reports;
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses.Reports;
 public record GetGenerateReportResponse
 {
     public List<ApplicationReviewReport> ApplicationReviewReports { get; set; } = [];
@@ -13,9 +13,9 @@ public record GetGenerateReportResponse
         public Guid ApplicationId { get; set; }
         public Guid CandidateId { get; set; }
         public long VacancyReference { get; set; }
-        public string? VacancyTitle { get; set; }
-        public string? EmployerName { get; set; }
-        public string? TrainingProviderName { get; set; }
+        public string VacancyTitle { get; set; }
+        public string EmployerName { get; set; }
+        public string TrainingProviderName { get; set; }
         public int ProgrammeId { get; set; }
         public DateTime? VacancyClosingDate { get; set; }
         public DateTime? ApplicationSubmittedDate { get; set; }

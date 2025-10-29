@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.Recruit.Domain.Reports;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.Reports;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses.Reports;
 using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Requests.Reports;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Domain;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static SFA.DAS.Recruit.InnerApi.Requests.Reports.GetGenerateReportResponse;
+using static SFA.DAS.Recruit.InnerApi.Recruit.Responses.Reports.GetGenerateReportResponse;
 
 namespace SFA.DAS.Recruit.Application.Report.Query.GenerateReportsById;
 public class GenerateReportsByReportIdQueryHandler(
