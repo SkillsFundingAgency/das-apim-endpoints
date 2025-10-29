@@ -56,6 +56,7 @@ public class ReportsController(IMediator mediator,
         {
             await mediator.Send(new PostCreateReportCommand
             {
+                Id = request.Id,
                 CreatedBy = request.CreatedBy,
                 FromDate = request.FromDate,
                 ToDate = request.ToDate,

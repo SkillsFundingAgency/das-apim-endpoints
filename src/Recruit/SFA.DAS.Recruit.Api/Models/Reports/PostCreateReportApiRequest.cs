@@ -5,9 +5,10 @@ namespace SFA.DAS.Recruit.Api.Models.Reports;
 
 public record PostCreateReportApiRequest
 {
-    public string Name { get; init; } = null!;
-    public Guid UserId { get; init; }
-    public string CreatedBy { get; init; } = null!;
+    public required Guid Id { get; init; }
+    public required string Name { get; init; }
+    public required Guid UserId { get; init; }
+    public required string CreatedBy { get; init; }
     public required DateTime FromDate { get; init; }
     public required DateTime ToDate { get; init; }
     public int? Ukprn { get; init; }

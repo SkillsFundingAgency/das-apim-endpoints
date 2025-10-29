@@ -6,6 +6,7 @@ namespace SFA.DAS.Recruit.Application.Report.Command.PostCreateReport;
 
 public record PostCreateReportCommand : IRequest
 {
+    public required Guid Id { get; set; }
     public string Name { get; init; } = null!;
     public Guid UserId { get; init; }
     public string CreatedBy { get; init; } = null!;

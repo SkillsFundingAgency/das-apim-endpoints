@@ -15,6 +15,7 @@ public class PostCreateReportCommandHandler(
         var response = await recruitApiClient.PostWithResponseCode<Domain.Reports.Report>(new PostReportRequest(
             new PostReportRequest.PostReportRequestData
             {
+                Id = command.Id,
                 CreatedBy = command.CreatedBy,
                 FromDate = command.FromDate,
                 ToDate = command.ToDate,

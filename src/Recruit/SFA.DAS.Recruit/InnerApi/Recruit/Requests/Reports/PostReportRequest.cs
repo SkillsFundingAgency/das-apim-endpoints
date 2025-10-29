@@ -11,6 +11,7 @@ public record PostReportRequest(PostReportRequestData Payload) : IPostApiRequest
 
     public record PostReportRequestData
     {
+        public required Guid Id { get; init; }
         public required string Name { get; init; }
         public Guid UserId { get; init; }
         public string CreatedBy { get; init; } = null!;
