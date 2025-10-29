@@ -52,7 +52,7 @@ namespace SFA.DAS.Recruit.Domain
                 {
                     return FullAddress != null ? JsonConvert.DeserializeObject<Address>(FullAddress) : null;
                 }
-                catch (JsonException e)
+                catch (JsonException)
                 {
                     return null;
                 }

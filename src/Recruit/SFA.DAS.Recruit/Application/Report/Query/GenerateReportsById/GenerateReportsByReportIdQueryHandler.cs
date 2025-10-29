@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.Recruit.Domain.Reports;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.Reports;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses.Reports;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
@@ -9,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -22,11 +24,13 @@ public class GenerateReportsByReportIdQueryHandler(
     ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
     : IRequestHandler<GenerateReportsByReportIdQuery, GenerateReportsByReportIdQueryResult>
 {
-    public async Task<GenerateReportsByReportIdQueryResult> Handle(GenerateReportsByReportIdQuery request,
-        CancellationToken cancellationToken)
+    public async Task<GenerateReportsByReportIdQueryResult> Handle(
+    GenerateReportsByReportIdQuery request,
+    CancellationToken cancellationToken)
     {
         var applicationSummaryReports = new List<ApplicationSummaryReport>();
 
+        // Get report info from Recruit API
         var recruitResponse = await recruitApiClient
             .Get<GetGenerateReportResponse>(new GetGenerateReportRequest(request.ReportId));
 
@@ -35,28 +39,60 @@ public class GenerateReportsByReportIdQueryHandler(
             return new GenerateReportsByReportIdQueryResult { Report = applicationSummaryReports };
         }
 
+        // Collect unique vacancy references
+        var vacancyReferences = recruitResponse.ApplicationReviewReports
+            .Select(r => r.VacancyReference)
+            .Distinct()
+            .ToList();
+
+        // Fetch all applications (including candidate details) for each vacancy
+        var allApplications = new List<Domain.Application>();
+        foreach (var vacancyRef in vacancyReferences)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var candidateApiResponse = await candidateApiClient.Get<GetApplicationsByVacancyReferenceApiResponse>(
+                new GetApplicationsByVacancyReferenceApiRequest(vacancyRef));
+
+            if (candidateApiResponse?.Applications?.Count > 0)
+            {
+                allApplications.AddRange(candidateApiResponse.Applications);
+            }
+        }
+
+        var appLookup = allApplications
+            .GroupBy(a => (a.Id, a.CandidateId))
+            .ToDictionary(g => g.Key, g => g.First());
+
+        var courseCache = new Dictionary<string, CourseInfo>(StringComparer.OrdinalIgnoreCase);
+
+        // Process each review sequentially
         foreach (var review in recruitResponse.ApplicationReviewReports)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var applicantData = MapBaseApplicantData(review);
-
-            // Get application details
-            var applicationResponse = await candidateApiClient.Get<Domain.Application>(
-                new GetApplicationByIdApiRequest(review.ApplicationId, review.CandidateId));
-
-            // Get course info
-            var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(
-                new GetStandardRequest(review.ProgrammeId));
-
-            // Skip incomplete data
-            if (applicationResponse?.Candidate == null)
+            if (!appLookup.TryGetValue((review.ApplicationId, review.CandidateId), out var applicationResponse))
             {
+                // If the application doesn't exist in the bulk response, skip it.
                 continue;
             }
 
-            // Fill candidate and course details
-            EnrichApplicantDataWithCandidate(applicantData, applicationResponse, courseResult);
+            if (!courseCache.TryGetValue(review.ProgrammeId.ToString(), out var courseInfo))
+            {
+                var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(
+                    new GetStandardRequest(review.ProgrammeId));
+                if (courseResult == null)
+                    continue;
+
+                courseInfo = new CourseInfo(courseResult.Title, courseResult.Level, courseResult.Status);
+                courseCache[review.ProgrammeId.ToString()] = courseInfo;
+            }
+
+            if (applicationResponse.Candidate == null)
+                continue;
+
+            var applicantData = MapBaseApplicantData(review);
+            EnrichApplicantDataWithCandidate(applicantData, applicationResponse, courseInfo);
 
             applicationSummaryReports.Add(applicantData);
         }
@@ -66,7 +102,7 @@ public class GenerateReportsByReportIdQueryHandler(
             Report = applicationSummaryReports
         };
     }
-
+    
     private static ApplicationSummaryReport MapBaseApplicantData(ApplicationReviewReport review)
     {
         return new ApplicationSummaryReport
@@ -88,7 +124,7 @@ public class GenerateReportsByReportIdQueryHandler(
     private static void EnrichApplicantDataWithCandidate(
         ApplicationSummaryReport applicant,
         Domain.Application applicationResponse,
-        GetStandardsListItemResponse course)
+        CourseInfo courseInfo)
     {
         var candidate = applicationResponse.Candidate;
         if (candidate != null)
@@ -104,9 +140,9 @@ public class GenerateReportsByReportIdQueryHandler(
         }
 
         applicant.InterviewAssistance = applicationResponse.Support;
-        applicant.CourseName = course?.Title ?? string.Empty;
-        applicant.ApprenticeshipLevel = course?.Level ?? 0;
-        applicant.CourseStatus = course?.Status ?? string.Empty;
+        applicant.CourseName = courseInfo?.Title ?? string.Empty;
+        applicant.ApprenticeshipLevel = courseInfo?.Level ?? 0;
+        applicant.CourseStatus = courseInfo?.Status ?? string.Empty;
 
         var addresses = applicationResponse.EmploymentLocation?.Addresses;
         if (addresses == null || addresses.Count == 0)
