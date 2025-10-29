@@ -8,6 +8,7 @@ using SFA.DAS.Recruit.Application.Report.Query.GetReportsByUkprn;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.Report.Query.GetReportById;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
@@ -16,6 +17,22 @@ namespace SFA.DAS.Recruit.Api.Controllers;
 public class ReportsController(IMediator mediator,
     ILogger<ReportsController> logger) : ControllerBase
 {
+    [HttpGet]
+    [Route("{reportId:guid}")]
+    public async Task<IActionResult> GetById(Guid reportId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetReportByIdQuery(reportId));
+            return Ok(result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting report by report Id");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
     [HttpGet]
     [Route("{ukprn:int}/provider")]
     public async Task<IActionResult> GetByUkprn(int ukprn)
@@ -33,7 +50,7 @@ public class ReportsController(IMediator mediator,
     }
 
     [HttpGet]
-    [Route("{reportId:guid}")]
+    [Route("generate/{reportId:guid}")]
     public async Task<IActionResult> Generate(Guid reportId)
     {
         try

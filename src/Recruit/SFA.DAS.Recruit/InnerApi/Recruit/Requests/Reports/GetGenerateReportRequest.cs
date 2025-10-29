@@ -4,5 +4,5 @@ using System;
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests.Reports;
 public record GetGenerateReportRequest(Guid ReportId) : IGetApiRequest
 {
-    public string GetUrl => $"api/reports/{ReportId}";
+    public string GetUrl => $"api/reports/generate/{ReportId}";
 }
