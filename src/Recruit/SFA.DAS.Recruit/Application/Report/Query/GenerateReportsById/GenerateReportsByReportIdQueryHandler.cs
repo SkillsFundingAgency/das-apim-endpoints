@@ -36,7 +36,7 @@ public class GenerateReportsByReportIdQueryHandler(
 
         if (recruitResponse?.ApplicationReviewReports == null || recruitResponse.ApplicationReviewReports.Count == 0)
         {
-            return new GenerateReportsByReportIdQueryResult { Report = applicationSummaryReports };
+            return new GenerateReportsByReportIdQueryResult { Reports = applicationSummaryReports };
         }
 
         // Collect unique vacancy references
@@ -99,7 +99,7 @@ public class GenerateReportsByReportIdQueryHandler(
 
         return new GenerateReportsByReportIdQueryResult
         {
-            Report = applicationSummaryReports
+            Reports = applicationSummaryReports
         };
     }
     
