@@ -22,6 +22,8 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         private Mock<ILogger<QualificationsController>> _loggerMock;
         private Mock<IMediator> _mediatorMock;
 
+        private const string CurrentUser = "Axel Barlington";
+
         [SetUp]
         public void SetUp()
         {
@@ -378,7 +380,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualificationOutputFile();
+            var result = await controller.GetQualificationOutputFile(CurrentUser);
 
             // Assert
             Assert.Multiple(() =>
@@ -396,8 +398,6 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             });
         }
 
-
-
         [Test]
         public async Task GetQualificationOutputFile_ReturnsOkEnvelope_WhenQueryFails()
         {
@@ -413,7 +413,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualificationOutputFile();
+            var result = await controller.GetQualificationOutputFile(CurrentUser);
 
             // Assert
             Assert.Multiple(() =>
@@ -429,6 +429,76 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             });
         }
 
+        [Test]
+        public async Task GetQualificationOutputFileLogs_ReturnsOkResult_WithLogs()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            var logs = _fixture.CreateMany<GetQualificationOutputFileLogResponse.QualificationOutputFileLog>(3).ToList();
+            var payload = _fixture.Build<GetQualificationOutputFileLogResponse>()
+                                  .With(p => p.OutputFileLogs, logs)
+                                  .Create();
+
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>()
+                                        .With(r => r.Success, true)
+                                        .With(r => r.Value, payload)
+                                        .Create();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileLogQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualificationOutputFileLogs();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                var ok = (OkObjectResult)result;
+
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileLogResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.True);
+                Assert.That(envelope.Value, Is.Not.Null);
+                Assert.That(envelope.Value!.OutputFileLogs, Is.Not.Null);
+                Assert.That(envelope.Value!.OutputFileLogs.Count(), Is.EqualTo(logs.Count));
+            });
+        }
+
+        [Test]
+        public async Task GetQualificationOutputFileLogs_ReturnsOkEnvelope_WhenQueryFails()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>()
+                                        .With(r => r.Success, false)
+                                        .With(r => r.Value, (GetQualificationOutputFileLogResponse?)null)
+                                        .With(r => r.ErrorMessage, "No qualification output file logs found.")
+                                        .Create();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileLogQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualificationOutputFileLogs();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                var ok = (OkObjectResult)result;
+
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileLogResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileLogResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.False);
+                Assert.That(envelope.Value, Is.Null);
+                Assert.That(envelope.ErrorMessage, Is.EqualTo("No qualification output file logs found."));
+            });
+        }
     }
     public class DateOnlySpecimenBuilder : ISpecimenBuilder
     {
