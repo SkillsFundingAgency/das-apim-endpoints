@@ -7,5 +7,19 @@ public class GetLearningsRequest : IGetApiRequest
     public long Ukprn { get; set; }
     public int CollectionYear { get; set; }
     public byte CollectionPeriod { get; set; }
-    public string GetUrl => $"{Ukprn}/{CollectionYear}/{CollectionPeriod}";
+    public int? Page { get; set; }
+    public int? PageSize { get; set; }
+
+    public string GetUrl 
+    { 
+        get 
+        {
+            var url = $"{Ukprn}/{CollectionYear}/{CollectionPeriod}";
+
+            if (Page.HasValue && PageSize.HasValue)
+                url += $"?page={Page}&pageSize={PageSize}";
+
+            return url;
+        }
+    }
 }
