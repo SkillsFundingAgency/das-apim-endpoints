@@ -972,3 +972,37 @@ Data: {
 * Start the api project ```SFA.DAS.LevyTransferMatching.Api```
 
 Starting the API will then show the swagger definition with the available operations. 
+
+### Reference Data Jobs 
+
+The Reference Data Jobs outer api relies on the following inner apis:
+
+* [das-public-sector-organisations-api](https://github.com/SkillsFundingAgency/das-public-sector-organisations-api)
+* [das-educational-organisations-api](https://github.com/SkillsFundingAgency/das-educational-organisations-api)
+
+
+You are able to run the API by doing the following:
+
+
+* In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
+```
+ParitionKey: LOCAL
+RowKey: SFA.DAS.ReferenceDataJobs.OuterApi_1.0
+Data: {
+    "AzureAd": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "PublicSectorOrganisationsInnerApi": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    },
+    "EducationOrganisationsInnerApi": {
+        "url": "https://****:****/",
+        "identifier": "https://******.onmicrosoft.com/*****"
+    }
+}
+```
+* Start the api project ```SFA.DAS.ReferenceDataJobs.Api```
+
+Starting the API will then show the swagger definition with the available operations. 

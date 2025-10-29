@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
+using SFA.DAS.Approvals.Application.Providers.Queries;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -37,6 +38,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
-        }
+        }        
     }
 }

@@ -1,9 +1,8 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
@@ -22,14 +21,14 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     }
 
     [HttpGet]
-    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOrganisationResponse))]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetOrganisationQueryResult))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
     [Route("{ukprn}")]
     public async Task<IActionResult> GetOrganisation([FromRoute] int ukprn, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Received request to get organisation for Ukprn: {Ukprn}", ukprn);
-        GetOrganisationResponse? response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
+        GetOrganisationQueryResult? response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
         return response == null ? NotFound() : Ok(response);
     }
 }

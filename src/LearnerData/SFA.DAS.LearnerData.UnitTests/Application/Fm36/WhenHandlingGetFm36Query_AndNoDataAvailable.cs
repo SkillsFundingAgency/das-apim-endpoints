@@ -26,6 +26,6 @@ public class WhenHandlingGetFm36Query_AndNoDataAvailable
     {
         // Assert
         _testFixture.Result.Should().NotBeNull();
-        _testFixture.Result.FM36Learners.Should().BeEmpty();
+        _testFixture.Result.Items.Should().BeEmpty();
     }
 }
