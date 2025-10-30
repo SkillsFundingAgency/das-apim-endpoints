@@ -19,7 +19,7 @@ public class StubUpdateLearnerRequest
 public class StubLearner
 {
     [Required]
-    public string Uln { get; set; }
+    public long Uln { get; set; }
     [Required]
     public string LearnerRef { get; set; }
     [Required]
@@ -54,7 +54,6 @@ public class StubOnProgramme
     public DateTime? StartDate { get; set; }
     [Required]
     public DateTime? ExpectedEndDate { get; set; }
-    [Required]
     public int? OffTheJobHours { get; set; }
     [Required]
     public List<StubCost> Costs { get; set; }

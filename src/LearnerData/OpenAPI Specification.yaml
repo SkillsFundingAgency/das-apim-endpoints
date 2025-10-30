@@ -333,7 +333,7 @@ components:
           type: object
           properties:
             uln:
-              type: string
+              type: integer
             learnerRef:
               type: string
             firstname:
