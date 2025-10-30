@@ -8,7 +8,7 @@ public record PostCreateReportCommand : IRequest
 {
     public required Guid Id { get; set; }
     public string Name { get; init; } = null!;
-    public Guid UserId { get; init; }
+    public required string UserId { get; init; }
     public string CreatedBy { get; init; } = null!;
     public required DateTime FromDate { get; init; }
     public required DateTime ToDate { get; init; }

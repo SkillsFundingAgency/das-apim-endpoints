@@ -13,7 +13,7 @@ public record PostReportRequest(PostReportRequestData Payload) : IPostApiRequest
     {
         public required Guid Id { get; init; }
         public required string Name { get; init; }
-        public Guid UserId { get; init; }
+        public required string UserId { get; init; }
         public string CreatedBy { get; init; } = null!;
         public required DateTime FromDate { get; init; }
         public required DateTime ToDate { get; init; }
