@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
-using SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails;
+using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
 using SFA.DAS.EmployerFeedback.Models;
 using System;
@@ -88,10 +88,10 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         }
 
         [Test]
-        public async Task TriggerFeedbackEmails_ReturnsNoContent_WhenRequestIsValid()
+        public async Task SendFeedbackEmails_ReturnsNoContent_WhenRequestIsValid()
         {
             var feedbackTransactionId = 123L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -105,23 +105,23 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
             };
 
             _mediatorMock
-                .Setup(x => x.Send(It.IsAny<TriggerFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var result = await _controller.TriggerFeedbackEmails(feedbackTransactionId, request);
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
 
             Assert.That(result, Is.InstanceOf<NoContentResult>());
-            _mediatorMock.Verify(x => x.Send(It.Is<TriggerFeedbackEmailsCommand>(cmd =>
+            _mediatorMock.Verify(x => x.Send(It.Is<SendFeedbackEmailsCommand>(cmd =>
                 cmd.FeedbackTransactionId == feedbackTransactionId &&
                 cmd.Request == request
             ), CancellationToken.None), Times.Once);
         }
 
         [Test]
-        public async Task TriggerFeedbackEmails_ReturnsBadRequest_WhenSendAfterDateIsInFuture()
+        public async Task SendFeedbackEmails_ReturnsBadRequest_WhenSendAfterDateIsInFuture()
         {
             var feedbackTransactionId = 124L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -131,10 +131,10 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 
             var exception = new InvalidOperationException("Feedback transaction sendAfter date is in the future");
             _mediatorMock
-                .Setup(x => x.Send(It.IsAny<TriggerFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
 
-            var result = await _controller.TriggerFeedbackEmails(feedbackTransactionId, request);
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
 
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequestResult = result as BadRequestObjectResult;
@@ -144,10 +144,10 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         }
 
         [Test]
-        public async Task TriggerFeedbackEmails_ReturnsBadRequest_WhenNoMatchingTemplateFound()
+        public async Task SendFeedbackEmails_ReturnsBadRequest_WhenNoMatchingTemplateFound()
         {
             var feedbackTransactionId = 125L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -157,10 +157,10 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 
             var exception = new InvalidOperationException("No matching template found for templateName: TestTemplate");
             _mediatorMock
-                .Setup(x => x.Send(It.IsAny<TriggerFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
 
-            var result = await _controller.TriggerFeedbackEmails(feedbackTransactionId, request);
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
 
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequestResult = result as BadRequestObjectResult;
@@ -170,10 +170,10 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         }
 
         [Test]
-        public async Task TriggerFeedbackEmails_ReturnsInternalServerError_WhenUnexpectedExceptionOccurs()
+        public async Task SendFeedbackEmails_ReturnsInternalServerError_WhenUnexpectedExceptionOccurs()
         {
             var feedbackTransactionId = 126L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -183,10 +183,10 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 
             var exception = new Exception("Unexpected error occurred");
             _mediatorMock
-                .Setup(x => x.Send(It.IsAny<TriggerFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
 
-            var result = await _controller.TriggerFeedbackEmails(feedbackTransactionId, request);
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
 
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
             var statusResult = result as StatusCodeResult;

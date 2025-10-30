@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails;
+using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
 using SFA.DAS.EmployerFeedback.Models;
@@ -16,17 +16,17 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbackEmails
+namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SendFeedbackEmails
 {
     [TestFixture]
-    public class TriggerFeedbackEmailsCommandHandlerTests
+    public class SendFeedbackEmailsCommandHandlerTests
     {
         private Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>> _mockEmployerFeedbackApiClient;
         private Mock<IAccountsApiClient<AccountsConfiguration>> _mockAccountsApiClient;
         private Mock<INotificationService> _mockNotificationService;
-        private Mock<ILogger<TriggerFeedbackEmailsCommandHandler>> _mockLogger;
+        private Mock<ILogger<SendFeedbackEmailsCommandHandler>> _mockLogger;
         private Mock<IEncodingService> _mockEncodingService;
-        private TriggerFeedbackEmailsCommandHandler _handler;
+        private SendFeedbackEmailsCommandHandler _handler;
 
         [SetUp]
         public void Arrange()
@@ -34,10 +34,10 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
             _mockEmployerFeedbackApiClient = new Mock<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>>();
             _mockAccountsApiClient = new Mock<IAccountsApiClient<AccountsConfiguration>>();
             _mockNotificationService = new Mock<INotificationService>();
-            _mockLogger = new Mock<ILogger<TriggerFeedbackEmailsCommandHandler>>();
+            _mockLogger = new Mock<ILogger<SendFeedbackEmailsCommandHandler>>();
             _mockEncodingService = new Mock<IEncodingService>();
 
-            _handler = new TriggerFeedbackEmailsCommandHandler(
+            _handler = new SendFeedbackEmailsCommandHandler(
                 _mockEmployerFeedbackApiClient.Object,
                 _mockAccountsApiClient.Object,
                 _mockNotificationService.Object,
@@ -52,7 +52,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
             var templateId = Guid.NewGuid();
             var hashedAccountId = "ABC123";
 
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -94,7 +94,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                 }
             };
 
-            var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
+            var command = new SendFeedbackEmailsCommand(feedbackTransactionId, request);
 
             _mockEmployerFeedbackApiClient
                 .Setup(x => x.GetWithResponseCode<GetFeedbackTransactionResponse>(It.IsAny<GetFeedbackTransactionRequest>()))
@@ -128,13 +128,13 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
         public void Then_ThrowsException_WhenFeedbackTransactionNotFound()
         {
             var feedbackTransactionId = 12345L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>(),
                 EmployerAccountsBaseUrl = "https://employer-accounts.test",
                 EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
-            var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
+            var command = new SendFeedbackEmailsCommand(feedbackTransactionId, request);
 
             _mockEmployerFeedbackApiClient
                 .Setup(x => x.GetWithResponseCode<GetFeedbackTransactionResponse>(It.IsAny<GetFeedbackTransactionRequest>()))
@@ -150,7 +150,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
         public void Then_ThrowsException_WhenSendAfterDateIsInFuture()
         {
             var feedbackTransactionId = 12345L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>(),
                 EmployerAccountsBaseUrl = "https://employer-accounts.test",
@@ -167,7 +167,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                 SentDate = null
             };
 
-            var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
+            var command = new SendFeedbackEmailsCommand(feedbackTransactionId, request);
 
             _mockEmployerFeedbackApiClient
                 .Setup(x => x.GetWithResponseCode<GetFeedbackTransactionResponse>(It.IsAny<GetFeedbackTransactionRequest>()))
@@ -183,7 +183,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
         public async Task Then_ExitsEarly_WhenFeedbackTransactionAlreadySent()
         {
             var feedbackTransactionId = 12345L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>(),
                 EmployerAccountsBaseUrl = "https://employer-accounts.test",
@@ -200,7 +200,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                 SentDate = DateTime.UtcNow.AddDays(-1)
             };
 
-            var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
+            var command = new SendFeedbackEmailsCommand(feedbackTransactionId, request);
 
             _mockEmployerFeedbackApiClient
                 .Setup(x => x.GetWithResponseCode<GetFeedbackTransactionResponse>(It.IsAny<GetFeedbackTransactionRequest>()))
@@ -216,7 +216,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
         public void Then_ThrowsException_WhenNoMatchingTemplateFound()
         {
             var feedbackTransactionId = 12345L;
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -240,7 +240,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                 SentDate = null
             };
 
-            var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
+            var command = new SendFeedbackEmailsCommand(feedbackTransactionId, request);
 
             _mockEmployerFeedbackApiClient
                 .Setup(x => x.GetWithResponseCode<GetFeedbackTransactionResponse>(It.IsAny<GetFeedbackTransactionRequest>()))
@@ -258,7 +258,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
             var feedbackTransactionId = 12345L;
             var templateId = Guid.NewGuid();
 
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -282,7 +282,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                 SentDate = null
             };
 
-            var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
+            var command = new SendFeedbackEmailsCommand(feedbackTransactionId, request);
 
             _mockEmployerFeedbackApiClient
                 .Setup(x => x.GetWithResponseCode<GetFeedbackTransactionResponse>(It.IsAny<GetFeedbackTransactionRequest>()))

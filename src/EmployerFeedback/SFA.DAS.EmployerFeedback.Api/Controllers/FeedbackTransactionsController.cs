@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails;
+using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
 using SFA.DAS.EmployerFeedback.Models;
 using System;
@@ -48,24 +48,24 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
         }
 
         [HttpPost("{id}/send")]
-        public async Task<IActionResult> TriggerFeedbackEmails([FromRoute] long id, [FromBody] TriggerFeedbackEmailsRequest request)
+        public async Task<IActionResult> SendFeedbackEmails([FromRoute] long id, [FromBody] SendFeedbackEmailsRequest request)
         {
             try
             {
-                _logger.LogInformation("Received request to trigger feedback emails for transaction {FeedbackTransactionId}", id);
+                _logger.LogInformation("Received request to send feedback emails for transaction {FeedbackTransactionId}", id);
 
-                await _mediator.Send(new TriggerFeedbackEmailsCommand(id, request));
+                await _mediator.Send(new SendFeedbackEmailsCommand(id, request));
 
                 return NoContent();
             }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex, "Bad request for triggering feedback emails {FeedbackTransactionId}: {Message}", id, ex.Message);
+                _logger.LogWarning(ex, "Bad request for sending feedback emails {FeedbackTransactionId}: {Message}", id, ex.Message);
                 return BadRequest(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error triggering feedback emails {FeedbackTransactionId}", id);
+                _logger.LogError(ex, "Error sending feedback emails {FeedbackTransactionId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

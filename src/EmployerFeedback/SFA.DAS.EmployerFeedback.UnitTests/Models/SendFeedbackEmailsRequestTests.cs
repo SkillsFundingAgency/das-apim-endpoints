@@ -6,7 +6,7 @@ using System.Collections.Generic;
 namespace SFA.DAS.EmployerFeedback.UnitTests.Models
 {
     [TestFixture]
-    public class TriggerFeedbackEmailsRequestTests
+    public class SendFeedbackEmailsRequestTests
     {
         [Test]
         public void Then_SetsNotificationTemplates_WhenProvided()
@@ -25,7 +25,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Models
                 }
             };
 
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = templates,
                 EmployerAccountsBaseUrl = "https://test.com"

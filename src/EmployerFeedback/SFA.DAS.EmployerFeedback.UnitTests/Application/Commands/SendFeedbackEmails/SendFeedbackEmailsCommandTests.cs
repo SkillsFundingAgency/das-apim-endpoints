@@ -1,20 +1,20 @@
 using NUnit.Framework;
-using SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails;
+using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails;
 using SFA.DAS.EmployerFeedback.Models;
 using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbackEmails
+namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SendFeedbackEmails
 {
     [TestFixture]
-    public class TriggerFeedbackEmailsCommandTests
+    public class SendFeedbackEmailsCommandTests
     {
         [Test]
         public void Then_SetsPropertiesCorrectly_WhenConstructed()
         {
             var feedbackTransactionId = 12345L;
             var templateId = Guid.NewGuid();
-            var request = new TriggerFeedbackEmailsRequest
+            var request = new SendFeedbackEmailsRequest
             {
                 NotificationTemplates = new List<NotificationTemplateRequest>
                 {
@@ -28,7 +28,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.TriggerFeedbac
                 EmployerFeedbackBaseUrl = "https://employer-feedback.test"
             };
 
-            var command = new TriggerFeedbackEmailsCommand(feedbackTransactionId, request);
+            var command = new SendFeedbackEmailsCommand(feedbackTransactionId, request);
 
             Assert.That(command.FeedbackTransactionId, Is.EqualTo(feedbackTransactionId));
             Assert.That(command.Request, Is.EqualTo(request));

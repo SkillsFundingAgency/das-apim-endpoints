@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.EmployerFeedback.Models
 {
-    public class TriggerFeedbackEmailsRequest
+    public class SendFeedbackEmailsRequest
     {
         public List<NotificationTemplateRequest> NotificationTemplates { get; set; }
         public string EmployerAccountsBaseUrl { get; set; }

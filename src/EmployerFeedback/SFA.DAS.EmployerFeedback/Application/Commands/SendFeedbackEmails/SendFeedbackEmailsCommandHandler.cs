@@ -14,21 +14,21 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails
+namespace SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails
 {
-    public class TriggerFeedbackEmailsCommandHandler : IRequestHandler<TriggerFeedbackEmailsCommand>
+    public class SendFeedbackEmailsCommandHandler : IRequestHandler<SendFeedbackEmailsCommand>
     {
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
         private readonly INotificationService _notificationService;
-        private readonly ILogger<TriggerFeedbackEmailsCommandHandler> _logger;
+        private readonly ILogger<SendFeedbackEmailsCommandHandler> _logger;
         private readonly IEncodingService _encodingService;
 
-        public TriggerFeedbackEmailsCommandHandler(
+        public SendFeedbackEmailsCommandHandler(
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
             IAccountsApiClient<AccountsConfiguration> accountsApiClient,
             INotificationService notificationService,
-            ILogger<TriggerFeedbackEmailsCommandHandler> logger,
+            ILogger<SendFeedbackEmailsCommandHandler> logger,
             IEncodingService encodingService)
         {
             _employerFeedbackApiClient = employerFeedbackApiClient;
@@ -38,9 +38,9 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.TriggerFeedbackEmails
             _logger = logger;
         }
 
-        public async Task Handle(TriggerFeedbackEmailsCommand request, CancellationToken cancellationToken)
+        public async Task Handle(SendFeedbackEmailsCommand request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Processing TriggerFeedbackEmails for ID: {FeedbackTransactionId}", request.FeedbackTransactionId);
+            _logger.LogInformation("Processing SendFeedbackEmails for ID: {FeedbackTransactionId}", request.FeedbackTransactionId);
 
             var feedbackTransaction = await GetAndValidateFeedbackTransaction(request.FeedbackTransactionId);
 
