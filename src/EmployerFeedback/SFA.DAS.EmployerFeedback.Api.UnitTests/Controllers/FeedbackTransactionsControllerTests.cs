@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
+using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
+using SFA.DAS.EmployerFeedback.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -83,6 +85,112 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
                     It.IsAny<Exception>(),
                     It.IsAny<Func<It.IsAnyType, Exception, string>>()),
                 Times.Once);
+        }
+
+        [Test]
+        public async Task SendFeedbackEmails_ReturnsNoContent_WhenRequestIsValid()
+        {
+            var feedbackTransactionId = 123L;
+            var request = new SendFeedbackEmailsRequest
+            {
+                NotificationTemplates = new List<NotificationTemplateRequest>
+                {
+                    new NotificationTemplateRequest
+                    {
+                        TemplateName = "TestTemplate",
+                        TemplateId = Guid.NewGuid()
+                    }
+                },
+                EmployerAccountsBaseUrl = "https://test.com"
+            };
+
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
+
+            Assert.That(result, Is.InstanceOf<NoContentResult>());
+            _mediatorMock.Verify(x => x.Send(It.Is<SendFeedbackEmailsCommand>(cmd =>
+                cmd.FeedbackTransactionId == feedbackTransactionId &&
+                cmd.Request == request
+            ), CancellationToken.None), Times.Once);
+        }
+
+        [Test]
+        public async Task SendFeedbackEmails_ReturnsBadRequest_WhenSendAfterDateIsInFuture()
+        {
+            var feedbackTransactionId = 124L;
+            var request = new SendFeedbackEmailsRequest
+            {
+                NotificationTemplates = new List<NotificationTemplateRequest>
+                {
+                    new NotificationTemplateRequest { TemplateName = "TestTemplate", TemplateId = Guid.NewGuid() }
+                }
+            };
+
+            var exception = new InvalidOperationException("Feedback transaction sendAfter date is in the future");
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
+
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            var badRequestResult = result as BadRequestObjectResult;
+            var errorResponse = badRequestResult.Value;
+            Assert.That(errorResponse.GetType().GetProperty("error").GetValue(errorResponse),
+                Is.EqualTo("Feedback transaction sendAfter date is in the future"));
+        }
+
+        [Test]
+        public async Task SendFeedbackEmails_ReturnsBadRequest_WhenNoMatchingTemplateFound()
+        {
+            var feedbackTransactionId = 125L;
+            var request = new SendFeedbackEmailsRequest
+            {
+                NotificationTemplates = new List<NotificationTemplateRequest>
+                {
+                    new NotificationTemplateRequest { TemplateName = "TestTemplate", TemplateId = Guid.NewGuid() }
+                }
+            };
+
+            var exception = new InvalidOperationException("No matching template found for templateName: TestTemplate");
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
+
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+            var badRequestResult = result as BadRequestObjectResult;
+            var errorResponse = badRequestResult.Value;
+            Assert.That(errorResponse.GetType().GetProperty("error").GetValue(errorResponse),
+                Is.EqualTo("No matching template found for templateName: TestTemplate"));
+        }
+
+        [Test]
+        public async Task SendFeedbackEmails_ReturnsInternalServerError_WhenUnexpectedExceptionOccurs()
+        {
+            var feedbackTransactionId = 126L;
+            var request = new SendFeedbackEmailsRequest
+            {
+                NotificationTemplates = new List<NotificationTemplateRequest>
+                {
+                    new NotificationTemplateRequest { TemplateName = "TestTemplate", TemplateId = Guid.NewGuid() }
+                }
+            };
+
+            var exception = new Exception("Unexpected error occurred");
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+
+            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = result as StatusCodeResult;
+            Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
         }
     }
 }
