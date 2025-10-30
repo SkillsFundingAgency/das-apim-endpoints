@@ -24,7 +24,7 @@ public class GetOrganisationsQueryHandlerTests
         // Arrange
         GetOrganisationsResponse apiResponse = new()
         {
-            Organisations = new List<OrganisationModel>
+            Organisations = new List<OrganisationResponse>
             { new() { Ukprn = 12345, LegalName = "Test1" }, new() { Ukprn = 56789, LegalName = "Test2" }}
         };
         apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationsResponse>(It.Is<GetOrganisationsRequest>(c => c.GetUrl.Equals(new GetOrganisationsRequest().GetUrl)))).ReturnsAsync(new ApiResponse<GetOrganisationsResponse>(apiResponse, HttpStatusCode.OK, ""));

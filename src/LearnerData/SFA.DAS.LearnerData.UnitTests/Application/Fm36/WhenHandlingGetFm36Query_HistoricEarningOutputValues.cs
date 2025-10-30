@@ -25,6 +25,6 @@ public class WhenHandlingGetFm36Query_HistoricEarningOutputValues
     public void EmptyArrayIsReturned()
     {
         // Assert
-        _testFixture.Result.FM36Learners.Should().AllSatisfy(x => x.HistoricEarningOutputValues.Should().BeEmpty());
+        _testFixture.Result.Items.Should().AllSatisfy(x => x.HistoricEarningOutputValues.Should().BeEmpty());
     }
 }

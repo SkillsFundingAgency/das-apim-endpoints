@@ -8,7 +8,7 @@ public class OrganisationSummaryTests
 {
     [Test, AutoData]
     public void OrganisationSummary_MapsOrganisationSummary(
-        OrganisationModel getOrganisationDetails)
+        OrganisationResponse getOrganisationDetails)
     {
         // Act
         OrganisationSummary sut = getOrganisationDetails;
