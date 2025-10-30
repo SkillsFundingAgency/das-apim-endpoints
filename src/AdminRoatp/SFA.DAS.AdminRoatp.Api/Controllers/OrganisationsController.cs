@@ -1,8 +1,12 @@
 ﻿using System.Net;
 using MediatR;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.AdminRoatp.Application.Commands.PatchOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
+using SFA.DAS.AdminRoatp.Infrastructure;
+using SFA.DAS.AdminRoatp.InnerApi.Requests;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
@@ -30,5 +34,17 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
         _logger.LogInformation("Received request to get organisation for Ukprn: {Ukprn}", ukprn);
         GetOrganisationQueryResult? response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
         return response == null ? NotFound() : Ok(response);
+    }
+
+    [HttpPatch]
+    [Route("{ukprn:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IActionResult> PatchOrganisation([FromRoute] int ukprn, [FromBody] JsonPatchDocument<PatchOrganisationModel> patchDoc, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Processing Organisations-PatchOrganisations");
+
+        HttpStatusCode response = await _mediator.Send(new PatchOrganisationCommand(ukprn, userId, patchDoc), cancellationToken);
+
+        return new StatusCodeResult((int)response);
     }
 }
