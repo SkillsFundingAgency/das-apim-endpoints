@@ -11,5 +11,6 @@ public record Report
     public ReportOwnerType OwnerType { get; set; }
     public DateTime CreatedDate { get; set; }
     public string? CreatedBy { get; set; }
+    public int DownloadCount { get; set; } = 0;
     public string DynamicCriteria { get; set; } = null!;
 }
