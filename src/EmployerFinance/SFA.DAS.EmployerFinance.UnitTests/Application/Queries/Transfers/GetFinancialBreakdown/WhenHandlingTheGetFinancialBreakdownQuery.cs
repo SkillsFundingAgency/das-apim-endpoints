@@ -1,13 +1,12 @@
-﻿using AutoFixture;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown;
 using SFA.DAS.EmployerFinance.Models.Constants;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFinancialBreakdown;
 
@@ -16,7 +15,6 @@ public class WhenHandlingTheGetFinancialBreakdownQuery
         [Test, MoqAutoData]
         public async Task And_AccountId_Specified_Then_Projection_Returned(
            long accountId,
-           [Frozen] Mock<IForecastingApiClient<ForecastingApiConfiguration>> forecastingApiConfiguration,
            [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> levyTransferMatchingApiConfiguration,
            GetFinancialBreakdownHandler getFinancialBreakdownHandler)
         {
@@ -47,16 +45,7 @@ public class WhenHandlingTheGetFinancialBreakdownQuery
           
             var getPledgesResponse = new Fixture().Create<GetPledgesResponse>();
 
-            var getTransferFinancialBreakdownResponse = new GetTransferFinancialBreakdownResponse()
-            {
-                Breakdown = breakDownList,
-                AccountId = accountId,                
-                AmountPledged = 20
-            };
-
-            forecastingApiConfiguration
-                .Setup(x => x.Get<GetTransferFinancialBreakdownResponse>(It.IsAny<GetTransferFinancialBreakdownRequest>()))
-                .ReturnsAsync(getTransferFinancialBreakdownResponse);
+            // Forecasting service is decommissioned; handler no longer calls it
 
             levyTransferMatchingApiConfiguration
                 .Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>()))
@@ -65,10 +54,10 @@ public class WhenHandlingTheGetFinancialBreakdownQuery
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
             results.AmountPledged.Should().Be(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount));
-            results.TransferConnections.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections));
-            results.AcceptedPledgeApplications.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications));
-            results.ApprovedPledgeApplications.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications));
-            results.PledgeOriginatedCommitments.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments));
-            results.Commitments.Should().Be(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments));
+            results.TransferConnections.Should().Be(0);
+            results.AcceptedPledgeApplications.Should().Be(0);
+            results.ApprovedPledgeApplications.Should().Be(0);
+            results.PledgeOriginatedCommitments.Should().Be(0);
+            results.Commitments.Should().Be(0);
         }
 }
