@@ -29,7 +29,7 @@ public class WhenHandlingGetFm36Query_NoDuplicatedKeys
         // Assert
         _testFixture.Result.Should().NotBeNull();
 
-        foreach (var learner in _testFixture.Result.FM36Learners)
+        foreach (var learner in _testFixture.Result.Items)
         {
             foreach (var learningDelivery in learner.LearningDeliveries)
             {
