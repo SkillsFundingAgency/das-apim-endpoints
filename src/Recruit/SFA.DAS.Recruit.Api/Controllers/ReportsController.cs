@@ -6,7 +6,9 @@ using SFA.DAS.Recruit.Application.Report.Command.PostCreateReport;
 using SFA.DAS.Recruit.Application.Report.Query.GenerateReportsById;
 using SFA.DAS.Recruit.Application.Report.Query.GetReportsByUkprn;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Recruit.Application.Report.Query.GetReportById;
 
@@ -19,12 +21,16 @@ public class ReportsController(IMediator mediator,
 {
     [HttpGet]
     [Route("{reportId:guid}")]
-    public async Task<IActionResult> GetById(Guid reportId)
+    public async Task<IActionResult> GetById(
+        [FromRoute, Required] Guid reportId,
+        CancellationToken token = default)
     {
         try
         {
-            var result = await mediator.Send(new GetReportByIdQuery(reportId));
-            return Ok(result);
+            var result = await mediator.Send(new GetReportByIdQuery(reportId), token);
+            return result.Report is null 
+                ? NotFound() 
+                : Ok(result);
         }
         catch (Exception e)
         {
@@ -35,11 +41,13 @@ public class ReportsController(IMediator mediator,
 
     [HttpGet]
     [Route("{ukprn:int}/provider")]
-    public async Task<IActionResult> GetByUkprn(int ukprn)
+    public async Task<IActionResult> GetByUkprn(
+        [FromRoute, Required] int ukprn,
+        CancellationToken token = default)
     {
         try
         {
-            var result = await mediator.Send(new GetReportsByUkprnQuery(ukprn));
+            var result = await mediator.Send(new GetReportsByUkprnQuery(ukprn), token);
             return Ok(result);
         }
         catch (Exception e)
@@ -51,11 +59,13 @@ public class ReportsController(IMediator mediator,
 
     [HttpGet]
     [Route("generate/{reportId:guid}")]
-    public async Task<IActionResult> Generate(Guid reportId)
+    public async Task<IActionResult> Generate(
+        [FromRoute, Required] Guid reportId,
+        CancellationToken token = default)
     {
         try
         {
-            var result = await mediator.Send(new GenerateReportsByReportIdQuery(reportId));
+            var result = await mediator.Send(new GenerateReportsByReportIdQuery(reportId), token);
             return Ok(result);
         }
         catch (Exception e)
@@ -67,7 +77,9 @@ public class ReportsController(IMediator mediator,
 
     [HttpPost]
     [Route("create")]
-    public async Task<IActionResult> CreateReport([FromBody] PostCreateReportApiRequest request)
+    public async Task<IActionResult> CreateReport(
+        [FromBody] PostCreateReportApiRequest request,
+        CancellationToken token = default)
     {
         try
         {
@@ -81,8 +93,8 @@ public class ReportsController(IMediator mediator,
                 OwnerType = request.OwnerType,
                 Ukprn = request.Ukprn,
                 UserId = request.UserId
-            });
-            return NoContent();
+            }, token);
+            return Created();
         }
         catch (Exception e)
         {
