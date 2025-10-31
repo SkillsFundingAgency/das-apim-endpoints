@@ -1,4 +1,5 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
@@ -115,7 +116,7 @@ public class GetLiveVacanciesApiResponse
         public string? ApplicationInstructions { get; set; }
 
         public int RouteCode { get; set; }
-        public string? DurationUnit { get; set; }
+        public DurationUnit? DurationUnit { get; set; }
         public int Duration { get; set; }
         public string? AccountLegalEntityPublicHashedId { get; set; }
         public string? AccountPublicHashedId { get; set; }
@@ -177,10 +178,10 @@ public class GetLiveVacanciesApiResponse
     public class Wage
     {
         public int Duration { get; set; }
-        public string? DurationUnit { get; set; }
+        public DurationUnit? DurationUnit { get; set; }
         public decimal? FixedWageYearlyAmount { get; set; }
         public string? WageAdditionalInformation { get; set; }
-        public string? WageType { get; set; }
+        public WageType? WageType { get; set; }
         public decimal WeeklyHours { get; set; }
         public string? WorkingWeekDescription { get; set; }
         public decimal? ApprenticeMinimumWage { get; set; }
@@ -218,6 +219,6 @@ public class GetLiveVacanciesApiResponse
         public string? QualificationType { get; set; }
         public string? Subject { get; set; }
         public string? Grade { get; set; }
-        public string? Weighting { get; set; }
+        public QualificationWeighting? Weighting { get; set; }
     }
 }

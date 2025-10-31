@@ -1,26 +1,35 @@
-﻿using SFA.DAS.SharedOuterApi.Extensions;
+﻿using Newtonsoft.Json;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Text.Json.Serialization;
-using SFA.DAS.SharedOuterApi.Domain;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 public class GetLiveVacanciesApiResponse
 {
-    public IEnumerable<LiveVacancy> Vacancies { get; set; } = null!;
+    [JsonProperty("items")]
+    public IEnumerable<LiveVacancy> Items { get; set; } = null!;
+    [JsonProperty("pageInfo")]
+    public PageInfo PageInfo { get; set; } = null!;
+}
+
+public record PageInfo
+{
+    public int TotalCount { get; set; }
     public int PageSize { get; set; }
-    public int PageNo { get; set; }
-    public int TotalLiveVacanciesReturned { get; set; }
-    public int TotalLiveVacancies { get; set; }
+    public int PageIndex { get; set; }
     public int TotalPages { get; set; }
 }
+
 public class LiveVacancy
 {
-    public string Id { get; set; } = null!;
+    public Guid Id { get; set; }
     public Guid VacancyId { get; set; }
     public DateTime ClosingDate { get; set; }
     public string? Description { get; set; }
-    public DisabilityConfident DisabilityConfident { get; set; }
+    public bool DisabilityConfident { get; set; }
     public string? EmployerContactEmail { get; set; }
     public string? EmployerContactName { get; set; }
     public string? EmployerContactPhone { get; set; }
@@ -30,7 +39,7 @@ public class LiveVacancy
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
     public List<Address>? EmployerLocations { get; set; } = [];
-    [JsonPropertyName("employerLocationOption"), JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
+    [JsonPropertyName("employerLocationOption"), System.Text.Json.Serialization.JsonConverter(typeof(JsonStringEnumConverter<AvailableWhere>))]
     public AvailableWhere? EmployerLocationOption { get; set; }
     public string? EmployerLocationInformation { get; set; }
 
@@ -98,10 +107,10 @@ public class TrainingProvider
 public class Wage
 {
     public int Duration { get; set; }
-    public string? DurationUnit { get; set; }
+    public DurationUnit? DurationUnit { get; set; }
     public decimal? FixedWageYearlyAmount { get; set; }
     public string? WageAdditionalInformation { get; set; }
-    public string? WageType { get; set; }
+    public WageType? WageType { get; set; }
     public decimal WeeklyHours { get; set; }
     public string? WorkingWeekDescription { get; set; }
     public decimal? ApprenticeMinimumWage { get; set; }
@@ -118,5 +127,5 @@ public class Qualification
     public string QualificationType { get; set; } = null!;
     public string Subject { get; set; } = null!;
     public string Grade { get; set; } = null!;
-    public string Weighting { get; set; } = null!;
+    public QualificationWeighting? Weighting { get; set; }
 }

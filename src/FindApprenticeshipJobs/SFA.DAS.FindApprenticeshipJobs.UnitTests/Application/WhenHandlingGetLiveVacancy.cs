@@ -1,9 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
@@ -11,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;
 
@@ -23,7 +19,7 @@ public class WhenHandlingGetLiveVacancy
         ApiResponse<GetLiveVacancyApiResponse> apiResponse,
         GetStandardsListResponse standards,
         [Frozen] Mock<ICourseService> mockCourseService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockApiClient,
         [Frozen] Mock<ILiveVacancyMapper> mockVacancyMapper,
         FindApprenticeshipJobs.Application.Shared.LiveVacancy mapperResult,
         GetLiveVacancyQueryHandler sut)
@@ -31,7 +27,7 @@ public class WhenHandlingGetLiveVacancy
         mockApiClient.Setup(x =>
                 x.GetWithResponseCode<GetLiveVacancyApiResponse>(
                     It.Is<GetLiveVacancyApiRequest>(r =>
-                        r.GetUrl == $"api/livevacancies/{query.VacancyReference}")))
+                        r.GetUrl == $"api/vacancies/{query.VacancyReference}/live")))
             .ReturnsAsync(apiResponse);
         mockCourseService
             .Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
@@ -51,7 +47,7 @@ public class WhenHandlingGetLiveVacancy
         ApiResponse<GetLiveVacancyApiResponse> apiResponse,
         GetStandardsListResponse standards,
         [Frozen] Mock<ICourseService> mockCourseService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockApiClient,
         [Frozen] Mock<ILiveVacancyMapper> mockVacancyMapper,
         FindApprenticeshipJobs.Application.Shared.LiveVacancy mapperResult,
         GetLiveVacancyQueryHandler sut)
@@ -59,7 +55,7 @@ public class WhenHandlingGetLiveVacancy
         mockApiClient.SetupSequence(x =>
                 x.GetWithResponseCode<GetLiveVacancyApiResponse>(
                     It.Is<GetLiveVacancyApiRequest>(r =>
-                        r.GetUrl == $"api/livevacancies/{query.VacancyReference}")))
+                        r.GetUrl == $"api/vacancies/{query.VacancyReference}/live")))
             .ReturnsAsync(new ApiResponse<GetLiveVacancyApiResponse>(null!, HttpStatusCode.NotFound, ""))
             .ReturnsAsync(apiResponse);
         mockCourseService
@@ -80,7 +76,7 @@ public class WhenHandlingGetLiveVacancy
         ApiResponse<GetLiveVacancyApiResponse> apiResponse,
         GetStandardsListResponse standards,
         [Frozen] Mock<ICourseService> mockCourseService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockApiClient,
         [Frozen] Mock<ILiveVacancyMapper> mockVacancyMapper,
         FindApprenticeshipJobs.Application.Shared.LiveVacancy mapperResult,
         GetLiveVacancyQueryHandler sut)
@@ -88,7 +84,7 @@ public class WhenHandlingGetLiveVacancy
         mockApiClient.Setup(x =>
                 x.GetWithResponseCode<GetLiveVacancyApiResponse>(
                     It.Is<GetLiveVacancyApiRequest>(r =>
-                        r.GetUrl == $"api/livevacancies/{query.VacancyReference}")))
+                        r.GetUrl == $"api/vacancies/{query.VacancyReference}/live")))
             .ReturnsAsync(new ApiResponse<GetLiveVacancyApiResponse>(null!, HttpStatusCode.NotFound, ""));
         mockCourseService
             .Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
