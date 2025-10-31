@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
@@ -10,7 +7,13 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -28,13 +31,7 @@ public class GetLearnersForProviderQueryHandler(
     {
         long accountLegalEntityId = 0;
         string employerName = null;
-
-        var learnerDataTask = GetLearnerData(request);
-        var standardsTask = GetStandardsData();
-
-        await Task.WhenAll(learnerDataTask, standardsTask);
-        var learnerData = await learnerDataTask;
-        var standards = await standardsTask;
+        List<string> selectedUlns = new List<string>();
 
         if (request.CohortId.HasValue)
         {
@@ -48,7 +45,20 @@ public class GetLearnersForProviderQueryHandler(
             }
             employerName = cohortResponse.Body.LegalEntityName;
             accountLegalEntityId = cohortResponse.Body.AccountLegalEntityId;
-        }
+
+            //find draft apprenticeships in the cohort to exclude from the learner search results
+            var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId.Value);
+            var draftApprenticeships = await commitmentsClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
+            selectedUlns = draftApprenticeships.Body.DraftApprenticeships.Select(x => x.Uln).ToList();
+            request.ExcludeUlns = selectedUlns;
+        }        
+
+        var learnerDataTask = GetLearnerData(request);
+        var standardsTask = GetStandardsData();
+
+        await Task.WhenAll(learnerDataTask, standardsTask);
+        var learnerData = await learnerDataTask;
+        var standards = await standardsTask;        
 
         if (request.AccountLegalEntityId.HasValue)
         {
@@ -90,7 +100,8 @@ public class GetLearnersForProviderQueryHandler(
                 request.Page,
                 request.PageSize, 
                 request.StartMonth,
-                request.StartYear
+                request.StartYear,
+                string.Join(",", request.ExcludeUlns)
             ));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
