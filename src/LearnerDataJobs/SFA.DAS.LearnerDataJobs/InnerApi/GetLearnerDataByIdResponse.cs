@@ -1,6 +1,5 @@
 ﻿namespace SFA.DAS.LearnerDataJobs.InnerApi;
-
-public class LearnerDataApprenticeshipIdRequest
+public class GetLearnerDataByIdResponse
 {
     public long? ApprenticeshipId { get; set; }
 }

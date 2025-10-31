@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.Application.Queries;
 using SFA.DAS.LearnerDataJobs.InnerApi;
+using System.Net;
 
 namespace SFA.DAS.LearnerDataJobs.Api.Controllers;
 
@@ -54,7 +54,6 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         }
     }
 
-
     [HttpPatch]
     [Route("providers/{providerId}/learners/{learnerDataId}/apprenticeshipId")]
     public async Task<IActionResult> PatchLearnerDataApprenticeshipId([FromRoute] long providerId, long learnerDataId, [FromBody] LearnerDataApprenticeshipIdRequest request)
@@ -76,4 +75,29 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         }
     }
 
+    [HttpPatch]
+    [Route("providers/{providerId}/learner/{learnerDataId}/apprenticeship-stop")]
+    public async Task<IActionResult> ApprenticeshipStop([FromRoute] long providerId, long learnerDataId, [FromBody] ApprenticeshipStopRequest request)
+    {
+        try
+        {
+            logger.LogTrace("Calling GetLearnerByIdQuery");
+            var command = new ApprenticeshipStopCommand(providerId, learnerDataId, request);
+            logger.LogInformation($"Get learner data from API for {learnerDataId}");
+
+            var result = await mediator.Send(command);           
+
+            if (!result)
+            {
+                logger.LogInformation("Getting learner data from APi is not successful");
+                return new NotFoundResult();
+            }
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "APIM error whilst attempting to assign ");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
 }

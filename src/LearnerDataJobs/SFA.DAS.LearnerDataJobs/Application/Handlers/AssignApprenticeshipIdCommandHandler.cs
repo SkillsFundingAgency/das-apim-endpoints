@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LearnerDataJobs.Application.Commands;
+namespace SFA.DAS.LearnerDataJobs.Application.Handlers;
 
 public class AssignApprenticeshipIdCommandHandler(IInternalApiClient<LearnerDataInnerApiConfiguration> client, ILogger<AssignApprenticeshipIdCommand> logger)
     : IRequestHandler<AssignApprenticeshipIdCommand, bool>
@@ -21,7 +22,7 @@ public class AssignApprenticeshipIdCommandHandler(IInternalApiClient<LearnerData
             {
                 logger.LogInformation("Assigning ApprenticeshipId returned status code {0} and error {1}", response.StatusCode, response.ErrorContent);
             }
-            return ((int)response.StatusCode >= 200 && (int)response.StatusCode <= 299);
+            return (int)response.StatusCode >= 200 && (int)response.StatusCode <= 299;
         }
         catch (Exception ex)
         {
