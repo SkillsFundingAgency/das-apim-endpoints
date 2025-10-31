@@ -23,7 +23,11 @@ public class ApprenticeshipStopCommandHandler(IInternalApiClient<LearnerDataInne
                 logger.LogTrace($"Learner Data  does not exists for Id : {command.LearnerDataId}");
                 return false;
             }
-            
+
+            logger.LogTrace($"learner apprenticeshipid :{learner.Body.ApprenticeshipId}");
+            logger.LogTrace($"command apprenticeshipid :{command.PatchRequest.ApprenticeshipId}");
+            logger.LogTrace($"command iswithdrwan :{command.PatchRequest.IsWithDrawnAtStartOfCourse}");
+
             if (command.PatchRequest.ApprenticeshipId != 0 && command.PatchRequest.ApprenticeshipId == learner.Body.ApprenticeshipId && command.PatchRequest.IsWithDrawnAtStartOfCourse)
             {                
                 var request = new PatchLearnerDataApprenticeshipIdRequest(command.ProviderId, command.LearnerDataId, new LearnerDataApprenticeshipIdRequest() { ApprenticeshipId = null });                
