@@ -12,5 +12,5 @@ public class DeleteShortlistItemRequest : IDeleteApiRequest
         _id = id;
     }
 
-    public string DeleteUrl => $"api/shortlists/{_id}";
+    public string DeleteUrl => $"shortlists/{_id}";
 }

@@ -28,16 +28,10 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBrea
             var breakdownTask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
                                                         (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow));
 
-            var nextYearBreakdowntask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
-                                                        (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow.AddYears(1)));
-
-            var yearAfterNextYearBreakdowntask = _forecastingApiClient.Get<GetTransferFinancialBreakdownResponse>
-                                                        (new GetTransferFinancialBreakdownRequest(request.AccountId, DateTime.UtcNow.AddYears(2)));
-
             var pledgesTask = _levyTransferMatchingApiClient.Get<GetPledgesResponse>
                                                         (new GetPledgesRequest(request.AccountId));
 
-            await Task.WhenAll(breakdownTask, nextYearBreakdowntask, yearAfterNextYearBreakdowntask, pledgesTask);
+            await Task.WhenAll(breakdownTask, pledgesTask);
 
             return new GetFinancialBreakdownResult
             {
@@ -46,20 +40,9 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBrea
                 TransferConnections = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.TransferConnections),
                 AcceptedPledgeApplications = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications),
                 PledgeOriginatedCommitments = breakdownTask.Result.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments),                
-                ProjectionStartDate = breakdownTask.Result.ProjectionStartDate,
-                CurrentYearEstimatedCommittedSpend = CalculateEstimatedCommittedSpend(breakdownTask.Result.Breakdown),
-                NextYearEstimatedCommittedSpend = CalculateEstimatedCommittedSpend(nextYearBreakdowntask.Result.Breakdown),
-                YearAfterNextYearEstimatedCommittedSpend = CalculateEstimatedCommittedSpend(yearAfterNextYearBreakdowntask.Result.Breakdown),
                 AmountPledged = pledgesTask.Result.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount)
             };
         }
 
-        private decimal CalculateEstimatedCommittedSpend(List<GetTransferFinancialBreakdownResponse.BreakdownDetails> breakdown)
-        {
-            return breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
-                   breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) +
-                   breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments) +
-                   breakdown.Sum(x => x.FundsOut.TransferConnections);
-        }
     }
 }

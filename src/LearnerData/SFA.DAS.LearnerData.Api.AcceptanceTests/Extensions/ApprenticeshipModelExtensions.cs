@@ -2,6 +2,7 @@
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
+using SFA.DAS.LearnerData.Application.Fm36;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
@@ -91,12 +92,8 @@ public static class ApprenticeshipModelExtensions
 
         return new InnerApiResponses
         {
-            LearningsInnerApiResponse = new GetLearningsResponse
-            {
-                Ukprn = 10005077,
-                Learnings = [learning]
-            },
-            EarningsInnerApiResponse = [earnings]
+            UnPagedLearningsInnerApiResponse = [learning],
+            EarningsInnerApiResponse = new GetFm36DataResponse { Apprenticeships = new List<Apprenticeship> { earnings } }
         };
     }
 }

@@ -3,5 +3,5 @@
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 public class GetOrganisationsResponse
 {
-    public List<OrganisationModel> Organisations { get; set; } = new();
+    public List<OrganisationResponse> Organisations { get; set; } = new();
 }

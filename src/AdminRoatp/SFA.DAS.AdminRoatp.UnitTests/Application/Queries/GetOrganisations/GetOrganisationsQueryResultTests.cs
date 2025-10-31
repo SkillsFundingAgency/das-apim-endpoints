@@ -9,7 +9,7 @@ public class GetOrganisationsQueryResultTests
     [Test, AutoData]
 
     public void GetOrganisationsQueryResult_MapsDataCorrectly(
-        OrganisationModel getOrganisationDetails)
+        OrganisationResponse getOrganisationDetails)
     {
         // Arrange
         OrganisationSummary organisationSummary = getOrganisationDetails;
