@@ -1,12 +1,11 @@
 ﻿using MediatR;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 
 namespace SFA.DAS.Recruit.Application.ApplicationReview.Queries.GetApplicationReviewsByVacancyReference
 {
