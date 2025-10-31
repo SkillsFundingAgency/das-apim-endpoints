@@ -31,7 +31,6 @@ public class GetLearnersForProviderQueryHandler(
     {
         long accountLegalEntityId = 0;
         string employerName = null;
-        List<string> selectedUlns = new List<string>();
 
         if (request.CohortId.HasValue)
         {
@@ -48,8 +47,12 @@ public class GetLearnersForProviderQueryHandler(
 
             //find draft apprenticeships in the cohort to exclude from the learner search results
             var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId.Value);
-            var draftApprenticeships = await commitmentsClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
-            selectedUlns = draftApprenticeships.Body.DraftApprenticeships.Select(x => x.Uln).ToList();
+            var draftApprenticeshipsResponse = await commitmentsClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
+            if (!string.IsNullOrEmpty(draftApprenticeshipsResponse.ErrorContent))
+            {
+                throw new ApplicationException($"Getting Draft Apprenticeships Failed. Status Code {draftApprenticeshipsResponse.StatusCode} Error : {draftApprenticeshipsResponse.ErrorContent}");
+            }
+            var selectedUlns = draftApprenticeshipsResponse.Body.DraftApprenticeships.Select(x => x.Uln).ToList();
             request.ExcludeUlns = selectedUlns;
         }        
 

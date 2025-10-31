@@ -262,4 +262,33 @@ public class WhenGettingLearnersForProvider
         await result.Should().ThrowAsync<ApplicationException>().WithMessage("*Courses failed");
     }
 
+    [Test, MoqAutoData]
+    public async Task Then_The_Api_Is_Called_And_Draft_Apprenticeships_Fails(
+        GetLearnersForProviderQuery query,
+        GetLearnersForProviderResponse learnersResponse,
+        GetCohortRequest cohortRequest,
+        GetCohortResponse cohortResponse,
+        List<LearnerSummary> learners,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IMapLearnerRecords> mapper,
+        [Greedy] GetLearnersForProviderQueryHandler handler
+    )
+    {
+        query.AccountLegalEntityId = null;
+
+        commitmentsClient.Setup(x =>
+           x.GetWithResponseCode<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
+       .ReturnsAsync(new ApiResponse<GetCohortResponse>(cohortResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x => x.GetWithResponseCode<GetDraftApprenticeshipsResponse>(It.IsAny<GetDraftApprenticeshipsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipsResponse>(null, HttpStatusCode.InternalServerError, "Draft Apprenticeships Failed"));
+
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+
+        var result = async () => await handler.Handle(query, CancellationToken.None);
+
+        await result.Should().ThrowAsync<ApplicationException>().WithMessage("*Draft Apprenticeships Failed");
+    }
+
 }
