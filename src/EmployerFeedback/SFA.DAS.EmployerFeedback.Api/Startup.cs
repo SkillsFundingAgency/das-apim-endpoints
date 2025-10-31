@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -13,10 +9,15 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
+using SFA.DAS.EmployerFeedback.Api.TaskQueue;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
+using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EmployerFeedback.Api
 {
@@ -54,18 +55,19 @@ namespace SFA.DAS.EmployerFeedback.Api
             services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly));
             services.AddServiceRegistration();
 
-            services.Configure<RouteOptions>(options =>
-                {
-                    options.LowercaseUrls = true;
-                    options.LowercaseQueryStrings = true;
-                }).AddMvc(o =>
+            services
+                .AddControllers(o =>
                 {
                     if (!_configuration.IsLocalOrDev())
                     {
                         o.Filters.Add(new AuthorizeFilter("default"));
                     }
                 })
-                .AddJsonOptions(options => options.JsonSerializerOptions.IgnoreNullValues = true);
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+                    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+                });
 
             if (_configuration["Environment"] != "DEV")
             {
@@ -73,11 +75,65 @@ namespace SFA.DAS.EmployerFeedback.Api
                      .AddCheck<AccountsApiHealthCheck>(AccountsApiHealthCheck.HealthCheckResultDescription);
             }
 
+            if (_configuration.IsLocalOrDev())
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                var configuration = _configuration
+                    .GetSection(nameof(EmployerFeedbackConfiguration))
+                    .Get<EmployerFeedbackConfiguration>();
+
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = configuration.ApimEndpointsRedisConnectionString;
+                });
+            }
+
+            services
+                .AddControllers()
+                .AddJsonOptions(options =>
+                {
+                    options.JsonSerializerOptions.Converters.Add(
+                        new System.Text.Json.Serialization.JsonStringEnumConverter());
+                });
+
             services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
 
-            services.AddSwaggerGen(c =>
+            services.AddHostedService<TaskQueueHostedService>();
+
+            services.AddSwaggerGen(opt =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerFeedbackOuterApi", Version = "v1" });
+                opt.SwaggerDoc("v1", new OpenApiInfo { Title = "EmployerFeedbackOuterApi", Version = "v1" });
+
+                if (!_configuration.IsLocalOrDev())
+                {
+                    opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Please enter token",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.Http,
+                        BearerFormat = "JWT",
+                        Scheme = "bearer"
+                    });
+
+                    opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                            new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type=ReferenceType.SecurityScheme,
+                                    Id="Bearer"
+                                }
+                            },
+                            new string[]{}
+                        }
+                    });
+                }
             });
         }
 
