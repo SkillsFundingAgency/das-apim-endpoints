@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -17,6 +12,11 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Learners.Queries;
@@ -77,6 +77,7 @@ public class WhenGettingLearnersForProvider
     GetCohortResponse cohortResponse,
     GetAllStandardsRequest coursesRequest,
     GetAllStandardsResponse coursesResponse,
+    GetDraftApprenticeshipsResponse apprenticeshipsResponse,
     List<LearnerSummary> learners,
     [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
     [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
@@ -96,7 +97,9 @@ public class WhenGettingLearnersForProvider
 
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
             .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
-
+        
+        commitmentsClient.Setup(x=>x.GetWithResponseCode<GetDraftApprenticeshipsResponse>(It.IsAny<GetDraftApprenticeshipsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipsResponse>(apprenticeshipsResponse,HttpStatusCode.OK, null));
 
         mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
 
@@ -130,6 +133,8 @@ public class WhenGettingLearnersForProvider
     )
     {
         GetLearnersForProviderRequest input;
+        query.CohortId = null;
+
         learnerDataClient.Setup(x =>
                 x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse,
@@ -230,6 +235,7 @@ public class WhenGettingLearnersForProvider
     GetAccountLegalEntityResponse aleResponse,
     GetAllStandardsRequest coursesRequest,
     GetAllStandardsResponse coursesResponse,
+    GetCohortResponse cohortResponse,
     List<LearnerSummary> learners,
     [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
     [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
@@ -237,6 +243,7 @@ public class WhenGettingLearnersForProvider
     [Greedy] GetLearnersForProviderQueryHandler handler
 )
     {
+        query.CohortId = null;
         learnerDataClient.Setup(x =>
                 x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
