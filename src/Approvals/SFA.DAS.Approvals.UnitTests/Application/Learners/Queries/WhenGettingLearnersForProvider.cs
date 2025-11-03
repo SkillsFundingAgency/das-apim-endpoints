@@ -265,13 +265,9 @@ public class WhenGettingLearnersForProvider
     [Test, MoqAutoData]
     public async Task Then_The_Api_Is_Called_And_Draft_Apprenticeships_Fails(
         GetLearnersForProviderQuery query,
-        GetLearnersForProviderResponse learnersResponse,
         GetCohortRequest cohortRequest,
         GetCohortResponse cohortResponse,
-        List<LearnerSummary> learners,
-        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
-        [Frozen] Mock<IMapLearnerRecords> mapper,
         [Greedy] GetLearnersForProviderQueryHandler handler
     )
     {
@@ -284,11 +280,45 @@ public class WhenGettingLearnersForProvider
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetDraftApprenticeshipsResponse>(It.IsAny<GetDraftApprenticeshipsRequest>()))
             .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipsResponse>(null, HttpStatusCode.InternalServerError, "Draft Apprenticeships Failed"));
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
-
         var result = async () => await handler.Handle(query, CancellationToken.None);
 
         await result.Should().ThrowAsync<ApplicationException>().WithMessage("*Draft Apprenticeships Failed");
     }
 
+    [Test, MoqAutoData]
+    public async Task Then_The_Api_Is_Called_And_Draft_Apprenticeships_Returs_Then_Data_Is_Included_In_LearnerApi_Call(
+        GetLearnersForProviderQuery query,
+        GetLearnersForProviderResponse learnersResponse,
+        GetCohortResponse cohortResponse,
+        GetDraftApprenticeshipsResponse draftApprenticeshipsResponse,
+        GetAllStandardsResponse coursesResponse,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Greedy] GetLearnersForProviderQueryHandler handler
+    )
+    {
+        query.AccountLegalEntityId = null;
+        IGetApiRequest captured = null;
+        var excludeUlns = string.Join(",", draftApprenticeshipsResponse.DraftApprenticeships.ConvertAll(x => x.Uln));
+
+        learnerDataClient.Setup(x =>
+                x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
+                .Callback<IGetApiRequest>(r => captured = r)
+                .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x =>
+           x.GetWithResponseCode<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
+       .ReturnsAsync(new ApiResponse<GetCohortResponse>(cohortResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x => x.GetWithResponseCode<GetDraftApprenticeshipsResponse>(It.IsAny<GetDraftApprenticeshipsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipsResponse>(draftApprenticeshipsResponse, HttpStatusCode.OK, null));
+
+        commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
+            .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
+
+        var result = await handler.Handle(query, CancellationToken.None);
+
+        captured.Should().NotBeNull();
+        captured.GetUrl.Should().Contain($"excludeUlns={excludeUlns}");
+    }
 }
