@@ -151,13 +151,11 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails
             string employerFeedbackBaseUrl,
             string hashedAccountId)
         {
-            var feedbackUrlWithAccountId = $"{employerFeedbackBaseUrl.TrimEnd('/')}/{hashedAccountId}";
-
             return new Dictionary<string, string>
             {
                 { "contact", user.FirstName },
                 { "employername", feedbackTransaction.AccountName },
-                { "feedbackbaseurl", feedbackUrlWithAccountId },
+                { "feedbackbaseurl", employerFeedbackBaseUrl },
                 { "accountsbaseurl", employerAccountsBaseUrl },
                 { "accounthashedid", hashedAccountId }
             };
