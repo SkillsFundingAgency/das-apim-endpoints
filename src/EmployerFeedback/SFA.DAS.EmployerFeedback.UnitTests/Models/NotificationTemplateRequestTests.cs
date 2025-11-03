@@ -4,7 +4,6 @@ using System;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Models
 {
-
     [TestFixture]
     public class NotificationTemplateRequestTests
     {
