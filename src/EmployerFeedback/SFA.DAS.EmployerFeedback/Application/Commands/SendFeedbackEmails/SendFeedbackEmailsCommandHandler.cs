@@ -6,7 +6,8 @@ using SFA.DAS.EmployerFeedback.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -108,19 +109,19 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails
             return matchingTemplate;
         }
 
-        private async Task<List<AccountUser>> GetEligibleAccountUsers(long accountId)
+        private async Task<List<GetAccountTeamMembersResponse>> GetEligibleAccountUsers(long accountId)
         {
-            var accountUsersResponse = await _accountsApiClient.GetWithResponseCode<GetAccountUsersResponse>(
-                new GetAccountUsersRequest(accountId));
-            accountUsersResponse.EnsureSuccessStatusCode();
+            var accountUsersResponse =
+                await _accountsApiClient.GetAll<GetAccountTeamMembersResponse>(
+                    new GetAccountTeamMembersRequest(accountId));
 
-            return accountUsersResponse.Body?
-                .Where(u => u.CanReceiveNotifications && u.Status == 2)
-                .ToList();
+            return accountUsersResponse?
+               .Where(u => u.CanReceiveNotifications && u.Status == 2)
+               .ToList();
         }
 
         private async Task SendEmailsToUsers(
-            List<AccountUser> accountUsers,
+            List<GetAccountTeamMembersResponse> accountUsers,
             GetFeedbackTransactionResponse feedbackTransaction,
             NotificationTemplateRequest template,
             string employerAccountsBaseUrl,
@@ -145,7 +146,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails
         }
 
         private Dictionary<string, string> CreateEmailTokens(
-            AccountUser user,
+            GetAccountTeamMembersResponse user,
             GetFeedbackTransactionResponse feedbackTransaction,
             string employerAccountsBaseUrl,
             string employerFeedbackBaseUrl,

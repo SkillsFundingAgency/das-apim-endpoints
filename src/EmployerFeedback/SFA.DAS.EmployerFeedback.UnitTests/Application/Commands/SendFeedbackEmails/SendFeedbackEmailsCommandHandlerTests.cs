@@ -8,6 +8,8 @@ using SFA.DAS.EmployerFeedback.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
@@ -76,19 +78,23 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SendFeedbackEm
                 SentDate = null
             };
 
-            var eligibleUsers = new List<AccountUser>
+            var eligibleUsers = new List<GetAccountTeamMembersResponse>
             {
-                new AccountUser
+                new GetAccountTeamMembersResponse
                 {
                     Email = "user1@test.com",
-                    FirstName = "User1",
+                    Name = "User One",
+                    UserRef = "user1ref",
+                    Role = "Owner",
                     CanReceiveNotifications = true,
                     Status = 2
                 },
-                new AccountUser
+                new GetAccountTeamMembersResponse
                 {
                     Email = "user2@test.com",
-                    FirstName = "User2",
+                    Name = "User Two",
+                    UserRef = "user2ref",
+                    Role = "Transactor",
                     CanReceiveNotifications = true,
                     Status = 2
                 }
@@ -101,8 +107,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SendFeedbackEm
                 .ReturnsAsync(new ApiResponse<GetFeedbackTransactionResponse>(feedbackTransaction, HttpStatusCode.OK, string.Empty));
 
             _mockAccountsApiClient
-                .Setup(x => x.GetWithResponseCode<GetAccountUsersResponse>(It.IsAny<GetAccountUsersRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAccountUsersResponse>(new GetAccountUsersResponse { eligibleUsers[0], eligibleUsers[1] }, HttpStatusCode.OK, string.Empty));
+                .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(It.IsAny<GetAccountTeamMembersRequest>()))
+                .ReturnsAsync(eligibleUsers);
 
             _mockEncodingService
                 .Setup(x => x.Encode(feedbackTransaction.AccountId, EncodingType.AccountId))
@@ -113,8 +119,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SendFeedbackEm
             _mockEmployerFeedbackApiClient.Verify(x => x.GetWithResponseCode<GetFeedbackTransactionResponse>(
                 It.Is<GetFeedbackTransactionRequest>(r => r.GetUrl.Contains(feedbackTransactionId.ToString()))), Times.Once);
 
-            _mockAccountsApiClient.Verify(x => x.GetWithResponseCode<GetAccountUsersResponse>(
-                It.Is<GetAccountUsersRequest>(r => r.GetUrl.Contains(feedbackTransaction.AccountId.ToString()))), Times.Once);
+            _mockAccountsApiClient.Verify(x => x.GetAll<GetAccountTeamMembersResponse>(
+                It.Is<GetAccountTeamMembersRequest>(r => r.GetAllUrl.Contains(feedbackTransaction.AccountId.ToString()))), Times.Once);
 
             _mockNotificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Exactly(eligibleUsers.Count));
 
@@ -208,7 +214,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SendFeedbackEm
 
             await _handler.Handle(command, CancellationToken.None);
 
-            _mockAccountsApiClient.Verify(x => x.GetWithResponseCode<GetAccountUsersResponse>(It.IsAny<GetAccountUsersRequest>()), Times.Never);
+            _mockAccountsApiClient.Verify(x => x.GetAll<GetAccountTeamMembersResponse>(It.IsAny<GetAccountTeamMembersRequest>()), Times.Never);
             _mockNotificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
         }
 
@@ -289,8 +295,8 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SendFeedbackEm
                 .ReturnsAsync(new ApiResponse<GetFeedbackTransactionResponse>(feedbackTransaction, HttpStatusCode.OK, string.Empty));
 
             _mockAccountsApiClient
-                .Setup(x => x.GetWithResponseCode<GetAccountUsersResponse>(It.IsAny<GetAccountUsersRequest>()))
-                .ReturnsAsync(new ApiResponse<GetAccountUsersResponse>(new GetAccountUsersResponse(), HttpStatusCode.OK, string.Empty));
+                .Setup(x => x.GetAll<GetAccountTeamMembersResponse>(It.IsAny<GetAccountTeamMembersRequest>()))
+                .ReturnsAsync(new List<GetAccountTeamMembersResponse>());
 
             await _handler.Handle(command, CancellationToken.None);
 
