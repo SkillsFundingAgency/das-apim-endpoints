@@ -1,20 +1,12 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Api.Controllers;
 using SFA.DAS.EmployerFinance.Api.Models;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetPledges;
-using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Pledges
+namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Pledges;
+
+public class WhenGettingPledges
 {
-    public class WhenGettingPledges
-    {
         [Test, MoqAutoData]
         public async Task Then_Gets_Pledges_From_Mediator(
             long accountId,
@@ -31,13 +23,12 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Pledges
             var value = okObjectResult.Value;
             var getPledgesResponse = value as GetPledgesResponse;
 
-            Assert.That(actionResult, Is.Not.Null);
-            Assert.That(okObjectResult, Is.Not.Null);
-            Assert.That(value, Is.Not.Null);
-            Assert.That(getPledgesResponse, Is.Not.Null);
+            actionResult.Should().NotBeNull();
+            okObjectResult.Should().NotBeNull();
+            value.Should().NotBeNull();
+            getPledgesResponse.Should().NotBeNull();
 
-            Assert.That(mediatorResult.TotalPledges, Is.EqualTo(getPledgesResponse.TotalPledges));
-            Assert.That(mediatorResult.Pledges.Count(), Is.EqualTo(getPledgesResponse.Pledges.Count()));
+            getPledgesResponse.TotalPledges.Should().Be(mediatorResult.TotalPledges);
+            mediatorResult.Pledges.Count().Should().Be(getPledgesResponse.Pledges.Count());
         }
-    }
 }

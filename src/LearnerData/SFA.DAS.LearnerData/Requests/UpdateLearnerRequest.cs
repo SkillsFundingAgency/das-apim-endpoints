@@ -7,14 +7,22 @@ namespace SFA.DAS.LearnerData.Requests;
 public class UpdateLearnerRequest
 {
     public UpdateLearnerRequestDeliveryDetails Delivery { get; set; }
+    public LearnerRequestDetails Learner { get; set; }
 }
+
+public class LearnerRequestDetails
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string? Email { get; set; }
+}
+
 public class UpdateLearnerRequestDeliveryDetails
 {
     public OnProgrammeRequestDetails OnProgramme { get; set; }
 
     public List<MathsAndEnglish> EnglishAndMaths { get; set; }
 
-    public DateTime? WithdrawalDate { get; set; }
 }
 
 public class OnProgrammeRequestDetails
@@ -22,6 +30,7 @@ public class OnProgrammeRequestDetails
     public DateTime ExpectedEndDate { get; set; }
     public List<CostDetails> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 
@@ -34,13 +43,17 @@ public class CostDetails
 
 public class MathsAndEnglish
 {
-    public string Course { get; set; }
+    //These fields exist currently only for the PUT, until we do the work to look up the course from the course code and align the Update
+    //with the CreateLearner requests
+    public string Course { get; set; } = "";
+    public decimal Amount { get; set; } = 0;
+
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
-    public decimal Amount { get; set; }
+    
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 

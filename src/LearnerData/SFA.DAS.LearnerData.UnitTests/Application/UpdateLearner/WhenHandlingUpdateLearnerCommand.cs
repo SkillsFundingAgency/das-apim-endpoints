@@ -10,6 +10,9 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using FluentAssertions;
+using Microsoft.IdentityModel.Protocols;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -131,9 +134,28 @@ public class WhenHandlingUpdateLearnerCommand
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate = null;
-        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x => x.CompletionDate = null);
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
+        command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate = null;
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x =>
+        {
+            x.CompletionDate = null;
+            x.WithdrawalDate = null;
+        });
+
+        // Clone expected learning support with original EndDates
+        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths
+            .SelectMany(x => x.LearningSupport.Select(ls => new LearningSupportUpdatedDetails
+            {
+                StartDate = ls.StartDate,
+                EndDate = ls.EndDate
+            }))
+            .ToList();
+
+        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!
+            .Select(ls => new LearningSupportUpdatedDetails
+            {
+                StartDate = ls.StartDate,
+                EndDate = ls.EndDate
+            }));
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -148,10 +170,11 @@ public class WhenHandlingUpdateLearnerCommand
 
         // Assert
         _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
 
         _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
-            r => r.Data.HasEquivalentItems(expectedLearningSupport,(actual,expected) => 
+            r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
                 actual.StartDate == expected.StartDate &&
                 actual.EndDate == expected.EndDate
             ))), Times.Once);
@@ -160,22 +183,19 @@ public class WhenHandlingUpdateLearnerCommand
     [Test]
     public async Task Then_Learner_Is_Updated_Successfully_With_LearningSupport_Changes_OnCompletion()
     {
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        
-        var completionDate = new[]
+        var startDate = new DateTime(2024, 8, 1);
+        var completionDate = startDate.AddYears(1);
+
+        var command = CreateLearnerCommandWithLearningSupport(startDate, completionDate: startDate.AddYears(1));
+
+        var expectedLearningSupport = new List<LearningSupportUpdatedDetails>
         {
-            command.UpdateLearnerRequest.Delivery.OnProgramme.LearningSupport.Min(x => x.EndDate).AddDays(-1),
-            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Min(y => y.EndDate).AddDays(-1)
-        }.Min();
-
-        command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate = completionDate;
-        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x => x.CompletionDate = completionDate);
-
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x => x.LearningSupport).ToList();
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
-        expectedLearningSupport.ForEach(x => x.EndDate = completionDate);
-
+            new LearningSupportUpdatedDetails
+            {
+                StartDate = startDate,
+                EndDate = completionDate
+            }
+        };
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -185,12 +205,49 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
-        // Act
         await _sut.Handle(command, CancellationToken.None);
 
-        // Assert
         _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
+            r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
+                actual.StartDate == expected.StartDate &&
+                actual.EndDate == expected.EndDate
+            ))), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_LearningSupport_Changes_OnWithdrawal()
+    {
+        var startDate = new DateTime(2024, 8, 1);
+        var withdrawalDate = startDate.AddYears(1);
+
+        var command = CreateLearnerCommandWithLearningSupport(startDate, withdrawalDate: startDate.AddYears(1));
+
+        var expectedLearningSupport = new List<LearningSupportUpdatedDetails>
+        {
+            new LearningSupportUpdatedDetails
+            {
+                StartDate = startDate,
+                EndDate = withdrawalDate
+            }
+        };
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        await _sut.Handle(command, CancellationToken.None);
+
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
 
         _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
             r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
@@ -283,12 +340,49 @@ public class WhenHandlingUpdateLearnerCommand
                 ))), Times.Once);
     }
 
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_PersonalDetails_Changes()
+    {
+        var fixture = new Fixture();
+
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var expectedEpisodeKey = Guid.NewGuid();
+        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
+        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails },
+            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
+            LearningEpisodeKey = expectedEpisodeKey,
+            Prices = expectedCosts
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<WithdrawApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.Is<UpdateLearningApiPutRequest>(
+                r => r.Data.Learner.FirstName == command.UpdateLearnerRequest.Learner.FirstName
+                && r.Data.Learner.LastName == command.UpdateLearnerRequest.Learner.LastName
+                && r.Data.Learner.EmailAddress == command.UpdateLearnerRequest.Learner.Email
+                )), Times.Once);
+
+        _earningsApiClient.Invocations.Count.Should().Be(0);
+    }
+
     [Test]
     public async Task Then_Learner_Is_Updated_Successfully_With_Withdrawal()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate;
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -308,6 +402,108 @@ public class WhenHandlingUpdateLearnerCommand
 
         _earningsApiClient.Verify(x => x.Patch(It.Is<WithdrawApiPatchRequest>(
             r => r.Data.WithdrawalDate == expectedWithdrawalDate)), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_Reverse_Withdrawal()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.Is<UpdateLearningApiPutRequest>(r => r.Data.Delivery.WithdrawalDate == expectedWithdrawalDate)), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_EnglishAndMaths_LearningSupport_Changes_OnCompletion()
+    {
+        var startDate = new DateTime(2024, 8, 1);
+        var completionDate = startDate.AddYears(1);
+
+        var command = CreateEnglishAndMathsLearnerCommandWithLearningSupport(startDate, completionDate: completionDate);
+
+        var expectedLearningSupport = new List<LearningSupportUpdatedDetails>
+        {
+            new LearningSupportUpdatedDetails
+            {
+                StartDate = startDate,
+                EndDate = completionDate
+            }
+        };
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        await _sut.Handle(command, CancellationToken.None);
+
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
+            r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
+                actual.StartDate == expected.StartDate &&
+                actual.EndDate == expected.EndDate
+            ))), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_EnglishAndMaths_LearningSupport_Changes_OnWithdrawal()
+    {
+        var startDate = new DateTime(2024, 8, 1);
+        var withdrawalDate = startDate.AddYears(1);
+
+        var command = CreateEnglishAndMathsLearnerCommandWithLearningSupport(startDate, withdrawalDate: withdrawalDate);
+
+        var expectedLearningSupport = new List<LearningSupportUpdatedDetails>
+        {
+            new LearningSupportUpdatedDetails
+            {
+                StartDate = startDate,
+                EndDate = withdrawalDate
+            }
+        };
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        await _sut.Handle(command, CancellationToken.None);
+
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
+            r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
+                actual.StartDate == expected.StartDate &&
+                actual.EndDate == expected.EndDate
+            ))), Times.Once);
     }
 
     private static void MockLearningApiResponse(
@@ -336,6 +532,60 @@ public class WhenHandlingUpdateLearnerCommand
                                                  c.WithdrawalDate == r.WithdrawalDate &&
                                                  c.PriorLearningPercentage == r.PriorLearningAdjustmentPercentage &&
                                                  c.CompletionDate == r.ActualEndDate));
+    }
+
+    private UpdateLearnerCommand CreateLearnerCommandWithLearningSupport(DateTime startDate, DateTime? completionDate = null, DateTime? withdrawalDate = null)
+    {
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var onProg = command.UpdateLearnerRequest.Delivery.OnProgramme;
+        onProg.Costs.Clear();
+        onProg.Costs.Add(new CostDetails
+        {
+            FromDate = startDate,
+            TrainingPrice = 1000,
+            EpaoPrice = 100
+        });
+        onProg.ExpectedEndDate = startDate.AddYears(2);
+        onProg.CompletionDate = completionDate;
+        onProg.WithdrawalDate = withdrawalDate;
+        onProg.LearningSupport.Clear();
+        onProg.LearningSupport.Add(new LearningSupportRequestDetails
+        {
+            StartDate = startDate,
+            EndDate = startDate.AddYears(2)
+        });
+
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
+
+        return command;
+    }
+
+    private UpdateLearnerCommand CreateEnglishAndMathsLearnerCommandWithLearningSupport(DateTime startDate, DateTime? completionDate = null, DateTime? withdrawalDate = null)
+    {
+        var command = _fixture.Create<UpdateLearnerCommand>();
+
+        var onProg = command.UpdateLearnerRequest.Delivery.OnProgramme;
+        onProg.LearningSupport.Clear();
+        onProg.CompletionDate = null;
+        onProg.WithdrawalDate = null;
+
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(new MathsAndEnglish
+        {
+            CompletionDate = completionDate,
+            WithdrawalDate = withdrawalDate,
+            LearningSupport =
+            [
+                new LearningSupportRequestDetails
+                {
+                    StartDate = startDate,
+                    EndDate = startDate.AddYears(2)
+                }
+            ]
+        });
+
+        return command;
     }
 }
 

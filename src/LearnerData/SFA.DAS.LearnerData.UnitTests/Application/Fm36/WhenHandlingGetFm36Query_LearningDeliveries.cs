@@ -22,8 +22,8 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        testFixture.Result.FM36Learners.Length.Should().Be(testFixture.LearningsResponse.Learnings.Count);
-        testFixture.Result.FM36Learners.SelectMany(learner => learner.LearningDeliveries).Count().Should().Be(testFixture.LearningsResponse.Learnings.Count);
+        testFixture.Result.Items.Count.Should().Be(testFixture.UnpagedLearningsResponse.Count);
+        testFixture.Result.Items.SelectMany(learner => learner.LearningDeliveries).Count().Should().Be(testFixture.UnpagedLearningsResponse.Count);
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -39,14 +39,14 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
         var expectedPriceEpisodeStartDate = apprenticeship.StartDate > testFixture.CollectionCalendarResponse.StartDate ? apprenticeship.StartDate : testFixture.CollectionCalendarResponse.StartDate;
         var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : testFixture.CollectionCalendarResponse.EndDate;
-        var earningApprenticeship = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningApprenticeship = testFixture.EarningsResponse.Apprenticeships.First();
+        var earningEpisode = earningApprenticeship.Episodes.Single();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.AimSeqNumber.Should().Be(1);
         learningDelivery.LearningDeliveryValues.ActualDaysIL.Should().Be(0);
@@ -140,9 +140,9 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "DisadvFirstPayment" && x.AllValuesAreSetToZero());
@@ -183,10 +183,10 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         await testFixture.CallSubjectUnderTest();
 
         //Assert
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
 
-        var expectedLearningSupport = testFixture.EarningsResponse.First()
+        var expectedLearningSupport = testFixture.EarningsResponse.Apprenticeships.First()
             .Episodes.First()
             .AdditionalPayments.Where(x =>
                 x.AdditionalPaymentType == AdditionalPaymentsTypes.LearningSupport &&
@@ -235,12 +235,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "InstPerPeriod");
@@ -273,12 +273,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimOnProgPayment");
@@ -311,12 +311,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont");
@@ -352,12 +352,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMinCoInvest");
@@ -393,12 +393,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimTotProgFund");
@@ -431,10 +431,10 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
-        var earningsApprenticeship = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key);
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
+        var earningsApprenticeship = testFixture.EarningsResponse.Apprenticeships.First();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedTextValues.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
@@ -457,12 +457,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstProv1618Pay");
@@ -502,12 +502,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondProv1618Pay");
@@ -547,12 +547,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstEmp1618Pay");
@@ -593,12 +593,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.LearningsResponse.Learnings.Single();
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.SingleOrDefault(x => x.Key == apprenticeship.Key).Episodes.Single();
+        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
         var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
 
-        var learningDelivery = testFixture.Result.FM36Learners.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondEmp1618Pay");
@@ -631,13 +631,13 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
-        testFixture.LearningsResponse.Learnings.First().SetWithdrawalDate(withdrawalDate);
+        testFixture.UnpagedLearningsResponse.First().SetWithdrawalDate(withdrawalDate);
 
         // Act
         await testFixture.CallSubjectUnderTest();
 
         // Assert
-        var learningDelivery = testFixture.Result.FM36Learners.Single().LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.Result.Items.Single().LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
     }

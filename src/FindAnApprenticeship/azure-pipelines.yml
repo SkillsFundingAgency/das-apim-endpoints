@@ -58,3 +58,4 @@ stages:
       ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
     useProductAppInsights: 'True'
     CheckClientCert: $True
+    RunTests: 'True'

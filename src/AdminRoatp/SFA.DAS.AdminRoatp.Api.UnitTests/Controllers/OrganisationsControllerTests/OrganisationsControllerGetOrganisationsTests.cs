@@ -14,15 +14,17 @@ public class OrganisationsControllerGetOrganisationsTests
     public async Task GetOrganisations_ReturnSuccessfulResponse(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] OrganisationsController sut,
-        GetOrganisationsQuery request,
-        GetOrganisationsQueryResponse expectedResponse)
+        GetOrganisationsQueryResult expectedResponse)
     {
+        // Arrange
         mediatorMock.Setup(m => m.Send(It.IsAny<GetOrganisationsQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
-        var result = await sut.GetOrganisations(request.SearchTerm, It.IsAny<CancellationToken>());
+        // Act
+        var result = await sut.GetOrganisations(It.IsAny<CancellationToken>());
         var response = (OkObjectResult)result;
 
-        mediatorMock.Verify(m => m.Send(It.Is<GetOrganisationsQuery>(r => r.SearchTerm == request.SearchTerm), It.IsAny<CancellationToken>()), Times.Once());
+        // Assert
+        mediatorMock.Verify(m => m.Send(It.IsAny<GetOrganisationsQuery>(), It.IsAny<CancellationToken>()), Times.Once());
         response.Value.Should().BeEquivalentTo(expectedResponse);
     }
 }
