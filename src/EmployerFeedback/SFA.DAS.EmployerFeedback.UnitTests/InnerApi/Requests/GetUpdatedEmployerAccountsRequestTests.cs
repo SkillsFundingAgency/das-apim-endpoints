@@ -27,7 +27,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.InnerApi.Requests
             Assert.That(request.SinceDate, Is.Null);
             Assert.That(request.PageNumber, Is.EqualTo(1));
             Assert.That(request.PageSize, Is.EqualTo(10));
-            Assert.That(request.GetUrl, Is.EqualTo("api/accounts/update?pageNumber=1&pageSize=10"));
+            Assert.That(request.GetUrl, Is.EqualTo("api/accounts/updated?pageNumber=1&pageSize=10"));
         }
     }
 }

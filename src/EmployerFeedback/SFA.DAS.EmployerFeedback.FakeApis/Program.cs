@@ -47,7 +47,7 @@ namespace SFA.DAS.EmployerFeedback.FakeApis
                     commitmentsV2Api
                         .WithPing()
                         .With(
-                            new GetAccountProvidersCourseStatusRequest(1001, 3, 60, 2),
+                            new GetAccountProvidersCourseStatusRequest(80641, 3, 60, 2),
                             new GetAccountProvidersCourseStatusResponse()
                             {
                                 Active = [new AccountProviderCourse { Ukprn = 12345678, CourseCode = "123"}],
@@ -55,7 +55,7 @@ namespace SFA.DAS.EmployerFeedback.FakeApis
                                 NewStart = []
                             })
                         .With(
-                            new GetAccountProvidersCourseStatusRequest(1002, 3, 60, 2),
+                            new GetAccountProvidersCourseStatusRequest(80642, 3, 60, 2),
                             new GetAccountProvidersCourseStatusResponse()
                             {
                                 Active = [],
@@ -63,7 +63,7 @@ namespace SFA.DAS.EmployerFeedback.FakeApis
                                 NewStart = []
                             })
                         .With(
-                            new GetAccountProvidersCourseStatusRequest(1003, 3, 60, 2),
+                            new GetAccountProvidersCourseStatusRequest(80643, 3, 60, 2),
                             new GetAccountProvidersCourseStatusResponse()
                             {
                                 Active = [],
