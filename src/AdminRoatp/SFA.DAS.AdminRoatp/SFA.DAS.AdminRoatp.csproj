@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="RestEase" />
   </ItemGroup>
 
   <ItemGroup>
