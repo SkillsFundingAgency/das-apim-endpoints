@@ -7,5 +7,6 @@ public class GetAccountTeamMembersResponse
     public string Email { get; set; }
     public bool CanReceiveNotifications { get; set; }
     public string Name { get; set; }
+    public string FirstName { get; set; }
     public int Status { get; set; }
 }
