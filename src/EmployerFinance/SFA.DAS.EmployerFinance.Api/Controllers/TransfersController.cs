@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFinance.Api.Models.Transfers;
-using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetCounts;
-using System;
-using System.Threading.Tasks;
+using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown;
 
 namespace SFA.DAS.EmployerFinance.Api.Controllers;
 
@@ -46,7 +46,7 @@ public class TransfersController(IMediator mediator, ILogger<TransfersController
     {
         try
         {
-            var response = await mediator.Send(new GetFinancialBreakdownQuery()
+            var response = await mediator.Send(new GetFinancialBreakdownQuery
             {
                 AccountId = accountId,
             });
