@@ -8,7 +8,7 @@ paths:
     post:
       description: Logs an entry into the log
       requestBody:
-        $ref: '#/components/requestBodies/jobRequest'
+        $ref: '#/components/requestBodies/logRequest'
       responses:
         '200':
           $ref: '#/components/responses/okResponse'
@@ -55,13 +55,13 @@ components:
           schema:
             $ref: '#/components/schemas/workflowSchema'
       
-    jobRequest:
+    logRequest:
       description: A JSON object containg the job to save
       required: true
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/jobSchema'
+            $ref: '#/components/schemas/logSchema'
     
   responses:
     createdResponse:
@@ -115,7 +115,7 @@ components:
             $ref: '#/components/schemas/error'
 
   schemas:
-    jobSchema:
+    logSchema:
       type: object
       properties:
         jobId:
@@ -124,19 +124,18 @@ components:
           type: string
           description: This is the initiator log
           example: Initiating with x records
-        numRecords:
-          type: integer
-        jsonData:
+        json:
           type: object
           additionalProperties: true
           description: The json data that the job is acting on. Info that would help remediation
           format: json
-        status:
+        level:
           type: string
-          enum: 
-            - started
-            - completed
-
+          description: The level of the log
+          enum:
+            - Info
+            - Warning
+            - Error
     error:
       type: object
       properties:
