@@ -13,15 +13,15 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Recruit.UnitTests.Handlers;
 
-public class WhenHandlingVacancySubmittedEventHandler
+public class WhenHandlingVacancyRejectedEventHandler
 {
     [Test, MoqAutoData]
     public async Task Then_The_Emails_Are_Returned_And_Passed_To_The_Notification_Service(
-        VacancySubmittedEvent @event,
+        VacancyRejectedEvent @event,
         NotificationEmailDto email,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
-        [Greedy] VacancySubmittedEventHandler sut)
+        [Greedy] VacancyRejectedEventHandler sut)
     {
         // arrange
         var apiResponse = new ApiResponse<PostCreateVacancyNotificationsResponse>([email], HttpStatusCode.OK, null);
@@ -43,7 +43,7 @@ public class WhenHandlingVacancySubmittedEventHandler
 
         // assert
         capturedRequest.Should().NotBeNull();
-        capturedRequest!.PostUrl.Should().Be($"api/vacancies/{@event.VacancyId}/create-notifications");
+        capturedRequest!.PostUrl.Should().Be($"api/vacancies/{@event.Id}/create-notifications");
         
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
         capturedCommand.Should().NotBeNull();
@@ -53,11 +53,11 @@ public class WhenHandlingVacancySubmittedEventHandler
     
     [Test, MoqAutoData]
     public async Task Then_No_Emails_Are_Sent_When_The_Remote_Call_Fails(
-        VacancySubmittedEvent @event,
+        VacancyRejectedEvent @event,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<INotificationService> notificationService,
-        [Frozen] Mock<ILogger<VacancySubmittedEventHandler>> logger,
-        [Greedy] VacancySubmittedEventHandler sut)
+        [Frozen] Mock<ILogger<VacancyRejectedEventHandler>> logger,
+        [Greedy] VacancyRejectedEventHandler sut)
     {
         // arrange
         var apiResponse = new ApiResponse<PostCreateVacancyNotificationsResponse>(null!, HttpStatusCode.BadRequest, "foo");

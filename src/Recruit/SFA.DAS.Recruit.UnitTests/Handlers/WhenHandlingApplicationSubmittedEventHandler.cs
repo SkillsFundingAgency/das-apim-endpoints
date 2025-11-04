@@ -10,7 +10,6 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Recruit.Domain;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.UnitTests.Handlers;
