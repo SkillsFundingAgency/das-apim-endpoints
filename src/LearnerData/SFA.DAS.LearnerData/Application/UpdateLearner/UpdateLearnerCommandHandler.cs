@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -97,12 +98,7 @@ public class UpdateLearnerCommandHandler(
             OnProgramme = new OnProgrammeDetails
             {
                 ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.Costs.Select(x =>  new Cost
-                {
-                    TrainingPrice = x.TrainingPrice,
-                    EpaoPrice = x.EpaoPrice,
-                    FromDate = x.FromDate.Value
-                }).ToList()
+                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.MapCosts()
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails

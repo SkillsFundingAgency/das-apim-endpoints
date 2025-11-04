@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Events;
+using SFA.DAS.LearnerData.Extensions;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
 
@@ -18,6 +19,7 @@ public class CreateLearnerCommandHandler(
 
     private LearnerDataEvent MapToEvent(CreateLearnerCommand command)
     {
+        var cost = command.Request.Delivery.OnProgramme.MapCosts().First();
 
         return new LearnerDataEvent
         {
@@ -30,8 +32,8 @@ public class CreateLearnerCommandHandler(
             StartDate = command.Request.Delivery.OnProgramme.StartDate!.Value,
             PlannedEndDate = command.Request.Delivery.OnProgramme.ExpectedEndDate,
             PercentageLearningToBeDelivered = command.Request.Delivery.OnProgramme.PercentageOfTrainingLeft,
-            EpaoPrice = command.Request.Delivery.OnProgramme.Costs.Single().EpaoPrice ?? 0,
-            TrainingPrice = command.Request.Delivery.OnProgramme.Costs.Single().TrainingPrice,
+            EpaoPrice = cost.EpaoPrice ?? 0,
+            TrainingPrice = cost.TrainingPrice,
             AgreementId = command.Request.Delivery.OnProgramme.AgreementId,
             IsFlexiJob = command.Request.Delivery.OnProgramme.IsFlexiJob!.Value,
             StandardCode = command.Request.Delivery.OnProgramme.StandardCode!.Value,
