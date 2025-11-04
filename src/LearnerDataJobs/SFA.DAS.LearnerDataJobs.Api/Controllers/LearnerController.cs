@@ -100,4 +100,30 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
             return StatusCode((int)HttpStatusCode.InternalServerError);
         }
     }
+
+    [HttpPatch]
+    [Route("providers/{providerId}/learner/{learnerDataId}/apprenticeshipstopdatechanged")]
+    public async Task<IActionResult> ApprenticeshipStopDateChanged([FromRoute] long providerId, long learnerDataId, [FromBody] ApprenticeshipStopRequest request)
+    {
+        try
+        {
+            logger.LogTrace("Calling GetLearnerByIdQuery");
+            var command = new ApprenticeshipStopCommand(providerId, learnerDataId, request);
+            logger.LogInformation($"Get learner data from API for {learnerDataId}");
+
+            var result = await mediator.Send(command);
+
+            if (!result)
+            {
+                logger.LogInformation("Getting learner data from APi is not successful");
+                return new NotFoundResult();
+            }
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "APIM error whilst attempting to assign ");
+            return StatusCode((int)HttpStatusCode.InternalServerError);
+        }
+    }
 }

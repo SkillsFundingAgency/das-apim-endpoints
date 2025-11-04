@@ -6,4 +6,6 @@ public record ApprenticeshipStopRequest
     public bool IsWithDrawnAtStartOfCourse { get; set; }
 
     public long? LearnerDataId { get; set; }
+
+    public DateTime? StopDate { get; set; }
 }
