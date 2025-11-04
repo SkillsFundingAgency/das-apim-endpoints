@@ -333,7 +333,7 @@ components:
           type: object
           properties:
             uln:
-              type: string
+              type: integer
             learnerRef:
               type: string
             firstname:
@@ -351,65 +351,70 @@ components:
           type: object
           properties:
             onProgramme:
-              type: object
-              properties:
-                care:
-                  type: object
-                  properties:
-                    careleaver:
-                      type: boolean
-                    employerConsent:
-                      type: boolean
-                standardCode:
-                  type: integer
-                agreementId:
-                  type: string
-                startDate:
-                  type: string
-                  format: date
-                expectedEndDate:
-                  type: string
-                  format: date
-                OffTheJobHours:
-                  type: integer
-                costs:
-                  type: array
-                  items:
+              type: array
+              items:
+                type: object
+                properties:
+                  care:
                     type: object
                     properties:
-                      trainingPrice:
-                        type: number
-                      epaoPrice:
-                        type: number
-                      fromDate:
-                        type: string
-                        format: date
-                completionDate:
-                  type: string
-                  format: date
-                withdrawalDate:
-                  type: string
-                  format: date
-                learningSupport:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      startDate:
-                        type: string
-                        format: date
-                      endDate:
-                        type: string
-                        format: date
-                isFlexiJob:
-                  type: boolean
-                pauseDate:
-                  type: string
-                  format: date
-                aimSequenceNumber:
-                  type: integer
-                learnerAimRef:
-                  type: string
+                      careleaver:
+                        type: boolean
+                      employerConsent:
+                        type: boolean
+                  standardCode:
+                    type: integer
+                  agreementId:
+                    type: string
+                  startDate:
+                    type: string
+                    format: date
+                  expectedEndDate:
+                    type: string
+                    format: date
+                  offTheJobHours:
+                    type: integer
+                  costs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        trainingPrice:
+                          type: number
+                        epaoPrice:
+                          type: number
+                        fromDate:
+                          type: string
+                          format: date
+                  completionDate:
+                    type: string
+                    format: date
+                  withdrawalDate:
+                    type: string
+                    format: date
+                  learningSupport:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        startDate:
+                          type: string
+                          format: date
+                        endDate:
+                          type: string
+                          format: date
+                  isFlexiJob:
+                    type: boolean
+                  pauseDate:
+                    type: string
+                    format: date
+                  aimSequenceNumber:
+                    type: integer
+                  learnAimRef:
+                    type: string
+                  actualEndDate:
+                    type: string
+                    format: date
             englishAndMaths:
               type: array
               items:
@@ -444,8 +449,16 @@ components:
                         endDate:
                           type: string
                           format: date
+                  pauseDate:
+                    type: string
+                    format: date
                   aimSequenceNumber:
                     type: integer
+                  learnAimRef:
+                    type: string
+                  actualEndDate:
+                    type: string
+                    format: date
 
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
