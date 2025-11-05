@@ -75,7 +75,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         }
     }
 
-    [HttpPatch]
+    [HttpPost]
     [Route("providers/{providerId}/learner/{learnerDataId}/apprenticeship-stop")]
     public async Task<IActionResult> ApprenticeshipStop([FromRoute] long providerId, long learnerDataId, [FromBody] ApprenticeshipStopRequest request)
     {
@@ -101,7 +101,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
         }
     }
 
-    [HttpPatch]
+    [HttpPost]
     [Route("providers/{providerId}/learner/{learnerDataId}/apprenticeshipstopdatechanged")]
     public async Task<IActionResult> ApprenticeshipStopDateChanged([FromRoute] long providerId, long learnerDataId, [FromBody] ApprenticeshipStopRequest request)
     {
