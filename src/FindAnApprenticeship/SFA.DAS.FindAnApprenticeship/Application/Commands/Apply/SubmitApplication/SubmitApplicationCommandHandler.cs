@@ -1,30 +1,27 @@
-using System;
-using System.Linq;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Responses;
-using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
 
 public class SubmitApplicationCommandHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, 
     IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client, 
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
     IVacancyService vacancyService,
@@ -43,12 +40,6 @@ public class SubmitApplicationCommandHandler(
         if (application == null || application.Status == ApplicationStatus.Submitted)
             return false;
 
-        var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-            new PostSubmitApplicationRequest(request.CandidateId, application), false);
-
-        if (response.StatusCode != HttpStatusCode.NoContent)
-            return false;
-        
         if (await vacancyService.GetVacancy(application.VacancyReference) is not GetApprenticeshipVacancyItemResponse vacancy)
             return false;
         
@@ -95,7 +86,7 @@ public class SubmitApplicationCommandHandler(
 
         if (!recruitNotificationResponse.StatusCode.IsSuccessStatusCode())
         {
-            logger.LogError("Failed to create application review notifications for application id '{Id}' with error '{ErrorContent}'", request.ApplicationId, response.ErrorContent);
+            logger.LogError("Failed to create application review notifications for application id '{Id}' with error '{ErrorContent}'", request.ApplicationId, recruitNotificationResponse.ErrorContent);
             return true;
         }
 
