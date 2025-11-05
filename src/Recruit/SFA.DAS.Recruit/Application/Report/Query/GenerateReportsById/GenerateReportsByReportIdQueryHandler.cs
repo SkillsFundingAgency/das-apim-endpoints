@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -24,9 +25,7 @@ public class GenerateReportsByReportIdQueryHandler(
     ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
     : IRequestHandler<GenerateReportsByReportIdQuery, GenerateReportsByReportIdQueryResult>
 {
-    public async Task<GenerateReportsByReportIdQueryResult> Handle(
-    GenerateReportsByReportIdQuery request,
-    CancellationToken cancellationToken)
+    public async Task<GenerateReportsByReportIdQueryResult> Handle(GenerateReportsByReportIdQuery request, CancellationToken cancellationToken)
     {
         var applicationSummaryReports = new List<ApplicationSummaryReport>();
 
@@ -45,20 +44,7 @@ public class GenerateReportsByReportIdQueryHandler(
             .Distinct()
             .ToList();
 
-        // Fetch all applications (including candidate details) for each vacancy
-        var allApplications = new List<Domain.Application>();
-        foreach (var vacancyRef in vacancyReferences)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var candidateApiResponse = await candidateApiClient.Get<GetApplicationsByVacancyReferenceApiResponse>(
-                new GetApplicationsByVacancyReferenceApiRequest(vacancyRef));
-
-            if (candidateApiResponse?.Applications?.Count > 0)
-            {
-                allApplications.AddRange(candidateApiResponse.Applications);
-            }
-        }
+        var allApplications = await GetCandidateApplications(vacancyReferences, cancellationToken);
 
         var appLookup = allApplications
             .GroupBy(a => (a.Id, a.CandidateId))
@@ -92,6 +78,7 @@ public class GenerateReportsByReportIdQueryHandler(
                 continue;
 
             var applicantData = MapBaseApplicantData(review);
+
             EnrichApplicantDataWithCandidate(applicantData, applicationResponse, courseInfo);
 
             applicationSummaryReports.Add(applicantData);
@@ -102,7 +89,30 @@ public class GenerateReportsByReportIdQueryHandler(
             Reports = applicationSummaryReports
         };
     }
-    
+
+    private async Task<List<Domain.Application>> GetCandidateApplications(List<long> vacancyReferences, CancellationToken cancellationToken)
+    {
+        // Fetch all applications (including candidate details) for each vacancy
+        var allApplications = new ConcurrentBag<Domain.Application>();
+
+        await Parallel.ForEachAsync(vacancyReferences, new ParallelOptions
+        {
+            MaxDegreeOfParallelism = 10, // Not to overload candidate API — if vacancyReferences is large (hundreds/thousands), that will spawn many concurrent HTTP calls.
+            CancellationToken = cancellationToken
+        }, async (vacancyRef, _) =>
+        {
+            var candidateApiResponse = await candidateApiClient.Get<GetApplicationsByVacancyReferenceApiResponse>(
+                new GetApplicationsByVacancyReferenceApiRequest(vacancyRef));
+
+            if (candidateApiResponse?.Applications?.Count > 0)
+            {
+                foreach (var app in candidateApiResponse.Applications)
+                    allApplications.Add(app);
+            }
+        });
+        return allApplications.ToList();
+    }
+
     private static ApplicationSummaryReport MapBaseApplicantData(ApplicationReviewReport review)
     {
         return new ApplicationSummaryReport
