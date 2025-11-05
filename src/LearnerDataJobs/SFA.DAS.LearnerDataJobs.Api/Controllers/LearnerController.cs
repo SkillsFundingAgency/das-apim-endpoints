@@ -81,7 +81,7 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
     {
         try
         {
-            logger.LogTrace("Calling GetLearnerByIdQuery");
+            logger.LogTrace("Calling ApprenticeshipStop");
             var command = new ApprenticeshipStopCommand(providerId, learnerDataId, request);
             logger.LogInformation($"Get learner data from API for {learnerDataId}");
 
@@ -107,8 +107,8 @@ public class LearnersController(IMediator mediator, ILogger<LearnersController> 
     {
         try
         {
-            logger.LogTrace("Calling GetLearnerByIdQuery");
-            var command = new ApprenticeshipStopCommand(providerId, learnerDataId, request);
+            logger.LogTrace("Calling ApprenticeshipStopDateChanged");
+            var command = new ApprenticeshipStopDateChangedCommand(providerId, learnerDataId, request);
             logger.LogInformation($"Get learner data from API for {learnerDataId}");
 
             var result = await mediator.Send(command);

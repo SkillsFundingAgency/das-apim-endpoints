@@ -50,9 +50,7 @@ public class ApprenticeshipStopDateChangedCommandHandler(IInternalApiClient<Lear
                 return (int)response.StatusCode >= 200 && (int)response.StatusCode <= 299;
             }
 
-
-
-            logger.LogInformation($"ApprenticeshipStopCommand not successful for LearnerDataId;{command.LearnerDataId}");
+            logger.LogInformation($"ApprenticeshipStopChangedCommand not successful for LearnerDataId;{command.LearnerDataId}");
             return false;
         }
         catch (Exception ex)
