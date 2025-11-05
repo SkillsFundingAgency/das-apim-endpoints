@@ -11,6 +11,7 @@ using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
+using Microsoft.AspNetCore.Http;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 {
@@ -355,6 +356,77 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        }
+
+        [Test]
+        public async Task GetQualificationOutputFile_ReturnsOkResult_WithZipPayload()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            var payload = _fixture.Build<GetQualificationOutputFileResponse>()
+                                  .With(p => p.FileName, "25-10-14_qualifications_export.zip")
+                                  .With(p => p.ZipFileContent, new byte[] { 1, 2, 3 })
+                                  .Create();
+
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
+                                        .With(r => r.Success, true)
+                                        .With(r => r.Value, payload)
+                                        .Create();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualificationOutputFile();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                var ok = (OkObjectResult)result;
+
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.True);
+                Assert.That(envelope.Value, Is.Not.Null);
+                Assert.That(envelope.Value!.FileName, Is.EqualTo(payload.FileName));
+                Assert.That(envelope.Value!.ZipFileContent, Is.Not.Null.And.Not.Empty);
+            });
+        }
+
+
+
+        [Test]
+        public async Task GetQualificationOutputFile_ReturnsOkEnvelope_WhenQueryFails()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
+                                        .With(r => r.Success, false)
+                                        .With(r => r.ErrorMessage, "No qualifications found for output file.")
+                                        .Create();
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetQualificationOutputFile();
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(result, Is.InstanceOf<OkObjectResult>());
+                var ok = (OkObjectResult)result;
+
+                Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetQualificationOutputFileResponse>>());
+                var envelope = (BaseMediatrResponse<GetQualificationOutputFileResponse>)ok.Value!;
+
+                Assert.That(envelope.Success, Is.False);
+                Assert.That(envelope.ErrorMessage, Is.EqualTo("No qualifications found for output file."));
+            });
         }
 
     }
