@@ -50,7 +50,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.Min(x => x.CompletionDate);
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -105,7 +105,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.Min(x => x.CompletionDate);
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate;
         var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
@@ -150,12 +150,12 @@ public class WhenHandlingUpdateLearnerCommand
             }))
             .ToList();
 
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.SelectMany(onProgramme => onProgramme.LearningSupport!
+        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.First().LearningSupport!
             .Select(ls => new LearningSupportUpdatedDetails
             {
                 StartDate = ls.StartDate,
                 EndDate = ls.EndDate
-            })));
+            }));
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -382,7 +382,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.Min(x => x.WithdrawalDate);
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -409,7 +409,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.Min(x => x.WithdrawalDate);
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
