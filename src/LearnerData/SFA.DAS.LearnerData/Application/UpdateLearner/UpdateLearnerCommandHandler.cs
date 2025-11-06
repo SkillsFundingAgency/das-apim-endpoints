@@ -86,19 +86,19 @@ public class UpdateLearnerCommandHandler(
         {
             Delivery = new Delivery
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.Min(x=>x.WithdrawalDate)
             },
             Learner = new LearningUpdateDetails
             {
                 FirstName = command.UpdateLearnerRequest.Learner.FirstName,
                 LastName = command.UpdateLearnerRequest.Learner.LastName,
                 EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.Min(x => x.CompletionDate)
             },
             OnProgramme = new OnProgrammeDetails
             {
-                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.MapCosts()
+                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.Max(x=> x.ExpectedEndDate),
+                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.SelectMany(x => x.MapCosts()).ToList()
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
