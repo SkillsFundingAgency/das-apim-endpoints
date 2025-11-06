@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+﻿namespace SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 public enum VacancyType
 {
     Apprenticeship = 0,
