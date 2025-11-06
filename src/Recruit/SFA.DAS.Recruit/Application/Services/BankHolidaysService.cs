@@ -34,16 +34,22 @@ public class BankHolidaysService : IBankHolidaysService
 
 public class Event
 {
+    [JsonPropertyName("title")]
     public string Title { get; set; }
+    [JsonPropertyName("date")]
     public string Date { get; set; }
+    [JsonPropertyName("notes")]
     public string Notes { get; set; }
+    [JsonPropertyName("bunting")]
     public bool Bunting { get; set; }
 
 }
 
 public class Data
 {
+    [JsonPropertyName("division")]
     public string Division { get; set; }
+    [JsonPropertyName("events")]
     public List<Event> Events { get; set; }
 }
 
