@@ -137,17 +137,13 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
             });
         }
 
-        [Test]
-        public async Task Handle_WhenRoatpNameMissing_IncludesProvider_WithEmptyName()
+        public async Task Handle_ExcludesProvider_WhenProviderNameIsMissingFromRoatp()
         {
-            // Arrange
-            var accountId = 222L; var userRef = Guid.NewGuid();
+            var accountId = 222L;
+            var userRef = Guid.NewGuid();
 
             _cache.Setup(c => c.RetrieveFromCache<List<Provider>>(GetTrainingProviderSearchQueryHandler.RoatpProvidersCacheKey))
-                  .ReturnsAsync(new List<Provider>
-                  {
-                      new Provider { Ukprn = 1001, Name = string.Empty, ProviderTypeId = ProviderConstants.MainProviderTypeId, StatusId = ProviderConstants.ActiveStatusId }
-                  });
+                  .ReturnsAsync(new List<Provider>());
 
             _commitments
                 .Setup(c => c.Get<GetAccountProvidersCourseStatusResponse>(It.IsAny<GetAccountProvidersCourseStatusRequest>()))
@@ -160,10 +156,9 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
                 .Setup(f => f.Get<GetLatestEmployerFeedbackResponse>(It.IsAny<GetLatestEmployerFeedbackRequest>()))
                 .ReturnsAsync(new GetLatestEmployerFeedbackResponse { EmployerFeedbacks = new List<EmployerFeedbackItem>() });
 
-            // Act
             var result = await _sut.Handle(new GetTrainingProviderSearchQuery(accountId, userRef), CancellationToken.None);
 
-            Assert.That(result.Providers, Has.One.Matches<TrainingProviderSearchResult>(p => p.Ukprn == 1001 && p.ProviderName == string.Empty));
+            Assert.That(result.Providers, Is.Empty, "Providers missing from RoATP should be excluded from results");
         }
 
         [Test]
