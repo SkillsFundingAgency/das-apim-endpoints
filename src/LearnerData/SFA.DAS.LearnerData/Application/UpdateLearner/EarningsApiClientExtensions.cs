@@ -17,7 +17,7 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Patch(new SaveCompletionApiPatchRequest(command.LearningKey, new SaveCompletionRequest
             {
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
             }));
         }, "completion date", logger, command.LearningKey);
 
@@ -89,7 +89,7 @@ internal static class EarningsApiClientExtensions
         {
             var data = new WithdrawRequest()
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate.GetValueOrDefault()
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate.GetValueOrDefault()
             };
 
             await earningsApiClient.Patch(new WithdrawApiPatchRequest(command.LearningKey, data));
