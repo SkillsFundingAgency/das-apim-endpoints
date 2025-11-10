@@ -66,13 +66,9 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
             accountProviders.UnionWith(providersWithActive);
             accountProviders.UnionWith(providersWithCompleted);
 
-            var eligibleProvidersLookup = activeMainProviders
-                .Where(p => p.ProviderTypeId == 1 && (p.StatusId == 1 || p.StatusId == 2))
+            var providerNameByUkprn = activeMainProviders
                 .GroupBy(p => (long)p.Ukprn)
-                .ToDictionary(g => g.Key, g => g.First());
-
-            var providerNameByUkprn = eligibleProvidersLookup
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Name);
+                .ToDictionary(g => g.Key, g => g.First().Name);
 
             var latestFeedbackByUkprn = (latestEmployerFeedback.EmployerFeedbacks ?? new List<EmployerFeedbackItem>())
                 .GroupBy(f => f.Ukprn)
@@ -82,7 +78,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
                           .First().Result);
 
             var providers = accountProviders
-                .Where(ukprn => eligibleProvidersLookup.ContainsKey(ukprn))
+                .Where(ukprn => providerNameByUkprn.ContainsKey(ukprn))
                 .Select(ukprn =>
                 {
                     latestFeedbackByUkprn.TryGetValue(ukprn, out var feedback);
@@ -121,9 +117,8 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
 
             try
             {
-                // Get live providers only - this calls GET /api/api/Providers?Live=true
                 var roatpProvidersResponse = await _roatpV2TrainingProviderService.GetProviders(true);
-                var providers = roatpProvidersResponse?.RegisteredProviders?.ToList() ?? [];
+                var providers = roatpProvidersResponse?.RegisteredProviders?.Where(p => p.ProviderTypeId == 1 && (p.StatusId == 1 || p.StatusId == 2)).ToList() ?? [];
                 await _cacheStorageService.SaveToCache(RoatpProvidersCacheKey, providers, 4);
                 return providers;
             }
