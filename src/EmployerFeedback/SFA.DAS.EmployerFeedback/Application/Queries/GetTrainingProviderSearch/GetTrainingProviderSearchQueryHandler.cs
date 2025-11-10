@@ -26,7 +26,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
         private readonly IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient;
         private readonly EmployerFeedbackConfiguration _employerFeedbackConfiguration;
 
-        public GetTrainingProviderSearchQueryHandler(ICacheStorageService cacheStorageService, 
+        public GetTrainingProviderSearchQueryHandler(ICacheStorageService cacheStorageService,
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
             IRoatpV2TrainingProviderService roatpV2TrainingProviderService,
             IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> employerFeedbackApiClient,
@@ -66,9 +66,13 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
             accountProviders.UnionWith(providersWithActive);
             accountProviders.UnionWith(providersWithCompleted);
 
-            var providerNameByUkprn = activeMainProviders
+            var eligibleProvidersLookup = activeMainProviders
+                .Where(p => p.ProviderTypeId == 1 && (p.StatusId == 1 || p.StatusId == 2))
                 .GroupBy(p => (long)p.Ukprn)
-                .ToDictionary(g => g.Key, g => g.First().Name);
+                .ToDictionary(g => g.Key, g => g.First());
+
+            var providerNameByUkprn = eligibleProvidersLookup
+                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value.Name);
 
             var latestFeedbackByUkprn = (latestEmployerFeedback.EmployerFeedbacks ?? new List<EmployerFeedbackItem>())
                 .GroupBy(f => f.Ukprn)
@@ -78,6 +82,7 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
                           .First().Result);
 
             var providers = accountProviders
+                .Where(ukprn => eligibleProvidersLookup.ContainsKey(ukprn))
                 .Select(ukprn =>
                 {
                     latestFeedbackByUkprn.TryGetValue(ukprn, out var feedback);
@@ -109,7 +114,6 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
             };
         }
 
-
         private async Task<List<Provider>> GetActiveMainProvidersAsync(CancellationToken cancellationToken)
         {
             var cachedResponse = await _cacheStorageService.RetrieveFromCache<List<Provider>>(RoatpProvidersCacheKey);
@@ -117,8 +121,9 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
 
             try
             {
+                // Get live providers only - this calls GET /api/api/Providers?Live=true
                 var roatpProvidersResponse = await _roatpV2TrainingProviderService.GetProviders(true);
-                var providers = roatpProvidersResponse?.RegisteredProviders?.Where(p => p.ProviderTypeId == 1).ToList() ?? [];
+                var providers = roatpProvidersResponse?.RegisteredProviders?.ToList() ?? [];
                 await _cacheStorageService.SaveToCache(RoatpProvidersCacheKey, providers, 4);
                 return providers;
             }

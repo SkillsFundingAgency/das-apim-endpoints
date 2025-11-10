@@ -57,9 +57,9 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
 
             var roatpProviders = new List<Provider>
             {
-                new Provider { Ukprn = 1002, Name = "alpha", ProviderTypeId = 1 },
-                new Provider { Ukprn = 1001, Name = "Bravo", ProviderTypeId = 1 },
-                new Provider { Ukprn = 2000, Name = "OtherType", ProviderTypeId = 2 },
+                new Provider { Ukprn = 1002, Name = "alpha", ProviderTypeId = 1, StatusId = 1 },
+                new Provider { Ukprn = 1001, Name = "Bravo", ProviderTypeId = 1, StatusId = 1 },
+                new Provider { Ukprn = 2000, Name = "OtherType", ProviderTypeId = 2, StatusId = 1 },
             };
             _cache.Setup(c => c.RetrieveFromCache<List<Provider>>(GetTrainingProviderSearchQueryHandler.RoatpProvidersCacheKey))
                   .ReturnsAsync(roatpProviders);
@@ -145,14 +145,14 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
             _cache.Setup(c => c.RetrieveFromCache<List<Provider>>(GetTrainingProviderSearchQueryHandler.RoatpProvidersCacheKey))
                   .ReturnsAsync(new List<Provider>
                   {
-                      new Provider { Ukprn = 1001, Name = "Bravo", ProviderTypeId = 1 }
+                      new Provider { Ukprn = 1001, Name = "Bravo", ProviderTypeId = 1, StatusId = 1 }
                   });
 
             _commitments
                 .Setup(c => c.Get<GetAccountProvidersCourseStatusResponse>(It.IsAny<GetAccountProvidersCourseStatusRequest>()))
                 .ReturnsAsync(new GetAccountProvidersCourseStatusResponse
                 {
-                    Active = new List<AccountProviderCourse> { new() { Ukprn = 1002 } }
+                    Active = new List<AccountProviderCourse> { new() { Ukprn = 1001 } }
                 });
 
             _feedback
@@ -162,8 +162,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
             // Act
             var result = await _sut.Handle(new GetTrainingProviderSearchQuery(accountId, userRef), CancellationToken.None);
 
-            // Assert
-            Assert.That(result.Providers, Has.One.Matches<TrainingProviderSearchResult>(p => p.Ukprn == 1002 && p.ProviderName == string.Empty));
+            Assert.That(result.Providers, Has.One.Matches<TrainingProviderSearchResult>(p => p.Ukprn == 1001 && p.ProviderName == "Bravo"));
         }
 
         [Test]
@@ -202,7 +201,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
         public async Task GetActiveMainProvidersAsync_ReturnsCached_WhenPresent_AndSkipsRoatpCall()
         {
             // Arrange
-            var cached = new List<Provider> { new Provider { Ukprn = 9999, Name = "Cached", ProviderTypeId = 1 } };
+            var cached = new List<Provider> { new Provider { Ukprn = 9999, Name = "Cached", ProviderTypeId = 1, StatusId = 1 } };
             _cache.Setup(c => c.RetrieveFromCache<List<Provider>>(GetTrainingProviderSearchQueryHandler.RoatpProvidersCacheKey))
                   .ReturnsAsync(cached);
 
@@ -258,7 +257,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
             _cache.Setup(c => c.RetrieveFromCache<List<Provider>>(GetTrainingProviderSearchQueryHandler.RoatpProvidersCacheKey))
                   .ReturnsAsync(new List<Provider>
                   {
-                      new Provider { Ukprn = 3001, Name = "NoFeedback", ProviderTypeId = 1 }
+                      new Provider { Ukprn = 3001, Name = "NoFeedback", ProviderTypeId = 1, StatusId = 1 }
                   });
 
             _commitments
