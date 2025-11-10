@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,8 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 public class UpdatedEmployerPermissionsController: ControllerBase
 {
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(IEnumerable<Guid>), StatusCodes.Status200OK)]
     [Route("vacancies/transferable")]
     public async Task<IResult> GetVacanciesToTransfer(
         [FromServices] IRecruitGqlClient recruitGqlClient,
@@ -26,6 +29,8 @@ public class UpdatedEmployerPermissionsController: ControllerBase
     }
     
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     [Route("vacancies/{vacancyId:guid}/transfer")]
     public async Task<IResult> TransferVacancy(
         [FromServices] ITransferProviderVacancyToLegalEntityHandler handler,        
