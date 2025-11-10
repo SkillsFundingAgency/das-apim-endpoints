@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Options;
+using SFA.DAS.EmployerFeedback.Application.Common.Constants;
 using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -82,12 +83,12 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
                 .Select(ukprn =>
                 {
                     latestFeedbackByUkprn.TryGetValue(ukprn, out var feedback);
-                    providerNameByUkprn.TryGetValue(ukprn, out var providerName);
+                    var providerName = providerNameByUkprn[ukprn];
 
                     return new TrainingProviderSearchResult
                     {
                         Ukprn = ukprn,
-                        ProviderName = providerName ?? string.Empty,
+                        ProviderName = providerName,
                         HasNewStart = providersWithNewStart.Contains(ukprn),
                         HasActive = providersWithActive.Contains(ukprn),
                         HasCompleted = providersWithCompleted.Contains(ukprn),
@@ -118,7 +119,9 @@ namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
             try
             {
                 var roatpProvidersResponse = await _roatpV2TrainingProviderService.GetProviders(true);
-                var providers = roatpProvidersResponse?.RegisteredProviders?.Where(p => p.ProviderTypeId == 1 && (p.StatusId == 1 || p.StatusId == 2)).ToList() ?? [];
+                var providers = roatpProvidersResponse?.RegisteredProviders?.Where(p =>
+                       p.ProviderTypeId == ProviderConstants.MainProviderTypeId &&
+                         (p.StatusId == ProviderConstants.ActiveStatusId || p.StatusId == ProviderConstants.ActiveButNotTakingOnApprenticesStatusId)).ToList() ?? [];
                 await _cacheStorageService.SaveToCache(RoatpProvidersCacheKey, providers, 4);
                 return providers;
             }
