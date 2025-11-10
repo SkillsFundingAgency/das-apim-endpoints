@@ -5,7 +5,7 @@ namespace SFA.DAS.RecruitJobs.Domain;
 public record VacancyReview
 {
     public Guid Id { get; init; }
-    public long VacancyReference { get; init; }
+    public string VacancyReference { get; init; }
     public string VacancyTitle { get; init; }
     public DateTime CreatedDate { get; init; }
     public DateTime SlaDeadLine { get; init; }
