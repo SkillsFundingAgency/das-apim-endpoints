@@ -48,7 +48,7 @@ public class TransferProviderVacancyToLegalEntityHandler(
                 vacancyReview = vacancyReviews.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
                 if (vacancyReview is not null && vacancyReview.Status is not ReviewStatus.UnderReview)
                 {
-                    patchDocument.Replace(x => x.Status, VacancyStatus.Closed);
+                    patchDocument.Replace(x => x.Status, VacancyStatus.Draft);
                 }
                 break;
             case VacancyStatus.Live:
