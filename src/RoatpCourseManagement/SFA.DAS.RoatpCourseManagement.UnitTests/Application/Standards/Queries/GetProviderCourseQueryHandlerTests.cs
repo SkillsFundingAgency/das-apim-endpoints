@@ -1,4 +1,9 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Moq;
@@ -10,11 +15,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
 {
@@ -61,9 +61,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                 result.StandardInfoUrl.Should().Be(course.StandardInfoUrl);
                 result.ContactUsPhoneNumber.Should().Be(course.ContactUsPhoneNumber);
                 result.ContactUsEmail.Should().Be(course.ContactUsEmail);
-                result.ContactUsPageUrl.Should().Be(course.ContactUsPageUrl);
                 result.ProviderCourseLocations.Count.Should().Be(apiResponseProviderCourseLocation.Count);
                 result.IsApprovedByRegulator.Should().Be(course.IsApprovedByRegulator);
+                result.IsRegulatedForProvider.Should().Be(course.IsRegulatedForProvider);
+                result.HasLocations.Should().Be(course.HasLocations);
             }
         }
 

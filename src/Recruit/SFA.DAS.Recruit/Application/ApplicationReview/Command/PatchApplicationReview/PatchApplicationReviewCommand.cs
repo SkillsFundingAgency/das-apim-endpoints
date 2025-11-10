@@ -1,12 +1,11 @@
 ﻿#nullable enable
-using System;
-using System.ComponentModel.DataAnnotations;
 using MediatR;
+using System;
 
 namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview
 {
     public sealed record PatchApplicationReviewCommand(Guid Id,
-        [Required] string Status,
+        string Status,
         string? TemporaryReviewStatus,
         string? EmployerFeedback,
         bool HasEverBeenEmployerInterviewing,

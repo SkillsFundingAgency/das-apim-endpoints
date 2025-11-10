@@ -59,3 +59,4 @@ stages:
       CivilServiceJobsApiKey: $(CivilServiceJobsApiKey)
     useProductAppInsights: 'True'
     CheckClientCert: $True
+    RunTests: 'True'

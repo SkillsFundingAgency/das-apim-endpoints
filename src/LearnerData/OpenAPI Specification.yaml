@@ -1,0 +1,464 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: Approved learning external API for consumption from an authenticated consumer
+  description: 'This service will provide a contract to the Data Collections team for consumption of approved learning'
+paths:
+  /info:
+    get:
+      description: information regarding this API. The version will be returned
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/infoResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse'   
+  
+  /health:
+    get:
+      description: The system is fully ready to accept requests and all the dependencies are healthy
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/healthCheckResponse'
+        '503':
+          $ref: '#/components/responses/healthCheckResponse'
+        '429':
+          $ref: '#/components/responses/rateLimitExceededResponse' 
+
+  /providers/{ukprn}/learners:
+    post:
+      summary: Create a new record in the AS service due to no match
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/learningRecordRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'  
+  
+  /providers/{ukprn}/academicyears/{academicyear}/learners/{learningKey}:
+    delete:
+      summary: Deletes a learning record identified by this request for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          description: The academic year in which the learner has been removed.
+          schema:
+            type: string
+        - name: learningKey
+          in: path
+          required: true
+          description: The internal key for this learner on the AS
+          schema:
+            type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+    put:
+      summary: Updates the details of a list of approved learning records
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          description: The academic year in which the learner has been updated.
+          schema:
+            type: string
+        - name: learningKey
+          in: path
+          required: true
+          description: The internal key for this learner on the AS
+          schema:
+            type: string
+      requestBody:
+        $ref: '#/components/requestBodies/learningRecordRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/acceptedResponse'
+        '400':
+          $ref: '#/components/responses/badRequest'
+        '401':
+          $ref: '#/components/responses/unauthorized'         
+          
+  /providers/{ukprn}/academicyears/{academicyear}/learners:
+    get:
+      summary: Returns a paged list of learningIdentifiers for this provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number for the provider entering this learner
+          schema:
+            type: string
+        - name: academicyear
+          in: path
+          required: true
+          example: 2425
+          schema:
+            type: integer
+        - name: page
+          in: query
+          required: false
+          description: Default is 1
+          schema:
+            type: integer
+        - name: pagesize
+          in: query
+          required: false
+          example: 20
+          description: Default is 20, can be between 10 and 100
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/pagedLearningIdentifiersResponse'  
+    
+components:  
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Ocp-Apim-Subscription-Key
+      description: "Enter your API key in the `Ocp-Apim-Subscription-Key` header."
+  headers:
+    location:
+      schema:
+        type: string
+        format: url
+        example: /providers/234324/learners/24321432
+    X-RateLimit-Limit:
+      description: The maximum number of requests allowed in a time window
+      schema:
+        type: integer
+        example: 100
+    X-RateLimit-Remaining:
+      description: The number of requests remaining in the current time window
+      schema:
+        type: integer
+        example: 99
+    X-RateLimit-Reset:
+      description: The time (in UNIX timestamp) when the rate limit resets
+      schema:
+        type: integer
+        example: 1712345678
+    Retry-After:
+      description: The number of seconds to wait before making a new request
+      schema:
+        type: integer
+        example: 60
+
+  requestBodies:
+    learningRecordRequest:
+      description: Details of an updated learning
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/apprenticeshipLearning"
+  responses:
+    pagedLearningIdentifiersResponse:
+      description: A paged learning identifiers response
+      headers:
+        Link:
+          description: Pagination links (next, prev)
+          schema:
+            type: string
+            format: url
+          example: '<https://api.example.com/items?page=2>; rel="prev", <https://api.example.com/items?page=5>; rel="next"'
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/pagedLearningIdentifiers'
+
+    rateLimitExceededResponse:
+      description: Too many requests - rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: "Rate limit exceeded. Try again later."
+
+    acceptedResponse:
+      description: A resource has been accepted on the platform    
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              correlationId:
+                type: string
+    
+    okResponse:
+      description: OK
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: OK
+
+    badRequest:
+      description: A bad request was sent and validation of the payload failed
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/error'
+
+    unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+
+    healthCheckResponse:
+      description: Results of a health check
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/healthcheckResults'
+
+    infoResponse:
+      description: Information response
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: Leaner data APIM for the learning service - Version 3.0.2
+            
+  schemas:
+    error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+    
+    pagedLearningIdentifiers:
+      type: object
+      properties:
+        learners:
+          type: array
+          items:
+              $ref: '#/components/schemas/learningIdentifier'
+        total:
+          type: integer
+          minimum: 0
+        page: 
+          type: integer
+          minimum: 1
+        pageSize: 
+          type: integer
+          minimum: 1
+          maximum: 100
+        totalPages: 
+          type: integer
+          minimum: 1
+      required:
+        - page
+        - total
+        - pageSize  
+        - totalPages  
+    
+    healthcheckResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/healthcheck' 
+  
+    healthcheck:
+      type: object
+      properties:
+        description: 
+          type: string
+        result: 
+          type: string    
+
+    learningIdentifier:
+      type: object
+      properties:
+        key:
+          type: string
+          format: uuid
+        uln:
+          type: integer
+
+    apprenticeshipLearning:
+      type: object
+      properties:
+        consumerReference:
+          type: string
+        learner:
+          type: object
+          properties:
+            uln:
+              type: integer
+            learnerRef:
+              type: string
+            firstname:
+              type: string
+            lastname:
+              type: string
+            dob:
+              type: string
+              format: date
+            email:
+              type: string
+            hasEhcp:
+              type: boolean
+        delivery:
+          type: object
+          properties:
+            onProgramme:
+              type: array
+              items:
+                type: object
+                properties:
+                  care:
+                    type: object
+                    properties:
+                      careleaver:
+                        type: boolean
+                      employerConsent:
+                        type: boolean
+                  standardCode:
+                    type: integer
+                  agreementId:
+                    type: string
+                  startDate:
+                    type: string
+                    format: date
+                  expectedEndDate:
+                    type: string
+                    format: date
+                  offTheJobHours:
+                    type: integer
+                  costs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        trainingPrice:
+                          type: number
+                        epaoPrice:
+                          type: number
+                        fromDate:
+                          type: string
+                          format: date
+                  completionDate:
+                    type: string
+                    format: date
+                  withdrawalDate:
+                    type: string
+                    format: date
+                  learningSupport:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        startDate:
+                          type: string
+                          format: date
+                        endDate:
+                          type: string
+                          format: date
+                  isFlexiJob:
+                    type: boolean
+                  pauseDate:
+                    type: string
+                    format: date
+                  aimSequenceNumber:
+                    type: integer
+                  learnAimRef:
+                    type: string
+                  actualEndDate:
+                    type: string
+                    format: date
+            englishAndMaths:
+              type: array
+              items:
+                type: object
+                properties:
+                  startDate:
+                    type: string
+                    format: date
+                  endDate:
+                    type: string
+                    format: date
+                  courseCode:
+                    type: integer
+                  completionDate:
+                    type: string
+                    format: date
+                  withdrawalDate:
+                    type: string
+                    format: date
+                  priorLearningAdjustment:
+                    type: integer
+                  otherFundingAdjustment:
+                    type: integer
+                  learningSupport:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        startDate:
+                          type: string
+                          format: date
+                        endDate:
+                          type: string
+                          format: date
+                  pauseDate:
+                    type: string
+                    format: date
+                  aimSequenceNumber:
+                    type: integer
+                  learnAimRef:
+                    type: string
+                  actualEndDate:
+                    type: string
+                    format: date
+
+security:
+  - ApiKeyAuth: []  # Apply API Key security globally

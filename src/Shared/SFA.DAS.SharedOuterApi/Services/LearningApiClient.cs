@@ -12,9 +12,9 @@ namespace SFA.DAS.SharedOuterApi.Services
     [ExcludeFromCodeCoverage]
     public class LearningApiClient : ILearningApiClient<LearningApiConfiguration>
     {
-        private readonly ITokenPassThroughInternalApiClient<LearningApiConfiguration> _apiClient;
+        private readonly IInternalApiClient<LearningApiConfiguration> _apiClient;
 
-        public LearningApiClient(ITokenPassThroughInternalApiClient<LearningApiConfiguration> apiClient)
+        public LearningApiClient(IInternalApiClient<LearningApiConfiguration> apiClient)
         {
             _apiClient = apiClient;
         }
@@ -91,19 +91,19 @@ namespace SFA.DAS.SharedOuterApi.Services
             return await _apiClient.PatchWithResponseCode(request);
         }
 
-        public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request)
+        public async Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             return await _apiClient.PutWithResponseCode<TResponse>(request);
-        }
-
-        public void GenerateServiceToken(string serviceAccount)
-        {
-            _apiClient.GenerateServiceToken(serviceAccount);
         }
 
         public async Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
         {
             return await _apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
+        }
+
+        public async Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+        {
+            return await _apiClient.PutWithResponseCode<TData, TResponse>(request);
         }
     }
 

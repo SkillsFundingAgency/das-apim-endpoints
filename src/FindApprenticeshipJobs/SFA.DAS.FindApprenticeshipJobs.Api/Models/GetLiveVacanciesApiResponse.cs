@@ -1,4 +1,5 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.CivilServiceJobs;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 using SFA.DAS.SharedOuterApi.Domain;
@@ -113,8 +114,8 @@ public class GetLiveVacanciesApiResponse
                 Duration = source.Duration,
                 DurationUnit = source.DurationUnit,
                 RouteCode = source.RouteCode,
-                AccountPublicHashedId = source.AccountPublicHashedId,
-                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                AccountId = source.AccountId,
+                AccountLegalEntityId = source.AccountLegalEntityId,
                 ApplicationMethod = source.ApplicationMethod,
                 ApplicationUrl = source.ApplicationUrl,
                 ApplicationInstructions = source.ApplicationInstructions,
@@ -130,10 +131,10 @@ public class GetLiveVacanciesApiResponse
         public string? ApplicationInstructions { get; set; }
 
         public int RouteCode { get; set; }
-        public string? DurationUnit { get; set; }
+        public DurationUnit? DurationUnit { get; set; }
         public int Duration { get; set; }
-        public string? AccountLegalEntityPublicHashedId { get; set; }
-        public string? AccountPublicHashedId { get; set; }
+        public int AccountId { get; set; }
+        public int AccountLegalEntityId { get; set; }
         public string ApprenticeshipLevel { get; set; }
         public Guid VacancyId { get; set; }
         public string VacancyReference { get; set; }
@@ -192,10 +193,10 @@ public class GetLiveVacanciesApiResponse
     public class Wage
     {
         public int Duration { get; set; }
-        public string? DurationUnit { get; set; }
+        public DurationUnit? DurationUnit { get; set; }
         public decimal? FixedWageYearlyAmount { get; set; }
         public string? WageAdditionalInformation { get; set; }
-        public string? WageType { get; set; }
+        public WageType? WageType { get; set; }
         public decimal WeeklyHours { get; set; }
         public string? WorkingWeekDescription { get; set; }
         public decimal? ApprenticeMinimumWage { get; set; }
@@ -233,6 +234,6 @@ public class GetLiveVacanciesApiResponse
         public string? QualificationType { get; set; }
         public string? Subject { get; set; }
         public string? Grade { get; set; }
-        public string? Weighting { get; set; }
+        public QualificationWeighting? Weighting { get; set; }
     }
 }

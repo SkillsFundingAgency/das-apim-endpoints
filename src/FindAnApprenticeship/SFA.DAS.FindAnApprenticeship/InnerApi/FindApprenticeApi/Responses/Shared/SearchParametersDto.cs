@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses.Shared;
 
@@ -13,7 +14,8 @@ public record SearchParametersDto(
     List<int>? SelectedLevelIds,
     string? Location,
     string? Latitude,
-    string? Longitude
+    string? Longitude,
+    List<ApprenticeshipTypes>? SelectedApprenticeshipTypes
 )
 {
     public virtual bool Equals(SearchParametersDto other)
@@ -36,8 +38,17 @@ public record SearchParametersDto(
         var otherLevels = other.SelectedLevelIds ?? [];
         var levelsEqual = thisLevels.Count == otherLevels.Count && !thisLevels.Except(otherLevels).Any();
         
+        if (levelsEqual is false)
+        {
+            return false;
+        }
+        
+        var thisAppTypes = SelectedApprenticeshipTypes ?? [];
+        var otherAppTypes = other.SelectedApprenticeshipTypes ?? [];
+        var appTypesEqual = thisAppTypes.Count == otherAppTypes.Count && !thisAppTypes.Except(otherAppTypes).Any();
+        
         return
-            levelsEqual
+            appTypesEqual
             && SearchTerm == other.SearchTerm
             && Distance == other.Distance
             && DisabilityConfident == other.DisabilityConfident
@@ -51,6 +62,9 @@ public record SearchParametersDto(
     {
         var routesValue = string.Join(",", (SelectedRouteIds ?? []).Order());
         var levelsValue = string.Join(",", (SelectedLevelIds ?? []).Order());
-        return HashCode.Combine(SearchTerm, routesValue, Distance, DisabilityConfident, levelsValue, Location, Latitude, Longitude);
+        var appTypesValue = string.Join(",", (SelectedApprenticeshipTypes ?? []).Order());
+        var hash = HashCode.Combine(routesValue, levelsValue, appTypesValue);
+        
+        return HashCode.Combine(SearchTerm, Distance, DisabilityConfident, Location, Latitude, Longitude, hash);
     }
 }

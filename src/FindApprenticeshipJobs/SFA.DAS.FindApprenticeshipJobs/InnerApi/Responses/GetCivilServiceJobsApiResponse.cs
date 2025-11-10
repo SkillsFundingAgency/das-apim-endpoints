@@ -3,48 +3,11 @@
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 public record GetCivilServiceJobsApiResponse
 {
-    [JsonProperty("meta")]
-    public Meta MetaData { get; set; }
+    [JsonProperty("jobs")]
+    
+    public List<Job> Jobs { get; set; } = [];
 
-    [JsonProperty("jobs")] public List<Job> Jobs { get; set; } = [];
-
-    public class Approach
-    {
-        [JsonProperty("en")]
-        public string En { get; set; }
-    }
-
-    public class ContractType
-    {
-        [JsonProperty("en")]
-        public List<string> En { get; set; }
-    }
-
-    public class Country
-    {
-        [JsonProperty("en")]
-        public string En { get; set; }
-    }
-
-    public class CountryRegions
-    {
-        [JsonProperty("en")]
-        public List<string> En { get; set; }
-    }
-
-    public class Department
-    {
-        [JsonProperty("en")]
-        public string En { get; set; }
-    }
-
-    public class Grade
-    {
-        [JsonProperty("en")]
-        public List<string> En { get; set; }
-    }
-
-    public class Job
+    public record Job
     {
         [JsonProperty("country")]
         public Country Country { get; set; }
@@ -53,22 +16,22 @@ public record GetCivilServiceJobsApiResponse
         public bool JobAdvertOnly { get; set; }
 
         [JsonProperty("jobApplyURL")]
-        public JobApplyURL JobApplyURL { get; set; }
+        public JobApplyUrl JobApplyUrl { get; set; }
 
         [JsonProperty("jobCode")]
-        public string JobCode { get; set; }
+        public string? JobCode { get; set; }
 
         [JsonProperty("jobReference")]
-        public string JobReference { get; set; }
+        public string? JobReference { get; set; }
 
         [JsonProperty("jobSystem")]
-        public string JobSystem { get; set; }
+        public string? JobSystem { get; set; }
 
         [JsonProperty("jobTitle")]
         public JobTitle JobTitle { get; set; }
 
         [JsonProperty("jobURL")]
-        public string JobURL { get; set; }
+        public string? JobUrl { get; set; }
 
         [JsonProperty("keyTimes")]
         public KeyTimes KeyTimes { get; set; }
@@ -101,10 +64,10 @@ public record GetCivilServiceJobsApiResponse
         public LocationFlags LocationFlags { get; set; }
 
         [JsonProperty("locationGeoCoordinates")]
-        public List<LocationGeoCoordinate> LocationGeoCoordinates { get; set; }
+        public List<LocationGeoCoordinate> LocationGeoCoordinates { get; set; } = [];
 
         [JsonProperty("salaryCurrency")]
-        public string SalaryCurrency { get; set; }
+        public string? SalaryCurrency { get; set; }
 
         [JsonProperty("salaryMaximum")]
         public decimal SalaryMaximum { get; set; }
@@ -113,16 +76,52 @@ public record GetCivilServiceJobsApiResponse
         public decimal SalaryMinimum { get; set; }
     }
 
-    public class JobApplyURL
+    public class Approach
     {
         [JsonProperty("en")]
         public string En { get; set; }
     }
 
+    public class ContractType
+    {
+        [JsonProperty("en")] 
+        public List<string> En { get; set; } = [];
+    }
+
+    public class Country
+    {
+        [JsonProperty("en")]
+        public string? En { get; set; }
+    }
+
+    public class CountryRegions
+    {
+        [JsonProperty("en")]
+        public List<string> En { get; set; } = [];
+    }
+
+    public class Department
+    {
+        [JsonProperty("en")]
+        public string? En { get; set; }
+    }
+
+    public class Grade
+    {
+        [JsonProperty("en")]
+        public List<string> En { get; set; } = [];
+    }
+   
+    public class JobApplyUrl
+    {
+        [JsonProperty("en")]
+        public string? En { get; set; }
+    }
+
     public class JobTitle
     {
         [JsonProperty("en")]
-        public string En { get; set; }
+        public string? En { get; set; }
     }
 
     public class KeyTimes
@@ -170,18 +169,18 @@ public record GetCivilServiceJobsApiResponse
     public class Profession
     {
         [JsonProperty("en")]
-        public string En { get; set; }
+        public string? En { get; set; }
     }
 
     public class Role
     {
         [JsonProperty("en")]
-        public List<string> En { get; set; }
+        public List<string> En { get; set; } = [];
     }
 
     public class WorkingPattern
     {
         [JsonProperty("en")]
-        public List<string> En { get; set; }
+        public List<string> En { get; set; } = [];
     }
 }

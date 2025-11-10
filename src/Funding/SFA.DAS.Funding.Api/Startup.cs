@@ -34,7 +34,7 @@ namespace SFA.DAS.Funding.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddNLog();
+            services.AddLogging();
             services.AddOptions();
             services.AddSingleton(_env);
             services.Configure<FundingApprenticeshipEarningsConfiguration>(_configuration.GetSection("FundingApprenticeshipEarningsInnerApi"));

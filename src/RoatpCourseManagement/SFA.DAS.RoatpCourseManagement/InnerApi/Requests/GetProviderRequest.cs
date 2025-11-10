@@ -6,7 +6,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         public string GetUrl => $"providers/{Ukprn}";
         public int Ukprn { get; }
-     
+
         public GetProviderRequest(int ukprn)
         {
             Ukprn = ukprn;

@@ -132,7 +132,7 @@ public class FinanceDataService(
 
     private static List<Transaction> GetFilteredTransactions(IEnumerable<Transaction> response)
     {
-        return response.Where(x => x.Description != null && x.Amount != 0).OrderByDescending(x => x.DateCreated).ToList();
+        return response.Where(x => x.Description != null).OrderByDescending(x => x.DateCreated).ToList();
     }
 
     private async Task<decimal> GetAccountBalance(string hashedAccountId)

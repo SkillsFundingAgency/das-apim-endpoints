@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.Recruit.InnerApi.Requests;
+﻿using SFA.DAS.Recruit.InnerApi.Requests;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests
 {

@@ -24,8 +24,10 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<CandidateApiConfiguration>>().Value);
         services.Configure<FindApprenticeshipApiConfiguration>(configuration.GetSection(nameof(FindApprenticeshipApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipApiConfiguration>>().Value);
-        services.Configure<CivilServiceJobsConfiguration>(configuration.GetSection(nameof(CivilServiceJobsConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<CivilServiceJobsConfiguration>>()!.Value);
+        services.Configure<CivilServiceJobsApiConfiguration>(configuration.GetSection(nameof(CivilServiceJobsApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CivilServiceJobsApiConfiguration>>()!.Value);
         services.AddSingleton(new NhsJobsConfiguration());
+        services.Configure<RecruitApiV2Configuration>(configuration.GetSection("RecruitAltApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiV2Configuration>>()!.Value);
     }
 }

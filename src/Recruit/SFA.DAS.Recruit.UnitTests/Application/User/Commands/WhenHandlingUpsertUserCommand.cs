@@ -1,6 +1,7 @@
 using System.Net;
 using System.Threading;
 using SFA.DAS.Recruit.Application.User.Commands.UpsertUser;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;

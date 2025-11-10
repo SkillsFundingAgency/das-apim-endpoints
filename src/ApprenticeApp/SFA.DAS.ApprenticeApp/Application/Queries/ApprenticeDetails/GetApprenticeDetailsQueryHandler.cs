@@ -6,6 +6,7 @@ using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.ApprenticeApp.Extensions;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 {
@@ -41,7 +42,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
                 ApprenticeDetails = new ApprenticeDetails
                 {
                     Apprentice = await apprenticeTask,
-                    MyApprenticeship = await myApprenticeshipTask
+                    MyApprenticeship = myApprenticeship,
                 }
             };
         }
@@ -59,6 +60,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
                 var course = await _coursesService.GetStandardCourse(myApprenticeship.StandardUId);
                 myApprenticeship.Title = course.Title;
                 myApprenticeship.Level = course.Level;
+                myApprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
             }
             return myApprenticeship;
         }

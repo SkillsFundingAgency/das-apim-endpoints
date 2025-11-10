@@ -139,4 +139,48 @@ public class WhenHandlingPostSendSavedSearchNotificationCommand
 
         notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Never);
     }
+
+    [Test]
+    public async Task Then_The_Handler_Uses_Level_Codes_In_SearchParams()
+    {
+        // arrange
+        var apiClient = new Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>>();
+        apiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchSavedSearchApiRequest>()))
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, string.Empty));
+
+        var notificationService = new Mock<INotificationService>();
+        notificationService.Setup(x => x.Send(It.IsAny<SendEmailCommand>())).Returns(Task.CompletedTask);
+
+        var env = new EmailEnvironmentHelper("TEST");
+
+        var handler = new PostSendSavedSearchNotificationCommandHandler(apiClient.Object, notificationService.Object, env);
+
+        var command = new PostSendSavedSearchNotificationCommand
+        {
+            Id = Guid.NewGuid(),
+            User = new PostSendSavedSearchNotificationCommand.UserDetails { Id = Guid.NewGuid(), FirstName = "Test", Email = "a@b.com" },
+            Vacancies = new List<PostSendSavedSearchNotificationCommand.Vacancy>
+                {
+                    new PostSendSavedSearchNotificationCommand.Vacancy
+                    {
+                        Title = "T",
+                        VacancyReference = "123",
+                        EmployerName = "E",
+                        EmployerLocation = new Address { Postcode = "P" },
+                        ClosingDate = "2022-12-31"
+                    }
+                },
+            Levels = new List<PostSendSavedSearchNotificationCommand.Level>
+                {
+                    new() { Code = 2, Name = "GCSE" },
+                    new() { Code = 3, Name = "A level" }
+                }
+        };
+
+        // act
+        await handler.Handle(command, CancellationToken.None);
+
+        // assert
+        notificationService.Verify(x => x.Send(It.Is<SendEmailCommand>(c => c.Tokens.ContainsKey("searchParams") && c.Tokens["searchParams"].ToString().Contains("Apprenticeship level: Level 2, Level 3"))), Times.Once);
+    }
 }

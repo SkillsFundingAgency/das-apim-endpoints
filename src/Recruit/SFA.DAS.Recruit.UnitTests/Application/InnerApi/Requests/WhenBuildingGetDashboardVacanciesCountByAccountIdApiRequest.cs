@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Recruit.Enums;
-using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.InnerApi.Requests;
 [TestFixture]

@@ -30,12 +30,14 @@ public class GetSavedSearchVacanciesQueryHandler(
         await Task.WhenAll(routesTask, levelsTask);
         var routesList = routesTask.Result;
         var levelsList = levelsTask.Result;
-        var searchResult = await GetSavedSearchResults(request, routesList, levelsList,candidate);
         
-        return searchResult;
+        return await GetSavedSearchResults(request, routesList, levelsList, candidate);
     }
-    private async Task<GetSavedSearchVacanciesQueryResult?> GetSavedSearchResults(GetSavedSearchVacanciesQuery request,
-        GetRoutesListResponse routesList, GetCourseLevelsListResponse levelsList, GetCandidateApiResponse candidate)
+    private async Task<GetSavedSearchVacanciesQueryResult?> GetSavedSearchResults(
+        GetSavedSearchVacanciesQuery request,
+        GetRoutesListResponse routesList,
+        GetCourseLevelsListResponse levelsList,
+        GetCandidateApiResponse candidate)
     {
         var categories = routesList.Routes
             .Where(route => request.SelectedRouteIds?.Contains(route.Id) ?? false)
@@ -72,25 +74,28 @@ public class GetSavedSearchVacanciesQueryHandler(
                 request.ExcludeNational,
                 [
                     VacancyDataSource.Nhs
-                ]));
+                ],
+                request.SelectedApprenticeshipTypes)
+        );
 
         var searchResult = new GetSavedSearchVacanciesQueryResult
         {
-            Id = request.Id,
-            User = candidate,
-            SearchTerm = request.SearchTerm,
-            Location = request.Location,
+            ApprenticeshipTypes = request.SelectedApprenticeshipTypes,
             Categories = categories,
-            Levels = levels,
             DisabilityConfident = request.DisabilityConfident,
-            ExcludeNational = request.ExcludeNational,
             Distance = request.Distance,
+            ExcludeNational = request.ExcludeNational,
+            Id = request.Id,
+            Levels = levels,
+            Location = request.Location,
+            SearchTerm = request.SearchTerm,
             UnSubscribeToken = request.UnSubscribeToken,
-            Vacancies = vacanciesResponse?.ApprenticeshipVacancies != null ? vacanciesResponse.ApprenticeshipVacancies.Select(x =>
-                    (GetSavedSearchVacanciesQueryResult.ApprenticeshipVacancy) x)
-                .ToList() : []
+            User = candidate,
+            Vacancies = vacanciesResponse?.ApprenticeshipVacancies != null 
+                ? vacanciesResponse.ApprenticeshipVacancies.Select(x => (GetSavedSearchVacanciesQueryResult.ApprenticeshipVacancy) x).ToList()
+                : [],
         };
+
         return searchResult;
-        
     }
 }

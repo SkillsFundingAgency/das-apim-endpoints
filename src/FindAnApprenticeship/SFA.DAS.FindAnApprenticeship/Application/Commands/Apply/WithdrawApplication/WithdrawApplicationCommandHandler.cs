@@ -4,27 +4,23 @@ using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.WithdrawApplication;
 
 public class WithdrawApplicationCommandHandler(
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient, 
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
     IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client,
     INotificationService notificationService,
     IVacancyService vacancyService,
@@ -40,14 +36,6 @@ public class WithdrawApplicationCommandHandler(
             return false;
         }
 
-        var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-            new PostWithdrawApplicationRequest(request.CandidateId, Convert.ToInt64(application.VacancyReference.TrimVacancyReference())), false);
-
-        if (response.StatusCode != HttpStatusCode.NoContent)
-        {
-            return false;
-        }
-        
         //need to get the application from recruit v2 for the Id. 
         var applicationReview =
             await recruitApiV2Client.GetWithResponseCode<ApplicationReview>(
@@ -59,8 +47,6 @@ public class WithdrawApplicationCommandHandler(
         {
             var jsonPatchApplicationReviewDocument = new JsonPatchDocument<ApplicationReview>();
             jsonPatchApplicationReviewDocument.Replace(x => x.WithdrawnDate, DateTime.UtcNow);
-            jsonPatchApplicationReviewDocument.Replace(x => x.Status, Enum.GetName(ApplicationStatus.Withdrawn));
-            jsonPatchApplicationReviewDocument.Replace(x => x.StatusUpdatedDate, DateTime.UtcNow);
             var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewApiRequest(applicationReview.Body.Id, jsonPatchApplicationReviewDocument);
 
             patchTask = recruitApiV2Client.PatchWithResponseCode(patchApplicationReviewApiRequest);    

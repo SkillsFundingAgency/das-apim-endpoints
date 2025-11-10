@@ -68,5 +68,8 @@ namespace SFA.DAS.Approvals.InnerApi.Responses
         public int? TrainingTotalHours { get; set; }
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
+        public long? LearnerDataId { get; set; }
+        public bool HasLearnerDataChanges { get; set; }
+        public DateTime? LastLearnerDataSync { get; set; }
     }
 }

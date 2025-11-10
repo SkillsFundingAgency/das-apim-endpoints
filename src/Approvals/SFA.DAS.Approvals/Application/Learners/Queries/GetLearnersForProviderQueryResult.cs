@@ -22,4 +22,5 @@ public class LearnerSummary
     public string LastName { get; set; }
     public long Uln { get; set; }
     public string Course { get; set; }
+    public DateTime StartDate { get; set; }
 }

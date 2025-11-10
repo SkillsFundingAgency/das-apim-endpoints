@@ -1,6 +1,8 @@
-﻿using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 
@@ -18,8 +20,8 @@ public sealed class GetCourseProviderQueryResult
     public ReviewModel Reviews { get; set; }
     public IEnumerable<LocationModel> Locations { get; set; }
     public IEnumerable<ProviderCourseModel> Courses { get; set; } = [];
-    public IEnumerable<AnnualEmployerFeedbackDetailsModel> AnnualEmployerFeedbackDetails { get; set; } = [];
-    public IEnumerable<AnnualApprenticeFeedbackDetailsModel> AnnualApprenticeFeedbackDetails { get; set; } = [];
+    public IEnumerable<EmployerFeedbackStarsAnnualSummary> AnnualEmployerFeedbackDetails { get; set; } = [];
+    public IEnumerable<ApprenticeFeedbackStarsAnnualSummary> AnnualApprenticeFeedbackDetails { get; set; } = [];
     public EndpointAssessmentModel EndpointAssessments { get; set; }
     public int TotalProvidersCount { get; set; }
     public Guid? ShortlistId { get; set; }

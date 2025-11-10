@@ -1,3 +1,6 @@
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
@@ -11,10 +14,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProviders
 {
@@ -116,9 +115,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             courseManagementApiMock.Verify(x => x.Get<GetAcademicYearsLatestQueryResponse>(It.IsAny<GetAcademicYearsLatestRequest>()), Times.Never);
         }
 
-
-        [Test, MoqAutoData]
-        public async Task Handler_BadRequestResponseFromApi_ReturnsEmptyResponse(
+        [Test]
+        [MoqInlineAutoData(HttpStatusCode.NotFound)]
+        [MoqInlineAutoData(HttpStatusCode.BadRequest)]
+        public async Task Handler_BadRequestOrNotFoundResponseFromApi_ReturnsNull(
+            HttpStatusCode statusCode,
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Greedy] GetTrainingCourseProvidersQueryHandler handler,
@@ -132,11 +133,11 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
                 .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()
                     )
                 )
-                 .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(null, HttpStatusCode.NotFound, "Error"));
+                 .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(null, statusCode, "Error"));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Should().BeEquivalentTo(new GetCourseProvidersResponse());
+            result.Should().BeNull();
         }
     }
 }

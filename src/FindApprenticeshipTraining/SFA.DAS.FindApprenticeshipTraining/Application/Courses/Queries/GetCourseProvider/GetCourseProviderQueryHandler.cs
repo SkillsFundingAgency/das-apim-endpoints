@@ -1,4 +1,9 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
@@ -10,20 +15,14 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 
 public sealed class GetCourseProviderQueryHandler(
     IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient,
-    IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration> _employerFeedbackApiClient,
-    IApprenticeFeedbackApiClient<ApprenticeFeedbackApiConfiguration> _apprenticeFeedbackApiClient,
     IAssessorsApiClient<AssessorsApiConfiguration> _assessorServiceInnerApiClient,
-    ICachedLocationLookupService _cachedLocationLookupService
+    ICachedLocationLookupService _cachedLocationLookupService,
+    ICachedFeedbackService _cachedFeedbackService
 ) : IRequestHandler<GetCourseProviderQuery, GetCourseProviderQueryResult>
 {
     public async Task<GetCourseProviderQueryResult> Handle(GetCourseProviderQuery query, CancellationToken cancellationToken)
@@ -32,7 +31,7 @@ public sealed class GetCourseProviderQueryHandler(
 
         List<Task> tasks = new List<Task>();
 
-        var courseProviderDetailsTask = _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProviderDetailsResponse>(
+        var courseProviderDetailsResponse = await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProviderDetailsResponse>(
             new GetCourseProviderDetailsRequest(
                 query.LarsCode,
                 query.Ukprn,
@@ -43,19 +42,17 @@ public sealed class GetCourseProviderQueryHandler(
             )
         );
 
-        tasks.Add(courseProviderDetailsTask);
+        if (courseProviderDetailsResponse.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.NotFound)
+        {
+            // If the course provider details are not found, return null so a not found response can be returned
+            return null;
+        }
+        // Any other failure should throw an exception
+        courseProviderDetailsResponse.EnsureSuccessStatusCode();
 
-        var employerFeedbackTask = _employerFeedbackApiClient.GetWithResponseCode<GetEmployerFeedbackSummaryAnnualResponse>(
-            new GetEmployerFeedbackSummaryAnnualRequest(query.Ukprn)
-        );
+        var feedbackTask = _cachedFeedbackService.GetProviderFeedback(query.Ukprn);
 
-        tasks.Add(employerFeedbackTask);
-
-        var apprenticeFeedbackTask = _apprenticeFeedbackApiClient.GetWithResponseCode<GetApprenticeFeedbackSummaryAnnualResponse>(
-            new GetApprenticeFeedbackSummaryAnnualRequest(query.Ukprn)
-        );
-
-        tasks.Add(apprenticeFeedbackTask);
+        tasks.Add(feedbackTask);
 
         var courseDetailsTask = _roatpCourseManagementApiClient.GetWithResponseCode<List<ProviderCourseResponse>>(
             new ProviderCoursesRequest(query.Ukprn)
@@ -75,18 +72,9 @@ public sealed class GetCourseProviderQueryHandler(
 
         await Task.WhenAll(tasks);
 
-        ApiResponse<GetCourseProviderDetailsResponse> courseProviderDetailsResponse = courseProviderDetailsTask.Result;
-        ApiResponse<GetEmployerFeedbackSummaryAnnualResponse> employerFeedbackResponse = employerFeedbackTask.Result;
-        ApiResponse<GetApprenticeFeedbackSummaryAnnualResponse> apprenticeFeedbackResponse = apprenticeFeedbackTask.Result;
         ApiResponse<List<ProviderCourseResponse>> courseDetailsResponse = courseDetailsTask.Result;
         ApiResponse<GetCourseTrainingProvidersCountResponse> courseTrainingProvidersCountResponse = courseTrainingProvidersCountTask.Result;
 
-        if (courseProviderDetailsResponse.StatusCode == HttpStatusCode.NotFound)
-            return null;
-
-        courseProviderDetailsResponse.EnsureSuccessStatusCode();
-        employerFeedbackResponse.EnsureSuccessStatusCode();
-        apprenticeFeedbackResponse.EnsureSuccessStatusCode();
         courseDetailsResponse.EnsureSuccessStatusCode();
         courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 
@@ -105,11 +93,13 @@ public sealed class GetCourseProviderQueryHandler(
                 courseTrainingProvidersCountResponse.Body.Courses[0] :
                 null;
 
+        var (employerFB, apprenticeFB) = feedbackTask.Result;
+
         GetCourseProviderQueryResult result = courseProviderDetailsResponse.Body;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
         result.Courses = courseDetailsResponse.Body.Select(a => (ProviderCourseModel)a);
-        result.AnnualEmployerFeedbackDetails = employerFeedbackResponse.Body.AnnualEmployerFeedbackDetails;
-        result.AnnualApprenticeFeedbackDetails = apprenticeFeedbackResponse.Body.AnnualApprenticeFeedbackDetails;
+        result.AnnualEmployerFeedbackDetails = employerFB.AnnualEmployerFeedbackDetails;
+        result.AnnualApprenticeFeedbackDetails = apprenticeFB.AnnualApprenticeFeedbackDetails;
         result.EndpointAssessments = assessmentsResponse.Body;
         return result;
     }

@@ -5,7 +5,10 @@ using System.Diagnostics;
 #pragma warning disable CS861
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
 {
-    public class GetFm36DataResponse : List<Apprenticeship> { }
+    public class GetFm36DataResponse
+    {
+        public List<Apprenticeship> Apprenticeships { get; set; }
+    }
 
     public class Apprenticeship
     {
@@ -33,6 +36,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
         public Guid EpisodePriceKey { get; set; }
+        public string InstalmentType { get; set; }
     }
 
     public class AdditionalPayment
