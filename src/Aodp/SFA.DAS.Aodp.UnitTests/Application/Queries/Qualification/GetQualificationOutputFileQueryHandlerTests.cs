@@ -1,14 +1,12 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture;
+﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using Moq;
-using NUnit.Framework;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
 {
@@ -20,7 +18,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
 
         // Reused constants
         private const string ContentTypeZip = "application/zip";
-        private const string GenericError = "Something went wrong";
+        private const string GenericError = "Export file not returned.";
         private const string TestZipName = "qualifications_export.zip";
 
         [SetUp]
@@ -31,9 +29,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         }
 
         [Test]
-        public async Task Then_The_Api_Is_Called_With_The_Request_And_OutputFile_Is_Returned()
+        public async Task Then_The_Api_Is_Called_And_OutputFile_Is_Returned()
         {
-            // Arrange
             var query = _fixture.Create<GetQualificationOutputFileQuery>();
 
             var apiResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
@@ -47,17 +44,20 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
                 .Create();
 
             _apiClientMock
-                .Setup(x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()))
-                .ReturnsAsync(apiResponse);
+                .Setup(x => x.PostWithResponseCode<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                    It.Is<GetQualificationOutputFileApiRequest>(r => true), true))
+                .ReturnsAsync(
+                    new ApiResponse<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                        apiResponse,
+                        HttpStatusCode.OK,
+                        string.Empty));
 
             var handler = new GetQualificationOutputFileQueryHandler(_apiClientMock.Object);
-
-            // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
-            // Assert
             _apiClientMock.Verify(
-                x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
+                x => x.PostWithResponseCode<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                    It.Is<GetQualificationOutputFileApiRequest>(r => true), true),
                 Times.Once);
 
             Assert.Multiple(() =>
@@ -74,7 +74,6 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         [Test]
         public async Task Then_The_Api_Is_Called_With_The_Request_And_Failure_Is_Returned_When_Success_Is_False()
         {
-            // Arrange
             var query = _fixture.Create<GetQualificationOutputFileQuery>();
 
             var apiResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
@@ -85,19 +84,22 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
                 .Create();
 
             _apiClientMock
-                .Setup(x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()))
-                .ReturnsAsync(apiResponse);
+                .Setup(x => x.PostWithResponseCode<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                    It.Is<GetQualificationOutputFileApiRequest>(r => true), true))
+                .ReturnsAsync(
+                    new ApiResponse<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                        apiResponse,
+                        HttpStatusCode.OK,
+                        string.Empty));
 
             var handler = new GetQualificationOutputFileQueryHandler(_apiClientMock.Object);
-
-            // Act
             var result = await handler.Handle(query, CancellationToken.None);
 
-            // Assert
             Assert.Multiple(() =>
             {
                 _apiClientMock.Verify(
-                    x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
+                    x => x.PostWithResponseCode<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                        It.IsAny<GetQualificationOutputFileApiRequest>(), true),
                     Times.Once);
 
                 Assert.That(result.Success, Is.False);
@@ -110,7 +112,6 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         [Test]
         public async Task Then_The_Api_Returns_Empty_ZipFile_And_Is_Treated_As_NoData()
         {
-            // Arrange
             var query = _fixture.Create<GetQualificationOutputFileQuery>();
 
             var apiResponse = new BaseMediatrResponse<GetQualificationOutputFileResponse>
@@ -127,8 +128,13 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             };
 
             _apiClientMock
-                .Setup(x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()))
-                .ReturnsAsync(apiResponse);
+                .Setup(x => x.PostWithResponseCode<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                    It.Is<GetQualificationOutputFileApiRequest>(r => true), true))
+                .ReturnsAsync(
+                    new ApiResponse<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                        apiResponse,
+                        HttpStatusCode.OK,
+                        string.Empty));
 
             var handler = new GetQualificationOutputFileQueryHandler(_apiClientMock.Object);
 
@@ -153,7 +159,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             var exceptionMessage = GenericError;
 
             _apiClientMock
-                .Setup(x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()))
+                .Setup(x => x.PostWithResponseCode <BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                    It.Is<GetQualificationOutputFileApiRequest>(r => true), true))
                 .ThrowsAsync(new Exception(exceptionMessage));
 
             var handler = new GetQualificationOutputFileQueryHandler(_apiClientMock.Object);
@@ -165,7 +172,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
             Assert.Multiple(() =>
             {
                 _apiClientMock.Verify(
-                    x => x.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(It.IsAny<GetQualificationOutputFileApiRequest>()),
+                    x => x.PostWithResponseCode<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                        It.IsAny<GetQualificationOutputFileApiRequest>(), true),
                     Times.Once);
                 Assert.That(result.Success, Is.False);
                 Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));

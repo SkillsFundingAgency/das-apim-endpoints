@@ -13,44 +13,51 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
         {
             _apiClient = apiClient;
         }
-        public async Task<BaseMediatrResponse<GetQualificationOutputFileResponse>> Handle(GetQualificationOutputFileQuery request, CancellationToken cancellationToken)
+        public async Task<BaseMediatrResponse<GetQualificationOutputFileResponse>> Handle(
+    GetQualificationOutputFileQuery request,
+    CancellationToken cancellationToken)
         {
             try
             {
-                var result = await _apiClient.Get<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
-                    new GetQualificationOutputFileApiRequest(request.CurrentUsername));
+                var result = await _apiClient.PostWithResponseCode<BaseMediatrResponse<GetQualificationOutputFileResponse>>(
+                    new GetQualificationOutputFileApiRequest(request));
 
-                if (result == null)
+                var inner = result?.Body;
+
+                if (inner == null)
                 {
                     return new BaseMediatrResponse<GetQualificationOutputFileResponse>
                     {
                         Success = false,
-                        ErrorMessage = "No response received from inner API.",
+                        ErrorMessage = "No response from inner API.",
                         ErrorCode = ErrorCodes.UnexpectedError
                     };
                 }
 
-                if (result.Value?.ZipFileContent == null || result.Value.ZipFileContent.Length == 0)
+                if (!inner.Success)
                 {
                     return new BaseMediatrResponse<GetQualificationOutputFileResponse>
                     {
-
                         Success = false,
-                        ErrorMessage = result.ErrorMessage ?? "Export file not returned.",
-                        ErrorCode = result.ErrorCode ?? ErrorCodes.NoData
+                        ErrorMessage = inner.ErrorMessage ?? "Inner API failed.",
+                        ErrorCode = inner.ErrorCode ?? ErrorCodes.UnexpectedError
+                    };
+                }
 
+                if (inner.Value?.ZipFileContent == null || inner.Value.ZipFileContent.Length == 0)
+                {
+                    return new BaseMediatrResponse<GetQualificationOutputFileResponse>
+                    {
+                        Success = false,
+                        ErrorMessage = "Export file not returned.",
+                        ErrorCode = ErrorCodes.NoData
                     };
                 }
 
                 return new BaseMediatrResponse<GetQualificationOutputFileResponse>
                 {
                     Success = true,
-                    Value = new GetQualificationOutputFileResponse
-                    {
-                        FileName = result.Value.FileName,
-                        ZipFileContent = result.Value.ZipFileContent,
-                        ContentType = result.Value.ContentType
-                    }
+                    Value = inner.Value
                 };
             }
             catch (Exception ex)
@@ -62,7 +69,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                     ErrorCode = ErrorCodes.UnexpectedError
                 };
             }
-
         }
+
     }
 }
