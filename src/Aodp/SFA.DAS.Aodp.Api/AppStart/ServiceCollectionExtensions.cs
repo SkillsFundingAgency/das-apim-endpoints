@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Api.Common.Infrastructure;
+﻿using SFA.DAS.Aodp.Wrapper;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -15,6 +16,7 @@ namespace SFA.DAS.Aodp.Api.AppStart
             services.AddTransient<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAodpApiClient<AodpApiConfiguration>, AodpApiClient>();
+            services.AddTransient<IMultipartFormDataSenderWrapper, MultipartFormDataSenderWrapper>();
             return services;
         }
     }
