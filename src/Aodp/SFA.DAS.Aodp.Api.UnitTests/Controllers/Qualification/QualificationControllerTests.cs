@@ -366,8 +366,9 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Arrange
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
+            var query = _fixture.Create<GetQualificationOutputFileQuery>();
+
             var payload = _fixture.Build<GetQualificationOutputFileResponse>()
-                                  .With(p => p.FileName, "25-10-14_qualifications_export.zip")
                                   .With(p => p.ZipFileContent, new byte[] { 1, 2, 3 })
                                   .Create();
 
@@ -376,11 +377,10 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                                         .With(r => r.Value, payload)
                                         .Create();
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileQuery>(), default))
-                         .ReturnsAsync(queryResponse);
+            _mediatorMock.Setup(m => m.Send(query, default)).ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualificationOutputFile(CurrentUser);
+            var result = await controller.GetQualificationOutputFile(query);
 
             // Assert
             Assert.Multiple(() =>
@@ -394,7 +394,8 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                 Assert.That(envelope.Success, Is.True);
                 Assert.That(envelope.Value, Is.Not.Null);
                 Assert.That(envelope.Value!.FileName, Is.EqualTo(payload.FileName));
-                Assert.That(envelope.Value!.ZipFileContent, Is.Not.Null.And.Not.Empty);
+                Assert.That(envelope.Value.ZipFileContent, Is.EqualTo(payload.ZipFileContent));
+                Assert.That(envelope.Value.ContentType, Is.EqualTo(payload.ContentType));
             });
         }
 
@@ -403,17 +404,18 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         {
             // Arrange
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            var query = _fixture.Create<GetQualificationOutputFileQuery>();
+            var expectedError = _fixture.Create<string>();
 
             var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
                                         .With(r => r.Success, false)
-                                        .With(r => r.ErrorMessage, "No qualifications found for output file.")
+                                        .With(r => r.ErrorMessage, expectedError)
                                         .Create();
 
-            _mediatorMock.Setup(m => m.Send(It.IsAny<GetQualificationOutputFileQuery>(), default))
-                         .ReturnsAsync(queryResponse);
+            _mediatorMock.Setup(m => m.Send(query, default)).ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualificationOutputFile(CurrentUser);
+            var result = await controller.GetQualificationOutputFile(query);
 
             // Assert
             Assert.Multiple(() =>
@@ -425,7 +427,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                 var envelope = (BaseMediatrResponse<GetQualificationOutputFileResponse>)ok.Value!;
 
                 Assert.That(envelope.Success, Is.False);
-                Assert.That(envelope.ErrorMessage, Is.EqualTo("No qualifications found for output file."));
+                Assert.That(envelope.ErrorMessage, Is.EqualTo(expectedError));
             });
         }
 
