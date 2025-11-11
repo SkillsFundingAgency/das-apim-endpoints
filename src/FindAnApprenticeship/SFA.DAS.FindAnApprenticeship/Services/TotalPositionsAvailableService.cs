@@ -38,7 +38,8 @@ public class TotalPositionsAvailableService(
                 false,
                 new List<VacancyDataSource>
                 {
-                    VacancyDataSource.Nhs
+                    VacancyDataSource.Nhs,
+                    VacancyDataSource.Csj,
                 },
                 null,
                 null));
