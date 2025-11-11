@@ -50,7 +50,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -105,7 +105,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
+        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate;
         var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
@@ -133,8 +133,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate = null;
-        command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate = null;
+        command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.CompletionDate = null);
+        command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.WithdrawalDate = null);
         command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x =>
         {
             x.CompletionDate = null;
@@ -150,7 +150,7 @@ public class WhenHandlingUpdateLearnerCommand
             }))
             .ToList();
 
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!
+        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.First().LearningSupport!
             .Select(ls => new LearningSupportUpdatedDetails
             {
                 StartDate = ls.StartDate,
@@ -382,7 +382,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -409,7 +409,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -537,24 +537,27 @@ public class WhenHandlingUpdateLearnerCommand
     private UpdateLearnerCommand CreateLearnerCommandWithLearningSupport(DateTime startDate, DateTime? completionDate = null, DateTime? withdrawalDate = null)
     {
         var command = _fixture.Create<UpdateLearnerCommand>();
+        var onProgramme = _fixture.Create<OnProgrammeRequestDetails>();
 
-        var onProg = command.UpdateLearnerRequest.Delivery.OnProgramme;
-        onProg.Costs.Clear();
-        onProg.Costs.Add(new CostDetails
+        onProgramme.Costs!.Clear();
+        onProgramme.Costs.Add(new CostDetails
         {
             FromDate = startDate,
             TrainingPrice = 1000,
             EpaoPrice = 100
         });
-        onProg.ExpectedEndDate = startDate.AddYears(2);
-        onProg.CompletionDate = completionDate;
-        onProg.WithdrawalDate = withdrawalDate;
-        onProg.LearningSupport.Clear();
-        onProg.LearningSupport.Add(new LearningSupportRequestDetails
+        onProgramme.ExpectedEndDate = startDate.AddYears(2);
+        onProgramme.CompletionDate = completionDate;
+        onProgramme.WithdrawalDate = withdrawalDate;
+        onProgramme.LearningSupport.Clear();
+        onProgramme.LearningSupport.Add(new LearningSupportRequestDetails
         {
             StartDate = startDate,
             EndDate = startDate.AddYears(2)
         });
+
+        command.UpdateLearnerRequest.Delivery.OnProgramme.Clear();
+        command.UpdateLearnerRequest.Delivery.OnProgramme.Add(onProgramme);
 
         command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
 
@@ -565,10 +568,12 @@ public class WhenHandlingUpdateLearnerCommand
     {
         var command = _fixture.Create<UpdateLearnerCommand>();
 
-        var onProg = command.UpdateLearnerRequest.Delivery.OnProgramme;
-        onProg.LearningSupport.Clear();
-        onProg.CompletionDate = null;
-        onProg.WithdrawalDate = null;
+        command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(onProg =>
+        {
+            onProg.LearningSupport.Clear();
+            onProg.CompletionDate = null;
+            onProg.WithdrawalDate = null;
+        });
 
         command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
         command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(new MathsAndEnglish

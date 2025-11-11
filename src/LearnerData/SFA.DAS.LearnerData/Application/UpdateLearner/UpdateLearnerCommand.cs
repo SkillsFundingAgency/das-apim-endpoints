@@ -31,10 +31,10 @@ internal static class UpdateLearnerCommandExtensions
     {
         var results = new List<LearningSupportUpdatedDetails>();
         var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme;
-        var completionDate = onProgramme.CompletionDate;
-        var withdrawalDate = onProgramme.WithdrawalDate;
+        var completionDate = onProgramme.First().CompletionDate;
+        var withdrawalDate = onProgramme.First().WithdrawalDate;
 
-        foreach (var ls in onProgramme.LearningSupport)
+        foreach (var ls in onProgramme.First().LearningSupport)
         {
             var potentialEndDates = new List<DateTime> { ls.EndDate };
 

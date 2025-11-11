@@ -1,9 +1,4 @@
-﻿using System.Net;
-using AutoFixture;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
+﻿using AutoFixture;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Services;
@@ -11,7 +6,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using DisabilityConfident = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.DisabilityConfident;
+using System.Net;
 using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 using Qualification = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.Qualification;
 
@@ -101,7 +96,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             {
                 Id = source.VacancyReference.ToString(),
                 VacancyReference = source.VacancyReference.ToString(),
-                source.VacancyId,
+                VacancyId = source.Id,
                 source.Title,
                 PostedDate = source.LiveDate,
                 source.StartDate,
@@ -138,9 +133,9 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                     CompanyBenefitsInformation = source.Wage.CompanyBenefitsInformation
                 },
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
-                IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
-                source.AccountPublicHashedId,
-                source.AccountLegalEntityPublicHashedId,
+                IsDisabilityConfident = source.DisabilityConfident,
+                source.AccountId,
+                source.AccountLegalEntityId,
                 LongDescription = source.Description,
                 source.TrainingDescription,
                 source.Skills,
