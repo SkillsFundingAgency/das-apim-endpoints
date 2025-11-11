@@ -2,7 +2,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -16,7 +16,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long ukprn)
         {
-            var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetTrainingProviderDetailsRequest((int)ukprn));
+            var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetOrganisationRequest((int)ukprn));
 
             if (searchResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 throw new HttpRequestContentException(searchResponse.ErrorContent, searchResponse.StatusCode);

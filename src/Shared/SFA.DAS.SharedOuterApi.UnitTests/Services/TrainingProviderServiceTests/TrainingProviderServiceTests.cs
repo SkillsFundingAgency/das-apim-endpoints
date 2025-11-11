@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Net;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -74,7 +69,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Services.TrainingProviderServiceTests
             string error = null)
         {
             client.Setup(x =>
-                   x.GetWithResponseCode<SearchResponse>(It.IsAny<GetTrainingProviderDetailsRequest>()))
+                   x.GetWithResponseCode<SearchResponse>(It.IsAny<GetOrganisationRequest>()))
                 .ReturnsAsync(new ApiResponse<SearchResponse>(
                     new SearchResponse { SearchResults = results }, statusCode, error));
         }
