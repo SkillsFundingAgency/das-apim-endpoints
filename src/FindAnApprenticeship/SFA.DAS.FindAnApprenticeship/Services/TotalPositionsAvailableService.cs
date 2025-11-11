@@ -25,7 +25,7 @@ public class TotalPositionsAvailableService(
         }
 
         var raaVacanciesCountTask = recruitApiClient.Get<long>(new GetTotalPositionsAvailableRequest());
-        var nhsVacanciesCountTask = findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
+        var externalVacanciesCountTask = findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
             new GetApprenticeshipCountRequest(null,
                 null,
                 null,
@@ -44,9 +44,9 @@ public class TotalPositionsAvailableService(
                 null,
                 null));
 
-        await Task.WhenAll(raaVacanciesCountTask, nhsVacanciesCountTask);
+        await Task.WhenAll(raaVacanciesCountTask, externalVacanciesCountTask);
             
-        var totalPositionsAvailable = raaVacanciesCountTask.Result + nhsVacanciesCountTask.Result.TotalVacancies;
+        var totalPositionsAvailable = raaVacanciesCountTask.Result + externalVacanciesCountTask.Result.TotalVacancies;
 
         await cacheStorageService.SaveToCache(nameof(GetTotalPositionsAvailableRequest), totalPositionsAvailable,
             TimeSpan.FromHours(1));
