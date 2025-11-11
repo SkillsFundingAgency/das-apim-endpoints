@@ -1,10 +1,10 @@
+using System.Linq;
+using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
@@ -14,9 +14,9 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public TrainingProviderService(IInternalApiClient<TrainingProviderConfiguration> client) => _client = client;
 
-        public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long trainingProviderId)
+        public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long ukprn)
         {
-            var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetTrainingProviderDetailsRequest(trainingProviderId));
+            var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetTrainingProviderDetailsRequest((int)ukprn));
 
             if (searchResponse.StatusCode != System.Net.HttpStatusCode.OK)
                 throw new HttpRequestContentException(searchResponse.ErrorContent, searchResponse.StatusCode);
@@ -24,7 +24,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             if (searchResponse.Body.SearchResults.Length == 0)
             {
                 throw new HttpRequestContentException(
-                    $"Training Provider Id {trainingProviderId} not found",
+                    $"Training Provider Id {ukprn} not found",
                     System.Net.HttpStatusCode.NotFound,
                     "");
             }
@@ -32,7 +32,7 @@ namespace SFA.DAS.SharedOuterApi.Services
             if (searchResponse.Body.SearchResults.Length > 1)
             {
                 throw new HttpRequestContentException(
-                    $"Training Provider Id {trainingProviderId} finds multiple matches",
+                    $"Training Provider Id {ukprn} finds multiple matches",
                     System.Net.HttpStatusCode.Conflict,
                     "");
             }

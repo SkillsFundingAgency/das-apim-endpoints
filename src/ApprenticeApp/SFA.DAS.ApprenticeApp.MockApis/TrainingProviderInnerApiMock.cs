@@ -10,7 +10,7 @@ namespace SFA.DAS.ApprenticeApp.MockApis
     [ExcludeFromCodeCoverage]
     public class TrainingProviderInnerApiMock : ApiMock
     {
-        public TrainingProviderInnerApiMock() : this(0) {}
+        public TrainingProviderInnerApiMock() : this(0) { }
 
         public TrainingProviderInnerApiMock(int port, bool ssl = false) : base(port, ssl)
         {
@@ -35,13 +35,12 @@ namespace SFA.DAS.ApprenticeApp.MockApis
 
         public TrainingProviderInnerApiMock WithValidSearch(long trainingProviderId, TrainingProviderResponse trainingProviderResponse)
         {
-            var response = new SearchResponse { SearchResults = new [] { trainingProviderResponse } };
+            var response = new SearchResponse { SearchResults = new[] { trainingProviderResponse } };
 
             MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/api/v1/search")
-                        .WithParam("searchterm", trainingProviderId.ToString())
+                        .WithPath($"/organisations/{trainingProviderId}")
                         .UsingGet()
                 )
                 .RespondWith(

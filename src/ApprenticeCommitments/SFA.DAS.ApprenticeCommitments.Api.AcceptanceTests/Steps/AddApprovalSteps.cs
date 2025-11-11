@@ -1,14 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -101,15 +101,14 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 _context.TrainingProviderInnerApi.MockServer
                     .Given(
                         Request.Create()
-                            .WithPath($"/api/v1/search")
-                            .WithParam("searchterm", true,$"{trainingProvider.Ukprn}")
+                            .WithPath($"/organisations/{trainingProvider.Ukprn}")
                             .UsingGet()
                     )
                     .RespondWith(
                         Response.Create()
                             .WithStatusCode((int)HttpStatusCode.OK)
                             .WithHeader("Content-Type", "application/json")
-                            .WithBody(JsonConvert.SerializeObject(new SearchResponse { SearchResults = new [] { trainingProvider }}))
+                            .WithBody(JsonConvert.SerializeObject(new SearchResponse { SearchResults = new[] { trainingProvider } }))
                     );
             }
         }
