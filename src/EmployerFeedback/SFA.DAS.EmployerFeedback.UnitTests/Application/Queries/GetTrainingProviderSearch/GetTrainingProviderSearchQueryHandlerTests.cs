@@ -60,7 +60,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
             {
                 new Provider { Ukprn = 1002, Name = "alpha", ProviderTypeId = ProviderConstants.MainProviderTypeId, StatusId = ProviderConstants.ActiveStatusId },
                 new Provider { Ukprn = 1001, Name = "Bravo", ProviderTypeId = ProviderConstants.MainProviderTypeId, StatusId = ProviderConstants.ActiveStatusId },
-                new Provider { Ukprn = 2000, Name = "OtherType", ProviderTypeId = 2, StatusId = ProviderConstants.ActiveStatusId },
+                new Provider { Ukprn = 2000, Name = "OtherType", ProviderTypeId = ProviderConstants.EmployerProviderTypeId, StatusId = ProviderConstants.ActiveStatusId },
             };
             _cache.Setup(c => c.RetrieveFromCache<List<Provider>>(GetTrainingProviderSearchQueryHandler.RoatpProvidersCacheKey))
                   .ReturnsAsync(roatpProviders);
@@ -137,6 +137,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries
             });
         }
 
+        [Test]
         public async Task Handle_ExcludesProvider_WhenProviderNameIsMissingFromRoatp()
         {
             var accountId = 222L;
