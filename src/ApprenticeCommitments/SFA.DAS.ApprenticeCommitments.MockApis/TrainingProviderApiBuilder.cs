@@ -59,7 +59,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             _server
                 .Given(
                     Request.Create()
-                    .WithPath("/api/v1/search")
+                    .WithPath("/organisations")
                     .UsingGet()
                 )
                 .RespondWith(new RoatpSearchResponseProvider(_fixture));

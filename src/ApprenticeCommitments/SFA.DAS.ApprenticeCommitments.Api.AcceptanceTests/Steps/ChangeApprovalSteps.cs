@@ -1,20 +1,20 @@
-﻿using FluentAssertions;
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using System;
-using System.Globalization;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
 {
@@ -76,8 +76,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 _context.TrainingProviderInnerApi.MockServer
                     .Given(
                         Request.Create()
-                            .WithPath($"/api/v1/search")
-                            .WithParam("searchterm", true, $"{trainingProvider.Ukprn}")
+                            .WithPath($"/organisations/{trainingProvider.Ukprn}")
                             .UsingGet()
                           )
                     .RespondWith(

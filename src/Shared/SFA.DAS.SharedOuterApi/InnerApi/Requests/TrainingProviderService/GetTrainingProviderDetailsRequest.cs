@@ -4,13 +4,13 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.TrainingProviderService
 {
     public class GetTrainingProviderDetailsRequest : IGetApiRequest
     {
-        private readonly long _trainingProviderId;
+        private readonly long _ukprn;
 
-        public GetTrainingProviderDetailsRequest(long trainingProviderId)
+        public GetTrainingProviderDetailsRequest(int ukprn)
         {
-            _trainingProviderId = trainingProviderId;
+            _ukprn = ukprn;
         }
 
-        public string GetUrl => $"api/v1/search?searchterm={_trainingProviderId}";
+        public string GetUrl => $"organisations/{_ukprn}";
     }
 }
