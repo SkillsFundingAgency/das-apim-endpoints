@@ -5,6 +5,7 @@ using SFA.DAS.Aodp.Wrapper;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using System.Reflection;
 using System.Text;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Import;
@@ -14,12 +15,46 @@ public class ImportDefundingListCommandHandlerTests
 {
     private Mock<IMultipartFormDataSenderWrapper> _multipartWrapperMock = null!;
     private ImportDefundingListCommandHandler _handler = null!;
+    private const string FieldName = "_multipartFormDataSenderWrapper";
 
     [SetUp]
     public void SetUp()
     {
         _multipartWrapperMock = new Mock<IMultipartFormDataSenderWrapper>();
         _handler = new ImportDefundingListCommandHandler(_multipartWrapperMock.Object);
+    }
+
+    [Test]
+    public void Constructor_WithValidDependency_AssignsDependency()
+    {
+        // Act
+        var handler = new ImportDefundingListCommandHandler(_multipartWrapperMock.Object);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            var field = handler.GetType().GetField(FieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, $"Expected private field '{FieldName}' to exist.");
+            var actualValue = field.GetValue(handler);
+            Assert.That(actualValue, Is.SameAs(_multipartWrapperMock.Object));
+        });
+    }
+
+    [Test]
+    public void Constructor_WithNull_DoesNotThrowAndLeavesFieldNull()
+    {
+        // Arrange / Act
+        ImportDefundingListCommandHandler? handler = null;
+        Assert.DoesNotThrow(() => handler = new ImportDefundingListCommandHandler(null!));
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            var field = handler?.GetType().GetField(FieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.That(field, Is.Not.Null, $"Expected private field '{FieldName}' to exist.");
+            var actualValue = field.GetValue(handler);
+            Assert.That(actualValue, Is.Null);
+        });
     }
 
     [Test]

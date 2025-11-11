@@ -28,8 +28,7 @@ public class ImportDefundingListCommandHandler : IRequestHandler<ImportDefunding
                 Data = request.File!
             };
 
-            var importResponse = await _multipartFormDataSenderWrapper
-                        .PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(apiRequest);
+            var importResponse = await _multipartFormDataSenderWrapper.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(apiRequest);
 
             response.Value = importResponse.Body;
             response.Success = true;

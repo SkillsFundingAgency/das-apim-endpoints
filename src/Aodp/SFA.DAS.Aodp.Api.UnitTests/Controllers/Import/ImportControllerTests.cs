@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Api.Controllers.Import;
+using SFA.DAS.Aodp.Api.Requests;
 using SFA.DAS.Aodp.Application.Commands.Import;
 using System.Text;
 
@@ -21,6 +22,24 @@ public class ImportControllerTests
     {
         _mediatorMock = new Mock<IMediator>();
         _loggerMock = new Mock<ILogger<ImportController>>();
+    }
+
+    [Test]
+    public void Constructor_AssignsPrivateFields_NoException()
+    {
+        // Act
+        var controller = new ImportController(_mediatorMock.Object, _loggerMock.Object);
+
+        // Assert
+        Assert.That(controller, Is.Not.Null);
+    }
+
+    [Test]
+    public void Constructor_Produces_ControllerInstance()
+    {
+        var controller = new ImportController(_mediatorMock.Object, _loggerMock.Object);
+
+        Assert.That(controller, Is.InstanceOf<Controller>());
     }
 
     [Test]
@@ -90,12 +109,16 @@ public class ImportControllerTests
             Assert.That(objResult, Is.Not.Null);
             Assert.That(objResult!.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
 
-            dynamic value = objResult.Value!;
+            var value = objResult.Value;
             Assert.That(value, Is.Not.Null);
-            var messageProp = value.GetType().GetProperty("message") ?? value.GetType().GetProperty("Message");
-            Assert.That(messageProp, Is.Not.Null, "Response object does not contain a 'message' property");
-            Assert.That((string)messageProp.GetValue(value), Is.EqualTo("Failed to read uploaded file"));
 
+            var type = value!.GetType();
+            var messageProp = type.GetProperty("message") ?? type.GetProperty("Message");
+            Assert.That(messageProp, Is.Not.Null, "Response object does not contain a 'message' property");
+
+            var messageObj = messageProp?.GetValue(value);
+            Assert.That(messageObj, Is.TypeOf<string>());
+            Assert.That((string)messageObj, Is.EqualTo("Failed to read uploaded file"));
             _mediatorMock.Verify(m => m.Send(It.IsAny<IRequest<BaseMediatrResponse<ImportDefundingListResponse>>>(), It.IsAny<CancellationToken>()), Times.Once);
         });
     }

@@ -7,6 +7,7 @@ using SFA.DAS.Aodp.Wrapper;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 
@@ -22,6 +23,54 @@ public class MultipartFormDataSenderWrapperTests
     public void SetUp()
     {
         _config = new AodpApiConfiguration { Url = BaseUrl };
+    }
+
+
+    [Test]
+    public void Constructor_WithValidDependencies_SetsPrivateFields()
+    {
+        // Arrange
+        var httpFactoryMock = new Mock<IHttpClientFactory>();
+        var config = new AodpApiConfiguration { Url = "https://api.test" };
+
+        // Act
+        var sut = new MultipartFormDataSenderWrapper(httpFactoryMock.Object, config);
+
+        // Assert
+        Assert.That(sut, Is.Not.Null);
+
+        var type = typeof(MultipartFormDataSenderWrapper);
+        var httpFactoryField = type.GetField("_httpClientFactory", BindingFlags.Instance | BindingFlags.NonPublic);
+        var configField = type.GetField("_aodpApiConfiguration", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        Assert.That(httpFactoryField, Is.Not.Null, "Could not find _httpClientFactory field via reflection");
+        Assert.That(configField, Is.Not.Null, "Could not find _aodpApiConfiguration field via reflection");
+
+        var httpFactoryValue = httpFactoryField!.GetValue(sut);
+        var configValue = configField!.GetValue(sut);
+
+        Assert.That(ReferenceEquals(httpFactoryValue, httpFactoryMock.Object), Is.True);
+        Assert.That(ReferenceEquals(configValue, config), Is.True);
+    }
+
+    [Test]
+    public void Constructor_AllowsNullDependencies_SetsPrivateFieldsToNull()
+    {
+        // Arrange / Act
+        var sut = new MultipartFormDataSenderWrapper(null!, null!);
+
+        // Assert
+        Assert.That(sut, Is.Not.Null);
+
+        var type = typeof(MultipartFormDataSenderWrapper);
+        var httpFactoryField = type.GetField("_httpClientFactory", BindingFlags.Instance | BindingFlags.NonPublic);
+        var configField = type.GetField("_aodpApiConfiguration", BindingFlags.Instance | BindingFlags.NonPublic);
+
+        var httpFactoryValue = httpFactoryField!.GetValue(sut);
+        var configValue = configField!.GetValue(sut);
+
+        Assert.That(httpFactoryValue, Is.Null);
+        Assert.That(configValue, Is.Null);
     }
 
     [Test]

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Aodp.Api.Requests;
 using SFA.DAS.Aodp.Application.Commands.Import;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Import;
@@ -41,10 +42,4 @@ public class ImportController : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to read uploaded file" });
         }
     }
-}
-
-public class ImportDefundingListRequest
-{
-    [FromForm(Name = "file")]
-    public IFormFile? File { get; set; }
 }
