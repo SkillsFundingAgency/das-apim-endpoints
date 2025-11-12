@@ -37,3 +37,15 @@ Scenario: Withdrawal
 	And the Withdrawal passed is different to the value in the learners domain
 	When the learner is updated
 	Then a Withdrawal update request is sent to the earnings domain
+
+Scenario: Start Break in Learning
+	Given there is a learner
+	And the BreakInLearningStarted passed is different to the value in the learners domain
+	When the learner is updated
+	Then a BreakInLearningStarted update request is sent to the earnings domain
+
+Scenario: Remove Break in Learning
+	Given there is a learner
+	And the BreakInLearningRemoved passed is different to the value in the learners domain
+	When the learner is updated
+	Then a BreakInLearningRemoved update request is sent to the earnings domain

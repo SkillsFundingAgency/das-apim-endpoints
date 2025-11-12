@@ -71,6 +71,12 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
                     await earningsApiClient.ReverseWithdrawal(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
+                    await earningsApiClient.StartBreakInLearning(command, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
+                    await earningsApiClient.RemoveBreakInLearning(command, logger);
+                    break;
             }
         }
 
@@ -98,7 +104,8 @@ public class UpdateLearnerCommandHandler(
             OnProgramme = new OnProgrammeDetails
             {
                 ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts()
+                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts(),
+                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
