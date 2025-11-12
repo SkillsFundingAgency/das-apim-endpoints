@@ -7,17 +7,8 @@ namespace SFA.DAS.Aodp.Api.Controllers.Import;
 
 [ApiController]
 [Route("api/[controller]")]
-public class ImportController : BaseController
+public class ImportController(IMediator mediator, ILogger<ImportController> logger) : BaseController(mediator, logger)
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<ImportController> _logger;
-
-    public ImportController(IMediator mediator, ILogger<ImportController> logger) : base(mediator, logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
-
     [HttpPost("defunding-list")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(BaseMediatrResponse<ImportDefundingListResponse>), StatusCodes.Status200OK)]

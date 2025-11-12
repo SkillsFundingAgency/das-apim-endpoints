@@ -86,7 +86,7 @@ public class MultipartFormDataSenderWrapperTests
         var httpFactoryMock = new Mock<IHttpClientFactory>();
         httpFactoryMock.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(httpClient);
         var wrapper = new MultipartFormDataSenderWrapper(httpFactoryMock.Object, _config);
-        var request = GetImportDefundingListApiRequest();
+        var (request, formFileMock) = GetImportDefundingListApiRequest();
 
         // Act
         var result = await wrapper.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(request, includeResponse: true);
@@ -107,6 +107,8 @@ public class MultipartFormDataSenderWrapperTests
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>()
             );
+
+            formFileMock.Verify(f => f.OpenReadStream(), Times.Once);
         });
     }
 
@@ -124,7 +126,7 @@ public class MultipartFormDataSenderWrapperTests
         httpFactoryMock.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
         var wrapper = new MultipartFormDataSenderWrapper(httpFactoryMock.Object, _config);
-        var request = GetImportDefundingListApiRequest();
+        var (request, formFileMock) = GetImportDefundingListApiRequest();
 
         // Act
         var result = await wrapper.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(request, includeResponse: false);
@@ -143,6 +145,7 @@ public class MultipartFormDataSenderWrapperTests
                 ItExpr.IsAny<HttpRequestMessage>(),
                 ItExpr.IsAny<CancellationToken>()
             );
+            formFileMock.Verify(f => f.OpenReadStream(), Times.Once);
         });
     }
 
@@ -159,7 +162,7 @@ public class MultipartFormDataSenderWrapperTests
         httpFactoryMock.Setup(f => f.CreateClient(It.IsAny<string>())).Returns(httpClient);
 
         var wrapper = new MultipartFormDataSenderWrapper(httpFactoryMock.Object, _config);
-        var request = GetImportDefundingListApiRequest();
+        var (request, formFileMock) = GetImportDefundingListApiRequest();
 
         // Act
         var result = await wrapper.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(request, includeResponse: true);
@@ -171,14 +174,15 @@ public class MultipartFormDataSenderWrapperTests
             Assert.That(result.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
             Assert.That(result.Body, Is.Null);
             Assert.That(result.ErrorContent, Is.EqualTo(errorBody));
-        });
 
-        handlerMock.Protected().Verify(
-            "SendAsync",
-            Times.Once(),
-            ItExpr.IsAny<HttpRequestMessage>(),
-            ItExpr.IsAny<CancellationToken>()
-        );
+            handlerMock.Protected().Verify(
+                "SendAsync",
+                Times.Once(),
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>()
+            );
+            formFileMock.Verify(f => f.OpenReadStream(), Times.Once);
+        });
     }
 
     private static HttpClient CreateHttpClient(Mock<HttpMessageHandler> handlerMock)
@@ -220,14 +224,23 @@ public class MultipartFormDataSenderWrapperTests
         return formFileMock;
     }
 
-    private static ImportDefundingListApiRequest GetImportDefundingListApiRequest()
+    private static (TestPostRequest request, Mock<IFormFile> formFileMock) GetImportDefundingListApiRequest()
     {
         var fileBytes = Encoding.UTF8.GetBytes("file-content");
         var formFileMock = CreateFormFile("bad.txt", "text/plain", fileBytes);
 
-        return new ImportDefundingListApiRequest
+        var request = new TestPostRequest
         {
+            PostUrl = "/import/defunding",
             Data = formFileMock.Object
         };
+
+        return (request, formFileMock);
+    }
+
+    private class TestPostRequest : IPostApiRequest<IFormFile>
+    {
+        public string PostUrl { get; set; } = string.Empty;
+        public required IFormFile Data { get; set; }
     }
 }
