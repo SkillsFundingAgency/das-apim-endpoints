@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -23,9 +22,9 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         public async Task GetAllRegisteredProviders_ReturnsAppropriateResponse()
         {
             var mediatorMock = new Mock<IMediator>();
-            var registeredProviders = new List<RegisteredProviderModel>();
+            var registeredProviders = new RegisteredProviderResponse();
 
-            var apiResponse = new ApiResponse<List<RegisteredProviderModel>>(registeredProviders, HttpStatusCode.OK, "");
+            var apiResponse = new ApiResponse<RegisteredProviderResponse>(registeredProviders, HttpStatusCode.OK, "");
 
             mediatorMock.Setup(m => m.Send(It.IsAny<GetRegisteredProvidersQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
@@ -38,7 +37,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
             var okResult = response as OkObjectResult;
             var actualResponse = okResult.Value;
-            Assert.That(apiResponse.Body, Is.SameAs(actualResponse));
+            Assert.That(apiResponse.Body.Organisations, Is.SameAs(actualResponse));
             Assert.That((int)HttpStatusCode.OK, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));
         }
 
@@ -53,10 +52,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         {
             var errorMessage = "Error in retrieval";
             var mediatorMock = new Mock<IMediator>();
-            var registeredProviders = new List<RegisteredProviderModel>();
+            var registeredProviders = new RegisteredProviderResponse();
 
             var apiResponse =
-                new ApiResponse<List<RegisteredProviderModel>>(registeredProviders, statusCode,
+                new ApiResponse<RegisteredProviderResponse>(registeredProviders, statusCode,
                     errorMessage);
 
             mediatorMock.Setup(m => m.Send(It.IsAny<GetRegisteredProvidersQuery>(), It.IsAny<CancellationToken>()))
