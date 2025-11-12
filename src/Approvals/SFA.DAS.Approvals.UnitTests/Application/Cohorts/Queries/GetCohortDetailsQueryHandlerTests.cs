@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -361,5 +362,264 @@ public class GetCohortDetailsQueryHandlerTests
 
         // Assert
         result.HasFoundationApprenticeships.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task Handle_Deduplicates_Course_Codes_Before_Making_API_Calls()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        var courseCode2 = "TEST2";
+        
+        var apprenticeships = new List<DraftApprenticeship>();
+        for (int i = 0; i < 5; i++)
+        {
+            apprenticeships.Add(fixture.Build<DraftApprenticeship>()
+                .With(x => x.CourseCode, courseCode1)
+                .Create());
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            apprenticeships.Add(fixture.Build<DraftApprenticeship>()
+                .With(x => x.CourseCode, courseCode2)
+                .Create());
+        }
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+        
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+
+        // Act
+        await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)), Times.Once);
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)), Times.Once);
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Exactly(2));
+    }
+
+    [Test]
+    public async Task Handle_Makes_Parallel_API_Calls_For_Unique_Course_Codes()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCodes = new[] { "TEST1", "TEST2", "TEST3", "TEST4", "TEST5" };
+        
+        var apprenticeships = courseCodes.Select(courseCode =>
+            fixture.Build<DraftApprenticeship>()
+                .With(x => x.CourseCode, courseCode)
+                .Create()).ToList();
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        var callOrder = new List<string>();
+        var callTimes = new Dictionary<string, DateTime>();
+
+        foreach (var courseCode in courseCodes)
+        {
+            _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)))
+                .Returns(async () =>
+                {
+                    callOrder.Add(courseCode);
+                    callTimes[courseCode] = DateTime.UtcNow;
+                    await Task.Delay(50);
+                    return new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" };
+                });
+        }
+
+        // Act
+        var startTime = DateTime.UtcNow;
+        await _handler.Handle(_query, CancellationToken.None);
+        var endTime = DateTime.UtcNow;
+        var totalTime = (endTime - startTime).TotalMilliseconds;
+
+        // Assert
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Exactly(5));
+        totalTime.Should().BeLessThan(150, "API calls should execute in parallel, not sequentially");
+    }
+
+    [Test]
+    public async Task Handle_HasFoundationApprenticeships_Is_True_When_Any_Course_Is_Foundation_Apprenticeship()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        var courseCode2 = "TEST2";
+        var courseCode3 = "TEST3";
+        
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode1).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode2).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode3).Create()
+        };
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+        
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "FoundationApprenticeship" });
+        
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode3)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+
+        // Act
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        result.HasFoundationApprenticeships.Should().BeTrue();
+    }
+
+    [Test]
+    public async Task Handle_HasFoundationApprenticeships_Is_False_When_No_Course_Is_Foundation_Apprenticeship()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        var courseCode2 = "TEST2";
+        
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode1).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode2).Create()
+        };
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+        
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+
+        // Act
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        result.HasFoundationApprenticeships.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task Handle_Handles_Null_API_Responses_Gracefully()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        var courseCode2 = "TEST2";
+        
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode1).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode2).Create()
+        };
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ReturnsAsync((GetStandardsListItem)null);
+        
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+
+        // Act
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        result.HasFoundationApprenticeships.Should().BeFalse();
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)), Times.Once);
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)), Times.Once);
+    }
+
+    [Test]
+    public async Task Handle_Continues_Processing_When_Individual_Requests_Fail()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        var courseCode2 = "TEST2";
+        var courseCode3 = "TEST3";
+        
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode1).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode2).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode3).Create()
+        };
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ThrowsAsync(new Exception("API Error"));
+        
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "FoundationApprenticeship" });
+        
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode3)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+
+        // Act
+        var act = async () => await _handler.Handle(_query, CancellationToken.None);
+        
+        // Assert
+        await act.Should().ThrowAsync<Exception>();
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)), Times.Once);
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)), Times.Once);
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode3)), Times.Once);
+    }
+
+    [Test]
+    public async Task Handle_Skips_Apprenticeships_With_Empty_Or_Null_Course_Codes()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode1).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, (string)null).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, string.Empty).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, "   ").Create()
+        };
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+
+        // Act
+        await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)), Times.Once);
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Exactly(1));
+    }
+
+    [Test]
+    public async Task Handle_Returns_False_When_No_Course_Codes_Exist()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, (string)null).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, string.Empty).Create()
+        };
+        
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        // Act
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        result.HasFoundationApprenticeships.Should().BeFalse();
+        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Never);
     }
 }

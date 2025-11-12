@@ -17,7 +17,7 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Patch(new SaveCompletionApiPatchRequest(command.LearningKey, new SaveCompletionRequest
             {
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
             }));
         }, "completion date", logger, command.LearningKey);
 
@@ -89,7 +89,7 @@ internal static class EarningsApiClientExtensions
         {
             var data = new WithdrawRequest()
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate.GetValueOrDefault()
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate.GetValueOrDefault()
             };
 
             await earningsApiClient.Patch(new WithdrawApiPatchRequest(command.LearningKey, data));
@@ -103,6 +103,28 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Patch(new ReverseWithdrawalApiPatchRequest(command.LearningKey));
         }, "reverse-withdrawal", logger, command.LearningKey);
+    }
+
+    internal static async Task StartBreakInLearning(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            var data = new PauseRequest()
+            {
+                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate.GetValueOrDefault()
+            };
+            await earningsApiClient.Patch(new PauseApiPatchRequest(command.LearningKey, data));
+        }, "StartBreakInLearning", logger, command.LearningKey);
+    }
+
+    internal static async Task RemoveBreakInLearning(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            await earningsApiClient.Delete(new RemovePauseApiDeleteRequest(command.LearningKey));
+        }, "RemoveBreakInLearning", logger, command.LearningKey);
     }
 
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)

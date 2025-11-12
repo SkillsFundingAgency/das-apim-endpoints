@@ -137,6 +137,9 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
                 return $"/apprenticeship/{learnerKey.ToString()}/prices";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
                 return $"/apprenticeship/{learnerKey.ToString()}/withdraw";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
+                return $"/apprenticeship/{learnerKey.ToString()}/pause";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

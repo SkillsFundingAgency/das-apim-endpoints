@@ -1,7 +1,3 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
@@ -307,7 +303,7 @@ public class WhenHandlingProcessApplicationReminder
         Preference candidatePreference1,
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
@@ -346,7 +342,7 @@ public class WhenHandlingProcessApplicationReminder
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetCandidateApplicationApiResponse candidateApplicationApiResponse,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)

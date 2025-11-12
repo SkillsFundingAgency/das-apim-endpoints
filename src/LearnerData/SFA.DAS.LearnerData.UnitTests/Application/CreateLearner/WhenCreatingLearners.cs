@@ -73,18 +73,18 @@ public class WhenCreatingLearners
         {
             ULN = long.Parse(request.Learner.Uln),
             UKPRN = command.Ukprn,
-            FirstName = request.Learner.Firstname,
-            LastName = request.Learner.Lastname,
+            FirstName = request.Learner.FirstName,
+            LastName = request.Learner.LastName,
             Email = request.Learner.Email,
             DoB = request.Learner.Dob!.Value,
-            StartDate = request.Delivery.OnProgramme.StartDate!.Value,
-            PlannedEndDate = request.Delivery.OnProgramme.ExpectedEndDate,
-            PercentageLearningToBeDelivered = request.Delivery.OnProgramme.PercentageOfTrainingLeft,
-            EpaoPrice = request.Delivery.OnProgramme.Costs.Single().EpaoPrice,
-            TrainingPrice = request.Delivery.OnProgramme.Costs.Single().TrainingPrice,
-            AgreementId = request.Delivery.OnProgramme.AgreementId,
-            IsFlexiJob = request.Delivery.OnProgramme.IsFlexiJob!.Value,
-            StandardCode = request.Delivery.OnProgramme.StandardCode!.Value,
+            StartDate = request.Delivery.OnProgramme.First().StartDate,
+            PlannedEndDate = request.Delivery.OnProgramme.First().ExpectedEndDate,
+            PercentageLearningToBeDelivered = request.Delivery.OnProgramme.First().PercentageOfTrainingLeft,
+            EpaoPrice = request.Delivery.OnProgramme.First().Costs.First().EpaoPrice,
+            TrainingPrice = request.Delivery.OnProgramme.First().Costs.First().TrainingPrice,
+            AgreementId = request.Delivery.OnProgramme.First().AgreementId,
+            IsFlexiJob = request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
+            StandardCode = request.Delivery.OnProgramme.First().StandardCode!.Value,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = request.ConsumerReference
@@ -100,7 +100,7 @@ public class WhenCreatingLearners
         }
 
         command.Request.Learner.Uln = $"{_fixture.Create<ulong>()}";
-        command.Request.Delivery.OnProgramme.Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
+        command.Request.Delivery.OnProgramme.First().Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
 
         return command;
     }
