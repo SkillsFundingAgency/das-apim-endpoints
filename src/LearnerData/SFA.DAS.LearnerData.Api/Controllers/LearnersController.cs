@@ -1,10 +1,11 @@
-﻿using FluentValidation;
+﻿using Azure;
+using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
@@ -19,7 +20,6 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<CreateLearnerRequest> validator,
     IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
@@ -80,14 +80,6 @@ public class LearnersController(
     [Route("/providers/{ukprn}/learners")]
     public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
     {
-
-        var validatorResult = await validator.ValidateAsync(dataRequest);
-
-        if (!validatorResult.IsValid)
-        {
-            return BuildErrorResponse(validatorResult.Errors);
-        }
-
         try
         {
             var correlationId = Guid.NewGuid();
@@ -163,15 +155,23 @@ public class LearnersController(
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
     [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
-    public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod)
+    public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         try
         {
-            var queryResult = await mediator.Send(new GetFm36Query(ukprn, collectionYear, collectionPeriod));
+            var query = new GetFm36Query(ukprn, collectionYear, collectionPeriod, page, pageSize); 
 
-            var model = queryResult.FM36Learners;
+            var queryResult = await mediator.Send(query);
 
-            return Ok(model);
+            if (query.IsPaged)
+            {
+                HttpContext.SetPageLinksInResponseHeaders(query, queryResult);
+                return Ok(queryResult);
+            }
+            else
+            {
+                return Ok(queryResult.Items);
+            }
         }
         catch (Exception e)
         {

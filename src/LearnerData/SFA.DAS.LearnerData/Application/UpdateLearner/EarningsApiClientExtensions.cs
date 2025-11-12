@@ -17,7 +17,7 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Patch(new SaveCompletionApiPatchRequest(command.LearningKey, new SaveCompletionRequest
             {
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
             }));
         }, "completion date", logger, command.LearningKey);
 
@@ -89,11 +89,20 @@ internal static class EarningsApiClientExtensions
         {
             var data = new WithdrawRequest()
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.WithdrawalDate.GetValueOrDefault()
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate.GetValueOrDefault()
             };
 
             await earningsApiClient.Patch(new WithdrawApiPatchRequest(command.LearningKey, data));
-        }, "prices", logger, command.LearningKey);
+        }, "withdraw", logger, command.LearningKey);
+    }
+
+    internal static async Task ReverseWithdrawal(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            await earningsApiClient.Patch(new ReverseWithdrawalApiPatchRequest(command.LearningKey));
+        }, "reverse-withdrawal", logger, command.LearningKey);
     }
 
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)

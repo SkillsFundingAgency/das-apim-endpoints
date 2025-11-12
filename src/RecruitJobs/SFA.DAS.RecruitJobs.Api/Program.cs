@@ -1,9 +1,9 @@
-using System.Threading.Tasks;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
-using SFA.DAS.Recruit.Jobs.Api;
+using SFA.DAS.RecruitJobs.Api;
 using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,3 +19,7 @@ Startup.ConfigureServices(builder.Services, builder.Environment, configuration);
 var app = builder.Build();
 Startup.ConfigureApp(app, configuration);
 app.Run();
+
+
+[ExcludeFromCodeCoverage]
+public partial class Program { }

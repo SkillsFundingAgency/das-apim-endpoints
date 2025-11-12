@@ -5,9 +5,9 @@ VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{18520D1E-A6F1-4457-8D00-7A7AC05E32E9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RecruitJobs", "SFA.DAS.Recruit.Jobs\SFA.DAS.RecruitJobs.csproj", "{DE520B82-2756-4E6C-98AB-0F838F1F51EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RecruitJobs", "SFA.DAS.RecruitJobs\SFA.DAS.RecruitJobs.csproj", "{DE520B82-2756-4E6C-98AB-0F838F1F51EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RecruitJobs.Api", "SFA.DAS.Recruit.Jobs.Api\SFA.DAS.RecruitJobs.Api.csproj", "{09620B10-B3BB-4CBC-B112-ECCA9F1CDE5C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RecruitJobs.Api", "SFA.DAS.RecruitJobs.Api\SFA.DAS.RecruitJobs.Api.csproj", "{09620B10-B3BB-4CBC-B112-ECCA9F1CDE5C}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RecruitJobs.Api.UnitTests", "SFA.DAS.RecruitJobs.Api.UnitTests\SFA.DAS.RecruitJobs.Api.UnitTests.csproj", "{FC6E2BC4-ACCA-4ED3-A719-4F9B8D0F1CDE}"
 EndProject

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
 
@@ -21,36 +22,28 @@ public class GetTrainingProgrammesQueryHandler(
     {
         var standards = await courseService.GetActiveStandards<GetStandardsListResponse>("ActiveStandards");
         var allTrainingProgrammes = standards.Standards?
-            .Select(item => (TrainingProgramme)item)
-            .ToList() ?? [];
+            .Select(item => (TrainingProgramme)item) ?? [];
 
-        if (request.Ukprn.HasValue)
+        if (!request.Ukprn.HasValue)
         {
-            var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value));
-
-            if (providerCourses == null || !providerCourses.Any())
-            {
-                return new GetTrainingProgrammesQueryResult
-                {
-                    TrainingProgrammes = []
-                };
-            }
-
-            var providerLarsCodes = providerCourses.Select(c => c.LarsCode.ToString()).ToHashSet();
-
-            var filteredCourses = allTrainingProgrammes
-                .Where(p => providerLarsCodes.Contains(p.Id))
-                .ToList();
-
-            return new GetTrainingProgrammesQueryResult
-            {
-                TrainingProgrammes = filteredCourses
-            };
+            return new GetTrainingProgrammesQueryResult(allTrainingProgrammes);
+        }
+            
+        var response = await roatpApiClient.Get<GetProvidersListItem>(new GetProviderRequest(request.Ukprn.Value));
+        if (response.ProviderTypeId == (int)ProviderType.Employer)
+        {
+            // employer providers should see all training courses
+            return new GetTrainingProgrammesQueryResult(allTrainingProgrammes);
+        }
+        
+        var providerCourses = await roatpApiClient.Get<List<ProviderCourse>>(new GetAllProviderCoursesRequest(request.Ukprn.Value));
+        if (providerCourses is not { Count: >0 })
+        {
+            return GetTrainingProgrammesQueryResult.Empty;
         }
 
-        return new GetTrainingProgrammesQueryResult
-        {
-            TrainingProgrammes = allTrainingProgrammes
-        };
+        var providerLarsCodes = providerCourses.Select(c => c.LarsCode.ToString()).ToHashSet();
+        var filteredCourses = allTrainingProgrammes.Where(p => providerLarsCodes.Contains(p.Id));
+        return new GetTrainingProgrammesQueryResult(filteredCourses);
     }
 }

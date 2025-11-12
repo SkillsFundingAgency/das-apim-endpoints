@@ -117,3 +117,15 @@ public class WithdrawRequest
 {
     public DateTime WithdrawalDate { get; set; }
 }
+
+public class ReverseWithdrawalRequest
+{
+}
+
+public class ReverseWithdrawalApiPatchRequest(Guid apprenticeshipKey) : IPatchApiRequest<ReverseWithdrawalRequest>
+{
+    public string PatchUrl { get; } = $"apprenticeship/{apprenticeshipKey}/reverse-withdrawal";
+
+    public ReverseWithdrawalRequest Data { get; set; } = new();
+}
+

@@ -15,14 +15,14 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetDashboardByUkprn
         [Test, MoqAutoData]
         public async Task Then_The_Query_Is_Handled_And_Data_Returned(
             GetDashboardByUkprnQuery query,
-            GetDashboardApiResponse apiResponse,
+            GetProviderDashboardApiResponse apiResponse,
             [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
             GetDashboardByUkprnQueryHandler handler)
         {
             //Arrange
             var expectedGetUrl = new GetDashboardByUkprnApiRequest(query.Ukprn);
             recruitApiClient
-                .Setup(x => x.Get<GetDashboardApiResponse>(
+                .Setup(x => x.Get<GetProviderDashboardApiResponse>(
                     It.Is<GetDashboardByUkprnApiRequest>(c => c.GetUrl.Equals(expectedGetUrl.GetUrl))))
                 .ReturnsAsync(apiResponse);
 
@@ -30,7 +30,7 @@ namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetDashboardByUkprn
             var actual = await handler.Handle(query, CancellationToken.None);
 
             //Assert
-            actual.Should().BeEquivalentTo(apiResponse);
+            actual.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
         }
     }
 }

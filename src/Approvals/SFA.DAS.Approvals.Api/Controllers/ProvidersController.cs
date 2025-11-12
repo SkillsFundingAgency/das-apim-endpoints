@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using SFA.DAS.Approvals.Api.Models;
-using SFA.DAS.Approvals.Application.Providers.Queries;
 using SFA.DAS.Approvals.Application.DeliveryModels.Queries;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command;
+using SFA.DAS.Approvals.Application.Providers.Queries;
 using SFA.DAS.Approvals.Application.ProviderUsers.Commands;
 using SFA.DAS.Approvals.Application.ProviderUsers.Queries;
-using Newtonsoft.Json.Linq;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.Api.Controllers
@@ -128,6 +129,23 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 _logger.LogError(e, "Error sending provider emails");
                 return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("{ukprn}/status")]
+        public async Task<IActionResult> GetProvider([FromRoute] int ukprn)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetRoatpV2ProviderStatusQuery(ukprn));
+
+                return Ok(new ProviderAccountDetailsResponse(result.ProviderStatusTypeId));
+
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }
