@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Models;
 using System;
@@ -29,8 +30,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var userResult = await _mediator.Send(new GetUserQuery { GovUkIdentifier = govUkIdentifier });
-                if(userResult != null)
-                { 
+                if (userResult != null)
+                {
                     return Ok(userResult.User);
                 }
 
@@ -63,6 +64,26 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to create or update user.");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{userId}/certificates")]
+        public async Task<IActionResult> GetCertificates([FromRoute] Guid userId)
+        {
+            try
+            {
+                var userResult = await _mediator.Send(new GetCertificatesQuery { UserId = userId });
+                if (userResult != null)
+                {
+                    return Ok(userResult);
+                }
+
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve certificates {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
