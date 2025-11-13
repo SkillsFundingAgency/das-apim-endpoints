@@ -16,6 +16,7 @@ public class ProviderDetails
     public List<VerificationDetails> VerificationDetails { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class ProviderContact
 {
     public string ContactType { get; set; }
@@ -29,12 +30,14 @@ public class ProviderContact
     public DateTime? LastUpdated { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class ProviderAlias
 {
     public string Alias { get; set; }
     public DateTime? LastUpdated { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class ContactAddress
 {
     public string Address1 { get; set; }
@@ -45,6 +48,7 @@ public class ContactAddress
     public string PostCode { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class ContactPersonalDetails
 {
     public string PersonNameTitle { get; set; }
@@ -53,6 +57,7 @@ public class ContactPersonalDetails
     public string PersonNameSuffix { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class VerificationDetails
 {
     public string VerificationAuthority { get; set; }
