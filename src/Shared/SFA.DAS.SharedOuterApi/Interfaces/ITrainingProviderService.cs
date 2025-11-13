@@ -1,10 +1,14 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.Models.Roatp;
 
-namespace SFA.DAS.SharedOuterApi.Interfaces
+namespace SFA.DAS.SharedOuterApi.Interfaces;
+
+public interface ITrainingProviderService
 {
-    public interface ITrainingProviderService
-    {
-        public Task<TrainingProviderResponse> GetTrainingProviderDetails(long ukprn);
-    }
+    [Obsolete("Use GetProviderDetails(int ukprn) instead")]
+    Task<TrainingProviderResponse> GetTrainingProviderDetails(long ukprn);
+
+    Task<ProviderDetailsModel> GetProviderDetails(int ukprn);
 }
