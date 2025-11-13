@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+
+[ExcludeFromCodeCoverage]
 public class ProviderDetails
 {
     public string UKPRN { get; set; }

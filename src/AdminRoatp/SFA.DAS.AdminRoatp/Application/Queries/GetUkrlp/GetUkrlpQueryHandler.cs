@@ -16,7 +16,7 @@ public class GetUkrlpQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _ap
 
         response.EnsureSuccessStatusCode();
 
-        if (response.Body?.Results == null)
+        if (response.Body.Results == null)
         {
             return null;
         }
