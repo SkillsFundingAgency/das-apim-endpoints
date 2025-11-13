@@ -71,7 +71,7 @@ public class WhenCreatingLearners
         // Assert
         @event.Should().BeEquivalentTo(new
         {
-            ULN = long.Parse(request.Learner.Uln),
+            ULN = request.Learner.Uln,
             UKPRN = command.Ukprn,
             FirstName = request.Learner.FirstName,
             LastName = request.Learner.LastName,
@@ -99,7 +99,7 @@ public class WhenCreatingLearners
             command.Request = createLearnerRequest;
         }
 
-        command.Request.Learner.Uln = $"{_fixture.Create<ulong>()}";
+        command.Request.Learner.Uln = _fixture.Create<long>();
         command.Request.Delivery.OnProgramme.First().Costs = new List<CostDetails> { _fixture.Create<CostDetails>() };
 
         return command;
