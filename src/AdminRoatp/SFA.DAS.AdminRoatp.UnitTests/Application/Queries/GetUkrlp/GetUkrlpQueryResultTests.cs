@@ -44,27 +44,6 @@ public class GetUkrlpQueryResultTests
         sut.CompanyNumber.Should().Be("67890");
     }
 
-    [Test]
-    public void ImplicitConversion_DataIsNull_MapsNullValues()
-    {
-        // Arrange
-        var providerDetails = new ProviderDetails
-        {
-            ProviderName = null,
-            ProviderAliases = null,
-            VerificationDetails = null
-        };
-
-        // Act
-        GetUkrlpQueryResult sut = providerDetails;
-
-        // Assert
-        sut.LegalName.Should().BeNull();
-        sut.TradingName.Should().BeNull();
-        sut.CharityNumber.Should().BeNull();
-        sut.CompanyNumber.Should().BeNull();
-    }
-
     [TestCase("Charity Commission", "12345", "12345", null)]
     [TestCase("Companies House", "67890", null, "67890")]
     [TestCase("Test Authority", "54321", null, null)]
@@ -100,5 +79,47 @@ public class GetUkrlpQueryResultTests
         sut.TradingName.Should().Be("TestAlias1");
         sut.CharityNumber.Should().Be(expectedCharityNumber);
         sut.CompanyNumber.Should().Be(expectedCompanyNumber);
+    }
+
+    [Test]
+    public void ImplicitConversion_DataIsNull_MapsNullValues()
+    {
+        // Arrange
+        var providerDetails = new ProviderDetails
+        {
+            ProviderName = null,
+            ProviderAliases = null,
+            VerificationDetails = null
+        };
+
+        // Act
+        GetUkrlpQueryResult sut = providerDetails;
+
+        // Assert
+        sut.LegalName.Should().BeNull();
+        sut.TradingName.Should().BeNull();
+        sut.CharityNumber.Should().BeNull();
+        sut.CompanyNumber.Should().BeNull();
+    }
+
+    [Test]
+    public void ImplicitConversion_DataIsEmpty_MapsNullValues()
+    {
+        // Arrange
+        var providerDetails = new ProviderDetails
+        {
+            ProviderName = "TestName1",
+            ProviderAliases = new List<ProviderAlias>(),
+            VerificationDetails = new List<VerificationDetails>()
+        };
+
+        // Act
+        GetUkrlpQueryResult sut = providerDetails;
+
+        // Assert
+        sut.LegalName.Should().Be("TestName1");
+        sut.TradingName.Should().BeNull();
+        sut.CharityNumber.Should().BeNull();
+        sut.CompanyNumber.Should().BeNull();
     }
 }
