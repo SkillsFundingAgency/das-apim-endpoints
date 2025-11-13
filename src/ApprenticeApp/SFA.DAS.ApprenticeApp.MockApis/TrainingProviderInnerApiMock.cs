@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -33,10 +33,8 @@ namespace SFA.DAS.ApprenticeApp.MockApis
             return this;
         }
 
-        public TrainingProviderInnerApiMock WithValidSearch(long trainingProviderId, TrainingProviderResponse trainingProviderResponse)
+        public TrainingProviderInnerApiMock WithValidSearch(long trainingProviderId, OrganisationResponse response)
         {
-            var response = new SearchResponse { SearchResults = new[] { trainingProviderResponse } };
-
             MockServer
                 .Given(
                     Request.Create()

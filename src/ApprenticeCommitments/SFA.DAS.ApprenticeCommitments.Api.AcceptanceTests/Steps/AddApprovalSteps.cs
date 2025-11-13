@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.Matchers;
@@ -23,13 +24,16 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
     public class AddApprovalSteps
     {
         private readonly TestContext _context;
+        private readonly Fixture _fixture = new();
         private CreateApprovalCommand _request;
         private IEnumerable<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse> _approvedApprenticeships;
-        private IEnumerable<TrainingProviderResponse> _trainingProviderResponses;
+        private OrganisationResponse _trainingProviderResponse;
         private IEnumerable<Apis.Courses.StandardResponse> _courseResponses;
 
         public AddApprovalSteps(TestContext context)
         {
+            _trainingProviderResponse = _fixture.Create<OrganisationResponse>();
+
             _context = context;
 
             _context.InnerApi.MockServer
@@ -92,25 +96,20 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         }
 
         [Given("the following training providers exist")]
-        public void GivenTheFollowingTrainingProvidersExist(Table table)
+        public void GivenTheFollowingTrainingProvidersExist()
         {
-            _trainingProviderResponses = table.CreateSet<TrainingProviderResponse>();
-
-            foreach (var trainingProvider in _trainingProviderResponses)
-            {
-                _context.TrainingProviderInnerApi.MockServer
-                    .Given(
-                        Request.Create()
-                            .WithPath($"/organisations/{trainingProvider.Ukprn}")
-                            .UsingGet()
-                    )
-                    .RespondWith(
-                        Response.Create()
-                            .WithStatusCode((int)HttpStatusCode.OK)
-                            .WithHeader("Content-Type", "application/json")
-                            .WithBody(JsonConvert.SerializeObject(new SearchResponse { SearchResults = new[] { trainingProvider } }))
-                    );
-            }
+            _context.TrainingProviderInnerApi.MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath($"/organisations/{_trainingProviderResponse.Ukprn}")
+                        .UsingGet()
+                )
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode((int)HttpStatusCode.OK)
+                        .WithHeader("Content-Type", "application/json")
+                        .WithBody(JsonConvert.SerializeObject(_trainingProviderResponse))
+                );
         }
 
         [Given("the following courses exist")]

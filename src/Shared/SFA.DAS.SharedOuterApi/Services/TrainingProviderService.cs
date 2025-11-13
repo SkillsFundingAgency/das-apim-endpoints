@@ -1,43 +1,52 @@
-using System.Linq;
+using System;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.Roatp;
 
-namespace SFA.DAS.SharedOuterApi.Services
+namespace SFA.DAS.SharedOuterApi.Services;
+
+public class TrainingProviderService : ITrainingProviderService
 {
-    public class TrainingProviderService : ITrainingProviderService
+    private readonly IInternalApiClient<TrainingProviderConfiguration> _client;
+
+    public TrainingProviderService(IInternalApiClient<TrainingProviderConfiguration> client) => _client = client;
+
+    [Obsolete("Use GetProviderDetails(int ukprn) instead")]
+    public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long ukprn)
     {
-        private readonly IInternalApiClient<TrainingProviderConfiguration> _client;
+        var organisationResponse = await _client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest((int)ukprn));
 
-        public TrainingProviderService(IInternalApiClient<TrainingProviderConfiguration> client) => _client = client;
-
-        public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long ukprn)
+        if (organisationResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
-            var searchResponse = await _client.GetWithResponseCode<SearchResponse>(new GetOrganisationRequest((int)ukprn));
-
-            if (searchResponse.StatusCode != System.Net.HttpStatusCode.OK)
-                throw new HttpRequestContentException(searchResponse.ErrorContent, searchResponse.StatusCode);
-
-            if (searchResponse.Body.SearchResults.Length == 0)
-            {
-                throw new HttpRequestContentException(
-                    $"Training Provider Id {ukprn} not found",
-                    System.Net.HttpStatusCode.NotFound,
-                    "");
-            }
-
-            if (searchResponse.Body.SearchResults.Length > 1)
-            {
-                throw new HttpRequestContentException(
-                    $"Training Provider Id {ukprn} finds multiple matches",
-                    System.Net.HttpStatusCode.Conflict,
-                    "");
-            }
-
-            return searchResponse.Body.SearchResults.First();
+            throw new HttpRequestContentException($"Training Provider Id {ukprn} not found", System.Net.HttpStatusCode.NotFound, "");
         }
+
+        if (organisationResponse.StatusCode != System.Net.HttpStatusCode.OK)
+        {
+            throw new HttpRequestContentException(organisationResponse.ErrorContent, organisationResponse.StatusCode);
+        }
+
+        TrainingProviderResponse result = organisationResponse.Body;
+
+        return result;
+    }
+
+    public async Task<ProviderDetailsModel> GetProviderDetails(int ukprn)
+    {
+        var organisationResponse = await _client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest((int)ukprn));
+
+        if (organisationResponse.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
+
+        organisationResponse.EnsureSuccessStatusCode();
+
+        ProviderDetailsModel result = organisationResponse.Body;
+
+        return result;
     }
 }
