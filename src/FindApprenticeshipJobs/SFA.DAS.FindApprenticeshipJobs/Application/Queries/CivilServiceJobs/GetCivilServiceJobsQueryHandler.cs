@@ -18,7 +18,7 @@ public class GetCivilServiceJobsQueryHandler(
     {
         var response = await civilServiceJobsApiClient.Get<GetCivilServiceJobsApiResponse>(new GetCivilServiceJobsApiRequest());
 
-        if (response.Jobs.Count == 0)
+        if (response?.Jobs is null || response.Jobs.Count == 0)
         {
             return new GetCivilServiceJobsQueryResult
             {
