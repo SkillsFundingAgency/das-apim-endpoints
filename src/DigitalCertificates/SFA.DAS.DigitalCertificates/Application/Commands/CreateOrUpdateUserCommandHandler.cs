@@ -1,15 +1,16 @@
-﻿using MediatR;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
+using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostCreateOrUpdateUserRequest;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 {
-    public class CreateOrUpdateUserCommandHandler : IRequestHandler<CreateOrUpdateUserCommand, CreateOrUpdateUserResponse>
+    public class CreateOrUpdateUserCommandHandler : IRequestHandler<CreateOrUpdateUserCommand, CreateOrUpdateUserResult>
     {
         private readonly IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> _digitalCertificatesApiClient;
 
@@ -19,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
             _digitalCertificatesApiClient = digitalCertificatesApiClient;
         }
 
-        public async Task<CreateOrUpdateUserResponse> Handle(CreateOrUpdateUserCommand command, CancellationToken cancellationToken)
+        public async Task<CreateOrUpdateUserResult> Handle(CreateOrUpdateUserCommand command, CancellationToken cancellationToken)
         {
             var request = new PostCreateOrUpdateUserRequest(new PostCreateOrUpdateUserRequestData
             {
@@ -35,7 +36,10 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 
             response.EnsureSuccessStatusCode();
 
-            return response.Body;
+            return new CreateOrUpdateUserResult
+            {
+                UserId = response.Body.UserId
+            };
         }
     }
 }

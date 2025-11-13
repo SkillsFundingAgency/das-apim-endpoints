@@ -36,16 +36,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
             if (authorisationResponse?.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 authorisationResponse.EnsureSuccessStatusCode();
-                var ulnAuthorisation = authorisationResponse.Body.Authorisation;
+                result.Authorisation = authorisationResponse.Body.Authorisation;
 
                 ApiResponse<GetCertificatesResponse> certificatesResponse= await _assessorsApiClient.
-                    GetWithResponseCode<GetCertificatesResponse>(new GetCertificatesRequest(ulnAuthorisation.Uln));
+                    GetWithResponseCode<GetCertificatesResponse>(new GetCertificatesRequest(result.Authorisation.Uln));
 
                 if (certificatesResponse?.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
                     certificatesResponse.EnsureSuccessStatusCode();
-
-                    result.Authorisation = ulnAuthorisation;
                     result.Certificates = certificatesResponse.Body.Certificates;
                 }
             }

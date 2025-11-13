@@ -26,8 +26,4 @@
     <ProjectReference Include="..\SFA.DAS.DigitalCertificates\SFA.DAS.DigitalCertificates.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Commands\" />
-  </ItemGroup>
-
 </Project>

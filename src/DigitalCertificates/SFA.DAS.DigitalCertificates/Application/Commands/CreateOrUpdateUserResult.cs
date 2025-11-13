@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 {
-    public class CreateOrUpdateUserResponse
+    public class CreateOrUpdateUserResult
     {
         public Guid UserId { get; set; }
     }
