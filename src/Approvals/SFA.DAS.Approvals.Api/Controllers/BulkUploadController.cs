@@ -37,6 +37,21 @@ namespace SFA.DAS.Approvals.Api.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("providers/{providerId}/learners/{id}/validate")]
+        public async Task<IActionResult> Validate(long providerId, long id)
+        {
+            var result = await _mediator.Send(
+                new ValidateLearnerCommand
+                {
+                    ProviderId = providerId,
+                    LearnerDataId = id
+                });
+
+            return Ok(result);
+        }
+
+
         [HttpPost]
         [Route("AddAndApprove")]
         public async Task<IActionResult> AddAndApprove(BulkUploadAddAndApproveDraftApprenticeshipsRequest request)
