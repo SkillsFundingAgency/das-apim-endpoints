@@ -50,7 +50,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'  
   
-  /providers/{ukprn}/academicyears/{academicyear}/learners/{learningKey}:
+  /providers/{ukprn}/learning/{learningKey}:
     delete:
       summary: Deletes a learning record identified by this request for this provider
       security:
