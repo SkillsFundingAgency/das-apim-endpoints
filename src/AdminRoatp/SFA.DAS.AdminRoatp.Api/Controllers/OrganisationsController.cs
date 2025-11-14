@@ -40,7 +40,6 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetUkrlpQueryResult))]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(IDictionary<string, string>))]
     [Route("{ukprn}/ukrlp-data")]
     public async Task<IActionResult> GetUkrlp([FromRoute] int ukprn, CancellationToken cancellationToken)
     {
