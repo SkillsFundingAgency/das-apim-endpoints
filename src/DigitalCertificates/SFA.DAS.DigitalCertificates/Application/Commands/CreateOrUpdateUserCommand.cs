@@ -1,8 +1,7 @@
-﻿using MediatR;
-using SFA.DAS.DigitalCertificates.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using MediatR;
+using SFA.DAS.DigitalCertificates.Models;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 {
