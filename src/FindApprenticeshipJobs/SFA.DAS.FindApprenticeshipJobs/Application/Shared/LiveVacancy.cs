@@ -52,8 +52,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared
         public int Duration { get; set; }
         public DurationUnit? DurationUnit { get; set; }
         public int RouteCode { get; set; }
-        public int AccountId { get; set; }
-        public int AccountLegalEntityId { get; set; }
+        public long AccountId { get; set; }
+        public long AccountLegalEntityId { get; set; }
         public string ApplicationMethod { get; set; } = null!;
         public string? ApplicationInstructions { get; set; }
         public string? ApplicationUrl { get; set; }
