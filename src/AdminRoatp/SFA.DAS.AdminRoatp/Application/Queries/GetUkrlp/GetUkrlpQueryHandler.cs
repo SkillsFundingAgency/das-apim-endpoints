@@ -12,7 +12,7 @@ public class GetUkrlpQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _ap
     public async Task<GetUkrlpQueryResult?> Handle(GetUkrlpQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handle GetUkrlp request for Ukprn {Ukprn}", request.Ukprn);
-        var response = await _apiClient.GetWithResponseCode<UkprnLookupResponse>(new GetUkrlpRequest(request.Ukprn));
+        var response = await _apiClient.GetWithResponseCode<UkrlpLookupResponse>(new GetUkrlpRequest(request.Ukprn));
 
         response.EnsureSuccessStatusCode();
 

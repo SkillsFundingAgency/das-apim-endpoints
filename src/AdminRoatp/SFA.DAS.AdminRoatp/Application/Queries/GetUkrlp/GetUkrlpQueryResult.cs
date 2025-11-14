@@ -10,7 +10,7 @@ public class GetUkrlpQueryResult
     public string? CharityNumber { get; set; }
     public string? CompanyNumber { get; set; }
 
-    public static implicit operator GetUkrlpQueryResult(ProviderDetails source) => new()
+    public static implicit operator GetUkrlpQueryResult(UkrlpProviderDetails source) => new()
     {
         LegalName = source.ProviderName,
         TradingName = source.ProviderAliases?.FirstOrDefault()?.Alias,

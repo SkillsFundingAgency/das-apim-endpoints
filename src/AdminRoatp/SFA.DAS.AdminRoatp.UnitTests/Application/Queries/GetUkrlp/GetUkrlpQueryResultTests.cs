@@ -9,7 +9,7 @@ public class GetUkrlpQueryResultTests
     public void ImplicitConversion_AllDataPresent_MapsAllDataCorrectly()
     {
         // Arrange
-        var providerDetails = new ProviderDetails
+        var providerDetails = new UkrlpProviderDetails
         {
             ProviderName = "TestName1",
             ProviderAliases = new List<ProviderAlias>
@@ -51,7 +51,7 @@ public class GetUkrlpQueryResultTests
     public void ImplicitConversion_VariationOfVerificationDetails_MapsCharityAndCompanyNumberCorrectly(string? verificationAuthority, string? verificationId, string? expectedCharityNumber, string? expectedCompanyNumber)
     {
         // Arrange
-        var providerDetails = new ProviderDetails
+        var providerDetails = new UkrlpProviderDetails
         {
             ProviderName = "TestName1",
             ProviderAliases = new List<ProviderAlias>
@@ -85,7 +85,7 @@ public class GetUkrlpQueryResultTests
     public void ImplicitConversion_DataIsNull_MapsNullValues()
     {
         // Arrange
-        var providerDetails = new ProviderDetails
+        var providerDetails = new UkrlpProviderDetails
         {
             ProviderName = null,
             ProviderAliases = null,
@@ -106,7 +106,7 @@ public class GetUkrlpQueryResultTests
     public void ImplicitConversion_DataIsEmpty_MapsNullValues()
     {
         // Arrange
-        var providerDetails = new ProviderDetails
+        var providerDetails = new UkrlpProviderDetails
         {
             ProviderName = "TestName1",
             ProviderAliases = new List<ProviderAlias>(),

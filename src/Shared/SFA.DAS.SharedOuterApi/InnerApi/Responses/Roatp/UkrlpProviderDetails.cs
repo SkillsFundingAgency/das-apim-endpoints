@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 
 [ExcludeFromCodeCoverage]
-public class ProviderDetails
+public class UkrlpProviderDetails
 {
     public string UKPRN { get; set; }
     public string ProviderName { get; set; }
