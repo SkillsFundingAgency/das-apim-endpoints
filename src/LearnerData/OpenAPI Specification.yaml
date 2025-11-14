@@ -62,12 +62,6 @@ paths:
           description: The UK Provider Reference Number for the provider entering this learner
           schema:
             type: string
-        - name: academicyear
-          in: path
-          required: true
-          description: The academic year in which the learner has been removed.
-          schema:
-            type: string
         - name: learningKey
           in: path
           required: true
@@ -86,12 +80,6 @@ paths:
           in: path
           required: true
           description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          description: The academic year in which the learner has been updated.
           schema:
             type: string
         - name: learningKey
@@ -461,4 +449,4 @@ components:
                     format: date
 
 security:
-  - ApiKeyAuth: []  # Apply API Key security globally
+  - ApiKeyAuth: []  # Apply API Key security globally 
