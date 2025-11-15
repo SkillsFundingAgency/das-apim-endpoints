@@ -20,9 +20,8 @@
     <PackageReference Include="NUnit" />
     <PackageReference Include="NUnit.Analyzers" />
     <PackageReference Include="NUnit3TestAdapter" />
-	<PackageReference Include="SpecFlow" />
-	<PackageReference Include="SpecFlow.NUnit" />
-	<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" />
+    <PackageReference Include="Reqnroll" />
+    <PackageReference Include="Reqnroll.NUnit" />
 	<PackageReference Include="WireMock.Net" />
   </ItemGroup>
 

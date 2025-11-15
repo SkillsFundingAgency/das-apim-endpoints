@@ -1,8 +1,7 @@
 ﻿using FluentAssertions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using System.Net;
-using TechTalk.SpecFlow;
-using WireMock;
+using Reqnroll;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 

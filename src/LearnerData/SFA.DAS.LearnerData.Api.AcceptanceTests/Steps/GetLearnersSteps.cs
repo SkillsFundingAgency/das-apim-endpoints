@@ -4,8 +4,7 @@ using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Application.GetLearners;
 using System.Net;
 using System.Net.Http.Headers;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -93,7 +92,7 @@ public class GetLearnersSteps(TestContext testContext, ScenarioContext scenarioC
     }
 
     [Then(@"the reponse contains the following information")]
-    public void ThenTheReponseContainsTheFollowingInformation(Table table)
+    public void ThenTheReponseContainsTheFollowingInformation(DataTable table)
     {
         var expectedResponse = table.CreateSet<ExpectedResponse>().First();
         var result = scenarioContext.Get<GetLearnersResponse>();

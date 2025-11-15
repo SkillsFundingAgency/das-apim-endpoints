@@ -3,8 +3,7 @@ using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using System.Net;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -14,7 +13,7 @@ namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioContext)
 {
     [Given(@"the following price episodes")]
-    public void GivenTheFollowingPriceEpisodes(Table table)
+    public void GivenTheFollowingPriceEpisodes(DataTable table)
     {
         var apprenticeship = scenarioContext.Get<ApprenticeshipModel>();
         var priceEpisodes = table.CreateSet<PriceEpisodeModel>().ToList();
@@ -22,7 +21,7 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
     }
 
     [Given(@"the following instalments:")]
-    public void GivenTheFollowingInstalments(Table table)
+    public void GivenTheFollowingInstalments(DataTable table)
     {
         var apprenticeship = scenarioContext.Get<ApprenticeshipModel>();
         var instalments = table.CreateSet<InstalmentModel>().ToList();
@@ -30,7 +29,7 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
     }
 
     [Given(@"the following additional payments:")]
-    public void GivenTheFollowingAdditionalPayments(Table table)
+    public void GivenTheFollowingAdditionalPayments(DataTable table)
     {
         var apprenticeship = scenarioContext.Get<ApprenticeshipModel>();
         var additionalPayments = table.CreateSet<AdditionalPaymentModel>().ToList();
