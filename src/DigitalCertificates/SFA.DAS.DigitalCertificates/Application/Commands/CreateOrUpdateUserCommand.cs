@@ -5,7 +5,7 @@ using SFA.DAS.DigitalCertificates.Models;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 {
-    public class CreateOrUpdateUserCommand : IRequest<CreateOrUpdateUserResponse>
+    public class CreateOrUpdateUserCommand : IRequest<CreateOrUpdateUserResult>
     {
         public required string GovUkIdentifier { get; set; }
         public required string EmailAddress { get; set; }

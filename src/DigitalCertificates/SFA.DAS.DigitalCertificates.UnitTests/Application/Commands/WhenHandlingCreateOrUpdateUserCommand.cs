@@ -23,16 +23,16 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
         [Test, MoqAutoData]
         public async Task Then_The_User_Is_Created_Or_Updated_Successfully(
             CreateOrUpdateUserCommand command,
-            CreateOrUpdateUserResponse apiResponseBody,
+            CreateOrUpdateUserResult apiResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             CreateOrUpdateUserCommandHandler handler)
         {
             // Arrange
-            var apiResponse = new ApiResponse<CreateOrUpdateUserResponse>(
+            var apiResponse = new ApiResponse<CreateOrUpdateUserResult>(
                 apiResponseBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(
+                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResult>(
                     It.Is<PostCreateOrUpdateUserRequest>(r =>
                         r.Data.GovUkIdentifier == command.GovUkIdentifier &&
                         r.Data.EmailAddress == command.EmailAddress &&
@@ -51,16 +51,16 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
         [Test, MoqAutoData]
         public async Task Then_The_Request_Is_Correctly_Constructed(
             CreateOrUpdateUserCommand command,
-            CreateOrUpdateUserResponse apiResponseBody,
+            CreateOrUpdateUserResult apiResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             CreateOrUpdateUserCommandHandler handler)
         {
             // Arrange
-            var response = new ApiResponse<CreateOrUpdateUserResponse>(apiResponseBody, HttpStatusCode.OK, string.Empty);
+            var response = new ApiResponse<CreateOrUpdateUserResult>(apiResponseBody, HttpStatusCode.OK, string.Empty);
             PostCreateOrUpdateUserRequest capturedRequest = null;
 
             mockDigitalCertificatesApiClient
-                .Setup(c => c.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(
+                .Setup(c => c.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResult>(
                     It.IsAny<IPostApiRequest<PostCreateOrUpdateUserRequestData>>(), It.IsAny<bool>()))
                 .Callback<IPostApiRequest<PostCreateOrUpdateUserRequestData>, bool>((req, includeResponse) =>
                 {

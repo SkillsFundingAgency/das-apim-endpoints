@@ -9,7 +9,7 @@ using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostCreateOrUpdateUse
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
 {
-    public class CreateOrUpdateUserCommandHandler : IRequestHandler<CreateOrUpdateUserCommand, CreateOrUpdateUserResponse>
+    public class CreateOrUpdateUserCommandHandler : IRequestHandler<CreateOrUpdateUserCommand, CreateOrUpdateUserResult>
     {
         private readonly IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> _digitalCertificatesApiClient;
 
@@ -19,7 +19,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
             _digitalCertificatesApiClient = digitalCertificatesApiClient;
         }
 
-        public async Task<CreateOrUpdateUserResponse> Handle(CreateOrUpdateUserCommand command, CancellationToken cancellationToken)
+        public async Task<CreateOrUpdateUserResult> Handle(CreateOrUpdateUserCommand command, CancellationToken cancellationToken)
         {
             var request = new PostCreateOrUpdateUserRequest(new PostCreateOrUpdateUserRequestData
             {
@@ -31,7 +31,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
             });
 
             var response = await _digitalCertificatesApiClient
-                .PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(request);
+                .PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResult>(request);
 
             response.EnsureSuccessStatusCode();
 
