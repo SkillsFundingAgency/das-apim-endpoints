@@ -129,6 +129,28 @@ public class ReverseWithdrawalApiPatchRequest(Guid apprenticeshipKey) : IPatchAp
     public ReverseWithdrawalRequest Data { get; set; } = new();
 }
 
+public class PauseRequest
+{
+    public DateTime PauseDate { get; set; }
+}
+
+public class PauseApiPatchRequest: IPatchApiRequest<PauseRequest>
+{
+    public string PatchUrl { get; }
+
+    public PauseRequest Data { get; set; }
+
+    public PauseApiPatchRequest(Guid apprenticeshipKey, PauseRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/pause";
+        Data = data;
+    }
+}
+
+public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiRequest
+{
+    public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
+
 public class MathsAndEnglishWithdrawRequest
 {
     public string Course { get; set; }
@@ -142,5 +164,4 @@ public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, Math
         $"apprenticeship/{apprenticeshipKey}/mathsAndEnglish/withdraw";
 
     public MathsAndEnglishWithdrawRequest Data { get; set; } = data;
-}
-
+}}

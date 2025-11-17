@@ -19,7 +19,7 @@ public class LearnerRequestDetails
 
 public class UpdateLearnerRequestDeliveryDetails
 {
-    public OnProgrammeRequestDetails OnProgramme { get; set; }
+    public List<OnProgrammeRequestDetails> OnProgramme { get; set; }
 
     public List<MathsAndEnglish> EnglishAndMaths { get; set; }
 
@@ -27,16 +27,18 @@ public class UpdateLearnerRequestDeliveryDetails
 
 public class OnProgrammeRequestDetails
 {
+    public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
-    public List<CostDetails> Costs { get; set; }
+    public List<CostDetails>? Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 
 public class CostDetails
 {
-    public int TrainingPrice { get; set; }
+    public int? TrainingPrice { get; set; }
     public int? EpaoPrice { get; set; }
     public DateTime? FromDate { get; set; }
 }

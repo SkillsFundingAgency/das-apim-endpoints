@@ -31,7 +31,7 @@ public class WhenValidatingLearnerData
     public async Task And_when_ULN_IsNotValid_Then_BadRequest_returned()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Learner.Uln = "1234";
+        request.Learner.Uln = 1234;
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
         result.Errors.First().ErrorMessage.Should().Be($"Learner data contains incorrect ULN {request.Learner.Uln}");
@@ -54,10 +54,10 @@ public class WhenValidatingLearnerData
     public async Task And_Firstname_Is_blank(string? name)
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Learner.Firstname = name;
+        request.Learner.FirstName = name;
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
-        result.Errors.First().PropertyName.Should().Contain("Firstname");
+        result.Errors.First().PropertyName.Should().Contain("FirstName");
     }
 
 
@@ -67,10 +67,10 @@ public class WhenValidatingLearnerData
     public async Task And_Lastname_Is_blank(string? name)
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Learner.Lastname = name;
+        request.Learner.LastName = name;
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
-        result.Errors.First().PropertyName.Should().Contain("Lastname");
+        result.Errors.First().PropertyName.Should().Contain("LastName");
     }
 
     [Test]
@@ -107,10 +107,10 @@ public class WhenValidatingLearnerData
     public async Task And_EPAOPrice_Is_Negative()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Delivery.OnProgramme.Costs.Single().EpaoPrice = -1;
+        request.Delivery.OnProgramme.First().Costs.Single().EpaoPrice = -1;
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
-        result.Errors.First().ErrorMessage.Should().Contain($"Learner data contains a negative EpaoPrice {request.Delivery.OnProgramme.Costs.Single().EpaoPrice}");
+        result.Errors.First().ErrorMessage.Should().Contain($"Learner data contains a negative EpaoPrice {request.Delivery.OnProgramme.First().Costs.Single().EpaoPrice}");
         result.Errors.First().PropertyName.Should().Contain("EpaoPrice");
     }
 
@@ -118,10 +118,10 @@ public class WhenValidatingLearnerData
     public async Task And_TrainingPrice_Is_Negative()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Delivery.OnProgramme.Costs.Single().TrainingPrice = -1;
+        request.Delivery.OnProgramme.First().Costs.Single().TrainingPrice = -1;
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
-        result.Errors.First().ErrorMessage.Should().Contain($"Learner data contains a negative TrainingPrice {request.Delivery.OnProgramme.Costs.Single().TrainingPrice}");
+        result.Errors.First().ErrorMessage.Should().Contain($"Learner data contains a negative TrainingPrice {request.Delivery.OnProgramme.First().Costs.Single().TrainingPrice}");
         result.Errors.First().PropertyName.Should().Contain("TrainingPrice");
     }
 
@@ -129,10 +129,10 @@ public class WhenValidatingLearnerData
     public async Task And_StandardCode_Is_Negative()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Delivery.OnProgramme.StandardCode = -1;
+        request.Delivery.OnProgramme.First().StandardCode = -1;
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
-        result.Errors.First().ErrorMessage.Should().Contain($"Learner data contains a negative StandardCode {request.Delivery.OnProgramme.StandardCode}");
+        result.Errors.First().ErrorMessage.Should().Contain($"Learner data contains a negative StandardCode {request.Delivery.OnProgramme.First().StandardCode}");
         result.Errors.First().PropertyName.Should().Contain("StandardCode");
     }
 
@@ -140,22 +140,22 @@ public class WhenValidatingLearnerData
     public async Task And_FirstName_Too_Long()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Learner.Firstname = new string('A', 101);
+        request.Learner.FirstName = new string('A', 101);
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
         result.Errors.First().ErrorMessage.Should().Be("Firstname cannot be more then 100 characters long");
-        result.Errors.First().PropertyName.Should().Contain("Learner.Firstname");
+        result.Errors.First().PropertyName.Should().Contain("Learner.FirstName");
     }
 
     [Test]
     public async Task And_LastName_Too_Long()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Learner.Lastname = new string('B', 101);
+        request.Learner.LastName = new string('B', 101);
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
         result.Errors.First().ErrorMessage.Should().Be("Lastname cannot be more then 100 characters long");
-        result.Errors.First().PropertyName.Should().Contain("Learner.Lastname");
+        result.Errors.First().PropertyName.Should().Contain("Learner.LastName");
     }
 
     [Test]
@@ -173,7 +173,7 @@ public class WhenValidatingLearnerData
     public async Task And_AgreementId_Too_Long()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Delivery.OnProgramme.AgreementId = new string('D', 21);
+        request.Delivery.OnProgramme.First().AgreementId = new string('D', 21);
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
         result.Errors.First().ErrorMessage.Should().Be("OnProgramme AgreementId cannot be more then 20 characters long");
@@ -198,27 +198,30 @@ public class WhenValidatingLearnerData
             ConsumerReference = "AAAAA",
             Learner = new CreateLearnerRequest.LearnerDetails
             {
-                Uln = "1234567890",
-                Firstname = "First",
-                Lastname = "Last",
+                Uln = 1234567890,
+                FirstName = "First",
+                LastName = "Last",
                 Email = "Email@abcd.com",
                 Dob = new DateTime(2000, 02, 01)
             },
             Delivery = new CreateLearnerRequest.DeliveryDetails
             {
-                OnProgramme = new CreateLearnerRequest.OnProgrammeDetails
+                OnProgramme = new List<CreateLearnerRequest.OnProgrammeDetails>
                 {
-                    AgreementId = "ABCD",
-                    IsFlexiJob = false,
-                    StartDate = new DateTime(2025, 02, 01),
-                    ExpectedEndDate = new DateTime(2027, 02, 01),
-                    StandardCode = 123,
-                    Costs = new List<CostDetails>
+                    new CreateLearnerRequest.OnProgrammeDetails
                     {
-                        new CostDetails
+                        AgreementId = "ABCD",
+                        IsFlexiJob = false,
+                        StartDate = new DateTime(2025, 02, 01),
+                        ExpectedEndDate = new DateTime(2027, 02, 01),
+                        StandardCode = 123,
+                        Costs = new List<CostDetails>
                         {
-                            EpaoPrice = 400,
-                            TrainingPrice = 3200
+                            new CostDetails
+                            {
+                                EpaoPrice = 400,
+                                TrainingPrice = 3200
+                            }
                         }
                     }
                 }

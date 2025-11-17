@@ -1,24 +1,13 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Net;
-using System.Threading.Tasks;
-using System;
 
-namespace SFA.DAS.Recruit.Jobs.Api.Controllers;
+namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class ApplicationReviewController : ControllerBase
+public class ApplicationReviewController(ILogger<ApplicationReviewController> logger) : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<ApplicationReviewController> _logger;
-
-    public ApplicationReviewController(IMediator mediator, ILogger<ApplicationReviewController> logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
+    private readonly ILogger<ApplicationReviewController> _logger = logger;
 
     [HttpGet]
     [Route("")]
