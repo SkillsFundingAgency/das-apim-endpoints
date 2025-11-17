@@ -37,3 +37,9 @@ Scenario: Withdrawal
 	And the Withdrawal passed is different to the value in the learners domain
 	When the learner is updated
 	Then a Withdrawal update request is sent to the earnings domain
+
+Scenario: English and Maths Withdrawal
+	Given there is a learner
+	And the MathsAndEnglishWithdrawal passed is different to the value in the learners domain
+	When the learner is updated
+	Then MathsAndEnglishWithdrawal update requests are sent to the earnings domain

@@ -375,6 +375,34 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Verify(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()), Times.Once);
     }
 
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_Maths_And_English_Withdrawal()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.FirstOrDefault().WithdrawalDate;
+        var expectedCourse = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.FirstOrDefault().Course;
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<MathsAndEnglishWithdrawApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
+                It.Is<UpdateLearningApiPutRequest>(r => r.Data.MathsAndEnglishCourses.Any(c => c.WithdrawalDate == expectedWithdrawalDate))), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.Is<MathsAndEnglishWithdrawApiPatchRequest>(
+            r => r.Data.WithdrawalDate == expectedWithdrawalDate && r.Data.Course == expectedCourse)), Times.Once);
+    }
+
     private static void MockLearningApiResponse(
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,

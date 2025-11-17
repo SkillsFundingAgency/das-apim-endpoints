@@ -105,6 +105,23 @@ internal static class EarningsApiClientExtensions
         }, "reverse-withdrawal", logger, command.LearningKey);
     }
 
+    internal static async Task WithdrawEnglishAndMaths(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            foreach (var englishAndMaths in command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(x => x.WithdrawalDate.HasValue))
+            {
+                var data = new MathsAndEnglishWithdrawRequest()
+                {
+                    WithdrawalDate = englishAndMaths.WithdrawalDate!.Value,
+                    Course = englishAndMaths.Course
+                };
+
+                await earningsApiClient.Patch(new MathsAndEnglishWithdrawApiPatchRequest(command.LearningKey, data));
+            }
+        }, "maths and english withdraw", logger, command.LearningKey);
+    }
+
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)
     {
         logger.LogInformation("Calling Earnings Inner Api to update {updateTarget} for {learningKey}", updateTarget, learningKey);

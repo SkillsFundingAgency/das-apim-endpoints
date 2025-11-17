@@ -129,3 +129,18 @@ public class ReverseWithdrawalApiPatchRequest(Guid apprenticeshipKey) : IPatchAp
     public ReverseWithdrawalRequest Data { get; set; } = new();
 }
 
+public class MathsAndEnglishWithdrawRequest
+{
+    public string Course { get; set; }
+    public DateTime WithdrawalDate { get; set; }
+}
+
+public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, MathsAndEnglishWithdrawRequest data)
+    : IPatchApiRequest<MathsAndEnglishWithdrawRequest>
+{
+    public string PatchUrl { get; } =
+        $"apprenticeship/{apprenticeshipKey}/mathsAndEnglish/withdraw";
+
+    public MathsAndEnglishWithdrawRequest Data { get; set; } = data;
+}
+
