@@ -50,7 +50,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'  
   
-  /providers/{ukprn}/academicyears/{academicyear}/learners/{learningKey}:
+  /providers/{ukprn}/learning/{learningKey}:
     delete:
       summary: Deletes a learning record identified by this request for this provider
       security:
@@ -60,12 +60,6 @@ paths:
           in: path
           required: true
           description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          description: The academic year in which the learner has been removed.
           schema:
             type: string
         - name: learningKey
@@ -86,12 +80,6 @@ paths:
           in: path
           required: true
           description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          description: The academic year in which the learner has been updated.
           schema:
             type: string
         - name: learningKey
@@ -461,4 +449,4 @@ components:
                     format: date
 
 security:
-  - ApiKeyAuth: []  # Apply API Key security globally
+  - ApiKeyAuth: []  # Apply API Key security globally 

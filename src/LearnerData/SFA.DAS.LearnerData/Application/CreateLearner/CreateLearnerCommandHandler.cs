@@ -23,7 +23,7 @@ public class CreateLearnerCommandHandler(
 
         return new LearnerDataEvent
         {
-            ULN = long.Parse(command.Request.Learner.Uln),
+            ULN = command.Request.Learner.Uln,
             UKPRN = command.Ukprn,
             FirstName = command.Request.Learner.FirstName,
             LastName = command.Request.Learner.LastName,

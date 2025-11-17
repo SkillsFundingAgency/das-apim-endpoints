@@ -12,7 +12,7 @@ public class CreateLearnerRequest : UpdateLearnerRequest
     public class LearnerDetails : LearnerRequestDetails
     {
         [Required]
-        public string Uln { get; set; }
+        public long Uln { get; set; }
         [Required]
         public string LearnerRef { get; set; }
         [Required]
