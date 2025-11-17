@@ -177,8 +177,8 @@ namespace SFA.DAS.Vacancies.Api.Models
                 ExpectedDuration = source.ExpectedDuration,
                 Location = new VacancyLocation
                 {
-                    Lat = source.Location?.Lat ?? source.Address.Latitude,
-                    Lon = source.Location?.Lon ?? source.Address.Longitude,
+                    Lat = source.Location?.Lat ?? source.Address?.Latitude ?? 0,
+                    Lon = source.Location?.Lon ?? source.Address?.Longitude ?? 0,
                 }
             };
         }
