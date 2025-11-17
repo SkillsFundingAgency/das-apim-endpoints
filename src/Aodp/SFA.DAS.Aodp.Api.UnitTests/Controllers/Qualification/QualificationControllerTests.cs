@@ -369,7 +369,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var query = _fixture.Create<GetQualificationOutputFileQuery>();
 
             var payload = _fixture.Build<GetQualificationOutputFileResponse>()
-                                  .With(p => p.ZipFileContent, new byte[] { 1, 2, 3 })
+                                  .With(p => p.FileContent, new byte[] { 1, 2, 3 })
                                   .Create();
 
             var queryResponse = _fixture.Build<BaseMediatrResponse<GetQualificationOutputFileResponse>>()
@@ -394,7 +394,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                 Assert.That(envelope.Success, Is.True);
                 Assert.That(envelope.Value, Is.Not.Null);
                 Assert.That(envelope.Value!.FileName, Is.EqualTo(payload.FileName));
-                Assert.That(envelope.Value.ZipFileContent, Is.EqualTo(payload.ZipFileContent));
+                Assert.That(envelope.Value.FileContent, Is.EqualTo(payload.FileContent));
                 Assert.That(envelope.Value.ContentType, Is.EqualTo(payload.ContentType));
             });
         }

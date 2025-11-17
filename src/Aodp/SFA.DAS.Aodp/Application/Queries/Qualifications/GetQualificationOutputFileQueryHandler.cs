@@ -44,7 +44,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                     };
                 }
 
-                if (inner.Value?.ZipFileContent == null || inner.Value.ZipFileContent.Length == 0)
+                if (inner.Value?.FileContent == null || inner.Value.FileContent.Length == 0)
                 {
                     return new BaseMediatrResponse<GetQualificationOutputFileResponse>
                     {

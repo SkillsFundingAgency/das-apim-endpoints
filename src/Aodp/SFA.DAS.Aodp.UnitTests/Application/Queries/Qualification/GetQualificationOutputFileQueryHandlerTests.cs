@@ -17,9 +17,9 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock = null!;
 
         // Reused constants
-        private const string ContentTypeZip = "application/zip";
+        private const string ContentTypeTextCsv = "text/csv";
         private const string GenericError = "Export file not returned.";
-        private const string TestZipName = "qualifications_export.zip";
+        private const string fileName = "qualifications_export.csv";
 
         [SetUp]
         public void SetUp()
@@ -37,9 +37,9 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
                 .With(r => r.Success, true)
                 .With(r => r.Value, new GetQualificationOutputFileResponse
                 {
-                    FileName = TestZipName,
-                    ZipFileContent = new byte[] { 1, 2, 3 },
-                    ContentType = ContentTypeZip
+                    FileName = fileName,
+                    FileContent = new byte[] { 1, 2, 3 },
+                    ContentType = ContentTypeTextCsv
                 })
                 .Create();
 
@@ -66,8 +66,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
                 Assert.That(result.ErrorCode, Is.Null);
                 Assert.That(result.Value, Is.Not.Null);
                 Assert.That(result.Value!.FileName, Is.EqualTo(apiResponse.Value!.FileName));
-                Assert.That(result.Value.ZipFileContent, Is.Not.Null.And.Not.Empty);
-                Assert.That(result.Value.ContentType, Is.EqualTo(ContentTypeZip));
+                Assert.That(result.Value.FileContent, Is.Not.Null.And.Not.Empty);
+                Assert.That(result.Value.ContentType, Is.EqualTo(ContentTypeTextCsv));
             });
         }
 
@@ -120,8 +120,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications
                 Value = new GetQualificationOutputFileResponse
                 {
                     FileName = string.Empty,
-                    ZipFileContent = Array.Empty<byte>(), 
-                    ContentType = "application/zip"
+                    FileContent = Array.Empty<byte>(), 
+                    ContentType = "text/csv"
                 },
                 ErrorMessage = GenericError,
                 ErrorCode = ErrorCodes.NoData

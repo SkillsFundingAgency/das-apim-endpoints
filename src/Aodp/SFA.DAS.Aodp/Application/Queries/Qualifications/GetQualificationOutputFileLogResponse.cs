@@ -10,8 +10,7 @@
             public string? UserDisplayName { get; set; }
             public DateTime? DownloadDate { get; set; }
             public DateTime? PublicationDate { get; set; }
-            public string? ApprovedFileName { get; set; }
-            public string? ArchivedFileName { get; set; }
+            public string? FileName { get; set; }
         }
     }
 }
