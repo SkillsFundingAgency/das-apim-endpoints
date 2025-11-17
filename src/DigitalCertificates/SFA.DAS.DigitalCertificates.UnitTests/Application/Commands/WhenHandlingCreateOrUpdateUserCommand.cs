@@ -89,7 +89,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResult>(
+                .Setup(client => client.PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(
                     It.IsAny<PostCreateOrUpdateUserRequest>(), true))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
