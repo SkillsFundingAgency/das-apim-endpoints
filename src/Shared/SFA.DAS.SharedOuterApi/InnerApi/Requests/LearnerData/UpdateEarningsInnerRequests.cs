@@ -150,6 +150,7 @@ public class PauseApiPatchRequest: IPatchApiRequest<PauseRequest>
 public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiRequest
 {
     public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
+}
 
 public class MathsAndEnglishWithdrawRequest
 {
@@ -164,4 +165,4 @@ public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, Math
         $"apprenticeship/{apprenticeshipKey}/mathsAndEnglish/withdraw";
 
     public MathsAndEnglishWithdrawRequest Data { get; set; } = data;
-}}
+}
