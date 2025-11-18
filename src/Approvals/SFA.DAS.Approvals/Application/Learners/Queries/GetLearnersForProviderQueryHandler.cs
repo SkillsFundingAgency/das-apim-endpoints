@@ -57,13 +57,6 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             }
         }
 
-        var learnerDataTask = GetLearnerData(request);
-        var standardsTask = GetStandardsData();
-
-        await Task.WhenAll(learnerDataTask, standardsTask);
-        var learnerData = await learnerDataTask;
-        var standards = await standardsTask;
-
         if (request.CohortId.HasValue)
         {
             logger.LogInformation("Getting Cohort details");
@@ -76,8 +69,25 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             }
             employerName = cohortResponse.Body.LegalEntityName;
             accountLegalEntityId = cohortResponse.Body.AccountLegalEntityId;
+
+            //find draft apprenticeships in the cohort to exclude from the learner search results
+            var apiRequest = new GetDraftApprenticeshipsRequest(request.CohortId.Value);
+            var draftApprenticeshipsResponse = await commitmentsClient.GetWithResponseCode<GetDraftApprenticeshipsResponse>(apiRequest);
+            if (!string.IsNullOrEmpty(draftApprenticeshipsResponse.ErrorContent))
+            {
+                throw new ApplicationException($"Getting Draft Apprenticeships Failed. Status Code {draftApprenticeshipsResponse.StatusCode} Error : {draftApprenticeshipsResponse.ErrorContent}");
+            }
+            var selectedUlns = draftApprenticeshipsResponse.Body.DraftApprenticeships.Select(x => x.Uln).ToList();
+            request.ExcludeUlns = selectedUlns;
         }
-        
+
+        var learnerDataTask = GetLearnerData(request);
+        var standardsTask = GetStandardsData();
+
+        await Task.WhenAll(learnerDataTask, standardsTask);
+        var learnerData = await learnerDataTask;
+        var standards = await standardsTask;
+
         logger.LogInformation("Building Learner Data result");
 
         return new GetLearnersForProviderQueryResult
@@ -108,7 +118,8 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
                 request.PageSize, 
                 request.StartMonth,
                 request.StartYear,
-                request.MaxStartDate
+                request.MaxStartDate,
+                string.Join(",", request.ExcludeUlns)
             ));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
