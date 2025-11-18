@@ -30,6 +30,8 @@ public class UpdateLearnerApiPutResponse
         ExpectedEndDate = 4,
         Withdrawal = 5,
         ReverseWithdrawal = 6,
-		PersonalDetails = 7
+		PersonalDetails = 7,
+        BreakInLearningStarted = 8,
+        BreakInLearningRemoved = 9
     }
 }

@@ -1,4 +1,3 @@
-using SFA.DAS.Recruit.InnerApi.Requests;
 using System;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 

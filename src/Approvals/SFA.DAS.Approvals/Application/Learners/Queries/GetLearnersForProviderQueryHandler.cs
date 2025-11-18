@@ -1,4 +1,7 @@
-﻿using AutoMapper;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
@@ -7,13 +10,8 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -23,7 +21,8 @@ public class GetLearnersForProviderQueryHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsClient,
     IMapLearnerRecords mapper,
     ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-    ILogger<GetLearnersForProviderQueryHandler> logger)
+    IReservationApiClient<ReservationApiConfiguration> _reservationsApiClient,
+ILogger<GetLearnersForProviderQueryHandler> logger)
     : IRequestHandler<GetLearnersForProviderQuery, GetLearnersForProviderQueryResult>
 {
     public async Task<GetLearnersForProviderQueryResult> Handle(GetLearnersForProviderQuery request,
@@ -31,6 +30,32 @@ public class GetLearnersForProviderQueryHandler(
     {
         long accountLegalEntityId = 0;
         string employerName = null;
+        int futureMonths = 0;
+
+        if (request.AccountLegalEntityId.HasValue)
+        {
+            logger.LogInformation("Getting Account Legal Entity");
+            accountLegalEntityId = request.AccountLegalEntityId.Value;
+            var legalEntityResponse = await commitmentsClient.GetWithResponseCode<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
+            if (!string.IsNullOrEmpty(legalEntityResponse.ErrorContent))
+            {
+                throw new ApplicationException($"Getting Legal Entity Data Failed. Status Code {legalEntityResponse.StatusCode} Error : {legalEntityResponse.ErrorContent}");
+            }
+            employerName = legalEntityResponse.Body.LegalEntityName;
+
+            if (legalEntityResponse.Body.LevyStatus == ApprenticeshipEmployerType.NonLevy)
+            {
+                var get = new GetAvailableDatesRequest(accountLegalEntityId);
+                var response = await _reservationsApiClient.Get<GetAvailableDatesResponse>(get);
+                if (response.AvailableDates is not null)
+                {
+                    futureMonths = response.AvailableDates.Count(x => x.StartDate > DateTime.Now) + 1;
+
+                    var maxStartDate = response.AvailableDates.Max(x => x.StartDate).AddMonths(1);
+                    request.MaxStartDate = maxStartDate;
+                }
+            }
+        }
 
         if (request.CohortId.HasValue)
         {
@@ -54,26 +79,14 @@ public class GetLearnersForProviderQueryHandler(
             }
             var selectedUlns = draftApprenticeshipsResponse.Body.DraftApprenticeships.Select(x => x.Uln).ToList();
             request.ExcludeUlns = selectedUlns;
-        }        
+        }
 
         var learnerDataTask = GetLearnerData(request);
         var standardsTask = GetStandardsData();
 
         await Task.WhenAll(learnerDataTask, standardsTask);
         var learnerData = await learnerDataTask;
-        var standards = await standardsTask;        
-
-        if (request.AccountLegalEntityId.HasValue)
-        {
-            logger.LogInformation("Getting Account Legal Entity");
-            accountLegalEntityId = request.AccountLegalEntityId.Value;
-            var legalEntityResponse = await commitmentsClient.GetWithResponseCode<GetAccountLegalEntityResponse>(new GetAccountLegalEntityRequest(accountLegalEntityId));
-            if (!string.IsNullOrEmpty(legalEntityResponse.ErrorContent))
-            {
-                throw new ApplicationException($"Getting Legal Entity Data Failed. Status Code {legalEntityResponse.StatusCode} Error : {legalEntityResponse.ErrorContent}");
-            }
-            employerName = legalEntityResponse.Body.LegalEntityName;
-        }
+        var standards = await standardsTask;
 
         logger.LogInformation("Building Learner Data result");
 
@@ -86,7 +99,8 @@ public class GetLearnersForProviderQueryHandler(
             Page = learnerData.Page,
             PageSize = learnerData.PageSize,
             TotalPages = learnerData.TotalPages,
-            Learners = await mapper.Map(learnerData.Data, standards.TrainingProgrammes.ToList())
+            Learners = await mapper.Map(learnerData.Data, standards.TrainingProgrammes.ToList()),
+            FutureMonths = futureMonths
         };
     }
 
@@ -104,6 +118,7 @@ public class GetLearnersForProviderQueryHandler(
                 request.PageSize, 
                 request.StartMonth,
                 request.StartYear,
+                request.MaxStartDate,
                 string.Join(",", request.ExcludeUlns)
             ));
 

@@ -16,7 +16,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 {
     public class VacancyService(
         IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
-        IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient) 
+        IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client) 
         : IVacancyService
     {
         public async Task<IVacancy> GetVacancy(string vacancyReference)
@@ -26,7 +26,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
 
         public async Task<IVacancy> GetClosedVacancy(string vacancyReference)
         {
-            var response = await recruitApiClient.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.TrimVacancyReference()));
+            var response = await recruitApiV2Client.Get<GetClosedVacancyResponse>(new GetClosedVacancyRequest(vacancyReference.TrimVacancyReference()));
             return AnonymizeClosedVacancy(response);
         }
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.FindAnApprenticeship.Services
                 });
 
             var recruitResponse =
-                await recruitApiClient.PostWithResponseCode<List<GetClosedVacancyResponse>>(recruitRequest);
+                await recruitApiV2Client.PostWithResponseCode<List<GetClosedVacancyResponse>>(recruitRequest);
 
             result.AddRange(recruitResponse.Body.Select(AnonymizeClosedVacancy));
 
