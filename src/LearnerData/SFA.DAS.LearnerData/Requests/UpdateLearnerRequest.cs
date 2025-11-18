@@ -19,7 +19,7 @@ public class LearnerRequestDetails
 
 public class UpdateLearnerRequestDeliveryDetails
 {
-    public OnProgrammeRequestDetails OnProgramme { get; set; }
+    public List<OnProgrammeRequestDetails> OnProgramme { get; set; }
 
     public List<MathsAndEnglish> EnglishAndMaths { get; set; }
 

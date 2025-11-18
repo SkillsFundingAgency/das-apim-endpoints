@@ -10,7 +10,7 @@ public class CreateLearnerRequestValidator : AbstractValidator<CreateLearnerRequ
         RuleFor(model => model.Learner.Uln).Must(uln => ValidateUln(uln))
             .WithMessage(model => $"Learner data contains incorrect ULN {model.Learner.Uln}");
 
-        RuleForEach(model => model.Delivery.OnProgramme.Costs)
+        RuleForEach(model => model.Delivery.OnProgramme.First().Costs)
             .ChildRules(cost =>
             {
                 cost.RuleFor(c => c.EpaoPrice).GreaterThanOrEqualTo(0)
@@ -20,20 +20,20 @@ public class CreateLearnerRequestValidator : AbstractValidator<CreateLearnerRequ
                     .WithMessage(c => $"Learner data contains a negative TrainingPrice {c.TrainingPrice}");
             });
 
-        RuleFor(model => model.Delivery.OnProgramme.StandardCode).GreaterThanOrEqualTo(0)
-            .WithMessage(model => $"Learner data contains a negative StandardCode {model.Delivery.OnProgramme.StandardCode}");
+        RuleFor(model => model.Delivery.OnProgramme.First().StandardCode).GreaterThanOrEqualTo(0)
+            .WithMessage(model => $"Learner data contains a negative StandardCode {model.Delivery.OnProgramme.First().StandardCode}");
 
         RuleFor(model => model.ConsumerReference)
            .MaximumLength(100)
            .WithMessage("ConsumerReference cannot be more then 100 characters long");
 
-        RuleFor(model => model.Learner.Firstname)
+        RuleFor(model => model.Learner.FirstName)
             .NotEmpty()
             .WithMessage("Firstname is required")
             .MaximumLength(100)
             .WithMessage("Firstname cannot be more then 100 characters long");
 
-        RuleFor(model => model.Learner.Lastname)
+        RuleFor(model => model.Learner.LastName)
             .NotEmpty()
             .WithMessage("Lastname is required")
             .MaximumLength(100)
@@ -48,19 +48,19 @@ public class CreateLearnerRequestValidator : AbstractValidator<CreateLearnerRequ
             .WithMessage("Email cannot be more then 200 characters long")
             .EmailAddress().When(model => model.Learner.Email != null);
 
-        RuleFor(model => model.Delivery.OnProgramme.AgreementId)
+        RuleFor(model => model.Delivery.OnProgramme.First().AgreementId)
             .MaximumLength(20)
             .WithMessage("OnProgramme AgreementId cannot be more then 20 characters long");
 
-        RuleFor(model => model.Delivery.OnProgramme.StartDate)
+        RuleFor(model => model.Delivery.OnProgramme.First().StartDate)
             .NotNull()
             .WithMessage("OnProgramme StartDate is required");
 
-        RuleFor(model => model.Delivery.OnProgramme.ExpectedEndDate)
+        RuleFor(model => model.Delivery.OnProgramme.First().ExpectedEndDate)
             .NotNull()
             .WithMessage("OnProgramme ExpectedEndDate is required");
 
-        RuleFor(model => model.Delivery.OnProgramme.IsFlexiJob)
+        RuleFor(model => model.Delivery.OnProgramme.First().IsFlexiJob)
             .NotNull()
             .WithMessage("OnProgramme IsFlexiJob is required");
     }

@@ -116,24 +116,7 @@ public class GetCohortDetailsQueryHandler(
             .Distinct()
             .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
-        var hasFoundationApprenticeships = false;
-        foreach (var apprenticeship in draftApprenticeships.DraftApprenticeships)
-        {
-            if (!string.IsNullOrWhiteSpace(apprenticeship.CourseCode))
-            {
-                var standardDetails =
-                    await coursesApiClient.Get<GetStandardsListItem>(
-                        new GetStandardDetailsByIdRequest(apprenticeship.CourseCode));
-                if (standardDetails != null)
-                {
-                    hasFoundationApprenticeships = standardDetails.ApprenticeshipType == "FoundationApprenticeship";
-                    if (hasFoundationApprenticeships)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
+        var hasFoundationApprenticeships = await CheckForFoundationApprenticeships(draftApprenticeships.DraftApprenticeships);
 
         return new GetCohortDetailsQueryResult
         {
@@ -168,5 +151,29 @@ public class GetCohortDetailsQueryHandler(
             RplErrorDraftApprenticeshipIds = rplErrors.DraftApprenticeshipIds,
             HasFoundationApprenticeships = hasFoundationApprenticeships
         };
+    }
+
+    private async Task<bool> CheckForFoundationApprenticeships(IEnumerable<DraftApprenticeship> draftApprenticeships)
+    {
+        var uniqueCourseCodes = draftApprenticeships
+            .Where(a => !string.IsNullOrWhiteSpace(a.CourseCode))
+            .Select(a => a.CourseCode)
+            .Distinct()
+            .ToList();
+
+        if (!uniqueCourseCodes.Any())
+        {
+            return false;
+        }
+
+        var courseDetailsTasks = uniqueCourseCodes
+            .Select(courseCode => coursesApiClient.Get<GetStandardsListItem>(
+                new GetStandardDetailsByIdRequest(courseCode)))
+            .ToList();
+
+        var courseDetails = await Task.WhenAll(courseDetailsTasks);
+
+        return courseDetails
+            .Any(cd => cd is { ApprenticeshipType: "FoundationApprenticeship" });
     }
 }

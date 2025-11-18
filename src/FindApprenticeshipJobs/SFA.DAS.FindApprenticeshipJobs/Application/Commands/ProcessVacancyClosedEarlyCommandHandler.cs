@@ -14,11 +14,11 @@ using System.Net;
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 
 public class ProcessVacancyClosedEarlyCommandHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, 
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient, 
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
-    ILogger<ProcessVacancyClosedEarlyCommandHandler> logger) : IRequestHandler<ProcessVacancyClosedEarlyCommand, Unit>
+    ILogger<ProcessVacancyClosedEarlyCommandHandler> logger) : IRequestHandler<ProcessVacancyClosedEarlyCommand>
 {
-    public async Task<Unit> Handle(ProcessVacancyClosedEarlyCommand request, CancellationToken cancellationToken)
+    public async Task Handle(ProcessVacancyClosedEarlyCommand request, CancellationToken cancellationToken)
     {
         var closedVacancyNotFoundPolicy = GetClosedVacancyNotFoundPolicy(request);
 
@@ -28,6 +28,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
 
         if (vacancy.StatusCode == HttpStatusCode.NotFound)
         {
+            logger.LogError("Vacancy not found: {VacancyReference} while processing closed vacancy handler", request.VacancyReference);
             throw new Exception($"Vacancy not found: {request.VacancyReference} while processing closed vacancy handler");
         }
         
@@ -47,8 +48,6 @@ public class ProcessVacancyClosedEarlyCommandHandler(
         }
 
         await Task.WhenAll(updateCandidate);
-        
-        return new Unit();
     }
 
     private AsyncRetryPolicy<ApiResponse<GetClosedVacancyApiResponse>> GetClosedVacancyNotFoundPolicy(ProcessVacancyClosedEarlyCommand request)
@@ -58,7 +57,7 @@ public class ProcessVacancyClosedEarlyCommandHandler(
             .WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(4), 
                 (_, _, retryCount, _) =>
                 {
-                    logger.LogInformation($"ProcessVacancyClosedEarlyCommandHandler: Unable to find {request.VacancyReference}. Retry {retryCount} due to 404 response");
+                    logger.LogInformation("ProcessVacancyClosedEarlyCommandHandler: Unable to find {RequestVacancyReference}. Retry {RetryCount} due to 404 response", request.VacancyReference, retryCount);
                 });
     }
 }

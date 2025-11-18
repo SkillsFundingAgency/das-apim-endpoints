@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
+﻿using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.Services;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -17,7 +16,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
             var result = LiveVacancyMapper.GetWage(wageText);
 
             // Assert
-            result.WageType.Should().Be("FixedWage");
+            result.WageType.Should().Be(WageType.FixedWage);
             result.WageText.Should().Be(wageText);
             result.ApprenticeMinimumWage.Should().Be(26530.00M);
             result.Under18NationalMinimumWage.Should().Be(26530.00M);
@@ -34,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
             var result = LiveVacancyMapper.GetWage(wageText);
 
             // Assert
-            result.WageType.Should().Be("FixedWage");
+            result.WageType.Should().Be(WageType.FixedWage);
             result.WageText.Should().Be(wageText);
             result.ApprenticeMinimumWage.Should().Be(30000M);
             result.Under18NationalMinimumWage.Should().Be(30000M);
@@ -53,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application
             var result = LiveVacancyMapper.GetWage(wageText);
 
             // Assert
-            result.WageType.Should().Be("CompetitiveSalary");
+            result.WageType.Should().Be(WageType.CompetitiveSalary);
             result.WageText.Should().Be(wageText);
         }
     }

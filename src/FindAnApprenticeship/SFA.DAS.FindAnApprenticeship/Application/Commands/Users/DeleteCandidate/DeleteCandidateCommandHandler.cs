@@ -5,22 +5,22 @@ using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
-using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidate
 {
@@ -28,7 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
         ILogger<DeleteCandidateCommandHandler> logger,
         IVacancyService vacancyService,
         INotificationService notificationService,
-        IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client,
         ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
         IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
         EmailEnvironmentHelper emailEnvironmentHelper) : IRequestHandler<DeleteCandidateCommand, Unit>
@@ -55,17 +55,15 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
 
             foreach (var application in applicationList)
             {
-                var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-                    new PostWithdrawApplicationRequest(command.CandidateId, Convert.ToInt64(application.VacancyReference.TrimVacancyReference())), false);
+                var patchResponse = await PatchWithDrawApplicationRequest(application.Id);
 
-                if (response.StatusCode != HttpStatusCode.NoContent)
+                if (patchResponse.StatusCode != HttpStatusCode.OK)
                 {
                     logger.LogError("Unable to with draw application for candidate Id {CandidateId}", command.CandidateId);
-                    throw new HttpRequestContentException($"Unable to withdraw application for candidate Id {command.CandidateId}", response.StatusCode, response.ErrorContent);
+                    throw new HttpRequestContentException($"Unable to withdraw application for candidate Id {command.CandidateId}", patchResponse.StatusCode, patchResponse.ErrorContent);
                 }
 
                 var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
-
                 jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Withdrawn);
 
                 var vacancy = await vacancyService.GetVacancy(application.VacancyReference);
@@ -87,6 +85,15 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Users.DeleteCandidat
                 candidateApiClient.Delete(new DeleteAccountApiRequest(command.CandidateId)));
 
             return Unit.Value;
+        }
+
+        private async Task<ApiResponse<string>> PatchWithDrawApplicationRequest(Guid applicationId)
+        {
+            var jsonPatchApplicationReviewDocument = new JsonPatchDocument<ApplicationReview>();
+            jsonPatchApplicationReviewDocument.Replace(x => x.WithdrawnDate, DateTime.UtcNow);
+            var patchApplicationReviewApiRequest = new PatchRecruitApplicationReviewApiRequest(applicationId, jsonPatchApplicationReviewDocument);
+
+            return await recruitApiV2Client.PatchWithResponseCode(patchApplicationReviewApiRequest);
         }
 
         private async Task SendApplicationWithDrawnNotificationEmail(List<EmailNotification> emailNotifications)

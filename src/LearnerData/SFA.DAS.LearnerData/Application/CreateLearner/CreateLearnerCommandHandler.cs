@@ -19,24 +19,24 @@ public class CreateLearnerCommandHandler(
 
     private LearnerDataEvent MapToEvent(CreateLearnerCommand command)
     {
-        var cost = command.Request.Delivery.OnProgramme.MapCosts().First();
+        var cost = command.Request.Delivery.OnProgramme.First().MapCosts().First();
 
         return new LearnerDataEvent
         {
             ULN = long.Parse(command.Request.Learner.Uln),
             UKPRN = command.Ukprn,
-            FirstName = command.Request.Learner.Firstname,
-            LastName = command.Request.Learner.Lastname,
+            FirstName = command.Request.Learner.FirstName,
+            LastName = command.Request.Learner.LastName,
             Email = command.Request.Learner.Email,
             DoB = command.Request.Learner.Dob!.Value,
-            StartDate = command.Request.Delivery.OnProgramme.StartDate!.Value,
-            PlannedEndDate = command.Request.Delivery.OnProgramme.ExpectedEndDate,
-            PercentageLearningToBeDelivered = command.Request.Delivery.OnProgramme.PercentageOfTrainingLeft,
+            StartDate = command.Request.Delivery.OnProgramme.First().StartDate,
+            PlannedEndDate = command.Request.Delivery.OnProgramme.First().ExpectedEndDate,
+            PercentageLearningToBeDelivered = command.Request.Delivery.OnProgramme.First().PercentageOfTrainingLeft,
             EpaoPrice = cost.EpaoPrice ?? 0,
             TrainingPrice = cost.TrainingPrice,
-            AgreementId = command.Request.Delivery.OnProgramme.AgreementId,
-            IsFlexiJob = command.Request.Delivery.OnProgramme.IsFlexiJob!.Value,
-            StandardCode = command.Request.Delivery.OnProgramme.StandardCode!.Value,
+            AgreementId = command.Request.Delivery.OnProgramme.First().AgreementId,
+            IsFlexiJob = command.Request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
+            StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode!.Value,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = command.Request.ConsumerReference

@@ -27,7 +27,6 @@ public class WhenHandlingSubmitApplicationCommand
         NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IMetrics> metricsService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         SubmitApplicationCommandHandler handler)
@@ -48,10 +47,6 @@ public class WhenHandlingSubmitApplicationCommand
         candidateApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
             .ReturnsAsync(() => new ApiResponse<string>("", HttpStatusCode.OK, ""));
-        
-        recruitApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<PostSubmitApplicationRequest>(), false))
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
 
@@ -78,12 +73,6 @@ public class WhenHandlingSubmitApplicationCommand
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
             )), Times.Once);
-        
-        recruitApiClient.Verify(x => x.PostWithResponseCode<NullResponse>(It.Is<PostSubmitApplicationRequest>(c =>
-            c.PostUrl.Contains(request.CandidateId.ToString())
-            && ((PostSubmitApplicationRequestData)c.Data).VacancyReference == vacancyReference
-            && ((PostSubmitApplicationRequestData)c.Data).MigrationDate.Date == DateTime.UtcNow.Date
-            ), false), Times.Once);
         
         recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()), Times.Once);
          recruitV2ApiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<CreateApplicationReviewRequest>(r =>

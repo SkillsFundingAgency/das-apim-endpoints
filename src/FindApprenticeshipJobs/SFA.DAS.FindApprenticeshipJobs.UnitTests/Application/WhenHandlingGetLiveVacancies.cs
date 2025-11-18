@@ -1,10 +1,6 @@
-﻿using System.Net;
-using AutoFixture;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
+﻿using AutoFixture;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
@@ -12,6 +8,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;
 public class WhenHandlingGetLiveVacancies
@@ -21,7 +18,7 @@ public class WhenHandlingGetLiveVacancies
         GetLiveVacanciesQuery mockQuery,
         GetStandardsListResponse getStandardsListResponse,
         [Frozen] Mock<ICourseService> courseService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockApiClient,
         [Frozen] Mock<ILiveVacancyMapper> mockLiveVacancyMapper,
         GetLiveVacanciesQueryHandler sut)
     {
@@ -32,15 +29,21 @@ public class WhenHandlingGetLiveVacancies
         noType.VacancyType = null;
         liveVacancies.Add(noType);
         var mockApiResponse =
-            new ApiResponse<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiResponse { Vacancies = liveVacancies, TotalLiveVacancies = liveVacancies.Count , TotalLiveVacanciesReturned = liveVacancies.Count , TotalPages = 1, PageNo = 1, PageSize = 10 },
+            new ApiResponse<GetLiveVacanciesApiResponse>(new GetLiveVacanciesApiResponse { Items = liveVacancies, PageInfo = new PageInfo()
+                {
+                    TotalCount = liveVacancies.Count,
+                    PageIndex = 1,
+                    PageSize = 10,
+                    TotalPages = 1
+                }},
                 HttpStatusCode.OK, "");
-        mockApiResponse.Body.Vacancies.First().VacancyType = null;
+        mockApiResponse.Body.Items.First().VacancyType = null;
         
         mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.Is<GetLiveVacanciesApiRequest>(c=>c.GetUrl == expectedUrl.GetUrl))).ReturnsAsync(mockApiResponse);
         courseService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
             .ReturnsAsync(getStandardsListResponse);
 
-        var mappedVacancies = SetupVacancyMapper(mockLiveVacancyMapper, mockApiResponse.Body.Vacancies,getStandardsListResponse);
+        var mappedVacancies = SetupVacancyMapper(mockLiveVacancyMapper, mockApiResponse.Body.Items, getStandardsListResponse);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
 
@@ -52,10 +55,10 @@ public class WhenHandlingGetLiveVacancies
     public async Task And_Api_Client_Returns_Null(
         GetLiveVacanciesQuery mockQuery,
         ApiResponse<GetLiveVacanciesApiResponse> mockApiResponse,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockApiClient,
         GetLiveVacanciesQueryHandler sut)
     {
-        mockApiResponse.Body.Vacancies = Enumerable.Empty<LiveVacancy>();
+        mockApiResponse.Body.Items = [];
         mockApiClient.Setup(client => client.GetWithResponseCode<GetLiveVacanciesApiResponse>(It.IsAny<GetLiveVacanciesApiRequest>())).ReturnsAsync(mockApiResponse);
 
         var actual = await sut.Handle(mockQuery, It.IsAny<CancellationToken>());
