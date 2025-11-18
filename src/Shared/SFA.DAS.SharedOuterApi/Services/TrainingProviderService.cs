@@ -39,7 +39,7 @@ public class TrainingProviderService : ITrainingProviderService
 
     public async Task<ProviderDetailsModel> GetProviderDetails(int ukprn)
     {
-        var organisationResponse = await _client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest((int)ukprn));
+        var organisationResponse = await _client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest(ukprn));
 
         if (organisationResponse.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
 
