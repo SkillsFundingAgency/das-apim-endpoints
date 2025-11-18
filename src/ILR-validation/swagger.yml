@@ -150,8 +150,8 @@ components:
           type: string
           description: From RoatP (under download controller)
           enum:
-          - employer
-          - main
+          - provider
+          - employerProvider
         status:
           type: string
           description: RoatP
@@ -167,7 +167,16 @@ components:
           type: array
           description: course management, do we need learning aim definition? Al will create an endpoint
           items:
-            type: string
+            type: object
+            properties:
+              code: 
+                type: string
+              effectiveFrom:
+                type: string
+                format: date
+              effectiveTo:
+                type: string
+                format: date
     
     employerData:
       type: object
