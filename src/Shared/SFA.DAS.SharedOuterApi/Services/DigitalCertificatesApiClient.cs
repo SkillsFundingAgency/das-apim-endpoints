@@ -3,11 +3,13 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class DigitalCertificatesApiClient : IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>
     {
         private readonly IInternalApiClient<DigitalCertificatesApiConfiguration> _apiClient;
