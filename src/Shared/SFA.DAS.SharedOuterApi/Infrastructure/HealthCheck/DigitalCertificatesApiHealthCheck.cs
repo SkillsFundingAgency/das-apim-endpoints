@@ -9,7 +9,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
     {
         public static readonly string HealthCheckDescription = "Digital Certificates API";
         public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
-        public DigitalCertificatesApiHealthCheck(IRequestApprenticeTrainingApiClient<DigitalCertificatesApiConfiguration> client, ILogger<DigitalCertificatesApiHealthCheck> logger)
+        public DigitalCertificatesApiHealthCheck(IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> client, ILogger<DigitalCertificatesApiHealthCheck> logger)
             : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
         {
         }
