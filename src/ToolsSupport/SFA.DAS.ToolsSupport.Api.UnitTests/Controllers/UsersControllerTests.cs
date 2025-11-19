@@ -87,7 +87,7 @@ public class UsersControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Resume_User_Calls_Mediator(
+    public async Task Then_Resume_User_Returns_Result_When_Api_Response_Ok(
         string identifier,
         ChangeUserStatusRequest request,
         InnerChangeUserStatusResponse responseBody,
@@ -110,6 +110,57 @@ public class UsersControllerTests
             c.Identifier == identifier &&
             c.ChangedByEmail == request.ChangedByEmail &&
             c.ChangedByUserId == request.ChangedByUserId), It.IsAny<CancellationToken>()));
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Resume_User_Returns_NotFound_When_Api_Returns_NotFound(
+        string identifier,
+        ChangeUserStatusRequest request,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] UsersController controller)
+    {
+        // Arrange
+        mediator
+            .Setup(x => x.Send(It.IsAny<ResumeEmployerUserCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ApiResponse<InnerChangeUserStatusResponse>(null, HttpStatusCode.NotFound, string.Empty));
+
+        // Act
+        var result = await controller.ResumeUser(identifier, request);
+
+        // Assert
+        result.Should().BeOfType<NotFoundResult>();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Resume_User_Returns_BadRequest_When_ModelState_Invalid(
+        string identifier,
+        ChangeUserStatusRequest request,
+        [Greedy] UsersController controller)
+    {
+        // Arrange
+        controller.ModelState.AddModelError("test", "error");
+
+        // Act
+        var result = await controller.ResumeUser(identifier, request) as BadRequestObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Suspend_User_Returns_BadRequest_When_ModelState_Invalid(
+        string identifier,
+        ChangeUserStatusRequest request,
+        [Greedy] UsersController controller)
+    {
+        // Arrange
+        controller.ModelState.AddModelError("test", "error");
+
+        // Act
+        var result = await controller.SuspendUser(identifier, request) as BadRequestObjectResult;
+
+        // Assert
+        result.Should().NotBeNull();
     }
 }
 
