@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -70,6 +71,12 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
                     await earningsApiClient.ReverseWithdrawal(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
+                    await earningsApiClient.StartBreakInLearning(command, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
+                    await earningsApiClient.RemoveBreakInLearning(command, logger);
+                    break;
             }
         }
 
@@ -85,24 +92,20 @@ public class UpdateLearnerCommandHandler(
         {
             Delivery = new Delivery
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate
+                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate
             },
             Learner = new LearningUpdateDetails
             {
                 FirstName = command.UpdateLearnerRequest.Learner.FirstName,
                 LastName = command.UpdateLearnerRequest.Learner.LastName,
                 EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate
+                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
             },
             OnProgramme = new OnProgrammeDetails
             {
-                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.Costs.Select(x =>  new Cost
-                {
-                    TrainingPrice = x.TrainingPrice,
-                    EpaoPrice = x.EpaoPrice,
-                    FromDate = x.FromDate.Value
-                }).ToList()
+                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().ExpectedEndDate,
+                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts(),
+                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
