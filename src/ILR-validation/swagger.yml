@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: Endpoint for ILR Validation data to be used in SLD
-  description: This endpoint will provide the data for SLD to validate incoming ILR records for the Apprenticeship service
+  title: Apprenticeship service reference data
+  description: Endpoint for ILR reference data to be used by Data collections to validate incoming ILR records
 paths:
   /info:
     get:
@@ -27,6 +27,15 @@ paths:
           $ref: '#/components/responses/healthCheckResponse'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse' 
+
+  /providers:
+    get:
+      summary: returns all data for providers
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/pagedProviderReferenceDataResponse' 
 
   /providers/{ukprn}:
     get:
@@ -81,11 +90,25 @@ components:
 
   responses:
     providerReferenceDataResponse:
-      description: A paged training response
+      description: A provider refererence data response
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/providerReferenceData'
+
+    pagedProviderReferenceDataResponse:
+      description: A paged provider refererence data response
+      headers:
+        Link:
+          description: Pagination links (next, prev)
+          schema:
+            type: string
+            format: url
+          example: '<https://api.example.com/items?page=2>; rel="prev", <https://api.example.com/items?page=5>; rel="next"'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/pagedProviderReferenceData'
 
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
@@ -140,6 +163,32 @@ components:
       required:
         - code
         - message
+    
+    pagedProviderReferenceData:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+              $ref: '#/components/schemas/providerReferenceData'
+        total:
+          type: integer
+          minimum: 0
+        page: 
+          type: integer
+          minimum: 1
+        pageSize: 
+          type: integer
+          minimum: 1
+          maximum: 20
+        totalPages: 
+          type: integer
+          minimum: 1
+      required:
+        - page
+        - total
+        - pageSize  
+        - totalPages  
     
     providerReferenceData:
       type: object
