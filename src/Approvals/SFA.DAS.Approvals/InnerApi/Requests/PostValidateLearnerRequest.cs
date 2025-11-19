@@ -9,9 +9,10 @@ namespace SFA.DAS.Approvals.InnerApi.Requests
         public object Data { get; set; }
         public string PostUrl => $"api/providers/{ProviderId}/learners/{LearnerDataId}/validate";
 
-        public PostValidateLearnerRequest(long providerId, ValidateLearnerApiRequest data)
+        public PostValidateLearnerRequest(long providerId, long learnerDataId, ValidateLearnerApiRequest data)
         {
             ProviderId = providerId;
+            LearnerDataId = learnerDataId;
             Data = data;
         }
     }
