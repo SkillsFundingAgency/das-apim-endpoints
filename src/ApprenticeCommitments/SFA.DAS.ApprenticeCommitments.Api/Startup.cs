@@ -16,7 +16,6 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.ApprenticeCommitments.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
-using MediatR.Extensions.FluentValidation.AspNetCore;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
@@ -80,7 +79,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(CreateApprovalCommandHandler).Assembly));
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(UpsertApprenticeCommand).Assembly));
-            services.AddFluentValidation(new[] { typeof(CreateApprovalCommandHandler).Assembly });
+            //services.AddFluentValidation(new[] { typeof(CreateApprovalCommandHandler).Assembly });
             services.AddServiceRegistration();
 
             services
