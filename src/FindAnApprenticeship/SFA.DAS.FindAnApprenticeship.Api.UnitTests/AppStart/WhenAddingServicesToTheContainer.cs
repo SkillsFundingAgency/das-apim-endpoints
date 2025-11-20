@@ -18,7 +18,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
         [TestCase(typeof(IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>))]
         [TestCase(typeof(ILocationApiClient<LocationApiConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
-        [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
         [TestCase(typeof(IRecruitApiClient<RecruitApiV2Configuration>))]
         [TestCase(typeof(ICourseService))]
         [TestCase(typeof(ILocationLookupService))]
@@ -51,7 +50,6 @@ namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("FindApprenticeshipApiConfiguration:url", "http://localhost:2"),
                     new KeyValuePair<string, string>("LocationApiConfiguration:url", "http://localhost:3"),
-                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:4"),
                     new KeyValuePair<string, string>("RecruitAltApiConfiguration:url", "http://localhost:5"),
                     new KeyValuePair<string, string>("ResourceEnvironmentName", "DEV")
                 }
