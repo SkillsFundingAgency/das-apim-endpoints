@@ -35,7 +35,7 @@ public class OuterApi
                 {"LearningApiConfiguration:url", _context?.ApprenticeshipsApi?.BaseAddress + "/"},
                 {"LearningApiConfiguration:BearerTokenSigningKey", "local_test_outer_api_client_bearer_token_signing_key"},
                 {"CollectionCalendarApiConfiguration:url", _context?.CollectionCalendarApi?.BaseAddress + "/"},
-                {"CoursesApi:url", _context?.CoursesApi?.BaseAddress + "/"},
+                {"CoursesApiConfiguration:url", _context?.CoursesApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
                 {"AzureAD:identifier", ""}
             };
