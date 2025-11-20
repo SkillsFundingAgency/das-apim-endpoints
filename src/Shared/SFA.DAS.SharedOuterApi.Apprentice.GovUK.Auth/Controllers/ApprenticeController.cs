@@ -4,23 +4,21 @@ using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 
 namespace SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
 
-public abstract class ApprenticeControllerBase(IMediator mediator) : ControllerBase
+public abstract class ApprenticeControllerBase(ISender sender) : ControllerBase
 {
     [HttpPut]
     [Route("/apprentices")]
     public async Task<IActionResult> PutApprentice([FromBody] UpsertApprenticeRequest request)
     {
-        var queryResult = await mediator.Send(new UpsertApprenticeCommand
+        var result = await sender.Send(new UpsertApprenticeCommand
         {
             GovUkIdentifier = request.GovUkIdentifier,
             Email = request.Email
         });
 
-            
-        return Ok(queryResult.Apprentice);
+        return Ok(result.Apprentice);
     }
 }
-
 
 public class UpsertApprenticeRequest
 {
