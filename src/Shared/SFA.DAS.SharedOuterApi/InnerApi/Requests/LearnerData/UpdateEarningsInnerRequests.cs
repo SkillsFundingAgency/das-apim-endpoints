@@ -155,7 +155,7 @@ public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiReq
 public class MathsAndEnglishWithdrawRequest
 {
     public string Course { get; set; }
-    public DateTime WithdrawalDate { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
 }
 
 public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, MathsAndEnglishWithdrawRequest data)

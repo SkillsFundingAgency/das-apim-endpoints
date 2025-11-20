@@ -131,11 +131,11 @@ internal static class EarningsApiClientExtensions
     {
         await LogAndExecute(async () =>
         {
-            foreach (var englishAndMaths in command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(x => x.WithdrawalDate.HasValue))
+            foreach (var englishAndMaths in command.UpdateLearnerRequest.Delivery.EnglishAndMaths)
             {
                 var data = new MathsAndEnglishWithdrawRequest()
                 {
-                    WithdrawalDate = englishAndMaths.WithdrawalDate!.Value,
+                    WithdrawalDate = englishAndMaths.WithdrawalDate,
                     Course = englishAndMaths.Course
                 };
 
