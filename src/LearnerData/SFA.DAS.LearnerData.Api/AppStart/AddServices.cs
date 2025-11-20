@@ -17,5 +17,6 @@ public static class AddApiServicesExtension
         services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<IEarningsApiClient<EarningsApiConfiguration>, EarningsApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
+        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
     }
 }

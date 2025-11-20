@@ -36,7 +36,7 @@ public class CreateLearnerCommandHandler(
             TrainingPrice = cost.TrainingPrice,
             AgreementId = command.Request.Delivery.OnProgramme.First().AgreementId,
             IsFlexiJob = command.Request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
-            StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode!.Value,
+            StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = command.Request.ConsumerReference

@@ -28,6 +28,7 @@ Scenario: LearningSupport updated
 
 Scenario: Prices updated
 	Given there is a learner
+	And the funding band maximum for that learner is set
 	And the Prices passed is different to the value in the learners domain
 	When the learner is updated
 	Then a Prices update request is sent to the earnings domain
