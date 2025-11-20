@@ -1,7 +1,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails;
+using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmail;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionUsers;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
 using SFA.DAS.EmployerFeedback.Models;
 using System;
@@ -47,25 +48,48 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
             }
         }
 
-        [HttpPost("{id}/send")]
-        public async Task<IActionResult> SendFeedbackEmails([FromRoute] long id, [FromBody] SendFeedbackEmailsRequest request)
+        [HttpPost("send")]
+        public async Task<IActionResult> SendFeedbackEmail([FromBody] SendFeedbackEmailRequest request)
         {
             try
             {
-                _logger.LogInformation("Received request to send feedback emails for transaction {FeedbackTransactionId}", id);
+                _logger.LogInformation("Received request to send feedback email for template {TemplateId}", request.TemplateId);
 
-                await _mediator.Send(new SendFeedbackEmailsCommand(id, request));
+                await _mediator.Send(new SendFeedbackEmailCommand(request));
 
                 return NoContent();
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error sending feedback email for template {TemplateId}", request.TemplateId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{id}/users")]
+        public async Task<IActionResult> GetFeedbackTransactionUsers([FromRoute] long id)
+        {
+            try
+            {
+                _logger.LogInformation("Received request to get feedback transaction users for ID: {FeedbackTransactionId}", id);
+
+                var result = await _mediator.Send(new GetFeedbackTransactionUsersQuery(id));
+
+                if (result == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(result);
+            }
             catch (InvalidOperationException ex)
             {
-                _logger.LogWarning(ex, "Bad request for sending feedback emails {FeedbackTransactionId}: {Message}", id, ex.Message);
+                _logger.LogWarning(ex, "Bad request for getting feedback transaction users {FeedbackTransactionId}: {Message}", id, ex.Message);
                 return BadRequest(new { error = ex.Message });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending feedback emails {FeedbackTransactionId}", id);
+                _logger.LogError(ex, "Error getting feedback transaction users for ID: {FeedbackTransactionId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
