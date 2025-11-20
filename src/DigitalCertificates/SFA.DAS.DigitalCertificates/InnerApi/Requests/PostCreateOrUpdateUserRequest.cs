@@ -25,7 +25,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             public string PhoneNumber { get; set; }
 
             public required List<Name> Names { get; set; }
-            public DateTime DateOfBirth { get; set; }
+            public DateTime? DateOfBirth { get; set; }
         }
     }
 }
