@@ -1,7 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Protocols;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
@@ -9,15 +8,12 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using System.Runtime.CompilerServices;
-using static SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner.ListExtensions;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -287,6 +283,10 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
+        var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
+        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+            .ReturnsAsync(coursesApiResponse);
+
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
@@ -328,6 +328,10 @@ public class WhenHandlingUpdateLearnerCommand
 
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
+
+        var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
+        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+            .ReturnsAsync(coursesApiResponse);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
