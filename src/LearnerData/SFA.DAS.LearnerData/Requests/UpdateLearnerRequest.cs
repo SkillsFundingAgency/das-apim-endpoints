@@ -54,6 +54,7 @@ public class MathsAndEnglish
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
