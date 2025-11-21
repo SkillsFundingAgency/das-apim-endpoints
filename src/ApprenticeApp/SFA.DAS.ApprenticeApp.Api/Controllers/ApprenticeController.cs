@@ -31,6 +31,24 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(queryResult.Apprentice);
         }
 
+        [HttpGet]
+        [Route("/apprentices")]
+        public async Task<IActionResult> GetApprenticeByName([FromQuery] string firstName, [FromQuery] string lastName)
+        {
+            var queryResult = await _mediator.Send(new GetApprenticeAccountByNameQuery
+            {
+                FirstName = firstName,
+                LastName = lastName
+            });
+
+            if (queryResult.Apprentices == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(queryResult.Apprentices);
+        }
+
         [HttpPatch("/apprentices/{id}")]
         public async Task<IActionResult> UpdateApprentice([Path] Guid id, [Body] object patch)
         {
