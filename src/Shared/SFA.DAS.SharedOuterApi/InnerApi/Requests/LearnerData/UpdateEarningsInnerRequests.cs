@@ -46,6 +46,7 @@ public class MathsAndEnglishRequestDetail
     public DateTime? WithdrawalDate { get; set; }
     public int? PriorLearningAdjustmentPercentage { get; set; }
     public DateTime? ActualEndDate { get; set; }
+    public DateTime? PauseDate { get; set; }
 }
 
 public class SaveLearningSupportApiPutRequest : IPatchApiRequest<SaveLearningSupportRequest>
