@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmail;
+using SFA.DAS.EmployerFeedback.Application.Commands.UpdateFeedbackTransaction;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionUsers;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
 using SFA.DAS.EmployerFeedback.Models;
@@ -62,6 +63,24 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error sending feedback email for template {TemplateId}", request.TemplateId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateFeedbackTransaction([FromRoute] long id, [FromBody] UpdateFeedbackTransactionRequest request)
+        {
+            try
+            {
+                _logger.LogInformation("Received request to update feedback transaction {FeedbackTransactionId}", id);
+
+                await _mediator.Send(new UpdateFeedbackTransactionCommand(id, request));
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating feedback transaction {FeedbackTransactionId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

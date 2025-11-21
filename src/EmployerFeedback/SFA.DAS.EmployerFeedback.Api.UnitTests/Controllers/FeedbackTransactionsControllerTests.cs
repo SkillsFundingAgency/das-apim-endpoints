@@ -14,6 +14,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmail;
+using SFA.DAS.EmployerFeedback.Application.Commands.UpdateFeedbackTransaction;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
@@ -228,6 +229,53 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
             _mediatorMock.Verify(x => x.Send(It.Is<GetFeedbackTransactionUsersQuery>(q =>
                 q.FeedbackTransactionId == feedbackTransactionId
             ), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateFeedbackTransaction_ReturnsNoContent_WhenRequestIsValid()
+        {
+            var feedbackTransactionId = 123L;
+            var request = new UpdateFeedbackTransactionRequest
+            {
+                TemplateId = Guid.NewGuid(),
+                SentCount = 5,
+                SentDate = DateTime.UtcNow
+            };
+
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<UpdateFeedbackTransactionCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            var result = await _controller.UpdateFeedbackTransaction(feedbackTransactionId, request);
+
+            Assert.That(result, Is.InstanceOf<NoContentResult>());
+            _mediatorMock.Verify(x => x.Send(It.Is<UpdateFeedbackTransactionCommand>(cmd =>
+                cmd.Id == feedbackTransactionId &&
+                cmd.Request == request
+            ), CancellationToken.None), Times.Once);
+        }
+
+        [Test]
+        public async Task UpdateFeedbackTransaction_ReturnsInternalServerError_WhenExceptionOccurs()
+        {
+            var feedbackTransactionId = 123L;
+            var request = new UpdateFeedbackTransactionRequest
+            {
+                TemplateId = Guid.NewGuid(),
+                SentCount = 5,
+                SentDate = DateTime.UtcNow
+            };
+            var exception = new Exception("Unexpected error occurred");
+
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<UpdateFeedbackTransactionCommand>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+
+            var result = await _controller.UpdateFeedbackTransaction(feedbackTransactionId, request);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = result as StatusCodeResult;
+            Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
         }
     }
 }
