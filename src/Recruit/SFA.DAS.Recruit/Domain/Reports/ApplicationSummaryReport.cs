@@ -7,13 +7,14 @@ namespace SFA.DAS.Recruit.Domain.Reports;
 public record ApplicationSummaryReport 
 {
     public string CandidateName { get; set; } = "";
-    public Guid ApplicationId { get; set; }
+    public Guid CandidateId { get; set; }
     public string AddressLine1 { get; set; } = "";
     public string AddressLine2 { get; set; } = "";
     public string Town { get; set; } = "";
     public string County { get; set; } = "";
     public string Postcode { get; set; } = "";
     public string Email { get; set; } = "";
+    public string Telephone { get; set; } = "";
     public string DateOfBirth { get; set; } = "";
     public long VacancyReferenceNumber { get; set; }
     public string VacancyTitle { get; set; } = "";
@@ -22,6 +23,7 @@ public record ApplicationSummaryReport
     public int ApprenticeshipLevel { get; set; } = 0;
     public ApprenticeshipTypes ApprenticeshipType { get; set; } = ApprenticeshipTypes.Standard;
     public string Employer { get; set; } = "";
+    public string VacancyPostcode { get; set; } = "";
     public string LearningProvider { get; set; } = "";
     public DateTime? ApplicationDate { get; set; }
     public DateTime? VacancyClosingDate { get; set; }
@@ -39,4 +41,5 @@ public record ApplicationSummaryReport
     public string Workplace8 { get; set; } = "";
     public string Workplace9 { get; set; } = "";
     public string Workplace10 { get; set; } = "";
+    public int CourseId { get; set; }
 }

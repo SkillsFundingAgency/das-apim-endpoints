@@ -105,7 +105,7 @@ internal class WhenHandlingGenerateReportByIdQuery
         result.Reports.Should().HaveCount(1);
         var report = result.Reports.First();
         report.Should().NotBeNull();
-        report.ApplicationId.Should().Be(applicationId);
+        report.CandidateId.Should().Be(candidateId);
         report.CandidateName.Should().Be("John Doe");
     }
 
