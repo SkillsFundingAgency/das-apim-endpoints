@@ -2,12 +2,9 @@
 using Microsoft.Extensions.Configuration.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using FluentAssertions;
 
 namespace SFA.DAS.ToolsSupport.Api.UnitTests.AppStart;
 
