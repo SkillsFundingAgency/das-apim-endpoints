@@ -3,6 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
+using SFA.DAS.LearnerDataJobs.Application.Handlers;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
