@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.ApprenticeApp.InnerApi.CommitmentsV2.Responses;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.ApprenticeApp.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 
 namespace SFA.DAS.ApprenticeApp.MockApis.Helpers
 {
@@ -37,12 +37,12 @@ namespace SFA.DAS.ApprenticeApp.MockApis.Helpers
 
         public static IEnumerable<Apprenticeship> ApprenticeshipsForThisApprentice(Apprentice apprentice)
         {
-            for(var i = 0; i<=2; ++i)
+            for (var i = 0; i <= 2; ++i)
             {
                 yield return ApprenticeshipForThisApprentice(Apprentice);
             }
         }
-        
+
         public static MyApprenticeshipData MyApprenticeship => new()
         {
             ApprenticeshipId = Faker.RandomNumber.Next(),
@@ -71,9 +71,9 @@ namespace SFA.DAS.ApprenticeApp.MockApis.Helpers
             EndDate = DateTime.Today.AddYears(1)
         };
 
-        public static TrainingProviderResponse Provider => new()
+        public static OrganisationResponse Provider => new()
         {
-            Id = Guid.NewGuid(),
+            OrganisationId = Guid.NewGuid(),
             Ukprn = Faker.RandomNumber.Next(),
             LegalName = Faker.Company.Name()
         };
