@@ -119,7 +119,8 @@ public class UpdateLearnerCommandHandler(
                     PlannedEndDate = x.EndDate,
                     PriorLearningPercentage = x.PriorLearningPercentage,
                     StartDate = x.StartDate,
-                    WithdrawalDate = x.WithdrawalDate
+                    WithdrawalDate = x.WithdrawalDate,
+                    PauseDate = x.PauseDate
                 }).ToList(),
             LearningSupport = command.CombinedLearningSupport()
         };
