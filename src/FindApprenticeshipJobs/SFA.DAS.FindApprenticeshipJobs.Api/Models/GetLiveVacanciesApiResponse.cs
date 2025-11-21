@@ -118,8 +118,8 @@ public class GetLiveVacanciesApiResponse
         public int RouteCode { get; set; }
         public DurationUnit? DurationUnit { get; set; }
         public int Duration { get; set; }
-        public int AccountId { get; set; }
-        public int AccountLegalEntityId { get; set; }
+        public long AccountId { get; set; }
+        public long AccountLegalEntityId { get; set; }
         public string ApprenticeshipLevel { get; set; }
         public Guid VacancyId { get; set; }
         public string VacancyReference { get; set; }
