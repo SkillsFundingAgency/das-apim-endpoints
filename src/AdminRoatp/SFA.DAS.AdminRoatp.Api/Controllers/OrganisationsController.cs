@@ -1,12 +1,13 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
+using SFA.DAS.AdminRoatp.Application.Queries.GetUkrlp;
 using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
+using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
@@ -33,6 +34,17 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     {
         _logger.LogInformation("Received request to get organisation for Ukprn: {Ukprn}", ukprn);
         GetOrganisationQueryResult? response = await _mediator.Send(new GetOrganisationQuery(ukprn), cancellationToken);
+        return response == null ? NotFound() : Ok(response);
+    }
+
+    [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(GetUkrlpQueryResult))]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [Route("{ukprn}/ukrlp-data")]
+    public async Task<IActionResult> GetUkrlp([FromRoute] int ukprn, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Received request to get UKRLP for Ukprn: {Ukprn}", ukprn);
+        GetUkrlpQueryResult? response = await _mediator.Send(new GetUkrlpQuery(ukprn), cancellationToken);
         return response == null ? NotFound() : Ok(response);
     }
 
