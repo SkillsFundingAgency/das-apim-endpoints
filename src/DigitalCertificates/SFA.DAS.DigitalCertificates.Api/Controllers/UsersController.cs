@@ -1,13 +1,14 @@
-﻿using MediatR;
+﻿using System;
+using System.Diagnostics;
+using System.Net;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Models;
-using System;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -35,7 +36,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
                     return Ok(userResult.User);
                 }
 
-                return NotFound();
+                throw new UnreachableException($"GetUserQueryHandler returned null for govUkIdentifier: {govUkIdentifier}");
             }
             catch (Exception e)
             {
@@ -79,7 +80,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
                     return Ok(userResult);
                 }
 
-                return NotFound();
+                throw new UnreachableException($"GetCertificatesQueryHandler returned null for userId: {userId}");
             }
             catch (Exception e)
             {

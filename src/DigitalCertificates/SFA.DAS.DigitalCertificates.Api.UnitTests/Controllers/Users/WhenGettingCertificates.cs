@@ -35,22 +35,6 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
         }
 
         [Test, MoqAutoData]
-        public async Task Then_NotFound_Returned_If_No_Certificates_Found(
-            Guid userId,
-            [Frozen] Mock<IMediator> mediator,
-            [Greedy] UsersController controller)
-        {
-            mediator
-                .Setup(x => x.Send(It.IsAny<GetCertificatesQuery>(), CancellationToken.None))
-                .ReturnsAsync((GetCertificatesResult?)null);
-
-            var actual = await controller.GetCertificates(userId) as StatusCodeResult;
-
-            actual.Should().NotBeNull();
-            actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
-        }
-
-        [Test, MoqAutoData]
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             Guid userId,
             [Frozen] Mock<IMediator> mediator,
