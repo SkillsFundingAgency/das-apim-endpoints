@@ -66,7 +66,11 @@ namespace SFA.DAS.Vacancies.Api.Models
                 IsDisabilityConfident = source.Vacancy.IsDisabilityConfident,
                 IsNationalVacancy = isRecruitNationally,
                 IsNationalVacancyDetails = isRecruitNationally ? source.Vacancy.EmploymentLocationInformation : string.Empty,
-                Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation { Lat = source.Vacancy.Location.Lat, Lon = source.Vacancy.Location.Lon } : null,
+                Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation
+                {
+                    Lat = source.Vacancy.Location?.Lat ?? source.Vacancy.Address?.Latitude ?? 0,
+                    Lon = source.Vacancy.Location?.Lon ?? source.Vacancy.Address?.Longitude ?? 0,
+                } : null,
                 NumberOfPositions = source.Vacancy.NumberOfPositions,
                 OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 OutcomeDescription = source.Vacancy.OutcomeDescription,

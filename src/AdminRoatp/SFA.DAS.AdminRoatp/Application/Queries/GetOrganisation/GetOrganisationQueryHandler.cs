@@ -28,14 +28,7 @@ public class GetOrganisationQueryHandler(IRoatpServiceApiClient<RoatpConfigurati
         GetOrganisationQueryResult result = response.Body;
         if (result.Status != OrganisationStatus.Removed) return result;
 
-        var historyResponse = await _apiClient.GetWithResponseCode<GetOrganisationStatusHistoryResponse>(new GetOrganisationStatusHistoryRequest(request.ukprn));
-        if (historyResponse.StatusCode != HttpStatusCode.OK) return result;
-
-        StatusHistoryModel? latestRemovedHistory = historyResponse.Body.StatusHistory.Where(h => h.Status == OrganisationStatus.Removed).OrderByDescending(h => h.AppliedDate).FirstOrDefault();
-        if (latestRemovedHistory != null)
-        {
-            result.RemovedDate = latestRemovedHistory.AppliedDate;
-        }
+        result.RemovedDate = response.Body.StatusDate;
 
         return result;
     }

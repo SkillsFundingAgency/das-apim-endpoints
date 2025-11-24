@@ -1,12 +1,11 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+﻿using Microsoft.Extensions.Logging;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using System.Text.RegularExpressions;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.SharedOuterApi.Models;
-using DisabilityConfident = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.DisabilityConfident;
+using System.Text.RegularExpressions;
 using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
@@ -26,7 +25,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             {
                 Id = source.VacancyReference.ToString(),
                 VacancyReference = source.VacancyReference.ToString(),
-                VacancyId = source.VacancyId,
+                VacancyId = source.Id,
                 Title = source.Title,
                 PostedDate = source.LiveDate,
                 StartDate = source.StartDate,
@@ -59,22 +58,22 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     CompanyBenefitsInformation = source.Wage.CompanyBenefitsInformation
                 },
                 AnonymousEmployerName = source.IsAnonymous ? source.EmployerName: null,
-                IsDisabilityConfident = source.DisabilityConfident == DisabilityConfident.Yes,
-                AccountPublicHashedId = source.AccountPublicHashedId,
-                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+                IsDisabilityConfident = source.DisabilityConfident,
+                AccountId = source.AccountId,
+                AccountLegalEntityId = source.AccountLegalEntityId,
                 ApplicationMethod = source.ApplicationMethod,
                 ApplicationInstructions = source.ApplicationInstructions,
                 ApplicationUrl = source.ApplicationUrl,
                 LongDescription = source.Description,
                 TrainingDescription = source.TrainingDescription,
-                Skills = source.Skills,
-                Qualifications = source.Qualifications.Select(q => new Application.Shared.Qualification
+                Skills = source.Skills ?? [],
+                Qualifications = source.Qualifications?.Select(q => new Application.Shared.Qualification
                 {
                     QualificationType = q.QualificationType,
                     Subject = q.Subject,
                     Grade = q.Grade,
                     Weighting = q.Weighting
-                }),
+                }).ToList() ?? [],
                 OutcomeDescription = source.OutcomeDescription,
                 EmployerContactName = source.EmployerContactName,
                 EmployerContactEmail = source.EmployerContactEmail,
@@ -175,7 +174,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 var middleBound = upperBound / 1.33M;
                 return new Application.Shared.Wage
                 {
-                    WageType = WageType.FixedWage.ToString(),
+                    WageType = WageType.FixedWage,
                     WageText = wageText,
                     ApprenticeMinimumWage = lowerBound,
                     Under18NationalMinimumWage = lowerBound,
@@ -189,7 +188,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             {
                 return new Application.Shared.Wage
                 {
-                    WageType = WageType.FixedWage.ToString(),
+                    WageType = WageType.FixedWage,
                     WageText = wageText,
                     ApprenticeMinimumWage = fixedWage,
                     Under18NationalMinimumWage = fixedWage,
@@ -202,7 +201,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
 
             return new Application.Shared.Wage
             {
-                WageType = WageType.CompetitiveSalary.ToString(),
+                WageType = WageType.CompetitiveSalary,
                 WageText = wageText,
             };
         }

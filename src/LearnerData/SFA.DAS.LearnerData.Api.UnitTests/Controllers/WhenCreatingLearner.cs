@@ -26,7 +26,7 @@ public class WhenCreatingLearner
     {
         long ukprn = 12345678;
 
-        request.Learner.Uln = "1234567890";
+        request.Learner.Uln = 1234567890;
 
         mockValidator.Setup(x => x.ValidateAsync(It.IsAny<CreateLearnerRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
@@ -53,7 +53,7 @@ public class WhenCreatingLearner
     {
         long ukprn = 12345678;
 
-        request.Learner.Uln = "1234567890";
+        request.Learner.Uln = 1234567890;
 
         mockValidator.Setup(x => x.ValidateAsync(It.IsAny<CreateLearnerRequest>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());

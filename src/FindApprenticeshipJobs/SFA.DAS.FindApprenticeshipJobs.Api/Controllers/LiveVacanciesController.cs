@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -9,27 +10,20 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class LiveVacanciesController : ControllerBase
+public class LiveVacanciesController(IMediator mediator,
+    ILogger<LiveVacanciesController> logger)
+    : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<LiveVacanciesController> _logger;
-
-    public LiveVacanciesController(IMediator mediator, ILogger<LiveVacanciesController> logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
-
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] uint pageSize, [FromQuery] uint pageNo, [FromQuery]DateTime? closingDate, CancellationToken cancellationToken)
+    public async Task<IActionResult> Get([FromQuery] uint pageSize, [FromQuery] uint pageNo, [FromQuery] DateTime? closingDate, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Get Live Vacancies invoked");
+        logger.LogInformation("Get Live Vacancies invoked");
 
         try
         {
-            var result = await _mediator.Send(new GetLiveVacanciesQuery
+            var result = await mediator.Send(new GetLiveVacanciesQuery
             {
-                PageNumber = (int)pageNo, 
+                PageNumber = (int)pageNo,
                 PageSize = (int)pageSize,
                 ClosingDate = closingDate
             }, cancellationToken);
@@ -38,7 +32,7 @@ public class LiveVacanciesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error invoking Get Live Vacancies");
+            logger.LogError(ex, "Error invoking Get Live Vacancies");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
@@ -47,28 +41,28 @@ public class LiveVacanciesController : ControllerBase
     [Route("{vacancyReference}")]
     public async Task<IActionResult> GetLiveVacancy([FromRoute] long vacancyReference, CancellationToken cancellationToken)
     {
-        _logger.LogInformation($"Get Live Vacancy invoked - vacancy reference: {vacancyReference}");
+        logger.LogInformation("Get Live Vacancy invoked - vacancy reference: {VacancyReference}", vacancyReference);
 
         try
         {
-            var result = await _mediator.Send(new GetLiveVacancyQuery { VacancyReference = vacancyReference }, cancellationToken);
+            var result = await mediator.Send(new GetLiveVacancyQuery { VacancyReference = vacancyReference }, cancellationToken);
             var viewModel = (GetLiveVacanciesApiResponse.LiveVacancy)result.LiveVacancy;
             return Ok(viewModel);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error invoking Get Live Vacancy");
+            logger.LogError(ex, "Error invoking Get Live Vacancy");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 
     [HttpPost]
     [Route("{vacancyReference}")]
-    public async Task<IActionResult> PostSendClosingSoonNotifications([FromRoute] long vacancyReference, [FromQuery]int daysUntilClosing)
+    public async Task<IActionResult> PostSendClosingSoonNotifications([FromRoute] long vacancyReference, [FromQuery] int daysUntilClosing)
     {
         try
         {
-            await _mediator.Send(new ProcessApplicationReminderCommand
+            await mediator.Send(new ProcessApplicationReminderCommand
             {
                 VacancyReference = vacancyReference,
                 DaysUntilClosing = daysUntilClosing
@@ -77,26 +71,23 @@ public class LiveVacanciesController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error sending closing soon notifications");
+            logger.LogError(ex, "Error sending closing soon notifications");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
-    
+
     [HttpPost]
     [Route("{vacancyReference}/close")]
-    public async Task<IActionResult> PostVacancyClosed([FromRoute] long vacancyReference)
+    public async Task<IActionResult> PostVacancyClosed([FromRoute, Required] long vacancyReference)
     {
         try
         {
-            await _mediator.Send(new ProcessVacancyClosedEarlyCommand
-            {
-                VacancyReference = vacancyReference
-            });
+            await mediator.Send(new ProcessVacancyClosedEarlyCommand(vacancyReference));
             return Ok();
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error closing vacancy");
+            logger.LogError(ex, "Error closing vacancy with vacancyReference: {VacancyReference}", vacancyReference);
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
