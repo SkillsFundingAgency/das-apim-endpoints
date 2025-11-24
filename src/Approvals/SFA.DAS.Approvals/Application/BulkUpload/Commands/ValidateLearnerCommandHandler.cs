@@ -80,6 +80,7 @@ public class ValidateLearnerCommandHandler(
 
 public class LearnerValidateApiResponse
 {
+    public List<LearnerError> CriticalErrors { get; set; }
     public LearnerValidation LearnerValidation { get; set; }
 }
 
