@@ -135,6 +135,7 @@ public class WhenHandlingUpdateLearnerCommand
         var command = _fixture.Create<UpdateLearnerCommand>();
         command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.CompletionDate = null);
         command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.WithdrawalDate = null);
+        command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x => x.PauseDate = null);
         command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x =>
         {
             x.CompletionDate = null;
@@ -555,6 +556,7 @@ public class WhenHandlingUpdateLearnerCommand
             StartDate = startDate,
             EndDate = startDate.AddYears(2)
         });
+        onProgramme.PauseDate = null;
 
         command.UpdateLearnerRequest.Delivery.OnProgramme.Clear();
         command.UpdateLearnerRequest.Delivery.OnProgramme.Add(onProgramme);

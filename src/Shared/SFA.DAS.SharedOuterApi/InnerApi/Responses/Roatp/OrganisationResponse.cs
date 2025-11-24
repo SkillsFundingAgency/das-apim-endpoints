@@ -14,6 +14,7 @@ public class OrganisationResponse
     public int OrganisationTypeId { get; set; }
     public string OrganisationType { get; set; }
     public Common.OrganisationStatus Status { get; set; }
+    public DateTime StatusDate { get; set; }
     public DateTime? ApplicationDeterminedDate { get; set; }
     public int? RemovedReasonId { get; set; }
     public string RemovedReason { get; set; }

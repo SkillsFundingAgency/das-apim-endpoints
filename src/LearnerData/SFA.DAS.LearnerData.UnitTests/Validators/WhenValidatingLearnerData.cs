@@ -31,7 +31,7 @@ public class WhenValidatingLearnerData
     public async Task And_when_ULN_IsNotValid_Then_BadRequest_returned()
     {
         var request = CreateValidCreateLearnerRequest();
-        request.Learner.Uln = "1234";
+        request.Learner.Uln = 1234;
         var result = await RunValidation(request);
         result.IsValid.Should().BeFalse();
         result.Errors.First().ErrorMessage.Should().Be($"Learner data contains incorrect ULN {request.Learner.Uln}");
@@ -198,7 +198,7 @@ public class WhenValidatingLearnerData
             ConsumerReference = "AAAAA",
             Learner = new CreateLearnerRequest.LearnerDetails
             {
-                Uln = "1234567890",
+                Uln = 1234567890,
                 FirstName = "First",
                 LastName = "Last",
                 Email = "Email@abcd.com",
