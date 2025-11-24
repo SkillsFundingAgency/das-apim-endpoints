@@ -1,15 +1,12 @@
-﻿using Contentful.Core.Models;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Queries.GetRoatpProviders;
-using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
     [ApiController]
+    [Route("providers")]
     public class ProviderController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -20,7 +17,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpGet]
-        [Route("/registeredProviders")]
+        [Route("registeredProviders")]
         public async Task<IActionResult> GetRegisteredProviders()
         {
             var result = await _mediator.Send(new GetRoatpProvidersQuery());
