@@ -33,7 +33,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
             ApiResponse<GetAuthorisationResponse> authorisationResponse = await _digitalCertificatesApiClient.
                 GetWithResponseCode<GetAuthorisationResponse>(new GetAuthorisationRequest(request.UserId));
 
-            if (authorisationResponse?.StatusCode != System.Net.HttpStatusCode.NotFound)
+            if (authorisationResponse != null && authorisationResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 authorisationResponse.EnsureSuccessStatusCode();
                 result.Authorisation = authorisationResponse.Body.Authorisation;
@@ -41,7 +41,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
                 ApiResponse<GetCertificatesResponse> certificatesResponse= await _assessorsApiClient.
                     GetWithResponseCode<GetCertificatesResponse>(new GetCertificatesRequest(result.Authorisation.Uln));
 
-                if (certificatesResponse?.StatusCode != System.Net.HttpStatusCode.NotFound)
+                if (certificatesResponse != null && certificatesResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
                 {
                     certificatesResponse.EnsureSuccessStatusCode();
                     result.Certificates = certificatesResponse.Body.Certificates;
