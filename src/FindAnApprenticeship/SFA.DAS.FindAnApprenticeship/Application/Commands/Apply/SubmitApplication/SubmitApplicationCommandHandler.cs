@@ -1,30 +1,27 @@
-using System;
-using System.Linq;
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
+using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Responses;
-using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.SubmitApplication;
 
 public class SubmitApplicationCommandHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient, 
     IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client, 
     ICandidateApiClient<CandidateApiConfiguration> candidateApiClient,
     IVacancyService vacancyService,
@@ -36,75 +33,116 @@ public class SubmitApplicationCommandHandler(
 {
     public async Task<bool> Handle(SubmitApplicationCommand request, CancellationToken cancellationToken)
     {
-        var application =
-            await candidateApiClient.Get<GetApplicationApiResponse>(
-                new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
+        var application = await GetApplicationAsync(request);
+        if (application is null) return false;
 
-        if (application == null || application.Status == ApplicationStatus.Submitted)
-            return false;
+        var vacancy = await GetVacancyAsync(application);
+        if (vacancy is null) return false;
 
-        var response = await recruitApiClient.PostWithResponseCode<NullResponse>(
-            new PostSubmitApplicationRequest(request.CandidateId, application), false);
+        await CreateApplicationReviewAsync(application, vacancy);
 
-        if (response.StatusCode != HttpStatusCode.NoContent)
-            return false;
-        
-        if (await vacancyService.GetVacancy(application.VacancyReference) is not GetApprenticeshipVacancyItemResponse vacancy)
-            return false;
-        
-        // Create in the new SQL Recruit Db - this should be a temporary call
+        await Task.WhenAll(
+            SendCandidateConfirmationEmailAsync(application, vacancy),
+            MarkApplicationSubmittedAsync(request.ApplicationId, request.CandidateId));
+
+        if (vacancy.VacancySource == VacancyDataSource.Raa)
+            metrics.IncreaseVacancySubmitted(application.VacancyReference);
+
+        await SendRecruitNotificationsAsync(request.ApplicationId);
+
+        return true;
+    }
+
+    // Fetch Application
+    private async Task<GetApplicationApiResponse?> GetApplicationAsync(SubmitApplicationCommand request)
+    {
+        var app = await candidateApiClient.Get<GetApplicationApiResponse>(
+            new GetApplicationApiRequest(request.CandidateId, request.ApplicationId, true));
+
+        if (app is null || app.Status == ApplicationStatus.Submitted)
+            return null;
+
+        return app;
+    }
+
+    // Fetch Vacancy
+    private async Task<GetApprenticeshipVacancyItemResponse?> GetVacancyAsync(GetApplicationApiResponse application)
+    {
+        var vacancy = await vacancyService.GetVacancy(application.VacancyReference);
+        return vacancy as GetApprenticeshipVacancyItemResponse;
+    }
+
+    // Create application review in Recruit
+    private async Task CreateApplicationReviewAsync(GetApplicationApiResponse app, GetApprenticeshipVacancyItemResponse vacancy)
+    {
         int.TryParse(vacancy.Ukprn, out var ukprn);
-        var createApplicationReviewRequestData = new CreateApplicationReviewRequestData(
+
+        var data = new CreateApplicationReviewRequestData(
             vacancy.AccountId!.Value,
             vacancy.AccountLegalEntityId!.Value,
-            application.Id,
-            application.CandidateId,
+            app.Id,
+            app.CandidateId,
             ukprn,
             vacancy.VacancyReference.ConvertVacancyReferenceToLong(),
             vacancy.Title,
             vacancy.AdditionalQuestion1,
             vacancy.AdditionalQuestion2,
             DateTime.UtcNow);
-        
-        await recruitApiV2Client.PutWithResponseCode<NullResponse>(new CreateApplicationReviewRequest(application.Id, createApplicationReviewRequestData));
-        
+
+        var response = await recruitApiV2Client.PutWithResponseCode<NullResponse>(
+            new CreateApplicationReviewRequest(app.Id, data));
+
+        if (!response.StatusCode.IsSuccessStatusCode())
+        {
+            logger.LogError("Failed to create application review in Recruit v2 for app '{Id}' - {Error}",
+                app.Id, response.ErrorContent);
+            throw new ApplicationException($"Failed to create application review in Recruit v2 for app '{app.Id}'");
+        }
+    }
+
+    // Send candidate confirmation email
+    private async Task SendCandidateConfirmationEmailAsync(GetApplicationApiResponse app, GetApprenticeshipVacancyItemResponse vacancy)
+    {
         var email = new SubmitApplicationEmail(
             helper.SubmitApplicationEmailTemplateId,
-            application.Candidate.Email,
-            application.Candidate.FirstName,
+            app.Candidate.Email,
+            app.Candidate.FirstName,
             vacancy.Title,
             vacancy.EmployerName,
             vacancyService.GetVacancyWorkLocation(vacancy, true),
             helper.CandidateApplicationUrl);
+
         await notificationService.Send(new SendEmailCommand(email.TemplateId, email.RecipientAddress, email.Tokens));
-        var jsonPatchDocument = new JsonPatchDocument<Domain.Models.Application>();
+    }
 
-        jsonPatchDocument.Replace(x => x.Status, ApplicationStatus.Submitted);
+    // Update application status
+    private async Task MarkApplicationSubmittedAsync(Guid applicationId, Guid candidateId)
+    {
+        var patch = new JsonPatchDocument<Domain.Models.Application>();
+        patch.Replace(x => x.Status, ApplicationStatus.Submitted);
 
-        var patchRequest = new PatchApplicationApiRequest(request.ApplicationId, request.CandidateId, jsonPatchDocument);
-        await candidateApiClient.PatchWithResponseCode(patchRequest);
+        await candidateApiClient.PatchWithResponseCode(
+            new PatchApplicationApiRequest(applicationId, candidateId, patch));
+    }
 
-        // increase the count of vacancy submitted counter metrics.
-        if (vacancy.VacancySource == VacancyDataSource.Raa)
+    // Send Recruit notification emails
+    private async Task SendRecruitNotificationsAsync(Guid applicationId)
+    {
+        var response = await recruitApiV2Client.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
+            new PostCreateApplicationReviewNotificationsRequest(applicationId));
+
+        if (!response.StatusCode.IsSuccessStatusCode())
         {
-            metrics.IncreaseVacancySubmitted(application.VacancyReference);
+            logger.LogError("Failed to create application review notifications for app '{Id}' - {Error}",
+                applicationId, response.ErrorContent);
+            return;
         }
 
-        var recruitNotificationResponse = await recruitApiV2Client.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
-            new PostCreateApplicationReviewNotificationsRequest(request.ApplicationId));
+        var sendEmailTasks = response.Body
+            .Select(x => notificationService.Send(
+                new SendEmailCommand(x.TemplateId.ToString(), x.RecipientAddress, x.Tokens)))
+            .ToArray();
 
-        if (!recruitNotificationResponse.StatusCode.IsSuccessStatusCode())
-        {
-            logger.LogError("Failed to create application review notifications for application id '{Id}' with error '{ErrorContent}'", request.ApplicationId, response.ErrorContent);
-            return true;
-        }
-
-        var sendEmailTasks = recruitNotificationResponse.Body
-            .Select(x => notificationService.Send(new SendEmailCommand(x.TemplateId.ToString(), x.RecipientAddress, x.Tokens)))
-            .ToList();
         await Task.WhenAll(sendEmailTasks);
-        
-        
-        return true;
     }
 }
