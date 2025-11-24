@@ -3,6 +3,7 @@
 public class GetProviderStandardsResponse
 {
     public int LarsCode { get; set; }
+    public string IfateReferenceNumber { get; set; }
     public string CourseName { get; set; }
     public int Level { get; set; }
 

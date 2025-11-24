@@ -28,17 +28,14 @@ public class ValidateLearnerCommandHandler(
 {
     public async Task<LearnerValidateApiResponse> Handle(ValidateLearnerCommand command, CancellationToken cancellationToken)
     {
-        var providerStandardResults = await providerStandardsService.GetStandardsData(command.ProviderId);
-        if (!providerStandardResults.IsMainProvider)
-        {
-            providerStandardResults.Standards = null;
-        }
 
         var learnerData = await learnerDataClient.Get<GetLearnerForProviderResponse>(
             new GetLearnerForProviderRequest(
                 command.ProviderId,
                 command.LearnerDataId
             ));
+
+        var standardResult = await providerStandardsService.GetStandardsDataForProviderAndCourse(command.ProviderId, learnerData.StandardCode);
 
         var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(learnerData.StandardCode.ToString());
 
@@ -53,6 +50,7 @@ public class ValidateLearnerCommandHandler(
             TrainingPrice = learnerData.TrainingPrice,
             Cost = learnerData.TrainingPrice + learnerData.EpaoPrice,
             CourseCode = learnerData.StandardCode.ToString(),
+            StandardsCode = standardResult?.IfateReferenceNumber,
             DeliveryModel = learnerData.IsFlexiJob ? DeliveryModel.FlexiJobAgency : DeliveryModel.Regular,
             StartDate = new DateTime(learnerData.StartDate.Year, learnerData.StartDate.Month, 1),
             ActualStartDate = learnerData.StartDate.Date,
@@ -66,7 +64,6 @@ public class ValidateLearnerCommandHandler(
             ProviderId = command.ProviderId,
             LearnerDataId = command.LearnerDataId,
             Learner = learner, //(must contain Max and Min Ages, OTJTH, StandardCode, RPL, and any other static info)
-            ProviderStandardsData = providerStandardResults,
         };
 
 

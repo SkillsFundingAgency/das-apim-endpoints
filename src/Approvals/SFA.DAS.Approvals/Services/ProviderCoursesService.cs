@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application;
@@ -19,6 +20,7 @@ namespace SFA.DAS.Approvals.Services;
 public interface IProviderStandardsService
 {
     Task<ProviderStandardsData> GetStandardsData(long providerId);
+    Task<GetProviderStandardsResponse> GetStandardsDataForProviderAndCourse(long providerId, int larsCode);
 }
 
 public class ProviderStandardsService(
@@ -33,6 +35,23 @@ public class ProviderStandardsService(
     public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
     public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
     public const int CacheExpiryHours = 12;
+
+
+    public async Task<GetProviderStandardsResponse> GetStandardsDataForProviderAndCourse(long providerId, int larsCode)
+    {
+        var response = await providerCoursesApiClient.GetWithResponseCode<GetProviderStandardsResponse>(new GetProviderCourseStandardsRequest(providerId, larsCode));
+
+        var match = response.Body;
+
+        if (response.StatusCode == HttpStatusCode.NotFound || match == null)
+        {
+            logger.LogWarning($"No Standard {larsCode} Declared For Provider {providerId}");
+            return null;
+        }
+
+        return match;
+    }
+
 
     public async Task<ProviderStandardsData> GetStandardsData(long providerId)
     {

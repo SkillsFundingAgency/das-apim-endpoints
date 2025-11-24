@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.Approvals.Types;
+﻿using SFA.DAS.Approvals.Types;
 using System;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests;
@@ -9,7 +8,6 @@ public class ValidateLearnerApiRequest : SaveDataRequest
     public long ProviderId { get; set; }
     public long LearnerDataId { get; set; }
     public LearnerDataEnhanced Learner { get; set; }
-    public ProviderStandardsData ProviderStandardsData { get; set; }
 }
 
 public record LearnerDataEnhanced
@@ -23,6 +21,7 @@ public record LearnerDataEnhanced
     public int TrainingPrice { get; set; }
     public int Cost { get; set; }
     public string CourseCode { get; set; }
+    public string StandardsCode { get; set; }
     //public string ProviderReference { get; set; }
     public DeliveryModel DeliveryModel { get; set; }
     public DateTime StartDate { get; set; }
