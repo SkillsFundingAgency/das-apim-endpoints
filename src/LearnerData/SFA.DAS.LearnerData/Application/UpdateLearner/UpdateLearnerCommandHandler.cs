@@ -88,24 +88,54 @@ public class UpdateLearnerCommandHandler(
 
     private static UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
     {
+        /*
+       Compare each OnProgramme element with the previous element to ensure they are for the same “episode” (i.e. standardCode and agreementIdare the same (Ukprn is implied).
+        Any items in the array which aren’t for the same episode as they’ll be handled in later features.
+       Add a new BreakInLearning item to the BreakInLearning array with the start date of the end of the previous episode (confirm field) and with an end date of the start of the next episode.
+       Merge together the costs arrays from both OnProgramme elements, removing the break if the costs are the same before and after the break.
+       Merge together the values from the correct OnProgramme elements to create the required values for the inner:
+       WithdrawalDate - last element
+       ExpectedEndDate - last element
+         */
+
+        //get the first element in the OnProg - this is the "driver"
+        //get all other on-progs with same StandardCode and AgreementId (ignore all others)
+        //calculate the breaks in learning
+        //merge costs array (delete if same before and after break)
+        //update on prog with fields from last onProg where necessary
+        // -- eg. WithdrawalDate, ExpectedEndDate, PauseDate (?)
+
+        var orderedOnProgs = command.UpdateLearnerRequest.Delivery.OnProgramme
+            .OrderBy(x => x.StartDate); //todo: check order
+
+        var primaryOnProg = orderedOnProgs.First();
+        var onProgs = orderedOnProgs
+                .Where(x => x.StandardCode == primaryOnProg.StandardCode && x.AgreementId == primaryOnProg.AgreementId)
+                .ToList();
+
+        var lastOnProg = orderedOnProgs.Last();
+
+        var breaksInLearning = CalculateBreaksInLearning(onProgs);
+
         var body = new UpdateLearningRequestBody
         {
             Delivery = new Delivery
             {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate
+                WithdrawalDate = lastOnProg.WithdrawalDate
             },
             Learner = new LearningUpdateDetails
             {
                 FirstName = command.UpdateLearnerRequest.Learner.FirstName,
                 LastName = command.UpdateLearnerRequest.Learner.LastName,
                 EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
+                CompletionDate = lastOnProg.CompletionDate
             },
             OnProgramme = new OnProgrammeDetails
             {
-                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().ExpectedEndDate,
+                ExpectedEndDate = lastOnProg.ExpectedEndDate,
                 Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts(),
-                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate
+                PauseDate = lastOnProg.PauseDate,
+                BreaksInLearning = breaksInLearning
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
@@ -122,5 +152,30 @@ public class UpdateLearnerCommandHandler(
         };
 
         return new UpdateLearningApiPutRequest(learnerKey, body);
+    }
+
+    private static List<BreakInLearning> CalculateBreaksInLearning(List<Requests.OnProgrammeRequestDetails> onProgrammeItems)
+    {
+        var result = new List<BreakInLearning>();
+
+        for (int i = 0; i < onProgrammeItems.Count - 1; i++)
+        {
+            var current = onProgrammeItems[i];
+            var next = onProgrammeItems[i + 1];
+
+            if (current.ActualEndDate < next.StartDate)
+            {
+                var gapStart = current.ActualEndDate.Value.AddDays(1);
+                var gapEnd = next.StartDate.AddDays(-1);
+
+                result.Add(new BreakInLearning
+                {
+                    StartDate = gapStart,
+                    EndDate = gapEnd
+                });
+            }
+        }
+
+        return result;
     }
 }

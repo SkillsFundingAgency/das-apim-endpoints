@@ -1,18 +1,19 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Protocols;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using FluentAssertions;
-using Microsoft.IdentityModel.Protocols;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -383,6 +384,8 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.OnProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.Take(1).ToList();
+
         var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
@@ -410,6 +413,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.OnProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.Take(1).ToList();
         var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
@@ -507,7 +511,9 @@ public class WhenHandlingUpdateLearnerCommand
             ))), Times.Once);
     }
 
-    private static void MockLearningApiResponse(
+    
+
+    protected static void MockLearningApiResponse(
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,
         HttpStatusCode statusCode,
