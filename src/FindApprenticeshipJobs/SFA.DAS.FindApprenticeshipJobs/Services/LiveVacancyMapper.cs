@@ -167,8 +167,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 PostedDate = source.KeyTimes.PublishedTime,
                 Address = new Address
                 {
-                    Latitude = source.LocationGeoCoordinates.FirstOrDefault()?.Lat ?? 0,
-                    Longitude = source.LocationGeoCoordinates.FirstOrDefault()?.Lon ?? 0,
+                    Latitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lat : 0,
+                    Longitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lon : 0,
                 },
                 Qualifications = [],
                 Skills = [],
@@ -253,7 +253,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Under18NationalMinimumWage = lowerBand,
                 Between18AndUnder21NationalMinimumWage = decimal.Round(middleBand, 2, MidpointRounding.AwayFromZero),
                 Between21AndUnder25NationalMinimumWage = upperBand,
-                Over25NationalMinimumWage = upperBand,
+                Over25NationalMinimumWage = upperBand
             };
         }
     }
