@@ -136,10 +136,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             // Act
             await _sut.Handle(command, CancellationToken.None);
 
-            var actualRequest = _learningApiClient.Invocations
-                .Select(i => i.Arguments[0])
-                .OfType<UpdateLearningApiPutRequest>()
-                .Single();
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
 
             // Assert
             actualRequest.Data.Delivery.WithdrawalDate.Should().Be(withdrawalDate);
@@ -160,10 +157,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             // Act
             await _sut.Handle(command, CancellationToken.None);
 
-            var actualRequest = _learningApiClient.Invocations
-                .Select(i => i.Arguments[0])
-                .OfType<UpdateLearningApiPutRequest>()
-                .Single();
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
 
             // Assert
             actualRequest.Data.Learner.CompletionDate.Should().Be(completionDate);
@@ -183,11 +177,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
-
-            var actualRequest = _learningApiClient.Invocations
-                .Select(i => i.Arguments[0])
-                .OfType<UpdateLearningApiPutRequest>()
-                .Single();
+            
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
 
             // Assert
             actualRequest.Data.OnProgramme.ExpectedEndDate.Should().Be(expectedEndDate);
@@ -208,10 +199,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             // Act
             await _sut.Handle(command, CancellationToken.None);
 
-            var actualRequest = _learningApiClient.Invocations
-                .Select(i => i.Arguments[0])
-                .OfType<UpdateLearningApiPutRequest>()
-                .Single();
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
 
             // Assert
             actualRequest.Data.OnProgramme.PauseDate.Should().Be(pauseDate);
@@ -285,6 +273,33 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                 x.Patch(It.Is<PauseApiPatchRequest>(r =>
                     r.Data.PauseDate == pauseDate)), Times.Once);
         }
+
+        [Test]
+        public async Task When_LearningResponse_Indicates_BreakInLearningRemoved_Then_Earnings_Is_Updated()
+        {
+            var fixture = new Fixture();
+            var episodeKey = fixture.Create<Guid>();
+
+            // Arrange
+            var command = CreateLearnerWithBreaksInLearning(false);
+            
+            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+            {
+                Changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+                {
+                    UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved
+                },
+                LearningEpisodeKey = episodeKey
+            }, HttpStatusCode.OK);
+
+            // Act
+            await _sut.Handle(command, CancellationToken.None);
+
+            //Assert
+            _earningsApiClient.Verify(x =>
+                x.Delete(It.IsAny<RemovePauseApiDeleteRequest>()), Times.Once);
+        }
+
 
         private UpdateLearnerCommand CreateLearnerWithBreaksInLearning(bool withPriceChange)
         {
@@ -361,5 +376,10 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                     x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
                 .ReturnsAsync(response);
         }
+        private T CaptureRequest<T>(Mock mock) where T : class
+    => mock.Invocations
+           .Select(i => i.Arguments[0])
+           .OfType<T>()
+           .Single();
     }
 }
