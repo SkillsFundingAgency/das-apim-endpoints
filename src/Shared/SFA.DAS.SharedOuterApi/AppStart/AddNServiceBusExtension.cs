@@ -18,8 +18,6 @@ namespace SFA.DAS.SharedOuterApi.AppStart
             IConfiguration configuration,
             string endpointName)
         {
-
-
             var config = configuration
                 .GetSection("NServiceBusConfiguration")
                 .Get<NServiceBusConfiguration>();

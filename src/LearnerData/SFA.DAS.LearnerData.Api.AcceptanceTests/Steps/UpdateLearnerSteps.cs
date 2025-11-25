@@ -2,9 +2,11 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using System.Net;
 using System.Net.Http.Headers;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -19,6 +21,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string ChangesKey = "Changes";
     private const string LearnerKey = "LearnerKey";
     private const string UkprnKey = "UkprnKey";
+    private const string FundingBandMaximumKey = "FundingBandMaximumKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -81,6 +84,40 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var requests = testContext.EarningsApi.MockServer.LogEntries;
         requests.Should().BeEmpty("Expected no requests to the earnings domain, but found some.");
+    }
+
+    [Given("the funding band maximum for that learner is set")]
+    public void GivenTheFundingBandMaximumForThatApprenticeshipIsSet()
+    {
+        SetupFundingBandMaximum();
+    }
+
+    private void SetupFundingBandMaximum()
+    {
+        var fundingBandMaximum = _fixture.Create<int>();
+        scenarioContext.Set(fundingBandMaximum, FundingBandMaximumKey);
+
+        var response = new StandardDetailResponse
+        {
+            ApprenticeshipFunding =
+            [
+                new ApprenticeshipFunding
+                {
+                    EffectiveFrom = DateTime.MinValue,
+                    EffectiveTo = DateTime.MaxValue,
+                    MaxEmployerLevyCap = fundingBandMaximum
+                }
+            ]
+        };
+
+        testContext.CoursesApi.MockServer
+            .Given(
+                Request
+                .Create()
+                .WithPath($"/api/courses/standards/*"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithBodyAsJson(response));
     }
 
     private void ConfigureLearnerInnerApi()
