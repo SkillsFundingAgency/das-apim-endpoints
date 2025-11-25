@@ -151,3 +151,21 @@ public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiReq
 {
     public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
 }
+
+public class UpdateBreaksInLearningApiPatchRequest : IPatchApiRequest<UpdateBreaksInLearningRequest>
+{
+    public string PatchUrl { get; }
+    public UpdateBreaksInLearningRequest Data { get; set; }
+
+    public UpdateBreaksInLearningApiPatchRequest(Guid apprenticeshipKey, UpdateBreaksInLearningRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/breaksInLearning";
+        Data = data;
+    }
+}
+
+public class UpdateBreaksInLearningRequest
+{
+    public Guid EpisodeKey { get; set; }
+    public List<BreakInLearning> BreaksInLearning { get; set; }
+}

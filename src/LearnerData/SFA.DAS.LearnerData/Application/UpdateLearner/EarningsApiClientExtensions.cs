@@ -89,6 +89,7 @@ internal static class EarningsApiClientExtensions
         {
             var data = new WithdrawRequest()
             {
+                //todo: this now needs to use the apiPutRequest value instead, because the OnProgramme will have been mapped/manipulated
                 WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate.GetValueOrDefault()
             };
 
@@ -105,14 +106,14 @@ internal static class EarningsApiClientExtensions
         }, "reverse-withdrawal", logger, command.LearningKey);
     }
 
-    internal static async Task StartBreakInLearning(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task StartBreakInLearning(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, UpdateLearningApiPutRequest apiPutRequest,
+        ILogger<UpdateLearnerCommandHandler> logger)
     {
         await LogAndExecute(async () =>
         {
             var data = new PauseRequest()
             {
-                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate.GetValueOrDefault()
+                PauseDate = apiPutRequest.Data.OnProgramme.PauseDate.Value,
             };
             await earningsApiClient.Patch(new PauseApiPatchRequest(command.LearningKey, data));
         }, "StartBreakInLearning", logger, command.LearningKey);
@@ -125,6 +126,21 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Delete(new RemovePauseApiDeleteRequest(command.LearningKey));
         }, "RemoveBreakInLearning", logger, command.LearningKey);
+    }
+
+    internal static async Task UpdateBreaksInLearning(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        UpdateLearnerCommand command, UpdateLearningApiPutRequest apiPutRequest, UpdateLearnerApiPutResponse apiPutResponse, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            var data = new UpdateBreaksInLearningRequest
+            {
+                EpisodeKey = apiPutResponse.LearningEpisodeKey,
+                BreaksInLearning = apiPutRequest.Data.OnProgramme.BreaksInLearning
+            };
+
+            await earningsApiClient.Patch(new UpdateBreaksInLearningApiPatchRequest(command.LearningKey, data));
+        }, "UpdateBreaksInLearning", logger, command.LearningKey);
     }
 
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)

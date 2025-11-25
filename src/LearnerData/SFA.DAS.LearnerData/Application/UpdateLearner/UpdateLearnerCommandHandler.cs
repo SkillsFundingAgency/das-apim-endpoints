@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -39,12 +40,12 @@ public class UpdateLearnerCommandHandler(
         logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningApiPutResponse));
 
-        await UpdateEarnings(command, learningApiPutResponse);
+        await UpdateEarnings(command, request, learningApiPutResponse);
 
         logger.LogInformation("Earnings updated for learner with key {LearningKey}", command.LearningKey);
     }
 
-    private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
+    private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearningApiPutRequest updateLearningApiPutRequest, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
     {
         var updatePrices = false;
 
@@ -71,11 +72,14 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
                     await earningsApiClient.ReverseWithdrawal(command, logger);
                     break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
-                    await earningsApiClient.StartBreakInLearning(command, logger);
-                    break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
                     await earningsApiClient.RemoveBreakInLearning(command, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
+                    await earningsApiClient.StartBreakInLearning(command, updateLearningApiPutRequest, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
+                    await earningsApiClient.UpdateBreaksInLearning(command, updateLearningApiPutRequest, updateLearningApiPutResponse, logger);
                     break;
             }
         }
@@ -133,9 +137,9 @@ public class UpdateLearnerCommandHandler(
             OnProgramme = new OnProgrammeDetails
             {
                 ExpectedEndDate = lastOnProg.ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts(),
+                Costs = breaksInLearning.Costs.GetCostsOrDefault(primaryOnProg.StartDate),
                 PauseDate = lastOnProg.PauseDate,
-                BreaksInLearning = breaksInLearning
+                BreaksInLearning = breaksInLearning.Breaks
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
@@ -154,28 +158,61 @@ public class UpdateLearnerCommandHandler(
         return new UpdateLearningApiPutRequest(learnerKey, body);
     }
 
-    private static List<BreakInLearning> CalculateBreaksInLearning(List<Requests.OnProgrammeRequestDetails> onProgrammeItems)
+    private static (List<BreakInLearning> Breaks, List<CostDetails> Costs)
+        CalculateBreaksInLearning(List<OnProgrammeRequestDetails> onProgrammeItems)
     {
-        var result = new List<BreakInLearning>();
+        var breaks = new List<BreakInLearning>();
+        var mergedCosts = new List<CostDetails>();
 
-        for (int i = 0; i < onProgrammeItems.Count - 1; i++)
+        for (var i = 0; i < onProgrammeItems.Count; i++)
         {
             var current = onProgrammeItems[i];
-            var next = onProgrammeItems[i + 1];
 
-            if (current.ActualEndDate < next.StartDate)
+            // Merge costs: union all, but discard redundant consecutive entries
+            if (current.Costs != null)
             {
-                var gapStart = current.ActualEndDate.Value.AddDays(1);
-                var gapEnd = next.StartDate.AddDays(-1);
-
-                result.Add(new BreakInLearning
+                foreach (var cost in current.Costs)
                 {
-                    StartDate = gapStart,
-                    EndDate = gapEnd
-                });
+                    if (mergedCosts.Count == 0)
+                    {
+                        mergedCosts.Add(cost);
+                    }
+                    else
+                    {
+                        var last = mergedCosts.Last();
+                        if (last.TrainingPrice == cost.TrainingPrice &&
+                            last.EpaoPrice == cost.EpaoPrice)
+                        {
+                            // Identical apart from FromDate → carry forward the first FromDate
+                            // Do nothing (keep last as-is)
+                        }
+                        else
+                        {
+                            mergedCosts.Add(cost);
+                        }
+                    }
+                }
+            }
+
+            // Breaks in learning (skip last item check)
+            if (i < onProgrammeItems.Count - 1)
+            {
+                var next = onProgrammeItems[i + 1];
+
+                if (current.ActualEndDate.HasValue && current.ActualEndDate < next.StartDate)
+                {
+                    var gapStart = current.ActualEndDate.Value.AddDays(1);
+                    var gapEnd = next.StartDate.AddDays(-1);
+
+                    breaks.Add(new BreakInLearning
+                    {
+                        StartDate = gapStart,
+                        EndDate = gapEnd
+                    });
+                }
             }
         }
 
-        return result;
+        return (breaks, mergedCosts);
     }
 }

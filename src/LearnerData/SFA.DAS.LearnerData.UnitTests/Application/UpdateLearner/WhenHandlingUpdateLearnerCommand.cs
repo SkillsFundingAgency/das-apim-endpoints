@@ -1,15 +1,12 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Protocols;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -50,7 +47,7 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_Learner_Is_Updated_Successfully_With_Changes()
     {
         // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
+        var command = CreateUpdateLearnerCommand();
         var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate;
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
@@ -105,7 +102,7 @@ public class WhenHandlingUpdateLearnerCommand
     public async Task Then_Learner_Is_Updated_Successfully_With_MathsAndEnglish_Changes()
     {
         // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
+        var command = CreateUpdateLearnerCommand();
         var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate;
         var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
 
@@ -539,6 +536,14 @@ public class WhenHandlingUpdateLearnerCommand
                                                  c.WithdrawalDate == r.WithdrawalDate &&
                                                  c.PriorLearningPercentage == r.PriorLearningAdjustmentPercentage &&
                                                  c.CompletionDate == r.ActualEndDate));
+    }
+
+    private UpdateLearnerCommand CreateUpdateLearnerCommand()
+    {
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.OnProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.Take(1).ToList();
+
+        return command;
     }
 
     private UpdateLearnerCommand CreateLearnerCommandWithLearningSupport(DateTime startDate, DateTime? completionDate = null, DateTime? withdrawalDate = null)

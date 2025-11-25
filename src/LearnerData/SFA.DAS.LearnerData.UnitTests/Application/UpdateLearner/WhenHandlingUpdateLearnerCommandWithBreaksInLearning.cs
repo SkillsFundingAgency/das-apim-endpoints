@@ -40,16 +40,13 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
         }
 
         [Test]
-        public async Task With_No_Change_In_Price_Then_Learner_Is_Updated()
+        public async Task With_No_Change_In_Price_Then_Learning_Is_Updated()
         {
             var fixture = new Fixture();
 
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(false);
             MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
-
-            _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-                .Returns(Task.CompletedTask);
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -77,21 +74,17 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             actualRequest.Data.OnProgramme.Costs.Should().HaveCount(1);
 
             var expected = command.UpdateLearnerRequest.Delivery.OnProgramme.First().Costs.First();
-            actualRequest.Data.OnProgramme.Costs.First().Should().BeEquivalentTo(expected, opts =>
-                opts.Excluding(c => c.FromDate));
+            actualRequest.Data.OnProgramme.Costs.First().Should().BeEquivalentTo(expected);
         }
 
         [Test]
-        public async Task With_Change_In_Price_Then_Learner_Is_Updated()
+        public async Task With_Change_In_Price_Then_Learning_Is_Updated()
         {
             var fixture = new Fixture();
 
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(true);
             MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
-
-            _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-                .Returns(Task.CompletedTask);
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -128,9 +121,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                 opts.Excluding(c => c.FromDate));
         }
 
-
         [Test]
-        public async Task With_WithdrawalDate_Then_Learner_Is_Updated()
+        public async Task With_WithdrawalDate_Then_Learning_Is_Updated()
         {
             var fixture = new Fixture();
 
@@ -154,7 +146,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
         }
 
         [Test]
-        public async Task With_CompletionDate_Then_Learner_Is_Updated()
+        public async Task With_CompletionDate_Then_Learning_Is_Updated()
         {
             var fixture = new Fixture();
 
@@ -178,7 +170,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
         }
 
         [Test]
-        public async Task With_ExpectedEndDate_Then_Learner_Is_Updated()
+        public async Task With_ExpectedEndDate_Then_Learning_Is_Updated()
         {
             var fixture = new Fixture();
 
@@ -201,9 +193,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             actualRequest.Data.OnProgramme.ExpectedEndDate.Should().Be(expectedEndDate);
         }
 
-
         [Test]
-        public async Task With_PauseDate_Then_Learner_Is_Updated()
+        public async Task With_PauseDate_Then_Learning_Is_Updated()
         {
             var fixture = new Fixture();
 
@@ -224,6 +215,75 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 
             // Assert
             actualRequest.Data.OnProgramme.PauseDate.Should().Be(pauseDate);
+        }
+
+        [Test]
+        public async Task When_LearningResponse_Indicates_BreakInLearningUpdated_Then_Earnings_Is_Updated()
+        {
+            var fixture = new Fixture();
+            var episodeKey = fixture.Create<Guid>();
+
+            // Arrange
+            var command = CreateLearnerWithBreaksInLearning(false);
+
+            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+            {
+                Changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+                {
+                    UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated
+                },
+                LearningEpisodeKey = episodeKey
+            }, HttpStatusCode.OK);
+
+            // Act
+            await _sut.Handle(command, CancellationToken.None);
+
+            // Capture the actual request sent to the earnings API
+            var actualRequest = _earningsApiClient.Invocations
+                .Select(i => i.Arguments[0])
+                .OfType<UpdateBreaksInLearningApiPatchRequest>()
+                .Single();
+
+            // Assert
+            var expectedBreakInLearning = new BreakInLearning
+            {
+                StartDate = command.UpdateLearnerRequest.Delivery.OnProgramme[0].ActualEndDate!.Value.AddDays(1),
+                EndDate = command.UpdateLearnerRequest.Delivery.OnProgramme[1].StartDate.AddDays(-1)
+            };
+
+            actualRequest.Data.EpisodeKey.Should().Be(episodeKey);
+
+            actualRequest.Data.BreaksInLearning.Should().ContainSingle()
+                .Which.Should().BeEquivalentTo(expectedBreakInLearning);
+        }
+
+        [Test]
+        public async Task When_LearningResponse_Indicates_BreakInLearningStarted_Then_Earnings_Is_Updated()
+        {
+            var fixture = new Fixture();
+            var episodeKey = fixture.Create<Guid>();
+
+            // Arrange
+            var command = CreateLearnerWithBreaksInLearning(false);
+            var pauseDate = fixture.Create<DateTime>();
+            command.UpdateLearnerRequest.Delivery.OnProgramme.Last().PauseDate = pauseDate;
+
+            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+            {
+                Changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+                {
+                    UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted
+                },
+                LearningEpisodeKey = episodeKey
+            }, HttpStatusCode.OK);
+
+            // Act
+            await _sut.Handle(command, CancellationToken.None);
+
+            //Assert
+            _earningsApiClient.Verify(x =>
+                x.Patch(It.Is<PauseApiPatchRequest>(r =>
+                    r.Data.PauseDate == pauseDate)), Times.Once);
         }
 
         private UpdateLearnerCommand CreateLearnerWithBreaksInLearning(bool withPriceChange)
