@@ -86,6 +86,7 @@ public class SavePricesRequest
 {
     public Guid ApprenticeshipEpisodeKey { get; set; }
     public int AgeAtStartOfLearning { get; set; }
+    public int FundingBandMaximum { get; set; }
     public List<PriceDetail> Prices { get; set; } = [];
 }
 
@@ -97,7 +98,6 @@ public class PriceDetail
     public decimal TrainingPrice { get; set; }
     public decimal? EndPointAssessmentPrice { get; set; }
     public decimal TotalPrice { get; set; }
-    public int FundingBandMaximum { get; set; }
 }
 
 public class WithdrawApiPatchRequest : IPatchApiRequest<WithdrawRequest>

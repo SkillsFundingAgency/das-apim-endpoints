@@ -1,18 +1,19 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using FluentAssertions;
-using Microsoft.IdentityModel.Protocols;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -23,6 +24,7 @@ public class WhenHandlingUpdateLearnerCommand
 #pragma warning disable CS8618 // Non-nullable field, instantiated in SetUp method
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
+    private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
     private UpdateLearnerCommandHandler _sut;
 
@@ -38,11 +40,13 @@ public class WhenHandlingUpdateLearnerCommand
     {
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+        _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
-            _earningsApiClient.Object);
+            _earningsApiClient.Object,
+            _coursesApiClient.Object);
     }
 
     [Test]
@@ -279,6 +283,10 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
+        var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
+        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+            .ReturnsAsync(coursesApiResponse);
+
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
@@ -321,6 +329,10 @@ public class WhenHandlingUpdateLearnerCommand
         _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
             .Returns(Task.CompletedTask);
 
+        var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
+        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+            .ReturnsAsync(coursesApiResponse);
+
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
@@ -341,6 +353,58 @@ public class WhenHandlingUpdateLearnerCommand
                 ))), Times.Once);
     }
 
+
+    [Test]
+    public async Task Then_Learner_Is_Updated_Successfully_With_FundingBand_Changes()
+    {
+        var fixture = new Fixture();
+
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var expectedEpisodeKey = Guid.NewGuid();
+        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
+        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
+        var fundingBandMaximum = fixture.Create<int>();
+        var coursesApiResponse = new StandardDetailResponse
+        {
+            ApprenticeshipFunding =
+            [
+                new ApprenticeshipFunding
+                {
+                    EffectiveFrom = DateTime.MinValue,
+                    EffectiveTo = DateTime.MaxValue,
+                    MaxEmployerLevyCap = fundingBandMaximum
+                }
+            ]
+        };
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices },
+            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
+            LearningEpisodeKey = expectedEpisodeKey,
+            Prices = expectedCosts
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+            .ReturnsAsync(coursesApiResponse);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SavePricesApiPatchRequest>(
+            r =>
+               r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
+               r.Data.FundingBandMaximum == fundingBandMaximum
+               )), Times.Once);
+    }
 
     [Test]
     public async Task Then_Learner_Is_Updated_Successfully_With_PersonalDetails_Changes()
