@@ -1,16 +1,16 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Net;
-using FluentAssertions;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 {
@@ -46,7 +46,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(false);
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
+            MockEmptyLearningApiResponse();
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -56,12 +56,9 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                         It.IsAny<UpdateLearningApiPutRequest>()),
                 Times.Once);
 
-            var actualRequest = _learningApiClient.Invocations
-                .Select(i => i.Arguments[0])
-                .OfType<UpdateLearningApiPutRequest>()
-                .Single();
-
             // Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
+
             var expectedBreakInLearning = new BreakInLearning
             {
                 StartDate = command.UpdateLearnerRequest.Delivery.OnProgramme[0].ActualEndDate!.Value.AddDays(1),
@@ -84,7 +81,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(true);
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
+            MockEmptyLearningApiResponse();
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -94,12 +91,9 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                     It.IsAny<UpdateLearningApiPutRequest>()),
                 Times.Once);
 
-            var actualRequest = _learningApiClient.Invocations
-                .Select(i => i.Arguments[0])
-                .OfType<UpdateLearningApiPutRequest>()
-                .Single();
-
             // Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
+
             var expectedBreakInLearning = new BreakInLearning
             {
                 StartDate = command.UpdateLearnerRequest.Delivery.OnProgramme[0].ActualEndDate!.Value.AddDays(1),
@@ -131,14 +125,13 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             var withdrawalDate = fixture.Create<DateTime>();
             command.UpdateLearnerRequest.Delivery.OnProgramme.Last().WithdrawalDate = withdrawalDate;
 
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
+            MockEmptyLearningApiResponse();
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
 
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-
             // Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
             actualRequest.Data.Delivery.WithdrawalDate.Should().Be(withdrawalDate);
         }
 
@@ -152,14 +145,13 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             var completionDate = fixture.Create<DateTime>();
             command.UpdateLearnerRequest.Delivery.OnProgramme.Last().CompletionDate = completionDate;
 
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
+            MockEmptyLearningApiResponse();
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
 
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-
             // Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
             actualRequest.Data.Learner.CompletionDate.Should().Be(completionDate);
         }
 
@@ -173,7 +165,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             var expectedEndDate = fixture.Create<DateTime>();
             command.UpdateLearnerRequest.Delivery.OnProgramme.Last().ExpectedEndDate = expectedEndDate;
 
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
+            MockEmptyLearningApiResponse();
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -199,9 +191,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             // Act
             await _sut.Handle(command, CancellationToken.None);
 
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-
             // Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
             actualRequest.Data.OnProgramme.PauseDate.Should().Be(pauseDate);
         }
 
@@ -214,14 +205,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(false);
 
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-            {
-                Changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-                {
-                    UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated
-                },
-                LearningEpisodeKey = episodeKey
-            }, HttpStatusCode.OK);
+            MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated, episodeKey);
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -256,14 +240,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             var pauseDate = fixture.Create<DateTime>();
             command.UpdateLearnerRequest.Delivery.OnProgramme.Last().PauseDate = pauseDate;
 
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-            {
-                Changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-                {
-                    UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted
-                },
-                LearningEpisodeKey = episodeKey
-            }, HttpStatusCode.OK);
+            MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted, episodeKey);
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -282,15 +259,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(false);
-            
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-            {
-                Changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-                {
-                    UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved
-                },
-                LearningEpisodeKey = episodeKey
-            }, HttpStatusCode.OK);
+
+            MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved, episodeKey);
 
             // Act
             await _sut.Handle(command, CancellationToken.None);
@@ -376,6 +346,32 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                     x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
                 .ReturnsAsync(response);
         }
+
+        protected void MockEmptyLearningApiResponse()
+        {
+            var responseBody = new UpdateLearnerApiPutResponse();
+            var response = new ApiResponse<UpdateLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty);
+
+            _learningApiClient.Setup(x =>
+                    x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
+                .ReturnsAsync(response);
+        }
+
+        protected void MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges changes, Guid? episodeKey = null)
+        {
+            var responseBody = new UpdateLearnerApiPutResponse
+            {
+                Changes = [changes],
+                LearningEpisodeKey = episodeKey ?? Guid.Empty
+            };
+
+            var response = new ApiResponse<UpdateLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty);
+
+            _learningApiClient.Setup(x =>
+                    x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
+                .ReturnsAsync(response);
+        }
+
         private T CaptureRequest<T>(Mock mock) where T : class
     => mock.Invocations
            .Select(i => i.Arguments[0])
