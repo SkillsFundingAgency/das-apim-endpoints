@@ -42,8 +42,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
         [Test]
         public async Task With_No_Change_In_Price_Then_Learning_Is_Updated()
         {
-            var fixture = new Fixture();
-
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(false);
             MockEmptyLearningApiResponse();
@@ -197,6 +195,151 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
         }
 
         [Test]
+        public async Task With_LearningSupport_Pre_And_Post_Break_Then_Learning_Is_Updated_With_Merged_LSF()
+        {
+            // Arrange
+            var command = CreateLearnerWithBreaksInLearning(false);
+            var preBreak = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
+            var postBreak = command.UpdateLearnerRequest.Delivery.OnProgramme.Skip(1).First();
+
+            var lsf1 = new LearningSupportRequestDetails
+            {
+                StartDate = preBreak.StartDate,
+                EndDate = preBreak.ActualEndDate.Value
+            };
+
+            var lsf2 = new LearningSupportRequestDetails()
+            {
+                StartDate = postBreak.StartDate,
+                EndDate = postBreak.ExpectedEndDate
+            };
+
+            preBreak.LearningSupport.Add(lsf1);
+            postBreak.LearningSupport.Add(lsf2);
+
+            MockEmptyLearningApiResponse();
+
+            // Act
+            await _sut.Handle(command, CancellationToken.None);
+
+            //Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
+            actualRequest.Data.LearningSupport.Count().Should().Be(2);
+
+            actualRequest.Data.LearningSupport.First().Should().BeEquivalentTo(lsf1);
+            actualRequest.Data.LearningSupport.Skip(1).First().Should().BeEquivalentTo(lsf2);
+        }
+
+        [Test]
+        public async Task With_LearningSupport_Overhanging_Start_Of_Break_Then_Learning_Is_Updated_With_Truncated_LSF()
+        {
+            // Arrange
+            var command = CreateLearnerWithBreaksInLearning(false);
+            var preBreak = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
+
+            var lsf1 = new LearningSupportRequestDetails
+            {
+                StartDate = preBreak.StartDate,
+                EndDate = preBreak.ActualEndDate.Value.AddMonths(1)
+            };
+
+            preBreak.LearningSupport.Add(lsf1);
+
+            MockEmptyLearningApiResponse();
+
+            // Act
+            await _sut.Handle(command, CancellationToken.None);
+
+            //Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
+            actualRequest.Data.LearningSupport.Count().Should().Be(1);
+
+            var expectedLsf = new LearningSupportUpdatedDetails
+            {
+                StartDate = preBreak.StartDate,
+                EndDate = preBreak.ActualEndDate.Value
+            };
+
+            actualRequest.Data.LearningSupport.First().Should().BeEquivalentTo(expectedLsf);
+        }
+
+        [Test]
+        public async Task With_LearningSupport_Overhanging_End_Of_Break_Then_Learning_Is_Updated_With_Truncated_LSF()
+        {
+            // Arrange
+            var command = CreateLearnerWithBreaksInLearning(false);
+            var postBreak = command.UpdateLearnerRequest.Delivery.OnProgramme.Skip(1).First();
+
+            var lsf1 = new LearningSupportRequestDetails
+            {
+                StartDate = postBreak.StartDate.AddMonths(-1),
+                EndDate = postBreak.ExpectedEndDate
+            };
+
+            postBreak.LearningSupport.Add(lsf1);
+
+            MockEmptyLearningApiResponse();
+
+            // Act
+            await _sut.Handle(command, CancellationToken.None);
+
+            //Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
+            actualRequest.Data.LearningSupport.Count().Should().Be(1);
+
+            var expectedLsf = new LearningSupportUpdatedDetails
+            {
+                StartDate = postBreak.StartDate,
+                EndDate = postBreak.ExpectedEndDate
+            };
+
+            actualRequest.Data.LearningSupport.First().Should().BeEquivalentTo(expectedLsf);
+        }
+
+        [Test]
+        public async Task With_LearningSupport_Containing_Break_Then_Learning_Is_Updated_With_Split_LSF()
+        {
+            // Arrange
+            var command = CreateLearnerWithBreaksInLearning(false);
+            var preBreak = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
+            var postBreak = command.UpdateLearnerRequest.Delivery.OnProgramme.Skip(1).First();
+
+            var lsf1 = new LearningSupportRequestDetails
+            {
+                StartDate = preBreak.StartDate,
+                EndDate = postBreak.ExpectedEndDate
+            };
+
+            preBreak.LearningSupport.Add(lsf1);
+
+            MockEmptyLearningApiResponse();
+
+            // Act
+            await _sut.Handle(command, CancellationToken.None);
+
+            // Assert
+            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
+
+            var expected = new[]
+            {
+                new LearningSupportUpdatedDetails
+                {
+                    StartDate = preBreak.StartDate,
+                    EndDate = preBreak.ActualEndDate.Value
+                },
+                new LearningSupportUpdatedDetails
+                {
+                    StartDate = postBreak.StartDate,
+                    EndDate = postBreak.ExpectedEndDate
+                }
+            };
+
+            actualRequest.Data.LearningSupport
+                .Should()
+                .BeEquivalentTo(expected, opts => opts.WithoutStrictOrdering());
+        }
+
+        [Test]
         public async Task When_LearningResponse_Indicates_BreakInLearningUpdated_Then_Earnings_Is_Updated()
         {
             var fixture = new Fixture();
@@ -270,7 +413,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                 x.Delete(It.IsAny<RemovePauseApiDeleteRequest>()), Times.Once);
         }
 
-
         private UpdateLearnerCommand CreateLearnerWithBreaksInLearning(bool withPriceChange)
         {
             var command = _fixture.Create<UpdateLearnerCommand>();
@@ -327,6 +469,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                 Costs = resumeCosts,
                 LearningSupport = []
             });
+
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
 
             return command;
         }
