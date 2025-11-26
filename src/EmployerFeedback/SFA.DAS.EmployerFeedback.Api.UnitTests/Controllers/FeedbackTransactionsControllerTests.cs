@@ -4,14 +4,16 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Api.Controllers;
-using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmails;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionUsers;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetFeedbackTransactionsBatch;
 using SFA.DAS.EmployerFeedback.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmail;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
@@ -88,109 +90,144 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
         }
 
         [Test]
-        public async Task SendFeedbackEmails_ReturnsNoContent_WhenRequestIsValid()
+        public async Task SendFeedbackEmail_ReturnsNoContent_WhenRequestIsValid()
         {
-            var feedbackTransactionId = 123L;
-            var request = new SendFeedbackEmailsRequest
+            var request = new SendFeedbackEmailRequest
             {
-                NotificationTemplates = new List<NotificationTemplateRequest>
-                {
-                    new NotificationTemplateRequest
-                    {
-                        TemplateName = "TestTemplate",
-                        TemplateId = Guid.NewGuid()
-                    }
-                },
-                EmployerAccountsBaseUrl = "https://test.com"
+                TemplateId = Guid.NewGuid(),
+                Contact = "Test Contact",
+                EmployerName = "Test Employer",
+                AccountHashedId = "ABCD123",
+                AccountsBaseUrl = "https://test.com"
             };
 
             _mediatorMock
-                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailCommand>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
-            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
+            var result = await _controller.SendFeedbackEmail(request);
 
             Assert.That(result, Is.InstanceOf<NoContentResult>());
-            _mediatorMock.Verify(x => x.Send(It.Is<SendFeedbackEmailsCommand>(cmd =>
-                cmd.FeedbackTransactionId == feedbackTransactionId &&
+            _mediatorMock.Verify(x => x.Send(It.Is<SendFeedbackEmailCommand>(cmd =>
                 cmd.Request == request
             ), CancellationToken.None), Times.Once);
         }
 
         [Test]
-        public async Task SendFeedbackEmails_ReturnsBadRequest_WhenSendAfterDateIsInFuture()
+        public async Task SendFeedbackEmail_ReturnsInternalServerError_WhenExceptionOccurs()
         {
-            var feedbackTransactionId = 124L;
-            var request = new SendFeedbackEmailsRequest
+            var request = new SendFeedbackEmailRequest
             {
-                NotificationTemplates = new List<NotificationTemplateRequest>
+                TemplateId = Guid.NewGuid(),
+                Contact = "Test Contact",
+                EmployerName = "Test Employer",
+                AccountHashedId = "ABCD123",
+                AccountsBaseUrl = "https://test.com"
+            };
+
+            var exception = new Exception("Unexpected error occurred");
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailCommand>(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(exception);
+
+            var result = await _controller.SendFeedbackEmail(request);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = result as StatusCodeResult;
+            Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+        }
+
+        [Test]
+        public async Task GetFeedbackTransactionUsers_ReturnsOk_WhenUsersFound()
+        {
+            var feedbackTransactionId = 123L;
+            var queryResult = new GetFeedbackTransactionUsersResult
+            {
+                AccountId = 456,
+                AccountName = "Test Account",
+                TemplateName = "TestTemplate",
+                Users = new List<FeedbackTransactionUser>
                 {
-                    new NotificationTemplateRequest { TemplateName = "TestTemplate", TemplateId = Guid.NewGuid() }
+                    new FeedbackTransactionUser { Name = "Test User", Email = "test@example.com" }
                 }
             };
 
-            var exception = new InvalidOperationException("Feedback transaction sendAfter date is in the future");
             _mediatorMock
-                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.IsAny<GetFeedbackTransactionUsersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(queryResult);
+
+            var result = await _controller.GetFeedbackTransactionUsers(feedbackTransactionId);
+
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = result as OkObjectResult;
+            var response = okResult.Value as GetFeedbackTransactionUsersResult;
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.AccountId, Is.EqualTo(456));
+            Assert.That(response.AccountName, Is.EqualTo("Test Account"));
+            Assert.That(response.TemplateName, Is.EqualTo("TestTemplate"));
+            Assert.That(response.Users.Count(), Is.EqualTo(1));
+            _mediatorMock.Verify(x => x.Send(It.Is<GetFeedbackTransactionUsersQuery>(q =>
+                q.FeedbackTransactionId == feedbackTransactionId
+            ), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GetFeedbackTransactionUsers_ReturnsNoContent_WhenAlreadySent()
+        {
+            var feedbackTransactionId = 124L;
+
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<GetFeedbackTransactionUsersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((GetFeedbackTransactionUsersResult)null);
+
+            var result = await _controller.GetFeedbackTransactionUsers(feedbackTransactionId);
+
+            Assert.That(result, Is.InstanceOf<NoContentResult>());
+            _mediatorMock.Verify(x => x.Send(It.Is<GetFeedbackTransactionUsersQuery>(q =>
+                q.FeedbackTransactionId == feedbackTransactionId
+            ), It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test]
+        public async Task GetFeedbackTransactionUsers_ReturnsBadRequest_WhenSendAfterDateIsInFuture()
+        {
+            var feedbackTransactionId = 125L;
+            var exception = new InvalidOperationException("Feedback transaction sendAfter date is in the future");
+
+            _mediatorMock
+                .Setup(x => x.Send(It.IsAny<GetFeedbackTransactionUsersQuery>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
 
-            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
+            var result = await _controller.GetFeedbackTransactionUsers(feedbackTransactionId);
 
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
             var badRequestResult = result as BadRequestObjectResult;
             var errorResponse = badRequestResult.Value;
             Assert.That(errorResponse.GetType().GetProperty("error").GetValue(errorResponse),
                 Is.EqualTo("Feedback transaction sendAfter date is in the future"));
+            _mediatorMock.Verify(x => x.Send(It.Is<GetFeedbackTransactionUsersQuery>(q =>
+                q.FeedbackTransactionId == feedbackTransactionId
+            ), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test]
-        public async Task SendFeedbackEmails_ReturnsBadRequest_WhenNoMatchingTemplateFound()
-        {
-            var feedbackTransactionId = 125L;
-            var request = new SendFeedbackEmailsRequest
-            {
-                NotificationTemplates = new List<NotificationTemplateRequest>
-                {
-                    new NotificationTemplateRequest { TemplateName = "TestTemplate", TemplateId = Guid.NewGuid() }
-                }
-            };
-
-            var exception = new InvalidOperationException("No matching template found for templateName: TestTemplate");
-            _mediatorMock
-                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
-                .ThrowsAsync(exception);
-
-            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
-
-            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
-            var badRequestResult = result as BadRequestObjectResult;
-            var errorResponse = badRequestResult.Value;
-            Assert.That(errorResponse.GetType().GetProperty("error").GetValue(errorResponse),
-                Is.EqualTo("No matching template found for templateName: TestTemplate"));
-        }
-
-        [Test]
-        public async Task SendFeedbackEmails_ReturnsInternalServerError_WhenUnexpectedExceptionOccurs()
+        public async Task GetFeedbackTransactionUsers_ReturnsInternalServerError_WhenUnexpectedExceptionOccurs()
         {
             var feedbackTransactionId = 126L;
-            var request = new SendFeedbackEmailsRequest
-            {
-                NotificationTemplates = new List<NotificationTemplateRequest>
-                {
-                    new NotificationTemplateRequest { TemplateName = "TestTemplate", TemplateId = Guid.NewGuid() }
-                }
-            };
-
             var exception = new Exception("Unexpected error occurred");
+
             _mediatorMock
-                .Setup(x => x.Send(It.IsAny<SendFeedbackEmailsCommand>(), It.IsAny<CancellationToken>()))
+                .Setup(x => x.Send(It.IsAny<GetFeedbackTransactionUsersQuery>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
 
-            var result = await _controller.SendFeedbackEmails(feedbackTransactionId, request);
+            var result = await _controller.GetFeedbackTransactionUsers(feedbackTransactionId);
 
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
             var statusResult = result as StatusCodeResult;
             Assert.That(statusResult.StatusCode, Is.EqualTo((int)HttpStatusCode.InternalServerError));
+            _mediatorMock.Verify(x => x.Send(It.Is<GetFeedbackTransactionUsersQuery>(q =>
+                q.FeedbackTransactionId == feedbackTransactionId
+            ), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }
