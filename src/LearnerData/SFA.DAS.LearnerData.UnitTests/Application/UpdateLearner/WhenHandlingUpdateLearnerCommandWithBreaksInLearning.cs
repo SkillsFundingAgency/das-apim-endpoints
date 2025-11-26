@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 {
@@ -36,7 +37,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             _sut = new UpdateLearnerCommandHandler(
                 _logger.Object,
                 _learningApiClient.Object,
-                _earningsApiClient.Object);
+                _earningsApiClient.Object,
+                new LearningSupportService());
         }
 
         [Test]

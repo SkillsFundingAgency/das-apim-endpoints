@@ -44,12 +44,12 @@ internal static class EarningsApiClientExtensions
         }, "maths and english", logger, command.LearningKey);
     }
 
-    internal static async Task UpdateLearningSupport(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task UpdateLearningSupport(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, UpdateLearningApiPutRequest apiPutRequest, ILogger<UpdateLearnerCommandHandler> logger)
     {
         await LogAndExecute(async () =>
         {
             var data = new SaveLearningSupportRequest();
-            data.AddRange(command.CombinedLearningSupport().Select(ls => new LearningSupportPaymentDetail
+            data.AddRange(apiPutRequest.Data.LearningSupport.Select(ls => new LearningSupportPaymentDetail
             {
                 StartDate = ls.StartDate,
                 EndDate = ls.EndDate

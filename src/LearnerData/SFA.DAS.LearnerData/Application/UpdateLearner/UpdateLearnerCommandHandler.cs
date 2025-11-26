@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -13,7 +14,8 @@ namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+    ILearningSupportService learningSupportService
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
@@ -60,7 +62,7 @@ public class UpdateLearnerCommandHandler(
                     await earningsApiClient.UpdateMathAndEnglish(command, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
-                    await earningsApiClient.UpdateLearningSupport(command, logger);
+                    await earningsApiClient.UpdateLearningSupport(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
@@ -90,7 +92,7 @@ public class UpdateLearnerCommandHandler(
         }
     }
 
-    private static UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
+    private UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
     {
         /*
        Compare each OnProgramme element with the previous element to ensure they are for the same “episode” (i.e. standardCode and agreementIdare the same (Ukprn is implied).
@@ -152,7 +154,7 @@ public class UpdateLearnerCommandHandler(
                     StartDate = x.StartDate,
                     WithdrawalDate = x.WithdrawalDate
                 }).ToList(),
-            LearningSupport = command.CombinedLearningSupport()
+            LearningSupport = learningSupportService.GetCombinedLearningSupport(command.UpdateLearnerRequest)
         };
 
         return new UpdateLearningApiPutRequest(learnerKey, body);

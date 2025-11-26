@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -40,7 +41,8 @@ public class WhenHandlingUpdateLearnerCommand
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
-            _earningsApiClient.Object);
+            _earningsApiClient.Object,
+            new LearningSupportService());
     }
 
     [Test]
@@ -142,15 +144,15 @@ public class WhenHandlingUpdateLearnerCommand
 
         // Clone expected learning support with original EndDates
         var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths
-            .SelectMany(x => x.LearningSupport.Select(ls => new LearningSupportUpdatedDetails
+            .SelectMany(x => x.LearningSupport.Select(ls => new LearningSupportPaymentDetail
             {
                 StartDate = ls.StartDate,
                 EndDate = ls.EndDate
             }))
             .ToList();
 
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.First().LearningSupport!
-            .Select(ls => new LearningSupportUpdatedDetails
+        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme.SelectMany(x => x.LearningSupport)
+            .Select(ls => new LearningSupportPaymentDetail
             {
                 StartDate = ls.StartDate,
                 EndDate = ls.EndDate
@@ -172,11 +174,13 @@ public class WhenHandlingUpdateLearnerCommand
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
                 It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
 
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
-            r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
-                actual.StartDate == expected.StartDate &&
-                actual.EndDate == expected.EndDate
-            ))), Times.Once);
+        _earningsApiClient.Verify(x => x.Patch<SaveLearningSupportRequest>(
+            It.Is<SaveLearningSupportApiPutRequest>(r =>
+                r.Data.All(actual =>
+                    expectedLearningSupport.Any(expected =>
+                        actual.StartDate == expected.StartDate &&
+                        actual.EndDate == expected.EndDate
+                    )))), Times.Once);
     }
 
     [Test]
