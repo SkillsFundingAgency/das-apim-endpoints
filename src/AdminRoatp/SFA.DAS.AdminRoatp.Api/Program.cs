@@ -20,6 +20,7 @@ builder.Services
     .AddSwagger(configuration)
     .AddServiceRegistrations()
     .AddRoatpServiceApiClient(configuration)
+    .AddRoatpV2ApiClient(configuration)
     .AddControllers(o =>
     {
         if (!configuration.IsLocalOrDev()) o.Filters.Add(new AuthorizeFilter("default"));
