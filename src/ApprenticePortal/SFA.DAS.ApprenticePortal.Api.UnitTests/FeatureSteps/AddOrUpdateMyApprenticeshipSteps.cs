@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using SFA.DAS.ApprenticePortal.Api.Controllers;
 using SFA.DAS.ApprenticePortal.InnerApi.CommitmentsV2.Responses;
 using SFA.DAS.ApprenticePortal.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         private readonly TestContext _context;
         private Apprentice _apprentice;
         private ApprenticeshipDetailsResponse _apprenticeshipDetails;
-        private TrainingProviderResponse _trainingProviderResponse;
+        private OrganisationResponse _trainingProviderResponse;
         private MyApprenticeshipConfirmedRequest _confirmRequest;
         private MyApprenticeshipData _postedData;
 
@@ -28,8 +28,8 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         {
             _context = context;
             _apprentice = _fixture.Create<Apprentice>();
-            _apprenticeshipDetails = _fixture.Build<ApprenticeshipDetailsResponse>().With(x=>x.Uln, "10000020").Create();
-            _trainingProviderResponse = _fixture.Create<TrainingProviderResponse>();
+            _apprenticeshipDetails = _fixture.Build<ApprenticeshipDetailsResponse>().With(x => x.Uln, "10000020").Create();
+            _trainingProviderResponse = _fixture.Create<OrganisationResponse>();
             _confirmRequest = _fixture.Build<MyApprenticeshipConfirmedRequest>()
                 .With(x => x.CommitmentsApprenticeshipId, _apprenticeshipDetails.Id).Create();
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         {
             _context.TrainingProviderInnerApi.WithValidSearch(_apprenticeshipDetails.ProviderId, _trainingProviderResponse);
         }
-        
+
         [Given(@"training provider has no trading name")]
         public void GivenTrainingProviderExistsButHasNoTradingName()
         {
@@ -76,7 +76,7 @@ namespace SFA.DAS.ApprenticePortal.Api.UnitTests.FeatureSteps
         [When(@"the MyApprenticeshipConfirmedRequest is posted")]
         public async Task WhenTheMyApprenticeshipConfirmedRequestIsPosted()
         {
-           await _context.OuterApiClient.Post($"/apprentices/{_apprentice.ApprenticeId}/my-apprenticeship", _confirmRequest);
+            await _context.OuterApiClient.Post($"/apprentices/{_apprentice.ApprenticeId}/my-apprenticeship", _confirmRequest);
         }
 
         [Then(@"the call to add MyApprenticeship is called")]

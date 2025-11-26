@@ -1,0 +1,191 @@
+{
+	"info": {
+		"_postman_id": "e483bb39-a222-4883-b839-1d898d11f329",
+		"name": "Outer API Tests For Employer_Feedback",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21174429"
+	},
+	"item": [
+		{
+			"name": "Attributes-GetAll",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/attributes",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DataLoad-GenerateFeedbackSummaries",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/DataLoad/generate-feedback-summaries",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"DataLoad",
+						"generate-feedback-summaries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EmployerFeedbackResult-SubmitFeedback",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userRef\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"ukprn\": 10005310,\r\n  \"accountId\": 1,\r\n  \"providerRating\": \"VeryPoor\",\r\n  \"feedbackSource\": 1,\r\n  \"providerAttributes\": [\r\n    {\r\n      \"attributeId\": 1,\r\n      \"attributeValue\": 1\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/EmployerFeedbackResult",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"EmployerFeedbackResult"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account-SyncEmployerAccounts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Account/update",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"Account",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EmployerFeedback-GetTrainingProviderSearch",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/EmployerFeedback?accountId=123&userRef=af597ef9-081c-4f05-ac3d-6a7046933554",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"EmployerFeedback"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": "123"
+						},
+						{
+							"key": "userRef",
+							"value": "af597ef9-081c-4f05-ac3d-6a7046933554"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
