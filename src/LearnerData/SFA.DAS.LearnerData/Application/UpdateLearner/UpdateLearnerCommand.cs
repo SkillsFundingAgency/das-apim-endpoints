@@ -21,30 +21,72 @@ internal static class UpdateLearnerCommandExtensions
     {
         var combinedLearningSupport = new List<LearningSupportUpdatedDetails>();
 
-        var onProgrammeLearningSupport = command.UpdateLearnerRequest.Delivery.OnProgramme?.LearningSupport
-            .Select(ls => new LearningSupportUpdatedDetails
-            {
-                StartDate = ls.StartDate,
-                EndDate = ls.EndDate
-            });
-
-        if (onProgrammeLearningSupport != null && onProgrammeLearningSupport.Any())
-            combinedLearningSupport.AddRange(onProgrammeLearningSupport);
-
-        var mathsAndEnglishLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths?
-            .SelectMany(x => x.LearningSupport != null
-                ? x.LearningSupport.Select(ls => new LearningSupportUpdatedDetails
-                {
-                    StartDate = ls.StartDate,
-                    EndDate = ls.EndDate
-                })
-                : Enumerable.Empty<LearningSupportUpdatedDetails>());
-
-
-        if (mathsAndEnglishLearningSupport != null && mathsAndEnglishLearningSupport.Any())
-            combinedLearningSupport.AddRange(mathsAndEnglishLearningSupport);
-
+        combinedLearningSupport.AddRange(GetOnProgrammeLearningSupport(command));
+        combinedLearningSupport.AddRange(GetEnglishAndMathsLearningSupport(command));
 
         return combinedLearningSupport;
+    }
+
+    private static IEnumerable<LearningSupportUpdatedDetails> GetOnProgrammeLearningSupport(UpdateLearnerCommand command)
+    {
+        var results = new List<LearningSupportUpdatedDetails>();
+        var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme;
+        var completionDate = onProgramme.First().CompletionDate;
+        var withdrawalDate = onProgramme.First().WithdrawalDate;
+        var pauseDate = onProgramme.First().PauseDate;
+
+        foreach (var ls in onProgramme.First().LearningSupport)
+        {
+            var potentialEndDates = new List<DateTime> { ls.EndDate };
+
+            if (completionDate.HasValue)
+                potentialEndDates.Add(completionDate.Value);
+
+            if (withdrawalDate.HasValue)
+                potentialEndDates.Add(withdrawalDate.Value);
+
+            if (pauseDate.HasValue)
+                potentialEndDates.Add(pauseDate.Value);
+
+            var endDate = potentialEndDates.Min();
+
+            results.Add(new LearningSupportUpdatedDetails
+            {
+                StartDate = ls.StartDate,
+                EndDate = endDate
+            });
+        }
+
+        return results;
+    }
+
+    private static IEnumerable<LearningSupportUpdatedDetails> GetEnglishAndMathsLearningSupport(UpdateLearnerCommand command)
+    {
+        var results = new List<LearningSupportUpdatedDetails>();
+        var englishAndMaths = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
+
+        foreach (var em in englishAndMaths)
+        {
+            foreach (var ls in em.LearningSupport)
+            {
+                var potentialEndDates = new List<DateTime> { ls.EndDate };
+
+                if (em.CompletionDate.HasValue)
+                    potentialEndDates.Add(em.CompletionDate.Value);
+
+                if (em.WithdrawalDate.HasValue)
+                    potentialEndDates.Add(em.WithdrawalDate.Value);
+
+                var endDate = potentialEndDates.Min();
+
+                results.Add(new LearningSupportUpdatedDetails
+                {
+                    StartDate = ls.StartDate,
+                    EndDate = endDate
+                });
+            }
+        }
+    
+        return results;
     }
 }

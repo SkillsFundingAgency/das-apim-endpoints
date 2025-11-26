@@ -3,6 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
+using SFA.DAS.LearnerDataJobs.Application.Handlers;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -21,7 +22,7 @@ public class AddLearnerDataCommandHandlerTests
     {
 
         var expectedUrl =
-            $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}/academicyears/{command.LearnerData.AcademicYear}/standardcodes/{command.LearnerData.StandardCode}";
+            $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
         client.Setup(x =>
                 x.PutWithResponseCode<NullResponse>(
                     It.Is<PutLearnerDataRequest>(p => p.Data == command.LearnerData && p.PutUrl == expectedUrl)))

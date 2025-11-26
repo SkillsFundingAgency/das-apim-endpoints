@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;

@@ -10,8 +10,11 @@ using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
 using SFA.DAS.Recruit.Enums;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.Queries.GetAlertsByAccountId;
+using SFA.DAS.Recruit.Application.Queries.GetVacanciesByAccountId;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
@@ -72,6 +75,49 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception e)
             {
                 logger.LogError(e, "Error getting employer dashboard stats");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("vacancies")]
+        public async Task<IActionResult> GetVacancies([FromRoute] long accountId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 25,
+            [FromQuery] string sortColumn = "CreatedDate",
+            [FromQuery] string sortOrder = "Desc",
+            [FromQuery] FilteringOptions filterBy = FilteringOptions.All,
+            [FromQuery] string searchTerm = "",
+            CancellationToken token = default)
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetVacanciesByAccountIdQuery(accountId, page, pageSize, sortColumn, sortOrder, filterBy, searchTerm), token);
+
+                return Ok(queryResult);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting employer vacancies");
+                return BadRequest();
+            }
+        }
+
+        [HttpGet]
+        [Route("alerts")]
+        public async Task<IActionResult> GetEmployerAlerts([FromRoute] long accountId,
+            [FromQuery] string userId = null,
+            CancellationToken token = default)
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetAlertsByAccountIdQuery(accountId, userId), token);
+
+                return Ok(queryResult);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error getting employer alerts");
                 return BadRequest();
             }
         }

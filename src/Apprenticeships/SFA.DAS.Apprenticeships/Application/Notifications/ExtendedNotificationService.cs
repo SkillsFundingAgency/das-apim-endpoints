@@ -134,11 +134,11 @@ namespace SFA.DAS.Apprenticeships.Application.Notifications
             {
                 var command = new SendEmailCommand(templateId, recipient.Email, tokens);
                 await _notificationService.Send(command);
-                _logger.LogInformation("Email sent to {userId}", recipient.UserRef);
+                _logger.LogInformation("Email sent to {userId}", recipient.UserRef); //UserRef is an internal guid and ok to log
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error sending email to {userId}", recipient.UserRef);
+                _logger.LogError(ex, "Error sending email to {userId}", recipient.UserRef); //UserRef is an internal guid and ok to log
                 return false;
             }
 

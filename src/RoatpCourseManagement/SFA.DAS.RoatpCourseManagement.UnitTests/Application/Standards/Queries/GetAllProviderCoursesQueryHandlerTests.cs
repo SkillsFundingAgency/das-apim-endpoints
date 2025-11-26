@@ -28,13 +28,12 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
         {
             apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(courses);
             var result = await sut.Handle(query, new CancellationToken());
-            
-            result.Should().BeEquivalentTo(courses, options => 
+
+            result.Should().BeEquivalentTo(courses, options =>
                options.Excluding(c => c.IfateReferenceNumber)
-                   .Excluding(c=>c.StandardInfoUrl)
+                   .Excluding(c => c.StandardInfoUrl)
                    .Excluding(c => c.ContactUsPhoneNumber)
                    .Excluding(c => c.ContactUsEmail)
-                   .Excluding(c => c.ContactUsPageUrl)
                    .Excluding(c => c.IsConfirmed)
                    .Excluding(c => c.HasNationalDeliveryOption)
                    .Excluding(c => c.DeliveryModels)
@@ -49,9 +48,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
             GetAllProviderCoursesQueryHandler sut)
         {
             var courses = new List<GetAllProviderCoursesResponse>();
-           apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(courses);
+            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(courses);
             var result = await sut.Handle(query, new CancellationToken());
-        
+
             result.Should().BeEmpty();
         }
 

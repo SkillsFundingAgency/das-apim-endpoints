@@ -68,3 +68,86 @@ public class LearningSupportPaymentDetail
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
 }
+
+public class SavePricesApiPatchRequest : IPatchApiRequest<SavePricesRequest>
+{
+    public string PatchUrl { get; }
+
+    public SavePricesRequest Data { get; set; }
+
+    public SavePricesApiPatchRequest(Guid apprenticeshipKey, SavePricesRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/prices";
+        Data = data;
+    }
+}
+
+public class SavePricesRequest
+{
+    public Guid ApprenticeshipEpisodeKey { get; set; }
+    public int AgeAtStartOfLearning { get; set; }
+    public int FundingBandMaximum { get; set; }
+    public List<PriceDetail> Prices { get; set; } = [];
+}
+
+public class PriceDetail
+{
+    public Guid Key { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public decimal TrainingPrice { get; set; }
+    public decimal? EndPointAssessmentPrice { get; set; }
+    public decimal TotalPrice { get; set; }
+}
+
+public class WithdrawApiPatchRequest : IPatchApiRequest<WithdrawRequest>
+{
+    public string PatchUrl { get; }
+
+    public WithdrawRequest Data { get; set; }
+
+    public WithdrawApiPatchRequest(Guid apprenticeshipKey, WithdrawRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/withdraw";
+        Data = data;
+    }
+}
+
+public class WithdrawRequest
+{
+    public DateTime WithdrawalDate { get; set; }
+}
+
+public class ReverseWithdrawalRequest
+{
+}
+
+public class ReverseWithdrawalApiPatchRequest(Guid apprenticeshipKey) : IPatchApiRequest<ReverseWithdrawalRequest>
+{
+    public string PatchUrl { get; } = $"apprenticeship/{apprenticeshipKey}/reverse-withdrawal";
+
+    public ReverseWithdrawalRequest Data { get; set; } = new();
+}
+
+public class PauseRequest
+{
+    public DateTime PauseDate { get; set; }
+}
+
+public class PauseApiPatchRequest: IPatchApiRequest<PauseRequest>
+{
+    public string PatchUrl { get; }
+
+    public PauseRequest Data { get; set; }
+
+    public PauseApiPatchRequest(Guid apprenticeshipKey, PauseRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/pause";
+        Data = data;
+    }
+}
+
+public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiRequest
+{
+    public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
+}

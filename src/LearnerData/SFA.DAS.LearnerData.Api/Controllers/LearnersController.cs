@@ -1,15 +1,18 @@
-﻿using FluentValidation;
+﻿using Azure;
+using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
+using SFA.DAS.LearnerData.Application.RemoveLearner;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -17,7 +20,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<IEnumerable<LearnerDataRequest>> validator,
+    IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
@@ -47,7 +50,7 @@ public class LearnersController(
         [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
     {
 
-        var validatorResult = await validator.ValidateAsync(dataRequests);
+        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
 
         if (!validatorResult.IsValid)
         {
@@ -59,8 +62,33 @@ public class LearnersController(
             var correlationId = Guid.NewGuid();
             await mediator.Send(new ProcessLearnersCommand
             {
-                CorrelationId = correlationId, ReceivedOn = DateTime.Now, AcademicYear = academicyear,
+                CorrelationId = correlationId,
+                ReceivedOn = DateTime.Now,
+                AcademicYear = academicyear,
                 Learners = dataRequests
+            });
+            return Accepted(new CorrelationResponse { CorrelationId = correlationId });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when processing learners list");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPost]
+    [Route("/providers/{ukprn}/learners")]
+    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
+    {
+        try
+        {
+            var correlationId = Guid.NewGuid();
+            await mediator.Send(new CreateLearnerCommand
+            {
+                CorrelationId = correlationId, 
+                ReceivedOn = DateTime.Now, 
+                Request = dataRequest,
+                Ukprn = ukprn
             });
             return Accepted(new CorrelationResponse {CorrelationId = correlationId});
         }
@@ -91,21 +119,59 @@ public class LearnersController(
         }
     }
 
+    [HttpDelete("/providers/{ukprn}/learning/{learningKey}")]
+    public async Task<IActionResult> RemoveLearner(
+        [FromRoute] long ukprn,
+        [FromRoute] Guid learningKey)
+    {
+        logger.LogInformation(
+            "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
+            ukprn,
+            learningKey);
+
+        try
+        {
+            var command = new RemoveLearnerCommand
+            {
+                LearningKey = learningKey,
+                Ukprn = ukprn
+            };
+
+            await mediator.Send(command);
+
+            return NoContent();
+
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"Internal error occurred when removing learner {learningKey}");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
     /// <summary>
     /// Gets all earnings data.
     /// </summary>
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
     [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
-    public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod)
+    public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         try
         {
-            var queryResult = await mediator.Send(new GetFm36Command(ukprn, collectionYear, collectionPeriod));
+            var query = new GetFm36Query(ukprn, collectionYear, collectionPeriod, page, pageSize); 
 
-            var model = queryResult.FM36Learners;
+            var queryResult = await mediator.Send(query);
 
-            return Ok(model);
+            if (query.IsPaged)
+            {
+                HttpContext.SetPageLinksInResponseHeaders(query, queryResult);
+                return Ok(queryResult);
+            }
+            else
+            {
+                return Ok(queryResult.Items);
+            }
         }
         catch (Exception e)
         {

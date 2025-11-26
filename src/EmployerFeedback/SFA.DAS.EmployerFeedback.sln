@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Empl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.UnitTests.csproj", "{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.EmployerFeedback.FakeApis", "SFA.DAS.EmployerFeedback.FakeApis\SFA.DAS.EmployerFeedback.FakeApis.csproj", "{DFBA4FCA-500F-1F6B-B78D-EAC462871FEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA452E56-DB2D-D5BD-9C66-676AC6E813E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFBA4FCA-500F-1F6B-B78D-EAC462871FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFBA4FCA-500F-1F6B-B78D-EAC462871FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFBA4FCA-500F-1F6B-B78D-EAC462871FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFBA4FCA-500F-1F6B-B78D-EAC462871FEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +73,7 @@ Global
 		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113} = {2648E357-8647-4625-BA1D-B0239F96E36D}
 		{553A5B33-A91F-491E-A9B3-FC8E3F4A6690} = {2648E357-8647-4625-BA1D-B0239F96E36D}
 		{31C27D46-ACC8-4891-B1C6-018A8EF8F981} = {2648E357-8647-4625-BA1D-B0239F96E36D}
+		{DFBA4FCA-500F-1F6B-B78D-EAC462871FEC} = {2648E357-8647-4625-BA1D-B0239F96E36D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {84B1617E-D17F-44D8-893A-D9ED04A8EBAB}

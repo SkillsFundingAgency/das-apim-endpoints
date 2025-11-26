@@ -6,7 +6,8 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
 using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
-using SFA.DAS.LearnerData.Application.ProcessLearners;
+using SFA.DAS.LearnerData.Api.Middleware;
+using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
 using SFA.DAS.NServiceBus.Configuration;
@@ -16,7 +17,6 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Net;
 using System.Text.Json.Serialization;
-using SFA.DAS.LearnerData.Api.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,10 +80,12 @@ builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks()
     .AddCheck<LearningApiHealthCheck>(LearningApiHealthCheck.HealthCheckResultDescription)
     .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription)
-    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription);
+    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription)
+    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
 
-builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(ProcessLearnersCommand).Assembly));
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateLearnerCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IValidator<CreateLearnerRequest>, CreateLearnerRequestValidator>();
 builder.Services.AddScoped<IValidator<IEnumerable<LearnerDataRequest>>, BulkLearnerDataRequestsValidator>();
 
 builder.Services.AddServices();
