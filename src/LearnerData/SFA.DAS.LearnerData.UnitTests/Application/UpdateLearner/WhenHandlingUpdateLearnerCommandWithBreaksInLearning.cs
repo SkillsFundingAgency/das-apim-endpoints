@@ -38,7 +38,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                 _logger.Object,
                 _learningApiClient.Object,
                 _earningsApiClient.Object,
-                new LearningSupportService());
+                new LearningSupportService(),
+                new BreaksInLearningService());
         }
 
         [Test]

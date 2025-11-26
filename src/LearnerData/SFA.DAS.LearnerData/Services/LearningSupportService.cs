@@ -144,7 +144,6 @@ namespace SFA.DAS.LearnerData.Services
 
             return results;
         }
-
     }
 }
 

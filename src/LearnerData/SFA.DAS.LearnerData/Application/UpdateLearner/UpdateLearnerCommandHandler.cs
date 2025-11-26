@@ -15,7 +15,8 @@ public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    ILearningSupportService learningSupportService
+    ILearningSupportService learningSupportService,
+    IBreaksInLearningService breaksInLearningService
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
@@ -94,56 +95,31 @@ public class UpdateLearnerCommandHandler(
 
     private UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
     {
-        /*
-       Compare each OnProgramme element with the previous element to ensure they are for the same “episode” (i.e. standardCode and agreementIdare the same (Ukprn is implied).
-        Any items in the array which aren’t for the same episode as they’ll be handled in later features.
-       Add a new BreakInLearning item to the BreakInLearning array with the start date of the end of the previous episode (confirm field) and with an end date of the start of the next episode.
-       Merge together the costs arrays from both OnProgramme elements, removing the break if the costs are the same before and after the break.
-       Merge together the values from the correct OnProgramme elements to create the required values for the inner:
-       WithdrawalDate - last element
-       ExpectedEndDate - last element
-         */
+        var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(command);
 
-        //get the first element in the OnProg - this is the "driver"
-        //get all other on-progs with same StandardCode and AgreementId (ignore all others)
-        //calculate the breaks in learning
-        //merge costs array (delete if same before and after break)
-        //update on prog with fields from last onProg where necessary
-        // -- eg. WithdrawalDate, ExpectedEndDate, PauseDate (?)
+        var breaksInLearning = breaksInLearningService.CalculateOnProgrammeBreaksInLearning(allMatchingOnProgrammes);
 
-        var orderedOnProgs = command.UpdateLearnerRequest.Delivery.OnProgramme
-            .OrderBy(x => x.StartDate); //todo: check order
-
-        var primaryOnProg = orderedOnProgs.First();
-        var onProgs = orderedOnProgs
-                .Where(x => x.StandardCode == primaryOnProg.StandardCode && x.AgreementId == primaryOnProg.AgreementId)
-                .ToList();
-
-        var lastOnProg = orderedOnProgs.Last();
-
-        var breaksInLearning = CalculateBreaksInLearning(onProgs);
-
-        var learningSupport = learningSupportService.GetCombinedLearningSupport(onProgs,
+        var learningSupport = learningSupportService.GetCombinedLearningSupport(allMatchingOnProgrammes,
             command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaksInLearning.Breaks);
 
         var body = new UpdateLearningRequestBody
         {
             Delivery = new Delivery
             {
-                WithdrawalDate = lastOnProg.WithdrawalDate
+                WithdrawalDate = latestOnProgramme.WithdrawalDate
             },
             Learner = new LearningUpdateDetails
             {
                 FirstName = command.UpdateLearnerRequest.Learner.FirstName,
                 LastName = command.UpdateLearnerRequest.Learner.LastName,
                 EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                CompletionDate = lastOnProg.CompletionDate
+                CompletionDate = latestOnProgramme.CompletionDate
             },
             OnProgramme = new OnProgrammeDetails
             {
-                ExpectedEndDate = lastOnProg.ExpectedEndDate,
-                Costs = breaksInLearning.Costs.GetCostsOrDefault(primaryOnProg.StartDate),
-                PauseDate = lastOnProg.PauseDate,
+                ExpectedEndDate = latestOnProgramme.ExpectedEndDate,
+                Costs = breaksInLearning.Costs.GetCostsOrDefault(firstOnProgramme.StartDate),
+                PauseDate = latestOnProgramme.PauseDate,
                 BreaksInLearning = breaksInLearning.Breaks
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
@@ -163,61 +139,24 @@ public class UpdateLearnerCommandHandler(
         return new UpdateLearningApiPutRequest(learnerKey, body);
     }
 
-    private static (List<BreakInLearning> Breaks, List<CostDetails> Costs)
-        CalculateBreaksInLearning(List<OnProgrammeRequestDetails> onProgrammeItems)
+    private static (OnProgrammeRequestDetails FirstOnProgramme,
+        OnProgrammeRequestDetails LatestOnProgramme,
+        List<OnProgrammeRequestDetails> MatchingOnProgrammes
+        ) SelectEpisode(UpdateLearnerCommand command)
     {
-        var breaks = new List<BreakInLearning>();
-        var mergedCosts = new List<CostDetails>();
+        var orderedOnProgrammes = command.UpdateLearnerRequest.Delivery.OnProgramme
+            .OrderBy(x => x.StartDate)
+            .ToList();
 
-        for (var i = 0; i < onProgrammeItems.Count; i++)
-        {
-            var current = onProgrammeItems[i];
+        var firstOnProgramme = orderedOnProgrammes.First();
 
-            // Merge costs: union all, but discard redundant consecutive entries
-            if (current.Costs != null)
-            {
-                foreach (var cost in current.Costs)
-                {
-                    if (mergedCosts.Count == 0)
-                    {
-                        mergedCosts.Add(cost);
-                    }
-                    else
-                    {
-                        var last = mergedCosts.Last();
-                        if (last.TrainingPrice == cost.TrainingPrice &&
-                            last.EpaoPrice == cost.EpaoPrice)
-                        {
-                            // Identical apart from FromDate → carry forward the first FromDate
-                            // Do nothing (keep last as-is)
-                        }
-                        else
-                        {
-                            mergedCosts.Add(cost);
-                        }
-                    }
-                }
-            }
+        var allMatchingOnProgrammes = orderedOnProgrammes
+            .Where(x => x.StandardCode == firstOnProgramme.StandardCode &&
+                        x.AgreementId == firstOnProgramme.AgreementId)
+            .ToList();
 
-            // Breaks in learning (skip last item check)
-            if (i < onProgrammeItems.Count - 1)
-            {
-                var next = onProgrammeItems[i + 1];
+        var latestOnProgramme = allMatchingOnProgrammes.Last();
 
-                if (current.ActualEndDate.HasValue && current.ActualEndDate < next.StartDate)
-                {
-                    var gapStart = current.ActualEndDate.Value.AddDays(1);
-                    var gapEnd = next.StartDate.AddDays(-1);
-
-                    breaks.Add(new BreakInLearning
-                    {
-                        StartDate = gapStart,
-                        EndDate = gapEnd
-                    });
-                }
-            }
-        }
-
-        return (breaks, mergedCosts);
+        return (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes);
     }
 }

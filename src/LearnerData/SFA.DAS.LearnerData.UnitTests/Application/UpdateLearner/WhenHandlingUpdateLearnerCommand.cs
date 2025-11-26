@@ -42,7 +42,8 @@ public class WhenHandlingUpdateLearnerCommand
             _logger.Object,
             _learningApiClient.Object,
             _earningsApiClient.Object,
-            new LearningSupportService());
+            new LearningSupportService(),
+            new BreaksInLearningService());
     }
 
     [Test]
