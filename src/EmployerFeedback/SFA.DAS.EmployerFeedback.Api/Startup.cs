@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
@@ -18,12 +19,14 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFeedback.Api
 {
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+        private const string EndpointName = "SFA.DAS.EmployerFeedback";
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
 
@@ -166,6 +169,11 @@ namespace SFA.DAS.EmployerFeedback.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerFeedbackOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+        }
+
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
         }
     }
 }
