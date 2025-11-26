@@ -123,6 +123,9 @@ public class UpdateLearnerCommandHandler(
 
         var breaksInLearning = CalculateBreaksInLearning(onProgs);
 
+        var learningSupport = learningSupportService.GetCombinedLearningSupport(onProgs,
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaksInLearning.Breaks);
+
         var body = new UpdateLearningRequestBody
         {
             Delivery = new Delivery
@@ -154,7 +157,7 @@ public class UpdateLearnerCommandHandler(
                     StartDate = x.StartDate,
                     WithdrawalDate = x.WithdrawalDate
                 }).ToList(),
-            LearningSupport = learningSupportService.GetCombinedLearningSupport(command.UpdateLearnerRequest)
+            LearningSupport = learningSupport
         };
 
         return new UpdateLearningApiPutRequest(learnerKey, body);

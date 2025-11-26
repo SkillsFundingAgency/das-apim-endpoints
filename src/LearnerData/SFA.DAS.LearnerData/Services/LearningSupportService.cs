@@ -5,26 +5,26 @@ namespace SFA.DAS.LearnerData.Services
 {
     public interface ILearningSupportService
     {
-        List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(UpdateLearnerRequest request);
+        List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breakInLearnings);
     }
 
     public class LearningSupportService : ILearningSupportService
     {
-        public List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(UpdateLearnerRequest request)
+        public List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breakInLearnings)
         {
             var combined = new List<LearningSupportUpdatedDetails>();
 
-            combined.AddRange(GetOnProgrammeLearningSupport(request));
-            combined.AddRange(GetEnglishAndMathsLearningSupport(request));
+            combined.AddRange(GetOnProgrammeLearningSupport(onProgrammeRequestDetailsList));
+            combined.AddRange(GetEnglishAndMathsLearningSupport(englishAndMaths));
 
             return combined;
         }
 
-        private static IEnumerable<LearningSupportUpdatedDetails> GetOnProgrammeLearningSupport(UpdateLearnerRequest request)
+        private static IEnumerable<LearningSupportUpdatedDetails> GetOnProgrammeLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList)
         {
             var results = new List<LearningSupportUpdatedDetails>();
 
-            foreach (var onProg in request.Delivery.OnProgramme)
+            foreach (var onProg in onProgrammeRequestDetailsList)
             {
                 foreach (var ls in onProg.LearningSupport)
                 {
@@ -52,11 +52,11 @@ namespace SFA.DAS.LearnerData.Services
             return results;
         }
 
-        private static IEnumerable<LearningSupportUpdatedDetails> GetEnglishAndMathsLearningSupport(UpdateLearnerRequest request)
+        private static IEnumerable<LearningSupportUpdatedDetails> GetEnglishAndMathsLearningSupport(List<MathsAndEnglish> englishAndMaths)
         {
             var results = new List<LearningSupportUpdatedDetails>();
 
-            foreach (var em in request.Delivery.EnglishAndMaths)
+            foreach (var em in englishAndMaths)
             {
                 foreach (var ls in em.LearningSupport)
                 {
@@ -80,6 +80,7 @@ namespace SFA.DAS.LearnerData.Services
 
             return results;
         }
+
     }
 }
 
