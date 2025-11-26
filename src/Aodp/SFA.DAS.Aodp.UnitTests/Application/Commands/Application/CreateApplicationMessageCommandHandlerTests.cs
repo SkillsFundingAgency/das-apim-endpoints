@@ -4,7 +4,8 @@ using Moq;
 using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Application.Messages;
-using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.Aodp.Models;
+using SFA.DAS.Aodp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -29,7 +30,7 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
         private const string InternalNotesMessageType = "InternalNotes";
 
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClient = null!;
-        private Mock<INotificationService> _notificationService = null!;
+        private Mock<IEmailService> _emailService = null!;
         private Mock<IOptions<AodpConfiguration>> _options = null!;
         private Mock<ILogger<CreateApplicationMessageCommandHandler>> _logger = null!;
 
@@ -39,7 +40,7 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
         public void SetUp()
         {
             _apiClient = new Mock<IAodpApiClient<AodpApiConfiguration>>();
-            _notificationService = new Mock<INotificationService>();
+            _emailService = new Mock<IEmailService>();
             _options = new Mock<IOptions<AodpConfiguration>>();
             _logger = new Mock<ILogger<CreateApplicationMessageCommandHandler>>();
 
@@ -61,9 +62,9 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
 
             _handler = new CreateApplicationMessageCommandHandler(
                 _apiClient.Object,
-                _notificationService.Object,
                 _options.Object,
-                _logger.Object);
+                _logger.Object,
+                _emailService.Object);
         }
 
         [Test]
@@ -123,19 +124,18 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                             r.Data == request), true),
                     Times.Once);
 
-                _notificationService.Verify(s =>
-                    s.Send(It.Is<SendEmailCommand>(cmd =>
-                        cmd.TemplateId == TemplateId.ToString() &&
-                        cmd.RecipientsAddress == QfauMailboxEmail &&
-                        cmd.Tokens != null &&
-                        cmd.Tokens.ContainsKey("QFASTBaseUrl") &&
-                        cmd.Tokens["QFASTBaseUrl"] == QfastBaseUrl)),
-                    Times.Once);
+                _emailService.Verify(s => s.SendAsync(
+                    It.Is<IReadOnlyCollection<NotificationDefinition>>(n =>
+                        n.Count == 1 &&
+                        n.First().TemplateName == EmailTemplateNames.QFASTApplicationSubmittedNotification &&
+                        n.First().RecipientKind == NotificationRecipientKind.QfauMailbox
+                    ),
+                    default),Times.Once);
             });
         }
 
         [Test]
-        public async Task Handle_NoNotifications_DoesNotSendEmail_StillReturnsSuccess()
+        public async Task Handle_NoNotifications_EmptyPayloadToEmailService_StillReturnsSuccess()
         {
             // Arrange
             var innerResponse = new CreateApplicationMessageCommandResponse
@@ -173,68 +173,11 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                 Assert.That(result.Value, Is.Not.Null);
                 Assert.That(result.Value.Id, Is.EqualTo(MessageId));
 
-                _notificationService.Verify(
-                    s => s.Send(It.IsAny<SendEmailCommand>()),
-                    Times.Never);
-            });
-        }
-
-        [Test]
-        public async Task Handle_TemplateIdMissing_LogsWarning_DoesNotSendEmail()
-        {
-            // Arrange
-            _options.SetupGet(o => o.Value).Returns(new AodpConfiguration
-            {
-                QfauReviewerEmailAddress = QfauMailboxEmail,
-                QFASTBaseUrl = QfastBaseUrl,
-                NotificationTemplates = new List<NotificationTemplate>()
-            });
-
-            var notifications = new List<NotificationDefinition>
-            {
-                new()
-                {
-                    TemplateName = TemplateName,
-                    RecipientKind = NotificationRecipientKind.QfauMailbox
-                }
-            };
-
-            var innerResponse = new CreateApplicationMessageCommandResponse
-            {
-                Id = MessageId,
-                Notifications = notifications
-            };
-
-            var apiResponse = new ApiResponse<CreateApplicationMessageCommandResponse>(
-                innerResponse,
-                HttpStatusCode.OK,
-                string.Empty);
-
-            _apiClient
-                .Setup(c => c.PostWithResponseCode<CreateApplicationMessageCommandResponse>(
-                    It.IsAny<CreateApplicationMessageApiRequest>(), true))
-                .ReturnsAsync(apiResponse);
-
-            var request = new CreateApplicationMessageCommand
-            {
-                ApplicationId = ApplicationId,
-                MessageType = ApplicationSubmittedMessageType,
-                MessageText = "Test",
-                UserType = QfauUserType
-            };
-
-            // Act
-            var result = await _handler.Handle(request, CancellationToken.None);
-
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(result, Is.Not.Null);
-                Assert.That(result.Success, Is.True); 
-
-                _notificationService.Verify(
-                    s => s.Send(It.IsAny<SendEmailCommand>()),
-                    Times.Never);
+                _emailService.Verify(
+                    s => s.SendAsync(
+                        It.Is<IReadOnlyCollection<NotificationDefinition>>(n => n != null && !n.Any()),
+                        default),
+                    Times.Once);
             });
         }
 
@@ -265,8 +208,8 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                 Assert.That(result.Success, Is.False);
                 Assert.That(result.ErrorMessage, Is.EqualTo("api exception"));
 
-                _notificationService.Verify(
-                    s => s.Send(It.IsAny<SendEmailCommand>()),
+                _emailService.Verify(
+                    s => s.SendAsync(It.IsAny<List<NotificationDefinition>>(), default),
                     Times.Never);
             });
         }

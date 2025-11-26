@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Api.Common.Infrastructure;
+﻿using SFA.DAS.Aodp.Services;
+using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -18,6 +19,8 @@ namespace SFA.DAS.Aodp.Api.AppStart
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IAodpApiClient<AodpApiConfiguration>, AodpApiClient>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddScoped<IEmailService, EmailService>();
+
             return services;
         }
     }
