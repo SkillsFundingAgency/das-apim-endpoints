@@ -22,10 +22,10 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             var breaksInLearningService = new BreaksInLearningService();
 
-            // Act: calculate breaks directly
+            // Act
             var result = breaksInLearningService.CalculateOnProgrammeBreaksInLearning([firstEpisode, secondEpisode]);
 
-            // Assert: expect one break spanning the gap
+            // Assert
             var expectedBreak = new BreakInLearning
             {
                 StartDate = firstEpisode.ActualEndDate!.Value.AddDays(1),

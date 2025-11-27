@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
@@ -10,8 +9,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
     [TestFixture]
     public class LearningSupportServiceTests
     {
-        private readonly Fixture _fixture = new Fixture();
-
         [Test]
         public void With_LearningSupport_Pre_And_Post_Break_Then_Learning_Is_Updated_With_Merged_LSF()
         {

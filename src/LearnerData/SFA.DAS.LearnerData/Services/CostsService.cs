@@ -13,31 +13,27 @@ namespace SFA.DAS.LearnerData.Services
         {
             var mergedCosts = new List<CostDetails>();
 
-            for (var i = 0; i < onProgrammeItems.Count; i++)
+            foreach (var current in onProgrammeItems)
             {
-                var current = onProgrammeItems[i];
-
                 // Merge costs: union all, but discard redundant consecutive entries
-                if (current.Costs != null)
+                if (current.Costs == null) continue;
+                foreach (var cost in current.Costs)
                 {
-                    foreach (var cost in current.Costs)
+                    if (mergedCosts.Count == 0)
                     {
-                        if (mergedCosts.Count == 0)
+                        mergedCosts.Add(cost);
+                    }
+                    else
+                    {
+                        var last = mergedCosts.Last();
+                        if (last.TrainingPrice == cost.TrainingPrice &&
+                            last.EpaoPrice == cost.EpaoPrice)
                         {
-                            mergedCosts.Add(cost);
+                            // Identical apart from FromDate keep previous as-is and skip this one
                         }
                         else
                         {
-                            var last = mergedCosts.Last();
-                            if (last.TrainingPrice == cost.TrainingPrice &&
-                                last.EpaoPrice == cost.EpaoPrice)
-                            {
-                                // Identical apart from FromDate → keep last as-is
-                            }
-                            else
-                            {
-                                mergedCosts.Add(cost);
-                            }
+                            mergedCosts.Add(cost);
                         }
                     }
                 }

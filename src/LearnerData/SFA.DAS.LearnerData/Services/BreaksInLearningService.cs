@@ -20,22 +20,18 @@ public class BreaksInLearningService : IBreaksInLearningService
             var current = onProgrammeItems[i];
 
             // Breaks in learning (skip last item check)
-            if (i < onProgrammeItems.Count - 1)
+            if (i >= onProgrammeItems.Count - 1) continue;
+            var next = onProgrammeItems[i + 1];
+
+            if (!current.ActualEndDate.HasValue || !(current.ActualEndDate < next.StartDate)) continue;
+            var gapStart = current.ActualEndDate.Value.AddDays(1);
+            var gapEnd = next.StartDate.AddDays(-1);
+
+            breaks.Add(new BreakInLearning
             {
-                var next = onProgrammeItems[i + 1];
-
-                if (current.ActualEndDate.HasValue && current.ActualEndDate < next.StartDate)
-                {
-                    var gapStart = current.ActualEndDate.Value.AddDays(1);
-                    var gapEnd = next.StartDate.AddDays(-1);
-
-                    breaks.Add(new BreakInLearning
-                    {
-                        StartDate = gapStart,
-                        EndDate = gapEnd
-                    });
-                }
-            }
+                StartDate = gapStart,
+                EndDate = gapEnd
+            });
         }
 
         return breaks;
