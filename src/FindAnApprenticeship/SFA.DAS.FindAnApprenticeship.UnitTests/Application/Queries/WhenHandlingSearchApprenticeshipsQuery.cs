@@ -64,7 +64,7 @@ public class WhenHandlingSearchApprenticeshipsQuery
             query.DisabilityConfident,
             new List<VacancyDataSource>
             {
-                VacancyDataSource.Nhs
+                VacancyDataSource.Nhs,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);
