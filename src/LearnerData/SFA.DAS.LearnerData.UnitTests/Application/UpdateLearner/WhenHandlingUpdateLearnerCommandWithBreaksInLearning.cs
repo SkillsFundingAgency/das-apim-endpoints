@@ -38,8 +38,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                 _logger.Object,
                 _learningApiClient.Object,
                 _earningsApiClient.Object,
-                new LearningSupportService(),
-                new BreaksInLearningService(),
+                new UpdateLearningApiPutRequestMapper(new LearningSupportService(), new BreaksInLearningService()),
                 Mock.Of<ICoursesApiClient<CoursesApiConfiguration>>());
         }
 

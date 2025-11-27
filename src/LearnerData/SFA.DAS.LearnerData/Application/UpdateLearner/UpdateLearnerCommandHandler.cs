@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -17,15 +15,14 @@ public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    ILearningSupportService learningSupportService,
-    IBreaksInLearningService breaksInLearningService,
+    IUpdateLearningApiPutRequestMapper updateLearningApiPutRequestMapper,
 	ICoursesApiClient<CoursesApiConfiguration> coursesApiClient
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
-        var request = CreateUpdateLearnerApiPutRequest(command.LearningKey, command);
+        var request = updateLearningApiPutRequestMapper.Map(command);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 
@@ -106,72 +103,5 @@ public class UpdateLearnerCommandHandler(
         var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
 
         return response.MaxFundingOn(startDate);
-    }
-
-    private UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
-    {
-        var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(command);
-
-        var breaksInLearning = breaksInLearningService.CalculateOnProgrammeBreaksInLearning(allMatchingOnProgrammes);
-
-        var learningSupport = learningSupportService.GetCombinedLearningSupport(allMatchingOnProgrammes,
-            command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaksInLearning.Breaks);
-
-        var body = new UpdateLearningRequestBody
-        {
-            Delivery = new Delivery
-            {
-                WithdrawalDate = latestOnProgramme.WithdrawalDate
-            },
-            Learner = new LearningUpdateDetails
-            {
-                FirstName = command.UpdateLearnerRequest.Learner.FirstName,
-                LastName = command.UpdateLearnerRequest.Learner.LastName,
-                EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                CompletionDate = latestOnProgramme.CompletionDate
-            },
-            OnProgramme = new OnProgrammeDetails
-            {
-                ExpectedEndDate = latestOnProgramme.ExpectedEndDate,
-                Costs = breaksInLearning.Costs.GetCostsOrDefault(firstOnProgramme.StartDate),
-                PauseDate = latestOnProgramme.PauseDate,
-                BreaksInLearning = breaksInLearning.Breaks
-            },
-            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
-                new MathsAndEnglishDetails
-                {
-                    Amount = x.Amount,
-                    CompletionDate = x.CompletionDate,
-                    Course = x.Course,
-                    PlannedEndDate = x.EndDate,
-                    PriorLearningPercentage = x.PriorLearningPercentage,
-                    StartDate = x.StartDate,
-                    WithdrawalDate = x.WithdrawalDate
-                }).ToList(),
-            LearningSupport = learningSupport
-        };
-
-        return new UpdateLearningApiPutRequest(learnerKey, body);
-    }
-
-    private static (OnProgrammeRequestDetails FirstOnProgramme,
-        OnProgrammeRequestDetails LatestOnProgramme,
-        List<OnProgrammeRequestDetails> MatchingOnProgrammes
-        ) SelectEpisode(UpdateLearnerCommand command)
-    {
-        var orderedOnProgrammes = command.UpdateLearnerRequest.Delivery.OnProgramme
-            .OrderBy(x => x.StartDate)
-            .ToList();
-
-        var firstOnProgramme = orderedOnProgrammes.First();
-
-        var allMatchingOnProgrammes = orderedOnProgrammes
-            .Where(x => x.StandardCode == firstOnProgramme.StandardCode &&
-                        x.AgreementId == firstOnProgramme.AgreementId)
-            .ToList();
-
-        var latestOnProgramme = allMatchingOnProgrammes.Last();
-
-        return (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes);
     }
 }
