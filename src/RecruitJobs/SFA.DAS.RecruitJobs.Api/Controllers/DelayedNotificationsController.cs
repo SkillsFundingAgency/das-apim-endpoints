@@ -25,7 +25,19 @@ public class DelayedNotificationsController: ControllerBase
         var results = await recruitApiClient.Get<GetDelayedNotificationsByDateResponse>(new GetDelayedNotificationsByDateRequest(dateTime!.Value));
         return TypedResults.Ok(results?.Emails.ToGetResponse() ?? []);
     }
-    
+
+
+    [HttpGet]
+    [Route("users/inactive")]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(List<NotificationEmail>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetBatchByUserInActiveStatus(
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+    {
+        var results = await recruitApiClient.Get<GetDelayedNotificationsByUserStatusResponse>(new GetDelayedNotificationsByUserStatusRequest());
+        return TypedResults.Ok(results?.Emails.ToGetResponse() ?? []);
+    }
+
     [HttpPost, Route("delete")]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

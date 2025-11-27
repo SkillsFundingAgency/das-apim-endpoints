@@ -59,7 +59,7 @@ internal static class EarningsApiClientExtensions
         }, "learning support", logger, command.LearningKey);
     }
 
-    internal static async Task UpdatePrices(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, Guid apprenticeshipKey, UpdateLearnerApiPutResponse apiPutResponse, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task UpdatePrices(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, Guid apprenticeshipKey, UpdateLearnerApiPutResponse apiPutResponse, int fundingBandMaximum, ILogger<UpdateLearnerCommandHandler> logger)
     {
         await LogAndExecute(async () =>
         {
@@ -67,6 +67,7 @@ internal static class EarningsApiClientExtensions
             {
                 ApprenticeshipEpisodeKey = apiPutResponse.LearningEpisodeKey,
                 AgeAtStartOfLearning = apiPutResponse.AgeAtStartOfLearning,
+                FundingBandMaximum = fundingBandMaximum,
                 Prices = apiPutResponse.Prices.Select(x => new PriceDetail
                 {
                     Key = x.Key,
@@ -74,8 +75,7 @@ internal static class EarningsApiClientExtensions
                     EndDate = x.EndDate,
                     TrainingPrice = x.TrainingPrice,
                     EndPointAssessmentPrice = x.EndPointAssessmentPrice,
-                    TotalPrice = x.TotalPrice,
-                    FundingBandMaximum = x.FundingBandMaximum
+                    TotalPrice = x.TotalPrice
                 }).ToList()
             };
 

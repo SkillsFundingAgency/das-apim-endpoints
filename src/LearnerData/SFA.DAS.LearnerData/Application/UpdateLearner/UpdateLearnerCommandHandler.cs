@@ -5,7 +5,9 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -16,7 +18,8 @@ public class UpdateLearnerCommandHandler(
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
     ILearningSupportService learningSupportService,
-    IBreaksInLearningService breaksInLearningService
+    IBreaksInLearningService breaksInLearningService,
+	ICoursesApiClient<CoursesApiConfiguration> coursesApiClient
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
@@ -89,8 +92,20 @@ public class UpdateLearnerCommandHandler(
 
         if (updatePrices)
         {
-            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
+            var fundingBandMaximum = await GetFundingBandMaximum(command);
+            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, fundingBandMaximum, logger);
         }
+    }
+
+    private async Task<int> GetFundingBandMaximum(UpdateLearnerCommand command)
+    {
+        var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
+        var standardId = onProgramme.StandardCode.ToString();
+        var startDate = onProgramme.StartDate;
+
+        var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
+
+        return response.MaxFundingOn(startDate);
     }
 
     private UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
