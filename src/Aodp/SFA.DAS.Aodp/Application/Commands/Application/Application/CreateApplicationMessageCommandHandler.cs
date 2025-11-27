@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Application.Messages;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
