@@ -11,13 +11,13 @@ namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 /// </summary>
 internal static class EarningsApiClientExtensions
 {
-    internal static async Task UpdateCompletionDate(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task UpdateCompletionDate(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, UpdateLearningApiPutRequest apiPutRequest, ILogger<UpdateLearnerCommandHandler> logger)
     {
         await LogAndExecute(async () =>
         {
             await earningsApiClient.Patch(new SaveCompletionApiPatchRequest(command.LearningKey, new SaveCompletionRequest
             {
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
+                CompletionDate = apiPutRequest.Data.Learner.CompletionDate
             }));
         }, "completion date", logger, command.LearningKey);
 
@@ -83,14 +83,13 @@ internal static class EarningsApiClientExtensions
         }, "prices", logger, apprenticeshipKey);
     }
 
-    internal static async Task WithdrawLearner(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task WithdrawLearner(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, UpdateLearningApiPutRequest apiPutRequest, ILogger<UpdateLearnerCommandHandler> logger)
     {
         await LogAndExecute(async () =>
         {
             var data = new WithdrawRequest()
             {
-                //todo: this now needs to use the apiPutRequest value instead, because the OnProgramme will have been mapped/manipulated
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate.GetValueOrDefault()
+                WithdrawalDate = apiPutRequest.Data.Delivery.WithdrawalDate.Value
             };
 
             await earningsApiClient.Patch(new WithdrawApiPatchRequest(command.LearningKey, data));

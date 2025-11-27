@@ -57,7 +57,7 @@ public class UpdateLearnerCommandHandler(
             switch (change)
             {
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
-                    await earningsApiClient.UpdateCompletionDate(command, logger);
+                    await earningsApiClient.UpdateCompletionDate(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
                     await earningsApiClient.UpdateMathAndEnglish(command, logger);
@@ -70,7 +70,7 @@ public class UpdateLearnerCommandHandler(
                     updatePrices = true;
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
-                    await earningsApiClient.WithdrawLearner(command, logger);
+                    await earningsApiClient.WithdrawLearner(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
                     await earningsApiClient.ReverseWithdrawal(command, logger);
