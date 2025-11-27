@@ -65,7 +65,6 @@ public class WhenHandlingSearchApprenticeshipsQuery
             new List<VacancyDataSource>
             {
                 VacancyDataSource.Nhs,
-                VacancyDataSource.Csj,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);
@@ -91,7 +90,6 @@ public class WhenHandlingSearchApprenticeshipsQuery
             {
                 VacancyDataSource.Raa,
                 VacancyDataSource.Nhs,
-                VacancyDataSource.Csj,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);
@@ -230,7 +228,6 @@ public class WhenHandlingSearchApprenticeshipsQuery
             new List<VacancyDataSource>
             {
                 VacancyDataSource.Nhs,
-                VacancyDataSource.Csj,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);
@@ -356,7 +353,6 @@ public class WhenHandlingSearchApprenticeshipsQuery
             new List<VacancyDataSource>
             {
                 VacancyDataSource.Nhs,
-                VacancyDataSource.Csj,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);

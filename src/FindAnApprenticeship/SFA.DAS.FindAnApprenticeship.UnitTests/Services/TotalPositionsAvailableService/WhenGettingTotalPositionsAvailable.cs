@@ -39,7 +39,6 @@ public class WhenGettingTotalPositionsAvailable
             new List<VacancyDataSource>
             {
                 VacancyDataSource.Nhs,
-                VacancyDataSource.Csj,
             },
             null,
             null);
