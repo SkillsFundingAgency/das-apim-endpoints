@@ -4,5 +4,5 @@ namespace SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
 
 public class ValidateEmailOverlapQueryResult
 {
-    public bool HasOverlapWithEmail { get; set; }
+    public bool HasEmailOverlapped { get; set; }
 }

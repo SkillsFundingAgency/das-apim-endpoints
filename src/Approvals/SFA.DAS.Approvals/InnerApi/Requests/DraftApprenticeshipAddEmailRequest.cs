@@ -20,7 +20,8 @@ public class DraftApprenticeshipAddEmailRequest : IPostApiRequest
 
     public class Body : SaveDataRequest
     {
-        public string Email { get; set; }       
+        public string Email { get; set; }      
+        public long CohortId { get; set; }
     }
 }
 

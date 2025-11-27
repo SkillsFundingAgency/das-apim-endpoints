@@ -20,7 +20,8 @@ public class DraftApprenticeshipAddEmailCommandHandler(
 
         setEmailRequest.Data = new DraftApprenticeshipAddEmailRequest.Body()
         {          
-            Email = request.Email,
+            Email = request.Email,   
+            CohortId = request.CohortId
         };
 
         var response = await apiClient.PostWithResponseCode<EmptyResponse>(setEmailRequest, false);

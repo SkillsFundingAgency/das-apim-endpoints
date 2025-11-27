@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -19,13 +20,13 @@ public class ValidateEmailOverlapQueryHandler : IRequestHandler<ValidateEmailOve
 
     public async Task<ValidateEmailOverlapQueryResult> Handle(ValidateEmailOverlapQuery request, CancellationToken cancellationToken)
     {
-        var response = await _apiClient.GetWithResponseCode<ValidateEmailOverlapQueryResult>(
+        var response = await _apiClient.GetWithResponseCode<ValidateEmailOverlapQueryResponse>(
          new ValidateEmailOverlapRequest(request.DraftApprenticeshipId, request.StartDate, request.EndDate, request.Email, request.CohortId));
         response.EnsureSuccessStatusCode();
 
         return new ValidateEmailOverlapQueryResult
         {
-            HasOverlapWithEmail = response.Body.HasOverlapWithEmail
+            HasEmailOverlapped  = response.Body.OverlapStatus == Enums.OverlapStatus.None
         };
     }
 }

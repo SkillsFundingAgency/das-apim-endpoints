@@ -383,7 +383,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 var command = new DraftApprenticeshipAddEmailCommand
                 {
-                    CohortId = cohortId,
+                    CohortId = request.CohortId,
                     DraftApprenticeshipId = draftApprenticeshipId,
                     Email = request.Email
                 };

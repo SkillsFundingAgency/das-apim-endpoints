@@ -21,6 +21,7 @@ public class DraftApprenticeshipSetReferenceCommandHandler(
         {
             Reference = request.Reference,
             Party = request.Party,
+            CohortId = request.CohortId
         };
 
 
