@@ -36,6 +36,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             // Act
             var actual = sut.GetCombinedLearningSupport([preBreak, postBreak],
+                postBreak.ExpectedEndDate,
                 command.UpdateLearnerRequest.Delivery.EnglishAndMaths,
                 []);
 
@@ -66,7 +67,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             var sut = new LearningSupportService();
 
-            var actual = sut.GetCombinedLearningSupport([preBreak], command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaks);
+            var actual = sut.GetCombinedLearningSupport([preBreak], postBreak.ExpectedEndDate, command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaks);
 
             var expected = new LearningSupportUpdatedDetails
             {
@@ -98,7 +99,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             var sut = new LearningSupportService();
 
-            var actual = sut.GetCombinedLearningSupport([postBreak], command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaks);
+            var actual = sut.GetCombinedLearningSupport([postBreak], postBreak.ExpectedEndDate, command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaks);
 
             var expected = new LearningSupportUpdatedDetails
             {
@@ -130,7 +131,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             var sut = new LearningSupportService();
 
-            var actual = sut.GetCombinedLearningSupport([preBreak, postBreak], command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaks);
+            var actual = sut.GetCombinedLearningSupport([preBreak, postBreak], postBreak.ExpectedEndDate, command.UpdateLearnerRequest.Delivery.EnglishAndMaths, breaks);
 
             var expected = new[]
             {

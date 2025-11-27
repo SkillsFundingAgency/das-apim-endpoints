@@ -27,8 +27,18 @@ namespace SFA.DAS.LearnerData.Services
             var costs = costsService.GetCosts(allMatchingOnProgrammes);
             var breaksInLearning = breaksInLearningService.CalculateOnProgrammeBreaksInLearning(allMatchingOnProgrammes);
 
+            //Determine the effective end date of the latest OnProgramme
+            var onProgrammeEndDate = new[]
+            {
+                latestOnProgramme.ExpectedEndDate,
+                latestOnProgramme.CompletionDate ?? DateTime.MaxValue,
+                latestOnProgramme.WithdrawalDate ?? DateTime.MaxValue,
+                latestOnProgramme.PauseDate ?? DateTime.MaxValue
+            }.Min();
+
             var learningSupport = learningSupportService.GetCombinedLearningSupport(
                 allMatchingOnProgrammes,
+                onProgrammeEndDate,
                 command.UpdateLearnerRequest.Delivery.EnglishAndMaths,
                 breaksInLearning);
 

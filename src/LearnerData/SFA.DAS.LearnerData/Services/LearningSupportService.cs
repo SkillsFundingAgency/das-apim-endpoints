@@ -5,16 +5,16 @@ namespace SFA.DAS.LearnerData.Services
 {
     public interface ILearningSupportService
     {
-        List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning);
+        List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, DateTime onProgrammeEndDate, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning);
     }
 
     public class LearningSupportService : ILearningSupportService
     {
-        public List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning)
+        public List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, DateTime onProgrammeEndDate, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning)
         {
             var combined = new List<LearningSupportUpdatedDetails>();
 
-            combined.AddRange(GetOnProgrammeLearningSupport(onProgrammeRequestDetailsList, breaksInLearning));
+            combined.AddRange(GetOnProgrammeLearningSupport(onProgrammeRequestDetailsList, breaksInLearning, onProgrammeEndDate));
             combined.AddRange(GetEnglishAndMathsLearningSupport(englishAndMaths));
 
             return combined;
@@ -22,54 +22,40 @@ namespace SFA.DAS.LearnerData.Services
 
         private static IEnumerable<LearningSupportUpdatedDetails> GetOnProgrammeLearningSupport(
     List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList,
-    List<BreakInLearning> breaksInLearning)
+    List<BreakInLearning> breaksInLearning,
+    DateTime effectiveEndDate)
         {
-            var results = new List<LearningSupportUpdatedDetails>();
-
-            // Build a basic list of LSF, each truncated by potential end dates
-            foreach (var onProg in onProgrammeRequestDetailsList)
-            {
-                foreach (var ls in onProg.LearningSupport)
-                {
-                    var potentialEndDates = new List<DateTime> { ls.EndDate };
-
-                    if (onProg.CompletionDate.HasValue) potentialEndDates.Add(onProg.CompletionDate.Value);
-                    if (onProg.WithdrawalDate.HasValue) potentialEndDates.Add(onProg.WithdrawalDate.Value);
-                    if (onProg.PauseDate.HasValue) potentialEndDates.Add(onProg.PauseDate.Value);
-
-                    var endDate = potentialEndDates.Min();
-
-                    results.Add(new LearningSupportUpdatedDetails
-                    {
-                        StartDate = ls.StartDate,
-                        EndDate = endDate
-                    });
-                }
-            }
-
             var adjusted = new List<LearningSupportUpdatedDetails>();
 
-            foreach (var ls in results)
-            {
-                var segments = new List<LearningSupportUpdatedDetails> { ls };
+            // get all learning support items across programmes
+            var allLearningSupport = onProgrammeRequestDetailsList.SelectMany(x => x.LearningSupport);
 
+            foreach (var ls in allLearningSupport)
+            {
+                // start with the raw LSF span
+                var initialSeg = new LearningSupportUpdatedDetails
+                {
+                    StartDate = ls.StartDate,
+                    EndDate = ls.EndDate
+                };
+
+                var segments = new List<LearningSupportUpdatedDetails> { initialSeg };
+
+                // split by breaks
                 foreach (var bil in breaksInLearning)
                 {
                     var newSegments = new List<LearningSupportUpdatedDetails>();
 
                     foreach (var seg in segments)
                     {
-                        // fully before break
                         if (seg.EndDate < bil.StartDate)
                         {
                             newSegments.Add(seg);
                         }
-                        // fully after break
                         else if (seg.StartDate > bil.EndDate)
                         {
                             newSegments.Add(seg);
                         }
-                        // spans break → split
                         else if (seg.StartDate < bil.StartDate && seg.EndDate > bil.EndDate)
                         {
                             newSegments.Add(new LearningSupportUpdatedDetails
@@ -83,7 +69,6 @@ namespace SFA.DAS.LearnerData.Services
                                 EndDate = seg.EndDate
                             });
                         }
-                        // overlaps break start only → truncate end
                         else if (seg.StartDate < bil.StartDate && seg.EndDate <= bil.EndDate)
                         {
                             newSegments.Add(new LearningSupportUpdatedDetails
@@ -92,7 +77,6 @@ namespace SFA.DAS.LearnerData.Services
                                 EndDate = bil.StartDate.AddDays(-1)
                             });
                         }
-                        // overlaps break end only → truncate start
                         else if (seg.StartDate >= bil.StartDate && seg.StartDate <= bil.EndDate && seg.EndDate > bil.EndDate)
                         {
                             newSegments.Add(new LearningSupportUpdatedDetails
@@ -107,7 +91,15 @@ namespace SFA.DAS.LearnerData.Services
                     segments = newSegments;
                 }
 
-                adjusted.AddRange(segments);
+                // truncate each segment to effectiveEndDate
+                foreach (var seg in segments)
+                {
+                    adjusted.Add(new LearningSupportUpdatedDetails
+                    {
+                        StartDate = seg.StartDate,
+                        EndDate = effectiveEndDate < seg.EndDate ? effectiveEndDate : seg.EndDate
+                    });
+                }
             }
 
             // remove zero-length segments
