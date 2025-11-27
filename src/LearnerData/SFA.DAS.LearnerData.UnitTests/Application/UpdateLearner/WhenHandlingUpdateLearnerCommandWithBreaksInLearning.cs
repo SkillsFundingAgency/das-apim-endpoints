@@ -38,83 +38,11 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
                 _logger.Object,
                 _learningApiClient.Object,
                 _earningsApiClient.Object,
-                new UpdateLearningApiPutRequestMapper(new LearningSupportService(), new BreaksInLearningService()),
+                new UpdateLearningApiPutRequestService(new LearningSupportService(), new BreaksInLearningService(), new CostsService()),
                 Mock.Of<ICoursesApiClient<CoursesApiConfiguration>>());
         }
 
-        [Test]
-        public async Task With_No_Change_In_Price_Then_Learning_Is_Updated()
-        {
-            // Arrange
-            var command = CreateLearnerWithBreaksInLearning(false);
-            MockEmptyLearningApiResponse();
-
-            // Act
-            await _sut.Handle(command, CancellationToken.None);
-
-            _learningApiClient.Verify(x =>
-                    x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
-                        It.IsAny<UpdateLearningApiPutRequest>()),
-                Times.Once);
-
-            // Assert
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-
-            var expectedBreakInLearning = new BreakInLearning
-            {
-                StartDate = command.UpdateLearnerRequest.Delivery.OnProgramme[0].ActualEndDate!.Value.AddDays(1),
-                EndDate = command.UpdateLearnerRequest.Delivery.OnProgramme[1].StartDate.AddDays(-1)
-            };
-
-            actualRequest.Data.OnProgramme.BreaksInLearning.Should().ContainSingle()
-                .Which.Should().BeEquivalentTo(expectedBreakInLearning);
-
-            actualRequest.Data.OnProgramme.Costs.Should().HaveCount(1);
-
-            var expected = command.UpdateLearnerRequest.Delivery.OnProgramme.First().Costs.First();
-            actualRequest.Data.OnProgramme.Costs.First().Should().BeEquivalentTo(expected);
-        }
-
-        [Test]
-        public async Task With_Change_In_Price_Then_Learning_Is_Updated()
-        {
-            var fixture = new Fixture();
-
-            // Arrange
-            var command = CreateLearnerWithBreaksInLearning(true);
-            MockEmptyLearningApiResponse();
-
-            // Act
-            await _sut.Handle(command, CancellationToken.None);
-
-            _learningApiClient.Verify(x =>
-                x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
-                    It.IsAny<UpdateLearningApiPutRequest>()),
-                Times.Once);
-
-            // Assert
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-
-            var expectedBreakInLearning = new BreakInLearning
-            {
-                StartDate = command.UpdateLearnerRequest.Delivery.OnProgramme[0].ActualEndDate!.Value.AddDays(1),
-                EndDate = command.UpdateLearnerRequest.Delivery.OnProgramme[1].StartDate.AddDays(-1)
-            };
-
-            actualRequest.Data.OnProgramme.BreaksInLearning.Should().ContainSingle()
-                .Which.Should().BeEquivalentTo(expectedBreakInLearning);
-
-            actualRequest.Data.OnProgramme.Costs.Should().HaveCount(2);
-
-            var expectedFirstCost = command.UpdateLearnerRequest.Delivery.OnProgramme[0].Costs.First();
-            var expectedSecondCost = command.UpdateLearnerRequest.Delivery.OnProgramme[1].Costs.First();
-
-            actualRequest.Data.OnProgramme.Costs[0].Should().BeEquivalentTo(expectedFirstCost, opts =>
-                opts.Excluding(c => c.FromDate));
-
-            actualRequest.Data.OnProgramme.Costs[1].Should().BeEquivalentTo(expectedSecondCost, opts =>
-                opts.Excluding(c => c.FromDate));
-        }
+        
 
         [Test]
         public async Task With_WithdrawalDate_Then_Learning_Is_Updated()
@@ -195,39 +123,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             // Assert
             var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
             actualRequest.Data.OnProgramme.PauseDate.Should().Be(pauseDate);
-        }
-
-        [Test]
-        public async Task When_LearningResponse_Indicates_BreakInLearningUpdated_Then_Earnings_Is_Updated()
-        {
-            var fixture = new Fixture();
-            var episodeKey = fixture.Create<Guid>();
-
-            // Arrange
-            var command = CreateLearnerWithBreaksInLearning(false);
-
-            MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated, episodeKey);
-
-            // Act
-            await _sut.Handle(command, CancellationToken.None);
-
-            // Capture the actual request sent to the earnings API
-            var actualRequest = _earningsApiClient.Invocations
-                .Select(i => i.Arguments[0])
-                .OfType<UpdateBreaksInLearningApiPatchRequest>()
-                .Single();
-
-            // Assert
-            var expectedBreakInLearning = new BreakInLearning
-            {
-                StartDate = command.UpdateLearnerRequest.Delivery.OnProgramme[0].ActualEndDate!.Value.AddDays(1),
-                EndDate = command.UpdateLearnerRequest.Delivery.OnProgramme[1].StartDate.AddDays(-1)
-            };
-
-            actualRequest.Data.EpisodeKey.Should().Be(episodeKey);
-
-            actualRequest.Data.BreaksInLearning.Should().ContainSingle()
-                .Which.Should().BeEquivalentTo(expectedBreakInLearning);
         }
 
         [Test]

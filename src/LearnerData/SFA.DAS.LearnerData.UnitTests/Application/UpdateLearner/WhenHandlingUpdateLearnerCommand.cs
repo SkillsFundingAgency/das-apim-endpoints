@@ -48,7 +48,7 @@ public class WhenHandlingUpdateLearnerCommand
             _logger.Object,
             _learningApiClient.Object,
             _earningsApiClient.Object,
-            new UpdateLearningApiPutRequestMapper(new LearningSupportService(), new BreaksInLearningService()),
+            new UpdateLearningApiPutRequestService(new LearningSupportService(), new BreaksInLearningService(), new CostsService()),
             _coursesApiClient.Object);
     }
 

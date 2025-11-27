@@ -14,19 +14,23 @@ namespace SFA.DAS.LearnerData.Services
         }
     }
 
-    public class UpdateLearningApiPutRequestMapper(ILearningSupportService learningSupportService, IBreaksInLearningService breaksInLearningService)
+    public class UpdateLearningApiPutRequestService(
+        ILearningSupportService learningSupportService,
+        IBreaksInLearningService breaksInLearningService,
+        ICostsService costsService)
         : IUpdateLearningApiPutRequestMapper
     {
         public UpdateLearningApiPutRequest Map(UpdateLearnerCommand command)
         {
             var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(command);
 
+            var costs = costsService.GetCosts(allMatchingOnProgrammes);
             var breaksInLearning = breaksInLearningService.CalculateOnProgrammeBreaksInLearning(allMatchingOnProgrammes);
 
             var learningSupport = learningSupportService.GetCombinedLearningSupport(
                 allMatchingOnProgrammes,
                 command.UpdateLearnerRequest.Delivery.EnglishAndMaths,
-                breaksInLearning.Breaks);
+                breaksInLearning);
 
             var body = new UpdateLearningRequestBody
             {
@@ -44,9 +48,9 @@ namespace SFA.DAS.LearnerData.Services
                 OnProgramme = new OnProgrammeDetails
                 {
                     ExpectedEndDate = latestOnProgramme.ExpectedEndDate,
-                    Costs = breaksInLearning.Costs.GetCostsOrDefault(firstOnProgramme.StartDate),
+                    Costs = costs.GetCostsOrDefault(firstOnProgramme.StartDate),
                     PauseDate = latestOnProgramme.PauseDate,
-                    BreaksInLearning = breaksInLearning.Breaks
+                    BreaksInLearning = breaksInLearning
                 },
                 MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                     new MathsAndEnglishDetails
