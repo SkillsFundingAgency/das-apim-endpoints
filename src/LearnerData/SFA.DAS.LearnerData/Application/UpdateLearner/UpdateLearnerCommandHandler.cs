@@ -15,14 +15,14 @@ public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    IUpdateLearningApiPutRequestMapper updateLearningApiPutRequestMapper,
+    IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
 	ICoursesApiClient<CoursesApiConfiguration> coursesApiClient
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
-        var request = updateLearningApiPutRequestMapper.Map(command);
+        var request = updateLearningPutRequestBuilder.Build(command);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 

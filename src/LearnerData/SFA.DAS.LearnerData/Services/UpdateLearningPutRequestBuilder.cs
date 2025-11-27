@@ -8,19 +8,19 @@ namespace SFA.DAS.LearnerData.Services
 {
     namespace SFA.DAS.LearnerData.Services
     {
-        public interface IUpdateLearningApiPutRequestMapper
+        public interface IUpdateLearningPutRequestBuilder
         {
-            UpdateLearningApiPutRequest Map(UpdateLearnerCommand command);
+            UpdateLearningApiPutRequest Build(UpdateLearnerCommand command);
         }
     }
 
-    public class UpdateLearningApiPutRequestService(
+    public class UpdateLearningPutRequestBuilder(
         ILearningSupportService learningSupportService,
         IBreaksInLearningService breaksInLearningService,
         ICostsService costsService)
-        : IUpdateLearningApiPutRequestMapper
+        : IUpdateLearningPutRequestBuilder
     {
-        public UpdateLearningApiPutRequest Map(UpdateLearnerCommand command)
+        public UpdateLearningApiPutRequest Build(UpdateLearnerCommand command)
         {
             var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(command);
 
