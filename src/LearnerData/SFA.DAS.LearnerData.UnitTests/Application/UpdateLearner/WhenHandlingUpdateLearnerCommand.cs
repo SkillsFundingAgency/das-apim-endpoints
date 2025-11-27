@@ -125,7 +125,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         // Arrange
         var command = CreateUpdateLearnerCommand();
-        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
         MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
         {
@@ -141,7 +141,7 @@ public class WhenHandlingUpdateLearnerCommand
 
         // Assert
         _earningsApiClient.Verify(x => x.Patch(It.Is<SaveMathsAndEnglishApiPatchRequest>(
-                r => Matches(r.Data, expectedMathsAndEnglishCourses))),
+                r => Matches(r.Data, apiPutRequest.Data.MathsAndEnglishCourses))),
             Times.Once);
     }
 
@@ -498,11 +498,11 @@ public class WhenHandlingUpdateLearnerCommand
         .ReturnsAsync(response);
     }
 
-    private static bool Matches(SaveMathsAndEnglishRequest request, List<MathsAndEnglish> courses)
+    private static bool Matches(SaveMathsAndEnglishRequest request, List<MathsAndEnglishDetails> courses)
     {
         return request.Count == courses.Count &&
                request.All(r => courses.Any(c => c.StartDate == r.StartDate &&
-                                                 c.EndDate == r.EndDate &&
+                                                 c.PlannedEndDate == r.EndDate &&
                                                  c.Course == r.Course &&
                                                  c.Amount == r.Amount &&
                                                  c.WithdrawalDate == r.WithdrawalDate &&

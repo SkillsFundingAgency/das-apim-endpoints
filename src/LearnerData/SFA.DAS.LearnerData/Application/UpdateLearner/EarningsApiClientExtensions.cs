@@ -23,15 +23,15 @@ internal static class EarningsApiClientExtensions
 
     }
 
-    internal static async Task UpdateMathAndEnglish(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task UpdateMathAndEnglish(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, UpdateLearningApiPutRequest apiPutRequest, ILogger<UpdateLearnerCommandHandler> logger)
     {
         await LogAndExecute(async () =>
         {
             var data = new SaveMathsAndEnglishRequest();
-            data.AddRange(command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x => new MathsAndEnglishRequestDetail
+            data.AddRange(apiPutRequest.Data.MathsAndEnglishCourses.Select(x => new MathsAndEnglishRequestDetail
             {
                 StartDate = x.StartDate,
-                EndDate = x.EndDate,
+                EndDate = x.PlannedEndDate,
                 Course = x.Course,
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,

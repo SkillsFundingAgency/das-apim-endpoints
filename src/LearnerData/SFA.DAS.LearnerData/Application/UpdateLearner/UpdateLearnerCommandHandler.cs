@@ -60,7 +60,7 @@ public class UpdateLearnerCommandHandler(
                     await earningsApiClient.UpdateCompletionDate(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
-                    await earningsApiClient.UpdateMathAndEnglish(command, logger);
+                    await earningsApiClient.UpdateMathAndEnglish(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
                     await earningsApiClient.UpdateLearningSupport(command, updateLearningApiPutRequest, logger);
