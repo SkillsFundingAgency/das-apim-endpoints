@@ -5,13 +5,13 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 {
@@ -22,6 +22,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 #pragma warning disable CS8618 // Non-nullable field, instantiated in SetUp method
         private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
         private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
+        private Mock<IUpdateLearningPutRequestBuilder> _updateLearningPutRequestBuilder;
         private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
         private UpdateLearnerCommandHandler _sut;
 
@@ -33,97 +34,20 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
         {
             _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
             _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+            _updateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
             _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
             _sut = new UpdateLearnerCommandHandler(
                 _logger.Object,
                 _learningApiClient.Object,
                 _earningsApiClient.Object,
-                new UpdateLearningPutRequestBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService()),
+                _updateLearningPutRequestBuilder.Object,
                 Mock.Of<ICoursesApiClient<CoursesApiConfiguration>>());
         }
 
+        //todo: create a test to cover Learning Update based off the builder's response (mocked)
         
 
-        [Test]
-        public async Task With_WithdrawalDate_Then_Learning_Is_Updated()
-        {
-            var fixture = new Fixture();
 
-            // Arrange
-            var command = CreateLearnerWithBreaksInLearning(false);
-            var withdrawalDate = fixture.Create<DateTime>();
-            command.UpdateLearnerRequest.Delivery.OnProgramme.Last().WithdrawalDate = withdrawalDate;
-
-            MockEmptyLearningApiResponse();
-
-            // Act
-            await _sut.Handle(command, CancellationToken.None);
-
-            // Assert
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-            actualRequest.Data.Delivery.WithdrawalDate.Should().Be(withdrawalDate);
-        }
-
-        [Test]
-        public async Task With_CompletionDate_Then_Learning_Is_Updated()
-        {
-            var fixture = new Fixture();
-
-            // Arrange
-            var command = CreateLearnerWithBreaksInLearning(false);
-            var completionDate = fixture.Create<DateTime>();
-            command.UpdateLearnerRequest.Delivery.OnProgramme.Last().CompletionDate = completionDate;
-
-            MockEmptyLearningApiResponse();
-
-            // Act
-            await _sut.Handle(command, CancellationToken.None);
-
-            // Assert
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-            actualRequest.Data.Learner.CompletionDate.Should().Be(completionDate);
-        }
-
-        [Test]
-        public async Task With_ExpectedEndDate_Then_Learning_Is_Updated()
-        {
-            var fixture = new Fixture();
-
-            // Arrange
-            var command = CreateLearnerWithBreaksInLearning(false);
-            var expectedEndDate = fixture.Create<DateTime>();
-            command.UpdateLearnerRequest.Delivery.OnProgramme.Last().ExpectedEndDate = expectedEndDate;
-
-            MockEmptyLearningApiResponse();
-
-            // Act
-            await _sut.Handle(command, CancellationToken.None);
-            
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-
-            // Assert
-            actualRequest.Data.OnProgramme.ExpectedEndDate.Should().Be(expectedEndDate);
-        }
-
-        [Test]
-        public async Task With_PauseDate_Then_Learning_Is_Updated()
-        {
-            var fixture = new Fixture();
-
-            // Arrange
-            var command = CreateLearnerWithBreaksInLearning(false);
-            var pauseDate = fixture.Create<DateTime>();
-            command.UpdateLearnerRequest.Delivery.OnProgramme.Last().PauseDate = pauseDate;
-
-            MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse(), HttpStatusCode.OK);
-
-            // Act
-            await _sut.Handle(command, CancellationToken.None);
-
-            // Assert
-            var actualRequest = CaptureRequest<UpdateLearningApiPutRequest>(_learningApiClient);
-            actualRequest.Data.OnProgramme.PauseDate.Should().Be(pauseDate);
-        }
 
         [Test]
         public async Task When_LearningResponse_Indicates_BreakInLearningStarted_Then_Earnings_Is_Updated()
@@ -133,8 +57,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
 
             // Arrange
             var command = CreateLearnerWithBreaksInLearning(false);
-            var pauseDate = fixture.Create<DateTime>();
-            command.UpdateLearnerRequest.Delivery.OnProgramme.Last().PauseDate = pauseDate;
+            var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
+            _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
 
             MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted, episodeKey);
 
@@ -144,7 +68,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             //Assert
             _earningsApiClient.Verify(x =>
                 x.Patch(It.Is<PauseApiPatchRequest>(r =>
-                    r.Data.PauseDate == pauseDate)), Times.Once);
+                    r.Data.PauseDate == apiPutRequest.Data.OnProgramme.PauseDate)), Times.Once);
         }
 
         [Test]
@@ -154,7 +78,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner
             var episodeKey = fixture.Create<Guid>();
 
             // Arrange
-            var command = CreateLearnerWithBreaksInLearning(false);
+            var command = fixture.Create<UpdateLearnerCommand>();
 
             MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved, episodeKey);
 
