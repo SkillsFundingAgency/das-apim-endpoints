@@ -5,9 +5,9 @@ namespace SFA.DAS.LearnerData.Extensions;
 
 public static class CostsExtensions
 {
-    public static List<Cost> MapCosts(this OnProgrammeRequestDetails source)
+    public static List<Cost> GetCostsOrDefault(this List<CostDetails>? costs, DateTime startDate)
     {
-        if (source.Costs == null || source.Costs.Count==0)
+        if (costs == null || costs.Count == 0)
         {
             return
             [
@@ -15,16 +15,16 @@ public static class CostsExtensions
                 {
                     TrainingPrice = 0,
                     EpaoPrice = null,
-                    FromDate = source.StartDate
+                    FromDate = startDate
                 }
             ];
         }
 
-        return source.Costs.Select(x => new Cost
+        return costs.Select(x => new Cost
         {
             TrainingPrice = x.TrainingPrice ?? 0,
             EpaoPrice = x.EpaoPrice,
-            FromDate = x.FromDate ?? source.StartDate
+            FromDate = x.FromDate ?? startDate
         }).ToList();
     }
 }
