@@ -20,7 +20,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var lsf1 = new LearningSupportRequestDetails
             {
                 StartDate = preBreak.StartDate,
-                EndDate = preBreak.ActualEndDate.Value
+                EndDate = preBreak.ActualEndDate!.Value
             };
 
             var lsf2 = new LearningSupportRequestDetails
@@ -56,7 +56,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var lsf1 = new LearningSupportRequestDetails
             {
                 StartDate = preBreak.StartDate,
-                EndDate = preBreak.ActualEndDate.Value.AddMonths(1)
+                EndDate = preBreak.ActualEndDate!.Value.AddMonths(1)
             };
             preBreak.LearningSupport.Add(lsf1);
 
@@ -94,7 +94,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             var breaks = new List<BreakInLearning>
             {
-                new BreakInLearning { StartDate = preBreak.ActualEndDate.Value.AddDays(1), EndDate = postBreak.StartDate.AddDays(-1) }
+                new BreakInLearning { StartDate = preBreak.ActualEndDate!.Value.AddDays(1), EndDate = postBreak.StartDate.AddDays(-1) }
             };
 
             var sut = new LearningSupportService();
@@ -126,7 +126,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             var breaks = new List<BreakInLearning>
             {
-                new BreakInLearning { StartDate = preBreak.ActualEndDate.Value.AddDays(1), EndDate = postBreak.StartDate.AddDays(-1) }
+                new BreakInLearning { StartDate = preBreak.ActualEndDate!.Value.AddDays(1), EndDate = postBreak.StartDate.AddDays(-1) }
             };
 
             var sut = new LearningSupportService();

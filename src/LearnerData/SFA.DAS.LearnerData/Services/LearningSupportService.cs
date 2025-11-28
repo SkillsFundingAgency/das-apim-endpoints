@@ -5,137 +5,123 @@ namespace SFA.DAS.LearnerData.Services
 {
     public interface ILearningSupportService
     {
-        List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, DateTime onProgrammeEndDate, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning);
+        List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(
+            List<OnProgrammeRequestDetails> onProgrammes, DateTime onProgrammeEndDate,
+            List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning);
     }
 
     public class LearningSupportService : ILearningSupportService
     {
-        public List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList, DateTime onProgrammeEndDate, List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning)
+        public List<LearningSupportUpdatedDetails> GetCombinedLearningSupport(
+            List<OnProgrammeRequestDetails> onProgrammes, DateTime onProgrammeEndDate,
+            List<MathsAndEnglish> englishAndMaths, List<BreakInLearning> breaksInLearning)
         {
             var combined = new List<LearningSupportUpdatedDetails>();
-
-            combined.AddRange(GetOnProgrammeLearningSupport(onProgrammeRequestDetailsList, breaksInLearning, onProgrammeEndDate));
+            combined.AddRange(GetOnProgrammeLearningSupport(onProgrammes, breaksInLearning, onProgrammeEndDate));
             combined.AddRange(GetEnglishAndMathsLearningSupport(englishAndMaths));
-
             return combined;
         }
 
         private static IEnumerable<LearningSupportUpdatedDetails> GetOnProgrammeLearningSupport(
-    List<OnProgrammeRequestDetails> onProgrammeRequestDetailsList,
-    List<BreakInLearning> breaksInLearning,
-    DateTime effectiveEndDate)
+            List<OnProgrammeRequestDetails> onProgrammes,
+            List<BreakInLearning> breaksInLearning,
+            DateTime effectiveEndDate)
         {
-            var adjusted = new List<LearningSupportUpdatedDetails>();
-
-            // get all learning support items across programmes
-            var allLearningSupport = onProgrammeRequestDetailsList.SelectMany(x => x.LearningSupport);
-
-            foreach (var ls in allLearningSupport)
-            {
-                // start with the raw LSF span
-                var initialSeg = new LearningSupportUpdatedDetails
-                {
-                    StartDate = ls.StartDate,
-                    EndDate = ls.EndDate
-                };
-
-                var segments = new List<LearningSupportUpdatedDetails> { initialSeg };
-
-                // split by breaks
-                foreach (var bil in breaksInLearning)
-                {
-                    var newSegments = new List<LearningSupportUpdatedDetails>();
-
-                    foreach (var seg in segments)
-                    {
-                        if (seg.EndDate < bil.StartDate)
-                        {
-                            newSegments.Add(seg);
-                        }
-                        else if (seg.StartDate > bil.EndDate)
-                        {
-                            newSegments.Add(seg);
-                        }
-                        else if (seg.StartDate < bil.StartDate && seg.EndDate > bil.EndDate)
-                        {
-                            newSegments.Add(new LearningSupportUpdatedDetails
-                            {
-                                StartDate = seg.StartDate,
-                                EndDate = bil.StartDate.AddDays(-1)
-                            });
-                            newSegments.Add(new LearningSupportUpdatedDetails
-                            {
-                                StartDate = bil.EndDate.AddDays(1),
-                                EndDate = seg.EndDate
-                            });
-                        }
-                        else if (seg.StartDate < bil.StartDate && seg.EndDate <= bil.EndDate)
-                        {
-                            newSegments.Add(new LearningSupportUpdatedDetails
-                            {
-                                StartDate = seg.StartDate,
-                                EndDate = bil.StartDate.AddDays(-1)
-                            });
-                        }
-                        else if (seg.StartDate >= bil.StartDate && seg.StartDate <= bil.EndDate && seg.EndDate > bil.EndDate)
-                        {
-                            newSegments.Add(new LearningSupportUpdatedDetails
-                            {
-                                StartDate = bil.EndDate.AddDays(1),
-                                EndDate = seg.EndDate
-                            });
-                        }
-                        // fully inside break → drop
-                    }
-
-                    segments = newSegments;
-                }
-
-                // truncate each segment to effectiveEndDate
-                foreach (var seg in segments)
-                {
-                    adjusted.Add(new LearningSupportUpdatedDetails
-                    {
-                        StartDate = seg.StartDate,
-                        EndDate = effectiveEndDate < seg.EndDate ? effectiveEndDate : seg.EndDate
-                    });
-                }
-            }
-
-            // remove zero-length segments
-            adjusted = adjusted.Where(r => r.EndDate >= r.StartDate).ToList();
-
-            return adjusted;
+            return onProgrammes
+                .SelectMany(x => x.LearningSupport)
+                //split & truncate ls by breaks
+                .SelectMany(ls => SplitByBreaks(
+                    new LearningSupportUpdatedDetails { StartDate = ls.StartDate, EndDate = ls.EndDate },
+                    breaksInLearning))
+                //truncate ls by learning end date
+                .Select(seg => Truncate(seg, effectiveEndDate))
+                //drop zero-length segments
+                .Where(seg => seg.EndDate >= seg.StartDate)
+                .ToList();
         }
 
-        private static IEnumerable<LearningSupportUpdatedDetails> GetEnglishAndMathsLearningSupport(List<MathsAndEnglish> englishAndMaths)
+        private static IEnumerable<LearningSupportUpdatedDetails> SplitByBreaks(
+            LearningSupportUpdatedDetails segment,
+            IEnumerable<BreakInLearning> breaks)
         {
-            var results = new List<LearningSupportUpdatedDetails>();
+            var segments = new List<LearningSupportUpdatedDetails> { segment };
 
-            foreach (var em in englishAndMaths)
+            foreach (var bil in breaks)
             {
-                foreach (var ls in em.LearningSupport)
-                {
-                    var potentialEndDates = new List<DateTime> { ls.EndDate };
-
-                    if (em.CompletionDate.HasValue)
-                        potentialEndDates.Add(em.CompletionDate.Value);
-
-                    if (em.WithdrawalDate.HasValue)
-                        potentialEndDates.Add(em.WithdrawalDate.Value);
-
-                    var endDate = potentialEndDates.Min();
-
-                    results.Add(new LearningSupportUpdatedDetails
-                    {
-                        StartDate = ls.StartDate,
-                        EndDate = endDate
-                    });
-                }
+                segments = segments.SelectMany(seg => SplitSegment(seg, bil)).ToList();
             }
 
-            return results;
+            return segments;
+        }
+
+        private static IEnumerable<LearningSupportUpdatedDetails> SplitSegment(LearningSupportUpdatedDetails seg, BreakInLearning bil)
+        {
+            //segment not truncated by break
+            if (seg.EndDate < bil.StartDate || seg.StartDate > bil.EndDate)
+            {
+                yield return seg;
+            }
+            //split ls if a break falls fully within
+            else if (seg.StartDate < bil.StartDate && seg.EndDate > bil.EndDate)
+            {
+                yield return new LearningSupportUpdatedDetails
+                {
+                    StartDate = seg.StartDate,
+                    EndDate = bil.StartDate.AddDays(-1)
+                };
+                yield return new LearningSupportUpdatedDetails
+                {
+                    StartDate = bil.EndDate.AddDays(1),
+                    EndDate = seg.EndDate
+                };
+            }
+            //truncate end date with start of breaks
+            else if (seg.StartDate < bil.StartDate && seg.EndDate <= bil.EndDate)
+            {
+                yield return new LearningSupportUpdatedDetails
+                {
+                    StartDate = seg.StartDate,
+                    EndDate = bil.StartDate.AddDays(-1)
+                };
+            }
+            //truncate start date with end of breaks
+            else if (seg.StartDate >= bil.StartDate && seg.StartDate <= bil.EndDate && seg.EndDate > bil.EndDate)
+            {
+                yield return new LearningSupportUpdatedDetails
+                {
+                    StartDate = bil.EndDate.AddDays(1),
+                    EndDate = seg.EndDate
+                };
+            }
+            // do not yield segments fully inside break
+        }
+
+        private static LearningSupportUpdatedDetails Truncate(LearningSupportUpdatedDetails seg, DateTime effectiveEndDate)
+        {
+            return new LearningSupportUpdatedDetails
+            {
+                StartDate = seg.StartDate,
+                EndDate = effectiveEndDate < seg.EndDate ? effectiveEndDate : seg.EndDate
+            };
+        }
+
+        private static IEnumerable<LearningSupportUpdatedDetails> GetEnglishAndMathsLearningSupport(
+            List<MathsAndEnglish> englishAndMaths)
+        {
+            return englishAndMaths
+                .SelectMany(em => em.LearningSupport.Select(ls =>
+                {
+                    var potentialEndDates = new List<DateTime> { ls.EndDate };
+                    if (em.CompletionDate.HasValue) potentialEndDates.Add(em.CompletionDate.Value);
+                    if (em.WithdrawalDate.HasValue) potentialEndDates.Add(em.WithdrawalDate.Value);
+
+                    return new LearningSupportUpdatedDetails
+                    {
+                        StartDate = ls.StartDate,
+                        EndDate = potentialEndDates.Min()
+                    };
+                }))
+                .ToList();
         }
     }
 }
-

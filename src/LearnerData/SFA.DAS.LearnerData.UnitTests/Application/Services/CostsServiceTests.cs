@@ -1,8 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services
@@ -10,8 +8,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
     [TestFixture]
     public class CostsServiceTests
     {
-        private readonly Fixture _fixture = new Fixture();
-
         [Test]
         public void With_No_Change_In_Price_Then_Costs_Are_Merged()
         {
@@ -27,7 +23,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             //Assert
             result.Should().HaveCount(1);
 
-            var expected = onProgrammes.First().Costs.First();
+            var expected = onProgrammes.First().Costs!.First();
             result.First().Should().BeEquivalentTo(expected);
         }
 

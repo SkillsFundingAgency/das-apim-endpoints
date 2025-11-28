@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NServiceBus.Features;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
