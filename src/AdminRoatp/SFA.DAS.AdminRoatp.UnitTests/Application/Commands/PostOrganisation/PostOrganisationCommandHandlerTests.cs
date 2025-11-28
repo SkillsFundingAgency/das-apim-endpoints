@@ -2,23 +2,29 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
-using SFA.DAS.AdminRoatp.Application.Commands.CreateProvider;
 using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.AdminRoatp.Infrastructure;
+using SFA.DAS.AdminRoatp.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.Application.Commands.PostOrganisation;
 public class PostOrganisationCommandHandlerTests
 {
-    [Test, RecursiveMoqInlineAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_CallsPostOrganisation(
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpV2ApiClientMock,
         [Greedy] PostOrganisatonCommandHandler sut,
         PostOrganisationCommand command,
         CancellationToken cancellationToken
         )
     {
+        command.ProviderType = ProviderType.Employer;
         HttpResponseMessage response = new HttpResponseMessage { StatusCode = HttpStatusCode.Created };
 
         roatpServiceRestApiClientMock
@@ -80,17 +86,22 @@ public class PostOrganisationCommandHandlerTests
         int callsPutCourseTypesCount,
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
         [Greedy] PostOrganisatonCommandHandler sut,
+        PostOrganisationCommand command,
         int ukprn,
         CancellationToken cancellationToken
     )
     {
+        command.Ukprn = ukprn;
+        command.DeliversApprenticeships = deliversApprenticeships;
+        command.DeliversApprenticeshipUnits = deliversApprenticeshipUnits;
+        command.ProviderType = ProviderType.Employer;
+
         var courseTypes = new List<int>();
 
         if (deliversApprenticeships) courseTypes.Add((int)CourseType.Apprenticeships);
         if (deliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ApprenticeshipUnits);
 
-        PostOrganisationCommand command = new PostOrganisationCommand(ukprn, "legal name", "", "", "", ProviderType.Main,
-            1, "mark", "marky", deliversApprenticeships, deliversApprenticeshipUnits);
+
         HttpResponseMessage response = new HttpResponseMessage { StatusCode = postOrganisationStatus };
 
         roatpServiceRestApiClientMock
@@ -111,9 +122,9 @@ public class PostOrganisationCommandHandlerTests
                  && c.RequestingUserId == command.RequestingUserDisplayName
         ), cancellationToken), Times.Once);
 
-        roatpServiceRestApiClientMock.Verify(api => api.PutCourseTypes(ukprn, It.Is<PutCourseTypesModel>(
+        roatpServiceRestApiClientMock.Verify(api => api.PutCourseTypes(ukprn, It.Is<UpdateCourseTypesModel>(
             c => c.UserId == command.RequestingUserDisplayName
-            && c.CourseTypeIds.Count == courseTypes.Count
+            && c.CourseTypeIds.Count() == courseTypes.Count
             ), cancellationToken), Times.Exactly(callsPutCourseTypesCount));
     }
 
@@ -128,23 +139,25 @@ public class PostOrganisationCommandHandlerTests
         ProviderType providerType,
         int callsPostProvidersCount,
         [Frozen] Mock<IRoatpServiceRestApiClient> roatpServiceRestApiClientMock,
-        [Frozen] Mock<IRoatpV2ApiClient> roatpV2ApiClientMock,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpV2ApiClientMock,
         [Greedy] PostOrganisatonCommandHandler sut,
+        PostOrganisationCommand command,
         int ukprn,
         CancellationToken cancellationToken
     )
     {
-        PostOrganisationCommand command = new PostOrganisationCommand(ukprn, "legal name", "", "", "", providerType,
-            1, "mark", "marky", true, true);
+        command.Ukprn = ukprn;
+        command.ProviderType = providerType;
+
         HttpResponseMessage response = new HttpResponseMessage { StatusCode = postOrganisationStatus };
 
         roatpServiceRestApiClientMock
             .Setup(x => x.PostOrganisation(It.IsAny<PostOrganisationModel>(), cancellationToken)).ReturnsAsync(response);
 
-        HttpResponseMessage roatpV2Response = new HttpResponseMessage { StatusCode = HttpStatusCode.Created };
-        roatpV2ApiClientMock
-            .Setup(x => x.CreateProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CreateProviderModel>(), cancellationToken)).ReturnsAsync(roatpV2Response);
+        var apiResponse = new ApiResponse<int>(1, HttpStatusCode.Created, string.Empty);
 
+        roatpV2ApiClientMock.Setup(c => c.PostWithResponseCode<int>(It.IsAny<PostProvidersRequest>(
+        ), true)).ReturnsAsync(apiResponse);
 
         var actualResponse = await sut.Handle(command, cancellationToken);
 
@@ -161,6 +174,11 @@ public class PostOrganisationCommandHandlerTests
                  && c.RequestingUserId == command.RequestingUserDisplayName
         ), cancellationToken), Times.Once);
 
-        roatpV2ApiClientMock.Verify(api => api.CreateProvider(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<CreateProviderModel>(), cancellationToken), Times.Exactly(callsPostProvidersCount));
+        roatpV2ApiClientMock.Verify(c => c.PostWithResponseCode<int>(It.Is<PostProvidersRequest>(
+            c => c.UserId == command.RequestingUserId
+            && c.UserDisplayName == command.RequestingUserDisplayName
+            && c.PostUrl == $"providers?userId={command.RequestingUserId}&userDisplayName={command.RequestingUserDisplayName}"
+        ), true), Times.Exactly(callsPostProvidersCount));
+
     }
 }

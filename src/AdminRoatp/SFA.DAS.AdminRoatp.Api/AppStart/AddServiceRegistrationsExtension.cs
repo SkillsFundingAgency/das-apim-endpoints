@@ -21,17 +21,8 @@ public static class AddServiceRegistrationsExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
 
         services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
+        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IApplyApiClient<ApplyApiConfiguration>, ApplyApiClient>();
-        services.AddTransient<IRoatpServiceApiClient<RoatpConfiguration>, RoatpServiceApiClient>();
-
-        return services;
-    }
-
-    public static IServiceCollection AddRoatpV2ApiClient(this IServiceCollection services, IConfiguration configuration)
-    {
-        var apiConfig = GetApiConfiguration(configuration, "RoatpV2ApiConfiguration");
-        services.AddRestEaseClient<IRoatpV2ApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
 
         return services;
     }

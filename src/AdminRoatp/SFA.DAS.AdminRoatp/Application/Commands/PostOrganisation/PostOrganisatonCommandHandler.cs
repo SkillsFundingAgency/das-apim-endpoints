@@ -1,13 +1,16 @@
 ﻿using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.AdminRoatp.Application.Commands.CreateProvider;
 using SFA.DAS.AdminRoatp.Infrastructure;
+using SFA.DAS.AdminRoatp.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 
-public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServiceApiClient, IRoatpV2ApiClient _roatpV2ApiClient, ILogger<PostOrganisatonCommandHandler> _logger) : IRequestHandler<PostOrganisationCommand, HttpStatusCode>
+public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServiceApiClient, IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpV2ApiClient, ILogger<PostOrganisatonCommandHandler> _logger) : IRequestHandler<PostOrganisationCommand, HttpStatusCode>
 {
     public async Task<HttpStatusCode> Handle(PostOrganisationCommand command, CancellationToken cancellationToken)
     {
@@ -27,16 +30,14 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
         if (courseTypes.Count > 0)
         {
             _logger.LogInformation("Creating courseTypes for Posted organisation with ukprn {Ukprn}", command.Ukprn);
-            PutCourseTypesModel model = new PutCourseTypesModel(courseTypes, command.RequestingUserDisplayName);
+            UpdateCourseTypesModel model = new UpdateCourseTypesModel(courseTypes.ToArray(), command.RequestingUserDisplayName);
             tasks.Add(_roatpServiceApiClient.PutCourseTypes(command.Ukprn, model, cancellationToken));
         }
 
         if (command.ProviderType == ProviderType.Main)
         {
             _logger.LogInformation("Creating provider in RoatpV2 for Posted organisation with ukprn {Ukprn}", command.Ukprn);
-            tasks.Add(_roatpV2ApiClient.CreateProvider(command.RequestingUserId,
-                 command.RequestingUserDisplayName, (CreateProviderModel)command,
-                 cancellationToken));
+            tasks.Add(_roatpV2ApiClient.PostWithResponseCode<int>(new PostProvidersRequest(command)));
         }
 
         if (tasks.Count > 0) await Task.WhenAll(tasks);

@@ -2,6 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using RestEase;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchOrganisation;
 using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
@@ -52,10 +53,13 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [Route("")]
-    public async Task<IActionResult> PostOrganisation([FromBody] PostOrganisationCommand command, CancellationToken cancellationToken)
+    [Route("{ukprn}")]
+    public async Task<IActionResult> PostOrganisation([Path] int ukprn, [FromBody] PostOrganisationRequest request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Received command to Post organisation with ukprn {Ukprn}", command.Ukprn);
+
+        _logger.LogInformation("Received request to Post organisation with ukprn {Ukprn}", ukprn);
+        var command = (PostOrganisationCommand)request;
+        command.Ukprn = ukprn;
         HttpStatusCode response = await _mediator.Send(command, cancellationToken);
         return new StatusCodeResult((int)response);
     }

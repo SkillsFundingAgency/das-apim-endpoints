@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using RestEase;
-using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
 
 namespace SFA.DAS.AdminRoatp.Infrastructure;
 
@@ -13,7 +13,7 @@ public interface IRoatpServiceRestApiClient
 
     [Put("/organisations/{ukprn}/course-types")]
     [AllowAnyStatusCode]
-    Task<HttpResponseMessage> PutCourseTypes([Path] int ukprn, [Body] PutCourseTypesModel command, CancellationToken cancellationToken);
+    Task<HttpResponseMessage> PutCourseTypes([Path] int ukprn, [Body] UpdateCourseTypesModel command, CancellationToken cancellationToken);
 
     [Post("/organisations")]
     [AllowAnyStatusCode]
