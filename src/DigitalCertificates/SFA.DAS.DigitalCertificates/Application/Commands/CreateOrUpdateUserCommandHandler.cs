@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
+using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostCreateOrUpdateUserRequest;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
@@ -31,11 +32,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser
             });
 
             var response = await _digitalCertificatesApiClient
-                .PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResult>(request);
+                .PostWithResponseCode<PostCreateOrUpdateUserRequestData, CreateOrUpdateUserResponse>(request);
 
             response.EnsureSuccessStatusCode();
 
-            return response.Body;
+            return new CreateOrUpdateUserResult
+            {
+                UserId = response.Body.UserId
+            };
         }
     }
 }
