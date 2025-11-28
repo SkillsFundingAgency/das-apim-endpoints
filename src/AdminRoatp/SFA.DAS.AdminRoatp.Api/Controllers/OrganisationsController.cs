@@ -1,13 +1,15 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using RestEase;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchOrganisation;
+using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using SFA.DAS.AdminRoatp.Application.Queries.GetUkrlp;
 using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
-using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
@@ -46,6 +48,20 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
         _logger.LogInformation("Received request to get UKRLP for Ukprn: {Ukprn}", ukprn);
         GetUkrlpQueryResult? response = await _mediator.Send(new GetUkrlpQuery(ukprn), cancellationToken);
         return response == null ? NotFound() : Ok(response);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Route("{ukprn}")]
+    public async Task<IActionResult> PostOrganisation([Path] int ukprn, [FromBody] PostOrganisationRequest request, CancellationToken cancellationToken)
+    {
+
+        _logger.LogInformation("Received request to Post organisation with ukprn {Ukprn}", ukprn);
+        var command = (PostOrganisationCommand)request;
+        command.Ukprn = ukprn;
+        HttpStatusCode response = await _mediator.Send(command, cancellationToken);
+        return new StatusCodeResult((int)response);
     }
 
     [HttpPatch]
