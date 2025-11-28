@@ -33,6 +33,7 @@ public class UpdateLearnerApiPutResponse
 		PersonalDetails = 7,
         BreakInLearningStarted = 8,
         BreakInLearningRemoved = 9,
+        MathsAndEnglishWithdrawal = 10,
         BreaksInLearningUpdated = 11
     }
 }

@@ -84,6 +84,9 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
                     await earningsApiClient.UpdateBreaksInLearning(command, updateLearningApiPutRequest, updateLearningApiPutResponse, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
+                    await earningsApiClient.WithdrawEnglishAndMaths(command, updateLearningApiPutRequest, logger);
+                    break;
             }
         }
 

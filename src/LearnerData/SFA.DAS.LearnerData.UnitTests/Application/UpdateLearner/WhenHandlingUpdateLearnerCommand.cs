@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NServiceBus.Features;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
@@ -448,6 +449,26 @@ public class WhenHandlingUpdateLearnerCommand
         //Assert
         _earningsApiClient.Verify(x =>
             x.Delete(It.IsAny<RemovePauseApiDeleteRequest>()), Times.Once);
+    }
+    
+    [Test]
+    public async Task Then_Earnings_Is_Updated_With_Maths_And_English_Withdrawal()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var apiPutRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+        _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
+
+        MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        //Assert
+        _earningsApiClient.Verify(x =>
+            x.Patch(It.Is<MathsAndEnglishWithdrawApiPatchRequest>(r =>
+                r.Data.WithdrawalDate == apiPutRequest.Data.MathsAndEnglishCourses.First().WithdrawalDate && r.Data.Course == apiPutRequest.Data.MathsAndEnglishCourses.First().Course)), Times.Once);
     }
 
     protected void MockLearningApiResponse()

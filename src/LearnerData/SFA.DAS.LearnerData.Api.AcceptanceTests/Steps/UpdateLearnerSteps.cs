@@ -69,6 +69,16 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
+    [Then(@"(.*) update requests are sent to the earnings domain")]
+    public void ThenRequestsAreSentToTheEarningsDomain(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
+    {
+        var requestUrl = GetEarningsRequestUrl(updateRequestType);
+        var requests = testContext.EarningsApi.MockServer.LogEntries;
+
+        requests.Should().Contain(request => request.RequestMessage.Url.Contains(requestUrl),
+            $"Expected at least one request to {requestUrl} but did not find one.");
+    }
+
     [Then(@"no changes are made to the learner")]
     public void ThenNoChangesAreMadeToTheLearner()
     {
@@ -179,6 +189,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
                 return $"/apprenticeship/{learnerKey.ToString()}/pause";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
                 return $"/apprenticeship/{learnerKey.ToString()}/breaksInLearning";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
+                return $"/apprenticeship/{learnerKey}/mathsAndEnglish/withdraw";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }
