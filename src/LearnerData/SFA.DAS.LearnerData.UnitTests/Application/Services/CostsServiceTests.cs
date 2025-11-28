@@ -41,7 +41,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             // Assert
             result.Should().HaveCount(2);
-            result.Should().BeEquivalentTo(onProgrammes.SelectMany(x => x.Costs));
+            result.Should().BeEquivalentTo(onProgrammes.SelectMany(x => x.Costs!));
         }
     }
 }

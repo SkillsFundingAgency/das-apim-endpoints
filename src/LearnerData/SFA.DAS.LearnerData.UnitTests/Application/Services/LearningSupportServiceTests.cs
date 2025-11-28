@@ -41,7 +41,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 []);
 
             // Assert
-            actual.Count().Should().Be(2);
+            actual.Count.Should().Be(2);
             actual.First().Should().BeEquivalentTo(lsf1);
             actual.Skip(1).First().Should().BeEquivalentTo(lsf2);
         }

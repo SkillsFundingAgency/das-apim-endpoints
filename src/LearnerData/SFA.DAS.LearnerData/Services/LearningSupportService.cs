@@ -22,7 +22,7 @@ namespace SFA.DAS.LearnerData.Services
             return combined;
         }
 
-        private static IEnumerable<LearningSupportUpdatedDetails> GetOnProgrammeLearningSupport(
+        private static List<LearningSupportUpdatedDetails> GetOnProgrammeLearningSupport(
             List<OnProgrammeRequestDetails> onProgrammes,
             List<BreakInLearning> breaksInLearning,
             DateTime effectiveEndDate)
@@ -40,7 +40,7 @@ namespace SFA.DAS.LearnerData.Services
                 .ToList();
         }
 
-        private static IEnumerable<LearningSupportUpdatedDetails> SplitByBreaks(
+        private static List<LearningSupportUpdatedDetails> SplitByBreaks(
             LearningSupportUpdatedDetails segment,
             IEnumerable<BreakInLearning> breaks)
         {
@@ -105,7 +105,7 @@ namespace SFA.DAS.LearnerData.Services
             };
         }
 
-        private static IEnumerable<LearningSupportUpdatedDetails> GetEnglishAndMathsLearningSupport(
+        private static List<LearningSupportUpdatedDetails> GetEnglishAndMathsLearningSupport(
             List<MathsAndEnglish> englishAndMaths)
         {
             return englishAndMaths

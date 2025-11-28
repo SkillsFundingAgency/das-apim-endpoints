@@ -89,7 +89,7 @@ internal static class EarningsApiClientExtensions
         {
             var data = new WithdrawRequest()
             {
-                WithdrawalDate = apiPutRequest.Data.Delivery.WithdrawalDate.Value
+                WithdrawalDate = apiPutRequest.Data.Delivery.WithdrawalDate!.Value
             };
 
             await earningsApiClient.Patch(new WithdrawApiPatchRequest(command.LearningKey, data));
@@ -112,7 +112,7 @@ internal static class EarningsApiClientExtensions
         {
             var data = new PauseRequest()
             {
-                PauseDate = apiPutRequest.Data.OnProgramme.PauseDate.Value,
+                PauseDate = apiPutRequest.Data.OnProgramme.PauseDate!.Value,
             };
             await earningsApiClient.Patch(new PauseApiPatchRequest(command.LearningKey, data));
         }, "StartBreakInLearning", logger, command.LearningKey);
