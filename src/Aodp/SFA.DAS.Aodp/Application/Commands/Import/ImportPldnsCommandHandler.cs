@@ -28,7 +28,7 @@ public class ImportPldnsCommandHandler : IRequestHandler<ImportPldnsCommand, Bas
             };
 
             var importResponse = await _multipartFormDataSenderWrapper
-                        .PostWithMultipartFormData<IFormFile, ImportPldnsCommandResponse>(apiRequest);
+                        .PostWithMultipartFormData<IFormFile, ImportPldnsCommandResponse>(apiRequest, true, cancellationToken);
 
             response.Value = importResponse.Body;
             response.Success = true;

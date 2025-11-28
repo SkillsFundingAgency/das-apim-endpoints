@@ -22,7 +22,7 @@ public class MultipartFormDataSenderWrapper : IMultipartFormDataSenderWrapper
         _aodpApiConfiguration = aodpApiConfiguration;
     }
 
-    public async Task<ApiResponse<TResponse>> PostWithMultipartFormData<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true)
+    public async Task<ApiResponse<TResponse>> PostWithMultipartFormData<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true, CancellationToken cancellationToken = default)
     {
         var requestData = request.Data as IFormFile;
         using var content = new MultipartFormDataContent();

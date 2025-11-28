@@ -5,5 +5,5 @@ namespace SFA.DAS.Aodp.Wrapper;
 
 public interface IMultipartFormDataSenderWrapper
 {
-    Task<ApiResponse<TResponse>> PostWithMultipartFormData<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true);
+    Task<ApiResponse<TResponse>> PostWithMultipartFormData<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true, CancellationToken cancellationToken = default);
 }

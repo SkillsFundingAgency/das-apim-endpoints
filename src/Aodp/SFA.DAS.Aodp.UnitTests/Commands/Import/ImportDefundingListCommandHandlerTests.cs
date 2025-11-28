@@ -34,7 +34,7 @@ public class ImportDefundingListCommandHandlerTests
         };
         var apiResponse = new ApiResponse<ImportDefundingListResponse>(expectedResponseBody, HttpStatusCode.OK, string.Empty, new Dictionary<string, IEnumerable<string>>());
         _multipartWrapperMock
-            .Setup(m => m.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>()))
+            .Setup(m => m.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>(), default))
             .ReturnsAsync(apiResponse);
 
         var command = new ImportDefundingListCommand { File = file };
@@ -52,7 +52,7 @@ public class ImportDefundingListCommandHandlerTests
             Assert.That(result.Value.ImportedCount, Is.EqualTo(expectedResponseBody.ImportedCount));
             Assert.That(result.Value.Message, Is.EqualTo(expectedResponseBody.Message));
             _multipartWrapperMock.Verify(m => m.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>
-                    (It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>()), Times.Once);
+                    (It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>(), default), Times.Once);
         });
 
     }
@@ -64,7 +64,7 @@ public class ImportDefundingListCommandHandlerTests
         var file = CreateFormFile("a,b");
         var expectedException = new InvalidOperationException("Wrapper failure");
         _multipartWrapperMock
-            .Setup(m => m.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>()))
+            .Setup(m => m.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>(), default))
             .ThrowsAsync(expectedException);
 
         var command = new ImportDefundingListCommand { File = file };
@@ -79,7 +79,7 @@ public class ImportDefundingListCommandHandlerTests
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorMessage, Is.Not.Null);
             Assert.That(result.ErrorMessage, Is.EqualTo(expectedException.Message));
-            _multipartWrapperMock.Verify(m => m.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>()), Times.Once);
+            _multipartWrapperMock.Verify(m => m.PostWithMultipartFormData<IFormFile, ImportDefundingListResponse>(It.IsAny<IPostApiRequest<IFormFile>>(), It.IsAny<bool>(), default), Times.Once);
         });
     }
 
