@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoFixture;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using WireMock;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -59,7 +59,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
             _server
                 .Given(
                     Request.Create()
-                    .WithPath("/api/v1/search")
+                    .WithPath("/organisations")
                     .UsingGet()
                 )
                 .RespondWith(new RoatpSearchResponseProvider(_fixture));
@@ -95,12 +95,10 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
                 if (long.TryParse(searchTerm, out long providerId))
                 {
-                    var trainingProviderResponse = _fixture.Build<TrainingProviderResponse>()
+                    var response = _fixture.Build<OrganisationResponse>()
                         .With(x => x.Ukprn, providerId)
                         .With(x => x.TradingName, $"Provider{providerId}")
                         .Create();
-
-                    var response = new SearchResponse { SearchResults = new TrainingProviderResponse[] { trainingProviderResponse } };
 
                     // Construct response
                     var responseMessage = new ResponseMessage

@@ -86,6 +86,7 @@ public class SavePricesRequest
 {
     public Guid ApprenticeshipEpisodeKey { get; set; }
     public int AgeAtStartOfLearning { get; set; }
+    public int FundingBandMaximum { get; set; }
     public List<PriceDetail> Prices { get; set; } = [];
 }
 
@@ -97,7 +98,6 @@ public class PriceDetail
     public decimal TrainingPrice { get; set; }
     public decimal? EndPointAssessmentPrice { get; set; }
     public decimal TotalPrice { get; set; }
-    public int FundingBandMaximum { get; set; }
 }
 
 public class WithdrawApiPatchRequest : IPatchApiRequest<WithdrawRequest>
@@ -150,4 +150,19 @@ public class PauseApiPatchRequest: IPatchApiRequest<PauseRequest>
 public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiRequest
 {
     public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
+}
+
+public class MathsAndEnglishWithdrawRequest
+{
+    public string Course { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
+}
+
+public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, MathsAndEnglishWithdrawRequest data)
+    : IPatchApiRequest<MathsAndEnglishWithdrawRequest>
+{
+    public string PatchUrl { get; } =
+        $"apprenticeship/{apprenticeshipKey}/mathsAndEnglish/withdraw";
+
+    public MathsAndEnglishWithdrawRequest Data { get; set; } = data;
 }

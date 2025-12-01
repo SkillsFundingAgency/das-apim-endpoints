@@ -80,7 +80,8 @@ builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks()
     .AddCheck<LearningApiHealthCheck>(LearningApiHealthCheck.HealthCheckResultDescription)
     .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription)
-    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription);
+    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription)
+    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateLearnerCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
