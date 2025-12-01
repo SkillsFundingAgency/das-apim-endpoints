@@ -11,5 +11,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public DateTime DateOfBirth { get; set; }
     }
 }

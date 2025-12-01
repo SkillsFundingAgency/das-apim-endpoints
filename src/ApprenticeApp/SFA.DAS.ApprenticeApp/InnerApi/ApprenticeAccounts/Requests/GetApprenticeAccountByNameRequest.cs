@@ -11,13 +11,15 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests
     {
         private readonly string _firstName;
         private readonly string _lastName;
+        private readonly DateTime _dateOfBirth;
 
-        public GetApprenticeAccountByNameRequest(string firstName, string lastName)
+        public GetApprenticeAccountByNameRequest(string firstName, string lastName, DateTime dateOfBirth)
         {
             _firstName = firstName;
             _lastName = lastName;
+            _dateOfBirth = dateOfBirth;
         }
 
-        public string GetUrl => $"apprentices?firstName={_firstName}&lastName={_lastName}";
+        public string GetUrl => $"apprentices?firstName={_firstName}&lastName={_lastName}&dateOfBirth={_dateOfBirth}";
     }
 }

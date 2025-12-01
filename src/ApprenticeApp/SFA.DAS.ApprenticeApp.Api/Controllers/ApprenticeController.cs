@@ -33,12 +33,13 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
         [HttpGet]
         [Route("/apprentices")]
-        public async Task<IActionResult> GetApprenticeByName([FromQuery] string firstName, [FromQuery] string lastName)
+        public async Task<IActionResult> GetApprenticeByName([FromQuery] string firstName, [FromQuery] string lastName, [FromQuery] DateTime dateOfBirth)
         {
             var queryResult = await _mediator.Send(new GetApprenticeAccountByNameQuery
             {
                 FirstName = firstName,
-                LastName = lastName
+                LastName = lastName,
+                DateOfBirth = dateOfBirth
             });
 
             if (queryResult.Apprentices == null)
@@ -85,7 +86,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             });
             
             return Ok();
-        }
+        }        
         public class ApprenticeAddSubscriptionRequest
         {
             public string Endpoint { get; set; }

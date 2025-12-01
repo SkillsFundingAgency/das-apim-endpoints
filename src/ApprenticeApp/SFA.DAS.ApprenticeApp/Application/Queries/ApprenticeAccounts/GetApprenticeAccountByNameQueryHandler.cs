@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts
 
         public async Task<GetApprenticeAccountByNameQueryResult> Handle(GetApprenticeAccountByNameQuery request, CancellationToken cancellationToken)
         {
-            var result = await _accountsApiClient.Get<List<ApprenticeAccount>>(new GetApprenticeAccountByNameRequest(request.FirstName, request.LastName));
+            var result = await _accountsApiClient.Get<List<ApprenticeAccount>>(new GetApprenticeAccountByNameRequest(request.FirstName, request.LastName, request.DateOfBirth));
 
             var apprentice = result.Select(x => new Apprentice
             {
