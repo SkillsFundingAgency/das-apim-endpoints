@@ -141,5 +141,33 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
             actual.Should().BeEquivalentTo(expected, opts => opts.WithoutStrictOrdering());
         }
+
+        [Test]
+        public void With_EnglishAndMaths_LearningSupport_Overhanging_Start_Of_Break_Then_LSF_Is_Truncated()
+        {
+            var command = BreaksInLearningTestHelper.CreateLearnerWithEnglishAndMathsBreaksInLearning();
+            var lsf1 = new LearningSupportRequestDetails
+            {
+                StartDate = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.First().StartDate,
+                EndDate = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.First().EndDate
+            };
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.First().LearningSupport.Add(lsf1);
+
+            var sut = new LearningSupportService();
+
+            //Currently BiL does not exist for E&M - all we have is a "PauseDate".
+            //Since the BiL parameter in the below method is for the OnProg BiL, it probably needs to be removed altogether
+            //to be replaced with two separate methods that can be unioned in the handler instead of in here.
+            var actual = sut.GetCombinedLearningSupport([], DateTime.UtcNow, command.UpdateLearnerRequest.Delivery.EnglishAndMaths, []);
+
+            var expected = new LearningSupportUpdatedDetails
+            {
+                StartDate = lsf1.StartDate,
+                EndDate = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.First().PauseDate!.Value
+            };
+
+            actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
+        }
+
     }
 }
