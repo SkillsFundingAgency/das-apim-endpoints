@@ -87,6 +87,9 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
                     await earningsApiClient.WithdrawEnglishAndMaths(command, updateLearningApiPutRequest, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged:
+                    await earningsApiClient.UpdateDateOfBirth(command, updateLearningApiPutRequest, logger);
+                    break;
             }
         }
 
