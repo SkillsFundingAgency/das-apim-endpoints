@@ -184,3 +184,21 @@ public class UpdateBreaksInLearningRequest
     public Guid EpisodeKey { get; set; }
     public List<BreakInLearning> BreaksInLearning { get; set; }
 }
+
+public class SaveDateOfBirthApiPatchRequest : IPatchApiRequest<SaveDateOfBirthRequest>
+{
+    public string PatchUrl { get; }
+
+    public SaveDateOfBirthRequest Data { get; set; }
+
+    public SaveDateOfBirthApiPatchRequest(Guid learningKey, SaveDateOfBirthRequest data)
+    {
+        PatchUrl = $"apprenticeship/{learningKey.ToString()}/learner/dateOfBirth";
+        Data = data;
+    }
+}
+
+public class SaveDateOfBirthRequest
+{
+    public DateTime? DateOfBirth { get; set; }
+}

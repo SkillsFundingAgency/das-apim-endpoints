@@ -470,6 +470,30 @@ public class WhenHandlingUpdateLearnerCommand
                 r.Data.WithdrawalDate == apiPutRequest.Data.MathsAndEnglishCourses.First().WithdrawalDate && r.Data.Course == apiPutRequest.Data.MathsAndEnglishCourses.First().Course)), Times.Once);
     }
 
+    [Test]
+    public async Task Then_Earnings_Is_Updated_With_DateOfBirth()
+    {
+        // Arrange
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+        {
+            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged }
+        }, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveDateOfBirthApiPatchRequest>()))
+            .Returns(Task.CompletedTask);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        //Assert
+        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveDateOfBirthApiPatchRequest>(
+                r => r.Data.DateOfBirth == apiPutRequest.Data.Learner.DateOfBirth)),
+            Times.Once);
+    }
+
     protected void MockLearningApiResponse()
     {
         var responseBody = new UpdateLearnerApiPutResponse();

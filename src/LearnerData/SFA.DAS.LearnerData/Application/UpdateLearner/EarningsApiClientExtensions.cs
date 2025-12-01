@@ -159,6 +159,18 @@ internal static class EarningsApiClientExtensions
         }, "maths and english withdraw", logger, command.LearningKey);
     }
 
+    internal static async Task UpdateDateOfBirth(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, UpdateLearningApiPutRequest apiPutRequest, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            var data = new SaveDateOfBirthRequest()
+            {
+                DateOfBirth = apiPutRequest.Data.Learner.DateOfBirth
+            };
+            await earningsApiClient.Patch(new SaveDateOfBirthApiPatchRequest(command.LearningKey, data));
+        }, "date of birth", logger, command.LearningKey);
+    }
+
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)
     {
         logger.LogInformation("Calling Earnings Inner Api to update {updateTarget} for {learningKey}", updateTarget, learningKey);
