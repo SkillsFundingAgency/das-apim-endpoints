@@ -193,7 +193,7 @@ public class SaveDateOfBirthApiPatchRequest : IPatchApiRequest<SaveDateOfBirthRe
 
     public SaveDateOfBirthApiPatchRequest(Guid learningKey, SaveDateOfBirthRequest data)
     {
-        PatchUrl = $"apprenticeship/{learningKey.ToString()}/learner/dateOfBirth";
+        PatchUrl = $"apprenticeship/{learningKey.ToString()}/dateOfBirth";
         Data = data;
     }
 }
