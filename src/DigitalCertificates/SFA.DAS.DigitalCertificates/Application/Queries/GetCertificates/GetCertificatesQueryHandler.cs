@@ -38,13 +38,16 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
                 authorisationResponse.EnsureSuccessStatusCode();
                 result.Authorisation = authorisationResponse.Body.Authorisation;
 
-                ApiResponse<GetCertificatesResponse> certificatesResponse= await _assessorsApiClient.
-                    GetWithResponseCode<GetCertificatesResponse>(new GetCertificatesRequest(result.Authorisation.Uln));
-
-                if (certificatesResponse != null && certificatesResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
+                if (result.Authorisation != null)
                 {
-                    certificatesResponse.EnsureSuccessStatusCode();
-                    result.Certificates = certificatesResponse.Body.Certificates;
+                    ApiResponse<GetCertificatesResponse> certificatesResponse = await _assessorsApiClient.
+                        GetWithResponseCode<GetCertificatesResponse>(new GetCertificatesRequest(result.Authorisation.Uln));
+
+                    if (certificatesResponse != null && certificatesResponse.StatusCode != System.Net.HttpStatusCode.NotFound)
+                    {
+                        certificatesResponse.EnsureSuccessStatusCode();
+                        result.Certificates = certificatesResponse.Body.Certificates;
+                    }
                 }
             }
 
