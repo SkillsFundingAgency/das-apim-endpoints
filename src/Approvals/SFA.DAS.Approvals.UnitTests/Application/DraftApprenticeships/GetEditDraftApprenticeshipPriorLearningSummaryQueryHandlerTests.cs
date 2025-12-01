@@ -126,5 +126,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.That(_draftApprenticeship.HasStandardOptions, Is.EqualTo(result.HasStandardOptions));
         }
+
+        [Test]
+        public async Task Handle_LearnerDataId_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.That(_draftApprenticeship.LearnerDataId, Is.EqualTo(result.LearnerDataId));
+        }
     }
 }
