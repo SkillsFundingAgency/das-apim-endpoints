@@ -200,5 +200,5 @@ public class SaveDateOfBirthApiPatchRequest : IPatchApiRequest<SaveDateOfBirthRe
 
 public class SaveDateOfBirthRequest
 {
-    public DateTime? DateOfBirth { get; set; }
+    public DateTime DateOfBirth { get; set; }
 }
