@@ -17,7 +17,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
     public class WhenGettingCertificateSharingDetails
     {
         [Test, MoqAutoData]
-        public async Task Then_The_Sharings_Are_Returned_From_Mediator(
+        public async Task Then_The_Sharings_Are_Returned(
             Guid userId,
             Guid certificateId,
             int limit,
