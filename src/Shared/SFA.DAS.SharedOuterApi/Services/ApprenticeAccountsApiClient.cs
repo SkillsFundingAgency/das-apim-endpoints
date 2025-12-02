@@ -53,7 +53,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task Delete(IDeleteApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Delete(request);
         }
 
         public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
