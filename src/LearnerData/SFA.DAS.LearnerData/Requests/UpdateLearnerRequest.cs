@@ -28,12 +28,14 @@ public class UpdateLearnerRequestDeliveryDetails
 public class OnProgrammeRequestDetails
 {
     public int StandardCode { get; set; }
+    public string AgreementId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<CostDetails>? Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
+    public DateTime? ActualEndDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 
