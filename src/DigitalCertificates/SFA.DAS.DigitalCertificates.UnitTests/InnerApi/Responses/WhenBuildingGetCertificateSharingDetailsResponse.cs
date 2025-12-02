@@ -38,6 +38,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
                 UserId = Guid.NewGuid(),
                 CertificateId = Guid.NewGuid(),
                 CertificateType = "Test",
+                CourseName = "CourseName",
                 Sharings = new List<SharingItem> { sharing }
             };
 
