@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +10,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
-using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
 using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
@@ -55,7 +54,7 @@ namespace SFA.DAS.EmployerFeedback.Api
             }
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAttributesQuery).Assembly));
             services.AddServiceRegistration();
 
             services
