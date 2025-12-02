@@ -8,7 +8,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
         public Guid UserId { get; set; }
         public Guid CertificateId { get; set; }
         public string CertificateType { get; set; }
-        public required string CourseName { get; set; }
+        public string CourseName { get; set; }
         public List<SharingItem> Sharings { get; set; }
     }
 
