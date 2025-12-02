@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "83889b38-c51c-49f1-a53d-710ada0489f9",
+		"_postman_id": "06aa2e16-0fec-437f-adf3-3f6330fa27f3",
 		"name": "Outer API Tests For Employer_Feedback",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "21174429"
@@ -128,7 +128,7 @@
 				"method": "POST",
 				"header": [],
 				"url": {
-					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Account/update",
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Accounts/update",
 					"protocol": "https",
 					"host": [
 						"at-apim-empfb-api",
@@ -138,7 +138,7 @@
 						"uk"
 					],
 					"path": [
-						"Account",
+						"Accounts",
 						"update"
 					]
 				}
@@ -215,7 +215,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Account?batchsize=10",
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Accounts?batchsize=10",
 					"protocol": "https",
 					"host": [
 						"at-apim-empfb-api",
@@ -225,7 +225,7 @@
 						"uk"
 					],
 					"path": [
-						"Account"
+						"Accounts"
 					],
 					"query": [
 						{
@@ -262,7 +262,7 @@
 					}
 				},
 				"url": {
-					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Account/1/feedbacktransaction",
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Accounts/1/feedbacktransaction",
 					"protocol": "https",
 					"host": [
 						"at-apim-empfb-api",
@@ -272,7 +272,7 @@
 						"uk"
 					],
 					"path": [
-						"Account",
+						"Accounts",
 						"1",
 						"feedbacktransaction"
 					]
