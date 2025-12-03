@@ -224,6 +224,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             Assert.That(_draftApprenticeship.EmployerHasEditedCost, Is.EqualTo(result.EmployerHasEditedCost));
         }
 
+        [Test]
+        public async Task Handle_TraingingCouser_Version_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.That(_draftApprenticeship.TrainingCourseVersion, Is.EqualTo(result.TrainingCourseVersion));
+        }
+
         [TestCase(0, false)]
         [TestCase(1, false)]
         [TestCase(2, true)]
