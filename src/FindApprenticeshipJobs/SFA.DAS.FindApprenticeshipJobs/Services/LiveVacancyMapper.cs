@@ -170,6 +170,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Latitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lat : 0,
                     Longitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lon : 0,
                 },
+                EmploymentLocationOption = source.LocationGeoCoordinates.Count switch
+                {
+                    0 => null,
+                    1 => AvailableWhere.OneLocation,
+                    _ => AvailableWhere.MultipleLocations
+                },
                 OtherAddresses = GetCivilServiceJobOtherAddresses(source.LocationGeoCoordinates),
                 Qualifications = [],
                 Skills = [],
