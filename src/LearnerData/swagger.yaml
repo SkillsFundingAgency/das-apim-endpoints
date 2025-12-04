@@ -24,6 +24,38 @@ paths:
           $ref: '#/components/responses/healthCheckResponse'
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'
+  
+  /reference-data/providers:
+    get:
+      summary: returns all reference data for providers
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      responses:
+        '200':
+          $ref: '#/components/responses/pagedProviderReferenceDataResponse' 
+
+  /reference-data/providers/{ukprn}:
+    get:
+      summary: returns reference data pertinant to a provider
+      security:
+        - ApiKeyAuth: []  # Require API Key authentication
+      parameters:
+        - name: ukprn
+          in: path
+          required: true
+          description: The UK Provider Reference Number
+          schema:
+            type: string        
+      responses:
+        '200':
+          $ref: '#/components/responses/providerReferenceDataResponse' 
+        '404':
+          description: The provider was not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/error' 
+
   /providers/{ukprn}/academicyears/{academicyear}/learners:
     put:
       summary: External authenticated endpoint for pushing ILR data (leaner data in our domain) into the apprenticeship service
@@ -90,27 +122,6 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'                       
 
-  /reference-data/providers/{ukprn}/employers:
-    get:
-      summary: This endpoint returns the employers linked to the provider sent across in the ukprn field
-      description: This endpoint is required when the ConRefNumber is updated from the provider within the ILR record. Data returned will form the basis for validation of the conRefNumber stored in the ILR record to ensure that incorrect relationships are not stored
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner cohort
-          schema:
-            type: string
-          
-      responses:
-        '200':
-          $ref: '#/components/responses/refDataEmployersPerProvider'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '429':
-          $ref: '#/components/responses/rateLimitExceededResponse' 
 components:  
   securitySchemes:
     ApiKeyAuth:
@@ -164,14 +175,26 @@ components:
               $ref: '#/components/schemas/learnerRequest'
 
   responses:
-    refDataEmployersPerProvider:
-      description: Response for reference data endpoint returning employers with a relationship to a provider
+    providerReferenceDataResponse:
+      description: A provider refererence data response
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/employer'
+            $ref: '#/components/schemas/providerReferenceData'
+
+    pagedProviderReferenceDataResponse:
+      description: A paged provider refererence data response
+      headers:
+        Link:
+          description: Pagination links (next, prev)
+          schema:
+            type: string
+            format: url
+          example: '<https://api.example.com/items?page=2>; rel="prev", <https://api.example.com/items?page=5>; rel="next"'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/pagedProviderReferenceData'
     
     acceptedResponse:
       description: A resource has been created or updated through the service      
@@ -259,12 +282,6 @@ components:
         - code
         - message
     
-    employer:
-      type: object
-      properties:
-        employerAgreementId:
-          type: string
-    
     healthcheckResults:
       type: array
       items:
@@ -336,5 +353,74 @@ components:
         - agreementId     
         - isFlexiJob 
         - consumerReference
+    
+    pagedProviderReferenceData:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+              $ref: '#/components/schemas/providerReferenceData'
+        total:
+          type: integer
+          minimum: 0
+        page: 
+          type: integer
+          minimum: 1
+        pageSize: 
+          type: integer
+          minimum: 1
+          maximum: 20
+        totalPages: 
+          type: integer
+          minimum: 1
+      required:
+        - page
+        - total
+        - pageSize  
+        - totalPages  
+    
+    providerReferenceData:
+      type: object
+      properties:
+        ukprn:
+          type: string
+        type:
+          type: integer
+          description: 1 -main, 2 - provider, 3 - supporting
+          example: [1, 2, 3]
+        status:
+          type: string
+          description: 0 - removed, 1 - active, 2 - active (not taking providers), 3 - on boarding
+          example: [0, 1, 2, 3]
+        employers:
+          type: array
+          description: Provider relationships
+          items:
+              $ref: '#/components/schemas/employerData'
+        supportedCourses:
+          type: array
+          description: course management api will have a single endpoint
+          items:
+            type: object
+            properties:
+              code: 
+                type: string
+              effectiveFrom:
+                type: string
+                format: date
+              effectiveTo:
+                type: string
+                format: date
+    
+    employerData:
+      type: object
+      properties:
+        agreementId:
+          type: string
+        IsLevy:
+          type: boolean
+        IsFlexiEmployer: 
+          type: boolean
 security:
   - ApiKeyAuth: []  # Apply API Key security globally
