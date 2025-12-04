@@ -19,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
 
             if (getStandardsListItem == null)
             {
-                logger.LogError($"Standard not found {source.ProgrammeId}");
+                logger.LogError("Standard not found {ProgrammeId}", source.ProgrammeId);
             }
 
             return new Application.Shared.LiveVacancy
@@ -156,11 +156,11 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             {
                 Route = route.Name,
                 RouteCode = route.Id,
-                Title = source.JobTitle.En,
+                Title = source.JobTitle.En ?? string.Empty,
                 Description = string.Empty,
-                Id = source.JobCode,
+                Id = source.JobCode ?? string.Empty,
                 EmployerName = source.Department.En,
-                VacancyReference = source.JobReference,
+                VacancyReference = source.JobReference ?? string.Empty,
                 Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMinimum),
                 ApplicationUrl = source.JobUrl,
                 ClosingDate = source.KeyTimes.ClosingTime,
@@ -170,6 +170,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Latitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lat : 0,
                     Longitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lon : 0,
                 },
+                OtherAddresses = GetCivilServiceJobOtherAddresses(source.LocationGeoCoordinates),
                 Qualifications = [],
                 Skills = [],
                 SearchTags = "Civil Service Civil Servant Public Sector Whitehall",
@@ -255,6 +256,18 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Between21AndUnder25NationalMinimumWage = upperBand,
                 Over25NationalMinimumWage = upperBand
             };
+        }
+
+        private static List<Address> GetCivilServiceJobOtherAddresses(
+            List<GetCivilServiceJobsApiResponse.LocationGeoCoordinate>? source)
+        {
+            if (source is null || source.Count == 0) return [];
+            
+            return source.Skip(1).Select(location => new Address
+            {
+                Latitude = location.Lat,
+                Longitude = location.Lon
+            }).ToList();
         }
     }
 }

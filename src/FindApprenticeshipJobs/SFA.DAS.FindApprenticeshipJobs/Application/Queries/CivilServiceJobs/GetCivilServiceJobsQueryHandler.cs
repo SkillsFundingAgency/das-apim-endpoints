@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Location;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.CivilServiceJobs;
 public class GetCivilServiceJobsQueryHandler(
@@ -27,36 +28,74 @@ public class GetCivilServiceJobsQueryHandler(
         }
 
         var routes = await courseService.GetRoutes();
-        var route = routes.Routes.FirstOrDefault(c => c.Name.Contains("Business", StringComparison.CurrentCultureIgnoreCase));
-        var liveVacancies = response.Jobs.Select(c => liveVacancyMapper.Map(c, route)).ToList();
+        var route = routes.Routes
+            .FirstOrDefault(c => c.Name.Contains("Business", StringComparison.OrdinalIgnoreCase));
 
-        foreach (var liveVacancy in liveVacancies)
+        var liveVacancies = response.Jobs
+            .Select(c => liveVacancyMapper.Map(c, route))
+            .ToList();
+
+        // Populate address info in parallel
+        var addressTasks = liveVacancies.Select(async vacancy =>
         {
-            if (liveVacancy.Address?.Latitude == null ||
-                liveVacancy.Address.Longitude == null ||
-                liveVacancy.Address.Latitude == 0 ||
-                liveVacancy.Address.Longitude == 0)
+            // Main address
+            if (HasValidCoords(vacancy.Address))
             {
-                continue; // Skip if address is not available or coordinates are not set
+                vacancy.Address = await PopulateAddress(vacancy.Address!);
             }
-            
-            // Fetch address details using the coordinates
-            var locationApiResponse = await locationApiClient.Get<GetAddressByCoordinatesApiResponse>(
-                new GetAddressByCoordinatesApiRequest((double)liveVacancy.Address.Latitude!, (double)liveVacancy.Address.Longitude!));
 
-            if (locationApiResponse == null) continue;
+            // Other addresses
+            if (vacancy.OtherAddresses is {Count: > 0})
+            {
+                var tasks = vacancy.OtherAddresses
+                    .Where(HasValidCoords)
+                    .Select(async addr =>
+                    {
+                        var updated = await PopulateAddress(addr);
+                        return (Original: addr, Updated: updated);
+                    });
 
-            // Update the live vacancy address with the location API response
-            liveVacancy.Address.AddressLine1 = locationApiResponse.AddressLine1;
-            liveVacancy.Address.AddressLine2 = locationApiResponse.AddressLine2;
-            liveVacancy.Address.AddressLine3 = locationApiResponse.AddressLine3;
-            liveVacancy.Address.Postcode = locationApiResponse.Postcode;
-            liveVacancy.Address.Country = locationApiResponse.Country;
-        }
+                var results = await Task.WhenAll(tasks);
+
+                // Replace original instances
+                foreach (var (orig, updated) in results)
+                {
+                    var idx = vacancy.OtherAddresses.IndexOf(orig);
+                    if (idx >= 0) vacancy.OtherAddresses[idx] = updated;
+                }
+            }
+        });
+
+        await Task.WhenAll(addressTasks);
 
         return new GetCivilServiceJobsQueryResult
         {
             CivilServiceVacancies = liveVacancies
         };
+    }
+
+    private static bool HasValidCoords(Address? address)
+    {
+        return  address is {Latitude: not null, Longitude: not null} 
+                && address.Latitude != 0 && address.Longitude != 0;
+    }
+
+    private async Task<Address> PopulateAddress(Address address)
+    {
+        var response = await locationApiClient.Get<GetAddressByCoordinatesApiResponse>(
+            new GetAddressByCoordinatesApiRequest(
+                (double)address.Latitude!,
+                (double)address.Longitude!));
+
+        if (response is null)
+            return address;
+
+        address.AddressLine1 = response.AddressLine1;
+        address.AddressLine2 = response.AddressLine2;
+        address.AddressLine3 = response.AddressLine3;
+        address.Postcode = response.Postcode;
+        address.Country = response.Country;
+
+        return address;
     }
 }
