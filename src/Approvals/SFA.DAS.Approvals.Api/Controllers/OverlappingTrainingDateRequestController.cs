@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models.OverlappingTrainingDateRequest;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -80,6 +81,22 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 DraftApprenticeshipId = draftApprenticeshipId
             });
 
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("{draftApprenticeshipId}/validateEmailOverlap")]
+        public async Task<IActionResult> ValidateEmailOverlap(long draftApprenticeshipId, string email, long cohortId, string startDate, string endDate)
+        {
+            var result = await _mediator.Send(new ValidateEmailOverlapQuery()
+            {
+                Email = email,
+                CohortId = cohortId,
+                StartDate = startDate,
+                EndDate = endDate,
+                DraftApprenticeshipId = draftApprenticeshipId
+
+            });
             return Ok(result);
         }
     }
