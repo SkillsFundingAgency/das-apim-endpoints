@@ -38,7 +38,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 TotalCost = apprenticeship.Cost,
                 LastName = apprenticeship.LastName,
                 FirstName = apprenticeship.FirstName,
-                HasStandardOptions = apprenticeship.HasStandardOptions
+                HasStandardOptions = apprenticeship.HasStandardOptions,
+                LearnerDataId = apprenticeship.LearnerDataId
             };
         }
     }
