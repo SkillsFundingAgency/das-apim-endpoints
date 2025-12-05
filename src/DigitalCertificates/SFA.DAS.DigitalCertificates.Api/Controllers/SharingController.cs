@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using System;
-using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -29,12 +28,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var result = await _mediator.Send(new GetCertificateSharingDetailsQuery { UserId = user, CertificateId = certificateId, Limit = limit });
-                if (result != null)
-                {
-                    return Ok(result.Response);
-                }
-
-                throw new UnreachableException($"GetCertificateSharingDetailsQueryHandler returned null for user: {user}, certificateId: {certificateId}");
+                return Ok(result.Response);
             }
             catch (Exception e)
             {
