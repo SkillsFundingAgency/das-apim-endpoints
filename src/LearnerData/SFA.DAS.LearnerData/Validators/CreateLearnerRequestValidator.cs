@@ -65,15 +65,8 @@ public class CreateLearnerRequestValidator : AbstractValidator<CreateLearnerRequ
             .WithMessage("OnProgramme IsFlexiJob is required");
     }
 
-    private bool ValidateUln(string uln)
+    private bool ValidateUln(long uln)
     {
-        if(long.TryParse(uln, out var ulnAsLong))
-        {
-            return ulnAsLong is > 1000000000 or > 999999999;
-        }
-        else
-        {
-            return false;
-        }
+        return uln is > 1000000000 or > 999999999;
     } 
 }

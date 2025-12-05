@@ -3,7 +3,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -12,7 +14,8 @@ namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
@@ -71,13 +74,34 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
                     await earningsApiClient.ReverseWithdrawal(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
+                    await earningsApiClient.StartBreakInLearning(command, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
+                    await earningsApiClient.RemoveBreakInLearning(command, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
+                    await earningsApiClient.WithdrawEnglishAndMaths(command, logger);
+                    break;
             }
         }
 
         if (updatePrices)
         {
-            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
+            var fundingBandMaximum = await GetFundingBandMaximum(command);
+            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, fundingBandMaximum, logger);
         }
+    }
+
+    private async Task<int> GetFundingBandMaximum(UpdateLearnerCommand command)
+    {
+        var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
+        var standardId = onProgramme.StandardCode.ToString();
+        var startDate = onProgramme.StartDate;
+
+        var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
+
+        return response.MaxFundingOn(startDate);
     }
 
     private static UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
@@ -98,7 +122,8 @@ public class UpdateLearnerCommandHandler(
             OnProgramme = new OnProgrammeDetails
             {
                 ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts()
+                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts(),
+                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate
             },
             MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
                 new MathsAndEnglishDetails
@@ -109,7 +134,8 @@ public class UpdateLearnerCommandHandler(
                     PlannedEndDate = x.EndDate,
                     PriorLearningPercentage = x.PriorLearningPercentage,
                     StartDate = x.StartDate,
-                    WithdrawalDate = x.WithdrawalDate
+                    WithdrawalDate = x.WithdrawalDate,
+                    PauseDate = x.PauseDate
                 }).ToList(),
             LearningSupport = command.CombinedLearningSupport()
         };

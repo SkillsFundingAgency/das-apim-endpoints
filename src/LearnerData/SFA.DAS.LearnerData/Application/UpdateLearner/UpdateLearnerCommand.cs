@@ -33,6 +33,7 @@ internal static class UpdateLearnerCommandExtensions
         var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme;
         var completionDate = onProgramme.First().CompletionDate;
         var withdrawalDate = onProgramme.First().WithdrawalDate;
+        var pauseDate = onProgramme.First().PauseDate;
 
         foreach (var ls in onProgramme.First().LearningSupport)
         {
@@ -43,6 +44,9 @@ internal static class UpdateLearnerCommandExtensions
 
             if (withdrawalDate.HasValue)
                 potentialEndDates.Add(withdrawalDate.Value);
+
+            if (pauseDate.HasValue)
+                potentialEndDates.Add(pauseDate.Value);
 
             var endDate = potentialEndDates.Min();
 

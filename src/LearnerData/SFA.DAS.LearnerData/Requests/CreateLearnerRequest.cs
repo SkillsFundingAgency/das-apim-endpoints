@@ -12,7 +12,7 @@ public class CreateLearnerRequest : UpdateLearnerRequest
     public class LearnerDetails : LearnerRequestDetails
     {
         [Required]
-        public string Uln { get; set; }
+        public long Uln { get; set; }
         [Required]
         public string LearnerRef { get; set; }
         [Required]
@@ -30,7 +30,6 @@ public class CreateLearnerRequest : UpdateLearnerRequest
     {
         public int PercentageOfTrainingLeft { get; set; }
         public bool? IsFlexiJob { get; set; }
-        public int? StandardCode { get; set; }
         public string? AgreementId { get; set; }
     }
 }

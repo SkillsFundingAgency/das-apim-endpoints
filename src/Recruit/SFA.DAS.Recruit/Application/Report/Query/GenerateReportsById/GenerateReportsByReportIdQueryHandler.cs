@@ -70,7 +70,7 @@ public class GenerateReportsByReportIdQueryHandler(
                 if (courseResult == null)
                     continue;
 
-                courseInfo = new CourseInfo(courseResult.Title, courseResult.Level, courseResult.Status);
+                courseInfo = new CourseInfo(courseResult.Title, courseResult.Level, courseResult.Status, courseResult.LarsCode);
                 courseCache[review.ProgrammeId.ToString()] = courseInfo;
             }
 
@@ -117,7 +117,7 @@ public class GenerateReportsByReportIdQueryHandler(
     {
         return new ApplicationSummaryReport
         {
-            ApplicationId = review.ApplicationId,
+            CandidateId = review.CandidateId,
             VacancyReferenceNumber = review.VacancyReference,
             VacancyTitle = review.VacancyTitle,
             Employer = review.EmployerName,
@@ -146,11 +146,13 @@ public class GenerateReportsByReportIdQueryHandler(
             applicant.County = candidate.Address?.County;
             applicant.Postcode = candidate.Address?.Postcode;
             applicant.Email = candidate.Email;
+            applicant.Telephone = candidate.PhoneNumber;
             applicant.DateOfBirth = candidate.DateOfBirth?.ToString("dd/MM/yyyy") ?? string.Empty;
         }
 
         applicant.InterviewAssistance = applicationResponse.Support;
         applicant.CourseName = courseInfo?.Title ?? string.Empty;
+        applicant.CourseId = courseInfo?.LarsCode ?? 0;
         applicant.ApprenticeshipLevel = courseInfo?.Level ?? 0;
         applicant.CourseStatus = courseInfo?.Status ?? string.Empty;
 
@@ -166,6 +168,7 @@ public class GenerateReportsByReportIdQueryHandler(
         if (selectedAddresses.Count == 0 && addresses.Count == 1)
         {
             applicant.Workplace1 = addresses.First().Address.ToSingleLineAddress();
+            applicant.VacancyPostcode = addresses.FirstOrDefault()?.Address?.Postcode;
             return;
         }
 
@@ -184,5 +187,6 @@ public class GenerateReportsByReportIdQueryHandler(
                 .GetProperty($"Workplace{workplaceNumber}")
                 ?.SetValue(applicant, addressString);
         }
+        applicant.VacancyPostcode = addresses.FirstOrDefault()?.Address?.Postcode;
     }
 }

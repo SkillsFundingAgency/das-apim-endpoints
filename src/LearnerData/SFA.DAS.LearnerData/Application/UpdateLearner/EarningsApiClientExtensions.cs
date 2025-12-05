@@ -36,7 +36,8 @@ internal static class EarningsApiClientExtensions
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate
+                ActualEndDate = x.CompletionDate,
+                PauseDate = x.PauseDate
             }).ToList());
 
             await earningsApiClient.Patch(new SaveMathsAndEnglishApiPatchRequest(command.LearningKey, data));
@@ -59,7 +60,7 @@ internal static class EarningsApiClientExtensions
         }, "learning support", logger, command.LearningKey);
     }
 
-    internal static async Task UpdatePrices(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, Guid apprenticeshipKey, UpdateLearnerApiPutResponse apiPutResponse, ILogger<UpdateLearnerCommandHandler> logger)
+    internal static async Task UpdatePrices(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, Guid apprenticeshipKey, UpdateLearnerApiPutResponse apiPutResponse, int fundingBandMaximum, ILogger<UpdateLearnerCommandHandler> logger)
     {
         await LogAndExecute(async () =>
         {
@@ -67,6 +68,7 @@ internal static class EarningsApiClientExtensions
             {
                 ApprenticeshipEpisodeKey = apiPutResponse.LearningEpisodeKey,
                 AgeAtStartOfLearning = apiPutResponse.AgeAtStartOfLearning,
+                FundingBandMaximum = fundingBandMaximum,
                 Prices = apiPutResponse.Prices.Select(x => new PriceDetail
                 {
                     Key = x.Key,
@@ -74,8 +76,7 @@ internal static class EarningsApiClientExtensions
                     EndDate = x.EndDate,
                     TrainingPrice = x.TrainingPrice,
                     EndPointAssessmentPrice = x.EndPointAssessmentPrice,
-                    TotalPrice = x.TotalPrice,
-                    FundingBandMaximum = x.FundingBandMaximum
+                    TotalPrice = x.TotalPrice
                 }).ToList()
             };
 
@@ -103,6 +104,45 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Patch(new ReverseWithdrawalApiPatchRequest(command.LearningKey));
         }, "reverse-withdrawal", logger, command.LearningKey);
+    }
+
+    internal static async Task StartBreakInLearning(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            var data = new PauseRequest()
+            {
+                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate.GetValueOrDefault()
+            };
+            await earningsApiClient.Patch(new PauseApiPatchRequest(command.LearningKey, data));
+        }, "StartBreakInLearning", logger, command.LearningKey);
+    }
+
+    internal static async Task RemoveBreakInLearning(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            await earningsApiClient.Delete(new RemovePauseApiDeleteRequest(command.LearningKey));
+        }, "RemoveBreakInLearning", logger, command.LearningKey);
+    }
+
+    internal static async Task WithdrawEnglishAndMaths(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            foreach (var englishAndMaths in command.UpdateLearnerRequest.Delivery.EnglishAndMaths)
+            {
+                var data = new MathsAndEnglishWithdrawRequest()
+                {
+                    WithdrawalDate = englishAndMaths.WithdrawalDate,
+                    Course = englishAndMaths.Course
+                };
+
+                await earningsApiClient.Patch(new MathsAndEnglishWithdrawApiPatchRequest(command.LearningKey, data));
+            }
+        }, "maths and english withdraw", logger, command.LearningKey);
     }
 
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)

@@ -38,6 +38,7 @@ public class OnProgrammeDetails
 {
     public DateTime ExpectedEndDate { get; set; }
     public List<Cost> Costs { get; set; }
+    public DateTime? PauseDate { get; set; }
 }
 
 public class Cost
@@ -54,6 +55,7 @@ public class MathsAndEnglishDetails
     public DateTime PlannedEndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     public decimal Amount { get; set; }
 }
