@@ -17,7 +17,7 @@ public class ImportController : BaseController
         _logger = logger;
     }
 
-    [HttpPost("defunding-list")]
+    [HttpPost("/api/Import/defunding-list")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(BaseMediatrResponse<ImportDefundingListResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -42,7 +42,7 @@ public class ImportController : BaseController
         }
     }
 
-    [HttpPost("pldns")]
+    [HttpPost("/api/Import/pldns")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(BaseMediatrResponse<ImportPldnsCommandResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
