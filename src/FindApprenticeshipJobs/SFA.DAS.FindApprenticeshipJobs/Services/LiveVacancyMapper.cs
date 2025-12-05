@@ -144,6 +144,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0,
                     Country = locationLookup?.Country
                 },
+                OtherAddresses = [],
+                EmploymentLocationOption = null,
                 Qualifications = [],
                 Skills = [],
                 SearchTags = "NHS National Health Service Health Medical Hospital",
