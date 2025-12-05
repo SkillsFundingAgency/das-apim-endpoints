@@ -6,4 +6,5 @@ namespace SFA.DAS.AdminRoatp.Infrastructure;
 public static class Constants
 {
     public const string RequestingUserIdHeader = "X-RequestingUserId";
+    public const string RequestingUserNameHeader = "X-RequestingUserName";
 }

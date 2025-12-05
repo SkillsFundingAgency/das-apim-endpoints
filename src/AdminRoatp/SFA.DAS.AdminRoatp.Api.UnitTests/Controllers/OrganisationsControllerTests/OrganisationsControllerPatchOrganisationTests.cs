@@ -24,9 +24,10 @@ public class OrganisationsControllerPatchOrganisationTests
         var patchDoc = new JsonPatchDocument<PatchOrganisationModel>();
         patchDoc.Replace(o => o.ProviderType, ProviderType.Main);
         string userId = Guid.NewGuid().ToString();
+        string userName = Guid.NewGuid().ToString();
         mediatorMock.Setup(m => m.Send(It.IsAny<PatchOrganisationCommand>(), It.IsAny<CancellationToken>())).ReturnsAsync(HttpStatusCode.NoContent);
         // Act
-        await controller.PatchOrganisation(ukprn, patchDoc, userId, CancellationToken.None);
+        await controller.PatchOrganisation(ukprn, patchDoc, userId, userName, CancellationToken.None);
         // Assert
         mediatorMock.Verify(m => m.Send(It.Is<PatchOrganisationCommand>(cmd =>
             cmd.Ukprn == ukprn &&
@@ -48,6 +49,7 @@ public class OrganisationsControllerPatchOrganisationTests
         var patchDoc = new JsonPatchDocument<PatchOrganisationModel>();
         patchDoc.Replace(o => o.ProviderType, ProviderType.Main);
         string userId = Guid.NewGuid().ToString();
+        string userName = Guid.NewGuid().ToString();
 
         mediatorMock.Setup(m => m.Send(It.Is<PatchOrganisationCommand>(cmd =>
             cmd.Ukprn == ukprn &&
@@ -57,7 +59,7 @@ public class OrganisationsControllerPatchOrganisationTests
 
         var controller = new OrganisationsController(mediatorMock.Object, loggerMock.Object);
         // Act
-        var result = await controller.PatchOrganisation(ukprn, patchDoc, userId, CancellationToken.None);
+        var result = await controller.PatchOrganisation(ukprn, patchDoc, userId, userName, CancellationToken.None);
         // Assert
         result.As<StatusCodeResult>().StatusCode.Should().Be((int)expected);
     }
