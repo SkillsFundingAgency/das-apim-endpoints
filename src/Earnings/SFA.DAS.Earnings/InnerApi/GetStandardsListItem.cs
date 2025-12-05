@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.Learning.InnerApi;
+namespace SFA.DAS.Earnings.InnerApi;
 
 #pragma warning disable CS8618
 public class GetStandardsListItem : StandardApiResponseBase
