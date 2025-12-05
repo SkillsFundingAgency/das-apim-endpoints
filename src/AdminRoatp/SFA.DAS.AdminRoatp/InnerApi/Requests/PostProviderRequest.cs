@@ -15,5 +15,4 @@ public class PostProviderRequest : IPostApiRequest
         UserDisplayName = data.UserDisplayName;
         Data = data;
     }
-
 }
