@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Aodp.Services;
+using SFA.DAS.Aodp.Wrapper;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -21,6 +22,7 @@ namespace SFA.DAS.Aodp.Api.AppStart
             services.AddTransient<INotificationService, NotificationService>();
             services.AddScoped<IEmailService, EmailService>();
 
+            services.AddTransient<IMultipartFormDataSenderWrapper, MultipartFormDataSenderWrapper>();
             return services;
         }
     }
