@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
-using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
 using SFA.DAS.Recruit.Application.Queries.GetNextVacancyReference;
+using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -14,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using GetNextVacancyReferenceResponse = SFA.DAS.Recruit.Api.Models.Vacancies.Responses.GetNextVacancyReferenceResponse;
+using GqlVacancyMapper = SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers.VacancyMapper;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
@@ -47,5 +50,27 @@ public class VacanciesController(
             logger.LogError(ex, "Error updating vacancy");
             return Problem(title: ex.Message, detail: ex.Error);
         }
+    }
+
+    [HttpGet, Route("{vacancyId:guid}")]
+    public async Task<IResult> GetOneById([FromRoute] Guid vacancyId,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var result = await recruitGqlClient.GetVacancyById.ExecuteAsync(vacancyId, cancellationToken);
+        return result is { Data.Vacancies.Count: 1 }
+            ? TypedResults.Ok(GqlVacancyMapper.From(result.Data.Vacancies[0]))
+            : TypedResults.NotFound();
+    }
+    
+    [HttpGet, Route("/by/ref/{vacancyReference:long}")]
+    public async Task<IResult> GetOneByReference([FromRoute] long vacancyReference,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var result = await recruitGqlClient.GetVacancyByReference.ExecuteAsync(vacancyReference, cancellationToken);
+        return result is { Data.Vacancies.Count: 1 }
+            ? TypedResults.Ok(GqlVacancyMapper.From(result.Data.Vacancies[0]))
+            : TypedResults.NotFound();
     }
 }
