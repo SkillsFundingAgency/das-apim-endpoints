@@ -41,29 +41,4 @@ public class ImportController : BaseController
             return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to read uploaded file" });
         }
     }
-
-    [HttpPost("/api/Import/pldns")]
-    [Consumes("multipart/form-data")]
-    [ProducesResponseType(typeof(BaseMediatrResponse<ImportPldnsCommandResponse>), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ImportPldns([FromForm] ImportPldnsCommand request)
-    {
-        //var file = request.File;
-
-        try
-        {
-            var command = new ImportPldnsCommand
-            {
-                File = request.File,
-            };
-
-            return await SendRequestAsync(command);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error reading uploaded file");
-            return StatusCode(StatusCodes.Status500InternalServerError, new { message = "Failed to read uploaded file" });
-        }
-    }
 }

@@ -6,6 +6,6 @@ public class CreateFormVersionApiRequest : IPostApiRequest
 {
     public string PostUrl => "/api/forms";
 
-    public object Data { get; set; }
+    public required object Data { get; set; }
 
 }
