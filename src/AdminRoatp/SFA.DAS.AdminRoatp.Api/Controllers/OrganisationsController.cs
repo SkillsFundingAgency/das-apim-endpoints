@@ -63,11 +63,11 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
     [HttpPatch]
     [Route("{ukprn:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> PatchOrganisation([FromRoute] int ukprn, [FromBody] JsonPatchDocument<PatchOrganisationModel> patchDoc, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> PatchOrganisation([FromRoute] int ukprn, [FromBody] JsonPatchDocument<PatchOrganisationModel> patchDoc, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, [FromHeader(Name = Constants.RequestingUserNameHeader)] string userName, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Processing Organisations-PatchOrganisations");
 
-        HttpStatusCode response = await _mediator.Send(new PatchOrganisationCommand(ukprn, userId, patchDoc), cancellationToken);
+        HttpStatusCode response = await _mediator.Send(new PatchOrganisationCommand(ukprn, userId, userName, patchDoc), cancellationToken);
 
         return new StatusCodeResult((int)response);
     }
