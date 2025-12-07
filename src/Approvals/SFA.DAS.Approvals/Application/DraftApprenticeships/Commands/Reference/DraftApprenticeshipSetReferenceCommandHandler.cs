@@ -11,9 +11,9 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.Reference;
 
 public class DraftApprenticeshipSetReferenceCommandHandler(
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
-        : IRequestHandler<DraftApprenticeshipSetReferenceCommand, Unit>
+        : IRequestHandler<DraftApprenticeshipSetReferenceCommand, DraftApprenticeshipSetReferenceResponse>
 {
-    public async Task<Unit> Handle(DraftApprenticeshipSetReferenceCommand request, CancellationToken cancellationToken)
+    public async Task<DraftApprenticeshipSetReferenceResponse> Handle(DraftApprenticeshipSetReferenceCommand request, CancellationToken cancellationToken)
     {
         var setRequest = new DraftApprenticeshipSetReferenceRequest(request.DraftApprenticeshipId, request.CohortId);
 
@@ -24,9 +24,8 @@ public class DraftApprenticeshipSetReferenceCommandHandler(
             CohortId = request.CohortId
         };
 
-
-        var response = await apiClient.PostWithResponseCode<EmptyResponse>(setRequest, false);
+        var response = await apiClient.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(setRequest, false);
         response.EnsureSuccessStatusCode();
-        return Unit.Value;
+        return response.Body;
     }
 }

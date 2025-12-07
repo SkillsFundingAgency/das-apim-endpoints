@@ -82,22 +82,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
             });
 
             return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("{draftApprenticeshipId}/validateEmailOverlap")]
-        public async Task<IActionResult> ValidateEmailOverlap(long draftApprenticeshipId, string email, long cohortId, string startDate, string endDate)
-        {
-            var result = await _mediator.Send(new ValidateEmailOverlapQuery()
-            {
-                Email = email,
-                CohortId = cohortId,
-                StartDate = startDate,
-                EndDate = endDate,
-                DraftApprenticeshipId = draftApprenticeshipId
-
-            });
-            return Ok(result);
-        }
+        }       
     }
 }

@@ -11,21 +11,23 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddEmail;
 
 public class DraftApprenticeshipAddEmailCommandHandler(
         ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
-        : IRequestHandler<DraftApprenticeshipAddEmailCommand, Unit>
+        : IRequestHandler<DraftApprenticeshipAddEmailCommand, DraftApprenticeshipAddEmailResponse>
 {
-    public async Task<Unit> Handle(DraftApprenticeshipAddEmailCommand request, CancellationToken cancellationToken)
+    public async Task<DraftApprenticeshipAddEmailResponse> Handle(DraftApprenticeshipAddEmailCommand request, CancellationToken cancellationToken)
     {
         var setEmailRequest = new DraftApprenticeshipAddEmailRequest(request.DraftApprenticeshipId, request.CohortId);
 
         setEmailRequest.Data = new DraftApprenticeshipAddEmailRequest.Body()
-        {          
-            Email = request.Email,   
-            CohortId = request.CohortId
+        {
+            Email = request.Email,
+            CohortId = request.CohortId,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate,
         };
 
-        var response = await apiClient.PostWithResponseCode<EmptyResponse>(setEmailRequest, false);
+        var response = await apiClient.PostWithResponseCode<DraftApprenticeshipAddEmailResponse>(setEmailRequest);
         response.EnsureSuccessStatusCode();
 
-        return Unit.Value;
+        return response.Body;
     }
 }

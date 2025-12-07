@@ -385,7 +385,9 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 {
                     CohortId = request.CohortId,
                     DraftApprenticeshipId = draftApprenticeshipId,
-                    Email = request.Email
+                    Email = request.Email,
+                    EndDate = request.EndDate,
+                    StartDate = request.StartDate
                 };
 
                 var response = await mediator.Send(command);
