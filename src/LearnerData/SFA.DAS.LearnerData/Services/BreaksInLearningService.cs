@@ -30,7 +30,8 @@ public class BreaksInLearningService : IBreaksInLearningService
             breaks.Add(new BreakInLearning
             {
                 StartDate = gapStart,
-                EndDate = gapEnd
+                EndDate = gapEnd,
+                PriorPeriodExpectedEndDate = current.ExpectedEndDate
             });
         }
 

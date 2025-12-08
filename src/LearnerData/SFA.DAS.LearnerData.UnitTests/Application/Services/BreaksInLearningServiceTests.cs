@@ -29,7 +29,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var expectedBreak = new BreakInLearning
             {
                 StartDate = firstEpisode.ActualEndDate!.Value.AddDays(1),
-                EndDate = secondEpisode.StartDate.AddDays(-1)
+                EndDate = secondEpisode.StartDate.AddDays(-1),
+                PriorPeriodExpectedEndDate = firstEpisode.ExpectedEndDate
             };
 
             result.Should().ContainSingle()
