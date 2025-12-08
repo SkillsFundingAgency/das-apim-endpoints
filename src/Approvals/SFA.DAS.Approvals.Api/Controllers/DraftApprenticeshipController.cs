@@ -18,6 +18,8 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApp
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequirements;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddEmail;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.Reference;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -371,6 +373,60 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 Message = "An error occurred while syncing learner data."
             });
         }
+        }
+
+        [HttpPost]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/add/email")]
+        public async Task<IActionResult> AddEmail(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] AddDraftApprenticeEmailRequest request)
+        {
+            try
+            {
+                var command = new DraftApprenticeshipAddEmailCommand
+                {
+                    CohortId = (long)request.CohortId,
+                    DraftApprenticeshipId = draftApprenticeshipId,
+                    Email = request.Email,
+                    EndDate = request.EndDate,
+                    StartDate = request.StartDate,
+                    ProviderId = providerId
+                };
+
+                var response = await mediator.Send(command);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in add email for cohort {CohortId} draft apprenticeship {DraftApprenticeshipId}", cohortId, draftApprenticeshipId);
+                return BadRequest();
+            }
+        }
+
+
+        [HttpPost]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/setReference")]
+        public async Task<IActionResult> SetReference(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] DraftApprenticeshipSetReferenceRequest request)
+        {
+            try
+            {
+                var command = new DraftApprenticeshipSetReferenceCommand
+                {
+                    CohortId = cohortId,
+                    DraftApprenticeshipId = draftApprenticeshipId,
+                    Reference = request.Reference,
+                    Party = (Application.Shared.Enums.Party)request.Party,
+                    ProviderId = providerId
+                };
+
+                var response = await mediator.Send(command);
+
+                return Ok(response);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error in set reference for cohort {CohortId} draft apprenticeship {DraftApprenticeshipId}", cohortId, draftApprenticeshipId);
+                return BadRequest();
+            }
         }
     }
 }
