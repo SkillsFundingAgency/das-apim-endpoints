@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-
+namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
 public class WithdrawApplicationCommandHandler : IRequestHandler<WithdrawApplicationCommand, BaseMediatrResponse<EmptyResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
