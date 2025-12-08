@@ -38,6 +38,8 @@ public class WhenAddReference
         var cohortId = _fixture.Create<long>();
         var draftApprenticeshipId = _fixture.Create<long>();
         var email = _fixture.Create<string>();
+        var providerId = _fixture.Create<long>();
+
 
         var response = new ApiResponse<DraftApprenticeshipSetReferenceResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
 
@@ -47,7 +49,7 @@ public class WhenAddReference
              y.Reference == email
          ), It.IsAny<CancellationToken>())).ReturnsAsync(new DraftApprenticeshipSetReferenceResponse() { DraftApprenticeshipId = draftApprenticeshipId});
 
-        var result = await _controller.SetReference(cohortId, draftApprenticeshipId, _request);
+        var result = await _controller.SetReference(providerId,cohortId, draftApprenticeshipId, _request);
 
         Assert.That(result, Is.InstanceOf<OkObjectResult>());
     }

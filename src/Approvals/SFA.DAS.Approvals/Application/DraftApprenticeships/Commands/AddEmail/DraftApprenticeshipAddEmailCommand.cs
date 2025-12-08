@@ -10,4 +10,5 @@ public class DraftApprenticeshipAddEmailCommand : IRequest<DraftApprenticeshipAd
     public string Email { get; set; }
     public string StartDate { get; set; }
     public string EndDate { get; set; }
+    public long ProviderId { get; set; }
 }

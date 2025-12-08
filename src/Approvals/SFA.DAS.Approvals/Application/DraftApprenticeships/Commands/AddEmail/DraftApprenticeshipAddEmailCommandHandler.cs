@@ -26,7 +26,7 @@ public class DraftApprenticeshipAddEmailCommandHandler(
         };
 
         var response = await apiClient.PostWithResponseCode<DraftApprenticeshipAddEmailResponse>(setEmailRequest);
-       // response.EnsureSuccessStatusCode();
+        response.EnsureSuccessStatusCode();
 
         return response.Body;
     }

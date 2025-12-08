@@ -36,6 +36,7 @@ public class WhenAddEmail
     public async Task AddEmailIsSubmittedCorrectly()
     {
         var cohortId = _fixture.Create<long>();
+        var providerId = _fixture.Create<long>();
         var draftApprenticeshipId = _fixture.Create<long>();
         var email = "test@test.com";
 
@@ -47,7 +48,7 @@ public class WhenAddEmail
              y.Email == email
          ), It.IsAny<CancellationToken>())).ReturnsAsync(new DraftApprenticeshipAddEmailResponse() { DraftApprenticeshipId = draftApprenticeshipId});
 
-        var result = await _controller.AddEmail(cohortId, draftApprenticeshipId, _request);
+        var result = await _controller.AddEmail(providerId,cohortId, draftApprenticeshipId, _request);
 
         Assert.That(result, Is.InstanceOf<OkObjectResult>());       
     }

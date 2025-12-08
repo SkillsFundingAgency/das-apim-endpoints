@@ -377,17 +377,18 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpPost]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/add/email")]
-        public async Task<IActionResult> AddEmail(long cohortId, long draftApprenticeshipId, [FromBody] AddDraftApprenticeEmailRequest request)
+        public async Task<IActionResult> AddEmail(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] AddDraftApprenticeEmailRequest request)
         {
             try
             {
                 var command = new DraftApprenticeshipAddEmailCommand
                 {
-                    CohortId = request.CohortId,
+                    CohortId = (long)request.CohortId,
                     DraftApprenticeshipId = draftApprenticeshipId,
                     Email = request.Email,
                     EndDate = request.EndDate,
-                    StartDate = request.StartDate
+                    StartDate = request.StartDate,
+                    ProviderId = providerId
                 };
 
                 var response = await mediator.Send(command);
@@ -404,7 +405,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
         [HttpPost]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/setReference")]
-        public async Task<IActionResult> SetReference(long cohortId, long draftApprenticeshipId, [FromBody] DraftApprenticeshipSetReferenceRequest request)
+        public async Task<IActionResult> SetReference(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] DraftApprenticeshipSetReferenceRequest request)
         {
             try
             {
@@ -413,7 +414,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                     CohortId = cohortId,
                     DraftApprenticeshipId = draftApprenticeshipId,
                     Reference = request.Reference,
-                    Party = request.Party,
+                    Party = (Application.Shared.Enums.Party)request.Party,
+                    ProviderId = providerId
                 };
 
                 var response = await mediator.Send(command);
