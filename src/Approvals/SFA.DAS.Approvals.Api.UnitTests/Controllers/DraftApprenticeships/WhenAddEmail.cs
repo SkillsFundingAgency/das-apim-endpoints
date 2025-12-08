@@ -39,13 +39,13 @@ public class WhenAddEmail
         var draftApprenticeshipId = _fixture.Create<long>();
         var email = "test@test.com";
 
-        var response = new ApiResponse<EmptyResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
+        var response = new ApiResponse<DraftApprenticeshipAddEmailResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
 
         _mediator.Setup(x => x.Send(It.Is<DraftApprenticeshipAddEmailCommand>(y =>
              y.CohortId == cohortId &&
              y.DraftApprenticeshipId == draftApprenticeshipId &&
              y.Email == email
-         ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
+         ), It.IsAny<CancellationToken>())).ReturnsAsync(new DraftApprenticeshipAddEmailResponse() { DraftApprenticeshipId = draftApprenticeshipId});
 
         var result = await _controller.AddEmail(cohortId, draftApprenticeshipId, _request);
 

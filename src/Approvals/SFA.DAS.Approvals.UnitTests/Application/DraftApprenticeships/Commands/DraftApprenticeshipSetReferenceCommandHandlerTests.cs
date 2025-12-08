@@ -33,20 +33,20 @@ public class DraftApprenticeshipSetReferenceCommandHandlerTests
     [Test]
     public async Task Then_The_Api_Is_Called_With_A_Valid_Request()
     {
-        var response = new ApiResponse<EmptyResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
+        var response = new ApiResponse<DraftApprenticeshipSetReferenceResponse>(new DraftApprenticeshipSetReferenceResponse() { DraftApprenticeshipId = 1 }, System.Net.HttpStatusCode.OK, null);
 
-        apiClient.Setup(x => x.PostWithResponseCode<EmptyResponse>(It.IsAny<DraftApprenticeshipSetReferenceRequest>(), false))
+        apiClient.Setup(x => x.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(It.IsAny<DraftApprenticeshipSetReferenceRequest>(), true))
           .ReturnsAsync(response);
 
         var actual = await _handler.Handle(command, CancellationToken.None);
 
         Assert.That(actual, Is.Not.Null);
 
-        apiClient.Verify(x => x.PostWithResponseCode<EmptyResponse>(It.Is<DraftApprenticeshipSetReferenceRequest>
+        apiClient.Verify(x => x.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(It.Is<DraftApprenticeshipSetReferenceRequest>
             (r => r.DraftApprenticeshipId == command.DraftApprenticeshipId &&
              r.CohortId == command.CohortId &&
              ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).CohortId == command.CohortId &&
              ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).Reference == command.Reference
-        ), false));
+        ), true));
     }
 }

@@ -39,13 +39,13 @@ public class WhenAddReference
         var draftApprenticeshipId = _fixture.Create<long>();
         var email = _fixture.Create<string>();
 
-        var response = new ApiResponse<EmptyResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
+        var response = new ApiResponse<DraftApprenticeshipSetReferenceResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
 
         _mediator.Setup(x => x.Send(It.Is<DraftApprenticeshipSetReferenceCommand>(y =>
              y.CohortId == cohortId &&
              y.DraftApprenticeshipId == draftApprenticeshipId &&
              y.Reference == email
-         ), It.IsAny<CancellationToken>())).ReturnsAsync(Unit.Value);
+         ), It.IsAny<CancellationToken>())).ReturnsAsync(new DraftApprenticeshipSetReferenceResponse() { DraftApprenticeshipId = draftApprenticeshipId});
 
         var result = await _controller.SetReference(cohortId, draftApprenticeshipId, _request);
 

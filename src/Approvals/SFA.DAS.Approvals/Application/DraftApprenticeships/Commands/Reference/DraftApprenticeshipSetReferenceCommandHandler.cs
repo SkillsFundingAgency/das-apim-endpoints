@@ -24,7 +24,7 @@ public class DraftApprenticeshipSetReferenceCommandHandler(
             CohortId = request.CohortId
         };
 
-        var response = await apiClient.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(setRequest, false);
+        var response = await apiClient.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(setRequest, true);
         response.EnsureSuccessStatusCode();
         return response.Body;
     }
