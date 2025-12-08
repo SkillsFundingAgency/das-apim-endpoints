@@ -4,8 +4,8 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Text.RegularExpressions;
+using SFA.DAS.SharedOuterApi.Models;
 using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
@@ -14,13 +14,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
     {
         public Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards)
         {
-            var getStandardsListItem = standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId);
+            var getStandardsListItem =
+                standards.Standards.SingleOrDefault(s => s.LarsCode.ToString() == source.ProgrammeId);
 
             if (getStandardsListItem == null)
             {
                 logger.LogError($"Standard not found {source.ProgrammeId}");
             }
-            
+
             return new Application.Shared.LiveVacancy
             {
                 Id = source.VacancyReference.ToString(),
@@ -36,10 +37,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ProviderName = source.TrainingProvider.Name,
                 Ukprn = source.TrainingProvider.Ukprn,
                 IsPositiveAboutDisability = false,
-                
+
                 IsEmployerAnonymous = source.IsAnonymous,
-                VacancyLocationType = source.EmployerLocationOption == AvailableWhere.AcrossEngland ? "National" : "NonNational",
-                ApprenticeshipLevel = getStandardsListItem?.Level == null? "": GetApprenticeshipLevel(getStandardsListItem.Level),
+                VacancyLocationType = source.EmployerLocationOption == AvailableWhere.AcrossEngland
+                    ? "National"
+                    : "NonNational",
+                ApprenticeshipLevel = getStandardsListItem?.Level == null
+                    ? ""
+                    : GetApprenticeshipLevel(getStandardsListItem.Level),
                 Wage = new Application.Shared.Wage
                 {
                     Duration = source.Wage.Duration,
@@ -93,14 +98,16 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 ThingsToConsider = source.ThingsToConsider,
                 ApprenticeshipTitle = getStandardsListItem?.Title,
                 Level = getStandardsListItem?.Level ?? 0,
-                
+
                 StandardLarsCode = getStandardsListItem?.LarsCode ?? 0,
-                
-                RouteCode = getStandardsListItem?.RouteCode ?? 0,  
+
+                RouteCode = getStandardsListItem?.RouteCode ?? 0,
                 Route = getStandardsListItem?.Route ?? string.Empty,
 
                 IsRecruitVacancy = true,
-                TypicalJobTitles = getStandardsListItem?.TypicalJobTitles == null ? "" : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
+                TypicalJobTitles = getStandardsListItem?.TypicalJobTitles == null
+                    ? ""
+                    : SortTypicalJobTitles(getStandardsListItem.TypicalJobTitles),
                 AdditionalQuestion1 = source.AdditionalQuestion1,
                 AdditionalQuestion2 = source.AdditionalQuestion2,
                 AdditionalTrainingDescription = source.AdditionalTrainingDescription,
@@ -109,11 +116,13 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             };
         }
 
-        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source, GetLocationsListResponse locations, GetRoutesListItem route)
+        public Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source, GetLocationsListResponse locations,
+            GetRoutesListItem route)
         {
             var location = source.Locations.FirstOrDefault().Location.Split(",");
             var locationLookup = locations.Locations.FirstOrDefault(c =>
-                c.Postcode.Replace(" ","").Equals(location[1].Replace(" ","").Trim(), StringComparison.CurrentCultureIgnoreCase));
+                c.Postcode.Replace(" ", "").Equals(location[1].Replace(" ", "").Trim(),
+                    StringComparison.CurrentCultureIgnoreCase));
             return new Application.Shared.LiveVacancy
             {
                 Route = route.Name,
@@ -123,7 +132,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Id = source.Id,
                 EmployerName = source.Employer,
                 VacancyReference = source.Reference,
-                Wage = GetWage(source.Salary),
+                Wage = GetNhsJobsWage(source.Salary),
                 ApplicationUrl = source.Url,
                 ClosingDate = DateTime.Parse(source.CloseDate),
                 PostedDate = DateTime.Parse(source.PostDate),
@@ -138,6 +147,32 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Qualifications = [],
                 Skills = [],
                 SearchTags = "NHS National Health Service Health Medical Hospital",
+            };
+        }
+
+        public Application.Shared.LiveVacancy Map(GetCivilServiceJobsApiResponse.Job source, GetRoutesListItem route)
+        {
+            return new Application.Shared.LiveVacancy
+            {
+                Route = route.Name,
+                RouteCode = route.Id,
+                Title = source.JobTitle.En,
+                Description = string.Empty,
+                Id = source.JobCode,
+                EmployerName = source.Department.En,
+                VacancyReference = source.JobReference,
+                Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMinimum),
+                ApplicationUrl = source.JobUrl,
+                ClosingDate = source.KeyTimes.ClosingTime,
+                PostedDate = source.KeyTimes.PublishedTime,
+                Address = new Address
+                {
+                    Latitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lat : 0,
+                    Longitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lon : 0,
+                },
+                Qualifications = [],
+                Skills = [],
+                SearchTags = "Civil Service Civil Servant Public Sector Whitehall",
             };
         }
 
@@ -162,7 +197,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             return string.Join("|", orderedJobTitles);
         }
 
-        public static Application.Shared.Wage GetWage(string wageText)
+        public static Application.Shared.Wage GetNhsJobsWage(string wageText)
         {
             // Regex to match numbers with decimals
             var matches = Regex.Matches(wageText, @"\d+\.\d{2}");
@@ -178,13 +213,14 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     WageText = wageText,
                     ApprenticeMinimumWage = lowerBound,
                     Under18NationalMinimumWage = lowerBound,
-                    Between18AndUnder21NationalMinimumWage = decimal.Round(middleBound, 2, MidpointRounding.AwayFromZero),
+                    Between18AndUnder21NationalMinimumWage =
+                        decimal.Round(middleBound, 2, MidpointRounding.AwayFromZero),
                     Between21AndUnder25NationalMinimumWage = upperBound,
                     Over25NationalMinimumWage = upperBound,
                 };
             }
 
-            if(decimal.TryParse(wageText.TrimStart('£'), out var fixedWage))
+            if (decimal.TryParse(wageText.TrimStart('£'), out var fixedWage))
             {
                 return new Application.Shared.Wage
                 {
@@ -203,6 +239,21 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             {
                 WageType = WageType.CompetitiveSalary,
                 WageText = wageText,
+            };
+        }
+
+        private static Application.Shared.Wage GetCivilServiceJobWage(decimal lowerBand, decimal upperBand)
+        {
+            var middleBand = upperBand / 1.33M;
+            return new Application.Shared.Wage
+            {
+                WageType = WageType.FixedWage,
+                WageText = $"{lowerBand} - {upperBand}",
+                ApprenticeMinimumWage = lowerBand,
+                Under18NationalMinimumWage = lowerBand,
+                Between18AndUnder21NationalMinimumWage = decimal.Round(middleBand, 2, MidpointRounding.AwayFromZero),
+                Between21AndUnder25NationalMinimumWage = upperBand,
+                Over25NationalMinimumWage = upperBand
             };
         }
     }
