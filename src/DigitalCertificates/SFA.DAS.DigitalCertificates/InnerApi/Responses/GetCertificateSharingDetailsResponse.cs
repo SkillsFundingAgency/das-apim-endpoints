@@ -18,7 +18,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
         public int SharingNumber { get; set; }
         public DateTime CreatedAt { get; set; }
         public Guid LinkCode { get; set; }
-        public DateTime? ExpiryTime { get; set; }
+        public DateTime ExpiryTime { get; set; }
         public List<DateTime> SharingAccess { get; set; }
         public List<SharingEmailItem> SharingEmails { get; set; }
     }
@@ -28,7 +28,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
         public Guid SharingEmailId { get; set; }
         public string EmailAddress { get; set; }
         public Guid EmailLinkCode { get; set; }
-        public DateTime? SentTime { get; set; }
+        public DateTime SentTime { get; set; }
         public List<DateTime> SharingEmailAccess { get; set; }
     }
 }
