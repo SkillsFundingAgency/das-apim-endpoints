@@ -50,7 +50,6 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
             if (vacancy.CourseId <= 0)
             {
                 logger.LogWarning("Vacancy '{vacancyReference}' has an unknown course", vacancy.VacancyReference);
-                return null;
             }
             
             var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
