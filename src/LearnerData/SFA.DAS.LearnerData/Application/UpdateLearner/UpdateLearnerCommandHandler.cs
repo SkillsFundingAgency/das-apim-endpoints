@@ -80,6 +80,9 @@ public class UpdateLearnerCommandHandler(
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
                     await earningsApiClient.RemoveBreakInLearning(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
+                    await earningsApiClient.WithdrawEnglishAndMaths(command, logger);
+                    break;
             }
         }
 
@@ -131,7 +134,8 @@ public class UpdateLearnerCommandHandler(
                     PlannedEndDate = x.EndDate,
                     PriorLearningPercentage = x.PriorLearningPercentage,
                     StartDate = x.StartDate,
-                    WithdrawalDate = x.WithdrawalDate
+                    WithdrawalDate = x.WithdrawalDate,
+                    PauseDate = x.PauseDate
                 }).ToList(),
             LearningSupport = command.CombinedLearningSupport()
         };

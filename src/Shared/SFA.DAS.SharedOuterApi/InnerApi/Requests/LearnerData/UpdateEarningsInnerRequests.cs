@@ -46,6 +46,7 @@ public class MathsAndEnglishRequestDetail
     public DateTime? WithdrawalDate { get; set; }
     public int? PriorLearningAdjustmentPercentage { get; set; }
     public DateTime? ActualEndDate { get; set; }
+    public DateTime? PauseDate { get; set; }
 }
 
 public class SaveLearningSupportApiPutRequest : IPatchApiRequest<SaveLearningSupportRequest>
@@ -150,4 +151,19 @@ public class PauseApiPatchRequest: IPatchApiRequest<PauseRequest>
 public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiRequest
 {
     public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
+}
+
+public class MathsAndEnglishWithdrawRequest
+{
+    public string Course { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
+}
+
+public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, MathsAndEnglishWithdrawRequest data)
+    : IPatchApiRequest<MathsAndEnglishWithdrawRequest>
+{
+    public string PatchUrl { get; } =
+        $"apprenticeship/{apprenticeshipKey}/mathsAndEnglish/withdraw";
+
+    public MathsAndEnglishWithdrawRequest Data { get; set; } = data;
 }

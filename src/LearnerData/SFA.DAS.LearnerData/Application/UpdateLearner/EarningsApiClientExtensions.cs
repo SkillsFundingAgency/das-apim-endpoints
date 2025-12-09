@@ -36,7 +36,8 @@ internal static class EarningsApiClientExtensions
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate
+                ActualEndDate = x.CompletionDate,
+                PauseDate = x.PauseDate
             }).ToList());
 
             await earningsApiClient.Patch(new SaveMathsAndEnglishApiPatchRequest(command.LearningKey, data));
@@ -125,6 +126,23 @@ internal static class EarningsApiClientExtensions
         {
             await earningsApiClient.Delete(new RemovePauseApiDeleteRequest(command.LearningKey));
         }, "RemoveBreakInLearning", logger, command.LearningKey);
+    }
+
+    internal static async Task WithdrawEnglishAndMaths(this IEarningsApiClient<EarningsApiConfiguration> earningsApiClient, UpdateLearnerCommand command, ILogger<UpdateLearnerCommandHandler> logger)
+    {
+        await LogAndExecute(async () =>
+        {
+            foreach (var englishAndMaths in command.UpdateLearnerRequest.Delivery.EnglishAndMaths)
+            {
+                var data = new MathsAndEnglishWithdrawRequest()
+                {
+                    WithdrawalDate = englishAndMaths.WithdrawalDate,
+                    Course = englishAndMaths.Course
+                };
+
+                await earningsApiClient.Patch(new MathsAndEnglishWithdrawApiPatchRequest(command.LearningKey, data));
+            }
+        }, "maths and english withdraw", logger, command.LearningKey);
     }
 
     private static async Task LogAndExecute(Func<Task> action, string updateTarget, ILogger<UpdateLearnerCommandHandler> logger, Guid learningKey)
