@@ -7,6 +7,6 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharings
     {
         public Guid UserId { get; set; }
         public Guid CertificateId { get; set; }
-        public int Limit { get; set; } = 10;
+        public int? Limit { get; set; }
     }
 }

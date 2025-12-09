@@ -7,9 +7,9 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
     {
         public Guid UserId { get; }
         public Guid CertificateId { get; }
-        public int Limit { get; }
+        public int? Limit { get; }
 
-        public GetCertificateSharingDetailsRequest(Guid userId, Guid certificateId, int limit = 10)
+        public GetCertificateSharingDetailsRequest(Guid userId, Guid certificateId, int? limit)
         {
             UserId = userId;
             CertificateId = certificateId;
