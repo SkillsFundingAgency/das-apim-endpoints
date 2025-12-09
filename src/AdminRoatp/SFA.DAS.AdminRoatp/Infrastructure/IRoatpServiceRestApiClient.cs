@@ -8,8 +8,7 @@ namespace SFA.DAS.AdminRoatp.Infrastructure;
 public interface IRoatpServiceRestApiClient
 {
     [Patch("/organisations/{ukprn}")]
-    [AllowAnyStatusCode]
-    Task<HttpResponseMessage> PatchOrganisation([Path] int ukprn, [Header(Constants.RequestingUserIdHeader)] string userId, [Body] JsonPatchDocument<PatchOrganisationModel> patchDoc, CancellationToken cancellationToken);
+    Task PatchOrganisation([Path] int ukprn, [Header(Constants.RequestingUserIdHeader)] string userId, [Body] JsonPatchDocument<PatchOrganisationModel> patchDoc, CancellationToken cancellationToken);
 
     [Put("/organisations/{ukprn}/course-types")]
     [AllowAnyStatusCode]

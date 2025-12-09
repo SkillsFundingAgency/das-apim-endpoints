@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using AutoFixture.NUnit3;
-using FluentAssertions;
 using Microsoft.AspNetCore.JsonPatch;
 using Moq;
 using SFA.DAS.AdminRoatp.Application.Commands.CreateProvider;
@@ -9,6 +8,7 @@ using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
@@ -33,12 +33,12 @@ public class PatchOrganisationCommandHandlerTests
         int ukprn = 12345678;
         var patchDoc = new JsonPatchDocument<PatchOrganisationModel>();
         patchDoc.Replace(o => o.ProviderType, ProviderType.Employer);
-        roatpServiceRestApiClientMock.Setup(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken)).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+
         var command = new PatchOrganisationCommand(ukprn, userId, userName, patchDoc);
 
         await sut.Handle(command, cancellationToken);
 
-        roatpServiceRestApiClientMock.Verify(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken), Times.Once);
+        roatpServiceRestApiClientMock.Verify(api => api.PatchOrganisation(ukprn, userName, patchDoc, cancellationToken), Times.Once);
         roatpV2ApiClientMock.Verify(api => api.GetWithResponseCode<OrganisationResponse>(It.IsAny<GetOrganisationRequest>()), Times.Never);
         roatpServiceApiClient.Verify(api => api.PostWithResponseCode<int>(It.IsAny<PostProviderRequest>(), It.IsAny<bool>()), Times.Never);
     }
@@ -58,18 +58,17 @@ public class PatchOrganisationCommandHandlerTests
         string userName = Guid.NewGuid().ToString();
         CancellationToken cancellationToken = new();
         var patchDoc = new JsonPatchDocument<PatchOrganisationModel>();
-        patchDoc.Replace(o => o.ProviderType, ProviderType.Main);
+        patchDoc.Replace(o => o.ProviderType, ProviderType.Employer);
         var command = new PatchOrganisationCommand(ukprn, userId, userName, patchDoc);
 
-        roatpServiceRestApiClientMock.Setup(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken)).ReturnsAsync(new HttpResponseMessage(expected));
+        var exception = new ApiResponseException(expected, expected.ToString());
+        roatpServiceRestApiClientMock.Setup(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken)).ThrowsAsync(exception);
 
         var handler = new PatchOrganisationCommandHandler(roatpServiceRestApiClientMock.Object, roatpV2ApiClientMock.Object, roatpServiceApiClient.Object);
 
-        // Act
         var actual = await handler.Handle(command, CancellationToken.None);
-        // Assert
-        actual.Should().Be(expected);
-        roatpServiceRestApiClientMock.Verify(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken), Times.Once);
+
+        roatpServiceRestApiClientMock.Verify(api => api.PatchOrganisation(ukprn, userName, patchDoc, cancellationToken), Times.Once);
         roatpV2ApiClientMock.Verify(api => api.GetWithResponseCode<OrganisationResponse>(It.IsAny<GetOrganisationRequest>()), Times.Never);
         roatpServiceApiClient.Verify(api => api.PostWithResponseCode<int>(It.IsAny<PostProviderRequest>(), It.IsAny<bool>()), Times.Never);
     }
@@ -92,7 +91,7 @@ public class PatchOrganisationCommandHandlerTests
 
         var patchDoc = new JsonPatchDocument<PatchOrganisationModel>();
         patchDoc.Replace(o => o.ProviderType, ProviderType.Main);
-        roatpServiceRestApiClientMock.Setup(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken)).ReturnsAsync(new HttpResponseMessage(HttpStatusCode.NoContent));
+        roatpServiceRestApiClientMock.Setup(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken));
         roatpServiceApiClientMock.Setup(a =>
             a.GetWithResponseCode<OrganisationResponse>(It.IsAny<GetOrganisationRequest>())).ReturnsAsync(
                         new ApiResponse<OrganisationResponse>(organisationResponse, HttpStatusCode.OK, ""));
@@ -105,7 +104,7 @@ public class PatchOrganisationCommandHandlerTests
 
         await sut.Handle(command, cancellationToken);
 
-        roatpServiceRestApiClientMock.Verify(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken), Times.Once);
+        roatpServiceRestApiClientMock.Verify(api => api.PatchOrganisation(ukprn, userName, patchDoc, cancellationToken), Times.Once);
         roatpServiceApiClientMock.Verify(api => api.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(x => x.Ukprn == ukprn)), Times.Once);
         roatpV2ApiClientMock.Verify(api => api.PostWithResponseCode<int>(It.Is<PostProviderRequest>(
             x => ((CreateProviderModel)x.Data).Ukprn == ukprn

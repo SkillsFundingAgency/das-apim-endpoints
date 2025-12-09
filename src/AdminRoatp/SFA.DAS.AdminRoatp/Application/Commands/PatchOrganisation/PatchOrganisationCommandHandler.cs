@@ -16,13 +16,13 @@ public class PatchOrganisationCommandHandler(IRoatpServiceRestApiClient _roatpSe
 {
     public async Task<HttpStatusCode> Handle(PatchOrganisationCommand request, CancellationToken cancellationToken)
     {
-        HttpResponseMessage response = await _roatpServiceApiClient.PatchOrganisation(request.Ukprn, request.UserId, request.PatchDoc, cancellationToken);
+        await _roatpServiceApiClient.PatchOrganisation(request.Ukprn, request.UserName, request.PatchDoc, cancellationToken);
 
         var operations = request.PatchDoc.Operations;
 
         var isChangeOfTypeToMain = operations.Any(x => x.path == "/ProviderType" && x.value.ToString() == ProviderType.Main.ToString());
 
-        if (response.IsSuccessStatusCode && isChangeOfTypeToMain)
+        if (isChangeOfTypeToMain)
         {
             var organisationResponse = await _roatpApiClient.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest(request.Ukprn));
             GetOrganisationQueryResult organisationDetails = organisationResponse.Body;
@@ -39,6 +39,6 @@ public class PatchOrganisationCommandHandler(IRoatpServiceRestApiClient _roatpSe
             await _roatpV2ApiClient.PostWithResponseCode<int>(postProviderRequest);
         }
 
-        return response.StatusCode;
+        return HttpStatusCode.NoContent;
     }
 }
