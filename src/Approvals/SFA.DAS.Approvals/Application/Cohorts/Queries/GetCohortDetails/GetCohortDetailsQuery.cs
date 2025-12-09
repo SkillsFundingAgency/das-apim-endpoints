@@ -52,7 +52,7 @@ public class GetCohortDetailsQueryResult
     public IEnumerable<DraftApprenticeship> DraftApprenticeships { get; set; }
     public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
     public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
-    public bool HasFoundationApprenticeships { get; set; }
+    public bool HasAgeRestrictedApprenticeships { get; set; }
 }
 
 public class GetCohortDetailsQueryHandler(
@@ -116,7 +116,7 @@ public class GetCohortDetailsQueryHandler(
             .Distinct()
             .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
-        var hasFoundationApprenticeships = await CheckForFoundationApprenticeships(draftApprenticeships.DraftApprenticeships);
+        var hasAgeRestrictedApprenticeships = await CheckForFoundationOrLevel7Apprenticeships(draftApprenticeships.DraftApprenticeships);
 
         return new GetCohortDetailsQueryResult
         {
@@ -149,11 +149,11 @@ public class GetCohortDetailsQueryHandler(
             DraftApprenticeships = draftApprenticeships.DraftApprenticeships,
             ApprenticeshipEmailOverlaps = emailOverlaps.ApprenticeshipEmailOverlaps,
             RplErrorDraftApprenticeshipIds = rplErrors.DraftApprenticeshipIds,
-            HasFoundationApprenticeships = hasFoundationApprenticeships
+            HasAgeRestrictedApprenticeships = hasAgeRestrictedApprenticeships
         };
     }
 
-    private async Task<bool> CheckForFoundationApprenticeships(IEnumerable<DraftApprenticeship> draftApprenticeships)
+    private async Task<bool> CheckForFoundationOrLevel7Apprenticeships(IEnumerable<DraftApprenticeship> draftApprenticeships)
     {
         var uniqueCourseCodes = draftApprenticeships
             .Where(a => !string.IsNullOrWhiteSpace(a.CourseCode))
@@ -174,6 +174,6 @@ public class GetCohortDetailsQueryHandler(
         var courseDetails = await Task.WhenAll(courseDetailsTasks);
 
         return courseDetails
-            .Any(cd => cd is { ApprenticeshipType: "FoundationApprenticeship" });
+            .Any(cd => cd is { ApprenticeshipType: "FoundationApprenticeship" } || cd is { Level: 7 });
     }
 }

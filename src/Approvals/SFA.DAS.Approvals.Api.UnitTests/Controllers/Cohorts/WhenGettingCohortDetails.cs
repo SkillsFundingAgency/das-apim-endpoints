@@ -89,7 +89,7 @@ public class WhenGettingCohortDetails
     public async Task GetCohortDetailsResponseWithCorrectlyMappedHasFoundationApprenticeshipsIsReturned()
     {
         // Arrange
-        _queryResult.HasFoundationApprenticeships = true;
+        _queryResult.HasAgeRestrictedApprenticeships = true;
 
         // Act
         var result = await _controller.GetCohortDetails(_cohortId);
@@ -97,6 +97,6 @@ public class WhenGettingCohortDetails
         // Assert
         var okObjectResult = (OkObjectResult)result;
         var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
-        Assert.That(objectResult.HasFoundationApprenticeships, Is.EqualTo(_queryResult.HasFoundationApprenticeships));
+        Assert.That(objectResult.HasAgeRestrictedApprenticeships, Is.EqualTo(_queryResult.HasAgeRestrictedApprenticeships));
     }
 }
