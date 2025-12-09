@@ -34,7 +34,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                 return null;
             }
 
-            if (vacancy.VacancySource == VacancyDataSource.Nhs)
+            if (vacancy.VacancySource != VacancyDataSource.Raa)
             {
                 return new GetApprenticeshipVacancyQueryResult
                 {

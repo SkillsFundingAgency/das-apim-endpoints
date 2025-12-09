@@ -181,7 +181,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 OtherAddresses = GetCivilServiceJobOtherAddresses(source.LocationGeoCoordinates),
                 Qualifications = [],
                 Skills = [],
-                SearchTags = "Civil Service Civil Servant Public Sector Whitehall",
+                SearchTags = "Civil Service Civil Servant Public Sector Government",
             };
         }
 
