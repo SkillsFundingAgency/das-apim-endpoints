@@ -3,13 +3,13 @@ using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
 {
-    public class GetCertificateSharingDetailsRequest : IGetApiRequest
+    public class GetSharingsRequest : IGetApiRequest
     {
         public Guid UserId { get; }
         public Guid CertificateId { get; }
         public int? Limit { get; }
 
-        public GetCertificateSharingDetailsRequest(Guid userId, Guid certificateId, int? limit)
+        public GetSharingsRequest(Guid userId, Guid certificateId, int? limit)
         {
             UserId = userId;
             CertificateId = certificateId;

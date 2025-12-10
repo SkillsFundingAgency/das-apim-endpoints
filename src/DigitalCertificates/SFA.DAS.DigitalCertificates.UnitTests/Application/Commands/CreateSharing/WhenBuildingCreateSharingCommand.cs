@@ -1,12 +1,12 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using System;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCertificateSharing
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharing
 {
-    public class WhenBuildingCreateCertificateSharingCommand
+    public class WhenBuildingCreateSharingCommand
     {
         [Test, AutoData]
         public void Then_Command_Properties_Are_Set_Correctly(
@@ -15,7 +15,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCerti
             string certificateType,
             string courseName)
         {
-            var command = new CreateCertificateSharingCommand
+            var command = new CreateSharingCommand
             {
                 UserId = userId,
                 CertificateId = certificateId,

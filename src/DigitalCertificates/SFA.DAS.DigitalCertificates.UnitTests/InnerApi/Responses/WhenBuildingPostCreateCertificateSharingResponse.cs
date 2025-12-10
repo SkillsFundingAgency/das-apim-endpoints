@@ -6,7 +6,7 @@ using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
 {
-    public class WhenBuildingPostCreateCertificateSharingResponse
+    public class WhenBuildingPostCreateSharingResponse
     {
         [Test, AutoData]
         public void Then_Response_Can_Be_Constructed(

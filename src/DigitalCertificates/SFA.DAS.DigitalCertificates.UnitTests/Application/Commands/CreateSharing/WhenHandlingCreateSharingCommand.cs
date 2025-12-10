@@ -6,7 +6,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -15,16 +15,16 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCertificateSharing
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharing
 {
-    public class WhenHandlingCreateCertificateSharingCommand
+    public class WhenHandlingCreateSharingCommand
     {
         [Test, MoqAutoData]
         public async Task Then_The_Sharing_Is_Created_Successfully(
-            CreateCertificateSharingCommand command,
+            CreateSharingCommand command,
             PostCreateSharingResponse apiResponseBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-            CreateCertificateSharingCommandHandler handler)
+            CreateSharingCommandHandler handler)
         {
             var apiResponse = new ApiResponse<PostCreateSharingResponse>(
                 apiResponseBody, HttpStatusCode.OK, string.Empty);
@@ -61,9 +61,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCerti
 
         [Test, MoqAutoData]
         public void Then_Exception_Is_Thrown_If_Api_Call_Fails(
-            CreateCertificateSharingCommand command,
+            CreateSharingCommand command,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-            CreateCertificateSharingCommandHandler handler)
+            CreateSharingCommandHandler handler)
         {
             mockDigitalCertificatesApiClient
                 .Setup(client => client.PostWithResponseCode<PostCreateSharingRequestData, PostCreateSharingResponse>(

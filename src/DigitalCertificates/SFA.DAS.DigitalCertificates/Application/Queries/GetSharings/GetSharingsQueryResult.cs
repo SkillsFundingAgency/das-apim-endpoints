@@ -2,8 +2,8 @@ using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharings
 {
-    public class GetCertificateSharingDetailsQueryResult
+    public class GetSharingsQueryResult
     {
-        public GetCertificateSharingDetailsResponse Response { get; set; }
+        public GetSharingsResponse Response { get; set; }
     }
 }

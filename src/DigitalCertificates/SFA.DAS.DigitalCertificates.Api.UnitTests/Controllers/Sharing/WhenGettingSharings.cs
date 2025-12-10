@@ -14,28 +14,28 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
 {
-    public class WhenGettingCertificateSharingDetails
+    public class WhenGettingSharings
     {
         [Test, MoqAutoData]
         public async Task Then_The_Sharings_Are_Returned(
             Guid userId,
             Guid certificateId,
             int limit,
-            GetCertificateSharingDetailsQueryResult queryResult,
+            GetSharingsQueryResult queryResult,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
         {
             mediator
-                .Setup(x => x.Send(It.Is<GetCertificateSharingDetailsQuery>(q => q.UserId == userId && q.CertificateId == certificateId && q.Limit == limit), CancellationToken.None))
+                .Setup(x => x.Send(It.Is<GetSharingsQuery>(q => q.UserId == userId && q.CertificateId == certificateId && q.Limit == limit), CancellationToken.None))
                 .ReturnsAsync(queryResult);
 
-            var actual = await controller.GetCertificateSharingDetails(userId, certificateId, limit) as ObjectResult;
+            var actual = await controller.GetSharings(userId, certificateId, limit) as ObjectResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().Be(queryResult.Response);
 
-            mediator.Verify(m => m.Send(It.Is<GetCertificateSharingDetailsQuery>(q => q.UserId == userId && q.CertificateId == certificateId && q.Limit == limit), It.IsAny<CancellationToken>()), Times.Once);
+            mediator.Verify(m => m.Send(It.Is<GetSharingsQuery>(q => q.UserId == userId && q.CertificateId == certificateId && q.Limit == limit), It.IsAny<CancellationToken>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -45,15 +45,15 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
         {
-            mediator.Setup(x => x.Send(It.IsAny<GetCertificateSharingDetailsQuery>(), CancellationToken.None))
+            mediator.Setup(x => x.Send(It.IsAny<GetSharingsQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
-            var actual = await controller.GetCertificateSharingDetails(userId, certificateId) as StatusCodeResult;
+            var actual = await controller.GetSharings(userId, certificateId) as StatusCodeResult;
 
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
 
-            mediator.Verify(m => m.Send(It.IsAny<GetCertificateSharingDetailsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+            mediator.Verify(m => m.Send(It.IsAny<GetSharingsQuery>(), It.IsAny<CancellationToken>()), Times.Once);
         }
     }
 }

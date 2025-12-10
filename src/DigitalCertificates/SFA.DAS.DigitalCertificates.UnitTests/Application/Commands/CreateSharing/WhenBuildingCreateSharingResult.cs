@@ -2,12 +2,12 @@ using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCertificateSharing
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharing
 {
-    public class WhenBuildingCreateCertificateSharingResult
+    public class WhenBuildingCreateSharingResult
     {
         [Test, AutoData]
         public void Then_Result_Properties_Are_Set_Correctly(
@@ -21,7 +21,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCerti
             Guid linkCode,
             DateTime expiryTime)
         {
-            var result = new CreateCertificateSharingResult
+            var result = new CreateSharingResult
             {
                 UserId = userId,
                 CertificateId = certificateId,
@@ -49,7 +49,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCerti
         public void Then_Implicit_Operator_Maps_PostCreateSharingResponse_Correctly(
             PostCreateSharingResponse response)
         {
-            CreateCertificateSharingResult result = response;
+            CreateSharingResult result = response;
 
             result.UserId.Should().Be(response.UserId);
             result.CertificateId.Should().Be(response.CertificateId);

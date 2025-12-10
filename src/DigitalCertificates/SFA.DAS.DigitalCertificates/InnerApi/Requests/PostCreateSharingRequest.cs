@@ -1,4 +1,4 @@
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 
@@ -23,7 +23,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
         public string CertificateType { get; set; }
         public string CourseName { get; set; }
 
-        public static implicit operator PostCreateSharingRequestData(CreateCertificateSharingCommand command)
+        public static implicit operator PostCreateSharingRequestData(CreateSharingCommand command)
         {
             return new PostCreateSharingRequestData
             {

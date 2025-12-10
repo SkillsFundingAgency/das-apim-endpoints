@@ -1,7 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using System;
 using System.Net;
@@ -23,11 +23,11 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCertificateSharingDetails([FromQuery] Guid user, [FromQuery] Guid certificateId, [FromQuery] int? limit = null)
+        public async Task<IActionResult> GetSharings([FromQuery] Guid user, [FromQuery] Guid certificateId, [FromQuery] int? limit = null)
         {
             try
             {
-                var result = await _mediator.Send(new GetCertificateSharingDetailsQuery { UserId = user, CertificateId = certificateId, Limit = limit });
+                var result = await _mediator.Send(new GetSharingsQuery { UserId = user, CertificateId = certificateId, Limit = limit });
                 return Ok(result.Response);
             }
             catch (Exception e)
@@ -38,7 +38,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateCertificateSharing([FromBody] CreateCertificateSharingCommand command)
+        public async Task<IActionResult> CreateSharing([FromBody] CreateSharingCommand command)
         {
             try
             {

@@ -7,7 +7,7 @@ using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
 {
-    public class WhenBuildingGetCertificateSharingDetailsResponse
+    public class WhenBuildingGetSharingsResponse
     {
         [Test, AutoData]
         public void Then_Sharing_Items_Can_Be_Constructed()
@@ -33,7 +33,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
                 }
             };
 
-            var response = new GetCertificateSharingDetailsResponse
+            var response = new GetSharingsResponse
             {
                 UserId = Guid.NewGuid(),
                 CertificateId = Guid.NewGuid(),

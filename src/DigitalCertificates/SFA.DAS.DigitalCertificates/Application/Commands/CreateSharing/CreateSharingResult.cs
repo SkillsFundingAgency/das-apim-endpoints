@@ -1,9 +1,9 @@
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using System;
 
-namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing
+namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing
 {
-    public class CreateCertificateSharingResult
+    public class CreateSharingResult
     {
         public Guid UserId { get; set; }
         public Guid CertificateId { get; set; }
@@ -15,9 +15,9 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateShar
         public Guid LinkCode { get; set; }
         public DateTime ExpiryTime { get; set; }
 
-        public static implicit operator CreateCertificateSharingResult(PostCreateSharingResponse response)
+        public static implicit operator CreateSharingResult(PostCreateSharingResponse response)
         {
-            return new CreateCertificateSharingResult
+            return new CreateSharingResult
             {
                 UserId = response.UserId,
                 CertificateId = response.CertificateId,

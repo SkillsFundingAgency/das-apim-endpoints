@@ -1,12 +1,12 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
 {
-    public class WhenBuildingPostCreateCertificateSharingRequest
+    public class WhenBuildingPostCreateSharingRequest
     {
         [Test, AutoData]
         public void Then_The_PostUrl_Is_Correctly_Built()
@@ -17,8 +17,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
         }
 
         [Test, AutoData]
-        public void Then_Implicit_Operator_Maps_CreateCertificateSharingCommand_Correctly(
-            CreateCertificateSharingCommand command)
+        public void Then_Implicit_Operator_Maps_CreateSharingCommand_Correctly(
+            CreateSharingCommand command)
         {
             PostCreateSharingRequestData requestData = command;
 

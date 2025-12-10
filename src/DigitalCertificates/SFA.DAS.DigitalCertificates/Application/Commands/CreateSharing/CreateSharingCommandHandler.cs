@@ -7,18 +7,18 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateSharing
+namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing
 {
-    public class CreateCertificateSharingCommandHandler : IRequestHandler<CreateCertificateSharingCommand, CreateCertificateSharingResult>
+    public class CreateSharingCommandHandler : IRequestHandler<CreateSharingCommand, CreateSharingResult>
     {
         private readonly IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> _digitalCertificatesApiClient;
 
-        public CreateCertificateSharingCommandHandler(IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> digitalCertificatesApiClient)
+        public CreateSharingCommandHandler(IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> digitalCertificatesApiClient)
         {
             _digitalCertificatesApiClient = digitalCertificatesApiClient;
         }
 
-        public async Task<CreateCertificateSharingResult> Handle(CreateCertificateSharingCommand command, CancellationToken cancellationToken)
+        public async Task<CreateSharingResult> Handle(CreateSharingCommand command, CancellationToken cancellationToken)
         {
             var request = new PostCreateSharingRequest(command);
 
@@ -27,7 +27,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificateShar
 
             response.EnsureSuccessStatusCode();
 
-            return (CreateCertificateSharingResult)response.Body;
+            return (CreateSharingResult)response.Body;
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Responses
 {
-    public class GetCertificateSharingDetailsResponse
+    public class GetSharingsResponse
     {
         public Guid UserId { get; set; }
         public Guid CertificateId { get; set; }
