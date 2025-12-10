@@ -60,23 +60,13 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     }
 
     [Then(@"a (.*) update request is sent to the earnings domain")]
-    public void ThenARequestIsSentToTheEarningsDomain(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
+    public void ThenARequestIsSentToTheEarningsDomain(string updateRequestType)
     {
         var requestUrl = GetEarningsRequestUrl(updateRequestType);
         var requests = testContext.EarningsApi.MockServer.LogEntries;
 
         requests.Should().ContainSingle(request => request.RequestMessage.Url.Contains(requestUrl),
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
-    }
-
-    [Then(@"(.*) update requests are sent to the earnings domain")]
-    public void ThenRequestsAreSentToTheEarningsDomain(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
-    {
-        var requestUrl = GetEarningsRequestUrl(updateRequestType);
-        var requests = testContext.EarningsApi.MockServer.LogEntries;
-
-        requests.Should().Contain(request => request.RequestMessage.Url.Contains(requestUrl),
-            $"Expected at least one request to {requestUrl} but did not find one.");
     }
 
     [Then(@"no changes are made to the learner")]
@@ -169,27 +159,17 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         response.IsSuccessStatusCode.Should().BeTrue($"Expected successful response from outer Api call, but got {response.StatusCode}. Content: {contentString}");
     }
 
-    private string GetEarningsRequestUrl(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
+    private string GetEarningsRequestUrl(string updateRequestType)
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+
         switch (updateRequestType)
         {
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
+            case "on-programme":
                 return $"learning/{learnerKey.ToString()}/on-programme";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
-                return $"learning/{learnerKey.ToString()}/english-and-maths";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
+            case "learning-support":
                 return $"learning/{learnerKey.ToString()}/learning-support";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
-                return $"learning/{learnerKey.ToString()}/on-programme";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
-                return $"learning/{learnerKey.ToString()}/on-programme";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
-                return $"learning/{learnerKey.ToString()}/on-programme";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
-                return $"learning/{learnerKey.ToString()}/on-programme";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
+            case "english-and-maths":
                 return $"learning/{learnerKey.ToString()}/english-and-maths";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
