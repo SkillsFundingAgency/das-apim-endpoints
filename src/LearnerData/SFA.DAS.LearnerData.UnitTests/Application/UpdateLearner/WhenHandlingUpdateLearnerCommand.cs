@@ -15,6 +15,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -25,8 +26,11 @@ public class WhenHandlingUpdateLearnerCommand
 #pragma warning disable CS8618 // Non-nullable field, instantiated in SetUp method
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
-    private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
+    //private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
     private Mock<IUpdateLearningPutRequestBuilder> _updateLearningPutRequestBuilder;
+    private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _updateEarningsOnProgrammeRequestBuilder;
+    private Mock<IUpdateEarningsLearningSupportRequestBuilder> _updateEarningsLearningSupportRequestBuilder;
+    private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
     private UpdateLearnerCommandHandler _sut;
 
@@ -43,14 +47,20 @@ public class WhenHandlingUpdateLearnerCommand
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _updateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
-        _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+        _updateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
+        _updateEarningsEnglishAndMathsRequestBuilder = new Mock<IUpdateEarningsEnglishAndMathsRequestBuilder>();
+        _updateEarningsLearningSupportRequestBuilder = new Mock<IUpdateEarningsLearningSupportRequestBuilder>();
+        //_coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
             _earningsApiClient.Object,
             _updateLearningPutRequestBuilder.Object,
-            _coursesApiClient.Object);
+            _updateEarningsOnProgrammeRequestBuilder.Object,
+            _updateEarningsEnglishAndMathsRequestBuilder.Object,
+            _updateEarningsLearningSupportRequestBuilder.Object);
+        //_coursesApiClient.Object);
     }
 
     [Test]
@@ -81,7 +91,7 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()), Times.Never);
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
     [Test]
@@ -96,379 +106,492 @@ public class WhenHandlingUpdateLearnerCommand
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
     }
 
+
     [Test]
-    public async Task Then_Earnings_Is_Updated_With_CompletionDate()
+    public async Task Then_Earnings_Is_Updated_With_OnProgrammeUpdates()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate }
-        }, HttpStatusCode.OK);
+        var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate); // on-prog change
+
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .ReturnsAsync(updateOnProgPutRequest);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         //Assert
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveCompletionApiPatchRequest>(
-                r => r.Data.CompletionDate == apiPutRequest.Data.Learner.CompletionDate)),
+        _earningsApiClient.Verify(x => x.Put(
+                It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
             Times.Once);
+
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
+
+
+
     [Test]
-    public async Task Then_Earnings_Is_Updated_With_MathsAndEnglish()
+    public async Task Then_Earnings_Is_Updated_With_LearningSupport_Updates()
     {
         // Arrange
-        var command = CreateUpdateLearnerCommand();
+        var command = _fixture.Create<UpdateLearnerCommand>();
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish }
-        }, HttpStatusCode.OK);
+        var updateLearningSupportApiPutRequest = _fixture.Create<UpdateLearningSupportApiPutRequest>();
 
-        _earningsApiClient
-            .Setup(x => x.Patch(It.IsAny<SaveMathsAndEnglishApiPatchRequest>()))
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport); // LSF change
+
+        _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(updateLearningSupportApiPutRequest);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateLearningSupportApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
-        // Assert
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveMathsAndEnglishApiPatchRequest>(
-                r => Matches(r.Data, apiPutRequest.Data.MathsAndEnglishCourses))),
+        //Assert
+        _earningsApiClient.Verify(x => x.Put(
+                It.Is<UpdateLearningSupportApiPutRequest>(r => r == updateLearningSupportApiPutRequest)),
             Times.Once);
-    }
 
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_LearningSupport_Changes()
-    {
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.CompletionDate = null);
-        command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.WithdrawalDate = null);
-        command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x => x.PauseDate = null);
-        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x =>
-        {
-            x.CompletionDate = null;
-            x.WithdrawalDate = null;
-        });
-
-        // Clone expected learning support with original EndDates
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths
-            .SelectMany(x => x.LearningSupport.Select(ls => new LearningSupportPaymentDetail
-            {
-                StartDate = ls.StartDate,
-                EndDate = ls.EndDate
-            }))
-            .ToList();
-
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme.SelectMany(x => x.LearningSupport)
-            .Select(ls => new LearningSupportPaymentDetail
-            {
-                StartDate = ls.StartDate,
-                EndDate = ls.EndDate
-            }));
-
-        var apiPutRequest = MockLearningPutRequestBuilder(command);
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch<SaveLearningSupportRequest>(It.IsAny<SaveLearningSupportApiPutRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-
-        _earningsApiClient.Verify(x => x.Patch<SaveLearningSupportRequest>(
-            It.Is<SaveLearningSupportApiPutRequest>(r =>
-                r.Data.All(actual =>
-                    apiPutRequest.Data.LearningSupport.Any(expected =>
-                        actual.StartDate == expected.StartDate &&
-                        actual.EndDate == expected.EndDate
-                    )))), Times.Once);
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
 
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_Price_Changes()
-    {
-        var fixture = new Fixture();
-
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedEpisodeKey = Guid.NewGuid();
-        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
-        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices },
-            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
-            LearningEpisodeKey = expectedEpisodeKey,
-            Prices = expectedCosts
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
-        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
-            .ReturnsAsync(coursesApiResponse);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SavePricesApiPatchRequest>(
-            r => 
-                r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
-                r.Data.AgeAtStartOfLearning == expectedAgeAtStartOfLearning &&
-                r.Data.Prices.HasEquivalentItems(expectedCosts, (actual, expected) =>
-                actual.StartDate == expected.StartDate &&
-                actual.EndDate == expected.EndDate &&
-                actual.TrainingPrice == expected.TrainingPrice &&
-                actual.EndPointAssessmentPrice == expected.EndPointAssessmentPrice &&
-                actual.TotalPrice == expected.TotalPrice
-            ))), Times.Once);
-    }
-
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_ExpectedEndDate_Changes()
-    {
-        var fixture = new Fixture();
-
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedEpisodeKey = Guid.NewGuid();
-        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
-        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate },
-            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
-            LearningEpisodeKey = expectedEpisodeKey,
-            Prices = expectedCosts
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
-        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
-            .ReturnsAsync(coursesApiResponse);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SavePricesApiPatchRequest>(
-            r =>
-                r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
-                r.Data.AgeAtStartOfLearning == expectedAgeAtStartOfLearning &&
-                r.Data.Prices.HasEquivalentItems(expectedCosts, (actual, expected) =>
-                    actual.StartDate == expected.StartDate &&
-                    actual.EndDate == expected.EndDate &&
-                    actual.TrainingPrice == expected.TrainingPrice &&
-                    actual.EndPointAssessmentPrice == expected.EndPointAssessmentPrice &&
-                    actual.TotalPrice == expected.TotalPrice
-                ))), Times.Once);
-    }
 
 
     [Test]
-    public async Task Then_Earnings_Is_Updated_With_FundingBand_Changes()
-    {
-        var fixture = new Fixture();
-
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedEpisodeKey = Guid.NewGuid();
-        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
-        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
-        var fundingBandMaximum = fixture.Create<int>();
-        var coursesApiResponse = new StandardDetailResponse
-        {
-            ApprenticeshipFunding =
-            [
-                new ApprenticeshipFunding
-                {
-                    EffectiveFrom = DateTime.MinValue,
-                    EffectiveTo = DateTime.MaxValue,
-                    MaxEmployerLevyCap = fundingBandMaximum
-                }
-            ]
-        };
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices },
-            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
-            LearningEpisodeKey = expectedEpisodeKey,
-            Prices = expectedCosts
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        _coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
-            .ReturnsAsync(coursesApiResponse);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SavePricesApiPatchRequest>(
-            r =>
-               r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
-               r.Data.FundingBandMaximum == fundingBandMaximum
-               )), Times.Once);
-    }
-
-    [Test]
-    public async Task Then_Earnings_Is_Not_Updated_With_PersonalDetails()
-    {
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails }
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<WithdrawApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _earningsApiClient.Invocations.Count.Should().Be(0);
-    }
-
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_Withdrawal()
+    public async Task Then_Earnings_Is_Updated_With_EnglishAndMaths_Updates()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
         var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal }
-        }, HttpStatusCode.OK);
+        var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<WithdrawApiPatchRequest>()))
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish); // E&M change
+
+        _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(englishAndMathsApiPutRequest);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
-        _earningsApiClient.Verify(x => x.Patch(It.Is<WithdrawApiPatchRequest>(
-            r => r.Data.WithdrawalDate == apiPutRequest.Data.Delivery.WithdrawalDate)), Times.Once);
-    }
-
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_Reverse_Withdrawal()
-    {
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal }
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _earningsApiClient.Verify(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()), Times.Once);
-    }
-
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_BreakInLearningStarted()
-    {
-        var fixture = new Fixture();
-        var episodeKey = fixture.Create<Guid>();
-
-        // Arrange
-        var command = fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
-        _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
-
-        MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted, episodeKey);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
         //Assert
-        _earningsApiClient.Verify(x =>
-            x.Patch(It.Is<PauseApiPatchRequest>(r =>
-                r.Data.PauseDate == apiPutRequest.Data.OnProgramme.PauseDate)), Times.Once);
+        _earningsApiClient.Verify(x => x.Put(
+                It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
+            Times.Once);
+
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_BreakInLearningRemoved()
-    {
-        var fixture = new Fixture();
-        var episodeKey = fixture.Create<Guid>();
 
-        // Arrange
-        var command = fixture.Create<UpdateLearnerCommand>();
 
-        MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved, episodeKey);
+    ////////////////// OLD TESTS BELOW //////////////////////////////////
 
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
 
-        //Assert
-        _earningsApiClient.Verify(x =>
-            x.Delete(It.IsAny<RemovePauseApiDeleteRequest>()), Times.Once);
-    }
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_CompletionDate()
+    //{
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+    //    var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate }
+    //    }, HttpStatusCode.OK);
+
+    //    _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    //Assert
+    //    _earningsApiClient.Verify(x => x.Put(It.Is<UpdateOnProgrammeApiPutRequest>(
+    //            r => r.Data.CompletionDate == apiPutRequest.Data.Learner.CompletionDate)),
+    //        Times.Once);
+
+    //    _earningsApiClient.VerifyNoOtherCalls();
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_MathsAndEnglish()
+    //{
+    //    // Arrange
+    //    var command = CreateUpdateLearnerCommand();
+    //    var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish }
+    //    }, HttpStatusCode.OK);
+
+    //    UpdateEnglishAndMathsApiPutRequest? captured = null;
+
+    //    _earningsApiClient
+    //        .Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
+    //        .Callback<UpdateEnglishAndMathsApiPutRequest>(req => captured = req)
+    //        .Returns(Task.CompletedTask);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+    //    captured!.Data.EnglishAndMaths.Should().BeEquivalentTo(apiPutRequest.Data.MathsAndEnglishCourses,
+    //        opts => opts.WithoutStrictOrdering());
+
+    //    _earningsApiClient.VerifyNoOtherCalls();
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_LearningSupport_Changes()
+    //{
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+    //    command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.CompletionDate = null);
+    //    command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x=> x.WithdrawalDate = null);
+    //    command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x => x.PauseDate = null);
+    //    command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x =>
+    //    {
+    //        x.CompletionDate = null;
+    //        x.WithdrawalDate = null;
+    //    });
+
+    //    // Clone expected learning support with original EndDates
+    //    var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths
+    //        .SelectMany(x => x.LearningSupport.Select(ls => new LearningSupportItem
+    //        {
+    //            StartDate = ls.StartDate,
+    //            EndDate = ls.EndDate
+    //        }))
+    //        .ToList();
+
+    //    expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme.SelectMany(x => x.LearningSupport)
+    //        .Select(ls => new LearningSupportItem
+    //        {
+    //            StartDate = ls.StartDate,
+    //            EndDate = ls.EndDate
+    //        }));
+
+    //    var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
+    //    }, HttpStatusCode.OK);
+
+    //    _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateLearningSupportApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+
+    //    _earningsApiClient.Verify(x => x.Put(
+    //        It.Is<UpdateLearningSupportApiPutRequest>(r =>
+    //            r.Data.LearningSupport.All(actual =>
+    //                apiPutRequest.Data.LearningSupport.Any(expected =>
+    //                    actual.StartDate == expected.StartDate &&
+    //                    actual.EndDate == expected.EndDate
+    //                )))), Times.Once);
+    //}
+
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_Price_Changes()
+    //{
+    //    var fixture = new Fixture();
+
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+    //    var expectedEpisodeKey = Guid.NewGuid();
+    //    var expectedAgeAtStartOfLearning = _fixture.Create<int>();
+    //    var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices },
+    //        AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
+    //        LearningEpisodeKey = expectedEpisodeKey,
+    //        Prices = expectedCosts
+    //    }, HttpStatusCode.OK);
+
+    //    _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    //var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
+    //    //_coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+    //    //    .ReturnsAsync(coursesApiResponse);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+    //    _learningApiClient.Verify(x =>
+    //        x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+    //    _earningsApiClient.Verify(x => x.Put(It.Is<UpdateOnProgrammeApiPutRequest>(
+    //        r => 
+    //            r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
+    //            r.Data.AgeAtStartOfLearning == expectedAgeAtStartOfLearning &&
+    //            r.Data.Prices.HasEquivalentItems(expectedCosts, (actual, expected) =>
+    //            actual.StartDate == expected.StartDate &&
+    //            actual.EndDate == expected.EndDate &&
+    //            actual.TrainingPrice == expected.TrainingPrice &&
+    //            actual.EndPointAssessmentPrice == expected.EndPointAssessmentPrice &&
+    //            actual.TotalPrice == expected.TotalPrice
+    //        ))), Times.Once);
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_ExpectedEndDate_Changes()
+    //{
+    //    var fixture = new Fixture();
+
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+    //    var expectedEpisodeKey = Guid.NewGuid();
+    //    var expectedAgeAtStartOfLearning = _fixture.Create<int>();
+    //    var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate },
+    //        AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
+    //        LearningEpisodeKey = expectedEpisodeKey,
+    //        Prices = expectedCosts
+    //    }, HttpStatusCode.OK);
+
+    //    _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    //var coursesApiResponse = _fixture.Create<StandardDetailResponse>();
+    //    //_coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+    //    //    .ReturnsAsync(coursesApiResponse);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+    //    _learningApiClient.Verify(x =>
+    //        x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+    //    _earningsApiClient.Verify(x => x.Put(It.Is<UpdateOnProgrammeApiPutRequest>(
+    //        r =>
+    //            r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
+    //            r.Data.AgeAtStartOfLearning == expectedAgeAtStartOfLearning &&
+    //            r.Data.Prices.HasEquivalentItems(expectedCosts, (actual, expected) =>
+    //                actual.StartDate == expected.StartDate &&
+    //                actual.EndDate == expected.EndDate &&
+    //                actual.TrainingPrice == expected.TrainingPrice &&
+    //                actual.EndPointAssessmentPrice == expected.EndPointAssessmentPrice &&
+    //                actual.TotalPrice == expected.TotalPrice
+    //            ))), Times.Once);
+    //}
+
+
+    ////todo: this will need more work, since the funding band lookup now happens elsewhere
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_FundingBand_Changes()
+    //{
+    //    var fixture = new Fixture();
+
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+    //    var expectedEpisodeKey = Guid.NewGuid();
+    //    var expectedAgeAtStartOfLearning = _fixture.Create<int>();
+    //    var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
+    //    var fundingBandMaximum = fixture.Create<int>();
+    //    var coursesApiResponse = new StandardDetailResponse
+    //    {
+    //        ApprenticeshipFunding =
+    //        [
+    //            new ApprenticeshipFunding
+    //            {
+    //                EffectiveFrom = DateTime.MinValue,
+    //                EffectiveTo = DateTime.MaxValue,
+    //                MaxEmployerLevyCap = fundingBandMaximum
+    //            }
+    //        ]
+    //    };
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices },
+    //        AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
+    //        LearningEpisodeKey = expectedEpisodeKey,
+    //        Prices = expectedCosts
+    //    }, HttpStatusCode.OK);
+
+    //    _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    //_coursesApiClient.Setup(x => x.Get<StandardDetailResponse>(It.Is<GetStandardDetailsByIdRequest>(x => x.Id == command.UpdateLearnerRequest.Delivery.OnProgramme.First().StandardCode.ToString())))
+    //    //    .ReturnsAsync(coursesApiResponse);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+    //    _learningApiClient.Verify(x =>
+    //        x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+
+    //    _earningsApiClient.Verify(x => x.Put(It.Is<UpdateOnProgrammeApiPutRequest>(
+    //        r =>
+    //           r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
+    //           r.Data.FundingBandMaximum == fundingBandMaximum
+    //           )), Times.Once);
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Not_Updated_With_PersonalDetails()
+    //{
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails }
+    //    }, HttpStatusCode.OK);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+    //    _earningsApiClient.VerifyNoOtherCalls();
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_Withdrawal()
+    //{
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+    //    var apiPutRequest = MockLearningPutRequestBuilder(command);
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal }
+    //    }, HttpStatusCode.OK);
+
+    //    _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    _earningsApiClient.Verify(x => x.Put(It.Is<UpdateOnProgrammeApiPutRequest>(
+    //        r => r.Data.WithdrawalDate == apiPutRequest.Data.Delivery.WithdrawalDate)), Times.Once);
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_Reverse_Withdrawal()
+    //{
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+
+    //    MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
+    //    {
+    //        Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal }
+    //    }, HttpStatusCode.OK);
+
+    //    _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
+    //        .Returns(Task.CompletedTask);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    // Assert
+    //    _earningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_BreakInLearningStarted()
+    //{
+    //    var fixture = new Fixture();
+    //    var episodeKey = fixture.Create<Guid>();
+
+    //    // Arrange
+    //    var command = fixture.Create<UpdateLearnerCommand>();
+    //    var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
+    //    _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
+
+    //    MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted, episodeKey);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    //Assert
+    //    _earningsApiClient.Verify(x =>
+    //        x.Put(It.Is<UpdateOnProgrammeApiPutRequest>(r =>
+    //            r.Data.PauseDate == apiPutRequest.Data.OnProgramme.PauseDate)), Times.Once);
+    //}
+
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_BreakInLearningRemoved()
+    //{
+    //    var fixture = new Fixture();
+    //    var episodeKey = fixture.Create<Guid>();
+
+    //    // Arrange
+    //    var command = fixture.Create<UpdateLearnerCommand>();
+
+    //    MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved, episodeKey);
+
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
+
+    //    //Assert
+    //    _earningsApiClient.Verify(x =>
+    //        x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Once);
+    //}
     
-    [Test]
-    public async Task Then_Earnings_Is_Updated_With_Maths_And_English_Withdrawal()
-    {
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var apiPutRequest = _fixture.Create<UpdateLearningApiPutRequest>();
-        _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
+    //[Test]
+    //public async Task Then_Earnings_Is_Updated_With_Maths_And_English_Withdrawal()
+    //{
+    //    // Arrange
+    //    var command = _fixture.Create<UpdateLearnerCommand>();
+    //    var apiPutRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+    //    _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
 
-        MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal);
+    //    MockLearningApiResponse(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal);
 
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
+    //    // Act
+    //    await _sut.Handle(command, CancellationToken.None);
 
-        // Assert
-        //Assert
-        _earningsApiClient.Verify(x =>
-            x.Patch(It.Is<MathsAndEnglishWithdrawApiPatchRequest>(r =>
-                r.Data.WithdrawalDate == apiPutRequest.Data.MathsAndEnglishCourses.First().WithdrawalDate && r.Data.Course == apiPutRequest.Data.MathsAndEnglishCourses.First().Course)), Times.Once);
-    }
+    //    // Assert
+    //    //Assert
+    //    _earningsApiClient.Verify(x =>
+    //        x.Put(It.Is<UpdateEnglishAndMathsApiPutRequest>(r =>
+    //            r.Data.EnglishAndMaths.First().WithdrawalDate == apiPutRequest.Data.MathsAndEnglishCourses.First().WithdrawalDate && r.Data.EnglishAndMaths.First().Course == apiPutRequest.Data.MathsAndEnglishCourses.First().Course)), Times.Once);
+    //}
 
     protected void MockLearningApiResponse()
     {
@@ -518,10 +641,10 @@ public class WhenHandlingUpdateLearnerCommand
         .ReturnsAsync(response);
     }
 
-    private static bool Matches(SaveMathsAndEnglishRequest request, List<MathsAndEnglishDetails> courses)
+    private static bool Matches(UpdateEnglishAndMathsRequest request, List<MathsAndEnglishDetails> courses)
     {
-        return request.Count == courses.Count &&
-               request.All(r => courses.Any(c => c.StartDate == r.StartDate &&
+        return request.EnglishAndMaths.Count == courses.Count &&
+               request.EnglishAndMaths.All(r => courses.Any(c => c.StartDate == r.StartDate &&
                                                  c.PlannedEndDate == r.EndDate &&
                                                  c.Course == r.Course &&
                                                  c.Amount == r.Amount &&

@@ -7,9 +7,10 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData
     //this is the NEW version of all the requests
 
 
+    //Learning Support
     public class UpdateLearningSupportApiPutRequest(Guid learningKey, UpdateLearningSupportRequest data) : IPutApiRequest<UpdateLearningSupportRequest>
     {
-        public string PutUrl { get; } = $"apprenticeship/{learningKey}/learningSupport";
+        public string PutUrl { get; } = $"learning/{learningKey}/learning-support";
 
         public UpdateLearningSupportRequest Data { get; set; } = data;
     }
@@ -27,11 +28,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData
 
 
 
-
+    //English and Maths
     public class UpdateEnglishAndMathsApiPutRequest(Guid learningKey, UpdateEnglishAndMathsRequest data)
         : IPutApiRequest<UpdateEnglishAndMathsRequest>
     {
-        public string PutUrl { get; } = $"apprenticeship/{learningKey}/english-and-maths";
+        public string PutUrl { get; } = $"learning/{learningKey}/english-and-maths";
         public UpdateEnglishAndMathsRequest Data { get; set; } = data;
     }
 
@@ -41,11 +42,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData
     }
 
 
-
+    //OnProgramme
     public class UpdateOnProgrammeApiPutRequest(Guid learningKey, UpdateOnProgrammeRequest data)
         : IPutApiRequest<UpdateOnProgrammeRequest>
     {
-        public string PutUrl { get; } = $"apprenticeship/{learningKey}/on-programme";
+        public string PutUrl { get; } = $"learning/{learningKey}/on-programme";
         public UpdateOnProgrammeRequest Data { get; set; } = data;
     }
 
@@ -57,7 +58,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData
         public DateTime? PauseDate { get; set; }
         public int AgeAtStartOfLearning { get; set; }
         public int? FundingBandMaximum { get; set; }
-        public bool IncludesFundingBandMaximumChanges { get; set; }
+        public bool IncludesFundingBandMaximumUpdate { get; set; }
         public List<PriceItem> Prices { get; set; } = [];
         public List<BreakInLearningItem> BreaksInLearning { get; set; } = [];
 

@@ -35,7 +35,7 @@ namespace SFA.DAS.LearnerData.Services
                 PauseDate = putRequest.Data.OnProgramme.PauseDate,
                 ApprenticeshipEpisodeKey = learningApiPutResponse.LearningEpisodeKey,
                 FundingBandMaximum = fundingBandMaximum,
-                IncludesFundingBandMaximumChanges = includesFundingBandMaximumUpdate,
+                IncludesFundingBandMaximumUpdate = includesFundingBandMaximumUpdate,
                 AgeAtStartOfLearning = learningApiPutResponse.AgeAtStartOfLearning,
                 Prices = learningApiPutResponse.Prices.Select(x => new PriceItem
                 {

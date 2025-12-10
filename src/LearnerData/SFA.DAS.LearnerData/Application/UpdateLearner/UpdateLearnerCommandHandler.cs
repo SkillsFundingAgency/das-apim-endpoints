@@ -36,7 +36,7 @@ public class UpdateLearnerCommandHandler(
         }
 
         var learningApiPutResponse = learningResponse.Body;
-        if (!learningApiPutResponse.Changes.Any())
+        if (!learningApiPutResponse.Changes.Any()) //todo: if changes = personal details ONLY, then we can also early-exit here
         {
             logger.LogInformation("No changes detected for learner with key {LearningKey}", command.LearningKey);
             return;
