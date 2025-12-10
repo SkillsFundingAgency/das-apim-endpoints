@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using KellermanSoftware.CompareNetObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -97,6 +98,6 @@ public class WhenGettingCohortDetails
         // Assert
         var okObjectResult = (OkObjectResult)result;
         var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
-        Assert.That(objectResult.HasAgeRestrictedApprenticeships, Is.EqualTo(_queryResult.HasAgeRestrictedApprenticeships));
+        objectResult.HasAgeRestrictedApprenticeships.Should().Be(_queryResult.HasAgeRestrictedApprenticeships);
     }
 }
