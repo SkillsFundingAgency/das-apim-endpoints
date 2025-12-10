@@ -31,12 +31,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var userResult = await _mediator.Send(new GetUserQuery { GovUkIdentifier = govUkIdentifier });
-                if (userResult != null)
-                {
-                    return Ok(userResult.User);
-                }
-
-                throw new UnreachableException($"GetUserQueryHandler returned null for govUkIdentifier: {govUkIdentifier}");
+                return Ok(userResult?.User);
             }
             catch (Exception e)
             {
@@ -74,13 +69,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         {
             try
             {
-                var userResult = await _mediator.Send(new GetCertificatesQuery { UserId = userId });
-                if (userResult != null)
-                {
-                    return Ok(userResult);
-                }
-
-                throw new UnreachableException($"GetCertificatesQueryHandler returned null for userId: {userId}");
+                var certificatesResult = await _mediator.Send(new GetCertificatesQuery { UserId = userId });
+                return Ok(certificatesResult ?? new GetCertificatesResult());
             }
             catch (Exception e)
             {
