@@ -175,22 +175,22 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         switch (updateRequestType)
         {
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
-                return $"apprenticeship/{learnerKey.ToString()}/completion";
+                return $"learning/{learnerKey.ToString()}/on-programme";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
-                return $"/apprenticeship/{learnerKey}/mathsAndEnglish";
+                return $"learning/{learnerKey.ToString()}/english-and-maths";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
-                return $"/apprenticeship/{learnerKey.ToString()}/learningSupport";
+                return $"learning/{learnerKey.ToString()}/learning-support";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
-                return $"/apprenticeship/{learnerKey.ToString()}/prices";
+                return $"learning/{learnerKey.ToString()}/on-programme";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
-                return $"/apprenticeship/{learnerKey.ToString()}/withdraw";
+                return $"learning/{learnerKey.ToString()}/on-programme";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
-                return $"/apprenticeship/{learnerKey.ToString()}/pause";
+                return $"learning/{learnerKey.ToString()}/on-programme";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
-                return $"/apprenticeship/{learnerKey.ToString()}/breaksInLearning";
+                return $"learning/{learnerKey.ToString()}/on-programme";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
-                return $"/apprenticeship/{learnerKey}/mathsAndEnglish/withdraw";
+                return $"learning/{learnerKey.ToString()}/english-and-maths";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }
