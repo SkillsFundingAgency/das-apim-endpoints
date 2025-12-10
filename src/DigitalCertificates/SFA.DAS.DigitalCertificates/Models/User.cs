@@ -6,7 +6,7 @@ namespace SFA.DAS.DigitalCertificates.Models
     {
         public Guid Id { get; set; }
         public string GovUkIdentifier { get; set; }
-        public string EmailAddress { get; set;  }
+        public string EmailAddress { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime? LastLoginAt { get; set; }
         public bool IsLocked { get; set; }
