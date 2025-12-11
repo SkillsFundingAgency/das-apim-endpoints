@@ -44,7 +44,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 PauseDate = x.PauseDate
             }).ToList();
 
-            //result.LearningKey.Should().Be(command.LearningKey);
+            result.PutUrl.Should().Be($"learning/{command.LearningKey}/english-and-maths");
             result.Data.EnglishAndMaths.Should().BeEquivalentTo(expectedItems);
         }
     }

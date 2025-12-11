@@ -42,7 +42,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var result = await _sut.Build(command, response, putRequest);
 
             // Assert
-            //result.LearningKey.Should().Be(command.LearningKey);
+            result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
             result.Data.CompletionDate.Should().Be(putRequest.Data.Learner.CompletionDate);
             result.Data.WithdrawalDate.Should().Be(putRequest.Data.Delivery.WithdrawalDate);
             result.Data.PauseDate.Should().Be(putRequest.Data.OnProgramme.PauseDate);
@@ -78,25 +78,22 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var command = _fixture.Create<UpdateLearnerCommand>();
             var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
             var response = _fixture.Build<UpdateLearnerApiPutResponse>()
-                                   .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
-                                   {
-                                       UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices
-                                   })
+                                   .With(r => r.Changes, [UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices])
                                    .Create();
 
             var expectedFundingBand = 9000;
             _coursesApiClient.Setup(c => c.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
                              .ReturnsAsync(new StandardDetailResponse
                              {
-                                 ApprenticeshipFunding = new List<ApprenticeshipFunding>
-                                 {
+                                 ApprenticeshipFunding =
+                                 [
                                      new ApprenticeshipFunding
                                      {
                                          EffectiveFrom = DateTime.UtcNow.AddMonths(-1),
                                          EffectiveTo = DateTime.UtcNow.AddMonths(1),
                                          MaxEmployerLevyCap = expectedFundingBand
                                      }
-                                 }
+                                 ]
                              });
 
             // Act

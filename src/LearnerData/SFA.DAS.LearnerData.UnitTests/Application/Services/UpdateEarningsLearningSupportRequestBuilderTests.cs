@@ -39,6 +39,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     EndDate = x.EndDate
                 }).ToList();
 
+            result.PutUrl.Should().Be($"learning/{command.LearningKey}/learning-support");
             result.Data.LearningSupport.Should().BeEquivalentTo(expected);
         }
     }
