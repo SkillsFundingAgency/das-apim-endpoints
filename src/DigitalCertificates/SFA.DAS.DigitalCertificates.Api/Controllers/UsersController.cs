@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Models;
 
@@ -85,6 +86,21 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve certificates {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{userId}/sharings")]
+        public async Task<IActionResult> GetSharings([FromRoute] Guid userId, [FromQuery] Guid certificateId, [FromQuery] int? limit = null)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharingsQuery { UserId = userId, CertificateId = certificateId, Limit = limit });
+                return Ok(result.Response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve sharings {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

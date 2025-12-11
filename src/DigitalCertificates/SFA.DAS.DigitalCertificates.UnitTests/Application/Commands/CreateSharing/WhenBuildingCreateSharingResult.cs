@@ -21,6 +21,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             Guid linkCode,
             DateTime expiryTime)
         {
+            // Arrange & Act
             var result = new CreateSharingResult
             {
                 UserId = userId,
@@ -34,6 +35,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
                 ExpiryTime = expiryTime
             };
 
+            // Assert
             result.UserId.Should().Be(userId);
             result.CertificateId.Should().Be(certificateId);
             result.CertificateType.Should().Be(certificateType);
@@ -49,8 +51,10 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
         public void Then_Implicit_Operator_Maps_PostCreateSharingResponse_Correctly(
             PostCreateSharingResponse response)
         {
+            // Arrange & Act
             CreateSharingResult result = response;
 
+            // Assert
             result.UserId.Should().Be(response.UserId);
             result.CertificateId.Should().Be(response.CertificateId);
             result.CertificateType.Should().Be(response.CertificateType);
@@ -61,5 +65,6 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             result.LinkCode.Should().Be(response.LinkCode);
             result.ExpiryTime.Should().Be(response.ExpiryTime);
         }
+
     }
 }

@@ -26,6 +26,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             CreateSharingCommandHandler handler)
         {
+            // Arrange
             var apiResponse = new ApiResponse<PostCreateSharingResponse>(
                 apiResponseBody, HttpStatusCode.OK, string.Empty);
 
@@ -38,8 +39,10 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
                         r.Data.CourseName == command.CourseName), true))
                 .ReturnsAsync(apiResponse);
 
+            // Act
             var actual = await handler.Handle(command, CancellationToken.None);
 
+            // Assert
             actual.UserId.Should().Be(apiResponseBody.UserId);
             actual.CertificateId.Should().Be(apiResponseBody.CertificateId);
             actual.CertificateType.Should().Be(apiResponseBody.CertificateType);
@@ -65,13 +68,16 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             CreateSharingCommandHandler handler)
         {
+            // Arrange
             mockDigitalCertificatesApiClient
                 .Setup(client => client.PostWithResponseCode<PostCreateSharingRequestData, PostCreateSharingResponse>(
                     It.IsAny<PostCreateSharingRequest>(), true))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
+            // Act
             Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
 
+            // Assert
             act.Should().ThrowAsync<ApiResponseException>()
                 .Where(e => e.Status == HttpStatusCode.BadRequest);
 

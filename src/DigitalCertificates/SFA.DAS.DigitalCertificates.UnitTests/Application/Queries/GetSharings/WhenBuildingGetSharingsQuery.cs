@@ -11,6 +11,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
         [Test, AutoData]
         public void Then_Properties_Can_Be_Set(Guid userId, Guid certificateId, int limit)
         {
+            // Arrange & Act
             var query = new GetSharingsQuery
             {
                 UserId = userId,
@@ -18,6 +19,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
                 Limit = limit
             };
 
+            // Assert
             query.UserId.Should().Be(userId);
             query.CertificateId.Should().Be(certificateId);
             query.Limit.Should().Be(limit);

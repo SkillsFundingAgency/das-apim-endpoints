@@ -23,6 +23,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
         {
+            // Arrange
             mediator
                 .Setup(x => x.Send(It.Is<CreateSharingCommand>(c =>
                     c.UserId == command.UserId &&
@@ -31,8 +32,10 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
                     c.CourseName == command.CourseName), CancellationToken.None))
                 .ReturnsAsync(result);
 
+            // Act
             var actual = await controller.CreateSharing(command) as ObjectResult;
 
+            // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().Be(result);
@@ -50,11 +53,14 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             [Frozen] Mock<IMediator> mediator,
             [Greedy] SharingController controller)
         {
+            // Arrange
             mediator.Setup(x => x.Send(It.IsAny<CreateSharingCommand>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
+            // Act
             var actual = await controller.CreateSharing(command) as StatusCodeResult;
 
+            // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
 

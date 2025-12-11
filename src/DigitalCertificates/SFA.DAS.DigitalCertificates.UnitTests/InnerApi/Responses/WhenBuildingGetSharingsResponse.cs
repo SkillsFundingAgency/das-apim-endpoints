@@ -4,6 +4,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
+using static SFA.DAS.DigitalCertificates.Models.Enums;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
 {
@@ -12,6 +13,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
         [Test, AutoData]
         public void Then_Sharing_Items_Can_Be_Constructed()
         {
+            // Arrange
             var sharing = new SharingItem
             {
                 SharingId = Guid.NewGuid(),
@@ -33,17 +35,20 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
                 }
             };
 
+            // Act
             var response = new GetSharingsResponse
             {
                 UserId = Guid.NewGuid(),
                 CertificateId = Guid.NewGuid(),
-                CertificateType = "Test",
+                CertificateType = CertificateType.Standard,
                 CourseName = "CourseName",
                 Sharings = new List<SharingItem> { sharing }
             };
 
+            // Assert
             response.Sharings.Should().ContainSingle();
             response.Sharings[0].SharingEmails.Should().ContainSingle();
+            response.CertificateType.Should().Be(CertificateType.Standard);
         }
     }
 }

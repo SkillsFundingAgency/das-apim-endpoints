@@ -11,9 +11,11 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
         [Test, AutoData]
         public void Then_The_GetUrl_Is_Correctly_Built(Guid userId, Guid certificateId, int limit)
         {
+            // Arrange & Act
             var request = new GetSharingsRequest(userId, certificateId, limit);
 
-            request.GetUrl.Should().Be($"api/sharing?user={userId}&certificateid={certificateId}&limit={limit}");
+            // Assert
+            request.GetUrl.Should().Be($"api/users/{userId}/sharings?certificateId={certificateId}&limit={limit}");
         }
     }
 }

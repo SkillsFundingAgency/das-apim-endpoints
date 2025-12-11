@@ -21,61 +21,74 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
     {
         [Test, MoqAutoData]
         public async Task Then_The_Sharings_Are_Retrieved_Successfully(
-        Guid userId,
-        GetSharingsQuery query,
-        GetSharingsResponse responseBody,
-        [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-        GetSharingsQueryHandler handler)
+            Guid userId,
+            GetSharingsQuery query,
+            GetSharingsResponse responseBody,
+            [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
+            GetSharingsQueryHandler handler)
         {
+            // Arrange
             query.UserId = userId;
             query.CertificateId = responseBody.CertificateId;
 
             var apiResponse = new ApiResponse<GetSharingsResponse>(responseBody, HttpStatusCode.OK, string.Empty);
 
             mockDigitalCertificatesApiClient
-            .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(
-            It.Is<GetSharingsRequest>(r => r.UserId == userId && r.CertificateId == responseBody.CertificateId && r.Limit == query.Limit)))
-            .ReturnsAsync(apiResponse);
+                .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(
+                    It.Is<GetSharingsRequest>(r =>
+                        r.UserId == userId &&
+                        r.CertificateId == responseBody.CertificateId &&
+                        r.Limit == query.Limit)))
+                .ReturnsAsync(apiResponse);
 
+            // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
+            // Assert
             actual.Response.Should().BeEquivalentTo(responseBody);
         }
 
         [Test, MoqAutoData]
         public void Then_NotFound_Throws_ApiResponseException(
-        Guid userId,
-        GetSharingsQuery query,
-        [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-        GetSharingsQueryHandler handler)
+            Guid userId,
+            GetSharingsQuery query,
+            [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
+            GetSharingsQueryHandler handler)
         {
+            // Arrange
             query.UserId = userId;
 
             var apiResponse = new ApiResponse<GetSharingsResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockDigitalCertificatesApiClient
-            .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetSharingsRequest>()))
-            .ReturnsAsync(apiResponse);
+                .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetSharingsRequest>()))
+                .ReturnsAsync(apiResponse);
 
+            // Act
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
 
+            // Assert
             act.Should().ThrowAsync<ApiResponseException>()
-            .Where(e => e.Status == HttpStatusCode.NotFound);
+                .Where(e => e.Status == HttpStatusCode.NotFound);
         }
 
         [Test, MoqAutoData]
         public void Then_Exception_Is_Thrown_If_Api_Call_Fails(
-        GetSharingsQuery query,
-        [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-        GetSharingsQueryHandler handler)
+            GetSharingsQuery query,
+            [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
+            GetSharingsQueryHandler handler)
         {
+            // Arrange
             mockDigitalCertificatesApiClient
-            .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetSharingsRequest>()))
-            .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
+                .Setup(c => c.GetWithResponseCode<GetSharingsResponse>(It.IsAny<GetSharingsRequest>()))
+                .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
+            // Act
             Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+
+            // Assert
             act.Should().ThrowAsync<ApiResponseException>()
-            .Where(e => e.Status == HttpStatusCode.BadRequest);
+                .Where(e => e.Status == HttpStatusCode.BadRequest);
         }
     }
 }

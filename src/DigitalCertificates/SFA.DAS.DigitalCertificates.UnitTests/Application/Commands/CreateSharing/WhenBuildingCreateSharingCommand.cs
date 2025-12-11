@@ -3,6 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using System;
+using static SFA.DAS.DigitalCertificates.Models.Enums;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharing
 {
@@ -12,9 +13,10 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
         public void Then_Command_Properties_Are_Set_Correctly(
             Guid userId,
             Guid certificateId,
-            string certificateType,
+            CertificateType certificateType,
             string courseName)
         {
+            // Arrange & Act
             var command = new CreateSharingCommand
             {
                 UserId = userId,
@@ -23,6 +25,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
                 CourseName = courseName
             };
 
+            // Assert
             command.UserId.Should().Be(userId);
             command.CertificateId.Should().Be(certificateId);
             command.CertificateType.Should().Be(certificateType);

@@ -20,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
             Guid linkCode,
             DateTime expiryTime)
         {
-
+            // Arrange & Act
             var response = new PostCreateSharingResponse
             {
                 UserId = userId,
@@ -34,6 +34,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
                 ExpiryTime = expiryTime
             };
 
+            // Assert
             response.UserId.Should().Be(userId);
             response.CertificateId.Should().Be(certificateId);
             response.CertificateType.Should().Be(certificateType);
