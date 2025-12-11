@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 using SFA.DAS.Recruit.Application.Queries.GetNextVacancyReference;
+using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
@@ -53,6 +54,8 @@ public class VacanciesController(
     }
 
     [HttpGet, Route("{vacancyId:guid}")]
+    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetOneById([FromRoute] Guid vacancyId,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         CancellationToken cancellationToken)
@@ -64,6 +67,8 @@ public class VacanciesController(
     }
     
     [HttpGet, Route("/by/ref/{vacancyReference:long}")]
+    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetOneByReference([FromRoute] long vacancyReference,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         CancellationToken cancellationToken)
