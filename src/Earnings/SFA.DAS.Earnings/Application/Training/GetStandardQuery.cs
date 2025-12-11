@@ -1,10 +1,10 @@
 ﻿using MediatR;
-using SFA.DAS.Learning.InnerApi;
+using SFA.DAS.Earnings.InnerApi;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Learning.Application.TrainingCourses;
+namespace SFA.DAS.Earnings.Application.Training;
 
 public class GetStandardQuery : IRequest<GetStandardsListItem>
 {

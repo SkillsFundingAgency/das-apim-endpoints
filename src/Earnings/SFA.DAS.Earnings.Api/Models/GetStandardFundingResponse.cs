@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
-namespace SFA.DAS.Learning.Api.Models;
+namespace SFA.DAS.Earnings.Api.Models;
 
 public class GetStandardFundingResponse
 {

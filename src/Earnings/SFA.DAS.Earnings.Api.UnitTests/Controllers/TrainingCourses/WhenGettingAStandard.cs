@@ -4,17 +4,14 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SFA.DAS.Learning.Api.Controllers;
-using SFA.DAS.Learning.Api.Models;
-using SFA.DAS.Learning.Application.TrainingCourses;
-using SFA.DAS.Learning.InnerApi;
+using SFA.DAS.Earnings.Api.Controllers;
+using SFA.DAS.Earnings.Api.Models;
+using SFA.DAS.Earnings.Application.Training;
+using SFA.DAS.Earnings.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.Learning.Api.UnitTests.Controllers.TrainingCourses;
+namespace SFA.DAS.Earnings.Api.UnitTests.Controllers.TrainingCourses;
 
 [TestFixture]
 public class WhenGettingAStandard
