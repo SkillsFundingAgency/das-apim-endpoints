@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -15,13 +15,14 @@ public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient
+    IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
+	ICoursesApiClient<CoursesApiConfiguration> coursesApiClient
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
-        var request = CreateUpdateLearnerApiPutRequest(command.LearningKey, command);
+        var request = updateLearningPutRequestBuilder.Build(command);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 
@@ -42,12 +43,12 @@ public class UpdateLearnerCommandHandler(
         logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningApiPutResponse));
 
-        await UpdateEarnings(command, learningApiPutResponse);
+        await UpdateEarnings(command, request, learningApiPutResponse);
 
         logger.LogInformation("Earnings updated for learner with key {LearningKey}", command.LearningKey);
     }
 
-    private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
+    private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearningApiPutRequest updateLearningApiPutRequest, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
     {
         var updatePrices = false;
 
@@ -56,32 +57,35 @@ public class UpdateLearnerCommandHandler(
             switch (change)
             {
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
-                    await earningsApiClient.UpdateCompletionDate(command, logger);
+                    await earningsApiClient.UpdateCompletionDate(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
-                    await earningsApiClient.UpdateMathAndEnglish(command, logger);
+                    await earningsApiClient.UpdateMathAndEnglish(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
-                    await earningsApiClient.UpdateLearningSupport(command, logger);
+                    await earningsApiClient.UpdateLearningSupport(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
                     updatePrices = true;
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
-                    await earningsApiClient.WithdrawLearner(command, logger);
+                    await earningsApiClient.WithdrawLearner(command, updateLearningApiPutRequest, logger);
                     break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
                     await earningsApiClient.ReverseWithdrawal(command, logger);
                     break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
-                    await earningsApiClient.StartBreakInLearning(command, logger);
-                    break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
                     await earningsApiClient.RemoveBreakInLearning(command, logger);
                     break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
+                    await earningsApiClient.StartBreakInLearning(command, updateLearningApiPutRequest, logger);
+                    break;
+                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
+                    await earningsApiClient.UpdateBreaksInLearning(command, updateLearningApiPutRequest, updateLearningApiPutResponse, logger);
+                    break;
                 case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
-                    await earningsApiClient.WithdrawEnglishAndMaths(command, logger);
+                    await earningsApiClient.WithdrawEnglishAndMaths(command, updateLearningApiPutRequest, logger);
                     break;
             }
         }
@@ -102,44 +106,5 @@ public class UpdateLearnerCommandHandler(
         var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
 
         return response.MaxFundingOn(startDate);
-    }
-
-    private static UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
-    {
-        var body = new UpdateLearningRequestBody
-        {
-            Delivery = new Delivery
-            {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate
-            },
-            Learner = new LearningUpdateDetails
-            {
-                FirstName = command.UpdateLearnerRequest.Learner.FirstName,
-                LastName = command.UpdateLearnerRequest.Learner.LastName,
-                EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
-            },
-            OnProgramme = new OnProgrammeDetails
-            {
-                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts(),
-                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate
-            },
-            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
-                new MathsAndEnglishDetails
-                {
-                    Amount = x.Amount,
-                    CompletionDate = x.CompletionDate,
-                    Course = x.Course,
-                    PlannedEndDate = x.EndDate,
-                    PriorLearningPercentage = x.PriorLearningPercentage,
-                    StartDate = x.StartDate,
-                    WithdrawalDate = x.WithdrawalDate,
-                    PauseDate = x.PauseDate
-                }).ToList(),
-            LearningSupport = command.CombinedLearningSupport()
-        };
-
-        return new UpdateLearningApiPutRequest(learnerKey, body);
     }
 }
