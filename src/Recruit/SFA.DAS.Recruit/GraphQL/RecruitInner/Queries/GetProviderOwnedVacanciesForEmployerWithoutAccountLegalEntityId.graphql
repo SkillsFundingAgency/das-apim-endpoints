@@ -3,7 +3,7 @@ query GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityId($ukprn: In
         where: {
             deletedDate:  { eq: null }
             ownerType:  { eq: PROVIDER }
-            accountLegalEntityId: { eq: NULL }
+            accountLegalEntityId: { eq: null }
             ukprn: { eq: $ukprn }
             accountId: { eq: $accountId }
         }
