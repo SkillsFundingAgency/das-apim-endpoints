@@ -50,6 +50,12 @@ Scenario: Remove Break in Learning
 	And the BreakInLearningRemoved passed is different to the value in the learners domain
 	When the learner is updated
 	Then a BreakInLearningRemoved update request is sent to the earnings domain
+
+Scenario: Update Breaks in Learning
+	Given there is a learner
+	And the BreaksInLearningUpdated passed is different to the value in the learners domain
+	When the learner is updated
+	Then a BreaksInLearningUpdated update request is sent to the earnings domain
 	
 Scenario: English and Maths Withdrawal
 	Given there is a learner

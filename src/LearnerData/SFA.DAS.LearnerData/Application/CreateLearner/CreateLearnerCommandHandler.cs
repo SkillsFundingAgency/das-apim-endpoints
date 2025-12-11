@@ -19,7 +19,8 @@ public class CreateLearnerCommandHandler(
 
     private LearnerDataEvent MapToEvent(CreateLearnerCommand command)
     {
-        var cost = command.Request.Delivery.OnProgramme.First().MapCosts().First();
+        var onProgramme = command.Request.Delivery.OnProgramme.First();
+        var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
 
         return new LearnerDataEvent
         {
