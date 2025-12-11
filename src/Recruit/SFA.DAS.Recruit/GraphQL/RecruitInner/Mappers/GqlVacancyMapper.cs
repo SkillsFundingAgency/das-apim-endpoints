@@ -8,7 +8,7 @@ namespace SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
 
 // Note this class cannot be moved to the Shared assemblies as it
 // relies upon the dynamically generated interface IAllVacancyFields. 
-public static class VacancyMapper
+public static class GqlVacancyMapper
 {
     private static readonly JsonSerializerOptions Options = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     
