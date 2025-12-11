@@ -22,3 +22,23 @@ To add a new query:
 * build the project
 
 StrawberryShake will then make your new query available on the `RecruitGqlClient` via codegen.
+
+## Fragments
+When creating a new query, StrawberryShake generates a completely custom return type
+which can make mapping more complicated. By using GraphQL fragments we can simplify this.
+
+If returning the whole vacancy you should can make use of the `AllVacancyFields` fragment,
+by _destructuring_ it into the response fields:
+
+```graphql
+query ExampleQuery
+{
+    ...AllVacancyFields
+}
+```
+
+This will return all fields on the vacancy which can then be mapped into the domain
+object using the `GqlVacancyMapper.From` method.
+
+This does mean that when new fields are added/removed to/from the vacancy model,
+the `fragments.graphql` file should be updated appropriately along with the mapper.
