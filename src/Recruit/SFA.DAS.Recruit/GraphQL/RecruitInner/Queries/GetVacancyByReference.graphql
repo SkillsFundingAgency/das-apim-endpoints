@@ -1,9 +1,7 @@
 query GetVacancyByReference($vacancyReference: Long) {
     vacancies(
         where: {
-            vacancyReference: {
-                eq: $vacancyReference
-            }
+            vacancyReference: { eq: $vacancyReference }
         }
     )
     {

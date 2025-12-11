@@ -1,0 +1,15 @@
+query GetVacanciesByStatusAndClosingDate($status: VacancyStatus, $closingDate: DateTime) {
+    vacancies(
+        where: {
+            deletedDate: { eq: null }
+            status: { eq: $status },
+            closingDate: { lt: $closingDate }
+        }
+    )
+    {
+        id
+        vacancyReference
+        status
+        closingDate
+    }
+}
