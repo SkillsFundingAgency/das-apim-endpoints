@@ -40,34 +40,34 @@ public class UpdateLearnerCommandHandler(
         logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningApiPutResponse));
         
-        if (!learningApiPutResponse.Changes.Any() || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
+        if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
         {
-            logger.LogInformation($"No changes requiring earnings update for learning {command.LearningKey}");
+            logger.LogInformation("No changes requiring earnings update for learning {LearningKey}", command.LearningKey);
             return;
         }
         
         //Update Earnings
         if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
         {
-            logger.LogInformation($"Updating Earnings with OnProgramme changes for learning {command.LearningKey}");
+            logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", command.LearningKey);
             var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command, learningApiPutResponse, request);
             await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 
         if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
         {
-            logger.LogInformation($"Updating Earnings with English and Maths changes for learning {command.LearningKey}");
+            logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", command.LearningKey);
             var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
             await earningsApiClient.Put(englishAndMathsRequest);
         }
 
         if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
         {
-            logger.LogInformation($"Updating Earnings with Learning Support changes for learning {command.LearningKey}");
+            logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", command.LearningKey);
             var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(command, learningApiPutResponse, request);
             await earningsApiClient.Put(earningsLearningSupportRequest);
         }
 
-        logger.LogInformation($"Earnings updated for learning {command.LearningKey}");
+        logger.LogInformation("Earnings updated for learning {LearningKey}", command.LearningKey);
     }
 }
