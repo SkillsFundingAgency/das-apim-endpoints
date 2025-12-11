@@ -47,7 +47,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             result.Data.WithdrawalDate.Should().Be(putRequest.Data.Delivery.WithdrawalDate);
             result.Data.PauseDate.Should().Be(putRequest.Data.OnProgramme.PauseDate);
             result.Data.ApprenticeshipEpisodeKey.Should().Be(response.LearningEpisodeKey);
-            result.Data.AgeAtStartOfLearning.Should().Be(response.AgeAtStartOfLearning);
+            result.Data.DateOfBirth.Should().Be(putRequest.Data.Learner.DateOfBirth);
 
             result.Data.Prices.Should().BeEquivalentTo(response.Prices.Select(x => new PriceItem
             {

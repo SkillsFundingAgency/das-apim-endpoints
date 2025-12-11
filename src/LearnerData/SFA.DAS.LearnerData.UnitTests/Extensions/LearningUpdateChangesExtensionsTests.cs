@@ -16,6 +16,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged)]
         public void HasOnProgrammeUpdate_ReturnsTrue_ForOnProgrammeChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };

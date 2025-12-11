@@ -56,7 +56,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData
         public DateTime? CompletionDate { get; set; }
         public DateTime? WithdrawalDate { get; set; }
         public DateTime? PauseDate { get; set; }
-        public int AgeAtStartOfLearning { get; set; }
+        public DateTime DateOfBirth { get; set; }
         public int? FundingBandMaximum { get; set; }
         public bool IncludesFundingBandMaximumUpdate { get; set; }
         public List<PriceItem> Prices { get; set; } = [];

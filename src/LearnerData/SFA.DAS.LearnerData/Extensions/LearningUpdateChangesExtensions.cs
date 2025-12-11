@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Extensions
 {
@@ -14,7 +13,8 @@ namespace SFA.DAS.LearnerData.Extensions
                    || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted)
                    || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved)
                    || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)
-                   || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices);
+                   || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
+                   || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged);
         }
 
         public static bool HasEnglishAndMathsUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
@@ -30,8 +30,7 @@ namespace SFA.DAS.LearnerData.Extensions
 
         public static bool HasPersonalDetailsOnly(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
         {
-            return changes.Count == 1 &&
-                   changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails);
+            return changes.SequenceEqual(new [] { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails });
         }
     }
 }
