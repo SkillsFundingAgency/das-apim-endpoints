@@ -13,6 +13,7 @@ using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.Roatp;
 
 namespace SFA.DAS.Approvals.Services;
 
@@ -55,18 +56,18 @@ public class ProviderStandardsService(
 
     }
 
-    private async Task<TrainingProviderResponse> GetTrainingProviderDetails(long providerId)
+    private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)
     {
         var cacheKey = $"{ProviderDetailsCacheKey}-{providerId}";
 
-        var cacheResult = await cacheStorageService.RetrieveFromCache<TrainingProviderResponse>(cacheKey);
+        var cacheResult = await cacheStorageService.RetrieveFromCache<ProviderDetailsModel>(cacheKey);
 
         if (cacheResult != null)
         {
             return cacheResult;
         }
 
-        var result = await trainingProviderService.GetTrainingProviderDetails(providerId);
+        var result = await trainingProviderService.GetProviderDetails((int)providerId);
         await cacheStorageService.SaveToCache(cacheKey, result, CacheExpiryHours);
         return result;
     }

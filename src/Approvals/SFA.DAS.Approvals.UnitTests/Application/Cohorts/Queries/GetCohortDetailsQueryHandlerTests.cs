@@ -341,7 +341,7 @@ public class GetCohortDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        result.HasFoundationApprenticeships.Should().BeTrue();
+        result.HasAgeRestrictedApprenticeships.Should().BeTrue();
     }
 
     [Test, MoqAutoData]
@@ -361,7 +361,7 @@ public class GetCohortDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        result.HasFoundationApprenticeships.Should().BeFalse();
+        result.HasAgeRestrictedApprenticeships.Should().BeFalse();
     }
 
     [Test]
@@ -444,7 +444,7 @@ public class GetCohortDetailsQueryHandlerTests
     }
 
     [Test]
-    public async Task Handle_HasFoundationApprenticeships_Is_True_When_Any_Course_Is_Foundation_Apprenticeship()
+    public async Task Handle_HasAgeRestrictedApprenticeships_Is_True_When_Any_Course_Is_Foundation_Apprenticeship()
     {
         // Arrange
         var fixture = new Fixture();
@@ -474,11 +474,11 @@ public class GetCohortDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        result.HasFoundationApprenticeships.Should().BeTrue();
+        result.HasAgeRestrictedApprenticeships.Should().BeTrue();
     }
 
     [Test]
-    public async Task Handle_HasFoundationApprenticeships_Is_False_When_No_Course_Is_Foundation_Apprenticeship()
+    public async Task Handle_HasAgeRestrictedApprenticeships_Is_True_When_Course_Is_Foundation_Apprenticeship_Or_Level7()
     {
         // Arrange
         var fixture = new Fixture();
@@ -494,17 +494,78 @@ public class GetCohortDetailsQueryHandlerTests
         _draftApprenticeship.DraftApprenticeships = apprenticeships;
 
         _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
-            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "FoundationApprenticeship", Level = 6 });
         
         _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)))
-            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship", Level = 7 });
 
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        result.HasFoundationApprenticeships.Should().BeFalse();
+        result.HasAgeRestrictedApprenticeships.Should().BeTrue();
     }
+
+    [Test]
+    public async Task Handle_HasAgeRestrictedApprenticeships_Is_False_When_No_Course_Is_Foundation_Apprenticeship_Or_Level7()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        var courseCode2 = "TEST2";
+
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode1).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode2).Create()
+        };
+
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship", Level = 6 });
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship", Level = 6 });
+
+        // Act
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        result.HasAgeRestrictedApprenticeships.Should().BeFalse();
+    }
+
+    [Test]
+    public async Task Handle_HasAgeRestrictedApprenticeships_Is_True_When_Any_Course_Is_Level7()
+    {
+        // Arrange
+        var fixture = new Fixture();
+        var courseCode1 = "TEST1";
+        var courseCode2 = "TEST2";
+        var courseCode3 = "TEST3";
+
+        var apprenticeships = new List<DraftApprenticeship>
+        {
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode1).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode2).Create(),
+            fixture.Build<DraftApprenticeship>().With(x => x.CourseCode, courseCode3).Create()
+        };
+
+        _draftApprenticeship.DraftApprenticeships = apprenticeships;
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship" });
+
+        _coursesApiClient.Setup(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode3)))
+            .ReturnsAsync(new GetStandardsListItem { ApprenticeshipType = "StandardApprenticeship", Level = 7 });
+
+        // Act
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        // Assert
+        result.HasAgeRestrictedApprenticeships.Should().BeTrue();
+    }
+
 
     [Test]
     public async Task Handle_Handles_Null_API_Responses_Gracefully()
@@ -532,7 +593,7 @@ public class GetCohortDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        result.HasFoundationApprenticeships.Should().BeFalse();
+        result.HasAgeRestrictedApprenticeships.Should().BeFalse();
         _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)), Times.Once);
         _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode2)), Times.Once);
     }
@@ -619,7 +680,7 @@ public class GetCohortDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         // Assert
-        result.HasFoundationApprenticeships.Should().BeFalse();
+        result.HasAgeRestrictedApprenticeships.Should().BeFalse();
         _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Never);
     }
 }
