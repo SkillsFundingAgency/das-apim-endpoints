@@ -75,5 +75,36 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
 
             changes.HasLearningSupportUpdate().Should().BeFalse();
         }
+
+        [Test]
+        public void HasPersonalDetailsOnly_ReturnsTrue_WhenOnlyPersonalDetailsPresent()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails
+            };
+
+            changes.HasPersonalDetailsOnly().Should().BeTrue();
+        }
+
+        [Test]
+        public void HasPersonalDetailsOnly_ReturnsFalse_WhenNoChangesPresent()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>();
+
+            changes.HasPersonalDetailsOnly().Should().BeFalse();
+        }
+
+        [Test]
+        public void HasPersonalDetailsOnly_ReturnsFalse_WhenPersonalDetailsPlusOtherChangePresent()
+        {
+            var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
+            {
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails,
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate
+            };
+
+            changes.HasPersonalDetailsOnly().Should().BeFalse();
+        }
     }
 }

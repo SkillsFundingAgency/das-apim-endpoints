@@ -36,15 +36,16 @@ public class UpdateLearnerCommandHandler(
         }
 
         var learningApiPutResponse = learningResponse.Body;
-        if (!learningApiPutResponse.Changes.Any()) //todo: if changes = personal details ONLY, then we can also early-exit here
-        {
-            logger.LogInformation("No changes detected for learner with key {LearningKey}", command.LearningKey);
-            return;
-        }
 
         logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningApiPutResponse));
-
+        
+        if (!learningApiPutResponse.Changes.Any() || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
+        {
+            logger.LogInformation($"No changes requiring earnings update for learning {command.LearningKey}");
+            return;
+        }
+        
         //Update Earnings
         if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
         {

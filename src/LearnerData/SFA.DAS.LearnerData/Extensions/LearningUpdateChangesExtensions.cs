@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Extensions
 {
@@ -25,6 +26,12 @@ namespace SFA.DAS.LearnerData.Extensions
         public static bool HasLearningSupportUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
         {
             return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport);
+        }
+
+        public static bool HasPersonalDetailsOnly(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
+        {
+            return changes.Count == 1 &&
+                   changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails);
         }
     }
 }
