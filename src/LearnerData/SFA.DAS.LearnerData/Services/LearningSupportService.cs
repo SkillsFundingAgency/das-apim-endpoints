@@ -114,6 +114,7 @@ namespace SFA.DAS.LearnerData.Services
                     var potentialEndDates = new List<DateTime> { ls.EndDate };
                     if (em.CompletionDate.HasValue) potentialEndDates.Add(em.CompletionDate.Value);
                     if (em.WithdrawalDate.HasValue) potentialEndDates.Add(em.WithdrawalDate.Value);
+                    if (em.PauseDate.HasValue) potentialEndDates.Add(em.PauseDate.Value);
 
                     return new LearningSupportUpdatedDetails
                     {

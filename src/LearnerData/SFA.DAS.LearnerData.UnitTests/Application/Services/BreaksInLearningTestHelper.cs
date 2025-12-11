@@ -1,6 +1,7 @@
-﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
+﻿using AutoFixture;
+using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
-using AutoFixture;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 {
@@ -66,6 +67,37 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             });
 
             command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
+
+            return command;
+        }
+
+        public static UpdateLearnerCommand CreateLearnerWithEnglishAndMathsBreaksInLearning()
+        {
+            var fixture = new Fixture();
+
+            var command = fixture.Create<UpdateLearnerCommand>();
+            var startDate = fixture.Create<DateTime>();
+            var pauseDate = startDate.AddMonths(6);
+
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
+            command.UpdateLearnerRequest.Delivery.OnProgramme.Clear();
+
+            command.UpdateLearnerRequest.Delivery.OnProgramme.Add(new OnProgrammeRequestDetails
+            {
+                StartDate = startDate,
+                ExpectedEndDate = startDate.AddYears(2),
+                ActualEndDate = pauseDate,
+                PauseDate = null,
+                LearningSupport = []
+            });
+
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(new MathsAndEnglish
+            {
+                StartDate = startDate,
+                EndDate = startDate.AddYears(2),
+                PauseDate = pauseDate,
+                LearningSupport = []
+            });
 
             return command;
         }

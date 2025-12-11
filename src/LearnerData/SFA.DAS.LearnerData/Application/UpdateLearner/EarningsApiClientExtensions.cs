@@ -36,7 +36,8 @@ internal static class EarningsApiClientExtensions
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate
+                ActualEndDate = x.CompletionDate,
+                PauseDate = x.PauseDate
             }).ToList());
 
             await earningsApiClient.Patch(new SaveMathsAndEnglishApiPatchRequest(command.LearningKey, data));

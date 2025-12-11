@@ -57,6 +57,7 @@ public class MathsAndEnglishDetails
     public DateTime PlannedEndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     public decimal Amount { get; set; }
 }
@@ -76,4 +77,5 @@ public class BreakInLearning
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+    public DateTime PriorPeriodExpectedEndDate { get; set; }
 }
