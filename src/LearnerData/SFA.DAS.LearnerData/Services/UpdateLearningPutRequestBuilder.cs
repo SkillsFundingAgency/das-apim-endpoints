@@ -53,7 +53,8 @@ namespace SFA.DAS.LearnerData.Services
                     FirstName = command.UpdateLearnerRequest.Learner.FirstName,
                     LastName = command.UpdateLearnerRequest.Learner.LastName,
                     EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                    CompletionDate = latestOnProgramme.CompletionDate
+                    CompletionDate = latestOnProgramme.CompletionDate,
+                    DateOfBirth = command.UpdateLearnerRequest.Learner.Dob
                 },
                 OnProgramme = new OnProgrammeDetails
                 {
