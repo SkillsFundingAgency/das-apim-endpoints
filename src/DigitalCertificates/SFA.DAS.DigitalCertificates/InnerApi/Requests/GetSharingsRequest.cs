@@ -16,6 +16,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             Limit = limit;
         }
 
-        public string GetUrl => $"api/sharing?user={UserId}&certificateid={CertificateId}&limit={Limit}";
+        public string GetUrl => $"api/users/{UserId}/sharings?certificateId={CertificateId}&limit={Limit}";
     }
 }

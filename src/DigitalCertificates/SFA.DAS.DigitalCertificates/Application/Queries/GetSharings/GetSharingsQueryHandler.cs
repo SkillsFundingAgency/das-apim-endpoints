@@ -22,7 +22,10 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharings
         {
             var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetSharingsResponse>(new GetSharingsRequest(request.UserId, request.CertificateId, request.Limit));
 
-            apiResponse.EnsureSuccessStatusCode();
+            if (apiResponse?.StatusCode != System.Net.HttpStatusCode.NotFound)
+            {
+                apiResponse.EnsureSuccessStatusCode();
+            }
 
             return new GetSharingsQueryResult { Response = apiResponse?.Body };
         }

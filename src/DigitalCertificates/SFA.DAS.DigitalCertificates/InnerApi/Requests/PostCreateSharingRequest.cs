@@ -1,6 +1,7 @@
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
+using static SFA.DAS.DigitalCertificates.Models.Enums;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
 {
@@ -20,7 +21,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
     {
         public Guid UserId { get; set; }
         public Guid CertificateId { get; set; }
-        public string CertificateType { get; set; }
+        public CertificateType CertificateType { get; set; }
         public string CourseName { get; set; }
 
         public static implicit operator PostCreateSharingRequestData(CreateSharingCommand command)
