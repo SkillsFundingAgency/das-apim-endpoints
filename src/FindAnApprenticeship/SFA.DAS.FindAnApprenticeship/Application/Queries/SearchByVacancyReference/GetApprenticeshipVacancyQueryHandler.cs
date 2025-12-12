@@ -28,6 +28,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
         {
             var vacancy = await vacancyService.GetVacancy(request.VacancyReference) 
                           ?? await vacancyService.GetClosedVacancy(request.VacancyReference);
+            var courseResult = new GetStandardsListItemResponse();
 
             if (vacancy == null)
             {
@@ -49,10 +50,14 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
 
             if (vacancy.CourseId <= 0)
             {
+                // FAI-2869 Csj jobs comes with dummy placeholder course id.
                 logger.LogWarning("Vacancy '{vacancyReference}' has an unknown course", vacancy.VacancyReference);
             }
-            
-            var courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
+            else
+            {
+                courseResult = await coursesApiClient.Get<GetStandardsListItemResponse>(new GetStandardRequest(vacancy.CourseId));
+            }
+                
             var courseLevels = await courseService.GetLevels();
 
             GetApprenticeshipVacancyQueryResult.CandidateApplication candidateApplicationDetails = null;
