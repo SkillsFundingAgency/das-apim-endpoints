@@ -43,11 +43,14 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
+            // Arrange
             mediator.Setup(x => x.Send(It.IsAny<GetUserQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
+            // Act
             var actual = await controller.GetUser(govUkIdentifier) as StatusCodeResult;
 
+            // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }
