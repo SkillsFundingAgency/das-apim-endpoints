@@ -60,8 +60,10 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             metricsService.Verify(x => x.IncreaseVacancySearchResultViews(It.IsAny<string>(), 1), Times.Exactly(apiResponse.ApprenticeshipVacancies.Count()));
         }
 
-        [Test, MoqAutoData]
-        public async Task Then_The_Api_Is_Called_With_The_Request_And_Vacancies_Returned_Non_Raa(
+        [Test]
+        [MoqInlineAutoData(DataSource.Csj)]
+        [MoqInlineAutoData(DataSource.Nhs)]
+        public async Task Then_The_Api_Is_Called_With_The_Request_And_Vacancies_Returned_Non_Raa(DataSource dataSource,
             GetVacanciesQuery query,
             GetVacanciesResponse apiResponse,
             GetStandardsListItem courseResponse,
@@ -72,7 +74,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         {
             foreach (var apprenticeshipVacancy in apiResponse.ApprenticeshipVacancies)
             {
-                apprenticeshipVacancy.VacancySource = DataSource.Nhs;
+                apprenticeshipVacancy.VacancySource = dataSource;
             }
             query.AccountLegalEntityPublicHashedId = "";
             var expectedGetRequest = new GetVacanciesRequest(query.PageNumber, query.PageSize,
@@ -216,6 +218,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             GetVacanciesQuery query,
             GetVacanciesListItem vacancyRaa,
             GetVacanciesListItem vacancyNhs,
+            GetVacanciesListItem vacancyCsJ,
             GetStandardsListItem courseResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<ICourseService> courseService,
@@ -226,11 +229,12 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             courseResponse.LarsCode = standardLarsCode;
             vacancyRaa.VacancySource = DataSource.Raa;
             vacancyNhs.VacancySource = DataSource.Nhs;
+            vacancyCsJ.VacancySource = DataSource.Csj;
             var apiResponse = new GetVacanciesResponse
             {
-                ApprenticeshipVacancies = new List<GetVacanciesListItem> { vacancyRaa, vacancyNhs },
-                TotalFound = 2,
-                Total = 2
+                ApprenticeshipVacancies = new List<GetVacanciesListItem> { vacancyRaa, vacancyNhs, vacancyCsJ },
+                TotalFound = 3,
+                Total = 3
             };
             foreach (var vacanciesItem in apiResponse.ApprenticeshipVacancies)
             {
