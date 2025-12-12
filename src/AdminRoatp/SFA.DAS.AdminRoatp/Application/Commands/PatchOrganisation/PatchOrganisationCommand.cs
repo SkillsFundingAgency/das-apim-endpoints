@@ -4,4 +4,4 @@ using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 
 namespace SFA.DAS.AdminRoatp.Application.Commands.PatchOrganisation;
-public record PatchOrganisationCommand(int Ukprn, string UserId, JsonPatchDocument<PatchOrganisationModel> PatchDoc) : IRequest<HttpStatusCode>;
+public record PatchOrganisationCommand(int Ukprn, string UserId, string UserName, JsonPatchDocument<PatchOrganisationModel> PatchDoc) : IRequest<HttpStatusCode>;

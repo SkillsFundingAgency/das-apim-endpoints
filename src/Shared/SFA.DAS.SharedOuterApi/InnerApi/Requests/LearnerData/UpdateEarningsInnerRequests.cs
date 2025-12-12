@@ -153,12 +153,6 @@ public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiReq
     public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
 }
 
-public class MathsAndEnglishWithdrawRequest
-{
-    public string Course { get; set; }
-    public DateTime? WithdrawalDate { get; set; }
-}
-
 public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, MathsAndEnglishWithdrawRequest data)
     : IPatchApiRequest<MathsAndEnglishWithdrawRequest>
 {
@@ -166,4 +160,28 @@ public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, Math
         $"apprenticeship/{apprenticeshipKey}/mathsAndEnglish/withdraw";
 
     public MathsAndEnglishWithdrawRequest Data { get; set; } = data;
+}
+
+public class MathsAndEnglishWithdrawRequest
+{
+    public string Course { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
+}
+
+public class UpdateBreaksInLearningApiPatchRequest : IPatchApiRequest<UpdateBreaksInLearningRequest>
+{
+    public string PatchUrl { get; }
+    public UpdateBreaksInLearningRequest Data { get; set; }
+
+    public UpdateBreaksInLearningApiPatchRequest(Guid apprenticeshipKey, UpdateBreaksInLearningRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/breaksInLearning";
+        Data = data;
+    }
+}
+
+public class UpdateBreaksInLearningRequest
+{
+    public Guid EpisodeKey { get; set; }
+    public List<BreakInLearning> BreaksInLearning { get; set; }
 }
