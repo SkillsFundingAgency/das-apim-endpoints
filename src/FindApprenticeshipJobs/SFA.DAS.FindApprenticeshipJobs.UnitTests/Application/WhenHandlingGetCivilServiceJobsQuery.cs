@@ -85,7 +85,7 @@ public class WhenHandlingGetCivilServiceJobsQuery
 
         var job = new Job { JobCode = "J002" };
         var apiResponse = new GetCivilServiceJobsApiResponse { Jobs = [job]};
-
+        
         mockCivilServiceJobsApiClient
             .Setup(c => c.Get<GetCivilServiceJobsApiResponse>(It.IsAny<GetCivilServiceJobsApiRequest>()))
             .ReturnsAsync(apiResponse);
@@ -109,7 +109,8 @@ public class WhenHandlingGetCivilServiceJobsQuery
                 Longitude = -0.1
             },
             Title = "Geo Vacancy",
-            VacancyReference = "VAC12345"
+            VacancyReference = "VAC12345",
+            OtherAddresses = []
         };
 
         mockMapper
@@ -141,7 +142,7 @@ public class WhenHandlingGetCivilServiceJobsQuery
         mockLocationApiClient.Verify(
             x => x.Get<GetAddressByCoordinatesApiResponse>(
                 It.IsAny<GetAddressByCoordinatesApiRequest>()),
-            Times.Once);
+            Times.Exactly(4)); //Primary address + Other addresses
     }
 
     [Test, MoqAutoData]
@@ -178,7 +179,8 @@ public class WhenHandlingGetCivilServiceJobsQuery
         var liveVacancy = new SFA.DAS.FindApprenticeshipJobs.Application.Shared.LiveVacancy
         {
             Title = "Invalid Geo Vacancy",
-            VacancyReference = "VAC1234"
+            VacancyReference = "VAC1234",
+            Address = new Address()
         };
 
         mockMapper
