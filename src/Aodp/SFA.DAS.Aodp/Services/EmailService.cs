@@ -23,15 +23,16 @@ public class EmailService : IEmailService
         _logger = logger;
     }
 
-    public async Task SendAsync(
+    public async Task<bool> SendAsync(
         IReadOnlyCollection<NotificationDefinition> notifications,
         CancellationToken cancellationToken = default)
     {
         if (notifications == null || notifications.Count == 0)
         {
-            return;
+            return false;
         }
 
+        bool emailSent = false;
         foreach (var notification in notifications)
         {
             var templateId = _options.Value.NotificationTemplates
@@ -71,7 +72,10 @@ public class EmailService : IEmailService
 
             await _notificationService.Send(
                 new SendEmailCommand(templateId.ToString(), emailAddress, emailData));
+
+            emailSent = true;
         }
+        return emailSent;
     }
 
     private string? GetRecipientEmailAddress(NotificationDefinition notification)
