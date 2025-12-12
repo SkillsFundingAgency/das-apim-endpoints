@@ -19,7 +19,6 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         ConfigureRemoveLearningApi();
         ConfigureWithdrawLearnerEarningsApi();
-
         await CallRemoveLearnerEndpoint();
     }
 
@@ -77,8 +76,8 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
         testContext.EarningsApi.MockServer
             .Given(
                 Request.Create()
-                    .WithPath($"/apprenticeship/{learnerKey}/withdraw")
-                    .UsingPatch()
+                    .WithPath($"/learning/{learnerKey}")
+                    .UsingDelete()
             )
             .RespondWith(
                 Response.Create()
