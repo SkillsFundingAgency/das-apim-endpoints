@@ -49,7 +49,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
         }
 
         [Test, MoqAutoData]
-        public void Then_NotFound_Throws_ApiResponseException(
+        public async Task Then_NotFound_Returns_Null_Response(
             Guid userId,
             GetSharingsQuery query,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
@@ -65,11 +65,10 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
                 .ReturnsAsync(apiResponse);
 
             // Act
-            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+            var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            act.Should().ThrowAsync<ApiResponseException>()
-                .Where(e => e.Status == HttpStatusCode.NotFound);
+            actual.Response.Should().BeNull();
         }
 
         [Test, MoqAutoData]
