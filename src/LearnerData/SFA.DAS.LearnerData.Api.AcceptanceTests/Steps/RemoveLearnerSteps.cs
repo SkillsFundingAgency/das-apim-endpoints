@@ -35,14 +35,14 @@ internal class RemoveLearnerSteps(TestContext testContext, ScenarioContext scena
             "Expected a DELETE request to the Learning domain for the learner");
     }
 
-    [Then(@"a withdraw learner request is sent to the earnings domain")]
-    public void ThenAWithdrawLearnerRequestIsSentToTheEarningsDomain()
+    [Then(@"a delete learner request is sent to the earnings domain")]
+    public void ThenADeleteLearnerRequestIsSentToTheEarningsDomain()
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
         var requests = testContext.EarningsApi.MockServer.LogEntries;
 
-        requests.Should().ContainSingle(request => request.RequestMessage.Url.Contains($"/{learnerKey}/withdraw"),
-            "Expected a withdraw request to the Earnings domain for the learner");
+        requests.Should().ContainSingle(request => request.RequestMessage.Url.Contains($"/{learnerKey}") && request.RequestMessage.Method == "DELETE",
+            "Expected a delete request to the Earnings domain for the learner");
     }
 
     private void ConfigureRemoveLearningApi()
