@@ -44,8 +44,9 @@ public class WhenHandlingGetCivilServiceJobsQuery
 
         var apiResponse = new GetCivilServiceJobsApiResponse
         {
-            Jobs = [new Job {JobCode = "J001"}]
+            Jobs = [new Job {JobCode = "J001", Profession = new Profession { En = "Other" } }]
         };
+        routeListItem.Name = "Business and administration";
 
         mockCivilServiceJobsApiClient
             .Setup(c => c.Get<GetCivilServiceJobsApiResponse>(It.IsAny<GetCivilServiceJobsApiRequest>()))
@@ -83,9 +84,10 @@ public class WhenHandlingGetCivilServiceJobsQuery
         // Arrange
         var query = new GetCivilServiceJobsQuery();
 
-        var job = new Job { JobCode = "J002" };
+        var job = new Job { JobCode = "J002", Profession = new Profession { En = "Other" } };
         var apiResponse = new GetCivilServiceJobsApiResponse { Jobs = [job]};
-        
+        routeListItem.Name = "Business and administration";
+
         mockCivilServiceJobsApiClient
             .Setup(c => c.Get<GetCivilServiceJobsApiResponse>(It.IsAny<GetCivilServiceJobsApiRequest>()))
             .ReturnsAsync(apiResponse);
@@ -142,7 +144,7 @@ public class WhenHandlingGetCivilServiceJobsQuery
         mockLocationApiClient.Verify(
             x => x.Get<GetAddressByCoordinatesApiResponse>(
                 It.IsAny<GetAddressByCoordinatesApiRequest>()),
-            Times.Exactly(4)); //Primary address + Other addresses
+            Times.Exactly(1)); //Primary address + Other addresses
     }
 
     [Test, MoqAutoData]
@@ -158,8 +160,9 @@ public class WhenHandlingGetCivilServiceJobsQuery
         // Arrange
         var query = new GetCivilServiceJobsQuery();
 
-        var job = new Job { JobCode = "J003" };
+        var job = new Job { JobCode = "J003", Profession = new Profession{ En = "Other" } };
         var apiResponse = new GetCivilServiceJobsApiResponse { Jobs = [job]};
+        routeListItem.Name = "Business and administration";
 
         mockCivilServiceJobsApiClient
             .Setup(c => c.Get<GetCivilServiceJobsApiResponse>(It.IsAny<GetCivilServiceJobsApiRequest>()))
