@@ -24,14 +24,10 @@ namespace SFA.DAS.Recruit.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class VacanciesController(
-    ILogger<VacanciesController> logger,
-    IMediator mediator,
-    VacancyMapper vacancyMapper,
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient): ControllerBase
+public class VacanciesController(ILogger<VacanciesController> logger): ControllerBase
 {
     [HttpGet, Route("vacancyreference")]
-    public async Task<IActionResult> GetNextVacancyReference()
+    public async Task<IActionResult> GetNextVacancyReference([FromServices] IMediator mediator)
     {
         var result = await mediator.Send(new GetNextVacancyReferenceQuery());
         return Ok(new GetNextVacancyReferenceResponse(result.Value));
@@ -39,7 +35,11 @@ public class VacanciesController(
 
     // TODO: Semi proxy for the inner api endpoint - this should go once we have migrated vacancies over to SQL
     [HttpPost, Route("{vacancyId:guid}")]
-    public async Task<IActionResult> PostOne([FromRoute] Guid vacancyId, [FromBody] PostVacancyRequest vacancy)
+    public async Task<IActionResult> PostOne(
+        [FromRoute] Guid vacancyId,
+        [FromBody] PostVacancyRequest vacancy,
+        [FromServices] VacancyMapper vacancyMapper,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
     {
         var response = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancyId, vacancyMapper.ToInnerDto(vacancy)));
         try
@@ -63,7 +63,7 @@ public class VacanciesController(
     {
         var result = await recruitGqlClient.GetVacancyById.ExecuteAsync(vacancyId, cancellationToken);
         return result is { Data.Vacancies.Count: 1 }
-            ? TypedResults.Ok(new DataResponse<Vacancy> { Data = GqlVacancyMapper.From(result.Data.Vacancies[0]) })
+            ? TypedResults.Ok(new DataResponse<Vacancy>(GqlVacancyMapper.From(result.Data.Vacancies[0])))
             : TypedResults.NotFound();
     }
     
@@ -76,7 +76,7 @@ public class VacanciesController(
     {
         var result = await recruitGqlClient.GetVacancyByReference.ExecuteAsync(vacancyReference, cancellationToken);
         return result is { Data.Vacancies.Count: 1 }
-            ? TypedResults.Ok(new DataResponse<Vacancy> { Data = GqlVacancyMapper.From(result.Data.Vacancies[0]) })
+            ? TypedResults.Ok(new DataResponse<Vacancy>(GqlVacancyMapper.From(result.Data.Vacancies[0])))
             : TypedResults.NotFound();
     }
 }

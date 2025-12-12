@@ -12,6 +12,8 @@ using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.Recruit.Domain.Vacancy.VacancyStatus;
 
@@ -40,11 +42,8 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var result = new DataResponse<IEnumerable<VacancyIdentifier>>
-        {
-            Data = response.Data!.Vacancies.Select(x => new VacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Live, x.ClosingDate!.Value.UtcDateTime)) 
-        };
-        return TypedResults.Ok(result);
+        var data = response.Data!.Vacancies.Select(x => new VacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Live, x.ClosingDate!.Value.UtcDateTime)); 
+        return TypedResults.Ok(new DataResponse<IEnumerable<VacancyIdentifier>>(data));
     }
     
     [HttpPost, Route("findClosedVacancies")]
@@ -61,11 +60,8 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var result = new DataResponse<IEnumerable<Vacancy>>
-        {
-            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
-        };
-        return TypedResults.Ok(result);
+        var data = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
+        return TypedResults.Ok(new DataResponse<IEnumerable<Vacancy>>(data));
     }
     
     [HttpGet, Route("getProviderVacancies")]
@@ -81,19 +77,16 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
-        
-        var result = new DataResponse<IEnumerable<GetProviderVacanciesItem>>
+
+        var data = response.Data!.Vacancies.Select(x => new GetProviderVacanciesItem
         {
-            Data = response.Data!.Vacancies.Select(x => new GetProviderVacanciesItem
-            {
-                Id = x.Id,
-                VacancyReference = x.VacancyReference,
-                Status = x.Status.FromQueryType(),
-                OwnerType = x.OwnerType.FromQueryType()!.Value,
-                AccountId = x.AccountId
-            })
-        };
-        return TypedResults.Ok(result);
+            Id = x.Id,
+            VacancyReference = x.VacancyReference,
+            Status = x.Status.FromQueryType(),
+            OwnerType = x.OwnerType.FromQueryType()!.Value,
+            AccountId = x.AccountId
+        });
+        return TypedResults.Ok(new DataResponse<IEnumerable<GetProviderVacanciesItem>>(data));
     }
     
     [HttpGet, Route("getProviderOwnedVacanciesForLegalEntity")]
@@ -110,12 +103,9 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
-        
-        var result = new DataResponse<IEnumerable<Vacancy>>
-        {
-            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
-        };
-        return TypedResults.Ok(result);
+
+        var data = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
+        return TypedResults.Ok(new DataResponse<IEnumerable<Vacancy>>(data));
     }
     
     [HttpGet, Route("getProviderOwnedVacanciesInReviewForLegalEntity")]
@@ -132,12 +122,9 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
-        
-        var result = new DataResponse<IEnumerable<Vacancy>>
-        {
-            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
-        };
-        return TypedResults.Ok(result);
+
+        var data = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
+        return TypedResults.Ok(new DataResponse<IEnumerable<Vacancy>>(data));
     }
     
     [HttpGet, Route("getProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityId")]
@@ -154,12 +141,9 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
-        
-        var result = new DataResponse<IEnumerable<Vacancy>>
-        {
-            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
-        };
-        return TypedResults.Ok(result);
+
+        var data = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
+        return TypedResults.Ok(new DataResponse<IEnumerable<Vacancy>>(data));
     }
     
     [HttpGet, Route("getDraftVacanciesCreatedBefore")]
@@ -175,17 +159,14 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
-        
-        var result = new DataResponse<IEnumerable<VacancyIdentifier>>
-        {
-            Data = response.Data!.Vacancies.Select(x => new VacancyIdentifier (
-                x.Id,
-                x.VacancyReference,
-                x.Status.FromQueryType(),
-                x.ClosingDate?.UtcDateTime
-            ))
-        };
-        return TypedResults.Ok(result);
+
+        var data = response.Data!.Vacancies.Select(x => new VacancyIdentifier(
+            x.Id,
+            x.VacancyReference,
+            x.Status.FromQueryType(),
+            x.ClosingDate?.UtcDateTime
+        ));
+        return TypedResults.Ok(new DataResponse<IEnumerable<VacancyIdentifier>>(data));
     }
     
     [HttpGet, Route("getReferredVacanciesSubmittedBefore")]
@@ -202,30 +183,23 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var result = new DataResponse<IEnumerable<VacancyIdentifier>>
-        {
-            Data = response.Data!.Vacancies.Select(x => new VacancyIdentifier (
-                x.Id,
-                x.VacancyReference,
-                x.Status.FromQueryType(),
-                x.ClosingDate?.UtcDateTime
-            ))
-        };
-        return TypedResults.Ok(result);
+        var data = response.Data!.Vacancies.Select(x => new VacancyIdentifier(
+            x.Id,
+            x.VacancyReference,
+            x.Status.FromQueryType(),
+            x.ClosingDate?.UtcDateTime
+        ));
+        return TypedResults.Ok(new DataResponse<IEnumerable<VacancyIdentifier>>(data));
     }
     
     [HttpGet, Route("getVacancyCountForUser")]
     [ProducesResponseType(typeof(DataResponse<int>), StatusCodes.Status200OK)]
     public async Task<IResult> GetVacancyCountForUser(
         [FromQuery, Required] Guid userId,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
     {
-        // TODO: fetch from recruit inner
-        var result = new DataResponse<int>
-        {
-            Data = 0
-        };
-
-        return TypedResults.Ok(result);
+        var data = await recruitApiClient.Get<int>(new GetRequest($"/api/vacancies/count/user/{userId}"));
+        return TypedResults.Ok(new DataResponse<int>(data));
     }
 }
