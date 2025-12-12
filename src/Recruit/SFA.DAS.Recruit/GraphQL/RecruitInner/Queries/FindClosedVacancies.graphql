@@ -2,6 +2,7 @@ query FindClosedVacancies($refs: [Long]) {
     vacancies(
         where: {
             status:  { eq: CLOSED }
+            closedDate: { neq: null }
             vacancyReference:  { in: $refs }
         }
     )

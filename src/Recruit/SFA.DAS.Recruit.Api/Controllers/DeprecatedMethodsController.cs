@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
@@ -25,33 +26,29 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
      * Routes are intentionally completely non-rest like.
      */
     
-    [HttpGet, Route("getVacanciesByStatusAndClosingDate")]
-    [ProducesResponseType(typeof(IEnumerable<VacancyIdentity>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetVacanciesByStatusAndClosingDate(
-        [FromQuery, Required] VacancyStatus status,
-        [FromQuery, Required] DateTime closingDate,
+    [HttpGet, Route("getVacanciesToClose")]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<VacancyIdentifier>>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetVacanciesToClose(
+        [FromQuery, Required] DateTime pointInTime,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         CancellationToken cancellationToken)
     {
-        var response = await recruitGqlClient.GetVacanciesByStatusAndClosingDate.ExecuteAsync(status.ToQueryType(), closingDate, cancellationToken);
+        var response = await recruitGqlClient.GetVacanciesToClose.ExecuteAsync(pointInTime, cancellationToken);
         if (!response.IsSuccessResult())
         {
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var results = response.Data!.Vacancies.Select(x => new VacancyIdentity
+        var result = new DataResponse<IEnumerable<VacancyIdentifier>>
         {
-            Id = x.Id,
-            VacancyReference = x.VacancyReference,
-            ClosingDate = x.ClosingDate?.UtcDateTime,
-            Status = x.Status.FromQueryType(),
-        });
-        return TypedResults.Ok(results);
+            Data = response.Data!.Vacancies.Select(x => new VacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Live, x.ClosingDate!.Value.UtcDateTime)) 
+        };
+        return TypedResults.Ok(result);
     }
     
     [HttpPost, Route("findClosedVacancies")]
-    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<Vacancy>>), StatusCodes.Status200OK)]
     public async Task<IResult> FindClosedVacancies(
         [FromBody, Required] IEnumerable<long> vacancyReferences,
         [FromServices] IRecruitGqlClient recruitGqlClient,
@@ -63,13 +60,16 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
-        
-        var vacancies = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
-        return TypedResults.Ok(vacancies);
+
+        var result = new DataResponse<IEnumerable<Vacancy>>
+        {
+            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
+        };
+        return TypedResults.Ok(result);
     }
     
     [HttpGet, Route("getProviderVacancies")]
-    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<GetProviderVacanciesItem>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetProviderVacancies(
         [FromQuery, Required] int ukprn,
         [FromServices] IRecruitGqlClient recruitGqlClient,
@@ -82,20 +82,22 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             return TypedResults.Problem(response.ToProblemDetails());
         }
         
-        var results = response.Data!.Vacancies.Select(x => new GetProviderVacanciesItem
+        var result = new DataResponse<IEnumerable<GetProviderVacanciesItem>>
         {
-            Id = x.Id,
-            VacancyReference = x.VacancyReference,
-            Status = x.Status.FromQueryType(),
-            OwnerType = x.OwnerType.FromQueryType()!.Value,
-            AccountId = x.AccountId
-        });
-        
-        return TypedResults.Ok(results);
+            Data = response.Data!.Vacancies.Select(x => new GetProviderVacanciesItem
+            {
+                Id = x.Id,
+                VacancyReference = x.VacancyReference,
+                Status = x.Status.FromQueryType(),
+                OwnerType = x.OwnerType.FromQueryType()!.Value,
+                AccountId = x.AccountId
+            })
+        };
+        return TypedResults.Ok(result);
     }
     
     [HttpGet, Route("getProviderOwnedVacanciesForLegalEntity")]
-    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<Vacancy>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetProviderOwnedVacanciesForLegalEntity(
         [FromQuery, Required] int ukprn,
         [FromQuery, Required] long legalEntityId, 
@@ -109,12 +111,15 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             return TypedResults.Problem(response.ToProblemDetails());
         }
         
-        var vacancies = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
-        return TypedResults.Ok(vacancies);
+        var result = new DataResponse<IEnumerable<Vacancy>>
+        {
+            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
+        };
+        return TypedResults.Ok(result);
     }
     
     [HttpGet, Route("getProviderOwnedVacanciesInReviewForLegalEntity")]
-    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<Vacancy>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetProviderOwnedVacanciesInReview(
         [FromQuery, Required] int ukprn,
         [FromQuery, Required] long legalEntityId,
@@ -128,12 +133,15 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             return TypedResults.Problem(response.ToProblemDetails());
         }
         
-        var vacancies = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
-        return TypedResults.Ok(vacancies);
+        var result = new DataResponse<IEnumerable<Vacancy>>
+        {
+            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
+        };
+        return TypedResults.Ok(result);
     }
     
     [HttpGet, Route("getProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityId")]
-    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<Vacancy>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetProviderOwnedVacanciesForEmployerWithoutAccountLegalEntityId(
         [FromQuery, Required] int ukprn,
         [FromQuery, Required] long accountId,
@@ -147,12 +155,15 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             return TypedResults.Problem(response.ToProblemDetails());
         }
         
-        var vacancies = response.Data!.Vacancies.Select(GqlVacancyMapper.From);
-        return TypedResults.Ok(vacancies);
+        var result = new DataResponse<IEnumerable<Vacancy>>
+        {
+            Data = response.Data!.Vacancies.Select(GqlVacancyMapper.From)
+        };
+        return TypedResults.Ok(result);
     }
     
     [HttpGet, Route("getDraftVacanciesCreatedBefore")]
-    [ProducesResponseType(typeof(IEnumerable<VacancyIdentity>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<VacancyIdentifier>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetDraftVacanciesCreatedBefore(
         [FromQuery, Required] DateTime createdDate,
         [FromServices] IRecruitGqlClient recruitGqlClient,
@@ -164,38 +175,57 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
-
-        var results = response.Data!.Vacancies.Select(x => new VacancyIdentity
+        
+        var result = new DataResponse<IEnumerable<VacancyIdentifier>>
         {
-            Id = x.Id,
-            VacancyReference = x.VacancyReference,
-            ClosingDate = x.ClosingDate?.UtcDateTime,
-            Status = x.Status.FromQueryType(),
-        });
-        return TypedResults.Ok(results);
+            Data = response.Data!.Vacancies.Select(x => new VacancyIdentifier (
+                x.Id,
+                x.VacancyReference,
+                x.Status.FromQueryType(),
+                x.ClosingDate?.UtcDateTime
+            ))
+        };
+        return TypedResults.Ok(result);
     }
     
     [HttpGet, Route("getReferredVacanciesSubmittedBefore")]
-    [ProducesResponseType(typeof(IEnumerable<VacancyIdentity>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<VacancyIdentifier>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetReferredVacanciesSubmittedBefore(
-        [FromQuery, Required] DateTime createdDate,
+        [FromQuery, Required] DateTime submittedDate,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         CancellationToken cancellationToken)
     {
-        var response = await recruitGqlClient.GetReferredVacanciesSubmittedBefore.ExecuteAsync(createdDate, cancellationToken);
+        var response = await recruitGqlClient.GetReferredVacanciesSubmittedBefore.ExecuteAsync(submittedDate, cancellationToken);
         if (!response.IsSuccessResult())
         {
             logger.LogError(response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var results = response.Data!.Vacancies.Select(x => new VacancyIdentity
+        var result = new DataResponse<IEnumerable<VacancyIdentifier>>
         {
-            Id = x.Id,
-            VacancyReference = x.VacancyReference,
-            ClosingDate = x.ClosingDate?.UtcDateTime,
-            Status = x.Status.FromQueryType(),
-        });
-        return TypedResults.Ok(results);
+            Data = response.Data!.Vacancies.Select(x => new VacancyIdentifier (
+                x.Id,
+                x.VacancyReference,
+                x.Status.FromQueryType(),
+                x.ClosingDate?.UtcDateTime
+            ))
+        };
+        return TypedResults.Ok(result);
+    }
+    
+    [HttpGet, Route("getVacancyCountForUser")]
+    [ProducesResponseType(typeof(DataResponse<int>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetVacancyCountForUser(
+        [FromQuery, Required] Guid userId,
+        CancellationToken cancellationToken)
+    {
+        // TODO: fetch from recruit inner
+        var result = new DataResponse<int>
+        {
+            Data = 0
+        };
+
+        return TypedResults.Ok(result);
     }
 }

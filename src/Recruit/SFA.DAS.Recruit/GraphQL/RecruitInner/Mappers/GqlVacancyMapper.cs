@@ -57,7 +57,6 @@ public static class GqlVacancyMapper
                     Name = source.ContactName!,
                     Phone = source.ContactPhone!,
                 },
-            CreatedDate = null, // we no longer store this field
             DeletedDate = source.DeletedDate?.UtcDateTime,
             Description = source.Description,
             DisabilityConfident = source.DisabilityConfident,
@@ -135,7 +134,10 @@ public static class GqlVacancyMapper
 
         return source.Status switch
         {
+            // draft vacancy that hasn't progressed to setting this property yet
             VacancyStatus.Draft => null,
+            
+            // field should be set by now, so guesstimate it based on the locations
             _ => employerLocations switch
             {
                 { Count: 1 } => SharedOuterApi.Domain.AvailableWhere.OneLocation,

@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 using SFA.DAS.Recruit.Application.Queries.GetNextVacancyReference;
@@ -54,7 +55,7 @@ public class VacanciesController(
     }
 
     [HttpGet, Route("{vacancyId:guid}")]
-    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetOneById([FromRoute] Guid vacancyId,
         [FromServices] IRecruitGqlClient recruitGqlClient,
@@ -62,12 +63,12 @@ public class VacanciesController(
     {
         var result = await recruitGqlClient.GetVacancyById.ExecuteAsync(vacancyId, cancellationToken);
         return result is { Data.Vacancies.Count: 1 }
-            ? TypedResults.Ok(GqlVacancyMapper.From(result.Data.Vacancies[0]))
+            ? TypedResults.Ok(new DataResponse<Vacancy> { Data = GqlVacancyMapper.From(result.Data.Vacancies[0]) })
             : TypedResults.NotFound();
     }
     
     [HttpGet, Route("/by/ref/{vacancyReference:long}")]
-    [ProducesResponseType(typeof(Vacancy), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetOneByReference([FromRoute] long vacancyReference,
         [FromServices] IRecruitGqlClient recruitGqlClient,
@@ -75,7 +76,7 @@ public class VacanciesController(
     {
         var result = await recruitGqlClient.GetVacancyByReference.ExecuteAsync(vacancyReference, cancellationToken);
         return result is { Data.Vacancies.Count: 1 }
-            ? TypedResults.Ok(GqlVacancyMapper.From(result.Data.Vacancies[0]))
+            ? TypedResults.Ok(new DataResponse<Vacancy> { Data = GqlVacancyMapper.From(result.Data.Vacancies[0]) })
             : TypedResults.NotFound();
     }
 }
