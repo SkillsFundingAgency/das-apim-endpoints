@@ -19,20 +19,20 @@ using SFA.DAS.EmployerFeedback.Application.Queries.GetEmailNudgeAccountsBatch;
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
 {
     [TestFixture]
-    public class AccountControllerTests
+    public class AccountsControllerTests
     {
         private Mock<IBackgroundTaskQueue> _backgroundTaskQueueMock;
-        private Mock<ILogger<AccountController>> _loggerMock;
+        private Mock<ILogger<AccountsController>> _loggerMock;
         private Mock<IMediator> _mediatorMock;
-        private AccountController _controller;
+        private AccountsController _controller;
 
         [SetUp]
         public void SetUp()
         {
             _backgroundTaskQueueMock = new Mock<IBackgroundTaskQueue>();
-            _loggerMock = new Mock<ILogger<AccountController>>();
+            _loggerMock = new Mock<ILogger<AccountsController>>();
             _mediatorMock = new Mock<IMediator>();
-            _controller = new AccountController(_loggerMock.Object, _backgroundTaskQueueMock.Object, _mediatorMock.Object);
+            _controller = new AccountsController(_loggerMock.Object, _backgroundTaskQueueMock.Object, _mediatorMock.Object);
         }
 
         [Test]

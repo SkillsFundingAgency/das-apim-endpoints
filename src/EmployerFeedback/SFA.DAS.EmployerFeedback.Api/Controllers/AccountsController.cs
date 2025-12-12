@@ -14,14 +14,14 @@ namespace SFA.DAS.EmployerFeedback.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class AccountController : ControllerBase
+    public class AccountsController : ControllerBase
     {
-        private readonly ILogger<AccountController> _logger;
+        private readonly ILogger<AccountsController> _logger;
         private readonly IBackgroundTaskQueue _backgroundTaskQueue;
         private readonly IMediator _mediator;
 
-        public AccountController(
-            ILogger<AccountController> logger,
+        public AccountsController(
+            ILogger<AccountsController> logger,
             IBackgroundTaskQueue backgroundTaskQueue,
             IMediator mediator)
         {

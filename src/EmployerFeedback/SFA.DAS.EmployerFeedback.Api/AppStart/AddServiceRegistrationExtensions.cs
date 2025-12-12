@@ -2,11 +2,13 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
+using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.EmployerFeedback.Api.AppStart
@@ -31,6 +33,8 @@ namespace SFA.DAS.EmployerFeedback.Api.AppStart
 
             services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
+            services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IEncodingService, EncodingService>();
         }
     }
 }
