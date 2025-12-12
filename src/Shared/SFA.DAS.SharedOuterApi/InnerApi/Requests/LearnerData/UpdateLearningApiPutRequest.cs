@@ -32,6 +32,7 @@ public class LearningUpdateDetails
     public string LastName { get; set; }
     public string? EmailAddress { get; set; }
     public DateTime? CompletionDate { get; set; }
+    public DateTime DateOfBirth { get; set; }
 }
 
 public class OnProgrammeDetails

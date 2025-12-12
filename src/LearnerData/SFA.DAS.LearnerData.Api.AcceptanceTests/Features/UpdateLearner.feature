@@ -62,3 +62,9 @@ Scenario: English and Maths Withdrawal
 	And the MathsAndEnglishWithdrawal passed is different to the value in the learners domain
 	When the learner is updated
 	Then MathsAndEnglishWithdrawal update requests are sent to the earnings domain
+
+Scenario: Date of Birth updated
+	Given there is a learner
+	And the DateOfBirthChanged passed is different to the value in the learners domain
+	When the learner is updated
+	Then a DateOfBirthChanged update request is sent to the earnings domain
