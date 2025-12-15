@@ -1,7 +1,7 @@
-﻿using SFA.DAS.DigitalCertificates.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.DigitalCertificates.Models;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostCreateOrUpdateUserRequest;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
@@ -25,7 +25,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             public string PhoneNumber { get; set; }
 
             public required List<Name> Names { get; set; }
-            public DateTime DateOfBirth { get; set; }
+            public DateTime? DateOfBirth { get; set; }
         }
     }
 }

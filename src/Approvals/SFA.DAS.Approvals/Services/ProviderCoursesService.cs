@@ -79,12 +79,12 @@ public class ProviderStandardsService(
 
         if (cacheResult != null)
         {
-            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
+            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
         }
-
+        
         var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
         await cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
-        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
+        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
     }
 
     private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
@@ -102,7 +102,7 @@ public class ProviderStandardsService(
             }
 
             return providerStandards.Select(
-                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name).ToList();
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel, x.Level)).OrderBy(x => x.Name).ToList();
         }
         catch (Exception e)
         {

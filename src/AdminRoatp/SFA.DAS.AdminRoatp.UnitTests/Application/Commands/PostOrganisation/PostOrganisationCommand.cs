@@ -1,7 +1,9 @@
-﻿using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
+﻿using FluentAssertions;
+using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
+using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.Models;
+namespace SFA.DAS.AdminRoatp.UnitTests.Application.Commands.PostOrganisation;
 public class PostOrganisationRequestTests
 {
     [Test, MoqAutoData]

@@ -34,6 +34,7 @@ public class UpdateLearnerApiPutResponse
         BreakInLearningStarted = 8,
         BreakInLearningRemoved = 9,
         MathsAndEnglishWithdrawal = 10,
-        BreaksInLearningUpdated = 11
+        BreaksInLearningUpdated = 11,
+        DateOfBirthChanged = 12
     }
 }
