@@ -28,6 +28,7 @@ public class GetOrganisationQueryHandlerTests
         GetOrganisationQueryResult? result = await sut.Handle(request, CancellationToken.None);
 
         result.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
+        result.RemovedDate.Should().BeNull();
     }
 
     [Test, MoqAutoData]
@@ -63,82 +64,15 @@ public class GetOrganisationQueryHandlerTests
         [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
         GetOrganisationQueryHandler sut,
         GetOrganisationQuery request,
-        OrganisationResponse apiResponse,
-        DateTime removedDate)
-    {
-        apiResponse.Status = OrganisationStatus.Removed;
-        apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
-
-        GetOrganisationStatusHistoryResponse historyResponse = new([
-            new StatusHistoryModel(OrganisationStatus.Removed, removedDate.AddDays(-1)),
-            new StatusHistoryModel(OrganisationStatus.Removed, removedDate)
-        ]);
-        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationStatusHistoryResponse>(It.Is<GetOrganisationStatusHistoryRequest>(r => r.Ukprn == request.ukprn))).ReturnsAsync(new ApiResponse<GetOrganisationStatusHistoryResponse>(historyResponse, HttpStatusCode.OK, ""));
-
-        GetOrganisationQueryResult? result = await sut.Handle(request, CancellationToken.None);
-
-        result.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        result!.RemovedDate.Should().Be(removedDate);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_OrganisationHasRemovedStatus_WithNoMatchingHistory_ReturnsDataWithNoRemovedDate(
-        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
-        GetOrganisationQueryHandler sut,
-        GetOrganisationQuery request,
         OrganisationResponse apiResponse)
     {
         apiResponse.Status = OrganisationStatus.Removed;
         apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
 
-        GetOrganisationStatusHistoryResponse historyResponse = new([
-            new StatusHistoryModel(OrganisationStatus.Active, DateTime.UtcNow),
-            new StatusHistoryModel(OrganisationStatus.OnBoarding, DateTime.Today)
-        ]);
-        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationStatusHistoryResponse>(It.Is<GetOrganisationStatusHistoryRequest>(r => r.Ukprn == request.ukprn))).ReturnsAsync(new ApiResponse<GetOrganisationStatusHistoryResponse>(historyResponse, HttpStatusCode.OK, ""));
-
         GetOrganisationQueryResult? result = await sut.Handle(request, CancellationToken.None);
 
         result.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        result!.RemovedDate.Should().BeNull();
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_OrganisationHasRemovedStatus_WithNoStatusHistory_ReturnsDataWithNoRemovedDate(
-        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
-        GetOrganisationQueryHandler sut,
-        GetOrganisationQuery request,
-        OrganisationResponse apiResponse)
-    {
-        apiResponse.Status = OrganisationStatus.Removed;
-        apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
-
-        GetOrganisationStatusHistoryResponse historyResponse = new([]);
-        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationStatusHistoryResponse>(It.Is<GetOrganisationStatusHistoryRequest>(r => r.Ukprn == request.ukprn))).ReturnsAsync(new ApiResponse<GetOrganisationStatusHistoryResponse>(historyResponse, HttpStatusCode.OK, ""));
-
-        GetOrganisationQueryResult? result = await sut.Handle(request, CancellationToken.None);
-
-        result.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        result!.RemovedDate.Should().BeNull();
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_OrganisationHasRemovedStatus_StatusHistoryHasFailureResponse_ReturnsDataWithNoRemovedDate(
-        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
-        GetOrganisationQueryHandler sut,
-        GetOrganisationQuery request,
-        OrganisationResponse apiResponse)
-    {
-        apiResponse.Status = OrganisationStatus.Removed;
-        apiClientMock.Setup(a => a.GetWithResponseCode<OrganisationResponse>(It.Is<GetOrganisationRequest>(r => r.GetUrl.Equals(new GetOrganisationRequest(request.ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<OrganisationResponse>(apiResponse, HttpStatusCode.OK, ""));
-
-        GetOrganisationStatusHistoryResponse historyResponse = new([]);
-        apiClientMock.Setup(a => a.GetWithResponseCode<GetOrganisationStatusHistoryResponse>(It.Is<GetOrganisationStatusHistoryRequest>(r => r.Ukprn == request.ukprn))).ReturnsAsync(new ApiResponse<GetOrganisationStatusHistoryResponse>(historyResponse, HttpStatusCode.InternalServerError, ""));
-
-        GetOrganisationQueryResult? result = await sut.Handle(request, CancellationToken.None);
-
-        result.Should().BeEquivalentTo(apiResponse, options => options.ExcludingMissingMembers());
-        result!.RemovedDate.Should().BeNull();
+        result!.RemovedDate.Should().Be(apiResponse.StatusDate);
     }
 }
 

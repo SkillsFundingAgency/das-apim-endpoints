@@ -32,12 +32,15 @@ public class LearningUpdateDetails
     public string LastName { get; set; }
     public string? EmailAddress { get; set; }
     public DateTime? CompletionDate { get; set; }
+    public DateTime DateOfBirth { get; set; }
 }
 
 public class OnProgrammeDetails
 {
     public DateTime ExpectedEndDate { get; set; }
     public List<Cost> Costs { get; set; }
+    public DateTime? PauseDate { get; set; }
+    public List<BreakInLearning> BreaksInLearning { get; set; }
 }
 
 public class Cost
@@ -54,6 +57,7 @@ public class MathsAndEnglishDetails
     public DateTime PlannedEndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     public decimal Amount { get; set; }
 }
@@ -67,4 +71,11 @@ public class LearningSupportUpdatedDetails
 public class Delivery
 {
     public DateTime? WithdrawalDate { get; set; }
+}
+
+public class BreakInLearning
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public DateTime PriorPeriodExpectedEndDate { get; set; }
 }

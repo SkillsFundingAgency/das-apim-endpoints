@@ -34,17 +34,17 @@ public class Provider
 
     /// <summary>
     /// Provider Type
-    /// `0 -> Main`
-    /// `1 -> Employer`
-    /// `2 -> Supporting`
+    /// `1 -> Main`
+    /// `2 -> Employer`
+    /// `3 -> Supporting`
     /// </summary>
     public int ProviderTypeId { get; set; }
 
     /// <summary>
     /// Provider Status
-    /// `0 -> Active`
-    /// `1 -> ActiveButNotTakingOnApprentices`
-    /// `2 -> OnBoarding`
+    /// `1 -> Active`
+    /// `2 -> ActiveButNotTakingOnApprentices`
+    /// `3 -> OnBoarding`
     /// </summary>
     public int StatusId { get; set; }
 

@@ -19,11 +19,12 @@ public class CreateLearnerCommandHandler(
 
     private LearnerDataEvent MapToEvent(CreateLearnerCommand command)
     {
-        var cost = command.Request.Delivery.OnProgramme.First().MapCosts().First();
+        var onProgramme = command.Request.Delivery.OnProgramme.First();
+        var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
 
         return new LearnerDataEvent
         {
-            ULN = long.Parse(command.Request.Learner.Uln),
+            ULN = command.Request.Learner.Uln,
             UKPRN = command.Ukprn,
             FirstName = command.Request.Learner.FirstName,
             LastName = command.Request.Learner.LastName,
@@ -36,7 +37,7 @@ public class CreateLearnerCommandHandler(
             TrainingPrice = cost.TrainingPrice,
             AgreementId = command.Request.Delivery.OnProgramme.First().AgreementId,
             IsFlexiJob = command.Request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
-            StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode!.Value,
+            StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = command.Request.ConsumerReference

@@ -28,6 +28,7 @@ Scenario: LearningSupport updated
 
 Scenario: Prices updated
 	Given there is a learner
+	And the funding band maximum for that learner is set
 	And the Prices passed is different to the value in the learners domain
 	When the learner is updated
 	Then a Prices update request is sent to the earnings domain
@@ -37,3 +38,33 @@ Scenario: Withdrawal
 	And the Withdrawal passed is different to the value in the learners domain
 	When the learner is updated
 	Then a Withdrawal update request is sent to the earnings domain
+
+Scenario: Start Break in Learning
+	Given there is a learner
+	And the BreakInLearningStarted passed is different to the value in the learners domain
+	When the learner is updated
+	Then a BreakInLearningStarted update request is sent to the earnings domain
+
+Scenario: Remove Break in Learning
+	Given there is a learner
+	And the BreakInLearningRemoved passed is different to the value in the learners domain
+	When the learner is updated
+	Then a BreakInLearningRemoved update request is sent to the earnings domain
+
+Scenario: Update Breaks in Learning
+	Given there is a learner
+	And the BreaksInLearningUpdated passed is different to the value in the learners domain
+	When the learner is updated
+	Then a BreaksInLearningUpdated update request is sent to the earnings domain
+	
+Scenario: English and Maths Withdrawal
+	Given there is a learner
+	And the MathsAndEnglishWithdrawal passed is different to the value in the learners domain
+	When the learner is updated
+	Then MathsAndEnglishWithdrawal update requests are sent to the earnings domain
+
+Scenario: Date of Birth updated
+	Given there is a learner
+	And the DateOfBirthChanged passed is different to the value in the learners domain
+	When the learner is updated
+	Then a DateOfBirthChanged update request is sent to the earnings domain

@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.VacanciesManage.Configuration;
 
 namespace SFA.DAS.VacanciesManage.Api.AppStart
 {
@@ -24,6 +23,8 @@ namespace SFA.DAS.VacanciesManage.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
+            services.Configure<RecruitApiV2Configuration>(configuration.GetSection("RecruitAltApiConfiguration"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiV2Configuration>>().Value);
         }
     }
 }
