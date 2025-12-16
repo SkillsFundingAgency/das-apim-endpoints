@@ -1,9 +1,9 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreateProviderCourse;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -21,7 +21,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpPost]
         [Route("providers/{ukprn}/courses/{larsCode}/create")]
-        public async Task<IActionResult> CreateProviderCourse([FromRoute] int ukprn, [FromRoute] int larsCode, [FromBody] CreateProviderCourseCommand command)
+        public async Task<IActionResult> CreateProviderCourse([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] CreateProviderCourseCommand command)
         {
             _logger.LogInformation("Outer API: Request received to create provider course: {larscode} for ukprn: {ukprn} by user: {userId}", larsCode, ukprn, command.UserId);
 

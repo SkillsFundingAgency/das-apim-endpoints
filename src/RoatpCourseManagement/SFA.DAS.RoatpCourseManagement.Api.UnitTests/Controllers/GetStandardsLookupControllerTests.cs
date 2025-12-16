@@ -26,7 +26,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         {
             var mediatorMock = new Mock<IMediator>();
             var getAllStandardsResponse = new GetStandardsLookupResponse
-            { Standards = new List<GetStandardResponse> { new GetStandardResponse { LarsCode = 235 } } };
+            { Standards = new List<GetStandardResponse> { new GetStandardResponse { LarsCode = "235" } } };
 
             var apiResponse = new ApiResponse<GetStandardsLookupResponse>(getAllStandardsResponse, HttpStatusCode.OK, "");
 
@@ -79,7 +79,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         public async Task GetStandardInformation_InvokesHandler(
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] StandardsLookupGetController sut,
-            int larsCode)
+            string larsCode)
         {
             await sut.GetStandardInformation(larsCode);
 
