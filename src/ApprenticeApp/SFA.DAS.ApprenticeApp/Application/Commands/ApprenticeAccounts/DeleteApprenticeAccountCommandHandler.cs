@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests;
+using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
 {
-    public class DeleteApprenticeAccountCommandHandler : IRequestHandler<DeleteApprenticeAccountCommand, Unit>
+    public class DeleteApprenticeAccountCommandHandler : IRequestHandler<DeleteApprenticeAccountCommand, DeleteApprenticeAccountResponse>
     {        
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _apprenticeAccountsApiClient;        
 
@@ -18,11 +19,14 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
             _apprenticeAccountsApiClient = apprenticeAccountsApiClient;
         }
 
-        public async Task<Unit> Handle(DeleteApprenticeAccountCommand request, CancellationToken cancellationToken)
+        public async Task<DeleteApprenticeAccountResponse> Handle(DeleteApprenticeAccountCommand request, CancellationToken cancellationToken)
         {
-            await _apprenticeAccountsApiClient.Delete(new DeleteApprenticeAccountRequest(request.ApprenticeId));
-            return Unit.Value;
+            var result = await _apprenticeAccountsApiClient
+                .DeleteWithResponseCode<DeleteApprenticeAccountResponse>(
+                new DeleteApprenticeAccountRequest(request.ApprenticeId),
+                includeResponse: true);
 
+            return result.Body;
         }
     }
 }
