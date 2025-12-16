@@ -2,9 +2,11 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using System.Net;
 using System.Net.Http.Headers;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -19,6 +21,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string ChangesKey = "Changes";
     private const string LearnerKey = "LearnerKey";
     private const string UkprnKey = "UkprnKey";
+    private const string FundingBandMaximumKey = "FundingBandMaximumKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -66,11 +69,55 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
+    [Then(@"(.*) update requests are sent to the earnings domain")]
+    public void ThenRequestsAreSentToTheEarningsDomain(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
+    {
+        var requestUrl = GetEarningsRequestUrl(updateRequestType);
+        var requests = testContext.EarningsApi.MockServer.LogEntries;
+
+        requests.Should().Contain(request => request.RequestMessage.Url.Contains(requestUrl),
+            $"Expected at least one request to {requestUrl} but did not find one.");
+    }
+
     [Then(@"no changes are made to the learner")]
     public void ThenNoChangesAreMadeToTheLearner()
     {
         var requests = testContext.EarningsApi.MockServer.LogEntries;
         requests.Should().BeEmpty("Expected no requests to the earnings domain, but found some.");
+    }
+
+    [Given("the funding band maximum for that learner is set")]
+    public void GivenTheFundingBandMaximumForThatApprenticeshipIsSet()
+    {
+        SetupFundingBandMaximum();
+    }
+
+    private void SetupFundingBandMaximum()
+    {
+        var fundingBandMaximum = _fixture.Create<int>();
+        scenarioContext.Set(fundingBandMaximum, FundingBandMaximumKey);
+
+        var response = new StandardDetailResponse
+        {
+            ApprenticeshipFunding =
+            [
+                new ApprenticeshipFunding
+                {
+                    EffectiveFrom = DateTime.MinValue,
+                    EffectiveTo = DateTime.MaxValue,
+                    MaxEmployerLevyCap = fundingBandMaximum
+                }
+            ]
+        };
+
+        testContext.CoursesApi.MockServer
+            .Given(
+                Request
+                .Create()
+                .WithPath($"/api/courses/standards/*"))
+            .RespondWith(Response.Create()
+                .WithStatusCode(HttpStatusCode.OK)
+                .WithBodyAsJson(response));
     }
 
     private void ConfigureLearnerInnerApi()
@@ -140,6 +187,12 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
                 return $"/apprenticeship/{learnerKey.ToString()}/pause";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
+                return $"/apprenticeship/{learnerKey.ToString()}/breaksInLearning";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
+                return $"/apprenticeship/{learnerKey}/mathsAndEnglish/withdraw";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged:
+                return $"/apprenticeship/{learnerKey}/dateOfBirth";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

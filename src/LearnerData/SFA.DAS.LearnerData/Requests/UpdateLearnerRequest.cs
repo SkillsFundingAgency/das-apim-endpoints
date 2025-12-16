@@ -15,6 +15,7 @@ public class LearnerRequestDetails
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? Email { get; set; }
+    public DateTime Dob { get; set; }
 }
 
 public class UpdateLearnerRequestDeliveryDetails
@@ -27,12 +28,15 @@ public class UpdateLearnerRequestDeliveryDetails
 
 public class OnProgrammeRequestDetails
 {
+    public int StandardCode { get; set; }
+    public string AgreementId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<CostDetails>? Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
+    public DateTime? ActualEndDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 
@@ -54,6 +58,7 @@ public class MathsAndEnglish
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
