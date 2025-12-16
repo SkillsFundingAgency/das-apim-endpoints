@@ -19,7 +19,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.GetMyApprenticeshipByUln
         }
 
         public async Task<GetMyApprenticeshipByUlnQueryResult> Handle
-            (GetMyApprenticeshipByUlnQuery request, CancellationToken cancellation)
+            (GetMyApprenticeshipByUlnQuery request, CancellationToken cancellationToken)
         {
             var myApprenticeship = await _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipByUlnRequest(request.Uln));            
 
