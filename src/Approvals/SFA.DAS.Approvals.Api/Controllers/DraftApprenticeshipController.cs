@@ -404,29 +404,22 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
 
         [HttpPost]
-        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/setReference")]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/SetReference")]
+        
         public async Task<IActionResult> SetReference(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] DraftApprenticeshipSetReferenceRequest request)
         {
-            try
+            var command = new DraftApprenticeshipSetReferenceCommand
             {
-                var command = new DraftApprenticeshipSetReferenceCommand
-                {
-                    CohortId = cohortId,
-                    DraftApprenticeshipId = draftApprenticeshipId,
-                    Reference = request.Reference,
-                    Party = (Application.Shared.Enums.Party)request.Party,
-                    ProviderId = providerId
-                };
+                CohortId = cohortId,
+                DraftApprenticeshipId = draftApprenticeshipId,
+                Reference = request.Reference,
+                Party = (Application.Shared.Enums.Party)request.Party,
+                ProviderId = providerId
+            };
 
-                var response = await mediator.Send(command);
+            var response = await mediator.Send(command);
 
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error in set reference for cohort {CohortId} draft apprenticeship {DraftApprenticeshipId}", cohortId, draftApprenticeshipId);
-                return BadRequest();
-            }
+            return Ok(response);
         }
     }
 }
