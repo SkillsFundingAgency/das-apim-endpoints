@@ -67,7 +67,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
             : TypedResults.NotFound();
     }
     
-    [HttpGet, Route("/by/ref/{vacancyReference:long}")]
+    [HttpGet, Route("by/ref/{vacancyReference:long}")]
     [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IResult> GetOneByReference([FromRoute] long vacancyReference,

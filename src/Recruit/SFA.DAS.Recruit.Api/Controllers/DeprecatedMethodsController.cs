@@ -199,7 +199,7 @@ public class DeprecatedMethodsController(ILogger<DeprecatedMethodsController> lo
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
     {
-        var data = await recruitApiClient.Get<int>(new GetRequest($"/api/vacancies/count/user/{userId}"));
-        return TypedResults.Ok(new DataResponse<int>(data));
+        var response = await recruitApiClient.Get<DataResponse<int>>(new GetRequest($"/api/vacancies/count/user/{userId}"));
+        return TypedResults.Ok(response);
     }
 }
