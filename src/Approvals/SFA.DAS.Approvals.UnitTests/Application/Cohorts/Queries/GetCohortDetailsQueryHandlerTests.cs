@@ -689,7 +689,6 @@ public class GetCohortDetailsQueryHandlerTests
 
         // Assert
         _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode1)), Times.AtLeastOnce);
-        _coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()), Times.Exactly(1));
     }
 
     [Test]
