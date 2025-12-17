@@ -1,7 +1,10 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.Reference;
+using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -18,6 +21,7 @@ public class DraftApprenticeshipSetReferenceCommandHandlerTests
     private DraftApprenticeshipSetReferenceCommand command;
     private Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient;
     private DraftApprenticeshipSetReferenceCommandHandler _handler;
+    private ServiceParameters serviceParameters; 
 
     [SetUp]
     public void Setup()
@@ -26,9 +30,9 @@ public class DraftApprenticeshipSetReferenceCommandHandlerTests
         _request = fixture.Create<DraftApprenticeshipSetReferenceRequest>();
         command = fixture.Create<DraftApprenticeshipSetReferenceCommand>();
         apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-        _handler = new DraftApprenticeshipSetReferenceCommandHandler(apiClient.Object);
+        serviceParameters = new ServiceParameters(Party.Provider, 1100090);
+        _handler = new DraftApprenticeshipSetReferenceCommandHandler(apiClient.Object, serviceParameters);
     }
-
 
     [Test]
     public async Task Then_The_Api_Is_Called_With_A_Valid_Request()
@@ -40,13 +44,13 @@ public class DraftApprenticeshipSetReferenceCommandHandlerTests
 
         var actual = await _handler.Handle(command, CancellationToken.None);
 
-        Assert.That(actual, Is.Not.Null);
+        actual.Should().NotBeNull();
 
         apiClient.Verify(x => x.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(It.Is<DraftApprenticeshipSetReferenceRequest>
             (r => r.DraftApprenticeshipId == command.DraftApprenticeshipId &&
              r.CohortId == command.CohortId &&
-             ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).CohortId == command.CohortId &&
-             ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).Reference == command.Reference
-        ), true));
+             ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).Party == serviceParameters.CallingParty &&
+             ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).Reference == command.Reference)
+            , true));
     }
 }

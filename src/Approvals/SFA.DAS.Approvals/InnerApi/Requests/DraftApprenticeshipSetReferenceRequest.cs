@@ -24,7 +24,6 @@ public class DraftApprenticeshipSetReferenceRequest : IPostApiRequest
     {
         public string Reference { get; set; }
         public Party Party { get; set; }
-        public long CohortId { get; set; }
     }
 }
 

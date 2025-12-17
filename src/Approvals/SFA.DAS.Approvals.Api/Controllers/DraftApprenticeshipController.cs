@@ -404,7 +404,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
 
 
         [HttpPost]
-        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/SetReference")]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/reference")]
         
         public async Task<IActionResult> SetReference(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] DraftApprenticeshipSetReferenceRequest request)
         {
@@ -413,7 +413,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 CohortId = cohortId,
                 DraftApprenticeshipId = draftApprenticeshipId,
                 Reference = request.Reference,
-                Party = (Application.Shared.Enums.Party)request.Party,
                 ProviderId = providerId
             };
 

@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.Reference;
 
 public class DraftApprenticeshipSetReferenceCommandHandler(
-        ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient)
+        ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
+        ServiceParameters serviceParameters)
         : IRequestHandler<DraftApprenticeshipSetReferenceCommand, DraftApprenticeshipSetReferenceResponse>
 {
     public async Task<DraftApprenticeshipSetReferenceResponse> Handle(DraftApprenticeshipSetReferenceCommand request, CancellationToken cancellationToken)
@@ -20,8 +21,7 @@ public class DraftApprenticeshipSetReferenceCommandHandler(
         setRequest.Data = new DraftApprenticeshipSetReferenceRequest.Body()
         {
             Reference = request.Reference,
-            Party = request.Party,
-            CohortId = request.CohortId
+            Party = serviceParameters.CallingParty,
         };
 
         var response = await apiClient.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(setRequest, true);

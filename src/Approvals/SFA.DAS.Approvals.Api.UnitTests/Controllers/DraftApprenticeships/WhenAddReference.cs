@@ -19,7 +19,6 @@ public class WhenAddReference
     private DraftApprenticeshipController _controller;
     private Mock<IMediator> _mediator;
     private DraftApprenticeshipSetReferenceRequest _request;
-    private DraftApprenticeshipSetReferenceCommand _command;
     private Fixture _fixture;
 
     [SetUp]
@@ -27,7 +26,6 @@ public class WhenAddReference
     {
         _fixture = new Fixture();
         _request = _fixture.Create<DraftApprenticeshipSetReferenceRequest>();
-        _command = _fixture.Create<DraftApprenticeshipSetReferenceCommand>();
         _mediator = new Mock<IMediator>();
         _controller = new DraftApprenticeshipController(Mock.Of<ILogger<DraftApprenticeshipController>>(), _mediator.Object);
     }
@@ -39,7 +37,6 @@ public class WhenAddReference
         var draftApprenticeshipId = _fixture.Create<long>();
         var email = _fixture.Create<string>();
         var providerId = _fixture.Create<long>();
-
 
         var response = new ApiResponse<DraftApprenticeshipSetReferenceResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
 

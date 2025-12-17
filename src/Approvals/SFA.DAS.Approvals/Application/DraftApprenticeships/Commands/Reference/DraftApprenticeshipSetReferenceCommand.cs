@@ -9,6 +9,5 @@ public class DraftApprenticeshipSetReferenceCommand: IRequest<DraftApprenticeshi
     public long CohortId { get; set; }
     public long DraftApprenticeshipId { get; set; }
     public string Reference { get; set; }
-    public Party Party { get; set; }
     public long ProviderId { get; set; }
 }
