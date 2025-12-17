@@ -44,6 +44,7 @@ public static class GqlVacancyMapper
             ApplicationUrl = source.ApplicationUrl,
             ApprenticeshipType = NullOrEnum<SharedOuterApi.Domain.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
             ApprovedDate = source.ApprovedDate?.UtcDateTime,
+            CreatedDate = source.CreatedDate?.UtcDateTime,
             ClosedDate = source.ClosedDate?.UtcDateTime,
             ClosingDate = source.ClosingDate?.UtcDateTime,
             ClosureReason = NullOrEnum<Domain.Vacancy.ClosureReason>(source.ClosureReason?.ToString()),
