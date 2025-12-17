@@ -7,6 +7,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -46,9 +47,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             providerStandardsService.Setup(x => x.GetStandardsData(provider.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
+            var standardsData = providerStandardsData.Standards.Select(x =>
+                    new GetEditApprenticeshipCourseQueryResult.Standard
+                    { CourseCode = x.CourseCode, Name = x.Name });
+
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Standards.ToList().Should().BeEquivalentTo(providerStandardsData.Standards.ToList());
+            result.Standards.ToList().Should().BeEquivalentTo(standardsData);
         }
 
         [Test, MoqAutoData]
