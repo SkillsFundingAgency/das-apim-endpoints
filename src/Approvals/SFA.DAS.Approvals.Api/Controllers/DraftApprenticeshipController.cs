@@ -376,32 +376,21 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpPost]
-        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/add/email")]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/email")]
         public async Task<IActionResult> AddEmail(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] AddDraftApprenticeEmailRequest request)
         {
-            try
+            var command = new DraftApprenticeshipAddEmailCommand
             {
-                var command = new DraftApprenticeshipAddEmailCommand
-                {
-                    CohortId = (long)request.CohortId,
-                    DraftApprenticeshipId = draftApprenticeshipId,
-                    Email = request.Email,
-                    EndDate = request.EndDate,
-                    StartDate = request.StartDate,
-                    ProviderId = providerId
-                };
+                CohortId = cohortId,
+                DraftApprenticeshipId = draftApprenticeshipId,
+                Email = request.Email,
+                ProviderId = providerId
+            };
 
-                var response = await mediator.Send(command);
+            var response = await mediator.Send(command);
 
-                return Ok(response);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error in add email for cohort {CohortId} draft apprenticeship {DraftApprenticeshipId}", cohortId, draftApprenticeshipId);
-                return BadRequest();
-            }
+            return Ok(response);
         }
-
 
         [HttpPost]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/reference")]

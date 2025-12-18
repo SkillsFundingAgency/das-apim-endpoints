@@ -45,9 +45,7 @@ public class DraftApprenticeshipAddEmailCommandHandlerTests
         apiClient.Verify(x => x.PostWithResponseCode<DraftApprenticeshipAddEmailResponse>(It.Is<DraftApprenticeshipAddEmailRequest>
             (r => r.DraftApprenticeshipId == command.DraftApprenticeshipId &&
              r.CohortId == command.CohortId &&
-             ((DraftApprenticeshipAddEmailRequest.Body)r.Data).CohortId == command.CohortId &&
              ((DraftApprenticeshipAddEmailRequest.Body)r.Data).Email == command.Email
         ), true));
     }
 }
-
