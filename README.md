@@ -18,7 +18,6 @@ das-apim-endpoints covers the outer apis that reside within the APIM gateway. Al
 The Find Apprenticeship Training outer api relies on the following inner apis:
 
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
 * [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
 
@@ -282,54 +281,7 @@ Data: {
 
 Starting the API will then show the swagger definition with the available operations. This outer API is to be used as a resource for external subscribers to ESFA services, to get information about Endpoint Assessment Organisations and the courses that they can assess. 
 
-### Early Connect
 
-The Early Connect outer api relies on the following inner api:
-
-* [das-earlyconnect-api](https://github.com/SkillsFundingAgency/das-earlyconnect-api)
-
-You are able to run the API by doing the following
-
-* * In your Azure Storage Account, create a table called Configuration and add the following. Note that the identifier is not required for local dev.
-```
-ParitionKey: LOCAL
-RowKey: SFA.DAS.EarlyConnect.OuterApi_1.0
-Data: {
-  "EarlyConnectApiConfiguration": {
-    "url": "https://localhost:5104/",
-    "identifier": "https://**********.onmicrosoft.com/*********"
-  },
-  "LepsNeApiConfiguration": {
-    "url": "https://crmgen-web.azurewebsites.net/api/external/",
-    "identifier": "https://login.microsoftonline.com/*****************/oauth2/v2.0/token",
-    "Scope": "api://**************/.default",
-    "ClientId": "test",
-    "ClientSecret": "test"
-  },
-  "LepsLaApiConfiguration": {
-    "url": "https://Test/",
-    "KeyVaultIdentifier": "https://************.vault.azure.net/keys/lansignin",
-    "CertificateName": "dfeData-uat.lancashire.gov.uk"
-  },
-  "LepsLoApiConfiguration": {
-    "Url": "https://prod-**.westeurope.logic.azure.com:***/",
-    "ApiVersion": "2016-06-01",
-    "SignedPermissions": "%2Ftriggers%2Fmanual%2Frun",
-    "SignedVersion": "1.0",
-    "Signature": "xyz",
-    "ApiKey": "abc"
-  },
-  "AzureAd": {
-    "tenant": "**********.onmicrosoft.com",
-    "identifier": "https://***********.onmicrosoft.com/***************"
-  },
-  "Features": {
-    "NorthEastDataSharing": false,
-    "LondonDataSharing": false,
-    "LancashireDataSharing": false
-  }
-}
-```
 
 ### Forecasting
 
@@ -401,7 +353,6 @@ Starting the API will then show the swagger definition with the available operat
 The Manage Apprenticeships outer api relies on the following inner apis:
 
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 
 You are able to run the API by doing the following:
 
@@ -414,11 +365,7 @@ Data: {
     "CoursesApiConfiguration": {
         "url":"https://localhost:5001/",
         "identifier":"https://**********.onmicrosoft.com/*******"
-    },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
-    },
+    }
 }
 ```
 * Start the api project ```SFA.DAS.ManageApprenticeships.Api```
@@ -509,7 +456,6 @@ Starting the API will then show the swagger definition with the available operat
 
 The Employer Finance outer api relies on the following inner apis:
 
-* [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
 * [das-apprentice-accounts-api](https://github.com/SkillsFundingAgency/
 das-apprentice-accounts-api)
 * [das-roatp-api](https://github.com/SkillsFundingAgency/das-roatp-api)
@@ -527,10 +473,6 @@ ParitionKey: LOCAL
 RowKey: SFA.DAS.EmployerFinance.OuterApi_1.0
 Data: {
          {
-            "ForecastingApiConfiguration": {
-                "url": "https://****:****/",
-                "identifier": "https://******.onmicrosoft.com/*****"
-            },
             "AccountsApiConfiguration": {
                 "url": "https://****:****/",
                 "identifier": "https://******.onmicrosoft.com/*****"
@@ -571,7 +513,6 @@ Starting the API will then show the swagger definition with the available operat
 The Recruit outer api relies on the following inner apis:
 
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 
 You are able to run the API by doing the following:
 
@@ -583,10 +524,6 @@ RowKey: SFA.DAS.Recruit.OuterApi_1.0
 Data: {
     "CoursesApiConfiguration": {
         "url":"https://localhost:5001/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
-    },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
         "identifier":"https://**********.onmicrosoft.com/*******"
     },
 }
@@ -696,9 +633,7 @@ To invoke the Fake CommitmentsV2Api start the console application ```SFA.DAS.Emp
 The Employer Demand outer api relies on the following inner apis:
 
 * [das-courses-api](https://github.com/SkillsFundingAgency/das-courses-api)
-* [das-coursedelivery-api](https://github.com/SkillsFundingAgency/das-coursedelivery-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
-* [das-employerdemand-api](https://github.com/SkillsFundingAgency/das-employerdemand-api)
 
 
 You are able to run the API by doing the following:
@@ -713,10 +648,6 @@ Data: {
         "url":"https://localhost:5001/",
         "identifier":"https://**********.onmicrosoft.com/*******"
     },
-    "CourseDeliveryApiConfiguration" : {
-        "url":"https://localhost:5006/",
-        "identifier":"https://**********.onmicrosoft.com/*******"
-    },
     "LocationApiConfiguration" : {
         "url":"https://localhost:5008/",
         "identifier":"https://**********.onmicrosoft.com/*******"
@@ -729,14 +660,11 @@ Data: {
         "NServiceBusConnectionString":"*****",
         "NServiceBusLicense":"*******"
     },
-    "EmployerDemandConfiguration": {
-        "ApimEndpointsRedisConnectionString": " "
-    }
 }
 ```
 * Start the api project ```SFA.DAS.EmployerDemand.Api```
 
-Starting the API will then show the swagger definition with the available operations. Alternatively you can connect [das-employerdemand-web](https://github.com/SkillsFundingAgency/das-employerdemand-web) which is the consuming service of this outer API.
+Starting the API will then show the swagger definition with the available operations.
 
 
 ### Course Management
@@ -904,7 +832,6 @@ The Levy Transfer Matching outer api relies on the following inner apis:
 
 * [das-employer-accounts](https://github.com/SkillsFundingAgency/das-employer-accounts)
 * [das-employer-finance](https://github.com/SkillsFundingAgency/das-employer-finance)
-* [das-forecasting-api](https://github.com/SkillsFundingAgency/das-forecasting-api)
 * [das-levy-transfer-matching-api](https://github.com/SkillsFundingAgency/das-levy-transfer-matching-api)
 * [das-location-api](https://github.com/SkillsFundingAgency/das-location-api)
 * [das-employerusers](https://github.com/SkillsFundingAgency/das-employerusers)
@@ -924,10 +851,6 @@ Data: {
         "identifier": "https://******.onmicrosoft.com/*****"
     },
     "FinanceApiConfiguration": {
-        "url": "https://****:****/",
-        "identifier": "https://******.onmicrosoft.com/*****"
-    },
-    "ForecastingApiConfiguration": {
         "url": "https://****:****/",
         "identifier": "https://******.onmicrosoft.com/*****"
     },
