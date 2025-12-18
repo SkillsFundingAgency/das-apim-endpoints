@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{AFD8CB3E-4DE6-4750-9556-5F50D2E9A8C0}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{2648E357-8647-4625-BA1D-B0239F96E36D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DigitalCertificates.Api", "SFA.DAS.DigitalCertificates.Api\SFA.DAS.DigitalCertificates.Api.csproj", "{9D7CE9DD-5EA3-108F-A041-6CB4E3780B12}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DigitalCertificates", "SFA.DAS.DigitalCertificates\SFA.DAS.DigitalCertificates.csproj", "{6108EA07-F84A-E124-F8F5-88E9BDA39EF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DigitalCertificates.Api.UnitTests", "SFA.DAS.DigitalCertificates.Api.UnitTests\SFA.DAS.DigitalCertificates.Api.UnitTests.csproj", "{0F59142D-9770-862F-D8F0-9BE7955DEFB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DigitalCertificates.UnitTests", "SFA.DAS.DigitalCertificates.UnitTests\SFA.DAS.DigitalCertificates.UnitTests.csproj", "{39A76CC5-BB9B-257A-BA43-D136E1AF4DC4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.DigitalCertificates.MockApis", "SFA.DAS.DigitalCertificates.MockApis\SFA.DAS.DigitalCertificates.MockApis.csproj", "{040647C3-B223-67E4-A83A-700B78A6E911}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFD8CB3E-4DE6-4750-9556-5F50D2E9A8C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFD8CB3E-4DE6-4750-9556-5F50D2E9A8C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFD8CB3E-4DE6-4750-9556-5F50D2E9A8C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFD8CB3E-4DE6-4750-9556-5F50D2E9A8C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D7CE9DD-5EA3-108F-A041-6CB4E3780B12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D7CE9DD-5EA3-108F-A041-6CB4E3780B12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D7CE9DD-5EA3-108F-A041-6CB4E3780B12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D7CE9DD-5EA3-108F-A041-6CB4E3780B12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6108EA07-F84A-E124-F8F5-88E9BDA39EF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6108EA07-F84A-E124-F8F5-88E9BDA39EF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6108EA07-F84A-E124-F8F5-88E9BDA39EF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6108EA07-F84A-E124-F8F5-88E9BDA39EF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F59142D-9770-862F-D8F0-9BE7955DEFB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F59142D-9770-862F-D8F0-9BE7955DEFB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F59142D-9770-862F-D8F0-9BE7955DEFB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F59142D-9770-862F-D8F0-9BE7955DEFB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39A76CC5-BB9B-257A-BA43-D136E1AF4DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39A76CC5-BB9B-257A-BA43-D136E1AF4DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39A76CC5-BB9B-257A-BA43-D136E1AF4DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39A76CC5-BB9B-257A-BA43-D136E1AF4DC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{040647C3-B223-67E4-A83A-700B78A6E911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{040647C3-B223-67E4-A83A-700B78A6E911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{040647C3-B223-67E4-A83A-700B78A6E911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{040647C3-B223-67E4-A83A-700B78A6E911}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{41D340D7-A7E7-4430-B7F3-C5C1A90DD113} = {2648E357-8647-4625-BA1D-B0239F96E36D}
+		{0F59142D-9770-862F-D8F0-9BE7955DEFB2} = {2648E357-8647-4625-BA1D-B0239F96E36D}
+		{39A76CC5-BB9B-257A-BA43-D136E1AF4DC4} = {2648E357-8647-4625-BA1D-B0239F96E36D}
+		{040647C3-B223-67E4-A83A-700B78A6E911} = {2648E357-8647-4625-BA1D-B0239F96E36D}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {84B1617E-D17F-44D8-893A-D9ED04A8EBAB}
+	EndGlobalSection
+EndGlobal

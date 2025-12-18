@@ -46,6 +46,7 @@ public class MathsAndEnglishRequestDetail
     public DateTime? WithdrawalDate { get; set; }
     public int? PriorLearningAdjustmentPercentage { get; set; }
     public DateTime? ActualEndDate { get; set; }
+    public DateTime? PauseDate { get; set; }
 }
 
 public class SaveLearningSupportApiPutRequest : IPatchApiRequest<SaveLearningSupportRequest>
@@ -86,6 +87,7 @@ public class SavePricesRequest
 {
     public Guid ApprenticeshipEpisodeKey { get; set; }
     public int AgeAtStartOfLearning { get; set; }
+    public int FundingBandMaximum { get; set; }
     public List<PriceDetail> Prices { get; set; } = [];
 }
 
@@ -97,7 +99,6 @@ public class PriceDetail
     public decimal TrainingPrice { get; set; }
     public decimal? EndPointAssessmentPrice { get; set; }
     public decimal TotalPrice { get; set; }
-    public int FundingBandMaximum { get; set; }
 }
 
 public class WithdrawApiPatchRequest : IPatchApiRequest<WithdrawRequest>
@@ -150,4 +151,55 @@ public class PauseApiPatchRequest: IPatchApiRequest<PauseRequest>
 public class RemovePauseApiDeleteRequest(Guid apprenticeshipKey) : IDeleteApiRequest
 {
     public string DeleteUrl { get; } = $"apprenticeship/{apprenticeshipKey}/pause";
+}
+
+public class MathsAndEnglishWithdrawApiPatchRequest(Guid apprenticeshipKey, MathsAndEnglishWithdrawRequest data)
+    : IPatchApiRequest<MathsAndEnglishWithdrawRequest>
+{
+    public string PatchUrl { get; } =
+        $"apprenticeship/{apprenticeshipKey}/mathsAndEnglish/withdraw";
+
+    public MathsAndEnglishWithdrawRequest Data { get; set; } = data;
+}
+
+public class MathsAndEnglishWithdrawRequest
+{
+    public string Course { get; set; }
+    public DateTime? WithdrawalDate { get; set; }
+}
+
+public class UpdateBreaksInLearningApiPatchRequest : IPatchApiRequest<UpdateBreaksInLearningRequest>
+{
+    public string PatchUrl { get; }
+    public UpdateBreaksInLearningRequest Data { get; set; }
+
+    public UpdateBreaksInLearningApiPatchRequest(Guid apprenticeshipKey, UpdateBreaksInLearningRequest data)
+    {
+        PatchUrl = $"apprenticeship/{apprenticeshipKey}/breaksInLearning";
+        Data = data;
+    }
+}
+
+public class UpdateBreaksInLearningRequest
+{
+    public Guid EpisodeKey { get; set; }
+    public List<BreakInLearning> BreaksInLearning { get; set; }
+}
+
+public class SaveDateOfBirthApiPatchRequest : IPatchApiRequest<SaveDateOfBirthRequest>
+{
+    public string PatchUrl { get; }
+
+    public SaveDateOfBirthRequest Data { get; set; }
+
+    public SaveDateOfBirthApiPatchRequest(Guid learningKey, SaveDateOfBirthRequest data)
+    {
+        PatchUrl = $"apprenticeship/{learningKey.ToString()}/dateOfBirth";
+        Data = data;
+    }
+}
+
+public class SaveDateOfBirthRequest
+{
+    public DateTime DateOfBirth { get; set; }
 }

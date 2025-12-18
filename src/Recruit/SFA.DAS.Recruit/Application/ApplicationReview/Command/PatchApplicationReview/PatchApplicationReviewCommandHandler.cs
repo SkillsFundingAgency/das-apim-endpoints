@@ -29,6 +29,10 @@ namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplication
             {
                 jsonPatchApplicationReviewDocument.Replace(x => x.EmployerFeedback, command.EmployerFeedback);
             }
+            if (!string.IsNullOrEmpty(command.CandidateFeedback))
+            {
+                jsonPatchApplicationReviewDocument.Replace(x => x.CandidateFeedback, command.CandidateFeedback);
+            }
             if(command.DateSharedWithEmployer.HasValue)
             {
                 jsonPatchApplicationReviewDocument.Replace(x => x.DateSharedWithEmployer, command.DateSharedWithEmployer.Value);

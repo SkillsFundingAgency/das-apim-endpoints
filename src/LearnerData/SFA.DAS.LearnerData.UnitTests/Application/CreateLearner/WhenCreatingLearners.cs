@@ -84,7 +84,7 @@ public class WhenCreatingLearners
             TrainingPrice = request.Delivery.OnProgramme.First().Costs.First().TrainingPrice,
             AgreementId = request.Delivery.OnProgramme.First().AgreementId,
             IsFlexiJob = request.Delivery.OnProgramme.First().IsFlexiJob!.Value,
-            StandardCode = request.Delivery.OnProgramme.First().StandardCode!.Value,
+            StandardCode = request.Delivery.OnProgramme.First().StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
             ConsumerReference = request.ConsumerReference
