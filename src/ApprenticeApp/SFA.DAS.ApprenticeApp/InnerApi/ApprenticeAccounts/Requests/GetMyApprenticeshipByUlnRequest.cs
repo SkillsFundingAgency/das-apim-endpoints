@@ -4,9 +4,9 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests
 {
     public class GetMyApprenticeshipByUlnRequest : IGetApiRequest
     {
-        private readonly int _uln;
+        private readonly long _uln;
 
-        public GetMyApprenticeshipByUlnRequest(int uln)
+        public GetMyApprenticeshipByUlnRequest(long uln)
         {
             _uln = uln;
         }

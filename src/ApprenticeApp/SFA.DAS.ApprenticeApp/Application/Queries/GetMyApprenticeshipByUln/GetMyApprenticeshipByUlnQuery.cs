@@ -9,6 +9,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.GetMyApprenticeshipByUln
 {
     public class GetMyApprenticeshipByUlnQuery : IRequest<GetMyApprenticeshipByUlnQueryResult>
     {
-        public int Uln { get; set; }
+        public long Uln { get; set; }
     }
 }

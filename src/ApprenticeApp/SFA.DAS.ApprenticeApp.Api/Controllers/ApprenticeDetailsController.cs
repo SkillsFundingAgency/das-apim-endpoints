@@ -30,7 +30,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpGet("/apprentice/{uln}")]
-        public async Task<IActionResult> GetApprenticeshipByUln(int uln)
+        public async Task<IActionResult> GetApprenticeshipByUln(long uln)
         {
             var result = await _mediator.Send(new GetMyApprenticeshipByUlnQuery { Uln = uln });
             if (result.MyApprenticeship == null) return NotFound();
