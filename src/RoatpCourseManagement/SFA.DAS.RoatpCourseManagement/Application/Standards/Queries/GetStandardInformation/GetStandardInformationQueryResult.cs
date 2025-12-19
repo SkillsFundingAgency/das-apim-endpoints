@@ -16,12 +16,12 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandar
         public string Sector { get; set; }
         public bool IsRegulatedForProvider { get; set; }
 
-        public static implicit operator GetStandardInformationQueryResult(GetStandardResponse source) =>
+        public static implicit operator GetStandardInformationQueryResult(GetStandardResponseFromCoursesApi source) =>
             new()
             {
                 StandardUId = source.StandardUId,
                 IfateReferenceNumber = source.IfateReferenceNumber,
-                LarsCode = source.LarsCode,
+                LarsCode = source.LarsCode.ToString(),
                 Title = source.Title,
                 Level = source.Level,
                 Version = source.Version,

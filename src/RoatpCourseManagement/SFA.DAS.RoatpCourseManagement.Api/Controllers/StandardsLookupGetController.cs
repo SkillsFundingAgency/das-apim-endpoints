@@ -1,10 +1,12 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -33,7 +35,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
             }
 
             _logger.LogInformation("Active standards gathered");
-            return Ok(result.Body);
+
+            var mappedResponse = new GetStandardsLookupResponse { Standards = result.Body.Standards.Select(standard => (GetStandardResponse)standard).ToList() };
+
+            return Ok(mappedResponse);
         }
 
         [HttpGet]

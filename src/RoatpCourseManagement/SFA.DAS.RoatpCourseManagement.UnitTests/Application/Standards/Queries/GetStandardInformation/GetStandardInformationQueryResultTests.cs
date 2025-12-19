@@ -10,7 +10,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
     public class GetStandardInformationQueryResultTests
     {
         [Test, AutoData]
-        public void Operator_TransformsFromApiModel(GetStandardResponse source)
+        public void Operator_TransformsFromApiModel(GetStandardResponseFromCoursesApi source)
         {
             GetStandardInformationQueryResult sut = source;
 
@@ -19,8 +19,11 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.ApprovalBody, m => m.RegulatorName);
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.Route, m => m.Sector);
                 option.Excluding(s => s.SectorSubjectAreaTier1);
+                option.Excluding(s => s.LarsCode);
                 return option;
             });
+
+            sut.LarsCode.Should().Be(source.LarsCode.ToString());
         }
     }
 }
