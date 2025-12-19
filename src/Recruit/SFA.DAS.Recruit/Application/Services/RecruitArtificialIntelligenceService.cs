@@ -41,8 +41,8 @@ public class RecruitArtificialIntelligenceService(
             return;
         }
 
-        var skills = JsonSerializer.Serialize(vacancy.Skills ?? [], Global.JsonSerializerOptions);
-        var qualifications = JsonSerializer.Serialize(vacancy.Qualifications ?? [], Global.JsonSerializerOptions);
+        var skills = JsonSerializer.Serialize(vacancy.Skills ?? [], Global.JsonSerializerOptionsCamelCase);
+        var qualifications = JsonSerializer.Serialize(vacancy.Qualifications ?? [], Global.JsonSerializerOptionsCamelCase);
 
         var payload = new AiVacancyReviewData(
             vacancy.Id,

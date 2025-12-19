@@ -2,7 +2,8 @@
 
 namespace SFA.DAS.Recruit;
 
-public class Global
+public static class Global
 {
-    public static JsonSerializerOptions JsonSerializerOptions => new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    public static JsonSerializerOptions JsonSerializerOptionsCamelCase => new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    public static JsonSerializerOptions JsonSerializerOptionsCaseInsensitive => new() { PropertyNameCaseInsensitive = true };
 }
