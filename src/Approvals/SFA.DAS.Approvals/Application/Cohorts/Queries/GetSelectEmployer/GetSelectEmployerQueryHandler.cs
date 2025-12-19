@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -79,45 +80,30 @@ public class GetSelectEmployerQueryHandler(
 
     private async Task<Dictionary<string, string>> GetAccountLevyStatusMap(List<string> accountHashedIds)
     {
-        var levyStatusMap = new Dictionary<string, string>();
+        var levyStatusMap = new ConcurrentDictionary<string, string>();
 
         if (!accountHashedIds.Any())
         {
-            return levyStatusMap;
+            return new Dictionary<string, string>();
         }
 
-        var accountTasks = accountHashedIds.Select(async accountHashedId =>
+        await Parallel.ForEachAsync(accountHashedIds, new ParallelOptions { MaxDegreeOfParallelism = 10 }, async (accountHashedId, _) =>
         {
             try
             {
                 var accountResponse = await accountsApiClient.Get<GetAccountResponse>(
                     new GetAccountRequest(accountHashedId));
 
-                return new
-                {
-                    AccountHashedId = accountHashedId,
-                    ApprenticeshipEmployerType = accountResponse?.ApprenticeshipEmployerType ?? "NonLevy"
-                };
+                levyStatusMap[accountHashedId] = accountResponse?.ApprenticeshipEmployerType ?? "NonLevy";
             }
             catch (Exception ex)
             {
                 logger.LogWarning(ex, "Failed to get account levy status for account {AccountHashedId}, defaulting to NonLevy", accountHashedId);
-                return new
-                {
-                    AccountHashedId = accountHashedId,
-                    ApprenticeshipEmployerType = "NonLevy"
-                };
+                levyStatusMap[accountHashedId] = "NonLevy";
             }
         });
 
-        var accountResults = await Task.WhenAll(accountTasks);
-
-        foreach (var result in accountResults)
-        {
-            levyStatusMap[result.AccountHashedId] = result.ApprenticeshipEmployerType;
-        }
-
-        return levyStatusMap;
+        return new Dictionary<string, string>(levyStatusMap);
     }
 
     private static List<AccountProviderLegalEntityItem> ApplySearch(
@@ -196,3 +182,4 @@ public class GetSelectEmployerQueryHandler(
         return accountProviderLegalEntities;
     }
 }
+

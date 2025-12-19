@@ -1,8 +1,5 @@
 using System.Threading;
 using System.Threading.Tasks;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -14,8 +11,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
-using AutoFixture.NUnit3;
 using System.Net;
 using System.Collections.Generic;
 

@@ -1,11 +1,7 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
@@ -14,7 +10,6 @@ using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands.SyncLearnerData
 {
