@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture;
+using FluentAssertions;
 using KellermanSoftware.CompareNetObjects;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -89,7 +90,7 @@ public class WhenGettingCohortDetails
     public async Task GetCohortDetailsResponseWithCorrectlyMappedHasFoundationApprenticeshipsIsReturned()
     {
         // Arrange
-        _queryResult.HasFoundationApprenticeships = true;
+        _queryResult.HasAgeRestrictedApprenticeships = true;
 
         // Act
         var result = await _controller.GetCohortDetails(_cohortId);
@@ -97,6 +98,6 @@ public class WhenGettingCohortDetails
         // Assert
         var okObjectResult = (OkObjectResult)result;
         var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
-        Assert.That(objectResult.HasFoundationApprenticeships, Is.EqualTo(_queryResult.HasFoundationApprenticeships));
+        objectResult.HasAgeRestrictedApprenticeships.Should().Be(_queryResult.HasAgeRestrictedApprenticeships);
     }
 }
