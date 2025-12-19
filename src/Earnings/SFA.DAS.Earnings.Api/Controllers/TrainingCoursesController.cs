@@ -1,9 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Learning.Api.Models;
-using SFA.DAS.Learning.Application.TrainingCourses;
+using SFA.DAS.Earnings.Api.Models;
+using SFA.DAS.Earnings.Application.Training;
 
-namespace SFA.DAS.Learning.Api.Controllers;
+namespace SFA.DAS.Earnings.Api.Controllers;
 
 [ApiController]
 [Route("[controller]")]
