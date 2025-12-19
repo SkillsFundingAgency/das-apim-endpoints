@@ -351,6 +351,7 @@ public class GetSelectEmployerQueryHandlerTests
         [Frozen] Mock<ILogger<GetSelectEmployerQueryHandler>> logger,
         [Greedy] GetSelectEmployerQueryHandler handler)
     {
+        // Arrange
         var query = new GetSelectEmployerQuery { ProviderId = 100005067 };
 
         var providerRelationshipsResponse = new GetProviderAccountLegalEntitiesResponse
@@ -404,6 +405,7 @@ public class GetSelectEmployerQueryHandlerTests
         [Frozen] Mock<ILogger<GetSelectEmployerQueryHandler>> logger,
         [Greedy] GetSelectEmployerQueryHandler handler)
     {
+        // Arrange
         var query = new GetSelectEmployerQuery { ProviderId = 100005067 };
 
         var providerRelationshipsResponse = new GetProviderAccountLegalEntitiesResponse
