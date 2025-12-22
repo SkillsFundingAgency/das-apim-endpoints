@@ -1,13 +1,13 @@
-﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Models.DeleteProviderCourseLocations;
+﻿using System.Web;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Models.DeleteProviderCourseLocations;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Web;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
     public class ProviderCourseLocationsBulkDeleteRequest : IDeleteApiRequest
     {
         public int Ukprn { get; set; }
-        public int LarsCode { get; set; }
+        public string LarsCode { get; set; }
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
         public DeleteProviderCourseLocationOption DeleteProviderCourseLocationOption { get; set; }

@@ -1,12 +1,12 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreateProviderCourse;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 {
@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             [Frozen] Mock<IMediator> meditorMock,
             [Greedy] ProviderCourseCreateController sut,
             int ukprn,
-            int larsCode,
+            string larsCode,
             CreateProviderCourseCommand command)
         {
             await sut.CreateProviderCourse(ukprn, larsCode, command);
