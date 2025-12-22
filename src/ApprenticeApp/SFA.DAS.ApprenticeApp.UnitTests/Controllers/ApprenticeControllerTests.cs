@@ -42,6 +42,29 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
         }
 
         [Test, MoqAutoData]
+        public async Task Get_Apprentice_By_Name_NotFound_Test(
+    [Greedy] ApprenticeController controller)
+        {
+            // Arrange
+            var httpContext = new DefaultHttpContext();
+
+            var firstName = "John";
+            var lastName = "Doe";
+            var dateOfBirth = new DateTime(1995, 1, 1);
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = httpContext
+            };
+
+            // Act
+            var result = await controller.GetApprenticeByName(firstName, lastName, dateOfBirth);
+
+            // Assert
+            result.Should().BeOfType(typeof(NotFoundResult));
+        }
+
+        [Test, MoqAutoData]
         public async Task Add_Subscription_Returns_Ok(
             [Greedy] ApprenticeController controller)
         {
