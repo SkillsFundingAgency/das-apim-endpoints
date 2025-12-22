@@ -45,8 +45,8 @@ public class WhenSendingVacancyReview
         capturedRequest.ShortDescription.Should().Be(vacancy.ShortDescription);
         capturedRequest.Description.Should().Be(vacancy.Description);
         capturedRequest.EmployerDescription.Should().Be(vacancy.EmployerDescription);
-        capturedRequest.Skills.Should().Be(JsonSerializer.Serialize(vacancy.Skills, Global.JsonSerializerOptionsCamelCase));
-        capturedRequest.Qualifications.Should().Be(JsonSerializer.Serialize(vacancy.Qualifications, Global.JsonSerializerOptionsCamelCase));
+        capturedRequest.Skills.Should().Be(JsonSerializer.Serialize(vacancy.Skills, Global.JsonSerializerOptionsCaseInsensitive));
+        capturedRequest.Qualifications.Should().Be(JsonSerializer.Serialize(vacancy.Qualifications, Global.JsonSerializerOptionsCaseInsensitive));
         capturedRequest.ThingsToConsider.Should().Be(vacancy.ThingsToConsider);
         capturedRequest.TrainingDescription.Should().Be(vacancy.TrainingDescription);
         capturedRequest.AdditionalTrainingDescription.Should().Be(vacancy.AdditionalTrainingDescription);
