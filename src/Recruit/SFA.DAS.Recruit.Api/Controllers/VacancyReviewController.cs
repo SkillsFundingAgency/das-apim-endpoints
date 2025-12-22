@@ -51,19 +51,22 @@ public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccount
                 VacancyReview = (InnerApi.Recruit.Requests.VacancyReviewDto)vacancyReview,
                 Id = id
             });
-            
-            HttpContext.Response.OnCompleted(async () =>
+
+            if (vacancyReview.EnableAiProcessing)
             {
-                try
+                HttpContext.Response.OnCompleted(async () =>
                 {
-                    var vacancy = JsonSerializer.Deserialize<Vacancy>(vacancyReview.VacancySnapshot, Global.JsonSerializerOptionsCaseInsensitive);
-                    await aiService.SendVacancyReviewAsync(vacancy, CancellationToken.None);
-                }
-                catch (Exception e)
-                {
-                    logger.LogError(e, "An unhandled exception occurred whilst processing the VacancyReview AI call");
-                }
-            });
+                    try
+                    {
+                        var vacancy = JsonSerializer.Deserialize<Vacancy>(vacancyReview.VacancySnapshot, Global.JsonSerializerOptionsCaseInsensitive);
+                        await aiService.SendVacancyReviewAsync(vacancy, CancellationToken.None);
+                    }
+                    catch (Exception e)
+                    {
+                        logger.LogError(e, "An unhandled exception occurred whilst processing the VacancyReview AI call");
+                    }
+                });
+            }
             return Created();
         }
         catch (Exception e)
