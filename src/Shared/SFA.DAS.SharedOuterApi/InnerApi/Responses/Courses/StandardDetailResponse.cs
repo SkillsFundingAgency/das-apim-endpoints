@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿﻿using SFA.DAS.SharedOuterApi.Domain;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 {
