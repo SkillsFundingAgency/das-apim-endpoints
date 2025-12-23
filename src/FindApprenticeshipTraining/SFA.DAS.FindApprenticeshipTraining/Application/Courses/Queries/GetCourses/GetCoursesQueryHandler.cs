@@ -1,4 +1,9 @@
-﻿using MediatR;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -7,11 +12,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 
@@ -69,7 +69,7 @@ public sealed class GetCoursesQueryHandler(
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 new GetCourseTrainingProvidersCountRequest(
-                    pagedStandards.Select(a => a.LarsCode).ToArray(),
+                    pagedStandards.Select(a => a.LarsCode.ToString()).ToArray(),
                     query.Distance,
                     locationItem?.Latitude,
                     locationItem?.Longitude
@@ -86,7 +86,7 @@ public sealed class GetCoursesQueryHandler(
         {
             GetStandardsListItem standard = pagedStandards[index];
 
-            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode);
+            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode.ToString());
 
             standardModels.Add(
                 StandardModel.CreateFrom(
