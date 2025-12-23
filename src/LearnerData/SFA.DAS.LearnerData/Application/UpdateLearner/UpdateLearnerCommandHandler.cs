@@ -1,13 +1,13 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.LearnerData.Extensions;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 
@@ -16,7 +16,9 @@ public class UpdateLearnerCommandHandler(
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
-	ICoursesApiClient<CoursesApiConfiguration> coursesApiClient
+    IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
+    IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
+    IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
@@ -34,80 +36,38 @@ public class UpdateLearnerCommandHandler(
         }
 
         var learningApiPutResponse = learningResponse.Body;
-        if (!learningApiPutResponse.Changes.Any())
-        {
-            logger.LogInformation("No changes detected for learner with key {LearningKey}", command.LearningKey);
-            return;
-        }
 
         logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningApiPutResponse));
-
-        await UpdateEarnings(command, request, learningApiPutResponse);
-
-        logger.LogInformation("Earnings updated for learner with key {LearningKey}", command.LearningKey);
-    }
-
-    private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearningApiPutRequest updateLearningApiPutRequest, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
-    {
-        var updatePrices = false;
-
-        foreach (var change in updateLearningApiPutResponse.Changes)
+        
+        if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
         {
-            switch (change)
-            {
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
-                    await earningsApiClient.UpdateCompletionDate(command, updateLearningApiPutRequest, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
-                    await earningsApiClient.UpdateMathAndEnglish(command, updateLearningApiPutRequest, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
-                    await earningsApiClient.UpdateLearningSupport(command, updateLearningApiPutRequest, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
-                    updatePrices = true;
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
-                    await earningsApiClient.WithdrawLearner(command, updateLearningApiPutRequest, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
-                    await earningsApiClient.ReverseWithdrawal(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
-                    await earningsApiClient.RemoveBreakInLearning(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
-                    await earningsApiClient.StartBreakInLearning(command, updateLearningApiPutRequest, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
-                    await earningsApiClient.UpdateBreaksInLearning(command, updateLearningApiPutRequest, updateLearningApiPutResponse, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
-                    await earningsApiClient.WithdrawEnglishAndMaths(command, updateLearningApiPutRequest, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged:
-                    await earningsApiClient.UpdateDateOfBirth(command, updateLearningApiPutRequest, logger);
-                    break;
-            }
+            logger.LogInformation("No changes requiring earnings update for learning {LearningKey}", command.LearningKey);
+            return;
+        }
+        
+        //Update Earnings
+        if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
+        {
+            logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", command.LearningKey);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command, learningApiPutResponse, request);
+            await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 
-        if (updatePrices)
+        if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
         {
-            var fundingBandMaximum = await GetFundingBandMaximum(command);
-            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, fundingBandMaximum, logger);
+            logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", command.LearningKey);
+            var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
+            await earningsApiClient.Put(englishAndMathsRequest);
         }
-    }
 
-    private async Task<int> GetFundingBandMaximum(UpdateLearnerCommand command)
-    {
-        var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
-        var standardId = onProgramme.StandardCode.ToString();
-        var startDate = onProgramme.StartDate;
+        if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
+        {
+            logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", command.LearningKey);
+            var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(command, learningApiPutResponse, request);
+            await earningsApiClient.Put(earningsLearningSupportRequest);
+        }
 
-        var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
-
-        return response.MaxFundingOn(startDate);
+        logger.LogInformation("Earnings updated for learning {LearningKey}", command.LearningKey);
     }
 }
