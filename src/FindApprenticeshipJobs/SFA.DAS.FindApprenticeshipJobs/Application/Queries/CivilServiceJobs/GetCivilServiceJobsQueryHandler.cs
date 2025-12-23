@@ -31,10 +31,15 @@ public class GetCivilServiceJobsQueryHandler(
         var routes = await courseService.GetRoutes();
 
         // Map profession to route
-        var route = GetBusinessRoute(routes.Routes.ToList(), response.Jobs[0]?.Profession?.En) 
-                    ?? routes.Routes.First(r => r.Name.Equals("Business", StringComparison.OrdinalIgnoreCase));
         var liveVacancies = response.Jobs
-            .Select(c => liveVacancyMapper.Map(c, route))
+            .Select(job =>
+            {
+                var route = GetBusinessRoute(routes.Routes.ToList(), job.Profession.En)
+                            ?? routes.Routes.First(r =>
+                                r.Name.Equals("Business", StringComparison.OrdinalIgnoreCase));
+
+                return liveVacancyMapper.Map(job, route);
+            })
             .ToList();
 
         // Populate address info in parallel
