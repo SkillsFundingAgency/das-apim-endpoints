@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -23,7 +23,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("providers/{ukprn}/courses/{larsCode}")]
-        public async Task<IActionResult> GetProviderCourse([FromRoute] int ukprn, [FromRoute] int larsCode)
+        public async Task<IActionResult> GetProviderCourse([FromRoute] int ukprn, [FromRoute] string larsCode)
         {
             if (ukprn <= 9999999)
             {
@@ -31,7 +31,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
                 return BadRequest();
             }
 
-            if (larsCode <= 0)
+            if (larsCode == string.Empty)
             {
                 _logger.LogWarning("Invalid lars code {larsCode}", larsCode);
                 return BadRequest();
@@ -41,7 +41,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
             if (providerCourseResult == null)
             {
-                _logger.LogError($"Provider Course not found for ukprn {ukprn} and lars code {larsCode}");
+                _logger.LogError("Provider Course not found for ukprn {Ukprn} and lars code {LarsCode}", ukprn, larsCode);
                 return NotFound();
             }
 

@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Queries.Details;
+using SFA.DAS.ApprenticeApp.Application.Queries.GetMyApprenticeshipByUln;
 using SFA.DAS.ApprenticeApp.Telemetry;
 using System;
 using System.Threading.Tasks;
@@ -26,6 +27,15 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 return NotFound();
             _apprenticeAppMetrics.IncreaseAccountViews();
             return Ok(result.ApprenticeDetails);
+        }
+
+        [HttpGet("/apprentice/{uln}")]
+        public async Task<IActionResult> GetApprenticeshipByUln(long uln)
+        {
+            var result = await _mediator.Send(new GetMyApprenticeshipByUlnQuery { Uln = uln });
+            if (result.MyApprenticeship == null) return NotFound();
+
+            return Ok(result.MyApprenticeship);
         }
     }
 }

@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
-using SFA.DAS.EmployerFeedback.Application.Queries.GetProvider;
+using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
 using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
@@ -18,12 +18,14 @@ using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.EmployerFeedback.Api
 {
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+        private const string EndpointName = "SFA.DAS.EmployerFeedback";
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
 
@@ -52,7 +54,7 @@ namespace SFA.DAS.EmployerFeedback.Api
             }
 
             services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetAccountsQuery).Assembly));
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetProviderQuery).Assembly));
+            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetAttributesQuery).Assembly));
             services.AddServiceRegistration();
 
             services
@@ -166,6 +168,11 @@ namespace SFA.DAS.EmployerFeedback.Api
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "EmployerFeedbackOuterApi");
                 c.RoutePrefix = string.Empty;
             });
+        }
+
+        public void ConfigureContainer(UpdateableServiceProvider serviceProvider)
+        {
+            Task.FromResult(serviceProvider.StartNServiceBus(_configuration, EndpointName)).GetAwaiter().GetResult();
         }
     }
 }

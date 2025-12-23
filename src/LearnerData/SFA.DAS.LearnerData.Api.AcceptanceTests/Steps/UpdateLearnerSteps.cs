@@ -187,8 +187,12 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
                 return $"/apprenticeship/{learnerKey.ToString()}/pause";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated:
+                return $"/apprenticeship/{learnerKey.ToString()}/breaksInLearning";
             case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal:
                 return $"/apprenticeship/{learnerKey}/mathsAndEnglish/withdraw";
+            case UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged:
+                return $"/apprenticeship/{learnerKey}/dateOfBirth";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

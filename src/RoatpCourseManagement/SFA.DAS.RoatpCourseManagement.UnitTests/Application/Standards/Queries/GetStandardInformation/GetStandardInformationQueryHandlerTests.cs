@@ -24,9 +24,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> apiClientMock,
             GetStandardInformationQueryHandler sut,
             GetStandardInformationQuery query,
-            GetStandardResponse apiResponse)
+            GetStandardResponseFromCoursesApi apiResponse)
         {
-            apiClientMock.Setup(c => c.GetWithResponseCode<GetStandardResponse>(It.Is<GetStandardRequest>(r => r.LarsCode == query.LarsCode && r.GetUrl == $"api/courses/Standards/{query.LarsCode}"))).ReturnsAsync(new ApiResponse<GetStandardResponse>(apiResponse, HttpStatusCode.OK, null));
+            apiClientMock.Setup(c => c.GetWithResponseCode<GetStandardResponseFromCoursesApi>(It.Is<GetStandardRequest>(r => r.LarsCode == query.LarsCode && r.GetUrl == $"api/courses/Standards/{query.LarsCode}"))).ReturnsAsync(new ApiResponse<GetStandardResponseFromCoursesApi>(apiResponse, HttpStatusCode.OK, null));
 
             var result = await sut.Handle(query, new CancellationToken());
 
@@ -35,8 +35,11 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.ApprovalBody, m => m.RegulatorName);
                 option.WithMapping<GetStandardInformationQueryResult>(s => s.Route, m => m.Sector);
                 option.Excluding(s => s.SectorSubjectAreaTier1);
+                option.Excluding(s => s.LarsCode);
                 return option;
             });
+
+            result.LarsCode.Should().Be(apiResponse.LarsCode.ToString());
         }
 
         [Test, MoqAutoData]
@@ -45,7 +48,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
             GetStandardInformationQueryHandler sut,
             GetStandardInformationQuery query)
         {
-            apiClientMock.Setup(c => c.GetWithResponseCode<GetStandardResponse>(It.IsAny<GetStandardRequest>())).ReturnsAsync(new ApiResponse<GetStandardResponse>(null, HttpStatusCode.NotFound, null));
+            apiClientMock.Setup(c => c.GetWithResponseCode<GetStandardResponseFromCoursesApi>(It.IsAny<GetStandardRequest>())).ReturnsAsync(new ApiResponse<GetStandardResponseFromCoursesApi>(null, HttpStatusCode.NotFound, null));
 
             Func<Task> action = () => sut.Handle(query, new CancellationToken());
 
