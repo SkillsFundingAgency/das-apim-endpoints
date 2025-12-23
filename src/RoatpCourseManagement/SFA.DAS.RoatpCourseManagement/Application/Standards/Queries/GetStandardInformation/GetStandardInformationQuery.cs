@@ -4,8 +4,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandar
 {
     public class GetStandardInformationQuery : IRequest<GetStandardInformationQueryResult>
     {
-        public int LarsCode { get; }
-        public GetStandardInformationQuery(int larsCode)
+        public string LarsCode { get; }
+        public GetStandardInformationQuery(string larsCode)
         {
             LarsCode = larsCode;
         }
