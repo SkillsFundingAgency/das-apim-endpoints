@@ -9,9 +9,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerVacancies;
 
-public class GetEmployerVacanciesQueryHandler(IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient) : IRequestHandler<GetEmployerVacanciesQuery, GetEmployerVacanciesResponse>
+public class GetEmployerVacanciesQueryHandler(IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient) : IRequestHandler<GetEmployerVacanciesQuery, GetEmployerVacanciesQueryResponse>
 {
-    public async Task<GetEmployerVacanciesResponse> Handle(GetEmployerVacanciesQuery request, CancellationToken cancellationToken)
+    public async Task<GetEmployerVacanciesQueryResponse> Handle(GetEmployerVacanciesQuery request, CancellationToken cancellationToken)
     {
         var response =
             await recruitApiClient.GetWithResponseCode<GetPagedVacancySummaryApiResponse>(
@@ -19,13 +19,13 @@ public class GetEmployerVacanciesQueryHandler(IRecruitApiClient<RecruitApiV2Conf
 
         if (!response.StatusCode.IsSuccessStatusCode() || response.Body.PageInfo.TotalCount > 1)
         {
-            return new GetEmployerVacanciesResponse
+            return new GetEmployerVacanciesQueryResponse
             {
                 Vacancies = []
             };
         }
 
-        return new GetEmployerVacanciesResponse
+        return new GetEmployerVacanciesQueryResponse
         {
             Vacancies = response.Body.Items
         };

@@ -3,7 +3,7 @@ using SFA.DAS.EmployerAccounts.InnerApi.Responses;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerVacancies;
 
-public class GetEmployerVacanciesResponse
+public class GetEmployerVacanciesQueryResponse
 {
     public List<VacancySummary> Vacancies { get; set; }
 }
