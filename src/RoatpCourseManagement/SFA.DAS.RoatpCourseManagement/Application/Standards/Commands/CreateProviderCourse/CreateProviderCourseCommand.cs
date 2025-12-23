@@ -8,7 +8,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreatePro
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
         public int Ukprn { get; set; }
-        public int LarsCode { get; set; }
+        public string LarsCode { get; set; }
         public bool? IsApprovedByRegulator { get; set; }
         public string StandardInfoUrl { get; set; }
         public string ContactUsPhoneNumber { get; set; }

@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -25,10 +26,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         public async Task GetAllStandards_ReturnsAppropriateResponse()
         {
             var mediatorMock = new Mock<IMediator>();
-            var getAllStandardsResponse = new GetStandardsLookupResponse
-            { Standards = new List<GetStandardResponse> { new GetStandardResponse { LarsCode = 235 } } };
+            var getAllStandardsResponse = new GetStandardsLookupResponseFromCoursesApi
+            { Standards = new List<GetStandardResponseFromCoursesApi> { new() { LarsCode = 235 } } };
 
-            var apiResponse = new ApiResponse<GetStandardsLookupResponse>(getAllStandardsResponse, HttpStatusCode.OK, "");
+            var apiResponse = new ApiResponse<GetStandardsLookupResponseFromCoursesApi>(getAllStandardsResponse, HttpStatusCode.OK, "");
 
             mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(apiResponse);
@@ -40,9 +41,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             var statusCodeResult = response as IStatusCodeActionResult;
 
             var okResult = response as OkObjectResult;
-            var actualResponse = okResult.Value;
-            Assert.That(getAllStandardsResponse, Is.SameAs(actualResponse));
-            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));
+            var actualResponse = (GetStandardsLookupResponse)okResult.Value;
+            actualResponse!.Standards.Should().BeEquivalentTo(getAllStandardsResponse.Standards, options => options.Excluding(x => x.LarsCode));
+            Assert.That(getAllStandardsResponse.Standards[0].LarsCode.ToString(), Is.SameAs(actualResponse.Standards[0].LarsCode));
+            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(statusCodeResult!.StatusCode.GetValueOrDefault()));
         }
 
         [TestCase(HttpStatusCode.BadRequest)]
@@ -56,10 +58,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         {
             var errorMessage = "Error in retrieval";
             var mediatorMock = new Mock<IMediator>();
-            var getAllStandardsResponse = new GetStandardsLookupResponse { Standards = null };
+            var getAllStandardsResponse = new GetStandardsLookupResponseFromCoursesApi { Standards = null };
 
             var apiResponse =
-                new ApiResponse<GetStandardsLookupResponse>(getAllStandardsResponse, statusCode,
+                new ApiResponse<GetStandardsLookupResponseFromCoursesApi>(getAllStandardsResponse, statusCode,
                     errorMessage);
 
             mediatorMock.Setup(m => m.Send(It.IsAny<GetStandardsLookupQuery>(), It.IsAny<CancellationToken>()))
@@ -79,7 +81,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         public async Task GetStandardInformation_InvokesHandler(
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] StandardsLookupGetController sut,
-            int larsCode)
+            string larsCode)
         {
             await sut.GetStandardInformation(larsCode);
 

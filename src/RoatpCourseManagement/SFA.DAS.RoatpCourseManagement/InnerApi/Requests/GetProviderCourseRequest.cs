@@ -7,9 +7,9 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         public string GetUrl => $"providers/{Ukprn}/courses/{LarsCode}";
         public int Ukprn { get; }
-        public int LarsCode { get; }
+        public string LarsCode { get; }
 
-        public GetProviderCourseRequest(int ukprn,int larsCode)
+        public GetProviderCourseRequest(int ukprn, string larsCode)
         {
             Ukprn = ukprn;
             LarsCode = larsCode;

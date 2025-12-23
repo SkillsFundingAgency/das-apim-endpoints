@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourseLocation;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -20,13 +20,13 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("providers/{ukprn}/courses/{larsCode}/locations/provider-locations")]
-        public async Task<IActionResult> GetProviderCourseLocations(int ukprn, int larsCode)
+        public async Task<IActionResult> GetProviderCourseLocations(int ukprn, string larsCode)
         {
-            _logger.LogInformation("Outer API: Request received to get provider course locations for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
+            _logger.LogInformation("Outer API: Request received to get provider course locations for ukprn: {Ukprn} larscode: {LarsCode}", ukprn, larsCode);
             var providerCourselocationsResult = await _mediator.Send(new GetProviderCourseLocationQuery(ukprn, larsCode));
             if (providerCourselocationsResult == null)
             {
-                _logger.LogInformation($"Provider Course Locations not found for ukprn {ukprn} and lars code {larsCode}", ukprn,larsCode);
+                _logger.LogInformation("Provider Course Locations not found for ukprn {Ukprn} and lars code {LarsCode}", ukprn, larsCode);
                 return NotFound();
             }
 
