@@ -21,6 +21,7 @@ public class GetEmployerVacanciesApiResponse
 
 public class VacancyApiResponse
 {
+    public Guid Id { get; set; }
     public string Title { get; set; }
     public string Status { get; set; }
     public int? NoOfNewApplications { get; set; }
@@ -33,6 +34,7 @@ public class VacancyApiResponse
     {
         return new VacancyApiResponse
         {
+            Id = source.Id,
             Title = source.Title,
             Status = source.Status.ToString(),
             NoOfNewApplications = source.NoOfNewApplications,

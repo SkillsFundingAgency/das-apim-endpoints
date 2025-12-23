@@ -24,6 +24,7 @@ public record GetPagedVacancySummaryApiResponse
 
 public record VacancySummary
 {
+    public Guid Id { get; set; }
     public string Title { get; set; }
     public VacancyStatus Status { get; set; }
     public int? NoOfNewApplications { get; set; }
