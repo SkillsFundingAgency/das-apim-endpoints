@@ -89,7 +89,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Title = source.Vacancy.Title,
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 Ukprn = int.Parse(source.Vacancy.Ukprn),
-                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Nhs) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.TrimVacancyReference(),
+                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Raa) ? source.Vacancy.VacancyReference.TrimVacancyReference() : source.Vacancy.VacancyReference,
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Wage = source.Vacancy,
             };

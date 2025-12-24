@@ -90,5 +90,6 @@ public enum VacancySort
 
 public enum AdditionalDataSource
 {
-    Nhs
+    Nhs,
+    Csj
 }
