@@ -50,7 +50,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 AgreementId = agreementId,
                 PauseDate = null,
                 Costs = initialCosts,
-                LearningSupport = []
+                LearningSupport = [],
+                Care = new Care()
             });
 
             command.UpdateLearnerRequest.Delivery.OnProgramme.Add(new OnProgrammeRequestDetails
@@ -63,7 +64,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 WithdrawalDate = null,
                 CompletionDate = null,
                 Costs = resumeCosts,
-                LearningSupport = []
+                LearningSupport = [],
+                Care = new Care()
             });
 
             command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Clear();
