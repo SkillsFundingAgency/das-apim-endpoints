@@ -1,0 +1,38 @@
+query GetProviderTransferableVacancies($ukprn: Int, $legalIdentityId: Long) {
+  vacancies(
+    where: {
+      and: [
+        {
+          ownerType:
+          {
+            eq: PROVIDER
+          }
+        },
+        { 
+          deletedDate:
+          {
+            eq: null
+          }
+        },
+        {
+          ukprn:
+          {
+            eq: $ukprn
+          }
+        },
+        {
+          accountLegalEntityId:
+          {
+            eq: $legalIdentityId
+          }
+        }
+      ]
+  },
+  order: [ {
+     createdDate: ASC
+  }]
+  ) 
+  {
+      id
+  }
+}
