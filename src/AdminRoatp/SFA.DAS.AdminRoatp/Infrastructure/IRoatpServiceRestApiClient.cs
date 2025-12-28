@@ -17,8 +17,4 @@ public interface IRoatpServiceRestApiClient
     [Post("/organisations")]
     [AllowAnyStatusCode]
     Task<HttpResponseMessage> PostOrganisation([Body] PostOrganisationRequest request, CancellationToken cancellationToken);
-
-    [Delete("/organisations/{ukprn}/short-courses")]
-    [AllowAnyStatusCode]
-    Task<HttpResponseMessage> DeleteShortCourseTypes([Path] int ukprn, [Header(Constants.RequestingUserIdHeader)] string userId, CancellationToken cancellationToken);
 }
