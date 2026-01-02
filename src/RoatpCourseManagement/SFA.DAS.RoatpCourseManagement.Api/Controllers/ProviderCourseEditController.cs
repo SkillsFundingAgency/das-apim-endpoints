@@ -1,10 +1,10 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateApprovedByRegulator;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.UpdateContactDetails;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -22,7 +22,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpPost]
         [Route("providers/{ukprn}/courses/{larsCode}/update-contact-details")]
-        public async Task<IActionResult> UpdateProviderCourseContactDetails(int ukprn, int larsCode, UpdateContactDetailsCommand command)
+        public async Task<IActionResult> UpdateProviderCourseContactDetails(int ukprn, string larsCode, UpdateContactDetailsCommand command)
         {
             _logger.LogInformation("Outer API: Request to update course contact details for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
             command.Ukprn = ukprn;
@@ -41,7 +41,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpPost]
         [Route("providers/{ukprn}/courses/{larsCode}/update-approved-by-regulator")]
-        public async Task<IActionResult> UpdateProviderCourseApprovedByRegulator(int ukprn, int larsCode, UpdateApprovedByRegulatorCommand command)
+        public async Task<IActionResult> UpdateProviderCourseApprovedByRegulator(int ukprn, string larsCode, UpdateApprovedByRegulatorCommand command)
         {
             _logger.LogInformation("Outer API: Request to update confirm regulated standard for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
             command.Ukprn = ukprn;

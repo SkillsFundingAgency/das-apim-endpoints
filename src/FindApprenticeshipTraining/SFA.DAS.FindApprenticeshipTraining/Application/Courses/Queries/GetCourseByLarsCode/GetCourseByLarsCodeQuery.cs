@@ -4,7 +4,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCour
 
 public class GetCourseByLarsCodeQuery : IRequest<GetCourseByLarsCodeQueryResult>
 {
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
 
     public string Location { get; set; }
 

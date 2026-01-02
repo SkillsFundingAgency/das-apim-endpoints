@@ -30,7 +30,6 @@ public class CreateLearnerRequest : UpdateLearnerRequest
     {
         public int PercentageOfTrainingLeft { get; set; }
         public bool? IsFlexiJob { get; set; }
-        public string? AgreementId { get; set; }
     }
 }
 

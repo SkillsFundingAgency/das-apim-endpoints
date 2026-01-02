@@ -60,7 +60,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     }
 
     [Then(@"a (.*) update request is sent to the earnings domain")]
-    public void ThenARequestIsSentToTheEarningsDomain(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
+    public void ThenARequestIsSentToTheEarningsDomain(string updateRequestType)
     {
         var requestUrl = GetEarningsRequestUrl(updateRequestType);
         var requests = testContext.EarningsApi.MockServer.LogEntries;
@@ -159,24 +159,18 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         response.IsSuccessStatusCode.Should().BeTrue($"Expected successful response from outer Api call, but got {response.StatusCode}. Content: {contentString}");
     }
 
-    private string GetEarningsRequestUrl(UpdateLearnerApiPutResponse.LearningUpdateChanges updateRequestType)
+    private string GetEarningsRequestUrl(string updateRequestType)
     {
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+
         switch (updateRequestType)
         {
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
-                return $"apprenticeship/{learnerKey.ToString()}/completion";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
-                return $"/apprenticeship/{learnerKey}/mathsAndEnglish";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
-                return $"/apprenticeship/{learnerKey.ToString()}/learningSupport";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
-                return $"/apprenticeship/{learnerKey.ToString()}/prices";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
-                return $"/apprenticeship/{learnerKey.ToString()}/withdraw";
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
-            case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
-                return $"/apprenticeship/{learnerKey.ToString()}/pause";
+            case "on-programme":
+                return $"learning/{learnerKey.ToString()}/on-programme";
+            case "learning-support":
+                return $"learning/{learnerKey.ToString()}/learning-support";
+            case "english-and-maths":
+                return $"learning/{learnerKey.ToString()}/english-and-maths";
             default:
                 throw new ArgumentOutOfRangeException(nameof(updateRequestType), updateRequestType, null);
         }

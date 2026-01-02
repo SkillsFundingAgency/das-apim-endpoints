@@ -86,8 +86,8 @@ public class LiveVacancy
     public TrainingProvider TrainingProvider { get; set; } = null!;
     public long VacancyReference { get; set; }
     public Wage Wage { get; set; } = null!;
-    public int AccountId { get; set; }
-    public int AccountLegalEntityId { get; set; }
+    public long AccountId { get; set; }
+    public long AccountLegalEntityId { get; set; }
     public VacancyType? VacancyType { get; set; }
     public string ApplicationMethod { get; set; } = null!;
     public string? ApplicationInstructions { get; set; }
