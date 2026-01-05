@@ -1,7 +1,7 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStandardRegions;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
@@ -19,15 +19,15 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         }
         [HttpGet]
         [Route("providers/{ukprn}/courses/{larsCode}/locations/regions")]
-        public async Task<IActionResult> GetAllStandardSubRegions(int ukprn, int larsCode)
+        public async Task<IActionResult> GetAllStandardSubRegions(int ukprn, string larsCode)
         {
-            _logger.LogInformation("Outer API: Request to get all standard subregions for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
+            _logger.LogInformation("Outer API: Request to get all standard subregions for ukprn: {Ukprn} larscode: {LarsCode}", ukprn, larsCode);
 
             var standardRegionsQueryResult = await _mediator.Send(new GetAllStandardRegionsQuery(ukprn, larsCode));
 
             if (standardRegionsQueryResult == null || standardRegionsQueryResult.Regions.Count == 0)
             {
-                _logger.LogError($"Standard subregions for ukprn not found for ukprn {ukprn} and lars code {larsCode}");
+                _logger.LogError("Standard subregions for ukprn not found for ukprn {Ukprn} and lars code {LarsCode}", ukprn, larsCode);
                 return NotFound();
             }
             return Ok(standardRegionsQueryResult);
