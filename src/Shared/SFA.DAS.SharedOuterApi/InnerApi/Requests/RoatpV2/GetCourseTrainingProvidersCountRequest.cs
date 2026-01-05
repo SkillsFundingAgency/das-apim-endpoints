@@ -1,12 +1,12 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 
 public sealed class GetCourseTrainingProvidersCountRequest : IGetApiRequest
 {
-    public int[] LarsCodes { get; }
+    public string[] LarsCodes { get; }
 
     public int? Distance { get; }
 
@@ -14,7 +14,7 @@ public sealed class GetCourseTrainingProvidersCountRequest : IGetApiRequest
 
     public decimal? Longitude { get; }
 
-    public GetCourseTrainingProvidersCountRequest(int[] larsCodes, int? distance = null, decimal? latitude = null, decimal? longitude = null)
+    public GetCourseTrainingProvidersCountRequest(string[] larsCodes, int? distance = null, decimal? latitude = null, decimal? longitude = null)
     {
         LarsCodes = larsCodes;
         Distance = distance;
@@ -22,7 +22,7 @@ public sealed class GetCourseTrainingProvidersCountRequest : IGetApiRequest
         Longitude = longitude;
     }
 
-    private const string PROVIDERS_COUNT_URL = "api/courses/providers/count";
+    private const string PROVIDERS_COUNT_URL = "courses/providers-count";
 
     public string GetUrl => BuildUrl();
 

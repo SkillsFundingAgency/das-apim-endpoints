@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
@@ -41,8 +42,8 @@ public class RemoveLearnerCommandHandler(
             throw new Exception($"LastDayOfLearning returned from learning inner not found. Cannot withdraw from earnings.");
         }
 
-        var withdrawRequest = new WithdrawLearnerPatchRequest(command.LearningKey, lastDayOfLearning.Value);
-        var earningsResponse = await earningsApiClient.PatchWithResponseCode(withdrawRequest);
+        var deleteLearningRequest = new DeleteLearningRequest(command.LearningKey);
+        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(deleteLearningRequest);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
         {

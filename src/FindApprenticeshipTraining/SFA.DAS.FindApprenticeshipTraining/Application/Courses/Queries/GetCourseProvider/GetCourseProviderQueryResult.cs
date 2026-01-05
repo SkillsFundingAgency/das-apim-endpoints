@@ -14,7 +14,7 @@ public sealed class GetCourseProviderQueryResult
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
     public int Level { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }
     public ReviewModel Reviews { get; set; }
@@ -36,7 +36,7 @@ public sealed class GetCourseProviderQueryResult
             Contact = source.Contact,
             CourseName = source.CourseName,
             Level = source.Level,
-            LarsCode = source.LarsCode,
+            LarsCode = source.LarsCode.ToString(),
             IFateReferenceNumber = source.IFateReferenceNumber,
             Qar = source.QAR,
             Reviews = source.Reviews,
