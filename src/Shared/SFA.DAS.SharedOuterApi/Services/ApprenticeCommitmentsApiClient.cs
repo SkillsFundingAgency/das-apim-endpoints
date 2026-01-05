@@ -29,5 +29,18 @@ namespace SFA.DAS.SharedOuterApi.Services
         {
             return _apiClient.GetWithResponseCode<TResponse>(request);
         }
+
+        public async Task<HttpStatusCode> Patch<TRequest>(
+           IPatchApiRequest<TRequest> request)
+        {
+            await _apiClient.Patch(request);
+            return HttpStatusCode.OK;
+        }
+
+        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TRequest, TResponse>(
+            IPatchApiRequest<TRequest> request)
+        {
+            return _apiClient.PatchWithResponseCode<TRequest, TResponse>(request);
+        }
     }
 }

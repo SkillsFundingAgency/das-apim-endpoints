@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.ApprenticeApp.Models
-{
+{    
     public class Apprenticeship
     {
         public long Id { get; set; }
@@ -14,5 +15,10 @@ namespace SFA.DAS.ApprenticeApp.Models
         public DateTime? StoppedReceivedOn { get; set; }
         public bool IsStopped { get; set; }
         public bool HasBeenConfirmedAtLeastOnce { get; set; }
+    }
+
+    public class ApprenticeshipsList
+    {
+        public List<Apprenticeship> Apprenticeships { get; set; }
     }
 }
