@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ApprenticeApp.Models
 {    
@@ -11,6 +12,7 @@ namespace SFA.DAS.ApprenticeApp.Models
         ProviderRolesAndResponsibilitiesConfirmed = 4
     }
 
+    [ExcludeFromCodeCoverage]
     public static class RolesAndResponsibilitiesConfirmationsExtensions
     {
         public static bool IsConfirmed(this RolesAndResponsibilitiesConfirmations? confirmationsValue)

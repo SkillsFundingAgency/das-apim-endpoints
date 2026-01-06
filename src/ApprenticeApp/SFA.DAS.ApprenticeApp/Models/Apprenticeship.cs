@@ -20,6 +20,7 @@ namespace SFA.DAS.ApprenticeApp.Models
         public bool HasBeenConfirmedAtLeastOnce { get; set; }
     }
 
+    [ExcludeFromCodeCoverage]
     public class ApprenticeshipsList
     {
         public List<Apprenticeship> Apprenticeships { get; set; }
