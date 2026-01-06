@@ -1,11 +1,13 @@
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class ApprenticeCommitmentsApiClient : IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>
     {
         private readonly IInternalApiClient<ApprenticeCommitmentsApiConfiguration> _apiClient;
