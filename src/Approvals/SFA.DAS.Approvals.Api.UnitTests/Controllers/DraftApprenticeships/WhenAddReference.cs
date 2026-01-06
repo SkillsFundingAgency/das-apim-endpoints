@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -44,10 +45,10 @@ public class WhenAddReference
              y.CohortId == cohortId &&
              y.DraftApprenticeshipId == draftApprenticeshipId &&
              y.Reference == email
-         ), It.IsAny<CancellationToken>())).ReturnsAsync(new DraftApprenticeshipSetReferenceResponse() { DraftApprenticeshipId = draftApprenticeshipId});
+         ), It.IsAny<CancellationToken>()));
 
         var result = await _controller.SetReference(providerId,cohortId, draftApprenticeshipId, _request);
 
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        result.Should().BeOfType<OkResult>();
     }
 }

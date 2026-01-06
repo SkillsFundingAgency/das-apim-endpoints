@@ -1,15 +1,13 @@
 ﻿using AutoFixture;
-using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.Reference;
 using SFA.DAS.Approvals.Application.Shared.Enums;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -37,20 +35,15 @@ public class DraftApprenticeshipSetReferenceCommandHandlerTests
     [Test]
     public async Task Then_The_Api_Is_Called_With_A_Valid_Request()
     {
-        var response = new ApiResponse<DraftApprenticeshipSetReferenceResponse>(new DraftApprenticeshipSetReferenceResponse() { DraftApprenticeshipId = 1 }, System.Net.HttpStatusCode.OK, null);
+        apiClient.Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<DraftApprenticeshipSetReferenceRequest>()));
 
-        apiClient.Setup(x => x.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(It.IsAny<DraftApprenticeshipSetReferenceRequest>(), true))
-          .ReturnsAsync(response);
+        await _handler.Handle(command, CancellationToken.None);
 
-        var actual = await _handler.Handle(command, CancellationToken.None);
-
-        actual.Should().NotBeNull();
-
-        apiClient.Verify(x => x.PostWithResponseCode<DraftApprenticeshipSetReferenceResponse>(It.Is<DraftApprenticeshipSetReferenceRequest>
+        apiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<DraftApprenticeshipSetReferenceRequest>
             (r => r.DraftApprenticeshipId == command.DraftApprenticeshipId &&
              r.CohortId == command.CohortId &&
              ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).Party == serviceParameters.CallingParty &&
              ((DraftApprenticeshipSetReferenceRequest.Body)r.Data).Reference == command.Reference)
-            , true));
+            ));
     }
 }

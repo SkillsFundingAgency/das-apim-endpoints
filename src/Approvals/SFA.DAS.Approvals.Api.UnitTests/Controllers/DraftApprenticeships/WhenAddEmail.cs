@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -46,11 +47,11 @@ public class WhenAddEmail
              y.CohortId == cohortId &&
              y.DraftApprenticeshipId == draftApprenticeshipId &&
              y.Email == email
-         ), It.IsAny<CancellationToken>())).ReturnsAsync(new DraftApprenticeshipAddEmailResponse() { DraftApprenticeshipId = draftApprenticeshipId});
+         ), It.IsAny<CancellationToken>()));
 
         var result = await _controller.AddEmail(providerId,cohortId, draftApprenticeshipId, _request);
 
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());       
+        result.Should().BeOfType<OkResult>();
     }
 }
 

@@ -375,7 +375,7 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/email")]
         public async Task<IActionResult> AddEmail(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] AddDraftApprenticeEmailRequest request)
         {
@@ -387,12 +387,12 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 ProviderId = providerId
             };
 
-            var response = await mediator.Send(command);
+            await mediator.Send(command);
 
-            return Ok(response);
+            return Ok();
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/reference")]
         
         public async Task<IActionResult> SetReference(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] DraftApprenticeshipSetReferenceRequest request)
@@ -405,9 +405,8 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 ProviderId = providerId
             };
 
-            var response = await mediator.Send(command);
-
-            return Ok(response);
+            await mediator.Send(command);
+            return Ok();
         }
     }
 }

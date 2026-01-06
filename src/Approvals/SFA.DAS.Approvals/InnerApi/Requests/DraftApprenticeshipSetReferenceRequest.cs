@@ -3,7 +3,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.InnerApi.Requests;
 
-public class DraftApprenticeshipSetReferenceRequest : IPostApiRequest
+public class DraftApprenticeshipSetReferenceRequest : IPutApiRequest
 {
     public long DraftApprenticeshipId { get; set; }
 
@@ -16,7 +16,7 @@ public class DraftApprenticeshipSetReferenceRequest : IPostApiRequest
         CohortId = cohortId;
     }
 
-    public string PostUrl => $"api/cohorts/{CohortId}/draft-apprenticeships/{DraftApprenticeshipId}/reference";
+    public string PutUrl => $"api/cohorts/{CohortId}/draft-apprenticeships/{DraftApprenticeshipId}/reference";
 
     public object Data { get; set; }
 
