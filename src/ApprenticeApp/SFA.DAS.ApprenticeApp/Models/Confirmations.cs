@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.ApprenticeApp.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SFA.DAS.ApprenticeApp.Models
 {
+    [ExcludeFromCodeCoverage]
     public class Confirmations
     {
         public bool? EmployerCorrect { get; set; }

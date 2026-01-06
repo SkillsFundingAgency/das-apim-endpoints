@@ -1,8 +1,10 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeCommitments.Requests
 {
+    [ExcludeFromCodeCoverage]
     public class ConfirmApprenticeshipPatchRequest : IPatchApiRequest<object>
     {
         private readonly Guid _apprenticeId;
