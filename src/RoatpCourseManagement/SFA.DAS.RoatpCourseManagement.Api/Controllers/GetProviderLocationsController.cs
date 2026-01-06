@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAllProviderLocations;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAvailableProviderLocations;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetProviderLocationDetails;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 {
@@ -57,10 +57,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
 
         [HttpGet]
         [Route("providers/{ukprn}/locations/{larsCode}/available-providerlocations")]
-        public async Task<IActionResult> GetAvailableProviderLocations([FromRoute] int ukprn, [FromRoute] int larsCode)
+        public async Task<IActionResult> GetAvailableProviderLocations([FromRoute] int ukprn, [FromRoute] string larsCode)
         {
             var result = await _mediator.Send(new GetAvailableProviderLocationsQuery(ukprn, larsCode));
-            _logger.LogInformation($"Total {result.AvailableProviderLocations.Count} provider locations are available for ukprn: {ukprn} larsCode: {larsCode}");
+            _logger.LogInformation("Total {Count} provider locations are available for ukprn: {Ukprn} larsCode: {LarsCode}", result.AvailableProviderLocations.Count, ukprn, larsCode);
             return Ok(result);
         }
     }

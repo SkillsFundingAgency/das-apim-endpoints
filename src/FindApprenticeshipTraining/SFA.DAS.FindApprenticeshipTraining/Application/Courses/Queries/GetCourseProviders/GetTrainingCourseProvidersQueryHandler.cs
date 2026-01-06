@@ -7,9 +7,9 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
@@ -45,7 +45,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
         }
 
         var response =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponse>(
+            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(
                 new GetProvidersByCourseIdRequest()
                 {
                     CourseId = request.Id,
@@ -68,7 +68,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
             return null;
 
         return response.StatusCode.IsSuccessStatusCode()
-                ? response.Body
-                : new GetCourseProvidersResponse();
+            ? (GetCourseProvidersResponse)response.Body
+            : new GetCourseProvidersResponse();
     }
 }

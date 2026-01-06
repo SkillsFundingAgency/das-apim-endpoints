@@ -1,13 +1,13 @@
-﻿using MediatR;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider
 {
@@ -35,7 +35,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailab
 
             var existingLarsCodes = allProviderCourses.Select(p => p.LarsCode).ToList();
 
-            var availableStandards = allStandards.Where(s => !existingLarsCodes.Contains(s.LarsCode)).Select(c => (AvailableCourseModel)c);
+            var availableStandards = allStandards.Where(s => !existingLarsCodes.Contains(s.LarsCode.ToString())).Select(c => (AvailableCourseModel)c);
             return new GetAvailableCoursesForProviderQueryResult() { AvailableCourses = availableStandards.ToList() };
         }
     }

@@ -5,9 +5,9 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     public class GetStandardRequest : IGetApiRequest
     {
         public string GetUrl => $"api/courses/Standards/{LarsCode}";
-        public int LarsCode { get; }
+        public string LarsCode { get; }
 
-        public GetStandardRequest(int larsCode)
+        public GetStandardRequest(string larsCode)
         {
             LarsCode = larsCode;
         }
