@@ -82,7 +82,10 @@ public class WhenGettingProviderSummary
             options => options
                 .Excluding(c => c.IsApprovedByRegulator)
                 .Excluding(c => c.ApprovalBody)
+                .Excluding(c => c.LarsCode)
             );
+
+        sut.Courses[0].LarsCode.Should().Be(coursesResponse[0].LarsCode.ToString());
     }
 
     [Test, MoqAutoData]

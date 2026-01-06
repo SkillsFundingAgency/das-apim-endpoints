@@ -29,7 +29,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProv
                 var courses = await _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllCoursesRequest(request.Ukprn));
                 if (courses == null)
                 {
-                    _logger.LogInformation("Courses data not found for {ukprn}", request.Ukprn);
+                    _logger.LogInformation("Courses data not found for {Ukprn}", request.Ukprn);
                     return null;
                 }
                 var results = new List<GetAllProviderCoursesQueryResult>();

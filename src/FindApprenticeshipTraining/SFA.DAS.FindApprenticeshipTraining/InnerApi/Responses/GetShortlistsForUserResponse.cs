@@ -18,7 +18,7 @@ public class GetShortlistsForUserResponse
 public class ShortlistCourseModel
 {
     public int Ordering { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string StandardName { get; set; }
     public List<ShortlistLocationModel> Locations { get; set; } = [];
 }
