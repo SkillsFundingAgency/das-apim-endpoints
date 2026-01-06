@@ -7,7 +7,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     public class ProviderCourseCreateRequest : IPostApiRequest
     {
         public readonly int Ukprn;
-        public readonly int LarsCode;
+        public readonly string LarsCode;
         private readonly string UserId;
         private readonly string UserDisplayName;
         public string PostUrl => $"providers/{Ukprn}/courses/{LarsCode}?userId={HttpUtility.UrlEncode(UserId)}&userDisplayName={HttpUtility.UrlEncode(UserDisplayName)}";
