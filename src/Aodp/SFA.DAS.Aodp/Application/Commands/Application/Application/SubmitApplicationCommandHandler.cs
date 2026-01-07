@@ -1,10 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.Aodp.Application.Commands.Application.Application;
-using SFA.DAS.Aodp.InnerApi.AodpApi.Application.Messages;
 using SFA.DAS.Aodp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-
+namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
 public class SubmitApplicationCommandHandler : IRequestHandler<SubmitApplicationCommand, BaseMediatrResponse<EmptyResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;

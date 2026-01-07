@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
@@ -175,5 +176,14 @@ public class ApplicationsController : BaseController
     {
         submitApplicationCommand.ApplicationId = applicationId;
         return await SendRequestAsync(submitApplicationCommand);
+    }
+
+    [HttpPost("/api/applications/{applicationId}/withdraw")]
+    [ProducesResponseType(typeof(EmptyResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> WithdrawApplicationByIdAsync(Guid applicationId, WithdrawApplicationCommand withdrawApplicationCommand)
+    {
+        withdrawApplicationCommand.ApplicationId = applicationId;
+        return await SendRequestAsync(withdrawApplicationCommand);
     }
 }
