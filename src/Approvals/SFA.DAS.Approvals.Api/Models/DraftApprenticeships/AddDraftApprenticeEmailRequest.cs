@@ -4,5 +4,3 @@ public class AddDraftApprenticeEmailRequest
 {
     public string Email { get; set; }
 }
-
-

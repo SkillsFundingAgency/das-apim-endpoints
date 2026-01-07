@@ -31,14 +31,12 @@ public class DraftApprenticeshipAddEmailCommandHandlerTests
         _handler = new DraftApprenticeshipAddEmailCommandHandler(apiClient.Object, _serviceParameters);
     }
 
-
     [Test]
     public async Task Then_The_Api_Is_Called_With_A_Valid_Request()
     {
         apiClient.Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<DraftApprenticeshipAddEmailRequest>()));
 
-        await _handler.Handle(command, CancellationToken.None);
-        
+        await _handler.Handle(command, CancellationToken.None);        
 
         apiClient.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<DraftApprenticeshipAddEmailRequest>
             (r => r.DraftApprenticeshipId == command.DraftApprenticeshipId &&

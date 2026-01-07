@@ -9,7 +9,6 @@ public class DraftApprenticeshipSetReferenceRequest : IPutApiRequest
 
     public long CohortId { get; set; }
 
-
     public DraftApprenticeshipSetReferenceRequest(long draftApprenticeshipId, long cohortId)
     {
         DraftApprenticeshipId = draftApprenticeshipId;
@@ -26,4 +25,3 @@ public class DraftApprenticeshipSetReferenceRequest : IPutApiRequest
         public Party Party { get; set; }
     }
 }
-

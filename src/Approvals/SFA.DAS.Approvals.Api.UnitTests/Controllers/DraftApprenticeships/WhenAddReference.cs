@@ -8,8 +8,6 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.Reference;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,8 +36,6 @@ public class WhenAddReference
         var draftApprenticeshipId = _fixture.Create<long>();
         var email = _fixture.Create<string>();
         var providerId = _fixture.Create<long>();
-
-        var response = new ApiResponse<DraftApprenticeshipSetReferenceResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
 
         _mediator.Setup(x => x.Send(It.Is<DraftApprenticeshipSetReferenceCommand>(y =>
              y.CohortId == cohortId &&

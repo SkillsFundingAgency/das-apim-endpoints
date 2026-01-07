@@ -228,7 +228,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         public async Task Handle_TraingingCouser_Version_Is_Mapped()
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
-            Assert.That(_draftApprenticeship.TrainingCourseVersion, Is.EqualTo(result.TrainingCourseVersion));
+            result.TrainingCourseVersion.Should().Be(_draftApprenticeship.TrainingCourseVersion);
         }
 
         [TestCase(0, false)]

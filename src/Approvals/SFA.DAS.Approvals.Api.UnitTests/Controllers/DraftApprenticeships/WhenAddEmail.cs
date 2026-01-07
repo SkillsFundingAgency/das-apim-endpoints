@@ -8,8 +8,6 @@ using NUnit.Framework;
 using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddEmail;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -41,8 +39,6 @@ public class WhenAddEmail
         var draftApprenticeshipId = _fixture.Create<long>();
         var email = "test@test.com";
 
-        var response = new ApiResponse<DraftApprenticeshipAddEmailResponse>(null, System.Net.HttpStatusCode.OK, string.Empty);
-
         _mediator.Setup(x => x.Send(It.Is<DraftApprenticeshipAddEmailCommand>(y =>
              y.CohortId == cohortId &&
              y.DraftApprenticeshipId == draftApprenticeshipId &&
@@ -54,5 +50,3 @@ public class WhenAddEmail
         result.Should().BeOfType<OkResult>();
     }
 }
-
-
