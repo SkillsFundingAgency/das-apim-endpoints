@@ -12,7 +12,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
         public string Version { get; set; }
         public ApprenticeshipType ApprenticeshipType { get; set; }
         public string RegulatorName { get; set; }
-        public int LarsCode { get; set; }
+        public string LarsCode { get; set; }
         public string Sector { get; set; }
         public string StandardInfoUrl { get; set; }
         public string ContactUsPhoneNumber { get; set; }

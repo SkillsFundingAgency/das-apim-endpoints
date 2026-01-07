@@ -30,7 +30,7 @@ public class UpdateLearnerRequestDeliveryDetails
 public class OnProgrammeRequestDetails
 {
     public int StandardCode { get; set; }
-    public string AgreementId { get; set; }
+    public string? AgreementId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<CostDetails>? Costs { get; set; }
@@ -54,8 +54,8 @@ public class MathsAndEnglish
     //These fields exist currently only for the PUT, until we do the work to look up the course from the course code and align the Update
     //with the CreateLearner requests
     public string Course { get; set; } = "";
+    public string LearnAimRef { get; set; }
     public decimal Amount { get; set; } = 0;
-
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }

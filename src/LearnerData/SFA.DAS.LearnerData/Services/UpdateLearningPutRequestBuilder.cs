@@ -74,6 +74,7 @@ namespace SFA.DAS.LearnerData.Services
                     {
                         Amount = x.Amount,
                         CompletionDate = x.CompletionDate,
+                        LearnAimRef = x.LearnAimRef,
                         Course = x.Course,
                         PlannedEndDate = x.EndDate,
                         PriorLearningPercentage = x.PriorLearningPercentage,

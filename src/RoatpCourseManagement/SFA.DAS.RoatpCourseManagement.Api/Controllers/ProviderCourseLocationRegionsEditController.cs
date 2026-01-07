@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using System.Net;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
-using System.Net;
 using SFA.DAS.Roatp.CourseManagement.Application.Standards.Commands.UpdateStandardSubRegions;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
@@ -20,7 +20,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
         }
         [HttpPost]
         [Route("providers/{ukprn}/courses/{larsCode}/locations/regions")]
-        public async Task<IActionResult> UpdateStandardSubRegions(int ukprn, int larsCode, UpdateStandardSubRegionsCommand command)
+        public async Task<IActionResult> UpdateStandardSubRegions(int ukprn, string larsCode, UpdateStandardSubRegionsCommand command)
         {
             _logger.LogInformation("Outer API: Request to update standard subregions for ukprn: {ukprn} larscode: {larscode}", ukprn, larsCode);
             command.Ukprn = ukprn;
