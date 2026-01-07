@@ -557,8 +557,8 @@ components:
               items:
                 type: object
                 properties:
-                  standardCode???:
-                    type: integer
+                  courseCode:
+                    type: string
                   agreementId:
                     type: string
                   startDate:
@@ -583,8 +583,6 @@ components:
                     format: date
                   aimSequenceNumber:
                     type: integer
-                  learnAimRef:
-                    type: string
                   actualEndDate:
                     type: string
                     format: date
@@ -592,6 +590,7 @@ components:
                     type: array
                     items:
                       type: string
+                      
     learner:
       type: object
       properties:
