@@ -73,9 +73,10 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             return command;
         }
 
-        public static UpdateLearnerCommand CreateLearnerWithEnglishAndMathsBreaksInLearning()
+        public static UpdateLearnerCommand CreateLearnerWithEnglishAndMathsBreaksInLearning(bool returnsFromBreakInLearning = false)
         {
             var fixture = new Fixture();
+            var learnAimRef = fixture.Create<string>();
 
             var command = fixture.Create<UpdateLearnerCommand>();
             var startDate = fixture.Create<DateTime>();
@@ -93,15 +94,40 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 LearningSupport = []
             });
 
-            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(new MathsAndEnglish
+            if(returnsFromBreakInLearning)
             {
-                StartDate = startDate,
-                EndDate = startDate.AddYears(2),
-                PauseDate = pauseDate,
-                LearningSupport = []
-            });
+                var resumeDate = pauseDate.AddMonths(6);
 
-            return command;
+                command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(new MathsAndEnglish
+                {
+                    StartDate = startDate,
+                    EndDate = startDate.AddYears(2),
+                    ActualEndDate = pauseDate,
+                    LearningSupport = [],
+                    LearnAimRef = learnAimRef
+                });
+
+                command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(new MathsAndEnglish
+                {
+                    StartDate = resumeDate,
+                    EndDate = startDate.AddYears(2),
+                    LearnAimRef = learnAimRef,
+                    LearningSupport = []
+                });
+            }
+            else
+            {
+                command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(new MathsAndEnglish
+                {
+                    StartDate = startDate,
+                    EndDate = startDate.AddYears(2),
+                    PauseDate = pauseDate,
+                    LearningSupport = [],
+                    LearnAimRef = learnAimRef
+                });
+            }
+
+                return command;
         }
     }
 }
