@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider
 {
@@ -24,7 +24,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailab
 
         public async Task<GetAvailableCoursesForProviderQueryResult> Handle(GetAvailableCoursesForProviderQuery request, CancellationToken cancellationToken)
         {
-            var allStandardsTask = _courseManagementApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
+            var allStandardsTask = _courseManagementApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest(request.CourseType.Value));
             var allProviderCoursesTask = _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllCoursesRequest(request.Ukprn));
 
             await Task.WhenAll(allStandardsTask, allProviderCoursesTask);
