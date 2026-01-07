@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
@@ -10,8 +7,15 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitJobs.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.RecruitJobs.Api;
 
@@ -64,6 +68,30 @@ public static class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitJobsOuterApi", Version = "v1" });
         });
+
+        services
+            .AddRecruitGqlClient()
+            .ConfigureHttpClient((sp, x) =>
+            {
+                var clientConfig = sp.GetService<RecruitApiConfiguration>();
+                x.BaseAddress = new Uri($"{clientConfig.Url.TrimEnd('/')}/graphql");
+
+                if (configuration.IsLocalOrDev())
+                {
+                    return;
+                }
+
+                var correlationId = CorrelationContext.CorrelationId;
+                if (!string.IsNullOrWhiteSpace(correlationId))
+                {
+                    x.DefaultRequestHeaders.Remove("x-correlation-id");
+                    x.DefaultRequestHeaders.Add("x-correlation-id", correlationId);
+                }
+
+                var credentialHelper = sp.GetService<IAzureClientCredentialHelper>();
+                var token = credentialHelper.GetAccessTokenAsync(clientConfig.Identifier).Result;
+                x.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            });
     }
     
     public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)
