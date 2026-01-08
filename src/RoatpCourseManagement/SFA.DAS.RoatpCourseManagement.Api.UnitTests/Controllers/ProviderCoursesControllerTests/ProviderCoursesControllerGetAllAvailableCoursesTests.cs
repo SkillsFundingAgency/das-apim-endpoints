@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
+using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,18 +16,22 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
     [TestFixture]
     public class ProviderCoursesControllerGetAllAvailableCoursesTests
     {
-        [Test, MoqAutoData]
+        [Test]
+        [MoqInlineAutoData(null)]
+        [MoqInlineAutoData(CourseType.Apprenticeship)]
+        [MoqInlineAutoData(CourseType.ApprenticeshipUnit)]
         public async Task GetAllAvailableCourses_ReturnsCourses(
+            CourseType courseType,
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] ProviderCoursesController sut,
             GetAvailableCoursesForProviderQueryResult response,
             int ukprn
             )
         {
-            mediatorMock.Setup(m => m.Send(It.Is<GetAvailableCoursesForProviderQuery>(q => q.Ukprn == ukprn), It.IsAny<CancellationToken>())).ReturnsAsync(response);
+            mediatorMock.Setup(m => m.Send(It.Is<GetAvailableCoursesForProviderQuery>(q => q.Ukprn == ukprn && q.CourseType == courseType), It.IsAny<CancellationToken>())).ReturnsAsync(response);
 
-            var result = await sut.GetAllAvailableCourses(ukprn);
-            
+            var result = await sut.GetAllAvailableCourses(ukprn, courseType);
+
             var okObjectResult = result as OkObjectResult;
             okObjectResult.Should().NotBeNull();
             var queryResult = okObjectResult.Value as GetAvailableCoursesForProviderQueryResult;
