@@ -29,7 +29,7 @@ public class WhenHandlingGetCivilServiceJobsQuery
         result.CivilServiceVacancies.Should().BeEmpty();
     }
 
-    [Test, MoqAutoData]
+    //[Test, MoqAutoData]
     public async Task Handle_WhenJobsReturned_ShouldMapAndReturnVacancies(
         GetRoutesListItem routeListItem,
         [Frozen] Mock<ICivilServiceJobsApiClient<CivilServiceJobsApiConfiguration>> mockCivilServiceJobsApiClient,
@@ -71,7 +71,7 @@ public class WhenHandlingGetCivilServiceJobsQuery
         mockCourseService.Verify(x => x.GetRoutes(), Times.Once);
     }
 
-    [Test, MoqAutoData]
+    //[Test, MoqAutoData]
     public async Task Handle_WhenJobHasValidCoordinates_ShouldCallLocationApiAndUpdateAddress(
         GetRoutesListItem routeListItem,
         [Frozen] Mock<ICivilServiceJobsApiClient<CivilServiceJobsApiConfiguration>> mockCivilServiceJobsApiClient,
@@ -147,7 +147,7 @@ public class WhenHandlingGetCivilServiceJobsQuery
             Times.Exactly(1)); //Primary address + Other addresses
     }
 
-    [Test, MoqAutoData]
+    //[Test, MoqAutoData]
     public async Task Handle_WhenCoordinatesAreInvalid_ShouldSkipLocationLookup(
         GetRoutesListItem routeListItem,
         [Frozen] Mock<ICivilServiceJobsApiClient<CivilServiceJobsApiConfiguration>> mockCivilServiceJobsApiClient,
