@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   version: '1.0'
-  title: Learner data external API for consumption from an authenticated consumer
+  title: Provider reference data. external API for consumption from an authenticated consumer
   description: 'This service will provide a contract to the Data Collections team for submission to the Apprenticeship service'
 paths:
   /info:
@@ -68,73 +68,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/error' 
-
-  /providers/{ukprn}/academicyears/{academicyear}/learners:
-    put:
-      summary: External authenticated endpoint for pushing ILR data (leaner data in our domain) into the apprenticeship service
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner cohort
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner cohort
-          schema:
-            type: integer
-            example: 2324
-      requestBody:
-        $ref: '#/components/requestBodies/learnerRequestArray'
-      responses:
-        '202':
-          $ref: '#/components/responses/acceptedResponse'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'   
-  /providers/{ukprn}/academicyears/{academicyear}/learners/{uln}:
-    put:
-      summary: External authenticated endpoint for updating specific learners.
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      parameters:
-        - name: ukprn
-          in: path
-          required: true
-          description: The UK Provider Reference Number for the provider entering this learner
-          schema:
-            type: string
-        - name: academicyear
-          in: path
-          required: true
-          example: 2425
-          schema:
-            type: integer
-        - name: uln
-          in: path
-          required: true
-          description: The Unique Learner Number for this learner
-          schema:
-            type: string
-      requestBody:
-        $ref: '#/components/requestBodies/learnerRequest'
-      responses:
-        '202':
-          $ref: '#/components/responses/acceptedResponse'
-        '400':
-          $ref: '#/components/responses/badRequest'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '429':
-          $ref: '#/components/responses/rateLimitExceededResponse'                       
+                $ref: '#/components/schemas/error'                        
 
 components:  
   securitySchemes:
@@ -169,24 +103,6 @@ components:
       schema:
         type: integer
         example: 60
-
-  requestBodies:
-    learnerRequest:
-      description: The ilr record to be submitted to AS
-      required: true
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/learnerRequest'
-    learnerRequestArray:
-      description: The ilr record array to be submitted to AS
-      required: true
-      content:
-        application/json:
-          schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/learnerRequest'
 
   responses:
     providerReferenceDataResponse:
@@ -308,65 +224,6 @@ components:
           type: string
         result: 
           type: string    
-    
-    learnerRequest:
-      type: object
-      properties:
-        uln:
-          type: integer
-        firstName:
-          type: string
-        lastName:
-          type: string
-        dateOfBirth:
-          type: string
-          format: date
-        learnerEmail:
-          type: string
-        percentageLearningToBeDelivered:
-          description: This is the percentage of learning left to be delivered due to RPL
-          type: integer
-          example: 10
-        ukprn:
-          type: integer
-        agreementId:
-          type: string
-        trainingPrice:
-          type: integer
-          description: This is the earliest price
-        epaoPrice:
-          type: integer
-          description: This is the earliest price
-        standardCode:
-          type: integer
-        startDate:
-          type: string
-          format: date
-        plannedEndDate:
-          type: string
-          format: date
-        isFlexiJob:
-          type: boolean
-        plannedOTJTrainingHours:
-          type: integer
-        consumerReference:
-          type: string
-          description: This allows the consumer to set a reference for the records being submitted
-          example: LR-10034925-2425-20250301-113951-04
-      required:
-        - uln,
-        - firstName
-        - lastName
-        - dateOfBirth
-        - ukprn
-        - standardCode
-        - trainingPrice
-        - epaoPrice
-        - startDate
-        - plannedEndDate
-        - agreementId     
-        - isFlexiJob 
-        - consumerReference
     
     pagedProviderReferenceData:
       type: object
