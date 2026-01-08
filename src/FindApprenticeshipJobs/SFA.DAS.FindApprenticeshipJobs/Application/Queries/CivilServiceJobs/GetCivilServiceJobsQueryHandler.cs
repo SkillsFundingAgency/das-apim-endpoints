@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
@@ -50,6 +51,40 @@ public class GetCivilServiceJobsQueryHandler(
             {
                 vacancy.Address = await PopulateAddress(vacancy.Address!);
             }
+
+            vacancy.OtherAddresses.AddRange(new List<Address>()
+            {
+                new Address()
+                {
+                    AddressLine1 = "23-27 Bolton Street",
+                    AddressLine2 = "Chorley",
+                    AddressLine4 = "Lancashire",
+                    Postcode = "PR7 1JE",
+                    Country = "England",
+                    Latitude = 53.649653,
+                    Longitude = -2.630431
+                },
+                new Address()
+                {
+                    AddressLine1 = "Foster House, 2 Victoria Square",
+                    AddressLine2 = "Birmingham",
+                    AddressLine4 = "West Midlands",
+                    Postcode = "B1 1BD",
+                    Country = "England",
+                    Latitude = 52.478256,
+                    Longitude = -1.902689
+                },
+                new Address()
+                {
+                    AddressLine1 = "1 St. James's Square",
+                    AddressLine2 = "London",
+                    AddressLine4 = "Greater London",
+                    Postcode = "SW1Y 4AH",
+                    Country = "England",
+                    Latitude = 51.507351,
+                    Longitude = -0.127758
+            }});
+            vacancy.EmploymentLocationOption = AvailableWhere.MultipleLocations;
 
             // Other addresses
             if (vacancy.OtherAddresses is {Count: > 0})
