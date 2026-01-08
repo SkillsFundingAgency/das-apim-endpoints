@@ -21,21 +21,24 @@ public static class OperationResultExtensions
         return sb.ToString();
     }
     
-    public static string FormatErrors<T>(this IOperationResult<T> operationResult) where T : class
+    extension<T>(IOperationResult<T> operationResult) where T : class
     {
-        return operationResult is not { Errors: { Count: > 0 } errors }
-            ? string.Empty
-            : $"The following errors were returned in the GQL response:{Environment.NewLine}{errors.FormatErrors()}";
-    }
+        public string FormatErrors()
+        {
+            return operationResult is not { Errors: { Count: > 0 } errors }
+                ? string.Empty
+                : $"The following errors were returned in the GQL response:{Environment.NewLine}{errors.FormatErrors()}";
+        }
 
-    public static ProblemDetails ToProblemDetails<T>(this IOperationResult<T> operationResult) where T : class
-    {
-        return operationResult is not { Errors: { Count: > 0 } errors }
-            ? null
-            : new ProblemDetails
-            {
-                Title = "The following errors occurred",
-                Detail = errors.FormatErrors()
-            };
+        public ProblemDetails ToProblemDetails()
+        {
+            return operationResult is not { Errors: { Count: > 0 } errors }
+                ? null
+                : new ProblemDetails
+                {
+                    Title = "The following errors occurred",
+                    Detail = errors.FormatErrors()
+                };
+        }
     }
 }
