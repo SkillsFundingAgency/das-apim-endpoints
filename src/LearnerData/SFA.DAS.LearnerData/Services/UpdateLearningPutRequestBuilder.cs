@@ -26,7 +26,7 @@ namespace SFA.DAS.LearnerData.Services
 
             var costs = costsService.GetCosts(allMatchingOnProgrammes);
             var onProgrammeDetails = BuildOnProgrammeDetails(firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes, costs);
-            var mathsAndEnglishCourses = BuildMathsAndEnglishDetails(command.UpdateLearnerRequest.Delivery.EnglishAndMaths);
+            var englishAndMathsCourses = BuildEnglishAndMathsDetails(command.UpdateLearnerRequest.Delivery.EnglishAndMaths);
 
             //Determine the effective end date of the latest OnProgramme
             var onProgrammeEndDate = new[]
@@ -40,8 +40,9 @@ namespace SFA.DAS.LearnerData.Services
             var learningSupport = learningSupportService.GetCombinedLearningSupport(
                 allMatchingOnProgrammes,
                 onProgrammeEndDate,
-                command.UpdateLearnerRequest.Delivery.EnglishAndMaths,
-                onProgrammeDetails.BreaksInLearning);
+                onProgrammeDetails.BreaksInLearning,
+                englishAndMathsCourses,
+                command.EnglishAndMathsLearningSupport());
 
             var body = new UpdateLearningRequestBody
             {
@@ -64,7 +65,7 @@ namespace SFA.DAS.LearnerData.Services
                     }
                 },
                 OnProgramme = onProgrammeDetails,
-                MathsAndEnglishCourses = mathsAndEnglishCourses,
+                MathsAndEnglishCourses = englishAndMathsCourses,
                 LearningSupport = learningSupport
             };
 
@@ -109,7 +110,7 @@ namespace SFA.DAS.LearnerData.Services
             };
         }
 
-        private List<MathsAndEnglishDetails> BuildMathsAndEnglishDetails(List<MathsAndEnglish> mathsAndEnglish)
+        private List<MathsAndEnglishDetails> BuildEnglishAndMathsDetails(List<MathsAndEnglish> mathsAndEnglish)
         {
             var groupedCourses = mathsAndEnglish.GroupBy(c => c.LearnAimRef);
 

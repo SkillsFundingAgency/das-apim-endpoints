@@ -34,6 +34,7 @@ public class UpdateLearnerApiPutResponse
         MathsAndEnglishWithdrawal = 10,
         BreaksInLearningUpdated = 11,
         DateOfBirthChanged = 12,
-        Care = 13
+        Care = 13,
+        EnglishAndMathsBreaksInLearningUpdated = 14
     }
 }
