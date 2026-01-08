@@ -14,8 +14,4 @@
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\VacancyReview\Queries\" />
-  </ItemGroup>
-
 </Project>

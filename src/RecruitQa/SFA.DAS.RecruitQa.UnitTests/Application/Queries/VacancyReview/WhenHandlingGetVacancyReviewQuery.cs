@@ -1,15 +1,12 @@
 using System.Net;
-using System.Threading;
-using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
-using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Responses;
+using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReview;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.Recruit.UnitTests.Application.VacancyReview.Queries;
+namespace SFA.DAS.RecruitQa.UnitTests.Application.VacancyReview;
 
 public class WhenHandlingGetVacancyReviewQuery
 {

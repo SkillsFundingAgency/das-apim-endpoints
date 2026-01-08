@@ -1,15 +1,11 @@
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Responses;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
+namespace SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReview;
 
 public class GetVacancyReviewQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) : IRequestHandler<GetVacancyReviewQuery, GetVacancyReviewQueryResult>
 {

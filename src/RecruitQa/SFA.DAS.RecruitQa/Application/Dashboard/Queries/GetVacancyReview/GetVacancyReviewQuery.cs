@@ -1,7 +1,6 @@
-using System;
 using MediatR;
 
-namespace SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
+namespace SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReview;
 
 public class GetVacancyReviewQuery : IRequest<GetVacancyReviewQueryResult>
 {

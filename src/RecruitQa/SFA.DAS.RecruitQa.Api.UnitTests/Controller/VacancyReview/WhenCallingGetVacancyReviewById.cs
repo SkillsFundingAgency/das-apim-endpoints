@@ -1,12 +1,10 @@
-using System;
 using System.Net;
-using System.Threading;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Recruit.Api.Controllers;
-using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
+using SFA.DAS.RecruitQa.Api.Controllers;
+using SFA.DAS.RecruitQa.Api.Models;
+using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReview;
 
-namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.VacancyReview;
+namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
 public class WhenCallingGetVacancyReviewById
 {

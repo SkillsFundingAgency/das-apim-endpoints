@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
 
-namespace SFA.DAS.Recruit.UnitTests.InnerApi;
+namespace SFA.DAS.RecruitQa.UnitTests.InnerApi;
 
 public class WhenBuildingGetVacancyReviewsByFilterRequest
 {

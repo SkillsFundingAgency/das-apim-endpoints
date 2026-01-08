@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+namespace SFA.DAS.RecruitQa.InnerApi.Requests;
 
 public class GetVacancyReviewsByFilterRequest(List<string>? status = null, DateTime? expiredAssignationDateTime = null) : IGetApiRequest
 {
