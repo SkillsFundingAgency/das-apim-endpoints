@@ -1,27 +1,26 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+
+public class GetAllStandardsRequest : IGetApiRequest
 {
-    public class GetAllStandardsRequest : IGetApiRequest
+    public string GetUrl => BuildUrl();
+    public CourseType? CourseType { get; }
+    private string BuildUrl()
     {
-        public string GetUrl => BuildUrl();
-        public CourseType? CourseType { get; }
-        private string BuildUrl()
+        var url = $"standards";
+
+        if (CourseType.HasValue)
         {
-            var url = $"standards";
-
-            if (CourseType.HasValue)
-            {
-                url += $"?coursetype={CourseType}";
-            }
-
-            return url;
+            url += $"?coursetype={CourseType}";
         }
 
-        public GetAllStandardsRequest(CourseType? courseType)
-        {
-            CourseType = courseType;
-        }
+        return url;
+    }
+
+    public GetAllStandardsRequest(CourseType? courseType)
+    {
+        CourseType = courseType;
     }
 }
