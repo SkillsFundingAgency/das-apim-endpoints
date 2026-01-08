@@ -11,6 +11,32 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="StrawberryShake.Blazor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <GraphQL Update="GraphQL\Inner\Recruit\schema.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\Inner\Recruit\schema.extensions.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetProviderTransferableVacancies.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetProviderTransferableVacancyDetails.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\schema.extensions.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\schema.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="obj\Debug\net8.0\berry\" />
   </ItemGroup>
 
 </Project>
