@@ -5,8 +5,19 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
     public class GetAllStandardsRequest : IGetApiRequest
     {
-        public string GetUrl => $"standards?coursetype={CourseType}";
+        public string GetUrl => BuildUrl();
         public CourseType? CourseType { get; }
+        private string BuildUrl()
+        {
+            var url = $"standards";
+
+            if (CourseType.HasValue)
+            {
+                url += $"?coursetype={CourseType}";
+            }
+
+            return url;
+        }
 
         public GetAllStandardsRequest(CourseType? courseType)
         {

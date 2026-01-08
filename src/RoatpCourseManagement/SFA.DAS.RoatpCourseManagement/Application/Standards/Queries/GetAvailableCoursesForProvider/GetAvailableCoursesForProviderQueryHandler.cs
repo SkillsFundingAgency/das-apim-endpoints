@@ -25,7 +25,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailab
         public async Task<GetAvailableCoursesForProviderQueryResult> Handle(GetAvailableCoursesForProviderQuery request, CancellationToken cancellationToken)
         {
             var allStandardsTask = _courseManagementApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest(request.CourseType.Value));
-            var allProviderCoursesTask = _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllCoursesRequest(request.Ukprn));
+            var allProviderCoursesTask = _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllCoursesRequest(request.Ukprn, request.CourseType.Value));
 
             await Task.WhenAll(allStandardsTask, allProviderCoursesTask);
             var allStandards = allStandardsTask.Result.Standards;

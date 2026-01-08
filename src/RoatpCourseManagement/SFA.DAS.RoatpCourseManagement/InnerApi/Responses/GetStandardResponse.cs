@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
@@ -16,7 +15,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }
         public bool IsRegulatedForProvider { get; set; }
-        public CourseType CourseType { get; set; }
 
         public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source) =>
             new()
@@ -31,8 +29,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
                 ApprovalBody = source.ApprovalBody,
                 Route = source.Route,
                 SectorSubjectAreaTier1 = source.SectorSubjectAreaTier1,
-                IsRegulatedForProvider = source.IsRegulatedForProvider,
-                CourseType = source.CourseType
+                IsRegulatedForProvider = source.IsRegulatedForProvider
             };
     }
 
@@ -49,6 +46,5 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }
         public bool IsRegulatedForProvider { get; set; }
-        public CourseType CourseType { get; set; }
     }
 }
