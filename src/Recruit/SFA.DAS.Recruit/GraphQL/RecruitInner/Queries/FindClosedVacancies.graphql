@@ -1,0 +1,11 @@
+query FindClosedVacancies($refs: [Long]) {
+    vacancies(
+        where: {
+            status: { eq: CLOSED }
+            vacancyReference:  { in: $refs }
+        }
+    )
+    {
+        ...AllVacancyFields
+    }
+}
