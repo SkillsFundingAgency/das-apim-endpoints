@@ -54,8 +54,8 @@ public class MathsAndEnglish
     //These fields exist currently only for the PUT, until we do the work to look up the course from the course code and align the Update
     //with the CreateLearner requests
     public string Course { get; set; } = "";
+    public string LearnAimRef { get; set; }
     public decimal Amount { get; set; } = 0;
-
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
