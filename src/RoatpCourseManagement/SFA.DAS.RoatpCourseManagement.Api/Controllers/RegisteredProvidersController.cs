@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.RegisteredProviders.Queries;
@@ -10,6 +11,7 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Models.RegisteredProvider;
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
+[Tags("Lookups")]
 [Route("")]
 public class RegisteredProvidersController : ControllerBase
 {
