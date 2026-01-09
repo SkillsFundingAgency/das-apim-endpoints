@@ -16,6 +16,7 @@ public class LearnerRequestDetails
     public string LastName { get; set; }
     public string? Email { get; set; }
     public DateTime Dob { get; set; }
+    public bool HasEhcp { get; set; }
 }
 
 public class UpdateLearnerRequestDeliveryDetails
@@ -38,6 +39,7 @@ public class OnProgrammeRequestDetails
     public DateTime? PauseDate { get; set; }
     public DateTime? ActualEndDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
+    public Care Care { get; set; }
 }
 
 public class CostDetails
@@ -68,6 +70,12 @@ public class LearningSupportRequestDetails
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+}
+
+public class Care
+{
+    public bool Careleaver { get; set; }
+    public bool EmployerConsent { get; set; }
 }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

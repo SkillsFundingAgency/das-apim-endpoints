@@ -51,7 +51,13 @@ namespace SFA.DAS.LearnerData.Services
                     StartDate = x.StartDate,
                     EndDate = x.EndDate,
                     PriorPeriodExpectedEndDate = x.PriorPeriodExpectedEndDate
-                }).ToList()
+                }).ToList(),
+                Care = new Care
+                {
+                    HasEHCP = putRequest.Data.Learner.Care.HasEHCP,
+                    IsCareLeaver = putRequest.Data.Learner.Care.IsCareLeaver,
+                    CareLeaverEmployerConsentGiven = putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven
+                }
             };
 
             return new UpdateOnProgrammeApiPutRequest(command.LearningKey, payload);
