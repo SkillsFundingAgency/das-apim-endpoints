@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -59,12 +60,12 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 TotalPrice = x.TotalPrice
             }));
 
-            result.Data.BreaksInLearning.Should().BeEquivalentTo(
-                putRequest.Data.OnProgramme.BreaksInLearning.Select(x => new BreakInLearningItem
+            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
+                command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                 {
                     StartDate = x.StartDate,
-                    EndDate = x.EndDate,
-                    PriorPeriodExpectedEndDate = x.PriorPeriodExpectedEndDate
+                    EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ActualEndDate, x.ExpectedEndDate, x.PauseDate,x.WithdrawalDate,x.CompletionDate),
+                    OriginalExpectedEndDate = x.ExpectedEndDate
                 }));
 
             result.Data.FundingBandMaximum.Should().BeNull();

@@ -20,7 +20,7 @@ public class UpdateOnProgrammeRequest
     public int? FundingBandMaximum { get; set; }
     public bool IncludesFundingBandMaximumUpdate { get; set; }
     public List<PriceItem> Prices { get; set; } = [];
-    public List<BreakInLearningItem> BreaksInLearning { get; set; } = [];
+    public List<PeriodInLearningItem> PeriodsInLearning { get; set; } = [];
     public Care Care { get; set; }
 }
 
@@ -34,11 +34,11 @@ public class PriceItem
     public decimal TotalPrice { get; set; }
 }
 
-public class BreakInLearningItem
+public class PeriodInLearningItem
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
-    public DateTime PriorPeriodExpectedEndDate { get; set; }
+    public DateTime OriginalExpectedEndDate { get; set; }
 }
 
 public class Care
