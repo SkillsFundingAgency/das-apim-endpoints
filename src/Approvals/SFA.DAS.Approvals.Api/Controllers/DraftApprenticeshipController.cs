@@ -18,6 +18,8 @@ using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApp
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequirements;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddEmail;
+using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.Reference;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -371,6 +373,40 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 Message = "An error occurred while syncing learner data."
             });
         }
+        }
+
+        [HttpPut]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/email")]
+        public async Task<IActionResult> AddEmail(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] AddDraftApprenticeEmailRequest request)
+        {
+            var command = new DraftApprenticeshipAddEmailCommand
+            {
+                CohortId = cohortId,
+                DraftApprenticeshipId = draftApprenticeshipId,
+                Email = request.Email,
+                ProviderId = providerId
+            };
+
+            await mediator.Send(command);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("provider/{providerId}/unapproved/{cohortId}/apprentices/{draftApprenticeshipId}/reference")]
+        
+        public async Task<IActionResult> SetReference(long providerId, long cohortId, long draftApprenticeshipId, [FromBody] DraftApprenticeshipSetReferenceRequest request)
+        {
+            var command = new DraftApprenticeshipSetReferenceCommand
+            {
+                CohortId = cohortId,
+                DraftApprenticeshipId = draftApprenticeshipId,
+                Reference = request.Reference,
+                ProviderId = providerId
+            };
+
+            await mediator.Send(command);
+            return Ok();
         }
     }
 }
