@@ -1,11 +1,13 @@
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class ApprenticeCommitmentsApiClient : IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration>
     {
         private readonly IInternalApiClient<ApprenticeCommitmentsApiConfiguration> _apiClient;
@@ -28,6 +30,19 @@ namespace SFA.DAS.SharedOuterApi.Services
         public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
         {
             return _apiClient.GetWithResponseCode<TResponse>(request);
+        }
+
+        public async Task<HttpStatusCode> Patch<TRequest>(
+           IPatchApiRequest<TRequest> request)
+        {
+            await _apiClient.Patch(request);
+            return HttpStatusCode.OK;
+        }
+
+        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TRequest, TResponse>(
+            IPatchApiRequest<TRequest> request)
+        {
+            return _apiClient.PatchWithResponseCode<TRequest, TResponse>(request);
         }
     }
 }

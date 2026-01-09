@@ -20,6 +20,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
             {
                 StartDate = x.StartDate,
                 EndDate = x.PlannedEndDate,
+                LearnAimRef = x.LearnAimRef,
                 Course = x.Course,
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
