@@ -12,12 +12,8 @@ public class GetVacancyReviewsByFilterQueryHandler(IRecruitApiClient<RecruitApiC
 {
     public async Task<GetVacancyReviewsByFilterQueryResult> Handle(GetVacancyReviewsByFilterQuery request, CancellationToken cancellationToken)
     {
-        var statuses = request.Status == null
-            ? null
-            : new List<string> { request.Status };
-
         var response = await recruitApiClient.GetWithResponseCode<List<GetVacancyReviewResponse>>(
-            new GetVacancyReviewsByFilterRequest(statuses, request.ExpiredAssignationDateTime));
+            new GetVacancyReviewsByFilterRequest(request.Status, request.ExpiredAssignationDateTime));
 
         if (response.StatusCode == HttpStatusCode.NotFound || response.Body == null)
         {

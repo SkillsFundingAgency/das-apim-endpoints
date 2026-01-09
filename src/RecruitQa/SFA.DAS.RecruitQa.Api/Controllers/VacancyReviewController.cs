@@ -13,14 +13,14 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     [HttpGet]
     [Route("[controller]s")]
     public async Task<IActionResult> Get(
-        [FromQuery(Name = "reviewStatus")] string? status,
+        [FromQuery] List<string>? reviewStatus,
         [FromQuery] DateTime? expiredAssignationDateTime)
     {
         try
         {
             var result = await mediator.Send(new GetVacancyReviewsByFilterQuery
             {
-                Status = status,
+                Status = reviewStatus,
                 ExpiredAssignationDateTime = expiredAssignationDateTime
             });
 

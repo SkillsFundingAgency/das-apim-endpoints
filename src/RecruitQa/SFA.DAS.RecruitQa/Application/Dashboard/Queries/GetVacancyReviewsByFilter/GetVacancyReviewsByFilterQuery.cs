@@ -4,6 +4,6 @@ namespace SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByFil
 
 public class GetVacancyReviewsByFilterQuery : IRequest<GetVacancyReviewsByFilterQueryResult>
 {
-    public string? Status { get; set; }
+    public List<string>? Status { get; set; }
     public DateTime? ExpiredAssignationDateTime { get; set; }
 }
