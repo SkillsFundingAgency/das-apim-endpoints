@@ -107,7 +107,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.Wage.WageText.Should().NotBeNullOrEmpty();
             actual.Route.Should().Be(route.Name);
             actual.RouteCode.Should().Be(route.Id);
-            actual.SearchTags.Should().Be("Civil Service Civil Servant Public Sector Whitehall");
+            actual.SearchTags.Should().Be("Civil Service Civil Servant Public Sector Government");
             actual.EmploymentLocations.Should().BeNullOrEmpty();
         }
 

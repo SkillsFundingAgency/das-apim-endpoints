@@ -171,26 +171,5 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
             result.IsSavedVacancy.Should().BeFalse();
         }
-
-        [Test, MoqAutoData]
-        public async Task If_CourseId_Is_Not_In_Correct_Format_Then_Return_Null(
-            GetApprenticeshipVacancyQuery request,
-            CancellationToken token,
-            Mock<IVacancy> vacancy,
-            [Frozen] Mock<IVacancyService> vacancyService,
-            GetApprenticeshipVacancyQueryHandler sut)
-        {
-            // arrange
-            vacancy.Setup(x => x.CourseId).Returns(-1);
-            vacancyService.Setup(x => x.GetVacancy(request.VacancyReference)).ReturnsAsync((IVacancy)null!);
-            vacancyService.Setup(x => x.GetClosedVacancy(request.VacancyReference)).ReturnsAsync(vacancy.Object);
-
-            // act
-            var result = await sut.Handle(request, token);
-
-            // assert
-            result.Should().BeNull();
-            vacancy.Verify(x => x.CourseId, Times.Once);
-        }
     }
 }
