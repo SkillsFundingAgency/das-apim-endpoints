@@ -24,8 +24,8 @@ public class GetAvailableCoursesForProviderQueryHandler : IRequestHandler<GetAva
 
     public async Task<GetAvailableCoursesForProviderQueryResult> Handle(GetAvailableCoursesForProviderQuery request, CancellationToken cancellationToken)
     {
-        var allStandardsTask = _courseManagementApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest(request.CourseType.Value));
-        var allProviderCoursesTask = _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllCoursesRequest(request.Ukprn, request.CourseType.Value));
+        var allStandardsTask = _courseManagementApiClient.Get<GetAllStandardsResponse>(new GetAllCoursesRequest(request.CourseType.Value));
+        var allProviderCoursesTask = _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllProviderCoursesRequest(request.Ukprn, request.CourseType.Value));
 
         await Task.WhenAll(allStandardsTask, allProviderCoursesTask);
         var allStandards = allStandardsTask.Result.Standards;

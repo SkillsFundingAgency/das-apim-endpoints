@@ -5,26 +5,10 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
 public class GetAllCoursesRequest : IGetApiRequest
 {
-    public string GetUrl => BuildUrl();
-    public int Ukprn { get; }
-    public bool ExcludeInvalidCourses { get; }
+    public string GetUrl => $"standards?coursetype={CourseType}";
     public CourseType? CourseType { get; }
-    private string BuildUrl()
+    public GetAllCoursesRequest(CourseType? courseType)
     {
-        var url = $"providers/{Ukprn}/courses?excludeCoursesWithoutLocation={ExcludeInvalidCourses}";
-
-        if (CourseType.HasValue)
-        {
-            url += $"&courseType={CourseType}";
-        }
-
-        return url;
-    }
-
-    public GetAllCoursesRequest(int ukprn, CourseType? courseType)
-    {
-        Ukprn = ukprn;
-        ExcludeInvalidCourses = false;
         CourseType = courseType;
     }
 }

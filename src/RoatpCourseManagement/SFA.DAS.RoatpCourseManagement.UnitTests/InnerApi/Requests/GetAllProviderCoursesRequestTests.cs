@@ -5,15 +5,16 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests;
-public class GetAllCoursesRequestTests
+public class GetAllProviderCoursesRequestTests
 {
     [Test, AutoData]
     public void Constructor_ConstructsRequest(
+     int ukprn,
      CourseType courseType)
     {
-        var sut = new GetAllCoursesRequest(courseType);
+        var sut = new GetAllProviderCoursesRequest(ukprn, courseType);
 
         sut.GetUrl.Should()
-                .Be($"standards?coursetype={courseType}");
+                .Be($"providers/{ukprn}/courses?excludeCoursesWithoutLocation={false}&courseType={courseType}");
     }
 }
