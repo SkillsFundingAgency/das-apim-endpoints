@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReview;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByFilter;
+using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByAccountLegalEntity;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -50,6 +51,27 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
         catch (Exception e)
         {
             logger.LogError(e, "Error occured while getting vacancy review by Id");
+            return new StatusCodeResult(500);
+        }
+    }
+
+    [HttpGet]
+    [Route("accounts/{accountLegalEntityId}/vacancyreviews")]
+    public async Task<IActionResult> GetByAccountLegalEntity([FromRoute] long accountLegalEntityId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetVacancyReviewsByAccountLegalEntityQuery
+            {
+                AccountLegalEntityId = accountLegalEntityId
+            });
+
+            var dtoList = result.VacancyReviews.Select(x => (VacancyReviewDto)x).ToList();
+            return Ok(new GetVacancyReviewsApiResponse { VacancyReviews = dtoList });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while getting vacancy reviews by account legal entity");
             return new StatusCodeResult(500);
         }
     }
