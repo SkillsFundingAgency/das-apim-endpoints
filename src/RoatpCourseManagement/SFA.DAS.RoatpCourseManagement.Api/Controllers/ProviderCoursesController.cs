@@ -86,7 +86,7 @@ public class ProviderCoursesController : ControllerBase
 
     [HttpGet]
     [Route("providers/{ukprn}/available-courses/{courseType}")]
-    public async Task<IActionResult> GetAllAvailableCourses([FromRoute] int ukprn, [FromRoute] CourseType? courseType = null)
+    public async Task<IActionResult> GetAllAvailableCourses([FromRoute] int ukprn, [FromRoute] CourseType courseType)
     {
         var result = await _mediator.Send(new GetAvailableCoursesForProviderQuery(ukprn, courseType));
         _logger.LogInformation($"Total {result.AvailableCourses.Count} courses are available for ukprn: {ukprn}");

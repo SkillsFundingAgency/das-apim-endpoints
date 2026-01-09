@@ -17,7 +17,6 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
 public class ProviderCoursesControllerGetAllAvailableCoursesTests
 {
     [Test]
-    [MoqInlineAutoData(null)]
     [MoqInlineAutoData(CourseType.Apprenticeship)]
     [MoqInlineAutoData(CourseType.ApprenticeshipUnit)]
     public async Task GetAllAvailableCourses_ReturnsCourses(

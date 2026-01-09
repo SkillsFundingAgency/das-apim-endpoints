@@ -32,8 +32,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
         [Test, AutoData]
         public async Task Handle_EmptyProviderCourses_ReturnsAllStandards(GetAllStandardsResponse getAllStandardsResponse, GetAvailableCoursesForProviderQuery request)
         {
-            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>())).ReturnsAsync(getAllStandardsResponse);
-            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>());
+            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(getAllStandardsResponse);
+            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>());
 
             var result = await _sut.Handle(request, new CancellationToken());
 
@@ -44,8 +44,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
         public async Task Handle_HasProviderCourses_ReturnsFilteredList(GetAllStandardsResponse getAllStandardsResponse, GetAvailableCoursesForProviderQuery request)
         {
             var larsCode = getAllStandardsResponse.Standards.First().LarsCode;
-            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>())).ReturnsAsync(getAllStandardsResponse);
-            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>() { new GetAllProviderCoursesResponse { LarsCode = larsCode.ToString() } });
+            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(getAllStandardsResponse);
+            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>() { new GetAllProviderCoursesResponse { LarsCode = larsCode.ToString() } });
 
             var result = await _sut.Handle(request, new CancellationToken());
 
