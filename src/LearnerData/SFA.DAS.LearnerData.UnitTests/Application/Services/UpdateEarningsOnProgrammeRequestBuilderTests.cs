@@ -103,5 +103,27 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             result.Data.FundingBandMaximum.Should().Be(expectedFundingBand);
             result.Data.IncludesFundingBandMaximumUpdate.Should().BeTrue();
         }
+
+        [Test]
+        public async Task Build_Should_Set_CareDetails()
+        {
+            // Arrange
+            var command = _fixture.Create<UpdateLearnerCommand>();
+            var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+            var response = _fixture.Build<UpdateLearnerApiPutResponse>()
+                                   .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>())
+                                   .Create();
+
+            // Act
+            var result = await _sut.Build(command, response, putRequest);
+
+            // Assert
+            result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
+            result.Data.Care.HasEHCP.Should().Be(putRequest.Data.Learner.Care.HasEHCP);
+            result.Data.Care.IsCareLeaver.Should().Be(putRequest.Data.Learner.Care.IsCareLeaver);
+            result.Data.Care.CareLeaverEmployerConsentGiven.Should().Be(putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven);
+
+        }
+
     }
 }
