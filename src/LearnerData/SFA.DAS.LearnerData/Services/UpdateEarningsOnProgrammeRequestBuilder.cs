@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -46,12 +47,7 @@ namespace SFA.DAS.LearnerData.Services
                     EndPointAssessmentPrice = x.EndPointAssessmentPrice,
                     TotalPrice = x.TotalPrice
                 }).ToList(),
-                BreaksInLearning = putRequest.Data.OnProgramme.BreaksInLearning.Select(x => new BreakInLearningItem
-                {
-                    StartDate = x.StartDate,
-                    EndDate = x.EndDate,
-                    PriorPeriodExpectedEndDate = x.PriorPeriodExpectedEndDate
-                }).ToList(),
+                PeriodsInLearning = GetPeriodsInLearning(command),
                 Care = new Care
                 {
                     HasEHCP = putRequest.Data.Learner.Care.HasEHCP,
@@ -72,6 +68,30 @@ namespace SFA.DAS.LearnerData.Services
             var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
 
             return response.MaxFundingOn(startDate);
+        }
+
+        private List<PeriodInLearningItem> GetPeriodsInLearning(UpdateLearnerCommand command)
+        {
+            var periodsInLearning = new List<PeriodInLearningItem>();
+
+            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
+            {
+                var endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
+                    onProgramme.ActualEndDate,
+                    onProgramme.ExpectedEndDate,
+                    onProgramme.PauseDate,
+                    onProgramme.WithdrawalDate,
+                    onProgramme.CompletionDate);
+
+                periodsInLearning.Add(new PeriodInLearningItem
+                {
+                    StartDate = onProgramme.StartDate,
+                    EndDate = endDate,
+                    OriginalExpectedEndDate = onProgramme.ExpectedEndDate
+                });
+            }
+
+            return periodsInLearning.OrderBy(x=>x.StartDate).ToList();
         }
     }
 }

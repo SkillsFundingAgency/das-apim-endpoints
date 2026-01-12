@@ -34,7 +34,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
-    <Folder Include="Models\" />
     <Folder Include="InnerApi\ApprenticeProgress\" />
   </ItemGroup>
 </Project>

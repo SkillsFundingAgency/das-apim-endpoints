@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
+using SFA.DAS.ApprenticeApp.Application.Commands.Commitments;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.Application.Queries.GetMyApprenticeshipByUln;
 using SFA.DAS.ApprenticeApp.Models;
@@ -105,6 +106,52 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
             mediatorMock.Verify(m => m.Send(
                 It.Is<GetMyApprenticeshipByUlnQuery>(q => q.Uln == uln),
                 It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task ConfirmApprenticeship_Returns_Ok_When_Command_Succeeds(
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] ApprenticeDetailsController controller,
+            Confirmations confirmations)
+        {
+            // Arrange
+            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 12345L;
+            var revisionId = 67890L;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.Is<ConfirmApprenticeshipPatchCommand>(c =>
+                        c.ApprenticeId == apprenticeId &&
+                        c.ApprenticeshipId == apprenticeshipId &&
+                        c.RevisionId == revisionId &&
+                        c.Patch == confirmations),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Unit.Value);
+
+            // Act
+            var result = await controller.ConfirmApprenticeship(
+                apprenticeId,
+                apprenticeshipId,
+                revisionId,
+                confirmations);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+
+            mediatorMock.Verify(m => m.Send(
+                It.Is<ConfirmApprenticeshipPatchCommand>(c =>
+                    c.ApprenticeId == apprenticeId &&
+                    c.ApprenticeshipId == apprenticeshipId &&
+                    c.RevisionId == revisionId &&
+                    c.Patch == confirmations),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }
