@@ -7,6 +7,7 @@ using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByAccount
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByVacancyReference;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsCountByUser;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByUser;
+using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewSummary;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -119,6 +120,29 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
         catch (Exception e)
         {
             logger.LogError(e, "Error occured while getting vacancy reviews count by user");
+            return new StatusCodeResult(500);
+        }
+    }
+
+    [HttpGet]
+    [Route("[controller]s/summary")]
+    public async Task<IActionResult> GetSummary()
+    {
+        try
+        {
+            var result = await mediator.Send(new GetVacancyReviewSummaryQuery());
+            var model = new GetVacancyReviewSummaryApiResponse
+            {
+                TotalVacanciesForReview = result.TotalVacanciesForReview,
+                TotalVacanciesResubmitted = result.TotalVacanciesResubmitted,
+                TotalVacanciesBrokenSla = result.TotalVacanciesBrokenSla,
+                TotalVacanciesSubmittedTwelveTwentyFourHours = result.TotalVacanciesSubmittedTwelveTwentyFourHours
+            };
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while getting vacancy review summary");
             return new StatusCodeResult(500);
         }
     }
