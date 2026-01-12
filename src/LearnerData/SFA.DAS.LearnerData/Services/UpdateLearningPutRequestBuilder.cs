@@ -54,7 +54,13 @@ namespace SFA.DAS.LearnerData.Services
                     LastName = command.UpdateLearnerRequest.Learner.LastName,
                     EmailAddress = command.UpdateLearnerRequest.Learner.Email,
                     CompletionDate = latestOnProgramme.CompletionDate,
-                    DateOfBirth = command.UpdateLearnerRequest.Learner.Dob
+                    DateOfBirth = command.UpdateLearnerRequest.Learner.Dob,
+                    Care = new CareDetails
+                    {
+                        HasEHCP = command.UpdateLearnerRequest.Learner.HasEhcp,
+                        IsCareLeaver = latestOnProgramme.Care.Careleaver,
+                        CareLeaverEmployerConsentGiven = latestOnProgramme.Care.EmployerConsent
+                    }
                 },
                 OnProgramme = new OnProgrammeDetails
                 {
@@ -68,6 +74,7 @@ namespace SFA.DAS.LearnerData.Services
                     {
                         Amount = x.Amount,
                         CompletionDate = x.CompletionDate,
+                        LearnAimRef = x.LearnAimRef,
                         Course = x.Course,
                         PlannedEndDate = x.EndDate,
                         PriorLearningPercentage = x.PriorLearningPercentage,
@@ -100,5 +107,7 @@ namespace SFA.DAS.LearnerData.Services
 
             return (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes);
         }
+
+
     }
 }
