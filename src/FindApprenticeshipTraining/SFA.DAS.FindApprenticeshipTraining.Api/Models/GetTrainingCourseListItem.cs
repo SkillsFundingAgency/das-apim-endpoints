@@ -7,7 +7,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 {
     public class GetTrainingCourseListItem
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
         public string LevelEquivalent { get; set; }
@@ -32,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
         {
             return new GetTrainingCourseListItem
             {
-                Id = source.LarsCode,
+                Id = source.LarsCode.ToString(),
                 Title = source.Title,
                 Level = source.Level,
                 LevelEquivalent = source.LevelEquivalent,
@@ -42,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 Keywords = source.Keywords,
                 TypicalDuration = source.TypicalDuration,
                 Route = source.Route,
-                TypicalJobTitles = source.TypicalJobTitles.Split('|').Length <=1? new List<string>() : source.TypicalJobTitles.Split('|').OrderBy(x => x).ToList(),
+                TypicalJobTitles = source.TypicalJobTitles.Split('|').Length <= 1 ? new List<string>() : source.TypicalJobTitles.Split('|').OrderBy(x => x).ToList(),
                 CoreSkills = source.CoreSkills,
                 StandardPageUrl = source.StandardPageUrl,
                 IntegratedDegree = source.IntegratedDegree,

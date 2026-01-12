@@ -1,47 +1,55 @@
-﻿using System.Net;
+﻿using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
+using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 
-namespace SFA.DAS.RoatpCourseManagement.Api.Controllers
+namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
+
+[ApiController]
+[Tags("Lookups")]
+[Route("")]
+public class StandardsLookupGetController : ControllerBase
 {
-    public class StandardsLookupGetController : ControllerBase
+    private readonly ILogger<StandardsLookupGetController> _logger;
+    private readonly IMediator _mediator;
+
+    public StandardsLookupGetController(ILogger<StandardsLookupGetController> logger, IMediator mediator)
     {
-        private readonly ILogger<StandardsLookupGetController> _logger;
-        private readonly IMediator _mediator;
+        _logger = logger;
+        _mediator = mediator;
+    }
 
-        public StandardsLookupGetController(ILogger<StandardsLookupGetController> logger, IMediator mediator)
+    [HttpGet]
+    [Route("lookup/standards")]
+    public async Task<IActionResult> GetAllStandards()
+    {
+        _logger.LogInformation("Get all active standards");
+        var result = await _mediator.Send(new GetStandardsLookupQuery());
+
+        if (result.StatusCode != HttpStatusCode.OK)
         {
-            _logger = logger;
-            _mediator = mediator;
+            _logger.LogError("Active standards not gathered, status code {StatusCode}, Error content:{ErrorContent}", result.StatusCode, result.ErrorContent);
+            return StatusCode((int)result.StatusCode, result.ErrorContent);
         }
 
-        [HttpGet]
-        [Route("lookup/standards")]
-        public async Task<IActionResult> GetAllStandards()
-        {
-            _logger.LogInformation("Get all active standards");
-            var result = await _mediator.Send(new GetStandardsLookupQuery());
+        _logger.LogInformation("Active standards gathered");
 
-            if (result.StatusCode != HttpStatusCode.OK)
-            {
-                _logger.LogError($"Active standards not gathered, status code {result.StatusCode}, Error content:[{result.ErrorContent}]");
-                return StatusCode((int)result.StatusCode, result.ErrorContent);
-            }
+        var mappedResponse = new GetStandardsLookupResponse { Standards = result.Body.Standards.Select(standard => (GetStandardResponse)standard).ToList() };
 
-            _logger.LogInformation("Active standards gathered");
-            return Ok(result.Body);
-        }
+        return Ok(mappedResponse);
+    }
 
-        [HttpGet]
-        [Route("lookup/standards/{larsCode}")]
-        public async Task<ActionResult<GetStandardInformationQueryResult>> GetStandardInformation([FromRoute] int larsCode)
-        {
-            _logger.LogInformation("Outer API: request received to get details for standard: {larscode} from courses api", larsCode);
-            return await _mediator.Send(new GetStandardInformationQuery(larsCode));
-        }
+    [HttpGet]
+    [Route("lookup/standards/{larsCode}")]
+    public async Task<ActionResult<GetStandardInformationQueryResult>> GetStandardInformation([FromRoute] string larsCode)
+    {
+        _logger.LogInformation("Outer API: request received to get details for standard: {Larscode} from courses api", larsCode);
+        return await _mediator.Send(new GetStandardInformationQuery(larsCode));
     }
 }

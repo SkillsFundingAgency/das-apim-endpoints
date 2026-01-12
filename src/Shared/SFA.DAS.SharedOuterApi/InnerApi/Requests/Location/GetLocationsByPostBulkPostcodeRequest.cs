@@ -3,13 +3,9 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-public class GetLocationsByPostBulkPostcodeRequest : IPostApiRequest
+public class GetLocationsByPostBulkPostcodeRequest(List<string> data) : IPostApiRequest
 {
-    public GetLocationsByPostBulkPostcodeRequest(List<string> data)
-    {
-        Data = data;
-    }
-
     public string PostUrl => "api/Postcodes/bulk";
-    public object Data { get; set; }
+    public object Data { get; set; } = data;
+    public string Version => "2.0";
 }

@@ -1,4 +1,9 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
@@ -11,11 +16,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourses;
 
@@ -314,7 +314,7 @@ public sealed class WhenGettingCourses
         roatpCourseManagementApiClient.Verify(x =>
             x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 It.Is<GetCourseTrainingProvidersCountRequest>(r =>
-                        r.LarsCodes.SequenceEqual(pagedStandards.Select(s => s.LarsCode).ToArray()) &&
+                        r.LarsCodes.SequenceEqual(pagedStandards.Select(s => s.LarsCode.ToString()).ToArray()) &&
                         r.Distance == query.Distance &&
                         r.Latitude == (decimal?)locationItem.GeoPoint[0] &&
                         r.Longitude == (decimal?)locationItem.GeoPoint[1]
@@ -378,7 +378,7 @@ public sealed class WhenGettingCourses
             .Setup(x =>
                 x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                     It.Is<GetCourseTrainingProvidersCountRequest>(a =>
-                        a.LarsCodes.SequenceEqual(pagedStandards.Select(a => a.LarsCode).ToArray()) &&
+                        a.LarsCodes.SequenceEqual(pagedStandards.Select(a => a.LarsCode.ToString()).ToArray()) &&
                         a.Distance.Equals(query.Distance) &&
                         a.Latitude.Equals((decimal)locationItem.GeoPoint[0]) &&
                         a.Longitude.Equals((decimal)locationItem.GeoPoint[1])
@@ -461,7 +461,7 @@ public sealed class WhenGettingCourses
             .Setup(x =>
                 x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                     It.Is<GetCourseTrainingProvidersCountRequest>(a =>
-                        a.LarsCodes.SequenceEqual(pagedStandards.Select(a => a.LarsCode).ToArray()) &&
+                        a.LarsCodes.SequenceEqual(pagedStandards.Select(a => a.LarsCode.ToString()).ToArray()) &&
                         a.Distance.Equals(query.Distance) &&
                         a.Latitude.Equals((decimal)locationItem.GeoPoint[0]) &&
                         a.Longitude.Equals((decimal)locationItem.GeoPoint[1])

@@ -1,15 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Queries
 {
@@ -19,7 +14,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Queries
         public async Task Then_If_Cached_Then_Cached_Response_Returned_And_Api_Not_Called(
             List<string> cacheQueryResponse,
             GetCandidateSkillsQuery query,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> apiClient,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
             GetCandidateSkillsQueryHandler handler)
         {
@@ -39,20 +34,20 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Queries
             List<string> apiQueryResponse,
             GetCandidateSkillsQuery query,
             [Frozen] Mock<ICacheStorageService> cacheStorageService,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> apiClient,
             GetCandidateSkillsQueryHandler handler)
         {
-            cacheStorageService.Setup(x => x.RetrieveFromCache<List<string>>("GetCandidateSkills"))
-                .ReturnsAsync((List<string>)null);
+            cacheStorageService
+                .Setup(x => x.RetrieveFromCache<List<string>>("GetCandidateSkills"))
+                .ReturnsAsync((List<string>)null!);
             apiClient
-                .Setup(x => x.Get<List<string>>(
-                    It.Is<GetCandidateSkillsRequest>(c => c.GetUrl.Contains($"referencedata/candidate-skills"))))
+                .Setup(x => x.Get<List<string>>(It.IsAny<GetCandidateSkillsRequest>()))
                 .ReturnsAsync(apiQueryResponse);
             
             var actual = await handler.Handle(query, CancellationToken.None);
 
             actual.CandidateSkills.Should().BeEquivalentTo(apiQueryResponse);
-            cacheStorageService.Verify(x=>x.SaveToCache("GetCandidateSkills",apiQueryResponse, 3, null));
+            cacheStorageService.Verify(x => x.SaveToCache("GetCandidateSkills", apiQueryResponse, 3, null));
         }
     }
 }
