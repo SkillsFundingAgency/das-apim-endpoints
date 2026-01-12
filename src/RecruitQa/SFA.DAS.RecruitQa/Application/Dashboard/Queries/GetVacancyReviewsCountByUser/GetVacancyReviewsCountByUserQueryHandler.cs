@@ -12,7 +12,7 @@ public class GetVacancyReviewsCountByUserQueryHandler(IRecruitApiClient<RecruitA
     public async Task<GetVacancyReviewsCountByUserQueryResult> Handle(GetVacancyReviewsCountByUserQuery request, CancellationToken cancellationToken)
     {
         var response = await recruitApiClient.GetWithResponseCode<int>(
-            new GetVacancyReviewsCountByUserRequest(request.UserId, request.ApprovedFirstTime));
+            new GetVacancyReviewsCountByUserRequest(request.UserId, request.ApprovedFirstTime, request.AssignationExpiry));
 
         if (response.StatusCode == HttpStatusCode.NotFound)
         {

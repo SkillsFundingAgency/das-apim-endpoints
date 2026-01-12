@@ -12,16 +12,17 @@ public class WhenCallingGetVacancyReviewsCountByUser
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         string userId,
         bool? approvedFirstTime,
+        DateTime? assignationExpiry,
         int count,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
         mediator.Setup(x => x.Send(
-                It.Is<GetVacancyReviewsCountByUserQuery>(c => c.UserId == userId && c.ApprovedFirstTime == approvedFirstTime),
+                It.Is<GetVacancyReviewsCountByUserQuery>(c => c.UserId == userId && c.ApprovedFirstTime == approvedFirstTime && c.AssignationExpiry == assignationExpiry),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetVacancyReviewsCountByUserQueryResult { Count = count });
 
-        var actual = await controller.GetCountByUser(userId, approvedFirstTime) as OkObjectResult;
+        var actual = await controller.GetCountByUser(userId, approvedFirstTime, assignationExpiry) as OkObjectResult;
 
         actual.Should().NotBeNull();
         var model = actual!.Value as GetVacancyReviewsCountApiResponse;
@@ -33,6 +34,7 @@ public class WhenCallingGetVacancyReviewsCountByUser
     public async Task Then_If_Exception_Internal_Server_Error_Returned(
         string userId,
         bool? approvedFirstTime,
+        DateTime? assignationExpiry,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
@@ -41,7 +43,7 @@ public class WhenCallingGetVacancyReviewsCountByUser
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new Exception());
 
-        var actual = await controller.GetCountByUser(userId, approvedFirstTime) as StatusCodeResult;
+        var actual = await controller.GetCountByUser(userId, approvedFirstTime, assignationExpiry) as StatusCodeResult;
 
         actual.Should().NotBeNull();
         actual!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);

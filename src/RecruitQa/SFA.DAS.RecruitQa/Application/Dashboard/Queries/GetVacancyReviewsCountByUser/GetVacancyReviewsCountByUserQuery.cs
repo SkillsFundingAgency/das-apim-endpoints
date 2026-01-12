@@ -6,4 +6,5 @@ public class GetVacancyReviewsCountByUserQuery : IRequest<GetVacancyReviewsCount
 {
     public required string UserId { get; set; }
     public bool? ApprovedFirstTime { get; set; }
+    public DateTime? AssignationExpiry { get; set; }
 }

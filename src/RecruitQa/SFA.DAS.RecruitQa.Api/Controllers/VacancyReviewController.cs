@@ -102,14 +102,15 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
 
     [HttpGet]
     [Route("users/{userId}/VacancyReviews/count")]
-    public async Task<IActionResult> GetCountByUser([FromRoute] string userId, [FromQuery] bool? approvedFirstTime)
+    public async Task<IActionResult> GetCountByUser([FromRoute] string userId, [FromQuery] bool? approvedFirstTime, [FromQuery] DateTime? assignationExpiry)
     {
         try
         {
             var result = await mediator.Send(new GetVacancyReviewsCountByUserQuery
             {
                 UserId = userId,
-                ApprovedFirstTime = approvedFirstTime
+                ApprovedFirstTime = approvedFirstTime,
+                AssignationExpiry = assignationExpiry
             });
 
             return Ok(new GetVacancyReviewsCountApiResponse { Count = result.Count });
