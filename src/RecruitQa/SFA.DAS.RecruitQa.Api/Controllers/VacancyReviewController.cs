@@ -4,6 +4,8 @@ using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReview;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByFilter;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByAccountLegalEntity;
+using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByVacancyReference;
+using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsCountByUser;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -72,6 +74,49 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
         catch (Exception e)
         {
             logger.LogError(e, "Error occured while getting vacancy reviews by account legal entity");
+            return new StatusCodeResult(500);
+        }
+    }
+
+    [HttpGet]
+    [Route("[controller]s/{vacancyReference}/vacancyreviews")]
+    public async Task<IActionResult> GetByVacancyReference([FromRoute] long vacancyReference, [FromQuery] string status)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetVacancyReviewsByVacancyReferenceQuery
+            {
+                VacancyReference = vacancyReference,
+                Status = status
+            });
+
+            var dtoList = result.VacancyReviews.Select(x => (VacancyReviewDto)x).ToList();
+            return Ok(new GetVacancyReviewsApiResponse { VacancyReviews = dtoList });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while getting vacancy reviews by vacancy reference");
+            return new StatusCodeResult(500);
+        }
+    }
+
+    [HttpGet]
+    [Route("users/{userId}/VacancyReviews/count")]
+    public async Task<IActionResult> GetCountByUser([FromRoute] string userId, [FromQuery] bool? approvedFirstTime)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetVacancyReviewsCountByUserQuery
+            {
+                UserId = userId,
+                ApprovedFirstTime = approvedFirstTime
+            });
+
+            return Ok(new GetVacancyReviewsCountApiResponse { Count = result.Count });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while getting vacancy reviews count by user");
             return new StatusCodeResult(500);
         }
     }

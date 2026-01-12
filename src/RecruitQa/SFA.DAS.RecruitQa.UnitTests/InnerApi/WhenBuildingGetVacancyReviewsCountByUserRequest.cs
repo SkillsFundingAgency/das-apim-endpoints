@@ -1,0 +1,24 @@
+using System.Web;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
+
+namespace SFA.DAS.RecruitQa.UnitTests.InnerApi;
+
+public class WhenBuildingGetVacancyReviewsCountByUserRequest
+{
+    [Test, AutoData]
+    public void Then_The_Url_Is_Constructed_Correctly(string userId)
+    {
+        var actual = new GetVacancyReviewsCountByUserRequest(userId, true);
+
+        actual.GetUrl.Should().Be($"users/{HttpUtility.UrlEncode(userId)}/VacancyReviews/count?approvedFirstTime=True");
+    }
+
+    [Test, AutoData]
+    public void Then_The_Url_Handles_Null_ApprovedFirstTime(string userId)
+    {
+        bool? approvedFirstTime = null;
+        var actual = new GetVacancyReviewsCountByUserRequest(userId, approvedFirstTime);
+
+        actual.GetUrl.Should().Be($"users/{HttpUtility.UrlEncode(userId)}/VacancyReviews/count?approvedFirstTime=");
+    }
+}
