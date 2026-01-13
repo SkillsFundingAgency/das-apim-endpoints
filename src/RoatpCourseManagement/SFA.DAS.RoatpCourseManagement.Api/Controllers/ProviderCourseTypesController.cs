@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseTypes.Queries;
@@ -7,6 +8,7 @@ using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseTypes.Queries;
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
+[Tags("Providers")]
 [Route("providers/{ukprn}/course-types")]
 public class ProviderCourseTypesController(IMediator _mediator, ILogger<ProviderCourseTypesController> _logger) : ControllerBase
 {
