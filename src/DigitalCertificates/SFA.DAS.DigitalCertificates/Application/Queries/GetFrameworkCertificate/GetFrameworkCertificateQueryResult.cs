@@ -21,13 +21,13 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
         public DateTime? StartDate { get; set; }
         public DateTime? PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
+        public string CertificateType { get; set; }
         public List<QualificationDetails> QualificationsAndAwardingBodies { get; set; }
         // TODO: This 'DeliveryInformation field is not required for P2-2551. We need to discuss with Alan what data is actually required for this field.
         public List<object> DeliveryInformation { get; set; }
 
         // TODO: The fields below are not available from the Inner API and are not required for P2-2551.
         // They can be populated in future tickets if needed or it can be remove if not required for the upcoming tickets
-        public string CertificateType { get; set; }
         public string CourseCode { get; set; }
         public string OverallGrade { get; set; }
         public long? Ukprn { get; set; }
