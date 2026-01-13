@@ -1,13 +1,12 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation
+namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
+
+public record GetStandardInformationQuery : IRequest<GetStandardInformationQueryResult>
 {
-    public class GetStandardInformationQuery : IRequest<GetStandardInformationQueryResult>
+    public string LarsCode { get; }
+    public GetStandardInformationQuery(string larsCode)
     {
-        public string LarsCode { get; }
-        public GetStandardInformationQuery(string larsCode)
-        {
-            LarsCode = larsCode;
-        }
+        LarsCode = larsCode;
     }
 }
