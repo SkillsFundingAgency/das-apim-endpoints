@@ -257,13 +257,19 @@ components:
         ukprn:
           type: string
         type:
-          type: integer
+          type: string
           description: 1 -main, 2 - provider, 3 - supporting
-          example: [1, 2, 3]
+          enum:
+            - main
+            - provider
+            - supprting
         status:
           type: string
           description: 0 - removed, 1 - active, 2 - active (not taking providers), 3 - on boarding
-          example: [0, 1, 2, 3]
+          enum:
+            - removed
+            - activeActiveNotTakingProviders
+            - onBoarding
         employers:
           type: array
           description: Provider relationships
