@@ -34,7 +34,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
                 CertificateReference = certificateReference,
                 FrameworkCertificateNumber = frameworkCertificateNumber,
                 CourseName = courseName,
-                PathwayName = pathwayName,
+                CourseOption = pathwayName,
                 CourseLevel = courseLevel,
                 DateAwarded = dateAwarded,
                 ProviderName = providerName,
@@ -52,7 +52,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
             result.CertificateReference.Should().Be(certificateReference);
             result.FrameworkCertificateNumber.Should().Be(frameworkCertificateNumber);
             result.CourseName.Should().Be(courseName);
-            result.PathwayName.Should().Be(pathwayName);
+            result.CourseOption.Should().Be(pathwayName);
             result.CourseLevel.Should().Be(courseLevel);
             result.DateAwarded.Should().Be(dateAwarded);
             result.ProviderName.Should().Be(providerName);

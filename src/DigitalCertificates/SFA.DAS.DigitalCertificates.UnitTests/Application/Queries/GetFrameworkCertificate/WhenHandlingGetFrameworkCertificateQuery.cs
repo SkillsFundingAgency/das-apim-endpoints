@@ -60,7 +60,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
             actual.GivenNames.Should().Be(responseBody.ApprenticeForename);
             actual.Uln.Should().Be(responseBody.ApprenticeULN);
             actual.CourseName.Should().Be(responseBody.FrameworkName);
-            actual.PathwayName.Should().Be(responseBody.PathwayName);
+            actual.CourseOption.Should().Be(responseBody.PathwayName);
             actual.CourseLevel.Should().Be(responseBody.ApprenticeshipLevelName);
             actual.DateAwarded.Should().Be(responseBody.CertificationDate);
             actual.ProviderName.Should().Be(responseBody.ProviderName);

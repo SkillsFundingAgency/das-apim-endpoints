@@ -13,7 +13,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
         public string CertificateReference { get; set; }
         public string FrameworkCertificateNumber { get; set; }
         public string CourseName { get; set; }
-        public string PathwayName { get; set; }
+        public string CourseOption { get; set; }
         public string CourseLevel { get; set; }
         public DateTime DateAwarded { get; set; }
         public string ProviderName { get; set; }
@@ -29,7 +29,6 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
         // They can be populated in future tickets if needed or it can be remove if not required for the upcoming tickets
         public string CertificateType { get; set; }
         public string CourseCode { get; set; }
-        public string CourseOption { get; set; }
         public string OverallGrade { get; set; }
         public long? Ukprn { get; set; }
         public string AssessorName { get; set; }
@@ -42,11 +41,12 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
             {
                 FamilyName = source.ApprenticeSurname,
                 GivenNames = source.ApprenticeForename,
+                CertificateType = Enums.CertificateType.Framework.ToString(),
                 Uln = source.ApprenticeULN,
                 CertificateReference = source.CertificateReference,
                 FrameworkCertificateNumber = source.FrameworkCertificateNumber,
                 CourseName = source.FrameworkName,
-                PathwayName = source.PathwayName,
+                CourseOption = source.PathwayName,
                 CourseLevel = source.ApprenticeshipLevelName,
                 DateAwarded = source.CertificationDate,
                 ProviderName = source.ProviderName,
