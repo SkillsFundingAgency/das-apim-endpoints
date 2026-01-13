@@ -6,7 +6,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkLearner;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -14,21 +13,22 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFrameworkLearner
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFrameworkCertificate
 {
-    public class WhenHandlingGetFrameworkLearnerQuery
+    public class WhenHandlingGetFrameworkCertificateQuery
     {
         [Test, MoqAutoData]
         public async Task Then_The_FrameworkLearner_Is_Retrieved_Successfully(
-            Guid frameworkLearnerId,
-            GetFrameworkLearnerQuery query,
-            GetFrameworkLearnerResponse responseBody,
+            Guid id,
+            GetFrameworkCertificateQuery query,
+            GetFrameworkCertificateResponse responseBody,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            GetFrameworkLearnerQueryHandler handler)
+            GetFrameworkCertificateQueryHandler handler)
         {
             // Arrange
-            query.FrameworkLearnerId = frameworkLearnerId;
+            query.Id = id;
 
             responseBody.ApprenticeSurname = "Family";
             responseBody.ApprenticeForename = "Given";
@@ -45,10 +45,10 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
                 new QualificationAndAwardingBody { Name = "Qual1", AwardingBody = "Body1" }
             };
 
-            var apiResponse = new ApiResponse<GetFrameworkLearnerResponse>(responseBody, HttpStatusCode.OK, string.Empty);
+            var apiResponse = new ApiResponse<GetFrameworkCertificateResponse>(responseBody, HttpStatusCode.OK, string.Empty);
 
             mockAssessorsApiClient
-                .Setup(c => c.GetWithResponseCode<GetFrameworkLearnerResponse>(It.Is<GetFrameworkLearnerRequest>(r => r.FrameworkLearnerId == frameworkLearnerId)))
+                .Setup(c => c.GetWithResponseCode<GetFrameworkCertificateResponse>(It.Is<GetFrameworkCertificateRequest>(r => r.Id == id)))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -75,18 +75,18 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
 
         [Test, MoqAutoData]
         public async Task Then_NotFound_Returns_Null(
-            Guid frameworkLearnerId,
-            GetFrameworkLearnerQuery query,
+            Guid id,
+            GetFrameworkCertificateQuery query,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            GetFrameworkLearnerQueryHandler handler)
+            GetFrameworkCertificateQueryHandler handler)
         {
             // Arrange
-            query.FrameworkLearnerId = frameworkLearnerId;
+            query.Id = id;
 
-            var apiResponse = new ApiResponse<GetFrameworkLearnerResponse>(null, HttpStatusCode.NotFound, string.Empty);
+            var apiResponse = new ApiResponse<GetFrameworkCertificateResponse>(null, HttpStatusCode.NotFound, string.Empty);
 
             mockAssessorsApiClient
-                .Setup(c => c.GetWithResponseCode<GetFrameworkLearnerResponse>(It.IsAny<GetFrameworkLearnerRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetFrameworkCertificateResponse>(It.IsAny<GetFrameworkCertificateRequest>()))
                 .ReturnsAsync(apiResponse);
 
             // Act
@@ -98,13 +98,13 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
 
         [Test, MoqAutoData]
         public void Then_Exception_Is_Thrown_If_Api_Call_Fails(
-            GetFrameworkLearnerQuery query,
+            GetFrameworkCertificateQuery query,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
-            GetFrameworkLearnerQueryHandler handler)
+            GetFrameworkCertificateQueryHandler handler)
         {
             // Arrange
             mockAssessorsApiClient
-                .Setup(c => c.GetWithResponseCode<GetFrameworkLearnerResponse>(It.IsAny<GetFrameworkLearnerRequest>()))
+                .Setup(c => c.GetWithResponseCode<GetFrameworkCertificateResponse>(It.IsAny<GetFrameworkCertificateRequest>()))
                 .ThrowsAsync(new Exception("Bad request"));
 
             // Act

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
 {
-    public class GetFrameworkLearnerResponse
+    public class GetFrameworkCertificateResponse
     {
         public Guid Id { get; set; }
         public string FrameworkCertificateNumber { get; set; }

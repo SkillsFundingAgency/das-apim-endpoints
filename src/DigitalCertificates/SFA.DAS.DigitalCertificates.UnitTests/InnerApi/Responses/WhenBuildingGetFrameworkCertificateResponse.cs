@@ -7,7 +7,7 @@ using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
 {
-    public class WhenBuildingGetFrameworkLearnerResponse
+    public class WhenBuildingGetFrameworkCertificateResponse
     {
         [Test, AutoData]
         public void Then_Response_Properties_Are_Set_Correctly(
@@ -26,7 +26,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses
             string certificateReference)
         {
             // Arrange & Act
-            var response = new GetFrameworkLearnerResponse
+            var response = new GetFrameworkCertificateResponse
             {
                 Id = id,
                 FrameworkCertificateNumber = frameworkCertificateNumber,

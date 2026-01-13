@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 
-namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkLearner
+namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate
 {
-    public class GetFrameworkLearnerQueryResult
+    public class GetFrameworkCertificateQueryResult
     {
         public string FamilyName { get; set; }
         public string GivenNames { get; set; }
@@ -34,11 +34,11 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkLearner
         public long? Ukprn { get; set; }
         public string AssessorName { get; set; }
 
-        public static implicit operator GetFrameworkLearnerQueryResult(GetFrameworkLearnerResponse source)
+        public static implicit operator GetFrameworkCertificateQueryResult(GetFrameworkCertificateResponse source)
         {
             if (source == null) return null;
 
-            return new GetFrameworkLearnerQueryResult
+            return new GetFrameworkCertificateQueryResult
             {
                 FamilyName = source.ApprenticeSurname,
                 GivenNames = source.ApprenticeForename,

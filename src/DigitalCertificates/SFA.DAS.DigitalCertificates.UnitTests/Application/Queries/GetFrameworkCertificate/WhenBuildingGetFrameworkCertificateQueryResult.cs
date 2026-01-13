@@ -2,11 +2,11 @@ using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkLearner;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFrameworkLearner
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFrameworkCertificate
 {
-    public class WhenBuildingGetFrameworkLearnerQueryResult
+    public class WhenBuildingGetFrameworkCertificateQueryResult
     {
         [Test, AutoData]
         public void Then_Result_Properties_Are_Set_Correctly(
@@ -26,7 +26,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetFramework
             string printRequestedBy)
         {
             // Arrange & Act
-            var result = new GetFrameworkLearnerQueryResult
+            var result = new GetFrameworkCertificateQueryResult
             {
                 FamilyName = familyName,
                 GivenNames = givenNames,
