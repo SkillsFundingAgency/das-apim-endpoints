@@ -2,22 +2,22 @@ using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificateById;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertificateById
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetStandardCertificate
 {
-    public class WhenBuildingGetCertificateByIdQueryResult
+    public class WhenBuildingGetCertificateQueryResult
     {
         [Test, AutoData]
         public void Then_Result_Properties_Are_Set_Correctly(
             string familyName,
             string givenNames,
-            string uln,
+            long? uln,
             string certificateType,
             string courseCode,
             string courseName,
             string courseOption,
-            string courseLevel,
+            int? courseLevel,
             DateTime dateAwarded,
             string overallGrade,
             string providerName,
@@ -29,7 +29,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             string printRequestedBy)
         {
             // Arrange & Act
-            var result = new GetCertificateByIdQueryResult
+            var result = new GetStandardCertificateQueryResult
             {
                 FamilyName = familyName,
                 GivenNames = givenNames,
