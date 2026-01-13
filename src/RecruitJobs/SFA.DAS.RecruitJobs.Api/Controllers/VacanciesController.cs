@@ -13,7 +13,7 @@ using StrawberryShake;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("[controller]")]
 [ApiController]
 public class VacanciesController(ILogger<VacanciesController> logger) : ControllerBase
 {
