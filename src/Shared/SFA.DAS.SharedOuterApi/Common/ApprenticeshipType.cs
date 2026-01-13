@@ -3,5 +3,6 @@
 public enum ApprenticeshipType
 {
     Apprenticeship,
-    FoundationApprenticeship
+    FoundationApprenticeship,
+    ApprenticeshipUnit
 }
