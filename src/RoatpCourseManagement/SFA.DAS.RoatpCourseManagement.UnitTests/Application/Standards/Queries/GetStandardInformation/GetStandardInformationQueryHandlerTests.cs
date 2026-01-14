@@ -6,6 +6,7 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInf
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
@@ -24,19 +25,13 @@ public class GetStandardInformationQueryHandlerTests
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
         GetStandardInformationQueryHandler sut,
         GetStandardInformationQuery query,
-        GetStandardForLarsCodeResponse apiResponse)
+        GetCourseDetailsResponse apiResponse)
     {
-        apiClientMock.Setup(c => c.GetWithResponseCode<GetStandardForLarsCodeResponse>(It.Is<GetStandardForLarsCodeRequest>(r => r.LarsCode == query.LarsCode && r.GetUrl == $"standards/{query.LarsCode}"))).ReturnsAsync(new ApiResponse<GetStandardForLarsCodeResponse>(apiResponse, HttpStatusCode.OK, null));
+        apiClientMock.Setup(c => c.GetWithResponseCode<GetCourseDetailsResponse>(It.Is<GetCourseDetailsRequest>(r => r.LarsCode == query.LarsCode && r.GetUrl == $"standards/{query.LarsCode}"))).ReturnsAsync(new ApiResponse<GetCourseDetailsResponse>(apiResponse, HttpStatusCode.OK, null));
 
         var result = await sut.Handle(query, new CancellationToken());
 
-        result.Should().BeEquivalentTo(apiResponse, option =>
-        {
-            option.Excluding(s => s.Version);
-            return option;
-        });
-
-        result.LarsCode.Should().Be(apiResponse.LarsCode.ToString());
+        result.Should().BeEquivalentTo(apiResponse);
     }
 
     [Test, MoqAutoData]
@@ -45,10 +40,10 @@ public class GetStandardInformationQueryHandlerTests
         GetStandardInformationQueryHandler sut,
         GetStandardInformationQuery query)
     {
-        apiClientMock.Setup(c => c.GetWithResponseCode<GetStandardForLarsCodeResponse>(It.IsAny<GetStandardForLarsCodeRequest>())).ReturnsAsync(new ApiResponse<GetStandardForLarsCodeResponse>(null, HttpStatusCode.NotFound, null));
+        apiClientMock.Setup(c => c.GetWithResponseCode<GetCourseDetailsResponse>(It.IsAny<GetCourseDetailsRequest>())).ReturnsAsync(new ApiResponse<GetCourseDetailsResponse>(null, HttpStatusCode.NotFound, null));
 
         Func<Task> action = () => sut.Handle(query, new CancellationToken());
 
-        await action.Should().ThrowAsync<InvalidOperationException>();
+        await action.Should().ThrowAsync<ApiResponseException>();
     }
 }

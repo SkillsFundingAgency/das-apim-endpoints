@@ -19,12 +19,12 @@ public class GetStandardInformationQueryResult
     public bool IsRegulatedForProvider { get; set; }
     public CourseType CourseType { get; set; }
 
-    public static implicit operator GetStandardInformationQueryResult(GetStandardForLarsCodeResponse source) =>
+    public static implicit operator GetStandardInformationQueryResult(GetCourseDetailsResponse source) =>
         new()
         {
             StandardUId = source.StandardUId,
             IfateReferenceNumber = source.IfateReferenceNumber,
-            LarsCode = source.LarsCode.ToString(),
+            LarsCode = source.LarsCode,
             Title = source.Title,
             Level = source.Level,
             ApprenticeshipType = source.ApprenticeshipType,

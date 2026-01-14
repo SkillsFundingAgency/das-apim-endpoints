@@ -10,16 +10,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
 public class GetStandardInformationQueryResultTests
 {
     [Test, AutoData]
-    public void Operator_TransformsFromApiModel(GetStandardForLarsCodeResponse source)
+    public void Operator_TransformsFromApiModel(GetCourseDetailsResponse source)
     {
         GetStandardInformationQueryResult sut = source;
 
-        sut.Should().BeEquivalentTo(source, option =>
-        {
-            option.Excluding(s => s.Version);
-            return option;
-        });
-
-        sut.LarsCode.Should().Be(source.LarsCode.ToString());
+        sut.Should().BeEquivalentTo(source);
     }
 }

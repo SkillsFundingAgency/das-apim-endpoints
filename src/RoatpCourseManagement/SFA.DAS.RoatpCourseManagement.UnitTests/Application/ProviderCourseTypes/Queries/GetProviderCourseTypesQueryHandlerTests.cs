@@ -5,10 +5,10 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseTypes.Queries;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -52,7 +52,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.ProviderCourseType
             GetProviderCourseTypesQueryHandler sut)
         {
             apiClientMock.Setup(c => c.GetWithResponseCode<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ReturnsAsync(new ApiResponse<List<ProviderCourseTypeResult>>(null, HttpStatusCode.InternalServerError, ""));
-            Assert.ThrowsAsync<InvalidOperationException>(() => sut.Handle(query, new CancellationToken()));
+            Assert.ThrowsAsync<ApiResponseException>(() => sut.Handle(query, new CancellationToken()));
         }
     }
 }
