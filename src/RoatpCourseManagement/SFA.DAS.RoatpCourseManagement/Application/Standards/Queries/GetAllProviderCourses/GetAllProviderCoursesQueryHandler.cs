@@ -1,14 +1,14 @@
-﻿using MediatR;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 
@@ -41,13 +41,12 @@ public class GetAllProviderCoursesQueryHandler : IRequestHandler<GetAllProviderC
                     ProviderCourseId = c.ProviderCourseId,
                     CourseName = c.CourseName,
                     Level = c.Level,
-                    IsImported = c.IsImported,
                     LarsCode = c.LarsCode,
                     ApprovalBody = c.ApprovalBody,
-                    Version = c.Version,
                     IsApprovedByRegulator = c.IsApprovedByRegulator,
                     IsRegulatedForProvider = c.IsRegulatedForProvider,
-                    HasLocations = c.HasLocations
+                    HasLocations = c.HasLocations,
+                    HasOnlineDeliveryOption = c.HasOnlineDeliveryOption
                 };
                 results.Add(course);
             }
