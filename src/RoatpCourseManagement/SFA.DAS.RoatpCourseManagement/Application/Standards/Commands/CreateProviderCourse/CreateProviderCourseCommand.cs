@@ -14,6 +14,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreatePro
         public string ContactUsPhoneNumber { get; set; }
         public string ContactUsEmail { get; set; }
         public bool HasNationalDeliveryOption { get; set; }
+        public bool HasOnlineDeliveryOption { get; set; }
         public List<ProviderCourseLocationCommandModel> ProviderLocations { get; set; }
         public List<int> SubregionIds { get; set; }
     }
