@@ -37,6 +37,8 @@ public class VacancyReviewDto
     public Guid VacancyId { get; set; }
     public List<Address> EmployerLocations { get; set; }
     public AvailableWhere EmployerLocationOption { get; set; }
+    public bool? EnableAiProcessing { get; init; }
+
     public static explicit operator VacancyReviewDto(GetVacancyReviewResponse source)
     {
         return new VacancyReviewDto
