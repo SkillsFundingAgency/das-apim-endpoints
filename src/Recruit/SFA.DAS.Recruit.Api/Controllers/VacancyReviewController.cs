@@ -52,7 +52,12 @@ public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccount
                 Id = id
             });
 
-            if (vacancyReview.EnableAiProcessing)
+            if (vacancyReview.EnableAiProcessing is null)
+            {
+                logger.LogInformation("Ai not specified in request");
+            }
+            
+            if (vacancyReview.EnableAiProcessing is true)
             {
                 logger.LogInformation("Ai is enabled");
                 HttpContext.Response.OnCompleted(async () =>
