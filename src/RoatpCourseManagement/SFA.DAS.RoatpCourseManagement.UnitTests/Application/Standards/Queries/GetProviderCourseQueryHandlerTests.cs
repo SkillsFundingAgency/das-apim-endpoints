@@ -55,8 +55,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                 result.CourseName.Should().Be(standard.Title);
                 result.Level.Should().Be(standard.Level);
                 result.ApprenticeshipType.Should().Be(standard.ApprenticeshipType);
-                result.ApprovalBody.Should().Be(standard.ApprovalBody);
-                result.Route.Should().Be(standard.Route);
+                result.RegulatorName.Should().Be(standard.ApprovalBody);
+                result.Sector.Should().Be(standard.Route);
                 result.StandardInfoUrl.Should().Be(course.StandardInfoUrl);
                 result.ContactUsPhoneNumber.Should().Be(course.ContactUsPhoneNumber);
                 result.ContactUsEmail.Should().Be(course.ContactUsEmail);
