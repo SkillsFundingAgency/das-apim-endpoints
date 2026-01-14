@@ -23,7 +23,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         {
             var result = await _mediator.Send(new GetRoatpProvidersQuery());
 
-            return Ok(result.Providers);
+            return Ok(result);
         }
 
         [HttpGet]
