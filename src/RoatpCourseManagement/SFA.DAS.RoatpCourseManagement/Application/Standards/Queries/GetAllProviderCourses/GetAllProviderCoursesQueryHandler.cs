@@ -7,7 +7,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
@@ -27,7 +26,7 @@ public class GetAllProviderCoursesQueryHandler : IRequestHandler<GetAllProviderC
         _logger.LogInformation("Get Course request received for Ukprn number {Ukprn}", request.Ukprn);
         try
         {
-            var courses = await _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllProviderCoursesRequest(request.Ukprn, CourseType.Apprenticeship));
+            var courses = await _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllProviderCoursesRequest(request.Ukprn, request.CourseType));
             if (courses == null)
             {
                 _logger.LogInformation("Courses data not found for {Ukprn}", request.Ukprn);
