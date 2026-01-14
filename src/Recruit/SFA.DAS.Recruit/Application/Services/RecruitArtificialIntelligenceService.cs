@@ -34,6 +34,7 @@ public class RecruitArtificialIntelligenceService(
 
     public async Task SendVacancyReviewAsync(Vacancy vacancy, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Fetching training programmes");
         var programme = await GetTrainingProgrammeById(vacancy.ProgrammeId);
         if (programme is null)
         {
@@ -41,6 +42,7 @@ public class RecruitArtificialIntelligenceService(
             return;
         }
 
+        logger.LogInformation("Deserializing skills and qualifications");
         var skills = JsonSerializer.Serialize(vacancy.Skills ?? [], Global.JsonSerializerOptionsCaseInsensitive);
         var qualifications = JsonSerializer.Serialize(vacancy.Qualifications ?? [], Global.JsonSerializerOptionsCaseInsensitive);
 
@@ -58,6 +60,7 @@ public class RecruitArtificialIntelligenceService(
             programme.Title,
             $"Level {programme.EducationLevelNumber}");
 
+        
         await aiClient.SendPayloadAsync(payload, cancellationToken);
     }
 }

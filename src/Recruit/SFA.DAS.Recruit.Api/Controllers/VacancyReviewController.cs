@@ -54,11 +54,13 @@ public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccount
 
             if (vacancyReview.EnableAiProcessing)
             {
+                logger.LogInformation("Ai is enabled");
                 HttpContext.Response.OnCompleted(async () =>
                 {
                     try
                     {
                         var vacancy = JsonSerializer.Deserialize<VacancySnapshot>(vacancyReview.VacancySnapshot, Global.JsonSerializerOptionsCaseInsensitive);
+                        logger.LogInformation("Vacancy has deserialized");
                         await aiService.SendVacancyReviewAsync(vacancy, CancellationToken.None);
                     }
                     catch (Exception e)
@@ -66,6 +68,10 @@ public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccount
                         logger.LogError(e, "An unhandled exception occurred whilst processing the VacancyReview AI call");
                     }
                 });
+            }
+            else
+            {
+                logger.LogInformation("Ai is not enabled");
             }
             return Created();
         }
