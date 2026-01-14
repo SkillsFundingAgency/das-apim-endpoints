@@ -24,7 +24,6 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandar
                 LarsCode = source.LarsCode.ToString(),
                 Title = source.Title,
                 Level = source.Level,
-                Version = source.Version,
                 ApprenticeshipType = source.ApprenticeshipType,
                 RegulatorName = source.ApprovalBody,
                 Sector = source.Route,

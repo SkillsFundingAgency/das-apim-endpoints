@@ -16,13 +16,11 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
 {
     public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQuery, GetProviderCourseResult>
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
         private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
         private readonly ILogger<GetProviderCourseQueryHandler> _logger;
 
         public GetProviderCourseQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILogger<GetProviderCourseQueryHandler> logger)
         {
-            _coursesApiClient = coursesApiClient;
             _courseManagementApiClient = courseManagementApiClient;
             _logger = logger;
         }
@@ -31,7 +29,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
         {
             _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
 
-            var standardResponse = await _coursesApiClient.GetWithResponseCode<GetStandardResponseFromCoursesApi>(new GetStandardRequest(request.LarsCode));
+            var standardResponse = await _courseManagementApiClient.GetWithResponseCode<GetStandardResponseFromCourseManagementApi>(new GetStandardLookRequest(request.LarsCode));
             if (standardResponse.StatusCode != HttpStatusCode.OK)
             {
                 var errorMessage =
@@ -66,17 +64,17 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
                 IfateReferenceNumber = standard.IfateReferenceNumber,
                 CourseName = standard.Title,
                 Level = standard.Level,
-                Version = standard.Version,
                 ApprenticeshipType = standard.ApprenticeshipType,
-                RegulatorName = standard.ApprovalBody,
-                Sector = standard.Route,
+                ApprovalBody = standard.ApprovalBody,
+                Route = standard.Route,
                 StandardInfoUrl = course.StandardInfoUrl,
                 ContactUsPhoneNumber = course.ContactUsPhoneNumber,
                 ContactUsEmail = course.ContactUsEmail,
                 ProviderCourseLocations = locations,
                 IsApprovedByRegulator = course.IsApprovedByRegulator,
                 IsRegulatedForProvider = course.IsRegulatedForProvider,
-                HasLocations = course.HasLocations
+                HasLocations = course.HasLocations,
+                HasOnlineDeliveryOption = course.HasOnlineDeliveryOption,
             };
         }
     }
