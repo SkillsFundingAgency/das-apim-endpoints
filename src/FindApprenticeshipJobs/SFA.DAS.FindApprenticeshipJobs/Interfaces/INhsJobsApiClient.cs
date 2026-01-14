@@ -1,4 +1,3 @@
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 

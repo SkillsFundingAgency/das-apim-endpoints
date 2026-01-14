@@ -1,4 +1,6 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +9,6 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllStandardRegions;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 {
@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task GetAllStandardSubRegions_ValidRequest_ReturnsLocations(
             int ukprn,
-            int larsCode,
+            string larsCode,
             [Frozen] Mock<IMediator> mediatorMock,
             GetAllStandardRegionsQueryResult result,
             [Greedy] ProviderCourseLocationRegionsController sut)
@@ -37,7 +37,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         [Test, MoqAutoData]
         public async Task GetAllStandardSubRegions_InvalidRequest_ReturnsLocations(
             int ukprn,
-            int larsCode,
+            string larsCode,
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] ProviderCourseLocationRegionsController sut)
         {

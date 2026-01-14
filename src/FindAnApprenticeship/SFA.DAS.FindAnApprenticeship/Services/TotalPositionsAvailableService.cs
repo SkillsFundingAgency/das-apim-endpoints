@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 
 namespace SFA.DAS.FindAnApprenticeship.Services;
 
 public class TotalPositionsAvailableService(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client,
     IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration> findApprenticeshipApiClient,
     ICacheStorageService cacheStorageService) : ITotalPositionsAvailableService
 {
@@ -24,7 +25,7 @@ public class TotalPositionsAvailableService(
             return cachedValue.Value;
         }
 
-        var raaVacanciesCountTask = recruitApiClient.Get<long>(new GetTotalPositionsAvailableRequest());
+        var raaVacanciesCountTask = recruitApiV2Client.Get<GetTotalPositionsAvailableResponse>(new GetTotalPositionsAvailableRequest());
         var nhsVacanciesCountTask = findApprenticeshipApiClient.Get<GetApprenticeshipCountResponse>(
             new GetApprenticeshipCountRequest(null,
                 null,
@@ -45,7 +46,7 @@ public class TotalPositionsAvailableService(
 
         await Task.WhenAll(raaVacanciesCountTask, nhsVacanciesCountTask);
             
-        var totalPositionsAvailable = raaVacanciesCountTask.Result + nhsVacanciesCountTask.Result.TotalVacancies;
+        var totalPositionsAvailable = raaVacanciesCountTask.Result.TotalPositionsAvailable + nhsVacanciesCountTask.Result.TotalVacancies;
 
         await cacheStorageService.SaveToCache(nameof(GetTotalPositionsAvailableRequest), totalPositionsAvailable,
             TimeSpan.FromHours(1));

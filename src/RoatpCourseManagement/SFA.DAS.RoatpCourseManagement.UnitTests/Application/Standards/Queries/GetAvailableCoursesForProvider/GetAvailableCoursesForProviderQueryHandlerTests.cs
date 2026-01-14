@@ -1,4 +1,8 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -8,10 +12,6 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.GetAvailableCoursesForProvider
 {
@@ -32,8 +32,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
         [Test, AutoData]
         public async Task Handle_EmptyProviderCourses_ReturnsAllStandards(GetAllStandardsResponse getAllStandardsResponse, GetAvailableCoursesForProviderQuery request)
         {
-            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>())).ReturnsAsync(getAllStandardsResponse);
-            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>());
+            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(getAllStandardsResponse);
+            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>());
 
             var result = await _sut.Handle(request, new CancellationToken());
 
@@ -44,13 +44,13 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.
         public async Task Handle_HasProviderCourses_ReturnsFilteredList(GetAllStandardsResponse getAllStandardsResponse, GetAvailableCoursesForProviderQuery request)
         {
             var larsCode = getAllStandardsResponse.Standards.First().LarsCode;
-            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>())).ReturnsAsync(getAllStandardsResponse);
-            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>() { new GetAllProviderCoursesResponse {  LarsCode = larsCode } });
+            _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(getAllStandardsResponse);
+            _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>() { new GetAllProviderCoursesResponse { LarsCode = larsCode.ToString() } });
 
             var result = await _sut.Handle(request, new CancellationToken());
 
             result.AvailableCourses.Count.Should().Be(getAllStandardsResponse.Standards.Count - 1);
-            result.AvailableCourses.Any(c => c.LarsCode == larsCode).Should().BeFalse();
+            result.AvailableCourses.Any(c => c.LarsCode == larsCode.ToString()).Should().BeFalse();
         }
     }
 }
