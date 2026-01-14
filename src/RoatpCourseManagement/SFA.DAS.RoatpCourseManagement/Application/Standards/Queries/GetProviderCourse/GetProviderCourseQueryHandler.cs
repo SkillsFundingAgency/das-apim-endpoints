@@ -31,7 +31,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProvide
         {
             _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
 
-            var standardResponse = await _coursesApiClient.GetWithResponseCode<GetStandardResponse>(new GetStandardRequest(request.LarsCode));
+            var standardResponse = await _coursesApiClient.GetWithResponseCode<GetStandardResponseFromCoursesApi>(new GetStandardRequest(request.LarsCode));
             if (standardResponse.StatusCode != HttpStatusCode.OK)
             {
                 var errorMessage =
