@@ -1,6 +1,4 @@
-﻿using NUnit.Framework;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
-using SFA.DAS.Testing.AutoFixture;
+﻿using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 
 namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
 {
