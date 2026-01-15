@@ -24,26 +24,6 @@ public class GetStandardResponseTests
         result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
-        result.SectorSubjectAreaTier1.Should().Be(source.SectorSubjectAreaTier1);
-        result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
-    }
-
-    [Test, AutoData]
-    public void ImplicitConversion_FromCourseManagementApi_MapsAllProperties(GetStandardResponseFromCourseManagementApi source)
-    {
-        // Act
-        GetStandardResponse result = source;
-
-        // Assert
-        result.StandardUId.Should().BeNull();
-        result.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
-        result.LarsCode.Should().Be(source.LarsCode);
-        result.Title.Should().Be(source.Title);
-        result.Level.Should().Be(source.Level);
-        result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
-        result.ApprovalBody.Should().Be(source.ApprovalBody);
-        result.Route.Should().Be(source.Route);
-        result.SectorSubjectAreaTier1.Should().Be(source.SectorSubjectAreaTier1);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
     }
 
@@ -52,19 +32,6 @@ public class GetStandardResponseTests
     {
         // Arrange
         GetStandardResponseFromCoursesApi source = null;
-
-        // Act
-        Action act = () => { var _ = (GetStandardResponse)source; };
-
-        // Assert
-        act.Should().Throw<NullReferenceException>();
-    }
-
-    [Test]
-    public void ImplicitConversion_FromCourseManagementApi_NullSource_ThrowsNullReferenceException()
-    {
-        // Arrange
-        GetStandardResponseFromCourseManagementApi source = null;
 
         // Act
         Action act = () => { var _ = (GetStandardResponse)source; };
