@@ -27,7 +27,7 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
 
     public async Task<GetProviderCourseResult> Handle(GetProviderCourseQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
+        _logger.LogInformation("Get Provider Course request received for ukprn {Ukprn}, LarsCode {LarsCode}", request.Ukprn, request.LarsCode);
 
         var standardResponse = await _courseManagementApiClient.GetWithResponseCode<GetStandardResponseFromCourseManagementApi>(new GetStandardLookRequest(request.LarsCode));
         if (standardResponse.StatusCode != HttpStatusCode.OK)
