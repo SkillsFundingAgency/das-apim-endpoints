@@ -16,16 +16,16 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
     {
         var body = new UpdateEnglishAndMathsRequest
         {
-            EnglishAndMaths = putRequest.Data.MathsAndEnglishCourses.Select(x => new EnglishAndMathsItem
+            EnglishAndMaths = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x => new EnglishAndMathsItem
             {
                 StartDate = x.StartDate,
-                EndDate = x.PlannedEndDate,
+                EndDate = x.EndDate,
                 LearnAimRef = x.LearnAimRef,
                 Course = x.Course,
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
+                ActualEndDate = x.CompletionDate ?? x.ActualEndDate,
                 PauseDate = x.PauseDate
             }).ToList()
         };

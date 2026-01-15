@@ -20,28 +20,42 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             _sut = new UpdateEarningsEnglishAndMathsRequestBuilder();
         }
 
-        [Test]
-        public void Build_Should_Map_EnglishAndMathsItems_And_LearningKey()
+        [TestCase(true)]
+        [TestCase(false)]
+        public void Build_Should_Map_EnglishAndMathsItems_And_LearningKey(bool useCompletionDateForActualEndDate)
         {
             // Arrange
             var command = _fixture.Create<UpdateLearnerCommand>();
             var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
             var response = _fixture.Create<UpdateLearnerApiPutResponse>();
 
+            
+            foreach (var item in command.UpdateLearnerRequest.Delivery.EnglishAndMaths)
+            {
+                if (useCompletionDateForActualEndDate)
+                { 
+                    item.ActualEndDate = null;
+                } 
+                else
+                {
+                    item.CompletionDate = null;
+                }
+            }
+
             // Act
             var result = _sut.Build(command, response, putRequest);
 
             // Assert
-            var expectedItems = putRequest.Data.MathsAndEnglishCourses.Select(x => new EnglishAndMathsItem
+            var expectedItems = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x => new EnglishAndMathsItem
             {
                 StartDate = x.StartDate,
-                EndDate = x.PlannedEndDate,
+                EndDate = x.EndDate,
                 Course = x.Course,
                 LearnAimRef = x.LearnAimRef,
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
+                ActualEndDate = useCompletionDateForActualEndDate ? x.CompletionDate : x.ActualEndDate,
                 PauseDate = x.PauseDate
             }).ToList();
 
