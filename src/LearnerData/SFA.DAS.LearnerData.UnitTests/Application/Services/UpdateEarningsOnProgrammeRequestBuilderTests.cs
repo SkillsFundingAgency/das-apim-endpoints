@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Helpers;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -64,7 +65,13 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                 {
                     StartDate = x.StartDate,
-                    EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ActualEndDate, x.ExpectedEndDate, x.PauseDate,x.WithdrawalDate,x.CompletionDate),
+                    EndDate = DateTimeHelper.EarliestOf(
+                        x.ExpectedEndDate,
+                        x.ActualEndDate,
+                        x.PauseDate,
+                        x.WithdrawalDate,
+                        x.CompletionDate
+                    ) ?? x.ExpectedEndDate,
                     OriginalExpectedEndDate = x.ExpectedEndDate
                 }));
 

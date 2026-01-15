@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Helpers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -76,12 +77,11 @@ namespace SFA.DAS.LearnerData.Services
 
             foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
             {
-                var endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
+                var endDate = DateTimeHelper.EarliestOf(onProgramme.ExpectedEndDate,
                     onProgramme.ActualEndDate,
-                    onProgramme.ExpectedEndDate,
                     onProgramme.PauseDate,
                     onProgramme.WithdrawalDate,
-                    onProgramme.CompletionDate);
+                    onProgramme.CompletionDate) ?? onProgramme.ExpectedEndDate;
 
                 periodsInLearning.Add(new PeriodInLearningItem
                 {
