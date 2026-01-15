@@ -1,8 +1,5 @@
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 {
-    using System;
-    using System.Collections.Concurrent;
-    using System.Threading.Tasks;
     using AutoFixture;
     using FluentAssertions;
     using Moq;
@@ -10,8 +7,15 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
     using SFA.DAS.LearnerData.Application.GetProviderRelationships;
     using SFA.DAS.LearnerData.Services;
     using SFA.DAS.SharedOuterApi.Configuration;
+    using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
+    using SFA.DAS.SharedOuterApi.InnerApi.Requests.Rofjaa;
     using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+    using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
+    using SFA.DAS.SharedOuterApi.InnerApi.Responses.Rofjaa;
     using SFA.DAS.SharedOuterApi.Interfaces;
+    using System;
+    using System.Collections.Concurrent;
+    using System.Threading.Tasks;
 
     [TestFixture]
     public class GetProviderRelationshipServiceTests
@@ -37,11 +41,20 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var fixture = new Fixture();
             var employerDetails = fixture.Create<ConcurrentBag<EmployerDetails>>();
             var providerDetails = fixture.Create<GetProviderAccountLegalEntitiesResponse>();
+            var accountsResponse = fixture.Create<GetAccountByIdResponse>();
+            var agencyResponse = fixture.Create<GetAgencyResponse>();
+
+            _accountsApiClient.Setup(t => t.Get<GetAccountByIdResponse>(It.IsAny<GetAccountByIdRequest>())).
+                ReturnsAsync(accountsResponse);
+
+            _fjaaApiClient.Setup(t => t.Get<GetAgencyResponse>(It.IsAny<GetAgencyQuery>())).
+                ReturnsAsync(agencyResponse);
 
             // Act
-            await _testClass.GetEmployerDetails(employerDetails, providerDetails);
+            var details = await _testClass.GetEmployerDetails(providerDetails);
 
-            employerDetails.Should().NotBeNull();
+            details.Should().NotBeNull();
+            details.Should().HaveCount(providerDetails.AccountProviderLegalEntities.Count);
         }
 
         [Test]
@@ -49,15 +62,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
         {
             // Arrange
             var fixture = new Fixture();
-            await FluentActions.Invoking(() => _testClass.GetEmployerDetails(default, fixture.Create<GetProviderAccountLegalEntitiesResponse>())).Should().ThrowAsync<ArgumentNullException>().WithParameterName("employerDetails");
-        }
-
-        [Test]
-        public async Task CannotCallGetEmployerDetailsWithNullProviderDetails()
-        {
-            // Arrange
-            var fixture = new Fixture();
-            await FluentActions.Invoking(() => _testClass.GetEmployerDetails(fixture.Create<ConcurrentBag<EmployerDetails>>(), default)).Should().ThrowAsync<ArgumentNullException>().WithParameterName("providerDetails");
+            await FluentActions.Invoking(() => _testClass.GetEmployerDetails(fixture.Create<GetProviderAccountLegalEntitiesResponse>())).Should().ThrowAsync<ArgumentNullException>().WithParameterName("employerDetails");
         }
 
         [Test]
