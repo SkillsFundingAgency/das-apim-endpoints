@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificateById;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -23,11 +23,11 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCertificateById([FromRoute] Guid id)
+        public async Task<IActionResult> GetStandardCertificate([FromRoute] Guid id)
         {
             try
             {
-                var result = await _mediator.Send(new GetCertificateByIdQuery(id));
+                var result = await _mediator.Send(new GetStandardCertificateQuery(id));
 
                 return result == null ? NotFound() : Ok(result);
             }

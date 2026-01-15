@@ -3,12 +3,12 @@ using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
 {
-    public class GetCertificateByIdRequest : IGetApiRequest
+    public class GetStandardCertificateRequest : IGetApiRequest
     {
         public Guid Id { get; }
-        public bool IncludeLogs { get; }
+        public bool IncludeLogs { get; }            
 
-        public GetCertificateByIdRequest(Guid id, bool includeLogs = true)
+        public GetStandardCertificateRequest(Guid id, bool includeLogs = true)
         {
             Id = id;
             IncludeLogs = includeLogs;
@@ -18,4 +18,5 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
             ? $"api/v1/certificates/{Id}"
             : $"api/v1/certificates/{Id}?includeLogs=false";
     }
-}
+}               
+                    

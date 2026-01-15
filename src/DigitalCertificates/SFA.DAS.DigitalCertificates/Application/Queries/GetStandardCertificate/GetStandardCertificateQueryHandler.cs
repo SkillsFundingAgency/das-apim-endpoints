@@ -9,20 +9,20 @@ using System.Threading.Tasks;
 using System.Net;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 
-namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificateById
+namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
 {
-    public class GetCertificateByIdQueryHandler : IRequestHandler<GetCertificateByIdQuery, GetCertificateByIdQueryResult>
+    public class GetStandardCertificateQueryHandler : IRequestHandler<GetStandardCertificateQuery, GetStandardCertificateQueryResult>
     {
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
 
-        public GetCertificateByIdQueryHandler(IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient)
+        public GetStandardCertificateQueryHandler(IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient)
         {
             _assessorsApiClient = assessorsApiClient;
         }
 
-        public async Task<GetCertificateByIdQueryResult> Handle(GetCertificateByIdQuery request, CancellationToken cancellationToken)
+        public async Task<GetStandardCertificateQueryResult> Handle(GetStandardCertificateQuery request, CancellationToken cancellationToken)
         {
-            var certificateResponse = await _assessorsApiClient.GetWithResponseCode<GetCertificateByIdResponse>(new GetCertificateByIdRequest(request.Id, true));
+            var certificateResponse = await _assessorsApiClient.GetWithResponseCode<GetStandardCertificateResponse>(new GetStandardCertificateRequest(request.Id, true));
 
             if (certificateResponse == null || certificateResponse.StatusCode == HttpStatusCode.NotFound)
             {
@@ -44,7 +44,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificateById
                 }
             }
 
-            var result = (GetCertificateByIdQueryResult)certificate;
+            var result = (GetStandardCertificateQueryResult)certificate;
             result.AssessorName = assessorName;
 
             return result;

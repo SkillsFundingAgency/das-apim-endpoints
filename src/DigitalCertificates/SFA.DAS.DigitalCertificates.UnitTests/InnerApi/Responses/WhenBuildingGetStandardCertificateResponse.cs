@@ -6,7 +6,7 @@ using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses.Assessor
 {
-    public class WhenBuildingGetCertificateByIdResponse
+    public class WhenBuildingGetStandardCertificateResponse
     {
         [Test, AutoData]
         public void Then_Response_Can_Be_Constructed(
@@ -27,7 +27,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses.Assessor
             DateTime? printRequestedAt,
             string printRequestedBy)
         {
-            var response = new GetCertificateByIdResponse
+            var response = new GetStandardCertificateResponse
             {
                 OrganisationId = organisationId,
                 LearnerFamilyName = learnerFamilyName,
