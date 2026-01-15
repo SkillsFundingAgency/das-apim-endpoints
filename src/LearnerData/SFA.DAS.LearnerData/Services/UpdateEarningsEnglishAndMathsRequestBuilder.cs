@@ -26,7 +26,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
+                ActualEndDate = x.CompletionDate ?? x.PauseDate ?? x.WithdrawalDate,
                 PauseDate = x.PauseDate,
                 PeriodsInLearning = GetPeriodsInLearning(x.LearnAimRef, command)
             }).ToList()
