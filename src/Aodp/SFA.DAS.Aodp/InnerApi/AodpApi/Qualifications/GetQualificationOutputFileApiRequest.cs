@@ -1,16 +1,17 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Aodp.Application.Commands.Qualification;
+using SFA.DAS.Aodp.Application.Queries.Qualifications;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
 {
-    public class GetQualificationOutputFileApiRequest : IGetApiRequest
+    public class GetQualificationOutputFileApiRequest : IPostApiRequest
     {
-        public string CurrentUsername { get; set; } = string.Empty;
+        public string PostUrl => $"api/qualifications/outputfile";
+        public object Data { get; set; }
 
-        public string GetUrl => $"api/qualifications/outputfile/{CurrentUsername}";
-
-        public GetQualificationOutputFileApiRequest(string username) 
+        public GetQualificationOutputFileApiRequest(GetQualificationOutputFileQuery data)
         {
-            CurrentUsername = username;
+            Data = data;
         }
     }
 }
