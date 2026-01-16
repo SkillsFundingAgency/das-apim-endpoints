@@ -53,7 +53,6 @@ public class WhenGettingAllProviderRelationships
         result.Should().NotBeNull();
         result.GetAllProviderRelationships.Should().HaveCount(providerSummary.RegisteredProviders.Count());
         result.GetAllProviderRelationships.Select(x => x.UkPRN).Should().Equal(providerSummary.RegisteredProviders.Select(t => t.Ukprn.ToString()));
-        
     }
 
     [Test]

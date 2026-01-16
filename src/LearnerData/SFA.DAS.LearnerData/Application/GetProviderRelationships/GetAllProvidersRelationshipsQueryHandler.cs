@@ -31,7 +31,7 @@ public class GetAllProvidersRelationshipsQueryHandler(
                         return;
                     }
 
-               var employerDetails =   await getProviderRelationshipService.GetEmployerDetails(providerDetails);
+                    var employerDetails = await getProviderRelationshipService.GetEmployerDetails(providerDetails);
 
                     providerResponse.Add(new GetProviderRelationshipQueryResponse()
                     {
@@ -43,12 +43,12 @@ public class GetAllProvidersRelationshipsQueryHandler(
                 });
 
         return new GetAllProviderRelationshipQueryResponse() { GetAllProviderRelationships = [.. providerResponse] };
-    }   
+    }
 
     private async Task<GetProvidersResponse?> GetRegisteredProviderDetails(int page, int pagesize, CancellationToken cancellationToken)
     {
         var providerDetails = await roatpService.GetProviders(cancellationToken);
-        if(providerDetails is null) { return null; }
+        if (providerDetails is null) { return null; }
         providerDetails.RegisteredProviders = [.. providerDetails.RegisteredProviders.Skip(page - 1 * pagesize).Take(pagesize)];
         return providerDetails;
     }

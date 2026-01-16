@@ -2,7 +2,7 @@
 
 public class EmployerDetails
 {
-    public required string AgreementId { get; set; }
+    public string AgreementId { get; set; }
 
     public bool IsLevy { get; set; }
 

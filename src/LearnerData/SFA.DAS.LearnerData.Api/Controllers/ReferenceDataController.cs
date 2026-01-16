@@ -11,11 +11,10 @@ public class ReferenceDataController(
 IMediator mediator,
 ILogger<LearnersController> logger) : ControllerBase
 {
-
     [HttpGet("providers/{ukprn}")]
     public async Task<IActionResult> GetEmployerAgreementDetails([FromRoute] int ukprn)
     {
-        logger.LogInformation("GetEmployerAgreementId for ukprn {Ukprn}", ukprn);            
+        logger.LogInformation("GetEmployerAgreementId for ukprn {Ukprn}", ukprn);
 
         var query = new GetProviderRelationshipQuery()
         {
@@ -24,7 +23,7 @@ ILogger<LearnersController> logger) : ControllerBase
 
         var response = await mediator.Send(query);
 
-        if(response is null) { return NotFound(); }
+        if (response is null) { return NotFound(); }
 
         return Ok(response);
     }
@@ -32,12 +31,12 @@ ILogger<LearnersController> logger) : ControllerBase
     [HttpGet("reference-data/providers")]
     public async Task<IActionResult> GetAllEmployerAgreementDetails([FromQuery] int page = 1, [FromQuery] int pagesize = 20)
     {
-        pagesize = pagesize >100 ? 20 : pagesize;
+        pagesize = pagesize > 100 ? 20 : pagesize;
 
         logger.LogInformation("GetEmployerAgreementId");
 
         var query = new GetAllProviderRelationshipQuery()
-        {                
+        {
             Page = page,
             PageSize = pagesize
         };
@@ -46,5 +45,4 @@ ILogger<LearnersController> logger) : ControllerBase
         if (response is null) { return NotFound(); }
         return Ok((GetAllProviderRelationshipQueryResponse)response);
     }
-
 }

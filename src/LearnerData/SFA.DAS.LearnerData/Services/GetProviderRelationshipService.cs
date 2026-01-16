@@ -15,6 +15,7 @@ namespace SFA.DAS.LearnerData.Services
     public interface IGetProviderRelationshipService
     {
         Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails);
+
         Task<GetProviderAccountLegalEntitiesResponse> GetAllProviderRelationShipDetails(int ukprn);
     }
 

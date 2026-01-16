@@ -3,7 +3,6 @@ using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Concurrent;
 
 namespace SFA.DAS.LearnerData.Application.GetProviderRelationships;
 
@@ -23,7 +22,7 @@ public class GetProviderRelationshipQueryHandler(
         var provider = await GetRegisteredProviderDetails(request.Ukprn, cancellationToken);
         if (provider is null) { return null; }
 
-      var employerDetails =  await getProviderRelationshipService.GetEmployerDetails(providerDetails);
+        var employerDetails = await getProviderRelationshipService.GetEmployerDetails(providerDetails);
 
         return new GetProviderRelationshipQueryResponse()
         {
