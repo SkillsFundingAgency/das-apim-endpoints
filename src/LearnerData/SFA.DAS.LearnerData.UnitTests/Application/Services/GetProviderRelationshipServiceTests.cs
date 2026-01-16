@@ -46,12 +46,16 @@ public class GetProviderRelationshipServiceTests
             ReturnsAsync(accountsResponse);
 
         _fjaaApiClient.Setup(t => t.Get<GetAgencyResponse>(It.IsAny<GetAgencyQuery>())).
-            ReturnsAsync(agencyResponse);
+            ReturnsAsync((GetAgencyQuery query) => new GetAgencyResponse() { LegalEntityId = query.LegalEntityId});
 
         // Act
         var details = await _testClass.GetEmployerDetails(providerDetails);
 
         details.Should().NotBeNull();
         details.Should().HaveCount(providerDetails.AccountProviderLegalEntities.Count);
+        details.Select(t=>t.AgreementId).Should().BeEquivalentTo(providerDetails.AccountProviderLegalEntities.Select(t=>t.AccountLegalEntityPublicHashedId));
+
+        var firstItem = details.First();
+        var secondItem = providerDetails.AccountProviderLegalEntities.Select(t => t.AccountLegalEntityPublicHashedId == firstItem.AgreementId);
     }
 }

@@ -38,7 +38,7 @@ namespace SFA.DAS.LearnerData.Services
 
                      if (agencyTask is null) { return; }
 
-                     employerDetails.Add(CreateEmployerDetails(accountTask, agencyTask));
+                     employerDetails.Add(CreateEmployerDetails(accountTask, agencyTask, legalEntity1.AccountLegalEntityPublicHashedId));
                  });
 
             return employerDetails.ToList();
@@ -58,11 +58,11 @@ namespace SFA.DAS.LearnerData.Services
             return agencyResponse;
         }
 
-        private EmployerDetails CreateEmployerDetails(GetAccountByIdResponse accountDetails, GetAgencyResponse agencyDetails)
+        private EmployerDetails CreateEmployerDetails(GetAccountByIdResponse accountDetails, GetAgencyResponse agencyDetails, string legalEntityHashedId)
         {
             return new EmployerDetails()
             {
-                AgreementId = agencyDetails.LegalEntityId.ToString(),
+                AgreementId = legalEntityHashedId,
                 IsLevy = accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
                 IsFelxiEmployer = agencyDetails.IsGrantFunded
             };
