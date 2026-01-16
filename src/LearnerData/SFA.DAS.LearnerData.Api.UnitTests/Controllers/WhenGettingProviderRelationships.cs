@@ -12,8 +12,8 @@ using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
-namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
+namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
 [TestFixture]
 public class WhenGettingProviderRelationships
@@ -25,13 +25,12 @@ public class WhenGettingProviderRelationships
         [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
-
         // Arrange
         var queryResult = CreateProviderRelationQueryResult(ukprn);
 
         mockMediator
             .Setup(x => x.Send(It.IsAny<GetProviderRelationshipQuery>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.FromResult(queryResult));
+            .ReturnsAsync((queryResult));
 
         // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
@@ -44,15 +43,16 @@ public class WhenGettingProviderRelationships
         result.Should().NotBeNull();
         result!.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var resultBody = result.Value as GetProviderRelationshipQueryResponse;
-        resultBody.Should().NotBeNull();        
+        resultBody.Should().NotBeNull();
 
-        foreach (var expectedLearner in queryResult.Employers)
+        foreach (var expectedLearner in queryResult?.Employers ?? [])
         {
+            if (expectedLearner == null) continue;
             resultBody!.Employers.Should().Contain(x =>
                 x.AgreementId == expectedLearner.AgreementId &&
                 x.IsFelxiEmployer == expectedLearner.IsFelxiEmployer &&
                 x.IsLevy == expectedLearner.IsLevy);
-        }      
+        }
     }
 
     [Test, MoqAutoData]
@@ -62,7 +62,6 @@ public class WhenGettingProviderRelationships
         [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
-
         mockMediator
             .Setup(x => x.Send(It.IsAny<GetProviderRelationshipQuery>(), It.IsAny<CancellationToken>())).
             ReturnsAsync((GetProviderRelationshipQueryResponse?)null);
@@ -76,13 +75,13 @@ public class WhenGettingProviderRelationships
 
         // Assert
         result.Should().NotBeNull();
-        result!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);       
+        result!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
 
     private static GetProviderRelationshipQueryResponse CreateProviderRelationQueryResult(int ukprn)
     {
-       var fixture = new Fixture();
-       var employers = fixture.Create<EmployerDetails[]>();
+        var fixture = new Fixture();
+        var employers = fixture.Create<EmployerDetails[]>();
 
         return new GetProviderRelationshipQueryResponse
         {

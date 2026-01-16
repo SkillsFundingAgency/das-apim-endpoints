@@ -31,7 +31,8 @@ ILogger<LearnersController> logger) : ControllerBase
     [HttpGet("reference-data/providers")]
     public async Task<IActionResult> GetAllEmployerAgreementDetails([FromQuery] int page = 1, [FromQuery] int pagesize = 20)
     {
-        pagesize = pagesize > 100 ? 20 : pagesize;
+        const int MAX_PAGE_SIZE = 100;
+        pagesize = Math.Min(pagesize, MAX_PAGE_SIZE);
 
         logger.LogInformation("GetEmployerAgreementId");
 

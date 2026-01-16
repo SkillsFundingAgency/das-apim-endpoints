@@ -82,8 +82,7 @@ public class WhenGettingAllProviderRelationships
         var cancellationToken = fixture.Create<CancellationToken>();
         var providerLegalEntitiesresponse = fixture.Create<GetProviderAccountLegalEntitiesResponse>();
 
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.IsAny<int>())).
-          ReturnsAsync((GetProviderAccountLegalEntitiesResponse?)null);
+        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.IsAny<int>()));
 
         _roatpService.Setup(t => t.GetProviders(cancellationToken)).
           ReturnsAsync(fixture.Create<GetProvidersResponse>());

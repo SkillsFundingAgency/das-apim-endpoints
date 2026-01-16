@@ -37,7 +37,7 @@ public class WhenGettingAllProviderRelationships
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetAllEmployerAgreementDetails(1,20) as OkObjectResult;
+        var result = await sut.GetAllEmployerAgreementDetails(1, 20) as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
@@ -76,6 +76,5 @@ public class WhenGettingAllProviderRelationships
         var employers = fixture.Create<EmployerDetails[]>();
 
         return fixture.Create<GetAllProviderRelationshipQueryResponse>();
-       
     }
 }
