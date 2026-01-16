@@ -107,13 +107,13 @@ public static class GqlVacancyMapper
                 },
             TransferInfo = DeserializeOrNull<TransferInfo>(source.TransferInfo),
             VacancyReference = source.VacancyReference,
-            Wage = source.Wage_WageType is null
+            Wage = source.Wage_WageType is null && source.Wage_DurationUnit is null 
                 ? null
                 : new Wage
                 {
                     CompanyBenefitsInformation = source.Wage_CompanyBenefitsInformation,
                     Duration = source.Wage_Duration,
-                    DurationUnit = Enum.Parse<Domain.Vacancy.DurationUnit>(source.Wage_DurationUnit.ToString()!),
+                    DurationUnit = source.Wage_DurationUnit != null ?  Enum.Parse<Domain.Vacancy.DurationUnit>(source.Wage_DurationUnit.ToString()!) : null,
                     FixedWageYearlyAmount = source.Wage_FixedWageYearlyAmount,
                     WageAdditionalInformation = source.Wage_WageAdditionalInformation,
                     WageType = Enum.Parse<Domain.Vacancy.WageType>(source.Wage_WageType.ToString()!),
