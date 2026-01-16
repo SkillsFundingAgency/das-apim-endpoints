@@ -116,7 +116,7 @@ public static class GqlVacancyMapper
                     DurationUnit = source.Wage_DurationUnit != null ?  Enum.Parse<Domain.Vacancy.DurationUnit>(source.Wage_DurationUnit.ToString()!) : null,
                     FixedWageYearlyAmount = source.Wage_FixedWageYearlyAmount,
                     WageAdditionalInformation = source.Wage_WageAdditionalInformation,
-                    WageType = Enum.Parse<Domain.Vacancy.WageType>(source.Wage_WageType.ToString()!),
+                    WageType = source.Wage_WageType != null ? Enum.Parse<Domain.Vacancy.WageType>(source.Wage_WageType.ToString()!) : null,
                     WeeklyHours = source.Wage_WeeklyHours,
                     WorkingWeekDescription = source.Wage_WorkingWeekDescription,
                 },
