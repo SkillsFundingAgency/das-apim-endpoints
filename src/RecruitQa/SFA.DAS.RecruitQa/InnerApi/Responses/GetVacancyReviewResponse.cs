@@ -3,7 +3,7 @@ namespace SFA.DAS.RecruitQa.InnerApi.Responses;
 public class GetVacancyReviewResponse
 {
     public Guid Id { get; init; }
-    public long VacancyReference { get; init; }
+    public string VacancyReference { get; set; }
     public required string VacancyTitle { get; init; }
     public required DateTime CreatedDate { get; init; }
     public required DateTime SlaDeadLine { get; init; }

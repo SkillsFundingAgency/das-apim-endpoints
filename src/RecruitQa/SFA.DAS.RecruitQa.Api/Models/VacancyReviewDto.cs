@@ -1,5 +1,6 @@
 using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.RecruitQa.Api.Models;
@@ -39,7 +40,7 @@ public class VacancyReviewDto
         return new VacancyReviewDto
         {
             Id = source.Id,
-            VacancyReference = source.VacancyReference,
+            VacancyReference = source.VacancyReference.ConvertVacancyReferenceToLong(),
             VacancyTitle =  source.VacancyTitle,
             CreatedDate = source.CreatedDate,
             SlaDeadLine = source.SlaDeadLine,

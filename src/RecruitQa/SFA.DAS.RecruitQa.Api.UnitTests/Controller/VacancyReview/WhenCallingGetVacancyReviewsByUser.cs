@@ -1,4 +1,5 @@
 using System.Net;
+using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
@@ -17,6 +18,10 @@ public class WhenCallingGetVacancyReviewsByUser
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
+        var fixture = new Fixture();
+        innerResponses
+            .Select(r => r.VacancyReference = $"VAC{fixture.Create<long>()}")
+            .ToList();
         mediator.Setup(x => x.Send(
                 It.Is<GetVacancyReviewsByUserQuery>(c => c.UserId == userId && c.AssignationExpiry == assignationExpiry),
                 It.IsAny<CancellationToken>()))

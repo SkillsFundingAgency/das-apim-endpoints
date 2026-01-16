@@ -1,4 +1,5 @@
 using System.Net;
+using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
@@ -15,6 +16,9 @@ public class WhenCallingGetVacancyReviewById
         [Frozen] Mock<IMediator> mediator,
         [Greedy] VacancyReviewController controller)
     {
+        var fixture = new Fixture();
+        var vacancyReference = fixture.Create<long>();
+        queryResult.VacancyReview!.VacancyReference = $"VAC{vacancyReference}";
         mediator.Setup(x => x.Send(
                 It.Is<GetVacancyReviewQuery>(c => c.Id == id), It.IsAny<CancellationToken>()))
             .ReturnsAsync(queryResult);
@@ -24,7 +28,7 @@ public class WhenCallingGetVacancyReviewById
         actual.Should().NotBeNull();
         var actualModel = actual!.Value as GetVacancyReviewApiResponse;
         actualModel.Should().NotBeNull();
-        actualModel!.VacancyReview.Should().BeEquivalentTo(queryResult.VacancyReview);
+        actualModel!.VacancyReview.Should().BeEquivalentTo((VacancyReviewDto)queryResult.VacancyReview);
     }
     
     [Test, MoqAutoData]
