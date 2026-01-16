@@ -12,8 +12,8 @@ using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
-namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
+namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
 [TestFixture]
 public class WhenGettingAllProviderRelationships
@@ -25,34 +25,26 @@ public class WhenGettingAllProviderRelationships
         [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
-
         // Arrange
-        var queryResult = CreateAllProviderRelationQueryResult(ukprn);
+        var queryResult = CreateAllProviderRelationQueryResult();
 
         mockMediator
-            .Setup(x => x.Send(It.IsAny<GetProviderRelationshipQuery>(), It.IsAny<CancellationToken>()))
-            .Returns(Task.FromResult(queryResult));
+            .Setup(x => x.Send(It.IsAny<GetAllProviderRelationshipQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(queryResult);
 
         // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetEmployerAgreementDetails(ukprn) as OkObjectResult;
+        var result = await sut.GetAllEmployerAgreementDetails(1,20) as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
         result!.StatusCode.Should().Be((int)HttpStatusCode.OK);
-        var resultBody = result.Value as GetProviderRelationshipQueryResponse;
-        resultBody.Should().NotBeNull();        
-
-        foreach (var expectedLearner in queryResult.Employers)
-        {
-            resultBody!.Employers.Should().Contain(x =>
-                x.AgreementId == expectedLearner.AgreementId &&
-                x.IsFelxiEmployer == expectedLearner.IsFelxiEmployer &&
-                x.IsLevy == expectedLearner.IsLevy);
-        }      
+        var resultBody = result.Value as GetAllProviderRelationshipQueryResponse;
+        resultBody.Should().NotBeNull();
+        resultBody.GetAllProviderRelationships.Count.Should().Be(queryResult.GetAllProviderRelationships.Count);
     }
 
     [Test, MoqAutoData]
@@ -62,34 +54,28 @@ public class WhenGettingAllProviderRelationships
         [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
-
         mockMediator
-            .Setup(x => x.Send(It.IsAny<GetProviderRelationshipQuery>(), It.IsAny<CancellationToken>())).
-            Returns(Task.FromResult((GetProviderRelationshipQueryResponse?)null));
+            .Setup(x => x.Send(It.IsAny<GetAllProviderRelationshipQuery>(), It.IsAny<CancellationToken>())).
+            ReturnsAsync((GetAllProviderRelationshipQueryResponse?)null);
 
         // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetEmployerAgreementDetails(ukprn) as NotFoundResult;
+        var result = await sut.GetAllEmployerAgreementDetails(1, 20) as NotFoundResult;
 
         // Assert
         result.Should().NotBeNull();
-        result!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);       
+        result!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
 
-    private static GetProviderRelationshipQueryResponse CreateAllProviderRelationQueryResult(int ukprn)
+    private static GetAllProviderRelationshipQueryResponse CreateAllProviderRelationQueryResult()
     {
-       var fixture = new Fixture();
-       var employers = fixture.Create<EmployerDetails[]>();
+        var fixture = new Fixture();
+        var employers = fixture.Create<EmployerDetails[]>();
 
-        return new GetProviderRelationshipQueryResponse
-        {
-            Status = 1,
-            Type = 1,
-            UkPRN = ukprn.ToString(),
-            Employers = employers
-        };
+        return fixture.Create<GetAllProviderRelationshipQueryResponse>();
+       
     }
 }

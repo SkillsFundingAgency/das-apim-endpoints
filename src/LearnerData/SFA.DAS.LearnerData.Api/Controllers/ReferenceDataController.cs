@@ -43,6 +43,7 @@ ILogger<LearnersController> logger) : ControllerBase
         };
 
         var response = await mediator.Send(query);
+        if (response is null) { return NotFound(); }
         return Ok((GetAllProviderRelationshipQueryResponse)response);
     }
 

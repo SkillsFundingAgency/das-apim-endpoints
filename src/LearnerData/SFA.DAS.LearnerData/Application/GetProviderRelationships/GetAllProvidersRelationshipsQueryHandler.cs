@@ -3,6 +3,7 @@ using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Concurrent;
 
 namespace SFA.DAS.LearnerData.Application.GetProviderRelationships;
 
@@ -17,7 +18,7 @@ public class GetAllProvidersRelationshipsQueryHandler(
 
         if (providers is null) return null;
 
-        List<GetProviderRelationshipQueryResponse> providerResponse = [];
+        ConcurrentBag<GetProviderRelationshipQueryResponse> providerResponse = [];
 
         await Parallel.ForEachAsync(providers.RegisteredProviders,
                 new ParallelOptions { MaxDegreeOfParallelism = 5 },
@@ -41,12 +42,13 @@ public class GetAllProvidersRelationshipsQueryHandler(
                     });
                 });
 
-        return new GetAllProviderRelationshipQueryResponse() { GetAllProviderRelationships = providerResponse };
+        return new GetAllProviderRelationshipQueryResponse() { GetAllProviderRelationships = [.. providerResponse] };
     }   
 
-    private async Task<GetProvidersResponse> GetRegisteredProviderDetails(int page, int pagesize, CancellationToken cancellationToken)
+    private async Task<GetProvidersResponse?> GetRegisteredProviderDetails(int page, int pagesize, CancellationToken cancellationToken)
     {
         var providerDetails = await roatpService.GetProviders(cancellationToken);
+        if(providerDetails is null) { return null; }
         providerDetails.RegisteredProviders = [.. providerDetails.RegisteredProviders.Skip(page - 1 * pagesize).Take(pagesize)];
         return providerDetails;
     }

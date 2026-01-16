@@ -65,7 +65,7 @@ public class WhenGettingProviderRelationships
 
         mockMediator
             .Setup(x => x.Send(It.IsAny<GetProviderRelationshipQuery>(), It.IsAny<CancellationToken>())).
-            Returns(Task.FromResult((GetProviderRelationshipQueryResponse?)null));
+            ReturnsAsync((GetProviderRelationshipQueryResponse?)null);
 
         // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
