@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
+using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Aodp.Api;
 using SFA.DAS.Aodp.Api.AppStart;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
+using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 
@@ -12,7 +14,15 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseServiceProviderFactory<UpdateableServiceProvider>(
+    new NServiceBusServiceProviderFactory());
+
 var configuration = builder.Configuration.BuildSharedConfiguration();
+
+builder.Host.ConfigureContainer<UpdateableServiceProvider>(containerBuilder =>
+{
+    containerBuilder.StartNServiceBus(configuration, "SFA.DAS.APIMAODP");
+});
 
 builder.Services
     .AddLogging()
