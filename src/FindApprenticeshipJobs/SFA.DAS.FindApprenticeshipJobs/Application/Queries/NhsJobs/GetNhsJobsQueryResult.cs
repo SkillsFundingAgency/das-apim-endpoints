@@ -4,5 +4,5 @@ namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 
 public class GetNhsJobsQueryResult
 {
-    public List<LiveVacancy> NhsVacancies { get; set; }
+    public List<LiveVacancy> NhsVacancies { get; set; } = [];
 }

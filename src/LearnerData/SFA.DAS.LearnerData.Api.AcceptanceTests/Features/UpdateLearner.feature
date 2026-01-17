@@ -68,3 +68,9 @@ Scenario: Date of Birth updated
 	And the DateOfBirthChanged passed is different to the value in the learners domain
 	When the learner is updated
 	Then a on-programme update request is sent to the earnings domain
+
+Scenario: Care updated
+	Given there is a learner
+	And the Care passed is different to the value in the learners domain
+	When the learner is updated
+	Then a on-programme update request is sent to the earnings domain

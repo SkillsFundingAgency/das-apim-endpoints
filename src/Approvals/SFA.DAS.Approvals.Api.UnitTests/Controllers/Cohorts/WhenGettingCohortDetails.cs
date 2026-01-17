@@ -2,15 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
 using KellermanSoftware.CompareNetObjects;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
