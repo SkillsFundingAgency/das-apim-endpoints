@@ -1,3 +1,4 @@
+using System.Net;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -9,9 +10,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Api.Controllers;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
@@ -37,7 +39,7 @@ public class WhenGettingProviderRelationships
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetEmployerAgreementDetails(ukprn) as OkObjectResult;
+        var result = await sut.GetProviderRelationshipDetails(ukprn) as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
@@ -50,7 +52,7 @@ public class WhenGettingProviderRelationships
             if (expectedLearner == null) continue;
             resultBody!.Employers.Should().Contain(x =>
                 x.AgreementId == expectedLearner.AgreementId &&
-                x.IsFelxiEmployer == expectedLearner.IsFelxiEmployer &&
+                x.IsFlexiEmployer == expectedLearner.IsFlexiEmployer &&
                 x.IsLevy == expectedLearner.IsLevy);
         }
     }
@@ -71,7 +73,7 @@ public class WhenGettingProviderRelationships
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetEmployerAgreementDetails(ukprn) as NotFoundResult;
+        var result = await sut.GetProviderRelationshipDetails(ukprn) as NotFoundResult;
 
         // Assert
         result.Should().NotBeNull();
@@ -85,8 +87,8 @@ public class WhenGettingProviderRelationships
 
         return new GetProviderRelationshipQueryResponse
         {
-            Status = 1,
-            Type = 1,
+            Status = ProviderStatusType.Active.ToString(),
+            Type = ProviderType.Employer.ToString(),
             UkPRN = ukprn.ToString(),
             Employers = employers
         };

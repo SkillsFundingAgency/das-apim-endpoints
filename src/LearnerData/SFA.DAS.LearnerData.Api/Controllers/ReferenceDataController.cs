@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
-using SFA.DAS.LearnerData.Responses;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -9,10 +8,10 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class ReferenceDataController(
 IMediator mediator,
-ILogger<LearnersController> logger) : ControllerBase
+ILogger<ReferenceDataController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}")]
-    public async Task<IActionResult> GetEmployerAgreementDetails([FromRoute] int ukprn)
+    public async Task<IActionResult> GetProviderRelationshipDetails([FromRoute] int ukprn)
     {
         logger.LogInformation("GetEmployerAgreementId for ukprn {Ukprn}", ukprn);
 
@@ -23,13 +22,13 @@ ILogger<LearnersController> logger) : ControllerBase
 
         var response = await mediator.Send(query);
 
-        if (response is null) { return NotFound(); }
+        if (response is null) return NotFound(); 
 
         return Ok(response);
     }
 
-    [HttpGet("reference-data/providers")]
-    public async Task<IActionResult> GetAllEmployerAgreementDetails([FromQuery] int page = 1, [FromQuery] int pagesize = 20)
+    [HttpGet("providers")]
+    public async Task<IActionResult> GetAllProviderRelationshipDetails([FromQuery] int page = 1, [FromQuery] int pagesize = 20)
     {
         const int MAX_PAGE_SIZE = 100;
         pagesize = Math.Min(pagesize, MAX_PAGE_SIZE);
@@ -43,7 +42,7 @@ ILogger<LearnersController> logger) : ControllerBase
         };
 
         var response = await mediator.Send(query);
-        if (response is null) { return NotFound(); }
-        return Ok((GetAllProviderRelationshipQueryResponse)response);
+       
+        return Ok(response);
     }
 }

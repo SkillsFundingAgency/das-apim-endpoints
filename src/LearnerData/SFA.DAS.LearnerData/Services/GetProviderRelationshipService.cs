@@ -33,13 +33,11 @@ namespace SFA.DAS.LearnerData.Services
                  new ParallelOptions { MaxDegreeOfParallelism = 5 },
                  async (legalEntity1, cancellationToken) =>
                  {
-                     var accountTask = await GetEmployerAccountDetails(legalEntity1.AccountId);
+                     var accountDetailsResult = await GetEmployerAccountDetails(legalEntity1.AccountId);
 
-                     var agencyTask = await GetAgencyDetais(legalEntity1.AccountLegalEntityId);
+                     var agencyDetailsResult = await GetAgencyDetails(legalEntity1.AccountLegalEntityId);
 
-                     if (agencyTask is null) { return; }
-
-                     employerDetails.Add(CreateEmployerDetails(accountTask, agencyTask, legalEntity1.AccountLegalEntityPublicHashedId));
+                     employerDetails.Add(CreateEmployerDetails(accountDetailsResult, agencyDetailsResult, legalEntity1.AccountLegalEntityPublicHashedId));
                  });
 
             return employerDetails.ToList();
@@ -52,7 +50,7 @@ namespace SFA.DAS.LearnerData.Services
             return accountResponse;
         }
 
-        private async Task<GetAgencyResponse> GetAgencyDetais(long legalEntityId)
+        private async Task<GetAgencyResponse> GetAgencyDetails(long legalEntityId)
         {
             var agencyResponse = await fjaaApiClient.Get<GetAgencyResponse>(
                new GetAgencyQuery(legalEntityId));
@@ -64,8 +62,8 @@ namespace SFA.DAS.LearnerData.Services
             return new EmployerDetails()
             {
                 AgreementId = legalEntityHashedId,
-                IsLevy = accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
-                IsFelxiEmployer = agencyDetails.IsGrantFunded
+                IsLevy = accountDetails is null ? false : accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
+                IsFlexiEmployer = agencyDetails?.IsGrantFunded?? false
             };
         }
 

@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -20,16 +22,20 @@ public class GetProviderRelationshipQueryHandler(
             return null;
         }
         var provider = await GetRegisteredProviderDetails(request.Ukprn, cancellationToken);
-        if (provider is null) { return null; }
+
+        if (provider is null)
+        {
+            return null;
+        }
 
         var employerDetails = await getProviderRelationshipService.GetEmployerDetails(providerDetails);
 
         return new GetProviderRelationshipQueryResponse()
         {
             UkPRN = request.Ukprn.ToString(),
-            Status = provider.StatusId,
-            Type = provider.ProviderTypeId,
-            Employers = [.. employerDetails]
+            Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
+            Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
+            Employers = employerDetails.ToArray()
         };
     }
 

@@ -3,8 +3,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -52,8 +55,8 @@ public class WhenGettingProviderRelationships
         // Assert
         result.Should().NotBeNull();
         result?.UkPRN.Should().BeEquivalentTo(request.Ukprn.ToString());
-        result?.Status.Should().Be(providerSummary.StatusId);
-        result?.Type.Should().Be(providerSummary.ProviderTypeId);
+        result?.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType),providerSummary.StatusId));
+        result?.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
         result?.Employers?.Length.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
     }
 
@@ -88,6 +91,6 @@ public class WhenGettingProviderRelationships
         var result = await _sut.Handle(request, cancellationToken);
 
         // Assert
-        result.Should().BeNull();
+        result.Should().BeEquivalentTo(new GetProviderRelationshipQueryResponse());
     }
 }

@@ -1,3 +1,4 @@
+using System.Net;
 using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -11,7 +12,6 @@ using SFA.DAS.LearnerData.Api.Controllers;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
@@ -37,7 +37,7 @@ public class WhenGettingAllProviderRelationships
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetAllEmployerAgreementDetails(1, 20) as OkObjectResult;
+        var result = await sut.GetAllProviderRelationshipDetails(1, 20) as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
@@ -54,20 +54,15 @@ public class WhenGettingAllProviderRelationships
         [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
-        mockMediator
-            .Setup(x => x.Send(It.IsAny<GetAllProviderRelationshipQuery>(), It.IsAny<CancellationToken>())).
-            ReturnsAsync((GetAllProviderRelationshipQueryResponse?)null);
-
         // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetAllEmployerAgreementDetails(1, 20) as NotFoundResult;
+        var result = await sut.GetAllProviderRelationshipDetails(1, 20) as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
-        result!.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
     }
 
     private static GetAllProviderRelationshipQueryResponse CreateAllProviderRelationQueryResult()
