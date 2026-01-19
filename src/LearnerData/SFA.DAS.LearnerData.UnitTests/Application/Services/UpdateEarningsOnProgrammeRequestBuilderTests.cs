@@ -64,7 +64,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                 {
                     StartDate = x.StartDate,
-                    EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ActualEndDate, x.ExpectedEndDate, x.PauseDate,x.WithdrawalDate,x.CompletionDate),
+                    EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ActualEndDate, x.ExpectedEndDate, x.PauseDate,x.WithdrawalDate),
                     OriginalExpectedEndDate = x.ExpectedEndDate
                 }));
 
