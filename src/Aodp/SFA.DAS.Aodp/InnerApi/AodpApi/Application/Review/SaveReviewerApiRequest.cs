@@ -1,8 +1,14 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-public class SaveReviewerApiRequest(Guid applicationId) : IPutApiRequest
+public class SaveReviewerApiRequest : IPutApiRequest
 {
-    public string PutUrl => $"/api/applications/{applicationId}/reviewer";
+    public Guid ApplicationId { get; }
+    public SaveReviewerApiRequest(Guid applicationId)
+    {
+        ApplicationId = applicationId;
+    }
+
+    public string PutUrl => $"/api/applications/{ApplicationId}/reviewer";
 
     public object Data { get; set; }
 }

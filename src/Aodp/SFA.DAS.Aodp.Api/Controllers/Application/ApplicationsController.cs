@@ -189,7 +189,7 @@ public class ApplicationsController : BaseController
     }
 
     [HttpPut("/api/applications/{applicationId}/reviewer")]
-    [ProducesResponseType(typeof(EmptyResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(SaveReviewerCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> UpdateReviewer(SaveReviewerCommand command, Guid applicationId)
     {

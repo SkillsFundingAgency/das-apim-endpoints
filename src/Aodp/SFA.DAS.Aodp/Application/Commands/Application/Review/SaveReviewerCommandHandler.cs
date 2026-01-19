@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.AODP.Application.Commands.Application.Review;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -8,11 +8,12 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Review
     public class SaveReviewerCommandHandler : IRequestHandler<SaveReviewerCommand, BaseMediatrResponse<SaveReviewerCommandResponse>>
     {
         private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
+        private readonly ILogger<SaveReviewerCommandHandler> _logger;
 
-
-        public SaveReviewerCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
+        public SaveReviewerCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient, ILogger<SaveReviewerCommandHandler> logger)
         {
             _apiClient = apiClient;
+            _logger = logger;
         }
 
         public async Task<BaseMediatrResponse<SaveReviewerCommandResponse>> Handle(SaveReviewerCommand request, CancellationToken cancellationToken)

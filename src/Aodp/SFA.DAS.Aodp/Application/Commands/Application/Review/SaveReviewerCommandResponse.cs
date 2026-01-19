@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.AODP.Application.Commands.Application.Review;
+﻿namespace SFA.DAS.Aodp.Application.Commands.Application.Review;
 
 public class SaveReviewerCommandResponse
 {
