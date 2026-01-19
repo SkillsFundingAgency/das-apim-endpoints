@@ -14,7 +14,8 @@ namespace SFA.DAS.LearnerData.Extensions
                    || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved)
                    || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)
                    || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
-                   || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged);
+                   || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged)
+                   || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Care);
         }
 
         public static bool HasEnglishAndMathsUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)

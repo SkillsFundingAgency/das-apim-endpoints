@@ -1,11 +1,5 @@
-﻿using AutoFixture.NUnit3;
-using MediatR;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
-using SFA.DAS.Approvals.Api.Models;
+﻿using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.BulkUpload.Commands;
-using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
 

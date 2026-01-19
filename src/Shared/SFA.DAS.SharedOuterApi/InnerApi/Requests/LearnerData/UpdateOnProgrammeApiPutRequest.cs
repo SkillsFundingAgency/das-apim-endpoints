@@ -21,6 +21,7 @@ public class UpdateOnProgrammeRequest
     public bool IncludesFundingBandMaximumUpdate { get; set; }
     public List<PriceItem> Prices { get; set; } = [];
     public List<BreakInLearningItem> BreaksInLearning { get; set; } = [];
+    public Care Care { get; set; }
 }
 
 public class PriceItem
@@ -38,4 +39,11 @@ public class BreakInLearningItem
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime PriorPeriodExpectedEndDate { get; set; }
+}
+
+public class Care
+{
+    public bool HasEHCP { get; set; }
+    public bool IsCareLeaver { get; set; }
+    public bool CareLeaverEmployerConsentGiven { get; set; }
 }
