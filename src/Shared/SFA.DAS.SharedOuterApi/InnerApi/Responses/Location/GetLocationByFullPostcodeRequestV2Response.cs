@@ -15,7 +15,6 @@ public class GetLocationByFullPostcodeRequestV2Response
         var result = new GetLocationsListItem
         {
             Postcode = Postcode,
-            Outcode = Outcode,
             Country = Country,
             DistrictName = DistrictName,
         };
