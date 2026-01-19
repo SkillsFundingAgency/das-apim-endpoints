@@ -80,8 +80,7 @@ namespace SFA.DAS.LearnerData.Services
                     onProgramme.ActualEndDate,
                     onProgramme.ExpectedEndDate,
                     onProgramme.PauseDate,
-                    onProgramme.WithdrawalDate,
-                    onProgramme.CompletionDate);
+                    onProgramme.WithdrawalDate); //todo for now left CompletionDate out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
 
                 periodsInLearning.Add(new PeriodInLearningItem
                 {
