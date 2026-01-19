@@ -32,14 +32,15 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
 
         if (lat != 0 && lon != 0)
         {
-            return new LocationItem(location, new []{ lat, lon }, string.Empty);
+            return new LocationItem(location, [lat, lon], string.Empty);
         }
 
         GetLocationsListItem getLocationsListItem  = null;
         
         if (Regex.IsMatch(location, PostcodeRegex, RegexOptions.None, RegexTimeOut))
         { 
-            getLocationsListItem =  await locationApiClient.Get<GetLocationsListItem>(new GetLocationByFullPostcodeRequest(location));
+            var result = await locationApiClient.Get<GetLocationByFullPostcodeRequestV2Response>(new GetLocationByFullPostcodeRequestV2(location));
+            getLocationsListItem = result.ToGetLocationsListItem();
             getLocationsListItem.IncludeDistrictNameInPostcodeDisplayName = includeDistrictNameInPostcodeDisplayName;
             location = getLocationsListItem.DisplayName;
         }

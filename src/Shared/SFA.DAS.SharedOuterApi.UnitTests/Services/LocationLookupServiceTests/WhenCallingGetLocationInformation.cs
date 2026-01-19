@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Web;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Location;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -149,55 +152,63 @@ public class WhenCallingGetLocationInformation
     [MoqInlineAutoData("CV11AA")]
     public async Task Then_If_There_Is_An_Postcode_Supplied_It_Is_Searched_And_Returned(
         string postcode,
-        GetLocationsListItem apiLocationResponse,
+        GetLocationByFullPostcodeRequestV2Response response,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
+        // arrange
         var location = $"{postcode}";
-        var lat = 0;
-        var lon = 0;
-        apiLocationResponse.Outcode = "";
-        apiLocationResponse.Postcode = postcode;
-
+        response.Outcode = "";
+        response.Postcode = postcode;
+        
+        GetLocationByFullPostcodeRequestV2? capturedRequest = null;
         mockLocationApiClient
-            .Setup(client =>
-                client.Get<GetLocationsListItem>(
-                    It.Is<GetLocationByFullPostcodeRequest>(c => c.GetUrl.Contains(postcode.Split().FirstOrDefault())
-                                                                 && c.GetUrl.Contains(postcode.Split().LastOrDefault()))))
-            .ReturnsAsync(apiLocationResponse);
+            .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
+            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLocationByFullPostcodeRequestV2)
+            .ReturnsAsync(response);
 
-        var result = await service.GetLocationInformation(location, lat, lon);
-
+        // assert
+        var result = await service.GetLocationInformation(location, 0, 0);
+        
+        // assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest.GetUrl.Should().Be($"api/postcodes?postcode={UrlEncoder.Default.Encode(postcode)}");
+        
         result.Name.Should().Be(location);
-        result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
-        result.Country.Should().Be(apiLocationResponse.Country);
+        result.GeoPoint[0].Should().Be(response.Latitude);
+        result.GeoPoint[1].Should().Be(response.Longitude);
+        result.Country.Should().Be(response.Country);
     }
 
     [Test, MoqAutoData]
     public async Task Then_If_There_Is_A_Postcode_And_Include_District_Name_Is_Included_Option_Then_It_Is_Returned_As_Display_Name(
-        GetLocationsListItem apiLocationResponse,
+        GetLocationByFullPostcodeRequestV2Response response,
         [Frozen] Mock<ILocationApiClient<LocationApiConfiguration>> mockLocationApiClient,
         LocationLookupService service)
     {
-        var postcode = "CV1 1AA";
-        var location = $"{postcode}, {apiLocationResponse.DistrictName}";
-        var lat = 0;
-        var lon = 0;
-        apiLocationResponse.Postcode = postcode;
-        apiLocationResponse.Outcode = "";
+        // arrange
+        const string postcode = "CV1 1AA";
+        response.Postcode = postcode;
+        response.Outcode = null;
+        var location = $"{response.Postcode}, {response.DistrictName}";
 
+        GetLocationByFullPostcodeRequestV2? capturedRequest = null;
         mockLocationApiClient
-            .Setup(client =>
-                client.Get<GetLocationsListItem>(
-                    It.Is<GetLocationByFullPostcodeRequest>(c => c.GetUrl.Contains(postcode.Split().FirstOrDefault())
-                                                                 && c.GetUrl.Contains(postcode.Split().LastOrDefault()))))
-            .ReturnsAsync(apiLocationResponse);
+            .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
+            .Callback<IGetApiRequest>(x => capturedRequest = x as GetLocationByFullPostcodeRequestV2)
+            .ReturnsAsync(response);
+        
+        // act
+        var result = await service.GetLocationInformation(postcode, 0, 0, true);
 
-        var result = await service.GetLocationInformation(postcode, lat, lon, true);
-
+        // assert
+        capturedRequest.Should().NotBeNull();
+        capturedRequest.GetUrl.Should().Be("api/postcodes?postcode=CV1%201AA");
+        
         result.Name.Should().Be(location);
-        result.GeoPoint.Should().BeEquivalentTo(apiLocationResponse.Location.GeoPoint);
-        result.Country.Should().Be(apiLocationResponse.Country);
+        result.GeoPoint[0].Should().Be(response.Latitude);
+        result.GeoPoint[1].Should().Be(response.Longitude);
+        result.Country.Should().Be(response.Country);
     }
 
     [Test, MoqAutoData]
