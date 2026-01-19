@@ -76,11 +76,23 @@ namespace SFA.DAS.LearnerData.Services
 
             foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
             {
-                var endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
-                    onProgramme.ActualEndDate,
-                    onProgramme.ExpectedEndDate,
-                    onProgramme.PauseDate,
-                    onProgramme.WithdrawalDate); //todo for now left CompletionDate out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
+                DateTime endDate;
+
+                if (onProgramme.CompletionDate.HasValue)
+                {
+                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
+                        onProgramme.ExpectedEndDate,
+                        onProgramme.PauseDate,
+                        onProgramme.WithdrawalDate); //todo for now left CompletionDate (& ActualEndDate in the completion scenario) out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
+                }
+                else
+                {
+                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
+                        onProgramme.ActualEndDate,
+                        onProgramme.ExpectedEndDate,
+                        onProgramme.PauseDate,
+                        onProgramme.WithdrawalDate);
+                }
 
                 periodsInLearning.Add(new PeriodInLearningItem
                 {
