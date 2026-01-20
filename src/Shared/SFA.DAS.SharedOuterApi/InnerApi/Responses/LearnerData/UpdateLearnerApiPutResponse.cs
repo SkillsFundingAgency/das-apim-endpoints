@@ -7,7 +7,6 @@ public class UpdateLearnerApiPutResponse
 {
     public List<LearningUpdateChanges> Changes { get; set; } = [];
     public Guid LearningEpisodeKey { get; set; }
-    public int AgeAtStartOfLearning { get; set; }
     public List<EpisodePrice> Prices { get; set; } = [];
 
     public class EpisodePrice
@@ -18,7 +17,6 @@ public class UpdateLearnerApiPutResponse
         public decimal TrainingPrice { get; set; }
         public decimal? EndPointAssessmentPrice { get; set; }
         public decimal TotalPrice { get; set; }
-        public int FundingBandMaximum { get; set; }
     }
 
     public enum LearningUpdateChanges
@@ -35,6 +33,7 @@ public class UpdateLearnerApiPutResponse
         BreakInLearningRemoved = 9,
         MathsAndEnglishWithdrawal = 10,
         BreaksInLearningUpdated = 11,
-        DateOfBirthChanged = 12
+        DateOfBirthChanged = 12,
+        Care = 13
     }
 }
