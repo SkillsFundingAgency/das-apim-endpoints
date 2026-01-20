@@ -9,6 +9,7 @@ using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByUs
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVacancyReference;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewSummary;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -193,6 +194,34 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
         catch (Exception e)
         {
             logger.LogError(e, "Error occured while getting vacancy reviews by user");
+            return new StatusCodeResult(500);
+        }
+    }
+
+    [HttpGet]
+    [Route("accounts/{accountLegalEntityId}/vacancyreviews/count")]
+    public async Task<IActionResult> GetCountByAccountLegalEntity(
+        [FromRoute] long accountLegalEntityId,
+        [FromQuery] string? status,
+        [FromQuery] string? manualOutcome,
+        [FromQuery] string? employerNameOption
+        )
+    {
+        try
+        {
+            var result = await mediator.Send(new GetVacancyReviewsCountByAccountLegalEntityQuery
+            {
+                AccountLegalEntityId = accountLegalEntityId,
+                Status = status,
+                ManualOutcome = manualOutcome,
+                EmployerNameOption =employerNameOption
+            });
+
+            return Ok(new GetVacancyReviewsCountApiResponse { Count = result.Count });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while getting vacancy reviews count by account legal entity");
             return new StatusCodeResult(500);
         }
     }
