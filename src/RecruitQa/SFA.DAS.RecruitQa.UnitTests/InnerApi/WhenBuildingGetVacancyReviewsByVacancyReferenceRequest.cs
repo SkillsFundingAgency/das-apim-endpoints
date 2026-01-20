@@ -9,7 +9,7 @@ public class WhenBuildingGetVacancyReviewsByVacancyReferenceRequest
     {
         var actual = new GetVacancyReviewsByVacancyReferenceRequest(vacancyReference, status,false);
 
-        actual.GetUrl.Should().Be($"api/{vacancyReference}/VacancyReviews?status={status}");
+        actual.GetUrl.Should().Be($"api/vacancies/{vacancyReference}/Reviews?status={status}&includeNoStatus=False");
     }
 
     [Test, AutoData]
@@ -17,6 +17,6 @@ public class WhenBuildingGetVacancyReviewsByVacancyReferenceRequest
     {
         var actual = new GetVacancyReviewsByVacancyReferenceRequest(vacancyReference, status, false, manualOutcome);
 
-        actual.GetUrl.Should().Be($"api/{vacancyReference}/VacancyReviews?status={status}&manualOutcome={string.Join("&manualOutcome=", manualOutcome)}");
+        actual.GetUrl.Should().Be($"api/vacancies/{vacancyReference}/Reviews?status={status}&manualOutcome={string.Join("&manualOutcome=", manualOutcome)}&includeNoStatus=False");
     }
 }

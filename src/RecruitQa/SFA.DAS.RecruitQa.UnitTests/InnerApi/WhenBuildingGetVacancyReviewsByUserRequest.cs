@@ -10,7 +10,7 @@ public class WhenBuildingGetVacancyReviewsByUserRequest
     {
         var actual = new GetVacancyReviewsByUserRequest(userId, assignationExpiry, status);
 
-        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/vacancyreviews?assignationExpiry={assignationExpiry:yyyy-MMM-dd}&status={status}");
+        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/vacancyreviews?assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&status={status}");
     }
 
     [Test, AutoData]

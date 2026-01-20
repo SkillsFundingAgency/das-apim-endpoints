@@ -10,7 +10,7 @@ public class WhenBuildingGetVacancyReviewsCountByUserRequest
     {
         var actual = new GetVacancyReviewsCountByUserRequest(userId, true, assignationExpiry);
 
-        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/VacancyReviews/count?approvedFirstTime=True&assignationExpiry={assignationExpiry:yyyy-MMM-dd}");
+        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/VacancyReviews/count?approvedFirstTime=True&assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}");
     }
 
     [Test, AutoData]
