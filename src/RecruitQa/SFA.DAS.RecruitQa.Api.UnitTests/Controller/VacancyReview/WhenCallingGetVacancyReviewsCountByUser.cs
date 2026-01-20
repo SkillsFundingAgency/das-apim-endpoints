@@ -2,7 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsCountByUser;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 

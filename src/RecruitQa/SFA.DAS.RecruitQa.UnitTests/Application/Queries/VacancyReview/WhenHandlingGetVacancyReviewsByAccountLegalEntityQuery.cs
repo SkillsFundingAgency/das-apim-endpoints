@@ -1,5 +1,5 @@
 using System.Net;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByAccountLegalEntity;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByAccountLegalEntity;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;

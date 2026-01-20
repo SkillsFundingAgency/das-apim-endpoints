@@ -3,7 +3,7 @@ using AutoFixture;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitQa.Api.Controllers;
 using SFA.DAS.RecruitQa.Api.Models;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByFilter;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByFilter;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;

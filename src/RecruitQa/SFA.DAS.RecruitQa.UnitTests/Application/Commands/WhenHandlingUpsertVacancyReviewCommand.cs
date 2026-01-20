@@ -1,6 +1,6 @@
 using System.Net;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.RecruitQa.Application.Dashboard.Commands.UpsertVacancyReview;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Commands.UpsertVacancyReview;
 using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 using SFA.DAS.RecruitQa.InnerApi.Responses;

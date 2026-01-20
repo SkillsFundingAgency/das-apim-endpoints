@@ -1,13 +1,14 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitQa.Api.Models;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReview;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByFilter;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByAccountLegalEntity;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByVacancyReference;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsCountByUser;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewsByUser;
-using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetVacancyReviewSummary;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Commands.UpsertVacancyReview;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReview;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByAccountLegalEntity;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByFilter;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByUser;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByVacancyReference;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByUser;
+using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewSummary;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -34,6 +35,26 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
         catch (Exception e)
         {
             logger.LogError(e, "Error occured while getting vacancy reviews by filter");
+            return new StatusCodeResult(500);
+        }
+    }
+    
+    [HttpPost]
+    [Route("[controller]s/{id}")]
+    public async Task<IActionResult> UpsertVacancyReview([FromRoute] Guid id, [FromBody] VacancyReviewDto vacancyReview)
+    {
+        try
+        {
+            await mediator.Send(new UpsertVacancyReviewCommand
+            {
+                VacancyReview = (SFA.DAS.RecruitQa.InnerApi.Requests.VacancyReviewDto)vacancyReview,
+                Id = id
+            });
+            return Created();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while upserting vacancy review");
             return new StatusCodeResult(500);
         }
     }
@@ -81,15 +102,21 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     }
 
     [HttpGet]
-    [Route("[controller]s/{vacancyReference}/vacancyreviews")]
-    public async Task<IActionResult> GetByVacancyReference([FromRoute] long vacancyReference, [FromQuery] string status)
+    [Route("vacancies/{vacancyReference}/vacancyreviews")]
+    public async Task<IActionResult> GetByVacancyReference(
+        [FromRoute] long vacancyReference, 
+        [FromQuery] string? status, 
+        [FromQuery] List<string>? manualOutcome,
+        [FromQuery] bool includeNoStatus)
     {
         try
         {
             var result = await mediator.Send(new GetVacancyReviewsByVacancyReferenceQuery
             {
                 VacancyReference = vacancyReference,
-                Status = status
+                Status = status,
+                ManualOutcome = manualOutcome,
+                IncludeNoStatus = includeNoStatus
             });
 
             var dtoList = result.VacancyReviews.Select(x => (VacancyReviewDto)x).ToList();
@@ -149,14 +176,15 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
 
     [HttpGet]
     [Route("users/{userId}/VacancyReviews")]
-    public async Task<IActionResult> GetByUser([FromRoute] string userId, [FromQuery] DateTime? assignationExpiry)
+    public async Task<IActionResult> GetByUser([FromRoute] string userId, [FromQuery] DateTime? assignationExpiry, [FromQuery] string? status)
     {
         try
         {
             var result = await mediator.Send(new GetVacancyReviewsByUserQuery
             {
                 UserId = userId,
-                AssignationExpiry = assignationExpiry
+                AssignationExpiry = assignationExpiry,
+                Status = status
             });
 
             var dtoList = result.VacancyReviews.Select(x => (VacancyReviewDto)x).ToList();
