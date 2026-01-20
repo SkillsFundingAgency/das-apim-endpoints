@@ -17,6 +17,6 @@ public class WhenBuildingGetVacancyReviewsByFilterRequest
     {
         var actual = new GetVacancyReviewsByFilterRequest(expiredAssignationDateTime:expiredAssignationDateTime);
         
-        actual.GetUrl.Should().Be($"api/vacancyreviews?reviewStatus=&expiredAssignationDateTime={expiredAssignationDateTime}");
+        actual.GetUrl.Should().Be($"api/vacancyreviews?reviewStatus=&expiredAssignationDateTime={expiredAssignationDateTime:yyyy-MMM-dd}");
     }
 }

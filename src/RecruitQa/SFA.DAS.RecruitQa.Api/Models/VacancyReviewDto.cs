@@ -18,11 +18,11 @@ public class VacancyReviewDto
     public string ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
     public DateTime? ClosedDate { get; init; }
-    public string ManualOutcome { get; set; }
-    public string ManualQaComment { get; init; }
+    public string? ManualOutcome { get; set; }
+    public string? ManualQaComment { get; init; }
     public required List<string> ManualQaFieldIndicators { get; init; }
-    public string AutomatedQaOutcome { get; set; }
-    public string AutomatedQaOutcomeIndicators { get; init; }
+    public string? AutomatedQaOutcome { get; set; }
+    public string? AutomatedQaOutcomeIndicators { get; init; }
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }

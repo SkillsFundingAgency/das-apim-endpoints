@@ -9,6 +9,6 @@ public class WhenBuildingGetVacancyReviewsByAccountLegalEntityRequest
     {
         var actual = new GetVacancyReviewsByAccountLegalEntityRequest(accountLegalEntityId);
 
-        actual.GetUrl.Should().Be($"accounts/{accountLegalEntityId}/vacancyreviews");
+        actual.GetUrl.Should().Be($"api/accounts/{accountLegalEntityId}/vacancyreviews");
     }
 }

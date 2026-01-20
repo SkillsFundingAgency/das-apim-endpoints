@@ -9,6 +9,6 @@ public class WhenBuildingGetVacancyReviewSummaryRequest
     {
         var actual = new GetVacancyReviewSummaryRequest();
 
-        actual.GetUrl.Should().Be("VacancyReviews/summary");
+        actual.GetUrl.Should().Be("api/VacancyReviews/summary");
     }
 }
