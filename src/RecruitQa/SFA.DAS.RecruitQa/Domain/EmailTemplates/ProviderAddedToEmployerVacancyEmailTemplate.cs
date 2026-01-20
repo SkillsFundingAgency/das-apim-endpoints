@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Models.Messages;
-using System.Collections.Generic;
 
-namespace SFA.DAS.Recruit.Domain.EmailTemplates;
+namespace SFA.DAS.RecruitQa.Domain.EmailTemplates;
 public class ProviderAddedToEmployerVacancyEmailTemplate : EmailTemplateArguments
 {
     public ProviderAddedToEmployerVacancyEmailTemplate(string templateId,
