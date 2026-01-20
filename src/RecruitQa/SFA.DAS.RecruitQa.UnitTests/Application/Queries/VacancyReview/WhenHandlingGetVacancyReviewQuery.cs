@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-namespace SFA.DAS.RecruitQa.UnitTests.Application.VacancyReview;
+namespace SFA.DAS.RecruitQa.UnitTests.Application.Queries.VacancyReview;
 
 public class WhenHandlingGetVacancyReviewQuery
 {

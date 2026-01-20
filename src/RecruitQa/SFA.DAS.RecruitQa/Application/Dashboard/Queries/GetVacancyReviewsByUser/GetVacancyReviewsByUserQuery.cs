@@ -6,4 +6,5 @@ public class GetVacancyReviewsByUserQuery : IRequest<GetVacancyReviewsByUserQuer
 {
     public required string UserId { get; set; }
     public DateTime? AssignationExpiry { get; set; }
+    public string? Status { get; set; }
 }

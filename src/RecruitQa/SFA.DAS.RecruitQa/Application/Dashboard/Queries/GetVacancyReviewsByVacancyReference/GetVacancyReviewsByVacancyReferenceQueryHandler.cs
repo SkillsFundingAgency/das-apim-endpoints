@@ -13,7 +13,7 @@ public class GetVacancyReviewsByVacancyReferenceQueryHandler(IRecruitApiClient<R
     public async Task<GetVacancyReviewsByVacancyReferenceQueryResult> Handle(GetVacancyReviewsByVacancyReferenceQuery request, CancellationToken cancellationToken)
     {
         var response = await recruitApiClient.GetWithResponseCode<List<GetVacancyReviewResponse>>(
-            new GetVacancyReviewsByVacancyReferenceRequest(request.VacancyReference, request.Status));
+            new GetVacancyReviewsByVacancyReferenceRequest(request.VacancyReference, request.Status, request.IncludeNoStatus, request.ManualOutcome));
 
         if (response.StatusCode == HttpStatusCode.NotFound || response.Body == null)
         {
