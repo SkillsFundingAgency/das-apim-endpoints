@@ -24,12 +24,7 @@ public class GetRoatpProvidersQueryHandler: IRequestHandler<GetRoatpProvidersQue
                 {
                     Live = true
                 }
-            );
-
-        if (result.Body == null || !result.Body.RegisteredProviders.Any())
-        {
-            return new GetRoatpProvidersQueryResult { StatusCode = result.StatusCode };
-        }
+            );        
 
         var providers = result.Body.RegisteredProviders.Select(provider => new RoatpProvider
         {

@@ -24,45 +24,45 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.Controllers
             _controller = new ProviderController(_mediatorMock.Object);
         }
 
-        //[Test]
-        //public async Task GetRegisteredProviders_ShouldReturn_ProvidersFromMediator()
-        //{
-        //    // Arrange
-        //    var providers = new List<RoatpProvider>
-        //    {
-        //        new RoatpProvider { Ukprn = 12345678, Name = "Test Provider" }
-        //    };
+        [Test]
+        public async Task GetRegisteredProviders_ShouldReturn_ProvidersFromMediator()
+        {
+            // Arrange
+            var providers = new List<RoatpProvider>
+            {
+                new RoatpProvider { Ukprn = 12345678, Name = "Test Provider" }
+            };
 
-        //    _mediatorMock
-        //        .Setup(m => m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(new GetRoatpProvidersQueryResult { Providers = providers });
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetRoatpProvidersQueryResult { Providers = providers });
 
-        //    // Act
-        //    var result = await _controller.GetRegisteredProviders();
+            // Act
+            var result = await _controller.GetRegisteredProviders();
 
-        //    // Assert
-        //    var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
-        //    okResult.Value.Should().BeEquivalentTo(providers);
+            // Assert
+            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+            okResult.Value.Should().BeEquivalentTo(providers);
 
-        //    _mediatorMock.Verify(m =>
-        //        m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()),
-        //        Times.Once);
-        //}
+            _mediatorMock.Verify(m =>
+                m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
 
-        //[Test]
-        //public async Task GetRegisteredProviders_ShouldReturn_EmptyList_WhenNoProviders()
-        //{
-        //    // Arrange
-        //    _mediatorMock
-        //        .Setup(m => m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(new GetRoatpProvidersQueryResult { StatusCode =  });
+        [Test]
+        public async Task GetRegisteredProviders_ShouldReturn_EmptyList_WhenNoProviders()
+        {
+            // Arrange
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetRoatpProvidersQueryResult { });
 
-        //    // Act
-        //    var result = await _controller.GetRegisteredProviders();
+            // Act
+            var result = await _controller.GetRegisteredProviders();
 
-        //    // Assert
-        //    var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
-        //    okResult.Value.Should().BeEquivalentTo(new List<RoatpProvider>());
-        //}
+            // Assert
+            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+            okResult.Value.Should().BeEquivalentTo(new List<RoatpProvider>());
+        }
     }
 }
