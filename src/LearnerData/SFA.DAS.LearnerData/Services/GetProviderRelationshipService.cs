@@ -20,7 +20,6 @@ namespace SFA.DAS.LearnerData.Services
     }
 
     public class GetProviderRelationshipService(
-
     IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipApiClient,
         IAccountsApiClient<AccountsConfiguration> accountsApiClient,
         IFjaaApiClient<FjaaApiConfiguration> fjaaApiClient) : IGetProviderRelationshipService

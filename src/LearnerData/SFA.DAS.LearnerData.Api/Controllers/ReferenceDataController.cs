@@ -22,7 +22,7 @@ ILogger<ReferenceDataController> logger) : ControllerBase
 
         var response = await mediator.Send(query);
 
-        if (response is null) return NotFound(); 
+        if (response is null) return NotFound();
 
         return Ok(response);
     }
@@ -42,7 +42,7 @@ ILogger<ReferenceDataController> logger) : ControllerBase
         };
 
         var response = await mediator.Send(query);
-       
+
         return Ok(response);
     }
 }

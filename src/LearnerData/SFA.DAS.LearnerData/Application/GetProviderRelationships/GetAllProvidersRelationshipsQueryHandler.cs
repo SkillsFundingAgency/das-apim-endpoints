@@ -1,5 +1,4 @@
 ﻿using System.Collections.Concurrent;
-using System.Linq;
 using MediatR;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses;
@@ -17,11 +16,11 @@ public class GetAllProvidersRelationshipsQueryHandler(
 {
     public async Task<GetAllProviderRelationshipQueryResponse?> Handle(GetAllProviderRelationshipQuery request, CancellationToken cancellationToken)
     {
-        var providers = await GetRegisteredProviderDetails(request.Page, request.PageSize, cancellationToken);
+        var providers = await GetRegisteredProviderDetails(request.Page, (int)request.PageSize, cancellationToken);
 
         if (providers is null)
         {
-            return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = request.PageSize };
+            return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = request.PageSize, GetAllProviderRelationships = [] };
         }
 
         ConcurrentBag<GetProviderRelationshipQueryResponse> providerResponse = [];
@@ -51,12 +50,11 @@ public class GetAllProvidersRelationshipsQueryHandler(
         return new GetAllProviderRelationshipQueryResponse() { GetAllProviderRelationships = [.. providerResponse], Page = request.Page, PageSize = request.PageSize };
     }
 
-    private async Task<GetProvidersResponse?> GetRegisteredProviderDetails(int page, int? pageSize, CancellationToken cancellationToken)
-    {
-        
+    private async Task<GetProvidersResponse?> GetRegisteredProviderDetails(int page, int pageSize, CancellationToken cancellationToken)
+    {        
         var providerDetails = await roatpService.GetProviders(cancellationToken);
         if (providerDetails is null) { return null; }
-        providerDetails.RegisteredProviders = [.. providerDetails.RegisteredProviders.Skip((page - 1) * (int)pageSize).Take((int)pageSize)];
+        providerDetails.RegisteredProviders = [.. providerDetails.RegisteredProviders.Skip((page - 1) * pageSize).Take(pageSize)];
         return providerDetails;
     }
 }

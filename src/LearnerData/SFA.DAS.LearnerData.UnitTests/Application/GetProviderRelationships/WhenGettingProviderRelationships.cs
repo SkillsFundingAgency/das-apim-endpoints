@@ -1,96 +1,97 @@
-using AutoFixture;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Enums;
-using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.GetProviderRelationships;
 
 [TestFixture]
 public class WhenGettingProviderRelationships
 {
-    private GetProviderRelationshipQueryHandler _sut;
-    private Mock<IGetProviderRelationshipService> _getProviderRelationshipService;
-    private Mock<IRoatpV2TrainingProviderService> _roatpService;
-
-    [SetUp]
-    public void SetUp()
-    {
-        _getProviderRelationshipService = new Mock<IGetProviderRelationshipService>();
-        _roatpService = new Mock<IRoatpV2TrainingProviderService>();
-        _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
-    }
-
-    [Test]
-    public async Task CanCallHandle()
+    [Test, MoqAutoData]
+    public async Task GetEmployerDetails_Calls_With_Correct_Values(
+        GetProviderAccountLegalEntitiesResponse providerLegalEntitiesresponse,
+        GetProviderSummaryResponse providerSummary,
+        GetProviderRelationshipQuery request,
+        List<EmployerDetails> employers,
+       [Frozen] Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
     {
         // Arrange
-        var fixture = new Fixture();
-        var request = fixture.Create<GetProviderRelationshipQuery>();
-        var cancellationToken = fixture.Create<CancellationToken>();
-        var providerLegalEntitiesresponse = fixture.Create<GetProviderAccountLegalEntitiesResponse>();
-        var providerSummary = fixture.Create<GetProviderSummaryResponse>();
 
-        var employers = fixture.Create<List<EmployerDetails>>();
+        providerSummary.StatusId = 1;
+        providerSummary.ProviderTypeId = 1;
 
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.IsAny<int>())).
+        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.Is<int>(ukprn => ukprn == request.Ukprn))).
             ReturnsAsync(providerLegalEntitiesresponse);
 
-        _roatpService.Setup(t => t.GetProviderSummary(It.IsAny<int>())).
+        _roatpService.Setup(t => t.GetProviderSummary(It.Is<int>(ukprn => ukprn == request.Ukprn))).
             ReturnsAsync(providerSummary);
 
-        _getProviderRelationshipService.Setup(t => t.GetEmployerDetails(It.IsAny<GetProviderAccountLegalEntitiesResponse>())).
+        _getProviderRelationshipService.Setup(t => t.GetEmployerDetails(It.Is<GetProviderAccountLegalEntitiesResponse>(x=> x== providerLegalEntitiesresponse))).
             ReturnsAsync(employers);
 
+        var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
+
         // Act
-        var result = await _sut.Handle(request, cancellationToken);
+        var result = await _sut.Handle(request, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
         result?.UkPRN.Should().BeEquivalentTo(request.Ukprn.ToString());
-        result?.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType),providerSummary.StatusId));
+        result?.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), providerSummary.StatusId));
         result?.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
         result?.Employers?.Length.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
     }
 
-    [Test]
-    public async Task WhenProviderRelationshipsIsnull_ReturnsNull()
+    [Test, MoqAutoData]
+    public async Task WhenProviderRelationshipsIsnull_ReturnsNull(
+        GetProviderRelationshipQuery request,
+       [Frozen] Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
     {
         // Arrange
-        var fixture = new Fixture();
-        var request = fixture.Create<GetProviderRelationshipQuery>();
-        var cancellationToken = fixture.Create<CancellationToken>();
+        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.Is<int>(ukprn => ukprn == request.Ukprn))).
+            ReturnsAsync((GetProviderAccountLegalEntitiesResponse?)null);
+
+        var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
 
         // Act
-        var result = await _sut.Handle(request, cancellationToken);
+        var result = await _sut.Handle(request, CancellationToken.None);
 
         // Assert
         result.Should().BeNull();
     }
 
-    [Test]
-    public async Task WhenProviderIsnull_ReturnsNull()
+    [Test, MoqAutoData]
+    public async Task WhenProviderIsnull_ReturnsNull(
+        int ukprnValue,
+    GetProviderAccountLegalEntitiesResponse providerLegalEntitiesresponse,
+    GetProviderRelationshipQuery request,
+   [Frozen] Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
+   [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
     {
         // Arrange
-        var fixture = new Fixture();
-        var request = fixture.Create<GetProviderRelationshipQuery>();
-        var cancellationToken = fixture.Create<CancellationToken>();
-        var providerLegalEntitiesresponse = fixture.Create<GetProviderAccountLegalEntitiesResponse>();
-
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.IsAny<int>())).
+        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.Is<int>(ukprn => ukprn == request.Ukprn))).
           ReturnsAsync(providerLegalEntitiesresponse);
 
+        _roatpService.Setup(t => t.GetProviderSummary(It.IsAny<int>()))
+            .ReturnsAsync((GetProviderSummaryResponse?)null);
+
+        var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
+
         // Act
-        var result = await _sut.Handle(request, cancellationToken);
+        var result = await _sut.Handle(request, CancellationToken.None);
 
         // Assert
-        result.Should().BeEquivalentTo(new GetProviderRelationshipQueryResponse());
+        result.Should().BeNull();
     }
 }

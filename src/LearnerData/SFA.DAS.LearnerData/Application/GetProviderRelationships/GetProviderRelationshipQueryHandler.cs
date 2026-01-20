@@ -21,7 +21,7 @@ public class GetProviderRelationshipQueryHandler(
         {
             return null;
         }
-        var provider = await GetRegisteredProviderDetails(request.Ukprn, cancellationToken);
+        var provider = await GetRegisteredProviderDetails(request.Ukprn);
 
         if (provider is null)
         {
@@ -39,7 +39,7 @@ public class GetProviderRelationshipQueryHandler(
         };
     }
 
-    private async Task<GetProviderSummaryResponse> GetRegisteredProviderDetails(int ukprn, CancellationToken cancellationToken)
+    private async Task<GetProviderSummaryResponse> GetRegisteredProviderDetails(int ukprn)
     {
         var providerDetails = await roatpService.GetProviderSummary(ukprn);
         return providerDetails;
