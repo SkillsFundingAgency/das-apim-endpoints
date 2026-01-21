@@ -53,15 +53,16 @@ public class WhenGettingAllProviderRelationships
 
         // Assert
         result.Should().NotBeNull();
-        result.GetAllProviderRelationships.Should().HaveCount(providerSummary.RegisteredProviders.Count());
+        result.Items.Should().HaveCount(providerSummary.RegisteredProviders.Count());
         result.Page.Should().Be(request.Page);
         result.PageSize.Should().Be(request.PageSize);
+        result.TotalItems.Should().Be(providerSummary.TotalCount);
 
         index = 0;
 
         foreach (var provider in providerSummary.RegisteredProviders)
         {
-            var response = result.GetAllProviderRelationships.First(r => r.UkPRN == provider.Ukprn.ToString());
+            var response = result.Items.First(r => r.UkPRN == provider.Ukprn.ToString());
             response.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), provider.StatusId));
             response.Type.Should().Be(Enum.GetName(typeof(ProviderType), provider.ProviderTypeId));
             response.Employers.Should().BeEquivalentTo(employers[index]);
@@ -88,7 +89,7 @@ public class WhenGettingAllProviderRelationships
         var result = await _sut.Handle(request, cancellation);
 
         // Assert
-        result?.GetAllProviderRelationships.Should().HaveCount(0);
+        result?.Items.Should().HaveCount(0);
         result?.Page.Should().Be(request.Page);
         result?.PageSize.Should().Be(request.PageSize);
     }
@@ -116,6 +117,6 @@ public class WhenGettingAllProviderRelationships
         var result = await _sut.Handle(request, CancellationToken.None);
 
         // Assert
-        result?.GetAllProviderRelationships.Should().HaveCount(0);
+        result?.Items.Should().HaveCount(0);
     }
 }

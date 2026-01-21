@@ -44,7 +44,7 @@ public class WhenGettingAllProviderRelationships
         result!.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var resultBody = result.Value as GetAllProviderRelationshipQueryResponse;
         resultBody.Should().NotBeNull();
-        resultBody.GetAllProviderRelationships.Count.Should().Be(queryResult.GetAllProviderRelationships.Count);
+        resultBody.Items.Count.Should().Be(queryResult.Items.Count);
     }
 
     [Test, MoqAutoData]

@@ -16,11 +16,13 @@ public class GetAllProvidersRelationshipsQueryHandler(
 {
     public async Task<GetAllProviderRelationshipQueryResponse?> Handle(GetAllProviderRelationshipQuery request, CancellationToken cancellationToken)
     {
-        var providers = await GetRegisteredProviderDetails(request.Page, (int)request.PageSize, cancellationToken);
+        var pageSize = request.PageSize ?? 20;
+
+        var providers = await GetRegisteredProviderDetails(request.Page, pageSize, cancellationToken);
 
         if (providers is null)
         {
-            return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = request.PageSize, GetAllProviderRelationships = [] };
+            return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = pageSize, Items = [] };
         }
 
         ConcurrentBag<GetProviderRelationshipQueryResponse> providerResponse = [];
@@ -47,13 +49,14 @@ public class GetAllProvidersRelationshipsQueryHandler(
                     });
                 });
 
-        return new GetAllProviderRelationshipQueryResponse() { GetAllProviderRelationships = [.. providerResponse], Page = request.Page, PageSize = request.PageSize };
+        return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = pageSize, TotalItems =providers.TotalCount, Items =  providerResponse.ToList() };
     }
 
     private async Task<GetProvidersResponse?> GetRegisteredProviderDetails(int page, int pageSize, CancellationToken cancellationToken)
     {        
         var providerDetails = await roatpService.GetProviders(cancellationToken);
         if (providerDetails is null) { return null; }
+        providerDetails.TotalCount = providerDetails.RegisteredProviders.Count();
         providerDetails.RegisteredProviders = [.. providerDetails.RegisteredProviders.Skip((page - 1) * pageSize).Take(pageSize)];
         return providerDetails;
     }
