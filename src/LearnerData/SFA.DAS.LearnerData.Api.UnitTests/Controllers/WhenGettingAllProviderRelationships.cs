@@ -4,6 +4,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -63,6 +64,28 @@ public class WhenGettingAllProviderRelationships
 
         // Assert
         result.Should().NotBeNull();
+    }
+
+    [Test, MoqAutoData]
+    [MoqInlineAutoData(0)]
+    [MoqInlineAutoData(101)]
+    public async Task Then_Bad_request_response_is_returned_with_invalid_pagesize(
+        int pageSize,
+        int ukprn,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
+        [Greedy] ReferenceDataController sut)
+    {
+        // Setup fake HttpContext to allow headers to be set
+        var context = new DefaultHttpContext();
+        sut.ControllerContext = new ControllerContext { HttpContext = context };
+
+        // Act
+        var result = await sut.GetAllProviderRelationshipDetails(1, pageSize) as BadRequestResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
     }
 
     private static GetAllProviderRelationshipQueryResponse CreateAllProviderRelationQueryResult()

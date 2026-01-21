@@ -34,7 +34,7 @@ ILogger<ReferenceDataController> logger) : ControllerBase
         const int MAX_PAGE_SIZE = 100;
 
         if (pagesize < 1 || pagesize > MAX_PAGE_SIZE)
-            return BadRequest("Invalid Pagination parameters");
+            return BadRequest();
 
         logger.LogInformation("GetEmployerAgreementId");
 
