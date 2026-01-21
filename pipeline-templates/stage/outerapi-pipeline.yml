@@ -52,8 +52,6 @@ stages:
       DeploymentName: Deploy_${{ parameters.OuterApiName }}
       AADGroupObjectIdArray: $(AdminAADGroupObjectId),$(DevAADGroupObjectId)
       AppServiceName: $(${{ parameters.OuterApiName }}OuterApiAppServiceName)
-      AppServicePlanName: $(${{ parameters.OuterApiName }}OuterApiAppServicePlanName)
-      ApimEndpointsSubnetResourceId: $(${{ parameters.OuterApiName }}OuterApiSubnetResourceId)
       CustomHostName: $(${{ parameters.OuterApiName }}OuterApiCustomHostname)
       AppServiceKeyVaultCertificateName: $(${{ parameters.OuterApiName }}OuterApiKeyVaultCertificateName)
       ConfigNames: $(${{ parameters.OuterApiName }}OuterApiConfigNames)
