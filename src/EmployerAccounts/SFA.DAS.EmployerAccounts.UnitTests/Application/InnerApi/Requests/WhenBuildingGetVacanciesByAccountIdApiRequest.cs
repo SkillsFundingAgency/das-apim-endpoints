@@ -12,6 +12,6 @@ public class WhenBuildingGetVacanciesByAccountIdApiRequest
     {
         var actual = new GetVacanciesByAccountIdApiRequest(accountId);
         
-        actual.GetUrl.Should().Be($"api/accounts/{accountId}/vacancies?page=1&pageSize=1&sortColumn=&sortOrder=Desc&filterBy=All&searchTerm=");
+        actual.GetUrl.Should().Be($"api/accounts/{accountId}/vacancies?page=1&pageSize=1&sortColumn=CreatedDate&sortOrder=Desc&filterBy=All&searchTerm=");
     }
 }

@@ -6,7 +6,7 @@ namespace SFA.DAS.EmployerAccounts.InnerApi.Responses;
 
 public record GetPagedVacancySummaryApiResponse
 {
-    [JsonPropertyName("info")]
+    [JsonPropertyName("pageInfo")]
     public Info PageInfo { get; set; }
     [JsonPropertyName("items")]
     public List<VacancySummary> Items { get; set; }
