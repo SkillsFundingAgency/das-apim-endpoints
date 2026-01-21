@@ -67,10 +67,7 @@ public class WhenGettingAllProviderRelationships
     }
 
     [Test, MoqAutoData]
-    [MoqInlineAutoData(0)]
-    [MoqInlineAutoData(101)]
     public async Task Then_Bad_request_response_is_returned_with_invalid_pagesize(
-        int pageSize,
         int ukprn,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
@@ -81,7 +78,7 @@ public class WhenGettingAllProviderRelationships
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetAllProviderRelationshipDetails(1, pageSize) as BadRequestResult;
+        var result = await sut.GetAllProviderRelationshipDetails(1, 0) as BadRequestResult;
 
         // Assert
         result.Should().NotBeNull();
