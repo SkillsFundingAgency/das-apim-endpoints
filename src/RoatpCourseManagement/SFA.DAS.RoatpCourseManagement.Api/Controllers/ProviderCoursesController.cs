@@ -54,7 +54,7 @@ public class ProviderCoursesController : ControllerBase
 
     [HttpGet]
     [Route("providers/{ukprn}/courses")]
-    public async Task<IActionResult> GetAllProviderCourses([FromRoute] int ukprn)
+    public async Task<IActionResult> GetAllProviderCourses([FromRoute] int ukprn, [FromQuery] CourseType? courseType = null)
     {
         if (ukprn <= 0)
         {
@@ -65,7 +65,7 @@ public class ProviderCoursesController : ControllerBase
         _logger.LogInformation("Get Standards for ukprn number {Ukprn}", ukprn);
         try
         {
-            var result = await _mediator.Send(new GetAllProviderCoursesQuery(ukprn));
+            var result = await _mediator.Send(new GetAllProviderCoursesQuery(ukprn, courseType));
 
             if (result == null)
             {
