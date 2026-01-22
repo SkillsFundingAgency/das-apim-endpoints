@@ -182,7 +182,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
                     c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse2,userApiResponse4]);
-        var expectedGetUrlEmployer = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId);
+        var expectedGetUrlEmployer = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
@@ -281,7 +281,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
-        var expectedGetUrl = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId);
+        var expectedGetUrl = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
@@ -372,7 +372,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
-        var expectedGetUrl = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId);
+        var expectedGetUrl = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetEmployerRecruitUserNotificationPreferencesApiRequest>(c =>
