@@ -73,7 +73,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
-        var expectedGetUrl = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn);
+        var expectedGetUrl = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn, NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
@@ -177,11 +177,16 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
-        var expectedGetUrl = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn);
+        var expectedGetUrl = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn,NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
-                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse2,userApiResponse4]);
+                    c.GetAllUrl.Equals(expectedGetUrl.GetAllUrl)))).ReturnsAsync([userApiResponse4]);
+        var expectedGetUrlProviderAttached = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn,NotificationTypes.ProviderAttachedToVacancy);
+        recruitApiClient
+            .Setup(x => x.GetAll<RecruitUserApiResponse>(
+                It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
+                    c.GetAllUrl.Equals(expectedGetUrlProviderAttached.GetAllUrl)))).ReturnsAsync([userApiResponse2]);
         var expectedGetUrlEmployer = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
@@ -305,20 +310,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 && c.Tokens["location"] == "Recruiting nationally"
             )
         ), Times.Once);
-        notificationService.Verify(x=>x.Send(
-            It.Is<SendEmailCommand>(c=>
-                c.RecipientsAddress == userApiResponse2.Email
-                && c.TemplateId == emailEnvironmentHelper.VacancyReviewApprovedEmployerTemplateId
-                && c.Tokens["advertTitle"] == command.VacancyReview.VacancyTitle
-                && c.Tokens["firstName"] == userApiResponse2.Name
-                && c.Tokens["employerName"] == command.VacancyReview.EmployerName
-                && c.Tokens["FindAnApprenticeshipAdvertURL"] == string.Format(emailEnvironmentHelper.LiveVacancyUrl,command.VacancyReview.VacancyReference.ToString())
-                && c.Tokens["notificationSettingsURL"] == string.Format(emailEnvironmentHelper.NotificationsSettingsEmployerUrl, command.VacancyReview.HashedAccountId)
-                && c.Tokens["VACcode"] == command.VacancyReview.VacancyReference.ToString()
-                && c.Tokens["location"] == "Recruiting nationally"
-            )
-        ), Times.Once);
-        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Exactly(2));
+        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Exactly(1));
     }
     
     
@@ -450,7 +442,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 x => x.PutWithResponseCode<NullResponse>(
                     It.Is<PutCreateVacancyReviewRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)))
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.Created, ""));
-        var expectedGetUrl = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn);
+        var expectedGetUrl = new GetProviderRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.Ukprn, NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
