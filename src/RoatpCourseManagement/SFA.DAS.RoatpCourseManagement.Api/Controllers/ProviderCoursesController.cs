@@ -1,4 +1,6 @@
-﻿using MediatR;
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -6,8 +8,6 @@ using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProvider
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 using SFA.DAS.SharedOuterApi.InnerApi;
-using System;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
@@ -89,7 +89,7 @@ public class ProviderCoursesController : ControllerBase
     public async Task<IActionResult> GetAllAvailableCourses([FromRoute] int ukprn, [FromRoute] CourseType courseType)
     {
         var result = await _mediator.Send(new GetAvailableCoursesForProviderQuery(ukprn, courseType));
-        _logger.LogInformation($"Total {result.AvailableCourses.Count} courses are available for ukprn: {ukprn}");
+        _logger.LogInformation("Total {AvailableCoursesCount} courses are available for ukprn: {Ukprn}", result.AvailableCourses.Count, ukprn);
         return Ok(result);
     }
 }
