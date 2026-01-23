@@ -81,18 +81,17 @@ namespace SFA.DAS.LearnerData.Services
 
                 if (onProgramme.CompletionDate.HasValue)
                 {
-                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
-                        onProgramme.ExpectedEndDate,
+                    endDate = DateTimeHelper.EarliestOf(onProgramme.ExpectedEndDate,
                         onProgramme.PauseDate,
-                        onProgramme.WithdrawalDate); //todo for now left CompletionDate (& ActualEndDate in the completion scenario) out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
+                        onProgramme.WithdrawalDate)!.Value; //todo for now left CompletionDate (& ActualEndDate in the completion scenario) out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
                 }
                 else
                 {
-                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
+                    endDate = DateTimeHelper.EarliestOf(
                         onProgramme.ActualEndDate,
                         onProgramme.ExpectedEndDate,
                         onProgramme.PauseDate,
-                        onProgramme.WithdrawalDate);
+                        onProgramme.WithdrawalDate)!.Value;
                 }
 
                 periodsInLearning.Add(new PeriodInLearningItem
