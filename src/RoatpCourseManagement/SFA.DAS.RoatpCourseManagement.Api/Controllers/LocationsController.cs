@@ -1,10 +1,13 @@
-﻿using MediatR;
+﻿using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAddresses;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
+[ApiController]
+[Tags("Lookups")]
 [Route("[controller]")]
 public class LocationsController : ControllerBase
 {
