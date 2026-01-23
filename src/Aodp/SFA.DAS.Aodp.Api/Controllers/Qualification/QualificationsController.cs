@@ -263,6 +263,19 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             command.QualificationVersionId = qualificationVersionId;
             return await SendRequestAsync(command);
         }
+
+        [HttpGet("/api/qualifications/GetMatchingQualifications")]
+        [ProducesResponseType(typeof(GetMatchingQualificationsQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetMatchingQualifications(
+            [FromQuery] string searchTerm,
+            [FromQuery] int? skip,
+            [FromQuery] int? take)
+        {
+            return await SendRequestAsync(new GetMatchingQualificationsQuery(searchTerm, skip, take));
+        }
+
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {
             return await SendRequestAsync(new GetNewQualificationsExportQuery());
