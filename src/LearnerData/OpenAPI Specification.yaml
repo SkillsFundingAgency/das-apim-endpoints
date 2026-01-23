@@ -467,7 +467,7 @@ components:
         learners:
           type: array
           items:
-              $ref: '#/components/schemas/apprenticeshipUnitLearning'
+              $ref: '#/components/schemas/apprenticeshipUnitLearnerAndEarnings'
         total:
           type: integer
           minimum: 0
@@ -509,7 +509,7 @@ components:
         uln:
           type: integer
 
-    apprenticeshipUnitLearning:
+    apprenticeshipUnitLearnerAndEarnings:
       type: object
       properties:
         learningKey:
