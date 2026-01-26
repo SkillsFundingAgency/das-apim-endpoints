@@ -18,9 +18,9 @@ public static class AddServiceRegistrationExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
-        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
     }
 }
