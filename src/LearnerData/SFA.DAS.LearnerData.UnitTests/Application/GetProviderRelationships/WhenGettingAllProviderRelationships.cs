@@ -1,6 +1,3 @@
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Services;
@@ -8,7 +5,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.GetProviderRelationships;
 
