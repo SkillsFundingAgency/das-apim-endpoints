@@ -29,7 +29,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             _context.InnerApi.MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/apprentices/{_apprentice.ApprenticeId}")
+                        .WithPath($"/apprentices/{_apprentice.Id}")
                         .UsingGet())
                 .RespondWith(
                     Response.Create()
@@ -67,7 +67,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
         [When("the apprentice is requested")]
         public async Task WhenTheApprenticeshipOverviewIsRequested()
         {
-            await _context.OuterApiClient.Get($"/apprentices/{_apprentice.ApprenticeId}");
+            await _context.OuterApiClient.Get($"/apprentices/{_apprentice.Id}");
         }
 
         [Then("the result should contain the apprentice data")]
