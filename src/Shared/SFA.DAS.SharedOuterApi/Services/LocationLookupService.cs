@@ -40,7 +40,7 @@ public class LocationLookupService(ILocationApiClient<LocationApiConfiguration> 
         if (Regex.IsMatch(location, PostcodeRegex, RegexOptions.None, RegexTimeOut))
         { 
             var result = await locationApiClient.Get<GetLocationByFullPostcodeRequestV2Response>(new GetLocationByFullPostcodeRequestV2(location));
-            getLocationsListItem = result.ToGetLocationsListItem();
+            getLocationsListItem = result?.ToGetLocationsListItem() ?? new GetLocationsListItem();
             getLocationsListItem.IncludeDistrictNameInPostcodeDisplayName = includeDistrictNameInPostcodeDisplayName;
             location = getLocationsListItem.DisplayName;
         }
