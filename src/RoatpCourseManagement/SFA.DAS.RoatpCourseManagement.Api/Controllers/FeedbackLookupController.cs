@@ -1,13 +1,15 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpCourseManagement.Application.FeedbackLookup.Queries.GetAnnualSummariesFeedback;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
-[Route("feedback")]
 [ApiController]
+[Tags("Lookups")]
+[Route("feedback")]
 public class FeedbackLookupController(IMediator _mediator) : ControllerBase
 {
     [HttpGet]

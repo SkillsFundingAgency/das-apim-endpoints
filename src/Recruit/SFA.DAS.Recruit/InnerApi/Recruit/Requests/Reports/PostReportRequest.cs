@@ -18,6 +18,6 @@ public record PostReportRequest(PostReportRequestData Payload) : IPostApiRequest
         public required DateTime FromDate { get; init; }
         public required DateTime ToDate { get; init; }
         public int? Ukprn { get; init; }
-        public required ReportOwnerType OwnerType { get; init; }
+        public required string OwnerType { get; init; }
     }
 }

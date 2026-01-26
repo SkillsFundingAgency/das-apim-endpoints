@@ -30,6 +30,7 @@ namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.ApplicationReviews
                     && c.TemporaryReviewStatus == request.TemporaryReviewStatus
                     && c.HasEverBeenEmployerInterviewing == request.HasEverBeenEmployerInterviewing
                     && c.EmployerFeedback == request.EmployerFeedback
+                    && c.CandidateFeedback == request.CandidateFeedback
             ), CancellationToken.None), Times.Once);
         }
 

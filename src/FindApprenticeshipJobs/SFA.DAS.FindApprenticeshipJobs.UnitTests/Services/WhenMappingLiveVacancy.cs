@@ -90,6 +90,27 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             actual.EmploymentLocations.Should().BeNullOrEmpty();
         }
 
+        [Test, MoqAutoData]
+        public void Then_The_CivilService_Vacancy_Is_Mapped(GetCivilServiceJobsApiResponse.Job source, LiveVacancyMapper liveVacancyMapper, GetRoutesListItem route)
+        {
+
+            var actual = liveVacancyMapper.Map(source, route);
+
+            actual.Id.Should().Be(source.JobCode);
+            actual.Title.Should().Be(source.JobTitle.En);
+            actual.Description.Should().Be(string.Empty);
+            actual.ClosingDate.Should().BeCloseTo(source.KeyTimes.ClosingTime, TimeSpan.FromHours(1));
+            actual.PostedDate.Should().BeCloseTo(source.KeyTimes.PublishedTime, TimeSpan.FromHours(1));
+            actual.EmployerName.Should().Be(source.Department.En);
+            actual.VacancyReference.Should().Be(source.JobReference);
+            actual.ApplicationUrl.Should().Be(source.JobUrl);
+            actual.Wage.WageText.Should().NotBeNullOrEmpty();
+            actual.Route.Should().Be(route.Name);
+            actual.RouteCode.Should().Be(route.Id);
+            actual.SearchTags.Should().Be("Civil Service Civil Servant Public Sector Government");
+            actual.EmploymentLocations.Should().BeNullOrEmpty();
+        }
+
         private static void AssertResponse(FindApprenticeshipJobs.Application.Shared.LiveVacancy actual, LiveVacancy source, GetStandardsListResponse standardsListResponse)
         {
             var expectedResult = new

@@ -10,5 +10,6 @@ public class GetAllStandardsResponse
     {
         public string CourseCode { get; set; }
         public string Name { get; set; }
+        public int? Level { get; set; }
     }
 }
