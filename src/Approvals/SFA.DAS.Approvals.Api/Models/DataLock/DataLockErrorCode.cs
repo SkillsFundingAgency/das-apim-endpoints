@@ -58,6 +58,16 @@ namespace SFA.DAS.Approvals.Api.Models.DataLock
         /// <summary>
         /// Error with Employer stopped payments
         /// </summary>
-        Dlock10 = 512
+        Dlock10 = 512,
+
+        /// <summary>
+        /// Error code 11 (to be filtered by whitelist)
+        /// </summary>
+        Dlock11 = 1024,
+
+        /// <summary>
+        /// Error code 12 (to be filtered by whitelist)
+        /// </summary>
+        Dlock12 = 2048
     }
 }
