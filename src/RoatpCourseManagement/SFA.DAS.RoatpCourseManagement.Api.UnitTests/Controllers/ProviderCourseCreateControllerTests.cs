@@ -8,22 +8,21 @@ using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreateProviderCourse;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
-{
-    [TestFixture]
-    public class ProviderCourseCreateControllerTests
-    {
-        [Test, MoqAutoData]
-        public async Task CreateProviderCourse_InvokesCreateProviderLocationCommand(
-            [Frozen] Mock<IMediator> meditorMock,
-            [Greedy] ProviderCourseCreateController sut,
-            int ukprn,
-            string larsCode,
-            CreateProviderCourseCommand command)
-        {
-            await sut.CreateProviderCourse(ukprn, larsCode, command);
+namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers;
 
-            meditorMock.Verify(m => m.Send(command, It.IsAny<CancellationToken>()));
-        }
+[TestFixture]
+public class ProviderCourseCreateControllerTests
+{
+    [Test, MoqAutoData]
+    public async Task CreateProviderCourse_InvokesCreateProviderLocationCommand(
+        [Frozen] Mock<IMediator> meditorMock,
+        [Greedy] ProviderCourseCreateController sut,
+        int ukprn,
+        string larsCode,
+        CreateProviderCourseCommand command)
+    {
+        await sut.CreateProviderCourse(ukprn, larsCode, command);
+
+        meditorMock.Verify(m => m.Send(command, It.IsAny<CancellationToken>()));
     }
 }

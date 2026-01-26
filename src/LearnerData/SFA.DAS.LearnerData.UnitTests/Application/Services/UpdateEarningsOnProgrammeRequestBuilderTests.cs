@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -28,8 +29,9 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             _sut = new UpdateEarningsOnProgrammeRequestBuilder(_coursesApiClient.Object);
         }
 
-        [Test]
-        public async Task Build_Should_Map_Payload_Without_FundingBandUpdate()
+        [TestCase(true)]
+        [TestCase(false)]
+        public async Task Build_Should_Map_Payload_Without_FundingBandUpdate(bool completion)
         {
             // Arrange
             var command = _fixture.Create<UpdateLearnerCommand>();
@@ -37,6 +39,9 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var response = _fixture.Build<UpdateLearnerApiPutResponse>()
                                    .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>())
                                    .Create();
+
+            if(!completion)
+                putRequest.Data.Learner.CompletionDate = null;
 
             // Act
             var result = await _sut.Build(command, response, putRequest);
@@ -59,13 +64,26 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 TotalPrice = x.TotalPrice
             }));
 
-            result.Data.BreaksInLearning.Should().BeEquivalentTo(
-                putRequest.Data.OnProgramme.BreaksInLearning.Select(x => new BreakInLearningItem
-                {
-                    StartDate = x.StartDate,
-                    EndDate = x.EndDate,
-                    PriorPeriodExpectedEndDate = x.PriorPeriodExpectedEndDate
-                }));
+            if (completion)
+            {
+                result.Data.PeriodsInLearning.Should().BeEquivalentTo(
+                    command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
+                    {
+                        StartDate = x.StartDate,
+                        EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate),
+                        OriginalExpectedEndDate = x.ExpectedEndDate
+                    }));
+            }
+            else
+            {
+                result.Data.PeriodsInLearning.Should().BeEquivalentTo(
+                    command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
+                    {
+                        StartDate = x.StartDate,
+                        EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate, x.ActualEndDate),
+                        OriginalExpectedEndDate = x.ExpectedEndDate
+                    }));
+            }
 
             result.Data.FundingBandMaximum.Should().BeNull();
             result.Data.IncludesFundingBandMaximumUpdate.Should().BeFalse();
