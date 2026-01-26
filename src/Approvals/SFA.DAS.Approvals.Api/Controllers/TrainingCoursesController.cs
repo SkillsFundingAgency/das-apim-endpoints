@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Courses.Queries;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -104,6 +105,28 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 logger.LogError(e, "Error gettingFunding Band details {courseId}", courseCode);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("courses")]
+        public async Task<IActionResult> GetCourses()
+        {
+            try
+            {
+                var queryResult = await mediator.Send(new GetCoursesQuery());
+
+                var model = new GetCoursesResponse
+                {
+                    TrainingProgrammes = queryResult.TrainingProgrammes
+                };
+
+                return Ok(model);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Error attempting to get all courses");
+                return BadRequest();
             }
         }
     }
