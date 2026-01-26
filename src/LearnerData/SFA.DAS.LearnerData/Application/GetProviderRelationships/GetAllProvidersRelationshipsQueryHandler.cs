@@ -16,13 +16,11 @@ public class GetAllProvidersRelationshipsQueryHandler(
 {
     public async Task<GetAllProviderRelationshipQueryResponse?> Handle(GetAllProviderRelationshipQuery request, CancellationToken cancellationToken)
     {
-        var pageSize = request.PageSize ?? 20;
-
-        var providers = await GetRegisteredProviderDetails(request.Page, pageSize, cancellationToken);
+        var providers = await GetRegisteredProviderDetails(request.Page, (int)request.PageSize, cancellationToken);
 
         if (providers is null)
         {
-            return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = pageSize, Items = [] };
+            return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = (int)request.PageSize, Items = [] };
         }
 
         ConcurrentBag<GetProviderRelationshipQueryResponse> providerResponse = [];
@@ -49,7 +47,7 @@ public class GetAllProvidersRelationshipsQueryHandler(
                     });
                 });
 
-        return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = pageSize, TotalItems =providers.TotalCount, Items =  providerResponse.ToList() };
+        return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = (int)request.PageSize, TotalItems =providers.TotalCount, Items =  providerResponse.ToList() };
     }
 
     private async Task<GetProvidersResponse?> GetRegisteredProviderDetails(int page, int pageSize, CancellationToken cancellationToken)

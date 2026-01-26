@@ -30,13 +30,13 @@ public class WhenGettingProviderRelationships
         providerSummary.StatusId = 1;
         providerSummary.ProviderTypeId = 1;
 
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.Is<int>(ukprn => ukprn == request.Ukprn))).
+        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
             ReturnsAsync(providerLegalEntitiesresponse);
 
-        _roatpService.Setup(t => t.GetProviderSummary(It.Is<int>(ukprn => ukprn == request.Ukprn))).
+        _roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
             ReturnsAsync(providerSummary);
 
-        _getProviderRelationshipService.Setup(t => t.GetEmployerDetails(It.Is<GetProviderAccountLegalEntitiesResponse>(x=> x== providerLegalEntitiesresponse))).
+        _getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse)).
             ReturnsAsync(employers);
 
         var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
@@ -46,10 +46,10 @@ public class WhenGettingProviderRelationships
 
         // Assert
         result.Should().NotBeNull();
-        result?.UkPRN.Should().BeEquivalentTo(request.Ukprn.ToString());
-        result?.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), providerSummary.StatusId));
-        result?.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
-        result?.Employers?.Length.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
+        result.UkPRN.Should().BeEquivalentTo(request.Ukprn.ToString());
+        result.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), providerSummary.StatusId));
+        result.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
+        result.Employers?.Length.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
     }
 
     [Test, MoqAutoData]
@@ -59,7 +59,7 @@ public class WhenGettingProviderRelationships
        [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
     {
         // Arrange
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.Is<int>(ukprn => ukprn == request.Ukprn))).
+        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
             ReturnsAsync((GetProviderAccountLegalEntitiesResponse?)null);
 
         var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
@@ -80,10 +80,10 @@ public class WhenGettingProviderRelationships
    [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
     {
         // Arrange
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.Is<int>(ukprn => ukprn == request.Ukprn))).
+        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
           ReturnsAsync(providerLegalEntitiesresponse);
 
-        _roatpService.Setup(t => t.GetProviderSummary(It.IsAny<int>()))
+        _roatpService.Setup(t => t.GetProviderSummary(request.Ukprn))
             .ReturnsAsync((GetProviderSummaryResponse?)null);
 
         var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);

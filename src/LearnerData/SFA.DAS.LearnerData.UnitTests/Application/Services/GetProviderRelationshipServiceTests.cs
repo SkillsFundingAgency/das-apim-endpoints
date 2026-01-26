@@ -1,6 +1,4 @@
 using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -33,13 +31,13 @@ public class GetProviderRelationshipServiceTests
 
         foreach (var provider in providerLegalEnities)
         {
-            accountsClient.Setup(x => x.Get<GetAccountByIdResponse>
-            (It.Is<GetAccountByIdRequest>(t => t.AccountId == provider.AccountId))).ReturnsAsync(new GetAccountByIdResponse()
-            {
-                ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
-            });
+            accountsClient.Setup(x => x.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(provider.AccountId))).
+                ReturnsAsync(new GetAccountByIdResponse()
+                {
+                    ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                });
 
-            fjaaApiClient.Setup(x => x.Get<GetAgencyResponse>(It.Is<GetAgencyQuery>(c => c.LegalEntityId == provider.AccountLegalEntityId))).
+            fjaaApiClient.Setup(x => x.Get<GetAgencyResponse>(new GetAgencyQuery(provider.AccountLegalEntityId))).
                 ReturnsAsync(new GetAgencyResponse()
                 {
                     IsGrantFunded = true
@@ -49,6 +47,7 @@ public class GetProviderRelationshipServiceTests
         // Act
         var details = await _sut.GetEmployerDetails(providerResponse);
 
+        //Assert
         details.Should().NotBeNull();
         details.Should().HaveCount(providerResponse.AccountProviderLegalEntities.Count);
 

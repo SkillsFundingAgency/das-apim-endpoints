@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LearnerData.Application.GetProviderRelationships;
+﻿using System.Collections.Concurrent;
+using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
@@ -8,7 +9,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Rofjaa;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
-using System.Collections.Concurrent;
 
 namespace SFA.DAS.LearnerData.Services
 {
@@ -32,9 +32,9 @@ namespace SFA.DAS.LearnerData.Services
                  new ParallelOptions { MaxDegreeOfParallelism = 5 },
                  async (legalEntity1, cancellationToken) =>
                  {
-                     var accountDetailsResult = await GetEmployerAccountDetails(legalEntity1.AccountId);
-
+                     var accountDetailsTask = GetEmployerAccountDetails(legalEntity1.AccountId);
                      var agencyDetailsResult = await GetAgencyDetails(legalEntity1.AccountLegalEntityId);
+                     var accountDetailsResult = await accountDetailsTask;
 
                      employerDetails.Add(CreateEmployerDetails(accountDetailsResult, agencyDetailsResult, legalEntity1.AccountLegalEntityPublicHashedId));
                  });
@@ -62,7 +62,7 @@ namespace SFA.DAS.LearnerData.Services
             {
                 AgreementId = legalEntityHashedId,
                 IsLevy = accountDetails is null ? false : accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
-                IsFlexiEmployer = agencyDetails?.IsGrantFunded?? false
+                IsFlexiEmployer = agencyDetails?.IsGrantFunded ?? false
             };
         }
 

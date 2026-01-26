@@ -79,7 +79,6 @@ public class WhenGettingAllProviderRelationships
         )
     {
         // Arrange
-
         _roatpService.Setup(t => t.GetProviders(cancellation)).
             ReturnsAsync((GetProvidersResponse?)null);
 
@@ -105,7 +104,6 @@ public class WhenGettingAllProviderRelationships
         )
     {
         // Arrange
-
         _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.IsAny<int>()));
 
         _roatpService.Setup(t => t.GetProviders(CancellationToken.None)).
