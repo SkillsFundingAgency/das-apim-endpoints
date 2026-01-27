@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -7,7 +9,6 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.LearnerData.Extensions;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 
@@ -18,12 +19,16 @@ public class UpdateLearnerCommandHandler(
     IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
-    IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder
+    IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder,
+    IDistributedCache distributedCache
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
+
+        await distributedCache.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
+
         var request = updateLearningPutRequestBuilder.Build(command);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);

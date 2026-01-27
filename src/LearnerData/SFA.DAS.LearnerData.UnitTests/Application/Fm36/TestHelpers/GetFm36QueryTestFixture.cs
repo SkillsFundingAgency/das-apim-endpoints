@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.LearnerData.Application.Fm36;
@@ -28,6 +29,7 @@ internal class GetFm36QueryTestFixture
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
     internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
     internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
+    internal Mock<IDistributedCache> MockDistributedCache;
     internal GetFm36Result Result;
 
     private GetFm36QueryHandler _handler;
@@ -39,6 +41,7 @@ internal class GetFm36QueryTestFixture
         MockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
+        MockDistributedCache = new Mock<IDistributedCache>();
 
         Ukprn = Fixture.Create<long>();
         CollectionPeriod = 2;
@@ -53,7 +56,7 @@ internal class GetFm36QueryTestFixture
         CollectionCalendarResponse = BuildCollectionCalendarResponse(UnpagedLearningsResponse);
         SetupMocks(Ukprn, MockApprenticeshipsApiClient, UnpagedLearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
 
-        _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
+        _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, MockDistributedCache.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
         _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, null, null);
     }
 

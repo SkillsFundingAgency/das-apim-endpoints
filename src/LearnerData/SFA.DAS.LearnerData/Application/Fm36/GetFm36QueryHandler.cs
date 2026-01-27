@@ -1,9 +1,11 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using MediatR;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.Fm36.Common;
 using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -24,16 +26,19 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
+    private readonly IDistributedCache _distributedCache;
     private readonly ILogger<GetFm36QueryHandler> _logger;
 
     public GetFm36QueryHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
         ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
+        IDistributedCache distributedCache,
         ILogger<GetFm36QueryHandler> logger)
     {
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
         _collectionCalendarApiClient = collectionCalendarApiClient;
+        _distributedCache = distributedCache;
         _logger = logger;
     }
 
@@ -45,7 +50,9 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         var (learnings, totalLearners) = await GetLearnings(request);
 
         var earnings = await GetRelatedEarnings(request, learnings);
+        var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x=>x.Uln),cancellationToken);
         var joinedApprenticeships = JoinLearningAndEarningData(learnings, earnings, currentAcademicYear);
+        
 
         var fm36Learners = TransformToFm36Learners(joinedApprenticeships, currentAcademicYear, request.CollectionPeriod);
 
