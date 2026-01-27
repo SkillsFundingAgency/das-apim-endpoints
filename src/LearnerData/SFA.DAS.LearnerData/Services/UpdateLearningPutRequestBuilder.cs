@@ -136,7 +136,10 @@ namespace SFA.DAS.LearnerData.Services
                 else
                 {
                     var breaksInLearning = breaksInLearningService.CalculateEnglishAndMathsBreaksInLearning(g.ToList());
-                    var latestCourse = g.OrderByDescending(c => c.StartDate).First();
+                    var orderedCourses = g.OrderBy(c => c.StartDate).ToList();
+                    var firstCourse = orderedCourses.First();
+                    var latestCourse = orderedCourses.Last();
+
                     return new MathsAndEnglishDetails
                     {
                         Amount = latestCourse.Amount,
@@ -145,7 +148,7 @@ namespace SFA.DAS.LearnerData.Services
                         Course = latestCourse.Course,
                         PlannedEndDate = latestCourse.EndDate,
                         PriorLearningPercentage = latestCourse.PriorLearningPercentage,
-                        StartDate = latestCourse.StartDate,
+                        StartDate = firstCourse.StartDate,
                         WithdrawalDate = latestCourse.WithdrawalDate,
                         PauseDate = latestCourse.PauseDate,
                         BreaksInLearning = breaksInLearning
