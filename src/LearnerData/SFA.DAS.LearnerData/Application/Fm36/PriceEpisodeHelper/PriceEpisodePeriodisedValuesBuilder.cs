@@ -147,7 +147,7 @@ public static class PriceEpisodePeriodisedValuesBuilder
 
     public static void AddNthIncentivePaymentValues(
         this List<PriceEpisodePeriodisedValues> list,
-        JoinedEarningsApprenticeship joinedApprenticeship,
+        JoinedLearnerData joinedApprenticeship,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
         string attributeName,
@@ -166,7 +166,7 @@ public static class PriceEpisodePeriodisedValuesBuilder
         }
     }
 
-    private static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship joinedApprenticeship, JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
+    private static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedLearnerData joinedApprenticeship, JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
         var allAdditionalPayments = joinedApprenticeship.Episodes.SelectMany(x =>
             x.AdditionalPayments.Where(y => y.AdditionalPaymentType == additionalPaymentType))

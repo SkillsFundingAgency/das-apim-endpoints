@@ -8,8 +8,8 @@ using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
-// The Models in this file are used to join data from the Apprenticeships and Earnings APIs
-public class JoinedEarningsApprenticeship
+// The Models in this file are used to join data from the Learning and Earnings APIs, as well as cached SLD data
+public class JoinedLearnerData
 {
     /// <summary> Derived from Apprenticeships API, apprenticeship.Key </summary>
     public Guid Key { get; set; }
@@ -30,7 +30,7 @@ public class JoinedEarningsApprenticeship
     /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
     public DateTime? CompletionDate { get; set; }
 
-    internal JoinedEarningsApprenticeship(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
+    internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
     {
         Key = learning.Key;
         Uln = learning.Uln;

@@ -16,6 +16,8 @@ using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
 internal class GetFm36QueryTestFixture
 {
 
@@ -35,6 +37,7 @@ internal class GetFm36QueryTestFixture
     private GetFm36QueryHandler _handler;
     private GetFm36Query _query;
 
+ 
     internal GetFm36QueryTestFixture(TestScenario scenario)
     {
         // Arrange
@@ -143,3 +146,4 @@ internal class GetFm36QueryTestFixture
         }
     }
 }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

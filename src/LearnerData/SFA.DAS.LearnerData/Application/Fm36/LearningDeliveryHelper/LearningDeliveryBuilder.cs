@@ -6,7 +6,7 @@ namespace SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 
 internal static class LearningDeliveryBuilder
 {
-    internal static List<LearningDelivery> GetLearningDeliveries(GetAcademicYearsResponse currentAcademicYear, JoinedEarningsApprenticeship joinedApprenticeship)
+    internal static List<LearningDelivery> GetLearningDeliveries(GetAcademicYearsResponse currentAcademicYear, JoinedLearnerData joinedApprenticeship)
     {
         return
         [

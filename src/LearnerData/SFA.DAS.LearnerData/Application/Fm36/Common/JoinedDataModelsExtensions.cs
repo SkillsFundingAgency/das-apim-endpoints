@@ -10,7 +10,7 @@ namespace SFA.DAS.LearnerData.Application.Fm36.Common;
 
 internal static class JoinedDataModelsExtensions
 {
-    internal static List<PriceEpisodePeriodisedValues> GetPriceEpisodePeriodisedValues(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode joinedPriceEpisode, GetAcademicYearsResponse currentAcademicYear)
+    internal static List<PriceEpisodePeriodisedValues> GetPriceEpisodePeriodisedValues(this JoinedLearnerData joinedEarningsApprenticeship, JoinedPriceEpisode joinedPriceEpisode, GetAcademicYearsResponse currentAcademicYear)
     {
         var periodisedValues = new List<PriceEpisodePeriodisedValues>();
 
@@ -66,7 +66,7 @@ internal static class JoinedDataModelsExtensions
     }
 
     internal static PriceEpisodeValues GetPriceEpisodeValues(
-        this JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        this JoinedLearnerData joinedEarningsApprenticeship,
         JoinedPriceEpisode joinedPriceEpisode,
         GetAcademicYearsResponse currentAcademicYear,
         byte collectionPeriod,
@@ -162,7 +162,7 @@ internal static class JoinedDataModelsExtensions
         };
     }
 
-    private static DateTime? GetPriceEpisodeActualEndDateIncEPA(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode, bool hasSubsequentPriceEpisodes)
+    private static DateTime? GetPriceEpisodeActualEndDateIncEPA(this JoinedLearnerData joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode, bool hasSubsequentPriceEpisodes)
     {
         if (hasSubsequentPriceEpisodes)
         {
@@ -174,7 +174,7 @@ internal static class JoinedDataModelsExtensions
 
     }
 
-    private static DateTime? GetActualEndDate(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode, bool hasSubsequentPriceEpisodes)
+    private static DateTime? GetActualEndDate(this JoinedLearnerData joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode, bool hasSubsequentPriceEpisodes)
     {
         if (hasSubsequentPriceEpisodes)
         {
@@ -187,7 +187,7 @@ internal static class JoinedDataModelsExtensions
     }
 
     internal static LearningDeliveryValues GetLearningDelivery(
-        this JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        this JoinedLearnerData joinedEarningsApprenticeship,
         GetAcademicYearsResponse currentAcademicYear)
     {
         var daysInLearning = joinedEarningsApprenticeship.DaysInLearning();
@@ -259,7 +259,7 @@ internal static class JoinedDataModelsExtensions
     }
 
     internal static List<LearningDeliveryPeriodisedValues> GetLearningDeliveryPeriodisedValues(
-        this JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        this JoinedLearnerData joinedEarningsApprenticeship,
         GetAcademicYearsResponse currentAcademicYear)
     {
         var periodisedValues = new List<LearningDeliveryPeriodisedValues>();
@@ -292,7 +292,7 @@ internal static class JoinedDataModelsExtensions
         return periodisedValues;
     }
 
-    internal static List<LearningDeliveryPeriodisedTextValues> GetLearningDeliveryPeriodisedTextValues(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+    internal static List<LearningDeliveryPeriodisedTextValues> GetLearningDeliveryPeriodisedTextValues(this JoinedLearnerData joinedEarningsApprenticeship)
     {
         return new List<LearningDeliveryPeriodisedTextValues>
             {
@@ -304,7 +304,7 @@ internal static class JoinedDataModelsExtensions
     /// <summary>
     /// Currently only returns days in learning for withdrawn apprenticeship, in future this will need to be expanded to include completed apprenticeships
     /// </summary>
-    private static int DaysInLearning(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+    private static int DaysInLearning(this JoinedLearnerData joinedEarningsApprenticeship)
     {
         if (joinedEarningsApprenticeship.WithdrawnDate.HasValue)
         {
@@ -313,7 +313,7 @@ internal static class JoinedDataModelsExtensions
         return 0;// Default to zero if still in learning
     }
 
-    private static bool FundingStart(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+    private static bool FundingStart(this JoinedLearnerData joinedEarningsApprenticeship)
     {
         var daysInLearning = joinedEarningsApprenticeship.DaysInLearning();
 
@@ -329,7 +329,7 @@ internal static class JoinedDataModelsExtensions
         return daysInLearning >= qualifyingPeriod;
     }
 
-    private static int QualifyingPeriod(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+    private static int QualifyingPeriod(this JoinedLearnerData joinedEarningsApprenticeship)
     {
         var plannedDuration = joinedEarningsApprenticeship.PlannedDuration();
 
@@ -341,12 +341,12 @@ internal static class JoinedDataModelsExtensions
         }
     }
 
-    private static int PlannedDuration(this JoinedEarningsApprenticeship joinedEarningsApprenticeship)
+    private static int PlannedDuration(this JoinedLearnerData joinedEarningsApprenticeship)
     {
         return 1 + (joinedEarningsApprenticeship.PlannedEndDate - joinedEarningsApprenticeship.StartDate).Days;
     }
 
-    private static decimal GetPreviousEarnings(JoinedEarningsApprenticeship? apprenticeship, short academicYear, short collectionPeriod)
+    private static decimal GetPreviousEarnings(JoinedLearnerData? apprenticeship, short academicYear, short collectionPeriod)
     {
         var previousYearEarnings = apprenticeship?
             .Episodes
@@ -366,7 +366,7 @@ internal static class JoinedDataModelsExtensions
     }
 
     private static int? GetPriceEpisodeActualInstalments(
-        this JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        this JoinedLearnerData joinedEarningsApprenticeship,
         GetAcademicYearsResponse currentAcademicYear,
         bool hasSubsequencePriceEpisodes)
     {
@@ -379,7 +379,7 @@ internal static class JoinedDataModelsExtensions
     }
 
     private static int? GetPriceEpisodeInstalmentsThisPeriod(
-        this JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        this JoinedLearnerData joinedEarningsApprenticeship,
         JoinedPriceEpisode joinedPriceEpisode,
         GetAcademicYearsResponse currentAcademicYear,
         byte collectionPeriod)
@@ -395,7 +395,7 @@ internal static class JoinedDataModelsExtensions
     }
 
     private static int GetLearnDelAppPrevAccDaysIL(
-        JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        JoinedLearnerData joinedEarningsApprenticeship,
         GetAcademicYearsResponse currentAcademicYear)
     {
         return 1 + ((joinedEarningsApprenticeship.PlannedEndDate < currentAcademicYear.EndDate
@@ -406,7 +406,7 @@ internal static class JoinedDataModelsExtensions
                     : currentAcademicYear.StartDate)).Days;
     }
 
-    private static decimal GetLearnDelHistProgEarnings(JoinedEarningsApprenticeship joinedEarningsApprenticeship, GetAcademicYearsResponse currentAcademicYear)//, short collectionPeriod)
+    private static decimal GetLearnDelHistProgEarnings(JoinedLearnerData joinedEarningsApprenticeship, GetAcademicYearsResponse currentAcademicYear)//, short collectionPeriod)
     {
         //  Currently this will be for only this provider as the api request is for a single provider, but this may need to be expanded in the future
         var previousYearEarnings = joinedEarningsApprenticeship?
@@ -425,7 +425,7 @@ internal static class JoinedDataModelsExtensions
 
     }
 
-    private static JoinedPriceEpisode? GetNextPriceEpisode(this JoinedEarningsApprenticeship joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode)
+    private static JoinedPriceEpisode? GetNextPriceEpisode(this JoinedLearnerData joinedEarningsApprenticeship, JoinedPriceEpisode currentPriceEpisode)
     {
         return joinedEarningsApprenticeship.Episodes
             .Where(x => x.EpisodePriceKey != currentPriceEpisode.EpisodePriceKey)

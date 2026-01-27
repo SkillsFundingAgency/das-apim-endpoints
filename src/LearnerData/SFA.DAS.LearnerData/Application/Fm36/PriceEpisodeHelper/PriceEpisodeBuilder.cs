@@ -7,7 +7,7 @@ namespace SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 internal static class PriceEpisodeBuilder
 {
     internal static List<PriceEpisode> GetPriceEpisodes(
-        JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        JoinedLearnerData joinedEarningsApprenticeship,
         GetAcademicYearsResponse currentAcademicYear,
         byte collectionPeriod)
     {

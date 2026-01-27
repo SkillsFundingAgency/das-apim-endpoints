@@ -6,6 +6,7 @@ using SFA.DAS.LearnerData.Application.Fm36.Common;
 using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -51,7 +52,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
         var earnings = await GetRelatedEarnings(request, learnings);
         var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x=>x.Uln),cancellationToken);
-        var joinedApprenticeships = JoinLearningAndEarningData(learnings, earnings, currentAcademicYear);
+        var joinedApprenticeships = JoinDataSources(learnings, earnings, sldLearners, currentAcademicYear);
         
 
         var fm36Learners = TransformToFm36Learners(joinedApprenticeships, currentAcademicYear, request.CollectionPeriod);
@@ -128,9 +129,9 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         return result.Body.Apprenticeships;
     }
 
-    private List<JoinedEarningsApprenticeship> JoinLearningAndEarningData(List<Learning> learnings, List<Apprenticeship> earnings, GetAcademicYearsResponse currentAcademicYear)
+    private List<JoinedLearnerData> JoinDataSources(List<Learning> learnings, List<Apprenticeship> earnings, List<UpdateLearnerRequest> sldData, GetAcademicYearsResponse currentAcademicYear)
     {
-        var joinedApprenticeships = new List<JoinedEarningsApprenticeship>();
+        var joinedApprenticeships = new List<JoinedLearnerData>();
 
         foreach (var learning in learnings)
         {
@@ -140,7 +141,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             if (matchingEarnings != null)
             {
                 _logger.LogInformation($"Processing learning with key: {learning.Key}");
-                joinedApprenticeships.Add(new JoinedEarningsApprenticeship(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
+                joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
             }
             else
             {
@@ -154,7 +155,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
 
     private List<FM36Learner> TransformToFm36Learners(
-        List<JoinedEarningsApprenticeship> joinedApprenticeships,
+        List<JoinedLearnerData> joinedApprenticeships,
         GetAcademicYearsResponse currentAcademicYear,
         byte collectionPeriod)
     {
