@@ -1,5 +1,3 @@
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 
-public class GetLiveVacancyApiResponse : LiveVacancy
-{
-}
+public class GetLiveVacancyApiResponse : LiveVacancy;

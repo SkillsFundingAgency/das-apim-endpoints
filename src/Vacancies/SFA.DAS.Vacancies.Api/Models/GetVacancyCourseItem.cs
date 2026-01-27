@@ -30,7 +30,7 @@ namespace SFA.DAS.Vacancies.Api.Models
 
         public static implicit operator GetVacancyCourseItem (GetVacanciesListItem source)
         {
-            if (source.StandardLarsCode == null)
+            if (source.StandardLarsCode is null or 0)
             {
                 return new GetVacancyCourseItem();
             }

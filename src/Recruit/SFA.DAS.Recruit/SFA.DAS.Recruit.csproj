@@ -12,10 +12,17 @@
   <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="StrawberryShake.Blazor" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Application\VacancyReview\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
   </ItemGroup>
 
 </Project>
