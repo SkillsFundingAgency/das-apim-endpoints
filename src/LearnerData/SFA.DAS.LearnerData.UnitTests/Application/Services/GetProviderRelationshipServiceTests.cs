@@ -19,7 +19,7 @@ public class GetProviderRelationshipServiceTests
         [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
         List<GetProviderAccountLegalEntityItem> providerLegalEnities,
         ApprenticeshipEmployerType employerType,
-        GetProviderRelationshipService sut)
+       [Greedy] GetProviderRelationshipService sut)
     {
         var providerResponse = new GetProviderAccountLegalEntitiesResponse
         {
