@@ -32,6 +32,8 @@ public class LearningUpdateDetails
     public string LastName { get; set; }
     public string? EmailAddress { get; set; }
     public DateTime? CompletionDate { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public CareDetails Care { get; set; }
 }
 
 public class OnProgrammeDetails
@@ -39,6 +41,7 @@ public class OnProgrammeDetails
     public DateTime ExpectedEndDate { get; set; }
     public List<Cost> Costs { get; set; }
     public DateTime? PauseDate { get; set; }
+    public List<BreakInLearning> BreaksInLearning { get; set; }
 }
 
 public class Cost
@@ -51,6 +54,7 @@ public class Cost
 public class MathsAndEnglishDetails
 {
     public string Course { get; set; }
+    public string LearnAimRef { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime PlannedEndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
@@ -69,4 +73,18 @@ public class LearningSupportUpdatedDetails
 public class Delivery
 {
     public DateTime? WithdrawalDate { get; set; }
+}
+
+public class BreakInLearning
+{
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public DateTime PriorPeriodExpectedEndDate { get; set; }
+}
+
+public class CareDetails
+{
+    public bool HasEHCP { get; set; }
+    public bool IsCareLeaver { get; set; }
+    public bool CareLeaverEmployerConsentGiven { get; set; }
 }

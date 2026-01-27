@@ -1,12 +1,14 @@
-﻿using MediatR;
+﻿using System;
+using System.Diagnostics;
+using System.Net;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Models;
-using System;
-using System.Net;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -29,12 +31,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             try
             {
                 var userResult = await _mediator.Send(new GetUserQuery { GovUkIdentifier = govUkIdentifier });
-                if(userResult != null)
-                { 
-                    return Ok(userResult.User);
-                }
-
-                return NotFound();
+                return Ok(userResult?.User);
             }
             catch (Exception e)
             {
@@ -63,6 +60,21 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to create or update user.");
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{userId}/certificates")]
+        public async Task<IActionResult> GetCertificates([FromRoute] Guid userId)
+        {
+            try
+            {
+                var certificatesResult = await _mediator.Send(new GetCertificatesQuery { UserId = userId });
+                return Ok(certificatesResult ?? new GetCertificatesResult());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve certificates {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

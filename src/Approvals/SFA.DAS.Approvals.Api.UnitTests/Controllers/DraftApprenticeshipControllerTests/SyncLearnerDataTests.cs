@@ -1,17 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.SyncLearnerData;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.DraftApprenticeshipControllerTests
 {
