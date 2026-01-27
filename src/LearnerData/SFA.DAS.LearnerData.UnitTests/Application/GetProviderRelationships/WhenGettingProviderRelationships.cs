@@ -17,24 +17,24 @@ public class WhenGettingProviderRelationships
         GetProviderSummaryResponse providerSummary,
         GetProviderRelationshipQuery request,
         List<EmployerDetails> employers,
-       [Frozen] Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
-       [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
+       [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService)
     {
         // Arrange
 
         providerSummary.StatusId = 1;
         providerSummary.ProviderTypeId = 1;
 
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
+        getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
             ReturnsAsync(providerLegalEntitiesresponse);
 
-        _roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
+        roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
             ReturnsAsync(providerSummary);
 
-        _getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse)).
+        getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse)).
             ReturnsAsync(employers);
 
-        var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
+        var _sut = new GetProviderRelationshipQueryHandler(getProviderRelationshipService.Object, roatpService.Object);
 
         // Act
         var result = await _sut.Handle(request, CancellationToken.None);
@@ -50,14 +50,14 @@ public class WhenGettingProviderRelationships
     [Test, MoqAutoData]
     public async Task WhenProviderRelationshipsIsnull_ReturnsNull(
         GetProviderRelationshipQuery request,
-       [Frozen] Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
-       [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
+       [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService)
     {
         // Arrange
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
+        getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
             ReturnsAsync((GetProviderAccountLegalEntitiesResponse?)null);
 
-        var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
+        var _sut = new GetProviderRelationshipQueryHandler(getProviderRelationshipService.Object, roatpService.Object);
 
         // Act
         var result = await _sut.Handle(request, CancellationToken.None);
@@ -71,17 +71,17 @@ public class WhenGettingProviderRelationships
         int ukprnValue,
     GetProviderAccountLegalEntitiesResponse providerLegalEntitiesresponse,
     GetProviderRelationshipQuery request,
-   [Frozen] Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
-   [Frozen] Mock<IRoatpV2TrainingProviderService> _roatpService)
+   [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+   [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService)
     {
         // Arrange
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
+        getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
           ReturnsAsync(providerLegalEntitiesresponse);
 
-        _roatpService.Setup(t => t.GetProviderSummary(request.Ukprn))
+        roatpService.Setup(t => t.GetProviderSummary(request.Ukprn))
             .ReturnsAsync((GetProviderSummaryResponse?)null);
 
-        var _sut = new GetProviderRelationshipQueryHandler(_getProviderRelationshipService.Object, _roatpService.Object);
+        var _sut = new GetProviderRelationshipQueryHandler(getProviderRelationshipService.Object, roatpService.Object);
 
         // Act
         var result = await _sut.Handle(request, CancellationToken.None);

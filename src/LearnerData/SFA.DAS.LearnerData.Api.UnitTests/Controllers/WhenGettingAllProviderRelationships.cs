@@ -1,12 +1,9 @@
 using System.Net;
-using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Api.Controllers;
@@ -21,41 +18,37 @@ public class WhenGettingAllProviderRelationships
 {
     [Test, MoqAutoData]
     public async Task Then_Ok_response_is_returned_for_given_ukprn(
-        int ukprn,
+        GetAllProviderRelationshipQueryResponse getAllProviderRelationshipQueryResponse,
+        CancellationToken token,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
         // Arrange
-        var queryResult = CreateAllProviderRelationQueryResult();
-
+        int page = 1, pageSize = 10;
         mockMediator
-            .Setup(x => x.Send(It.IsAny<GetAllProviderRelationshipQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(queryResult);
+           .Setup(x => x.Send(It.Is<GetAllProviderRelationshipQuery>(t => t.Page == page && t.PageSize == pageSize), default))
+           .ReturnsAsync(getAllProviderRelationshipQueryResponse);
 
-        // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
         // Act
-        var result = await sut.GetAllProviderRelationshipDetails(1, 20) as OkObjectResult;
+        var result = await sut.GetAllProviderRelationshipDetails(page, pageSize) as OkObjectResult;
 
         // Assert
         result.Should().NotBeNull();
         result!.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var resultBody = result.Value as GetAllProviderRelationshipQueryResponse;
         resultBody.Should().NotBeNull();
-        resultBody.Items.Count.Should().Be(queryResult.Items.Count);
+        resultBody.Items.Count.Should().Be(getAllProviderRelationshipQueryResponse.Items.Count);
     }
 
     [Test, MoqAutoData]
     public async Task Then_not_found_response_is_returned_for_given_ukprn(
         int ukprn,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
-        // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
@@ -70,26 +63,13 @@ public class WhenGettingAllProviderRelationships
     public async Task Then_Bad_request_response_is_returned_with_invalid_pagesize(
         int ukprn,
         [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<ReferenceDataController>> mockLogger,
         [Greedy] ReferenceDataController sut)
     {
-        // Setup fake HttpContext to allow headers to be set
-        var context = new DefaultHttpContext();
-        sut.ControllerContext = new ControllerContext { HttpContext = context };
-
         // Act
         var result = await sut.GetAllProviderRelationshipDetails(1, 0) as BadRequestResult;
 
         // Assert
         result.Should().NotBeNull();
         result.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
-    }
-
-    private static GetAllProviderRelationshipQueryResponse CreateAllProviderRelationQueryResult()
-    {
-        var fixture = new Fixture();
-        var employers = fixture.Create<EmployerDetails[]>();
-
-        return fixture.Create<GetAllProviderRelationshipQueryResponse>();
     }
 }

@@ -8,14 +8,11 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [Route("reference-data")]
 [ApiController]
 public class ReferenceDataController(
-IMediator mediator,
-ILogger<ReferenceDataController> logger) : ControllerBase
+IMediator mediator) : ControllerBase
 {
     [HttpGet("providers/{ukprn}")]
     public async Task<IActionResult> GetProviderRelationshipDetails([FromRoute] int ukprn)
     {
-        logger.LogInformation("GetEmployerAgreementId for ukprn {Ukprn}", ukprn);
-
         var query = new GetProviderRelationshipQuery()
         {
             Ukprn = ukprn
@@ -35,8 +32,6 @@ ILogger<ReferenceDataController> logger) : ControllerBase
 
         if (pagesize < 1 || pagesize > MAX_PAGE_SIZE)
             return BadRequest();
-
-        logger.LogInformation("GetEmployerAgreementId");
 
         var query = new GetAllProviderRelationshipQuery()
         {

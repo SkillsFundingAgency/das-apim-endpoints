@@ -19,7 +19,7 @@ public class GetProviderRelationshipServiceTests
         [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
         List<GetProviderAccountLegalEntityItem> providerLegalEnities,
         ApprenticeshipEmployerType employerType,
-        GetProviderRelationshipService _sut)
+        GetProviderRelationshipService sut)
     {
         var providerResponse = new GetProviderAccountLegalEntitiesResponse
         {
@@ -42,7 +42,7 @@ public class GetProviderRelationshipServiceTests
         }
 
         // Act
-        var details = await _sut.GetEmployerDetails(providerResponse);
+        var details = await sut.GetEmployerDetails(providerResponse);
 
         //Assert
         details.Should().NotBeNull();

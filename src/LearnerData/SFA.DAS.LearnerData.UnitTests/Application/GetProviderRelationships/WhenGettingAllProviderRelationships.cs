@@ -18,14 +18,14 @@ public class WhenGettingAllProviderRelationships
         GetProviderAccountLegalEntitiesResponse[] providerLegalEntitiesresponse,
         GetProvidersResponse providerSummary,
         List<List<EmployerDetails>> employers,
-        Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
-        Mock<IRoatpV2TrainingProviderService> _roatpService
-        )
+       [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+       [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
     {
         // Arrange
 
         int count = providerSummary.RegisteredProviders.Count();
-        _roatpService.Setup(t => t.GetProviders(cancellation)).
+        roatpService.Setup(t => t.GetProviders(cancellation)).
          ReturnsAsync(providerSummary);
 
         int index = 0;
@@ -34,18 +34,16 @@ public class WhenGettingAllProviderRelationships
             var providerDetails = providerLegalEntitiesresponse[index];
             var employerDetails = employers[index];
 
-            _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.Is<int>(ukprn => ukprn == provider.Ukprn))).
+            getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(provider.Ukprn)).
            ReturnsAsync(providerDetails);
 
-            _getProviderRelationshipService.Setup(t => t.GetEmployerDetails(It.Is<GetProviderAccountLegalEntitiesResponse>(x => x == providerDetails))).
+            getProviderRelationshipService.Setup(t => t.GetEmployerDetails((providerDetails))).
                 ReturnsAsync(employerDetails);
             index++;
         }
 
-        GetAllProvidersRelationshipsQueryHandler _sut = new GetAllProvidersRelationshipsQueryHandler(_roatpService.Object, _getProviderRelationshipService.Object);
-
         // Act
-        var result = await _sut.Handle(request, cancellation);
+        var result = await sut.Handle(request, cancellation);
 
         // Assert
         result.Should().NotBeNull();
@@ -70,18 +68,16 @@ public class WhenGettingAllProviderRelationships
         GetAllProviderRelationshipQuery request,
         CancellationToken cancellation,
         GetProvidersResponse response,
-        Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
-        Mock<IRoatpV2TrainingProviderService> _roatpService
-        )
+        [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+        [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+        [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
     {
         // Arrange
-        _roatpService.Setup(t => t.GetProviders(cancellation)).
+        roatpService.Setup(t => t.GetProviders(cancellation)).
             ReturnsAsync((GetProvidersResponse?)null);
 
-        GetAllProvidersRelationshipsQueryHandler _sut = new GetAllProvidersRelationshipsQueryHandler(_roatpService.Object, _getProviderRelationshipService.Object);
-
         // Act
-        var result = await _sut.Handle(request, cancellation);
+        var result = await sut.Handle(request, cancellation);
 
         // Assert
         result?.Items.Should().HaveCount(0);
@@ -95,20 +91,18 @@ public class WhenGettingAllProviderRelationships
         GetAllProviderRelationshipQuery request,
         GetProvidersResponse response,
         GetProviderAccountLegalEntitiesResponse providerLegalEntitiesresponse,
-        Mock<IGetProviderRelationshipService> _getProviderRelationshipService,
-        Mock<IRoatpV2TrainingProviderService> _roatpService
-        )
+        [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+        [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+        [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
     {
         // Arrange
-        _getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(It.IsAny<int>()));
+        getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(ukprnValue));
 
-        _roatpService.Setup(t => t.GetProviders(CancellationToken.None)).
+        roatpService.Setup(t => t.GetProviders(CancellationToken.None)).
           ReturnsAsync(response);
 
-        GetAllProvidersRelationshipsQueryHandler _sut = new GetAllProvidersRelationshipsQueryHandler(_roatpService.Object, _getProviderRelationshipService.Object);
-
         // Act
-        var result = await _sut.Handle(request, CancellationToken.None);
+        var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
         result?.Items.Should().HaveCount(0);
