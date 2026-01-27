@@ -27,7 +27,6 @@ public class WhenGettingProviderRelationships
             .Setup(x => x.Send(It.Is<GetProviderRelationshipQuery>(t => t.Ukprn == ukprn), default))
             .ReturnsAsync((queryResult));
 
-        // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 
@@ -60,7 +59,6 @@ public class WhenGettingProviderRelationships
             .Setup(x => x.Send(It.Is<GetProviderRelationshipQuery>(t => t.Ukprn == ukprn), default)).
             ReturnsAsync((GetProviderRelationshipQueryResponse?)null);
 
-        // Setup fake HttpContext to allow headers to be set
         var context = new DefaultHttpContext();
         sut.ControllerContext = new ControllerContext { HttpContext = context };
 

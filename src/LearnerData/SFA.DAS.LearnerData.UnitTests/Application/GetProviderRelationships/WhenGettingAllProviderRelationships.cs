@@ -23,7 +23,6 @@ public class WhenGettingAllProviderRelationships
        [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
     {
         // Arrange
-
         int count = providerSummary.RegisteredProviders.Count();
         roatpService.Setup(t => t.GetProviders(cancellation)).
          ReturnsAsync(providerSummary);

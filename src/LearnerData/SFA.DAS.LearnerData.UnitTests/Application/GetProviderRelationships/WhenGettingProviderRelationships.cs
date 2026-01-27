@@ -18,7 +18,8 @@ public class WhenGettingProviderRelationships
         GetProviderRelationshipQuery request,
         List<EmployerDetails> employers,
        [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
-       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService)
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+       [Greedy] GetProviderRelationshipQueryHandler  sut)
     {
         // Arrange
         providerSummary.StatusId = 1;
@@ -32,11 +33,8 @@ public class WhenGettingProviderRelationships
 
         getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse)).
             ReturnsAsync(employers);
-
-        var _sut = new GetProviderRelationshipQueryHandler(getProviderRelationshipService.Object, roatpService.Object);
-
         // Act
-        var result = await _sut.Handle(request, CancellationToken.None);
+        var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
@@ -50,16 +48,15 @@ public class WhenGettingProviderRelationships
     public async Task WhenProviderRelationshipsIsnull_ReturnsNull(
         GetProviderRelationshipQuery request,
        [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
-       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService)
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+       [Greedy] GetProviderRelationshipQueryHandler sut)
     {
         // Arrange
         getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
             ReturnsAsync((GetProviderAccountLegalEntitiesResponse?)null);
 
-        var _sut = new GetProviderRelationshipQueryHandler(getProviderRelationshipService.Object, roatpService.Object);
-
         // Act
-        var result = await _sut.Handle(request, CancellationToken.None);
+        var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
         result.Should().BeNull();
@@ -71,7 +68,8 @@ public class WhenGettingProviderRelationships
     GetProviderAccountLegalEntitiesResponse providerLegalEntitiesresponse,
     GetProviderRelationshipQuery request,
    [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
-   [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService)
+   [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+   [Greedy] GetProviderRelationshipQueryHandler sut)
     {
         // Arrange
         getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
@@ -80,10 +78,8 @@ public class WhenGettingProviderRelationships
         roatpService.Setup(t => t.GetProviderSummary(request.Ukprn))
             .ReturnsAsync((GetProviderSummaryResponse?)null);
 
-        var _sut = new GetProviderRelationshipQueryHandler(getProviderRelationshipService.Object, roatpService.Object);
-
         // Act
-        var result = await _sut.Handle(request, CancellationToken.None);
+        var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
         result.Should().BeNull();
