@@ -21,7 +21,6 @@ public class WhenGettingProviderRelationships
        [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService)
     {
         // Arrange
-
         providerSummary.StatusId = 1;
         providerSummary.ProviderTypeId = 1;
 
