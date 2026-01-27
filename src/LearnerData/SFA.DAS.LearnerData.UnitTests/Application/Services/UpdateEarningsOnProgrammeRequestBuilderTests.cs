@@ -40,6 +40,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             var response = _fixture.Build<UpdateLearnerApiPutResponse>()
                                    .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>())
                                    .Create();
+            var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
 
             if (!completion)
             {
@@ -72,7 +73,9 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             if (completion)
             {
                 result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                    command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
+                    command.UpdateLearnerRequest.Delivery.OnProgramme
+                        .Where(x => x.AgreementId == agreementId)
+                        .Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
                         EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate)!.Value,
@@ -82,7 +85,9 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
             else
             {
                 result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                    command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
+                    command.UpdateLearnerRequest.Delivery.OnProgramme
+                        .Where(x => x.AgreementId == agreementId)
+                        .Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
                         EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate, x.ActualEndDate)!.Value,
