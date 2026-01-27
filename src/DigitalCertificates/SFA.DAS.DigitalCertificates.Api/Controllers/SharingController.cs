@@ -1,8 +1,9 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingById;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -48,6 +49,22 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve sharing {SharingId}", sharingId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{sharingId}/email")]
+        public async Task<IActionResult> CreateSharingEmail([FromRoute] Guid sharingId, [FromBody] CreateSharingEmailCommand command)
+        {
+            try
+            {
+                command.SharingId = sharingId;
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create sharing email for sharing {SharingId}", sharingId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }

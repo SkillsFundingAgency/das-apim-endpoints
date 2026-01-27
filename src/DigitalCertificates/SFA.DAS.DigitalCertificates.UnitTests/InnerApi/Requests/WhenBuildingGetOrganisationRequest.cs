@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
