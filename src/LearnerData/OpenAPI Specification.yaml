@@ -526,6 +526,8 @@ components:
         dob:
           type: string
           format: date
+        earningsApproved:
+          type: boolean
         earnings:
           type: array
           items: 
@@ -706,8 +708,8 @@ components:
                     items:
                       type: string
                       enum:
-                        - Milestone1Complete
-                        - Milestone2Complete
+                        - ThirtyPercentLearningComplete
+                        - LearningComplete
                       
     learner:
       type: object
