@@ -50,5 +50,13 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             
             return Ok(result.MyApprenticeship);
         }
+
+        [HttpPatch("/apprentices/{id}")]
+        public Task<IActionResult> UpdateApprentice(Guid id, [FromBody] object request)
+            => _client.Patch($"apprentices/{id}", request);
+
+        [HttpDelete("/apprentices/{id}")]
+        public Task<IActionResult> DeleteApprentice(Guid id)
+            => _client.Delete($"apprentices/{id}");
     }
 }
