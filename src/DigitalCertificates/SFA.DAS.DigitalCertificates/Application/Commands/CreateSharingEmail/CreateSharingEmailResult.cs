@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmail
