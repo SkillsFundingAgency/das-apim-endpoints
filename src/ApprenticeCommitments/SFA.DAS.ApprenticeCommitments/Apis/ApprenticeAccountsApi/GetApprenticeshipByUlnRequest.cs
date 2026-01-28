@@ -9,9 +9,9 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi
 {
     public class GetApprenticeshipByUlnRequest : IGetApiRequest
     {
-        public int Uln { get; set; }
+        public long Uln { get; set; }
 
-        public GetApprenticeshipByUlnRequest(int uln)
+        public GetApprenticeshipByUlnRequest(long uln)
         {
             Uln = uln;
         }
