@@ -14,5 +14,7 @@ public static class AddConfigurationOptionsExtension
         services.AddOptions();
         services.Configure<RecruitApiConfiguration>(configuration.GetSection("RecruitAltApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
+        services.Configure<BusinessMetricsConfiguration>(configuration.GetSection("BusinessMetricsApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<BusinessMetricsConfiguration>>().Value);
     }
 }

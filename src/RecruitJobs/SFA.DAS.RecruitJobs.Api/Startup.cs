@@ -39,7 +39,7 @@ public static class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddServiceRegistration(configuration);
+        services.AddServiceRegistration();
 
         services.Configure<RouteOptions>(options =>
             {
