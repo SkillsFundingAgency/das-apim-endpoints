@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
@@ -14,12 +15,15 @@ internal class MockDataGenerator
 
     internal List<Learning> UnpagedLearningsResponse { get; private set; }
     internal GetFm36DataResponse GetFm36DataResponse { get; private set; }
+    internal List<UpdateLearnerRequest> SldLearnerData { get; private set; }
     private Fixture Fixture { get; set; }
 
+#pragma warning disable CS8618
     internal MockDataGenerator()
     {
         Fixture = new Fixture();
     }
+#pragma warning restore CS8618
 
     private void InstantiateResponses()
     {
@@ -28,6 +32,7 @@ internal class MockDataGenerator
         UnpagedLearningsResponse = new List<Learning>();
         GetFm36DataResponse = new GetFm36DataResponse();
         GetFm36DataResponse.Apprenticeships = new List<Apprenticeship>();
+        SldLearnerData = new List<UpdateLearnerRequest>();
     }
 
     internal void GenerateData(TestScenario scenario)
@@ -50,6 +55,8 @@ internal class MockDataGenerator
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        GenerateSldLearnerData();
     }
 
     private void AddSimpleApprenticeship()
@@ -224,5 +231,20 @@ internal class MockDataGenerator
 
         UnpagedLearningsResponse.Add(apprenticeshipWithAPriceChange);
         GetFm36DataResponse.Apprenticeships.Add(earnings);
+    }
+
+    private void GenerateSldLearnerData()
+    {
+        foreach (var learning in UnpagedLearningsResponse)
+        {
+            var updateLearnerRequest = new UpdateLearnerRequest
+            {
+                Learner = new LearnerRequestDetails
+                {
+                    Uln = long.Parse(learning.Uln)
+                }
+            };
+            SldLearnerData.Add(updateLearnerRequest);
+        }
     }
 }

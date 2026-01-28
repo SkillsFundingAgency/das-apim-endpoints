@@ -9,6 +9,10 @@ using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
 // The Models in this file are used to join data from the Learning and Earnings APIs, as well as cached SLD data
+
+/// <summary>
+/// This object is the combination of data from the Learning Api, Earnings API and SLD cache for a single learner
+/// </summary>
 public class JoinedLearnerData
 {
     /// <summary> Derived from Apprenticeships API, apprenticeship.Key </summary>

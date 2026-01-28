@@ -52,10 +52,10 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
         var earnings = await GetRelatedEarnings(request, learnings);
         var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x=>x.Uln),cancellationToken);
-        var joinedApprenticeships = JoinDataSources(learnings, earnings, sldLearners, currentAcademicYear);
+        var joinedLearnerData = JoinDataSources(learnings, earnings, sldLearners, currentAcademicYear);
         
 
-        var fm36Learners = TransformToFm36Learners(joinedApprenticeships, currentAcademicYear, request.CollectionPeriod);
+        var fm36Learners = TransformToFm36Learners(joinedLearnerData, currentAcademicYear, request.CollectionPeriod);
 
         return BuildResult(request, fm36Learners, totalLearners);
     }
@@ -137,17 +137,23 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         {
             // Find matching entries in earningsData
             var matchingEarnings = earnings.FirstOrDefault(e => e.Key == learning.Key);
+            var matchingSld = sldData.FirstOrDefault(s => s.Learner.Uln.ToString() == learning.Uln);
 
-            if (matchingEarnings != null)
+            if(matchingSld == null)
             {
-                _logger.LogInformation($"Processing learning with key: {learning.Key}");
-                joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
+                _logger.LogWarning($"No matching SLD data found for learning with key: {learning.Key}");
+                throw new InvalidOperationException($"SLD data missing for learning key: {learning.Key}");
             }
-            else
+
+            if(matchingEarnings == null)
             {
                 _logger.LogWarning($"No matching earnings data found for learning with key: {learning.Key}");
                 throw new InvalidOperationException($"Earnings data missing for learning key: {learning.Key}");
             }
+
+            _logger.LogInformation($"Processing learning with key: {learning.Key}");
+            joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
+
         }
 
         return joinedApprenticeships;
@@ -155,30 +161,30 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
 
     private List<FM36Learner> TransformToFm36Learners(
-        List<JoinedLearnerData> joinedApprenticeships,
+        List<JoinedLearnerData> joinedLearnerData,
         GetAcademicYearsResponse currentAcademicYear,
         byte collectionPeriod)
     {
         var learners = new List<FM36Learner>();
 
-        var result = joinedApprenticeships
-            .Select(joinedApprenticeship =>
+        var result = joinedLearnerData
+            .Select(joinedLearner =>
             {
                 try
                 {
                     return new FM36Learner
                     {
-                        ULN = long.Parse(joinedApprenticeship.Uln),
+                        ULN = long.Parse(joinedLearner.Uln),
                         LearnRefNumber = EarningsFM36Constants.LearnRefNumber,
                         EarningsPlatform = SimplificationEarningsPlatform,
-                        PriceEpisodes = PriceEpisodeBuilder.GetPriceEpisodes(joinedApprenticeship, currentAcademicYear, collectionPeriod),
-                        LearningDeliveries = LearningDeliveryBuilder.GetLearningDeliveries(currentAcademicYear, joinedApprenticeship),
+                        PriceEpisodes = PriceEpisodeBuilder.GetPriceEpisodes(joinedLearner, currentAcademicYear, collectionPeriod),
+                        LearningDeliveries = LearningDeliveryBuilder.GetLearningDeliveries(currentAcademicYear, joinedLearner),
                         HistoricEarningOutputValues = new List<HistoricEarningOutputValues>()
                     };
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedApprenticeship.Key);
+                    _logger.LogError(ex, "Error processing apprenticeship with key: {Key}", joinedLearner.Key);
                     return null;
                 }
 

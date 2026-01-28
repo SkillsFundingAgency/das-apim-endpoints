@@ -3,6 +3,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
@@ -57,7 +58,7 @@ internal class GetFm36QueryTestFixture
         EarningsResponse = dataGenerator.GetFm36DataResponse;
 
         CollectionCalendarResponse = BuildCollectionCalendarResponse(UnpagedLearningsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, UnpagedLearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse);
+        SetupMocks(Ukprn, MockApprenticeshipsApiClient, UnpagedLearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse, dataGenerator.SldLearnerData);
 
         _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, MockDistributedCache.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
         _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, null, null);
@@ -80,7 +81,8 @@ internal class GetFm36QueryTestFixture
         Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
         GetFm36DataResponse earningsResponse,
         Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
-        GetAcademicYearsResponse collectionCalendarResponse)
+        GetAcademicYearsResponse collectionCalendarResponse,
+        List<UpdateLearnerRequest> sldLearnerData)
     {
         mockApprenticeshipsApiClient
             .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
@@ -99,6 +101,14 @@ internal class GetFm36QueryTestFixture
         MockCollectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{CollectionYear}")))
             .ReturnsAsync(collectionCalendarResponse);
+
+        foreach (var learner in sldLearnerData)
+        {
+            var key = $"LearnerData_{ukprn}_{learner.Learner.Uln}";
+            MockDistributedCache
+                .Setup(x => x.GetAsync(It.Is<string>(k => k == key), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(learner));
+        }
     }
 
     public enum QueryType

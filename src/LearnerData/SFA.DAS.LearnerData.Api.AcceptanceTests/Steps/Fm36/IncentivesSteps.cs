@@ -1,8 +1,12 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using Microsoft.Extensions.Caching.Distributed;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.NServiceBus;
 using System.Net;
+using System.Threading;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
@@ -63,6 +67,12 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithBodyAsJson(apiResponses.EarningsInnerApiResponse)
             );
+
+        var cancellationToken = new CancellationToken();
+        foreach (var sldData in apiResponses.GetSldData())
+        {
+            await testContext.Cache.StoreLearner(sldData, 10005077, cancellationToken);
+        }
 
 
         var response = await testContext.OuterApiClient.GetAsync($"/learners/providers/10005077/collectionPeriod/{academicYear}/{deliveryPeriod}/fm36Data");
