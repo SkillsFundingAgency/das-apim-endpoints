@@ -13,6 +13,10 @@ public static class AddConfigurationOptionsExtension
         services.AddConfigurationOptions<EarningsApiConfiguration>(configuration);
         services.AddConfigurationOptions<CollectionCalendarApiConfiguration>(configuration);
         services.AddConfigurationOptions<CoursesApiConfiguration>(configuration);
+        services.AddConfigurationOptions<ProviderRelationshipsApiConfiguration>(configuration);
+        services.AddConfigurationOptions<AccountsConfiguration>(configuration);
+        services.AddConfigurationOptions<FjaaApiConfiguration>(configuration);
+        services.AddConfigurationOptions<RoatpV2ApiConfiguration>(configuration);
     }
 
     private static void AddConfigurationOptions<T>(this IServiceCollection services, IConfiguration configuration, string? name = null) where T : class
