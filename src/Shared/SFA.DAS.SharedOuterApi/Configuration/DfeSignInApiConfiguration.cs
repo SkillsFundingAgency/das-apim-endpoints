@@ -9,6 +9,6 @@ namespace SFA.DAS.SharedOuterApi.Configuration
         public string ClientId { get; set; } // iss
         public string ApiSecret { get; set; } 
         public int TokenLifetimeMinutes { get; set; } = 5;
-        public string QfauUkprn { get; set; } = "01414141";
+        public string QfauUkprn { get; set; } 
     }
 }
