@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Api.Models.OverlappingTrainingDateRequest;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Command;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
@@ -81,6 +82,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
             });
 
             return Ok(result);
-        }
+        }       
     }
 }
