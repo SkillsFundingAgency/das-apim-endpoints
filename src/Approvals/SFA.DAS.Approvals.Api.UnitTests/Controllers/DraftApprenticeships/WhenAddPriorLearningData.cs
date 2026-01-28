@@ -1,11 +1,6 @@
-﻿using AutoFixture;
-using KellermanSoftware.CompareNetObjects;
-using MediatR;
+﻿using KellermanSoftware.CompareNetObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData;
 using System.Threading;
 using System.Threading.Tasks;

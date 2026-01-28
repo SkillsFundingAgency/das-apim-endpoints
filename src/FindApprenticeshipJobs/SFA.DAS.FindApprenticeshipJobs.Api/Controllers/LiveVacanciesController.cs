@@ -46,6 +46,8 @@ public class LiveVacanciesController(IMediator mediator,
         try
         {
             var result = await mediator.Send(new GetLiveVacancyQuery { VacancyReference = vacancyReference }, cancellationToken);
+            if (result.LiveVacancy is null) return Ok(); // Return 200 OK with no content if not found
+
             var viewModel = (GetLiveVacanciesApiResponse.LiveVacancy)result.LiveVacancy;
             return Ok(viewModel);
         }

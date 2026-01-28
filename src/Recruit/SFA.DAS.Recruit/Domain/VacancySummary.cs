@@ -3,6 +3,7 @@ using SFA.DAS.SharedOuterApi.Domain;
 using System;
 
 namespace SFA.DAS.Recruit.Domain;
+
 public record VacancySummary
 {
     public Guid Id { get; set; }
@@ -23,4 +24,5 @@ public record VacancySummary
     public DateTime? TransferInfoTransferredDate { get; set; }
     public bool IsTaskListCompleted { get; set; }
     public ApprenticeshipTypes? ApprenticeshipType { get; set; }
+    public SourceOrigin? SourceOrigin { get; set; }
 }

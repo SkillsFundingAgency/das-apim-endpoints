@@ -1,13 +1,14 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Commands.PatchOrganisation;
+using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 using SFA.DAS.AdminRoatp.Application.Queries.GetUkrlp;
 using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
-using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
@@ -48,14 +49,25 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
         return response == null ? NotFound() : Ok(response);
     }
 
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [Route("")]
+    public async Task<IActionResult> PostOrganisation([FromBody] PostOrganisationCommand command, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Received request to Post organisation with ukprn {Ukprn}", command.Ukprn);
+        HttpStatusCode response = await _mediator.Send(command, cancellationToken);
+        return new StatusCodeResult((int)response);
+    }
+
     [HttpPatch]
     [Route("{ukprn:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    public async Task<IActionResult> PatchOrganisation([FromRoute] int ukprn, [FromBody] JsonPatchDocument<PatchOrganisationModel> patchDoc, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> PatchOrganisation([FromRoute] int ukprn, [FromBody] JsonPatchDocument<PatchOrganisationModel> patchDoc, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, [FromHeader(Name = Constants.RequestingUserNameHeader)] string userName, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Processing Organisations-PatchOrganisations");
 
-        HttpStatusCode response = await _mediator.Send(new PatchOrganisationCommand(ukprn, userId, patchDoc), cancellationToken);
+        HttpStatusCode response = await _mediator.Send(new PatchOrganisationCommand(ukprn, userId, userName, patchDoc), cancellationToken);
 
         return new StatusCodeResult((int)response);
     }

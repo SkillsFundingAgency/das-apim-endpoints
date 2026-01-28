@@ -13,6 +13,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using System;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
@@ -52,7 +53,7 @@ public class GetCohortDetailsQueryResult
     public IEnumerable<DraftApprenticeship> DraftApprenticeships { get; set; }
     public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
     public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
-    public bool HasFoundationApprenticeships { get; set; }
+    public bool HasAgeRestrictedApprenticeships { get; set; }
 }
 
 public class GetCohortDetailsQueryHandler(
@@ -116,7 +117,9 @@ public class GetCohortDetailsQueryHandler(
             .Distinct()
             .Where(c => providerCourses.Standards.All(x => x.CourseCode != c));
 
-        var hasFoundationApprenticeships = await CheckForFoundationApprenticeships(draftApprenticeships.DraftApprenticeships);
+        var hasFoundationDateApprenticeships = await CheckForFoundationApprenticeships(draftApprenticeships.DraftApprenticeships);
+        var hasLevel7Apprenticeships = await CheckForLevel7Apprenticeships(draftApprenticeships.DraftApprenticeships);
+        var hasAgeRestrictedApprenticeships = hasFoundationDateApprenticeships || hasLevel7Apprenticeships;
 
         return new GetCohortDetailsQueryResult
         {
@@ -149,14 +152,14 @@ public class GetCohortDetailsQueryHandler(
             DraftApprenticeships = draftApprenticeships.DraftApprenticeships,
             ApprenticeshipEmailOverlaps = emailOverlaps.ApprenticeshipEmailOverlaps,
             RplErrorDraftApprenticeshipIds = rplErrors.DraftApprenticeshipIds,
-            HasFoundationApprenticeships = hasFoundationApprenticeships
+            HasAgeRestrictedApprenticeships = hasAgeRestrictedApprenticeships
         };
     }
 
     private async Task<bool> CheckForFoundationApprenticeships(IEnumerable<DraftApprenticeship> draftApprenticeships)
     {
         var uniqueCourseCodes = draftApprenticeships
-            .Where(a => !string.IsNullOrWhiteSpace(a.CourseCode))
+            .Where(a => !string.IsNullOrWhiteSpace(a.CourseCode) )
             .Select(a => a.CourseCode)
             .Distinct()
             .ToList();
@@ -175,5 +178,30 @@ public class GetCohortDetailsQueryHandler(
 
         return courseDetails
             .Any(cd => cd is { ApprenticeshipType: "FoundationApprenticeship" });
+    }
+
+    private async Task<bool> CheckForLevel7Apprenticeships(IEnumerable<DraftApprenticeship> draftApprenticeships)
+    {
+        var level7Start = new DateTime(2026, 01, 01);
+        var uniqueCourseCodes = draftApprenticeships
+            .Where(a => !string.IsNullOrWhiteSpace(a.CourseCode) && a.StartDate >= level7Start)
+            .Select(a => a.CourseCode)
+            .Distinct()
+            .ToList();
+
+        if (!uniqueCourseCodes.Any())
+        {
+            return false;
+        }
+
+        var courseDetailsTasks = uniqueCourseCodes
+            .Select(courseCode => coursesApiClient.Get<GetStandardsListItem>(
+                new GetStandardDetailsByIdRequest(courseCode)))
+            .ToList();
+
+        var courseDetails = await Task.WhenAll(courseDetailsTasks);
+
+        return courseDetails
+            .Any(cd => cd is { Level: 7 });
     }
 }

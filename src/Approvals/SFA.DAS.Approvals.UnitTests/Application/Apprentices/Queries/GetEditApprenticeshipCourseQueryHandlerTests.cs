@@ -2,10 +2,6 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Services;
@@ -15,7 +11,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
@@ -38,13 +33,17 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
 
             apiClient.Setup(x => x.GetWithResponseCode<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == query.ApprenticeshipId)))
                 .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(apprenticeship, HttpStatusCode.OK, string.Empty));
-            
+
             providerStandardsService.Setup(x => x.GetStandardsData(apprenticeship.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
+            var standardsData = providerStandardsData.Standards.Select(x =>
+                    new GetEditApprenticeshipCourseQueryResult.Standard
+                    { CourseCode = x.CourseCode, Name = x.Name });
+
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Standards.ToList().Should().BeEquivalentTo(providerStandardsData.Standards.ToList());
+            result.Standards.ToList().Should().BeEquivalentTo(standardsData);
         }
 
         [Test, MoqAutoData]

@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
@@ -15,8 +11,9 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.Roatp;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
@@ -47,19 +44,19 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             _fixture.AssertResultIsAsDefinedInManagingStandards();
         }
 
-        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.MainProvider, true)]
-        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.EmployerProvider, false)]
-        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.SupportingProvider, false)]
-        public async Task When_Provider_Is_Main_Provider_Then_IsMainProvider_Is_True(TrainingProviderResponse.ProviderTypeIdentifier providerType, bool expectIsMainProvider)
+        [TestCase(ProviderType.Main, true)]
+        [TestCase(ProviderType.Employer, false)]
+        [TestCase(ProviderType.Supporting, false)]
+        public async Task When_Provider_Is_Main_Provider_Then_IsMainProvider_Is_True(ProviderType providerType, bool expectIsMainProvider)
         {
             _fixture.WithProviderType(providerType);
             await _fixture.GetStandardsData();
             _fixture.AssertResultIndicatesIsMainProvider(expectIsMainProvider);
         }
 
-        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.EmployerProvider)]
-        [TestCase(TrainingProviderResponse.ProviderTypeIdentifier.SupportingProvider)]
-        public async Task When_Provider_Is_Not_Main_Provider_Then_All_Standards_Returned(TrainingProviderResponse.ProviderTypeIdentifier providerType)
+        [TestCase(ProviderType.Employer)]
+        [TestCase(ProviderType.Supporting)]
+        public async Task When_Provider_Is_Not_Main_Provider_Then_All_Standards_Returned(ProviderType providerType)
         {
             _fixture.WithProviderType(providerType);
             await _fixture.GetStandardsData();
@@ -93,8 +90,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private Mock<ICacheStorageService> _cacheStorageService;
             private Fixture _autoFixture = new();
             private long _trainingProviderId;
-            private TrainingProviderResponse _trainingProviderResponse;
-            private TrainingProviderResponse _trainingProviderCacheResponse;
+            private ProviderDetailsModel _trainingProviderResponse;
+            private ProviderDetailsModel _trainingProviderCacheResponse;
             private ProviderStandardsData _result;
             private GetAllStandardsResponse _allStandardsResponse;
             private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponse;
@@ -109,11 +106,11 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 _serviceParameters = new ServiceParameters(Party.Provider, 123);
 
                 _trainingProviderId = _autoFixture.Create<long>();
-                _trainingProviderResponse = _autoFixture.Create<TrainingProviderResponse>();
-                _trainingProviderResponse.ProviderType.Id = (short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider;
+                _trainingProviderResponse = _autoFixture.Create<ProviderDetailsModel>();
+                _trainingProviderResponse.ProviderType = ProviderType.Main;
 
                 _trainingProviderService.Setup(x =>
-                        x.GetTrainingProviderDetails(It.Is<long>(id => id == _trainingProviderId)))
+                        x.GetProviderDetails(It.Is<int>(id => id == _trainingProviderId)))
                     .ReturnsAsync(_trainingProviderResponse);
 
                 _allStandardsResponse = _autoFixture.Create<GetAllStandardsResponse>();
@@ -130,7 +127,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                     .ReturnsAsync(() => null);
 
                 _cacheStorageService.Setup(x =>
-                        x.RetrieveFromCache<TrainingProviderResponse>(
+                        x.RetrieveFromCache<ProviderDetailsModel>(
                             $"{Approvals.Services.ProviderStandardsService.ProviderDetailsCacheKey}-{_trainingProviderId}"))
                     .ReturnsAsync(() => null);
 
@@ -141,9 +138,9 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                     Mock.Of<ILogger<ProviderStandardsService>>());
             }
 
-            public ProviderCoursesServiceTestFixture WithProviderType(TrainingProviderResponse.ProviderTypeIdentifier providerType)
+            public ProviderCoursesServiceTestFixture WithProviderType(ProviderType providerType)
             {
-                _trainingProviderResponse.ProviderType.Id = (short)providerType;
+                _trainingProviderResponse.ProviderType = providerType;
                 return this;
             }
 
@@ -175,16 +172,16 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 
             public ProviderCoursesServiceTestFixture WithMainProviderDetailsInCache()
             {
-                _trainingProviderCacheResponse = _autoFixture.Build<TrainingProviderResponse>()
-                    .With(x => x.ProviderType, new TrainingProviderResponse.ProviderTypeResponse { Id = (short)(short)TrainingProviderResponse.ProviderTypeIdentifier.MainProvider })
+                _trainingProviderCacheResponse = _autoFixture.Build<ProviderDetailsModel>()
+                    .With(x => x.ProviderType, ProviderType.Main)
                     .Create();
 
                 _trainingProviderService.Setup(x =>
-                        x.GetTrainingProviderDetails(It.Is<long>(id => id == _trainingProviderId)))
+                        x.GetProviderDetails(It.Is<int>(id => id == _trainingProviderId)))
                     .ThrowsAsync(new InvalidOperationException("GetTrainingProviderDetails API call is invalid when response is cached"));
 
                 _cacheStorageService.Setup(x =>
-                        x.RetrieveFromCache<TrainingProviderResponse>(
+                        x.RetrieveFromCache<ProviderDetailsModel>(
                             $"{Approvals.Services.ProviderStandardsService.ProviderDetailsCacheKey}-{_trainingProviderId}"))
                     .ReturnsAsync(_trainingProviderCacheResponse);
 

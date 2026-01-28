@@ -31,9 +31,6 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
 
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClient = null!;
         private Mock<IEmailService> _emailService = null!;
-        private Mock<IOptions<AodpConfiguration>> _options = null!;
-        private Mock<ILogger<CreateApplicationMessageCommandHandler>> _logger = null!;
-
         private CreateApplicationMessageCommandHandler _handler = null!;
 
         [SetUp]
@@ -41,29 +38,9 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
         {
             _apiClient = new Mock<IAodpApiClient<AodpApiConfiguration>>();
             _emailService = new Mock<IEmailService>();
-            _options = new Mock<IOptions<AodpConfiguration>>();
-            _logger = new Mock<ILogger<CreateApplicationMessageCommandHandler>>();
-
-            var config = new AodpConfiguration
-            {
-                QfauReviewerEmailAddress = QfauMailboxEmail,
-                QFASTBaseUrl = QfastBaseUrl,
-                NotificationTemplates = new List<NotificationTemplate>
-                {
-                    new NotificationTemplate
-                    {
-                        TemplateName = TemplateName,
-                        TemplateId = TemplateId
-                    }
-                }
-            };
-
-            _options.SetupGet(o => o.Value).Returns(config);
 
             _handler = new CreateApplicationMessageCommandHandler(
                 _apiClient.Object,
-                _options.Object,
-                _logger.Object,
                 _emailService.Object);
         }
 
@@ -96,6 +73,10 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                     It.IsAny<CreateApplicationMessageApiRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
+            _emailService
+                .Setup(s => s.SendAsync(It.IsAny<IReadOnlyCollection<NotificationDefinition>>(), default))
+                .ReturnsAsync(true);
+
             var request = new CreateApplicationMessageCommand
             {
                 ApplicationId = ApplicationId,
@@ -116,22 +97,22 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                 Assert.That(result.Success, Is.True);
                 Assert.That(result.Value, Is.Not.Null);
                 Assert.That(result.Value.Id, Is.EqualTo(MessageId));
-
-                _apiClient.Verify(c =>
-                    c.PostWithResponseCode<CreateApplicationMessageCommandResponse>(
-                        It.Is<CreateApplicationMessageApiRequest>(r =>
-                            r.ApplicationId == ApplicationId &&
-                            r.Data == request), true),
-                    Times.Once);
-
-                _emailService.Verify(s => s.SendAsync(
-                    It.Is<IReadOnlyCollection<NotificationDefinition>>(n =>
-                        n.Count == 1 &&
-                        n.First().TemplateName == EmailTemplateNames.QFASTApplicationSubmittedNotification &&
-                        n.First().RecipientKind == NotificationRecipientKind.QfauMailbox
-                    ),
-                    default),Times.Once);
+                Assert.That(result.Value.EmailSent, Is.True);
             });
+
+            _apiClient.Verify(c =>
+                c.PostWithResponseCode<CreateApplicationMessageCommandResponse>(
+                    It.Is<CreateApplicationMessageApiRequest>(r =>
+                        r.ApplicationId == ApplicationId &&
+                        r.Data == request), true),
+                Times.Once);
+
+            _emailService.Verify(s => s.SendAsync(
+                It.Is<IReadOnlyCollection<NotificationDefinition>>(n =>
+                    n.Count == 1 &&
+                    n.First().TemplateName == EmailTemplateNames.QFASTApplicationSubmittedNotification &&
+                    n.First().RecipientKind == NotificationRecipientKind.QfauMailbox), default),
+                Times.Once);
         }
 
         [Test]
@@ -154,6 +135,10 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                     It.IsAny<CreateApplicationMessageApiRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
+            _emailService
+                .Setup(s => s.SendAsync(It.IsAny<IReadOnlyCollection<NotificationDefinition>>(), default))
+                .ReturnsAsync(false);
+
             var request = new CreateApplicationMessageCommand
             {
                 ApplicationId = ApplicationId,
@@ -172,13 +157,13 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                 Assert.That(result.Success, Is.True);
                 Assert.That(result.Value, Is.Not.Null);
                 Assert.That(result.Value.Id, Is.EqualTo(MessageId));
-
-                _emailService.Verify(
-                    s => s.SendAsync(
-                        It.Is<IReadOnlyCollection<NotificationDefinition>>(n => n != null && !n.Any()),
-                        default),
-                    Times.Once);
+                Assert.That(result.Value.EmailSent, Is.False);
             });
+
+            _emailService.Verify(
+                s => s.SendAsync(
+                    It.Is<IReadOnlyCollection<NotificationDefinition>>(n => n != null && !n.Any()), default),
+                Times.Once);
         }
 
         [Test]
@@ -207,11 +192,11 @@ namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
                 Assert.That(result, Is.Not.Null);
                 Assert.That(result.Success, Is.False);
                 Assert.That(result.ErrorMessage, Is.EqualTo("api exception"));
-
-                _emailService.Verify(
-                    s => s.SendAsync(It.IsAny<List<NotificationDefinition>>(), default),
-                    Times.Never);
             });
+
+            _emailService.Verify(
+                s => s.SendAsync(It.IsAny<IReadOnlyCollection<NotificationDefinition>>(), default),
+                Times.Never);
         }
     }
 }

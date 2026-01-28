@@ -20,13 +20,15 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Training_Course_Providers_From_Mediator(
-            int id,
+            int idVal,
             GetCourseProvidersModel getCourseProvidersModel,
             GetCourseProvidersResponse mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Frozen] ILogger<CoursesController> mockLogger,
             [Greedy] CoursesController controller)
         {
+            var id = idVal.ToString();
+
             mockMediator
                 .Setup(mediator => mediator.Send(
                     It.Is<GetCourseProvidersQuery>(c =>
@@ -58,11 +60,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
 
         [Test, MoqAutoData]
         public async Task And_Empty_Response_Then_Returns_Empty_Result(
-            int id,
+            int idVal,
             GetCourseProvidersModel getCourseProvidersModel,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CoursesController controller)
         {
+            string id = idVal.ToString();
             var response = new GetCourseProvidersResponse();
             mockMediator
                  .Setup(mediator => mediator.Send(
@@ -83,7 +86,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
 
         [Test, MoqAutoData]
         public async Task And_Null_Response_Returns_NotFound(
-            int id,
+            string id,
             GetCourseProvidersModel getCourseProvidersModel,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] CoursesController controller

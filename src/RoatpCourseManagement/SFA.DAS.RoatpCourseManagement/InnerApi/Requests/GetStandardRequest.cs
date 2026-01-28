@@ -1,15 +1,14 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
-{
-    public class GetStandardRequest : IGetApiRequest
-    {
-        public string GetUrl => $"api/courses/Standards/{LarsCode}";
-        public int LarsCode { get; }
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 
-        public GetStandardRequest(int larsCode)
-        {
-            LarsCode = larsCode;
-        }
+public class GetStandardRequest : IGetApiRequest
+{
+    public string GetUrl => $"api/courses/Standards/{LarsCode}";
+    public string LarsCode { get; }
+
+    public GetStandardRequest(string larsCode)
+    {
+        LarsCode = larsCode;
     }
 }

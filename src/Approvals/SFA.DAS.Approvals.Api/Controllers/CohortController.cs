@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
@@ -15,6 +15,7 @@ using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectLegalEntity;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectEmployer;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -249,6 +250,40 @@ public class CohortController(
         catch (Exception e)
         {
             logger.LogError(e, "Error getting legal entities for account {AccountId}", accountId);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("provider/{providerId}/unapproved/add/select-employer")]
+    public async Task<IActionResult> GetSelectEmployer(
+        [FromRoute] int providerId,
+        [FromQuery] string searchTerm,
+        [FromQuery] string sortField,
+        [FromQuery] bool reverseSort,
+        [FromQuery] bool useLearnerData)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetSelectEmployerQuery
+            {
+                ProviderId = providerId,
+                SearchTerm = searchTerm,
+                SortField = sortField,
+                ReverseSort = reverseSort,
+                UseLearnerData = useLearnerData
+            });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok((GetSelectEmployerResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in GetSelectEmployer for provider {ProviderId}", providerId);
             return BadRequest();
         }
     }

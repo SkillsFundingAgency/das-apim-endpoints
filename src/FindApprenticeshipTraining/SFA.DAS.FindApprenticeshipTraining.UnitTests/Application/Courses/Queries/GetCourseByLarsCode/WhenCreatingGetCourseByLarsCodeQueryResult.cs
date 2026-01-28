@@ -16,7 +16,7 @@ public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
         {
             Assert.That(sut.StandardUId, Is.EqualTo(response.StandardUId));
             Assert.That(sut.IFateReferenceNumber, Is.EqualTo(response.IfateReferenceNumber));
-            Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode));
+            Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode.ToString()));
             Assert.That(sut.Title, Is.EqualTo(response.Title));
             Assert.That(sut.Level, Is.EqualTo(response.Level));
             Assert.That(sut.Version, Is.EqualTo(response.Version));

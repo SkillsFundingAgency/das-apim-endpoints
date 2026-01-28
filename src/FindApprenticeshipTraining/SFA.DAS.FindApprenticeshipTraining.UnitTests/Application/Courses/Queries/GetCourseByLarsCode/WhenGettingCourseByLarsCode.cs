@@ -121,7 +121,7 @@ public sealed class WhenGettingCourseByLarsCode
     [Test]
     public async Task Handle_Returns_Default_When_No_Providers()
     {
-        var query = new GetCourseByLarsCodeQuery { LarsCode = 456 };
+        var query = new GetCourseByLarsCodeQuery { LarsCode = "456" };
 
         var standardDetailResponse = new StandardDetailResponse
         {
@@ -154,7 +154,7 @@ public sealed class WhenGettingCourseByLarsCode
             .Setup(x =>
                 x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                     It.Is<GetCourseTrainingProvidersCountRequest>(a =>
-                        a.LarsCodes.SequenceEqual(new int[1] { query.LarsCode }) &&
+                        a.LarsCodes.SequenceEqual(new string[1] { query.LarsCode }) &&
                         a.Distance.Equals(query.Distance)
                     )
                 )
@@ -396,7 +396,7 @@ public sealed class WhenGettingCourseByLarsCode
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse
     )
     {
-        var query = new GetCourseByLarsCodeQuery { LarsCode = 456, Location = "sw1", Distance = 10 };
+        var query = new GetCourseByLarsCodeQuery { LarsCode = "456", Location = "sw1", Distance = 10 };
 
         _cachedLocationLookupService.Setup(x =>
             x.GetCachedLocationInformation(query.Location, false)
@@ -416,7 +416,7 @@ public sealed class WhenGettingCourseByLarsCode
                 .Setup(x =>
                     x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                             It.Is<GetCourseTrainingProvidersCountRequest>(a =>
-                                a.LarsCodes.SequenceEqual(new int[1] { query.LarsCode }) &&
+                                a.LarsCodes.SequenceEqual(new string[1] { query.LarsCode }) &&
                                 a.Distance.Equals(query.Distance) &&
                                 a.Latitude.Equals((decimal?)locationItem.GeoPoint[0]) &&
                                 a.Longitude.Equals((decimal?)locationItem.GeoPoint[1])
@@ -592,7 +592,7 @@ public sealed class WhenGettingCourseByLarsCode
             .Setup(x =>
                 x.GetWithResponseCode<StandardDetailResponse>(
                     It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode.ToString())
+                        a.Id.Equals(query.LarsCode)
                     )
                 )
             )
@@ -623,7 +623,7 @@ public sealed class WhenGettingCourseByLarsCode
     [Test]
     public async Task Handle_Returns_Zero_IncentivePayment_When_No_Apprenticeship_Funding()
     {
-        var larsCode = 123;
+        var larsCode = "123";
 
         GetCourseByLarsCodeQuery query = new GetCourseByLarsCodeQuery { LarsCode = larsCode };
 
@@ -687,7 +687,7 @@ public sealed class WhenGettingCourseByLarsCode
 
     public async Task Handle_Returns_Expected_IncentivePayment_When_3_Payments_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
     {
-        var larsCode = 123;
+        var larsCode = "123";
 
         GetCourseByLarsCodeQuery query = new GetCourseByLarsCodeQuery { LarsCode = larsCode };
 

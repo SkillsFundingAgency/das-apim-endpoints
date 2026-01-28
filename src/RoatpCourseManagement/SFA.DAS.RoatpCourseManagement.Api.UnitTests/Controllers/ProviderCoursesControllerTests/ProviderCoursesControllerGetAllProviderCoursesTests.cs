@@ -9,6 +9,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
+using SFA.DAS.SharedOuterApi.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCoursesControllerTests
 {
@@ -25,7 +26,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
             mediatorMock.Setup(m => m.Send(It.Is<GetAllProviderCoursesQuery>(q => q.Ukprn == ValidUkprn), It.IsAny<CancellationToken>())).ReturnsAsync(new List<GetAllProviderCoursesQueryResult>());
             var subject = new ProviderCoursesController(Mock.Of<ILogger<ProviderCoursesController>>(), mediatorMock.Object);
 
-            var response = await subject.GetAllProviderCourses(ukprn);
+            var response = await subject.GetAllProviderCourses(ukprn, CourseType.Apprenticeship);
 
             var statusCodeResult = response as IStatusCodeActionResult;
 
@@ -39,7 +40,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCourse
             mediatorMock.Setup(m => m.Send(It.IsAny<GetAllProviderCoursesQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync((List<GetAllProviderCoursesQueryResult>)null);
             var subject = new ProviderCoursesController(Mock.Of<ILogger<ProviderCoursesController>>(), mediatorMock.Object);
 
-            var response = await subject.GetAllProviderCourses(ValidUkprn);
+            var response = await subject.GetAllProviderCourses(ValidUkprn, CourseType.Apprenticeship);
 
             var statusCodeResult = response as IStatusCodeActionResult;
             Assert.That(StatusCodes.Status404NotFound, Is.EqualTo(statusCodeResult.StatusCode.GetValueOrDefault()));

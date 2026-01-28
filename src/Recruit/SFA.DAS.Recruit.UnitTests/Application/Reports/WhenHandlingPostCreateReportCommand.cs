@@ -24,7 +24,7 @@ internal class WhenHandlingPostCreateReportCommand
             FromDate = command.FromDate,
             Id = command.Id,
             Name = command.Name,
-            OwnerType = command.OwnerType,
+            OwnerType = command.OwnerType.ToString(),
             ToDate = command.ToDate,
             Ukprn = command.Ukprn,
             UserId = command.UserId

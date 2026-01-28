@@ -29,7 +29,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
-        services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+        services.AddTransient<ICivilServiceJobsApiClient<CivilServiceJobsApiConfiguration>, CivilServiceJobsApiClient>();
+        services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]!));
         return services;
     }
 }

@@ -43,7 +43,7 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     [Route("{id}/providers")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetCourseProvidersResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCourseProviders(int id, [FromQuery] GetCourseProvidersModel model)
+    public async Task<IActionResult> GetCourseProviders(string id, [FromQuery] GetCourseProvidersModel model)
     {
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
@@ -75,11 +75,11 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("{larscode:int}")]
+    [HttpGet("{larscode}")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetCourseByLarsCodeQueryResult), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(NotFoundResult), StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetCourseByLarsCode([FromRoute] int larscode, [FromQuery] int? distance, [FromQuery] string location)
+    public async Task<IActionResult> GetCourseByLarsCode([FromRoute] string larscode, [FromQuery] int? distance, [FromQuery] string location)
     {
         var result = await _mediator.Send(new GetCourseByLarsCodeQuery
         {
@@ -95,8 +95,8 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     }
 
     [HttpGet]
-    [Route("{larsCode:int}/providers/{ukprn:int}")]
-    public async Task<IActionResult> GetCourseProvider([FromRoute] int larsCode, [FromRoute] long ukprn, [FromQuery] GetCourseProviderRequest request, CancellationToken cancellationToken)
+    [Route("{larsCode}/providers/{ukprn:int}")]
+    public async Task<IActionResult> GetCourseProvider([FromRoute] string larsCode, [FromRoute] long ukprn, [FromQuery] GetCourseProviderRequest request, CancellationToken cancellationToken)
     {
         var result = await _mediator.Send(
             new GetCourseProviderQuery(

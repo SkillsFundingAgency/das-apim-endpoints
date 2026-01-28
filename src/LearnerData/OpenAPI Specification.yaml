@@ -403,6 +403,9 @@ components:
                   actualEndDate:
                     type: string
                     format: date
+                  achievementDate:
+                    type: string
+                    format: date
             englishAndMaths:
               type: array
               items:
@@ -445,6 +448,9 @@ components:
                   learnAimRef:
                     type: string
                   actualEndDate:
+                    type: string
+                    format: date
+                  achievementDate:
                     type: string
                     format: date
 

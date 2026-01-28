@@ -51,7 +51,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
 
         var coursesApiStandardResponse = await _coursesApiClient.GetWithResponseCode<StandardDetailResponse>(
             new GetStandardDetailsByIdRequest(
-                query.LarsCode.ToString()
+                query.LarsCode
             )
         );
 
@@ -62,7 +62,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding?.Count > 0 ?
             standardDetails.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() :
         null;
-        
+
         GetCourseByLarsCodeQueryResult result = standardDetails;
 
         result.MaxFunding = apprenticeshipFunding?.MaxEmployerLevyCap ?? 0;

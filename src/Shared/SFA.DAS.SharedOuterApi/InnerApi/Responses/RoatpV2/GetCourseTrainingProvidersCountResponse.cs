@@ -9,7 +9,7 @@ public sealed class GetCourseTrainingProvidersCountResponse
 
 public sealed class CourseTrainingProviderCountModel
 {
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public int ProvidersCount { get; set; }
     public int TotalProvidersCount { get; set; }
 }

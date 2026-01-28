@@ -29,6 +29,11 @@ public class InnerApis(TestContext context)
             context.CollectionCalendarApi = new MockApi();
         }
 
+        if (context.CoursesApi == null)
+        {
+            context.CoursesApi = new MockApi();
+        }
+
         NUnit.Framework.TestContext.WriteLine("Initialising outer api...");
         if (Client == null)
         {
@@ -38,6 +43,7 @@ public class InnerApis(TestContext context)
                 {"EarningsApiConfiguration:url", context?.EarningsApi?.BaseAddress + "/"},
                 {"ApprenticeshipsApiConfiguration:url", context?.ApprenticeshipsApi?.BaseAddress + "/"},
                 {"CollectionCalendarApiConfiguration:url", context?.CollectionCalendarApi?.BaseAddress + "/"},
+                {"CoursesApiConfiguration:url", context?.CoursesApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
                 {"AzureAD:identifier", ""}
             };

@@ -144,7 +144,8 @@ namespace SFA.DAS.Recruit.Api.Controllers
                     request.TemporaryReviewStatus,
                     request.EmployerFeedback,
                     request.HasEverBeenEmployerInterviewing,
-                    request.DateSharedWithEmployer), token);
+                    request.DateSharedWithEmployer,
+                    request.CandidateFeedback), token);
 
                 return NoContent();
             }

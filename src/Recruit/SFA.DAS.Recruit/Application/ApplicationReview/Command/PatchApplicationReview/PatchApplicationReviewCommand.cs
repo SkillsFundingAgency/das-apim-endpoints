@@ -9,5 +9,6 @@ namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplication
         string? TemporaryReviewStatus,
         string? EmployerFeedback,
         bool HasEverBeenEmployerInterviewing,
-        DateTime? DateSharedWithEmployer) : IRequest;
+        DateTime? DateSharedWithEmployer, 
+        string? CandidateFeedback) : IRequest;
 }

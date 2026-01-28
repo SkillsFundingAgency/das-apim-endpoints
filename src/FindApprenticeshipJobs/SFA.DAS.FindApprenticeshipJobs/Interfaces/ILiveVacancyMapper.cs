@@ -7,5 +7,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.Interfaces
     {
         Application.Shared.LiveVacancy Map(LiveVacancy source, GetStandardsListResponse standards);
         Application.Shared.LiveVacancy Map(GetNhsJobApiDetailResponse source, GetLocationsListResponse locations, GetRoutesListItem route);
+        Application.Shared.LiveVacancy Map(GetCivilServiceJobsApiResponse.Job source, GetRoutesListItem route);
     }
 }

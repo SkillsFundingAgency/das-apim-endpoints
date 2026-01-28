@@ -101,7 +101,6 @@ public class WhenHandlingSubmitApplicationCommand
         NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IMetrics> metricsService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -122,10 +121,6 @@ public class WhenHandlingSubmitApplicationCommand
         candidateApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
             .ReturnsAsync(() => new ApiResponse<string>("", HttpStatusCode.OK, ""));
-        
-        recruitApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<PostSubmitApplicationRequest>(), false))
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
 
@@ -162,7 +157,6 @@ public class WhenHandlingSubmitApplicationCommand
         GetApprenticeshipVacancyItemResponse vacancyResponse,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IMetrics> metricsService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -183,10 +177,6 @@ public class WhenHandlingSubmitApplicationCommand
         candidateApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>()))
             .ReturnsAsync(() => new ApiResponse<string>("", HttpStatusCode.OK, ""));
-        
-        recruitApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<PostSubmitApplicationRequest>(), false))
-            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         
         vacancyService.Setup(x => x.GetVacancy(applicationApiResponse.VacancyReference)).ReturnsAsync(vacancyResponse);
 
@@ -235,7 +225,6 @@ public class WhenHandlingSubmitApplicationCommand
         NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IVacancyService> vacancyService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -265,12 +254,6 @@ public class WhenHandlingSubmitApplicationCommand
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
         ))).ReturnsAsync(new ApiResponse<string>("",HttpStatusCode.Accepted,""));
-        
-        recruitApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(
-                It.Is<PostSubmitApplicationRequest>(c => 
-                    c.PostUrl.Contains(request.CandidateId.ToString())
-                ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         
         recruitV2ApiClient
             .Setup(x => x.PostWithResponseCode<PostCreateApplicationReviewNotificationsResponse>(
@@ -322,7 +305,6 @@ public class WhenHandlingSubmitApplicationCommand
         NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IVacancyService> vacancyService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -346,11 +328,6 @@ public class WhenHandlingSubmitApplicationCommand
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
         ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
-        recruitApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(
-                It.Is<PostSubmitApplicationRequest>(c =>
-                    c.PostUrl.Contains(request.CandidateId.ToString())
-                ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
@@ -401,7 +378,6 @@ public class WhenHandlingSubmitApplicationCommand
         NotificationEmailDto applicationReviewNotificationsResponse,
         [Frozen] Mock<IMetrics> metricsService,
         [Frozen] Mock<IVacancyService> vacancyService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitV2ApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -432,11 +408,6 @@ public class WhenHandlingSubmitApplicationCommand
             c.Data.Operations[0].path == "/Status" &&
             (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Submitted
         ))).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
-        recruitApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(
-                It.Is<PostSubmitApplicationRequest>(c =>
-                    c.PostUrl.Contains(request.CandidateId.ToString())
-                ), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
         
         recruitV2ApiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<CreateApplicationReviewRequest>()))
@@ -483,7 +454,7 @@ public class WhenHandlingSubmitApplicationCommand
         SubmitApplicationCommand request,
         GetApplicationApiResponse applicationApiResponse,
         [Frozen] Mock<IMetrics> metricsService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         SubmitApplicationCommandHandler handler)
@@ -515,7 +486,7 @@ public class WhenHandlingSubmitApplicationCommand
     public async Task Then_The_ApplicationStatus_Is_Not_Updated_And_Not_Submitted_To_Recruit_If_Application_Is_Not_Found(
         SubmitApplicationCommand request,
         [Frozen] Mock<IMetrics> metricsService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         SubmitApplicationCommandHandler handler)
@@ -542,7 +513,7 @@ public class WhenHandlingSubmitApplicationCommand
         GetApplicationApiResponse applicationApiResponse,
         SubmitApplicationCommand request,
         [Frozen] Mock<IMetrics> metricsService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         SubmitApplicationCommandHandler handler)
@@ -575,7 +546,7 @@ public class WhenHandlingSubmitApplicationCommand
         SubmitApplicationCommand request,
         [Frozen] Mock<IVacancyService> vacancyService,
         [Frozen] Mock<IMetrics> metricsService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         SubmitApplicationCommandHandler handler)

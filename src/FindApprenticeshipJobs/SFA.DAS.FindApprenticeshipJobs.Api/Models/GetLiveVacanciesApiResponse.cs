@@ -1,5 +1,7 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.CivilServiceJobs;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.Models;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
@@ -30,6 +32,19 @@ public class GetLiveVacanciesApiResponse
             PageNo = 1,
             TotalLiveVacanciesReturned = source.NhsVacancies.Count,
             TotalLiveVacancies = source.NhsVacancies.Count,
+            TotalPages = 1
+        };
+    }
+
+    public static implicit operator GetLiveVacanciesApiResponse(GetCivilServiceJobsQueryResult source)
+    {
+        return new GetLiveVacanciesApiResponse
+        {
+            Vacancies = source.CivilServiceVacancies.Select(x => (LiveVacancy)x),
+            PageSize = source.CivilServiceVacancies.Count,
+            PageNo = 1,
+            TotalLiveVacanciesReturned = source.CivilServiceVacancies.Count,
+            TotalLiveVacancies = source.CivilServiceVacancies.Count,
             TotalPages = 1
         };
     }
@@ -118,8 +133,8 @@ public class GetLiveVacanciesApiResponse
         public int RouteCode { get; set; }
         public DurationUnit? DurationUnit { get; set; }
         public int Duration { get; set; }
-        public int AccountId { get; set; }
-        public int AccountLegalEntityId { get; set; }
+        public long AccountId { get; set; }
+        public long AccountLegalEntityId { get; set; }
         public string ApprenticeshipLevel { get; set; }
         public Guid VacancyId { get; set; }
         public string VacancyReference { get; set; }

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Domain;
+﻿﻿using SFA.DAS.SharedOuterApi.Domain;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
