@@ -1,0 +1,10 @@
+query GetVacancyByReference($vacancyReference: Long) {
+    vacancies(
+        where: {
+            vacancyReference: { eq: $vacancyReference }
+        }
+    )
+    {
+        ...AllVacancyFields
+    }
+}

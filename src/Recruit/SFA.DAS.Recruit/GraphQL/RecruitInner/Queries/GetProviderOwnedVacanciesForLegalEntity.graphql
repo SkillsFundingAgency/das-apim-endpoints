@@ -1,0 +1,13 @@
+query GetProviderOwnedVacanciesForLegalEntity($ukprn: Int, $accountLegalEntityId: Long) {
+    vacancies(
+        where: {
+            ownerType:  { eq: PROVIDER }
+            deletedDate:  { eq: null }
+            ukprn: { eq: $ukprn }
+            accountLegalEntityId:  { eq: $accountLegalEntityId }
+        }
+    )
+    {
+        ...AllVacancyFields
+    }
+}
