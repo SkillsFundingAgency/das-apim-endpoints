@@ -1,24 +1,30 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.LearnerData.Extensions;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 
 public class UpdateLearnerCommandHandler(
     ILogger<UpdateLearnerCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+    IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
+    IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
+    IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
+    IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder
     ) : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
-        var request = CreateUpdateLearnerApiPutRequest(command.LearningKey, command);
+        var request = updateLearningPutRequestBuilder.Build(command);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 
@@ -30,97 +36,38 @@ public class UpdateLearnerCommandHandler(
         }
 
         var learningApiPutResponse = learningResponse.Body;
-        if (!learningApiPutResponse.Changes.Any())
-        {
-            logger.LogInformation("No changes detected for learner with key {LearningKey}", command.LearningKey);
-            return;
-        }
 
         logger.LogInformation("Learner with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningApiPutResponse));
-
-        await UpdateEarnings(command, learningApiPutResponse);
-
-        logger.LogInformation("Earnings updated for learner with key {LearningKey}", command.LearningKey);
-    }
-
-    private async Task UpdateEarnings(UpdateLearnerCommand command, UpdateLearnerApiPutResponse updateLearningApiPutResponse)
-    {
-        var updatePrices = false;
-
-        foreach (var change in updateLearningApiPutResponse.Changes)
+        
+        if (learningApiPutResponse.Changes.Count == 0 || learningApiPutResponse.Changes.HasPersonalDetailsOnly())
         {
-            switch (change)
-            {
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate:
-                    await earningsApiClient.UpdateCompletionDate(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish:
-                    await earningsApiClient.UpdateMathAndEnglish(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport:
-                    await earningsApiClient.UpdateLearningSupport(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices:
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate:
-                    updatePrices = true;
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal:
-                    await earningsApiClient.WithdrawLearner(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal:
-                    await earningsApiClient.ReverseWithdrawal(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted:
-                    await earningsApiClient.StartBreakInLearning(command, logger);
-                    break;
-                case UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved:
-                    await earningsApiClient.RemoveBreakInLearning(command, logger);
-                    break;
-            }
+            logger.LogInformation("No changes requiring earnings update for learning {LearningKey}", command.LearningKey);
+            return;
+        }
+        
+        //Update Earnings
+        if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
+        {
+            logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", command.LearningKey);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command, learningApiPutResponse, request);
+            await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 
-        if (updatePrices)
+        if (learningApiPutResponse.Changes.HasEnglishAndMathsUpdate())
         {
-            await earningsApiClient.UpdatePrices(command.LearningKey, updateLearningApiPutResponse, logger);
+            logger.LogInformation("Updating Earnings with English and Maths changes for learning {LearningKey}", command.LearningKey);
+            var englishAndMathsRequest = updateEarningsEnglishAndMathsRequestBuilder.Build(command, learningApiPutResponse, request);
+            await earningsApiClient.Put(englishAndMathsRequest);
         }
-    }
 
-    private static UpdateLearningApiPutRequest CreateUpdateLearnerApiPutRequest(Guid learnerKey, UpdateLearnerCommand command)
-    {
-        var body = new UpdateLearningRequestBody
+        if (learningApiPutResponse.Changes.HasLearningSupportUpdate())
         {
-            Delivery = new Delivery
-            {
-                WithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().WithdrawalDate
-            },
-            Learner = new LearningUpdateDetails
-            {
-                FirstName = command.UpdateLearnerRequest.Learner.FirstName,
-                LastName = command.UpdateLearnerRequest.Learner.LastName,
-                EmailAddress = command.UpdateLearnerRequest.Learner.Email,
-                CompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().CompletionDate
-            },
-            OnProgramme = new OnProgrammeDetails
-            {
-                ExpectedEndDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().ExpectedEndDate,
-                Costs = command.UpdateLearnerRequest.Delivery.OnProgramme.First().MapCosts(),
-                PauseDate = command.UpdateLearnerRequest.Delivery.OnProgramme.First().PauseDate
-            },
-            MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
-                new MathsAndEnglishDetails
-                {
-                    Amount = x.Amount,
-                    CompletionDate = x.CompletionDate,
-                    Course = x.Course,
-                    PlannedEndDate = x.EndDate,
-                    PriorLearningPercentage = x.PriorLearningPercentage,
-                    StartDate = x.StartDate,
-                    WithdrawalDate = x.WithdrawalDate
-                }).ToList(),
-            LearningSupport = command.CombinedLearningSupport()
-        };
+            logger.LogInformation("Updating Earnings with Learning Support changes for learning {LearningKey}", command.LearningKey);
+            var earningsLearningSupportRequest = updateEarningsLearningSupportRequestBuilder.Build(command, learningApiPutResponse, request);
+            await earningsApiClient.Put(earningsLearningSupportRequest);
+        }
 
-        return new UpdateLearningApiPutRequest(learnerKey, body);
+        logger.LogInformation("Earnings updated for learning {LearningKey}", command.LearningKey);
     }
 }

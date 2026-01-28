@@ -108,7 +108,7 @@ public sealed class WhenGettingCourseProvider
             _roatpClientMock
                 .Setup(x => x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                     It.Is<GetCourseTrainingProvidersCountRequest>(a =>
-                        a.LarsCodes.SequenceEqual(new int[] { query.LarsCode }) &&
+                        a.LarsCodes.SequenceEqual(new string[] { query.LarsCode }) &&
                         a.Distance.Equals(query.Distance) &&
                         a.Latitude.Equals(locationResponse.Latitude) &&
                         a.Longitude.Equals(locationResponse.Longitude)
@@ -376,7 +376,7 @@ public sealed class WhenGettingCourseProvider
         _roatpClientMock.Verify(x =>
             x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 It.Is<GetCourseTrainingProvidersCountRequest>(a =>
-                    a.LarsCodes.SequenceEqual(new int[] { query.LarsCode }) &&
+                    a.LarsCodes.SequenceEqual(new string[] { query.LarsCode }) &&
                     a.Distance.Equals(query.Distance) &&
                     a.Latitude.Equals(locationResponse.Latitude) &&
                     a.Longitude.Equals(locationResponse.Longitude)

@@ -1,0 +1,440 @@
+{
+	"info": {
+		"_postman_id": "06aa2e16-0fec-437f-adf3-3f6330fa27f3",
+		"name": "Outer API Tests For Employer_Feedback",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21174429"
+	},
+	"item": [
+		{
+			"name": "Attributes-GetAll",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/attributes",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"attributes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DataLoad-GenerateFeedbackSummaries",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/DataLoad/generate-feedback-summaries",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"DataLoad",
+						"generate-feedback-summaries"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EmployerFeedbackResult-SubmitFeedback",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"userRef\": \"3fa85f64-5717-4562-b3fc-2c963f66afa6\",\r\n  \"ukprn\": 10005310,\r\n  \"accountId\": 1,\r\n  \"providerRating\": \"VeryPoor\",\r\n  \"feedbackSource\": 1,\r\n  \"providerAttributes\": [\r\n    {\r\n      \"attributeId\": 1,\r\n      \"attributeValue\": 1\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/EmployerFeedbackResult",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"EmployerFeedbackResult"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account-SyncEmployerAccounts",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Accounts/update",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"Accounts",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "EmployerFeedback-GetTrainingProviderSearch",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/EmployerFeedback?accountId=123&userRef=af597ef9-081c-4f05-ac3d-6a7046933554",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"EmployerFeedback"
+					],
+					"query": [
+						{
+							"key": "accountId",
+							"value": "123"
+						},
+						{
+							"key": "userRef",
+							"value": "af597ef9-081c-4f05-ac3d-6a7046933554"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account-GetEmailNudgeAccountsBatch",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Accounts?batchsize=10",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"Accounts"
+					],
+					"query": [
+						{
+							"key": "batchsize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Account-UpsertFeedbackTransaction",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"active\": [\r\n    {\r\n      \"ukprn\": 105053,\r\n      \"courseCode\": \"430\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/Accounts/1/feedbacktransaction",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"Accounts",
+						"1",
+						"feedbacktransaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FeedbackTransactions-GetFeedbackTransactionsBatch",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/feedbacktransactions?batchsize=10",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"feedbacktransactions"
+					],
+					"query": [
+						{
+							"key": "batchsize",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FeedbackTransactions-GetFeedbackTransactionUsers",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/FeedbackTransactions/5/users",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"FeedbackTransactions",
+						"5",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FeedbackTransactions-SendFeedbackEmail",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"templateId\": \"a0d17e87-3b0c-49cb-98f8-024fc6d256a5\",\r\n  \"contact\": \"string\",\r\n  \"email\": \"string\",\r\n  \"employerName\": \"string\",\r\n  \"accountHashedId\": \"ABCDEF\",\r\n  \"accountsBaseUrl\": \"string\",\r\n  \"feedbackBaseUrl\": \"string\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/feedbacktransactions/send",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"feedbacktransactions",
+						"send"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "FeedbackTransactions-UpdateFeedbackTransaction",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"templateId\": \"a0d17e87-3b0c-49cb-98f8-024fc6d256a5\",\r\n  \"sentCount\": 1,\r\n  \"sentDate\": \"2025-11-24T11:46:15.330Z\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://at-apim-empfb-api.apprenticeships.education.gov.uk/feedbacktransactions/5",
+					"protocol": "https",
+					"host": [
+						"at-apim-empfb-api",
+						"apprenticeships",
+						"education",
+						"gov",
+						"uk"
+					],
+					"path": [
+						"feedbacktransactions",
+						"5"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

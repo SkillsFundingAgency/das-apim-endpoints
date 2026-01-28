@@ -523,4 +523,65 @@ public class ApplicationControllerTests
             Assert.That(statusResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         });
     }
+
+    [Test]
+    public async Task WithdrawApplicationByIdAsync_ReturnsOkResult()
+    {
+        // Arrange
+        var request = _fixture.Create<WithdrawApplicationCommand>();
+        var response = _fixture.Create<EmptyResponse>();
+        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<WithdrawApplicationCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.WithdrawApplicationByIdAsync(request.ApplicationId, request);
+
+        // Assert
+        _mediatorMock.Verify(m => m.Send(
+            It.Is<WithdrawApplicationCommand>(c =>
+                c.ApplicationId == request.ApplicationId), default), Times.Once());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<EmptyResponse>());
+            var model = (EmptyResponse)okResult.Value;
+            Assert.That(model, Is.EqualTo(response));
+        });
+    }
+    
+    [Test]
+    public async Task WithdrawApplicationByIdAsync_WhenMediatorFails_ReturnsServerError()
+    {
+        // Arrange
+        var request = _fixture.Create<WithdrawApplicationCommand>();
+        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        {
+            Success = false,
+            ErrorMessage = "Some failure"
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<WithdrawApplicationCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.WithdrawApplicationByIdAsync(request.ApplicationId, request);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = (StatusCodeResult)result;
+            Assert.That(statusResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+        });
+    }
 }
