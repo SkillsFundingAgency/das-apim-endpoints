@@ -22,6 +22,9 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Services
         public async Task<IActionResult> Patch<T>(string url, T data)
             => await Request(new HttpRequestMessage(HttpMethod.Patch, url) { Content = CreateJsonContent(data) });
 
+        public async Task<IActionResult> Delete(string url)
+            => await Request(new HttpRequestMessage(HttpMethod.Delete, url));
+
         private async Task<IActionResult> Request(HttpRequestMessage request)
         {
             var response = await _client.Send(request);

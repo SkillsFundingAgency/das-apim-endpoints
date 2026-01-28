@@ -39,7 +39,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands
 
             var apprentice = apprenticeResponse.Body;
 
-            _logger.LogInformation("CreateApprenticeshipFromRegistration found apprentice {ApprenticeId}", apprentice.ApprenticeId);
+            _logger.LogInformation("CreateApprenticeshipFromRegistration found apprentice {ApprenticeId}", apprentice.Id);
 
             var response = await _cmad.PostWithResponseCode<object>(new CreateApprenticeshipRequest(
                 request.RegistrationId, request.ApprenticeId, apprentice.LastName, apprentice.DateOfBirth), false);
