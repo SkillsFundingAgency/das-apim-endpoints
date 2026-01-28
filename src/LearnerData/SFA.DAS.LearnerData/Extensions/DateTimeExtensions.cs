@@ -94,34 +94,6 @@ public static class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the later of the two specified <see cref="DateTime"/> values.
-    /// </summary>
-    public static DateTime? LatestOf(this DateTime? first, DateTime? second)
-    {
-        if (first == null && second == null) return null;
-        if (first == null) return second;
-        if (second == null) return first;
-
-        return first.Value.LatestOf(second.Value);
-    }
-
-    public static DateTime EarliestOrSelf(this DateTime first, params DateTime?[] dates)
-    {
-        DateTime earliest = first;
-
-        foreach (var date in dates)
-        {
-            if (date == null)
-                continue;
-
-            if (date < earliest)
-                earliest = date.Value;
-        }
-
-        return earliest;
-    }
-
-    /// <summary>
     /// Returns the earlier of the two specified <see cref="DateTime"/> values.
     /// </summary>
     public static DateTime? EarliestOf(this DateTime? first, DateTime? second)
