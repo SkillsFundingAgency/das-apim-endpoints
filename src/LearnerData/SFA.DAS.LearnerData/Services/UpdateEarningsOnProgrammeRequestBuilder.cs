@@ -75,7 +75,9 @@ namespace SFA.DAS.LearnerData.Services
         {
             var periodsInLearning = new List<PeriodInLearningItem>();
 
-            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
+            var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
+
+            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
             {
                 DateTime endDate;
 
