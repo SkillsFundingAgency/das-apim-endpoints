@@ -58,7 +58,7 @@ internal class GetFm36QueryTestFixture
         EarningsResponse = dataGenerator.GetFm36DataResponse;
 
         CollectionCalendarResponse = BuildCollectionCalendarResponse(UnpagedLearningsResponse);
-        SetupMocks(Ukprn, MockApprenticeshipsApiClient, UnpagedLearningsResponse, MockEarningsApiClient, EarningsResponse, MockCollectionCalendarApiClient, CollectionCalendarResponse, dataGenerator.SldLearnerData);
+        SetupMocks(Ukprn, UnpagedLearningsResponse, EarningsResponse, CollectionCalendarResponse, dataGenerator.SldLearnerData);
 
         _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, MockDistributedCache.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
         _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, null, null);
@@ -76,25 +76,22 @@ internal class GetFm36QueryTestFixture
 
     internal void SetupMocks(
         long ukprn,
-        Mock<ILearningApiClient<LearningApiConfiguration>> mockApprenticeshipsApiClient,
         List<Learning> learningsResponse,
-        Mock<IEarningsApiClient<EarningsApiConfiguration>> mockEarningsApiClient,
         GetFm36DataResponse earningsResponse,
-        Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> mockCollectionCalendarApiClient,
         GetAcademicYearsResponse collectionCalendarResponse,
         List<UpdateLearnerRequest> sldLearnerData)
     {
-        mockApprenticeshipsApiClient
+        MockApprenticeshipsApiClient
             .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
             .ReturnsAsync(learningsResponse);
 
-        mockApprenticeshipsApiClient
+        MockApprenticeshipsApiClient
             .Setup(x => x.Get<GetPagedLearnersFromLearningInner>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
             .ReturnsAsync(new GetPagedLearnersFromLearningInner { Items = learningsResponse, Page = 1, PageSize = learningsResponse.Count, TotalItems = learningsResponse.Count });
 
 
         var response = new ApiResponse<GetFm36DataResponse>(earningsResponse, System.Net.HttpStatusCode.OK, string.Empty);
-        mockEarningsApiClient
+        MockEarningsApiClient
             .Setup(x => x.PostWithResponseCode<GetFm36DataResponse>(
                 It.Is<PostGetFm36DataRequest>(r => r.Ukprn == ukprn), It.IsAny<bool>())).ReturnsAsync(response);
 
