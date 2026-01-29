@@ -121,7 +121,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
 
                 var response = _fixture.Build<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>()
                     .With(x => x.Id, apprenticeCommitmentsId)
-                    .With(x => x.Uln, uln.ToString())
+                    .With(x => x.Uln, uln)
                     .With(x => x.StartDate, fixedStartDate.AddMinutes(-apprenticeCommitmentsId))
                     .With(x => x.EndDate, fixedEndDate.AddMinutes(apprenticeCommitmentsId))
                     .With(x => x.CourseCode, 100.ToString())
