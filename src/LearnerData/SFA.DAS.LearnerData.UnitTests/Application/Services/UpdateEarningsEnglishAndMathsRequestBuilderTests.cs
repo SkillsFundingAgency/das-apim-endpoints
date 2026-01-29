@@ -52,7 +52,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
+                CompletionDate = x.CompletionDate,
                 PauseDate = x.PauseDate,
                 PeriodsInLearning = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(e => e.LearnAimRef == x.LearnAimRef)
                     .Select(y => new PeriodInLearningItem

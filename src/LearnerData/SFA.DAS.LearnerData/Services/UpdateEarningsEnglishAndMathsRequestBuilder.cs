@@ -24,10 +24,10 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
                 LearnAimRef = x.LearnAimRef,
                 Course = x.Course,
                 Amount = x.Amount,
-                WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate ?? x.PauseDate ?? x.WithdrawalDate,
                 PauseDate = x.PauseDate,
+                WithdrawalDate = x.WithdrawalDate,
+                CompletionDate = x.CompletionDate,
                 PeriodsInLearning = GetPeriodsInLearning(x.LearnAimRef, command)
             }).ToList()
         };
