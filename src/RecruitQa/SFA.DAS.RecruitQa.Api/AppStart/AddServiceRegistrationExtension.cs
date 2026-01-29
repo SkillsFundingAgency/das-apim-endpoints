@@ -3,6 +3,7 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 
@@ -20,6 +21,7 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<ICourseService, CourseService>();
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
     }
