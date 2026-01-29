@@ -8,7 +8,8 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [Route("reference-data")]
 [ApiController]
 public class ReferenceDataController(
-IMediator mediator) : ControllerBase
+IMediator mediator,
+ILogger<ReferenceDataController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}")]
     public async Task<IActionResult> GetProviderRelationshipDetails([FromRoute] int ukprn)
@@ -18,7 +19,10 @@ IMediator mediator) : ControllerBase
             Ukprn = ukprn
         };
 
+        logger.LogInformation("Started handling provider relationshipquery");
         var response = await mediator.Send(query);
+        logger.LogInformation("finished handling provider relationshipquery");
+        logger.LogInformation($" is response null : {response is null}");
 
         if (response is null) return NotFound();
 
