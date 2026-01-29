@@ -9,7 +9,6 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public string Version { get; set; }
         public ApprenticeshipType ApprenticeshipType { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
@@ -24,12 +23,25 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
                 LarsCode = source.LarsCode.ToString(),
                 Title = source.Title,
                 Level = source.Level,
-                Version = source.Version,
                 ApprenticeshipType = source.ApprenticeshipType,
                 ApprovalBody = source.ApprovalBody,
                 Route = source.Route,
                 SectorSubjectAreaTier1 = source.SectorSubjectAreaTier1,
                 IsRegulatedForProvider = source.IsRegulatedForProvider
+            };
+
+        public static implicit operator GetStandardResponse(GetStandardResponseFromCourseManagementApi source) =>
+            new()
+            {
+                IfateReferenceNumber = source.IfateReferenceNumber,
+                LarsCode = source.LarsCode,
+                Title = source.Title,
+                Level = source.Level,
+                ApprenticeshipType = source.ApprenticeshipType,
+                ApprovalBody = source.ApprovalBody,
+                Route = source.Route,
+                SectorSubjectAreaTier1 = source.SectorSubjectAreaTier1,
+                IsRegulatedForProvider = source.IsRegulatedForProvider,
             };
     }
 
@@ -40,7 +52,19 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public string Version { get; set; }
+        public ApprenticeshipType ApprenticeshipType { get; set; }
+        public string ApprovalBody { get; set; }
+        public string Route { get; set; }
+        public int SectorSubjectAreaTier1 { get; set; }
+        public bool IsRegulatedForProvider { get; set; }
+    }
+
+    public class GetStandardResponseFromCourseManagementApi
+    {
+        public string IfateReferenceNumber { get; set; }
+        public string LarsCode { get; set; }
+        public string Title { get; set; }
+        public int Level { get; set; }
         public ApprenticeshipType ApprenticeshipType { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
