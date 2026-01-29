@@ -42,15 +42,12 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
         var matchingEnglishAndMaths =
             command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(x => x.LearnAimRef == learnAimRef);
 
-        //my thinking here is that we need to iterate the learning api's put request, because that's where the E&M elements have been "grouped"
-        //but no, even easier is to just get the matching elements because OnProg aligns nicely with E&M elements
         foreach (var mathsAndEnglish in matchingEnglishAndMaths)
         {
-            var endDate = DateTimeHelper.EarliestOf(mathsAndEnglish.EndDate,
-                mathsAndEnglish.CompletionDate,
-                mathsAndEnglish.PauseDate,
-                mathsAndEnglish.WithdrawalDate,
-                mathsAndEnglish.CompletionDate) ?? mathsAndEnglish.EndDate;
+            var endDate = mathsAndEnglish.CompletionDate
+                          ?? mathsAndEnglish.PauseDate
+                          ?? mathsAndEnglish.WithdrawalDate
+                          ?? mathsAndEnglish.EndDate;
 
             periodsInLearning.Add(new PeriodInLearningItem
             {

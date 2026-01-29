@@ -58,7 +58,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     .Select(y => new PeriodInLearningItem
                     {
                         StartDate = y.StartDate,
-                        EndDate = DateTimeHelper.EarliestOf(y.EndDate, y.ActualEndDate, y.CompletionDate, y.WithdrawalDate) ?? y.EndDate,
+                        EndDate = y.PauseDate ?? y.CompletionDate ?? y.WithdrawalDate ?? y.EndDate,
                         OriginalExpectedEndDate = y.EndDate
                     })
                     .OrderBy(p => p.StartDate)
