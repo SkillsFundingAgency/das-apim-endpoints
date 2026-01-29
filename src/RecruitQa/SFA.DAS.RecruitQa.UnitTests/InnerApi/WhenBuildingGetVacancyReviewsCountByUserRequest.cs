@@ -10,7 +10,7 @@ public class WhenBuildingGetVacancyReviewsCountByUserRequest
     {
         var actual = new GetVacancyReviewsCountByUserRequest(userId, true, assignationExpiry);
 
-        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/VacancyReviews/count?approvedFirstTime=True&assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}");
+        actual.GetUrl.Should().Be($"api/users/VacancyReviews/count?approvedFirstTime=True&assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&userId={HttpUtility.UrlEncode(userId)}");
     }
 
     [Test, AutoData]
@@ -20,6 +20,6 @@ public class WhenBuildingGetVacancyReviewsCountByUserRequest
         DateTime? assignationExpiry = null;
         var actual = new GetVacancyReviewsCountByUserRequest(userId, approvedFirstTime, assignationExpiry);
 
-        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/VacancyReviews/count?approvedFirstTime=&assignationExpiry=");
+        actual.GetUrl.Should().Be($"api/users/VacancyReviews/count?approvedFirstTime=&assignationExpiry=&userId={HttpUtility.UrlEncode(userId)}");
     }
 }
