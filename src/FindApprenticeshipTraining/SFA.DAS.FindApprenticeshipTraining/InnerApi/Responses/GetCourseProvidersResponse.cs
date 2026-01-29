@@ -25,6 +25,7 @@ public class GetCourseProvidersResponseFromCourseApi : GetCourseProvidersRespons
 public class GetCourseProvidersResponse : GetCourseProvidersResponseBase
 {
     public string LarsCode { get; set; }
+    public bool IsActive { get; set; }
 
     public static implicit operator GetCourseProvidersResponse(GetCourseProvidersResponseFromCourseApi source)
     {

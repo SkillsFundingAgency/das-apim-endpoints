@@ -25,7 +25,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             GetCourseProvidersQuery query,
             [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
-            [Greedy] GetTrainingCourseProvidersQueryHandler handler,
+            [Greedy] GetCourseProvidersQueryHandler handler,
             CancellationToken cancellationToken
             )
         {
@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
-            [Greedy] GetTrainingCourseProvidersQueryHandler handler,
+            [Greedy] GetCourseProvidersQueryHandler handler,
             GetStandardsListItem standardResponse,
             CancellationToken cancellationToken
         )
@@ -92,7 +92,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Frozen] Mock<ILocationLookupService> locationLookupServiceMock,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiMock,
-            [Greedy] GetTrainingCourseProvidersQueryHandler handler,
+            [Greedy] GetCourseProvidersQueryHandler handler,
             GetStandardsListItem standardResponse,
             CancellationToken cancellationToken
         )
@@ -124,7 +124,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             HttpStatusCode statusCode,
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
-            [Greedy] GetTrainingCourseProvidersQueryHandler handler,
+            [Greedy] GetCourseProvidersQueryHandler handler,
             GetStandardsListItem standardResponse,
             CancellationToken cancellationToken
         )

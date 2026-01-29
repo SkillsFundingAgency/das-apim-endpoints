@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
-namespace SFA.DAS.FindApprenticeshipTraining.Services
+namespace SFA.DAS.FindApprenticeshipTraining.Services;
+
+public interface ICachedCoursesService
 {
-    public interface ICachedCoursesService
-    {
-        Task<GetStandardsListResponse> GetCourses();
-    }
+    Task<GetStandardsListResponse> GetCourses();
+    Task<GetStandardsListItem> GetCourseDetails(int larsCode);
 }

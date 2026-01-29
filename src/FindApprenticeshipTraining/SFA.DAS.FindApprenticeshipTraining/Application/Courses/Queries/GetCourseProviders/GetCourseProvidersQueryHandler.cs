@@ -9,11 +9,10 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
-public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient, ICachedLocationLookupService _cachedLocationLookupService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IRequestHandler<GetCourseProvidersQuery, GetCourseProvidersResponse>
+public class GetCourseProvidersQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient, ICachedLocationLookupService _cachedLocationLookupService, ICachedCoursesService _cachedCoursesService) : IRequestHandler<GetCourseProvidersQuery, GetCourseProvidersResponse>
 {
     public async Task<GetCourseProvidersResponse> Handle(GetCourseProvidersQuery request, CancellationToken cancellationToken)
     {
@@ -23,10 +22,19 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
         {
             locationItem = await _cachedLocationLookupService.GetCachedLocationInformation(request.Location);
 
+            GetStandardsListItem standard = null;
+
+            if (int.TryParse(request.Id, out var id))
+            {
+                standard = await _cachedCoursesService.GetCourseDetails(id);
+            }
+            else
+            {
+                // need to get standard from roatpv2 however roatpv2 does not have dates so cannot continue till the course api is updated to provide lars code as string. 
+            }
+
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
-
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
                 return new GetCourseProvidersResponse
@@ -38,6 +46,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                     QarPeriod = string.Empty,
                     ReviewPeriod = string.Empty,
                     StandardName = standardName,
+                    IsActive = standard.IsActive,
                     TotalCount = 0,
                     TotalPages = 0
                 };
