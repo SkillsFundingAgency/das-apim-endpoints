@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
@@ -47,6 +46,11 @@ namespace SFA.DAS.SharedOuterApi.Services
         public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
         {
             return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
+        }
+
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TData, TResponse>(IPostApiRequest<TData> request, bool includeResponse = true)
+        {
+            return _apiClient.PostWithResponseCode<TData, TResponse>(request, includeResponse);
         }
 
         public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
@@ -102,7 +106,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
         {
-            throw new NotImplementedException();
+            return _apiClient.PutWithResponseCode<TData, TResponse>(request);
         }
     }
 }

@@ -23,13 +23,6 @@ public class StubLearner
     [Required]
     public string LearnerRef { get; set; }
     [Required]
-    public string Firstname { get; set; }
-    [Required]
-    public string Lastname { get; set; }
-    [Required]
-    public DateTime? Dob { get; set; }
-    public string? Email { get; set; }
-    [Required]
     public bool? HasEhcp { get; set; }
 }
 
@@ -69,6 +62,7 @@ public class StubOnProgramme
     [Required]
     public string LearnAimRef { get; set; }
     public DateTime? ActualEndDate { get; set; }
+    public DateTime? AchievementDate { get; set; }
 }
 
 [ExcludeFromCodeCoverage]
@@ -118,6 +112,7 @@ public class StubEnglishAndMaths
     [Required]
     public string LearnAimRef { get; set; }
     public DateTime? ActualEndDate { get; set; }
+    public DateTime? AchievementDate { get; set; }
 }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

@@ -44,7 +44,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                 var apprenticeship = Fake.CommitmentsApprenticeship;
                 var myApprenticeship = Fake.MyApprenticeship;
                 var provider = Fake.Provider;
-                provider.Ukprn = apprenticeship.ProviderId;
+                provider.Ukprn = (int)apprenticeship.ProviderId;
 
                 if (!args.Contains("!accounts", StringComparer.CurrentCultureIgnoreCase))
                 {
@@ -82,7 +82,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
                     _fakeCoursesInnerApi = new CoursesInnerApiMock(PortCoursesInnerApi, true)
                         .WithPing()
                         .WithStandardCourse(myApprenticeship.StandardUId, Fake.StandardApiResponse)
-                        .WithAnyStandardCourse(Fake.StandardApiResponse); 
+                        .WithAnyStandardCourse(Fake.StandardApiResponse);
                 }
 
                 Console.WriteLine($"Apprentice Id {apprentice.ApprenticeId}");

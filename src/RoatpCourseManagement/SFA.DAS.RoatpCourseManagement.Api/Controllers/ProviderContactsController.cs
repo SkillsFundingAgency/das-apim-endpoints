@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Contacts.Queries.GetProviderContact;
@@ -8,6 +9,7 @@ using SFA.DAS.RoatpCourseManagement.Application.Contacts.Queries.GetProviderCont
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
+[Tags("Provider Contacts")]
 [Route("providers/{ukprn}/contact")]
 public class ProviderContactsController : ControllerBase
 {
