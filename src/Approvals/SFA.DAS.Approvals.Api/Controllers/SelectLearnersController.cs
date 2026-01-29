@@ -22,7 +22,8 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
         [FromQuery] int page,
         [FromQuery] int? pageSize,
         [FromQuery] int? startMonth,
-        [FromQuery] int startYear
+        [FromQuery] int startYear,
+        [FromQuery] string courseCode
         )
     {
         try
@@ -37,9 +38,10 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
                 SortField = sortColumn,
                 SortDescending = sortDescending,
                 Page = page,
-                PageSize = pageSize, 
+                PageSize = pageSize,
                 StartMonth = startMonth,
-                StartYear = startYear
+                StartYear = startYear,
+                CourseCode = !string.IsNullOrEmpty(courseCode) ? int.Parse(courseCode) : null
             });
             return Ok(result);
         }
