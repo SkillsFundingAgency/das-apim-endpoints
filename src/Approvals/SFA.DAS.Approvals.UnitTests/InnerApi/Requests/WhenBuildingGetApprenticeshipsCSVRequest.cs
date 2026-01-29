@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Net;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
 {

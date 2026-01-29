@@ -38,5 +38,7 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<CharitiesApiConfiguration>>().Value);
         services.Configure<CompaniesHouseApiConfiguration>(configuration.GetSection(nameof(CompaniesHouseApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CompaniesHouseApiConfiguration>>().Value);
+        services.Configure<RecruitApiV2Configuration>(configuration.GetSection(nameof(RecruitApiV2Configuration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiV2Configuration>>().Value);
     }
 }

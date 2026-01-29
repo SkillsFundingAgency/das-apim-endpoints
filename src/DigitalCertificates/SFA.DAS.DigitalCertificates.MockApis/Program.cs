@@ -9,9 +9,9 @@ namespace SFA.DAS.DigitalCertificates.MockApis
     public static class Program
     {
         private const int PortAssessorApi = 59023;
-        
+
         private static WireMockServer _fakeRatApi;
-        
+
         static void Main(string[] args)
         {
             if (args.Contains("--h"))

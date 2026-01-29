@@ -91,7 +91,8 @@ public class SearchApprenticeshipsQueryHandler(
                         new List<VacancyDataSource>
                         {
                             VacancyDataSource.Raa,
-                            VacancyDataSource.Nhs
+                            VacancyDataSource.Nhs,
+                            VacancyDataSource.Csj
                         },
                         request.ExcludeNational,
                         request.ApprenticeshipTypes));
@@ -112,7 +113,8 @@ public class SearchApprenticeshipsQueryHandler(
                 request.DisabilityConfident,
                 new List<VacancyDataSource>
                 {
-                    VacancyDataSource.Nhs
+                    VacancyDataSource.Nhs,
+                    VacancyDataSource.Csj
                 },
                 request.ExcludeNational,
                 request.ApprenticeshipTypes));

@@ -20,7 +20,7 @@ public class PostCreateReportCommandHandler(
                 FromDate = command.FromDate,
                 ToDate = command.ToDate,
                 Name = command.Name,
-                OwnerType = command.OwnerType,
+                OwnerType = command.OwnerType.ToString(),
                 Ukprn = command.Ukprn,
                 UserId = command.UserId
             }), true);

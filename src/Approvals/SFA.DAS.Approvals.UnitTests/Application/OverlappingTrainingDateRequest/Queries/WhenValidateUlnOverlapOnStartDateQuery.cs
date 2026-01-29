@@ -1,13 +1,9 @@
-﻿using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
+﻿using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
 

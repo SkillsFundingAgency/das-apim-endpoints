@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
 using KellermanSoftware.CompareNetObjects;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.DraftApprenticeships;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftApprenticeshipDetails;
 
