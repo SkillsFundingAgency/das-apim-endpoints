@@ -19,6 +19,7 @@ public abstract record ApplicationReview
     public DateTime? DateSharedWithEmployer { get; set; }
     public DateTime? StatusUpdatedDate { get; set; }
     public string? EmployerFeedback { get; set; }
+    public string? CandidateFeedback { get; set; }
     public string? Status { get; set; }
     public string? TemporaryReviewStatus { get; set; }
 }
