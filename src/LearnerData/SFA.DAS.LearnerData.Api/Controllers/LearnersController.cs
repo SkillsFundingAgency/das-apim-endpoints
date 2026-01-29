@@ -1,18 +1,17 @@
-﻿using Azure;
-using FluentValidation;
+﻿using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
+using SFA.DAS.LearnerData.Application.ProcessLearners;
+using SFA.DAS.LearnerData.Application.RemoveLearner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
-using SFA.DAS.LearnerData.Application.ProcessLearners;
-using SFA.DAS.LearnerData.Application.RemoveLearner;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -49,8 +48,9 @@ public class LearnersController(
     public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
         [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
     {
-
-        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
+        var learnerDataRequests = dataRequests.ToList();
+        logger.LogInformation($"UpdateLearner invoked with batch of {learnerDataRequests.Count} requests for ukprn {ukprn}");
+        var validatorResult = await originalValidator.ValidateAsync(learnerDataRequests);
 
         if (!validatorResult.IsValid)
         {
@@ -65,7 +65,7 @@ public class LearnersController(
                 CorrelationId = correlationId,
                 ReceivedOn = DateTime.Now,
                 AcademicYear = academicyear,
-                Learners = dataRequests
+                Learners = learnerDataRequests
             });
             return Accepted(new CorrelationResponse { CorrelationId = correlationId });
         }
