@@ -26,7 +26,7 @@ public class VacancyReviewDto
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
-    public long? AccountLegalEntityId { get; set; }
+    public long AccountLegalEntityId { get; set; }
     public string OwnerType { get; set; }
     public long AccountId { get; set; }
     public int Ukprn { get; set; }
@@ -90,7 +90,7 @@ public class VacancyReviewDto
             Ukprn = source.Ukprn,
             AccountId = source.AccountId,
             OwnerType = source.OwnerType,
-            AccountLegalEntityId = source.AccountLegalEntityId ?? 0,
+            AccountLegalEntityId = source.AccountLegalEntityId,
             EmployerName = source.EmployerName,
             HashedAccountId = source.HashedAccountId,
             EmployerLocations = source.EmployerLocations,
