@@ -32,8 +32,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 x.LearnAimRef = learnAimRef;
                 x.CompletionDate = null;
                 x.WithdrawalDate = null;
-                x.PauseDate = x.ActualEndDate;
-                x.EndDate = x.ActualEndDate.Value.AddDays(30);
+                x.PauseDate = x.PauseDate;
+                x.EndDate = x.PauseDate.Value.AddDays(30);
             });
             var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
             putRequest.Data.MathsAndEnglishCourses.ForEach(x => x.LearnAimRef = learnAimRef);

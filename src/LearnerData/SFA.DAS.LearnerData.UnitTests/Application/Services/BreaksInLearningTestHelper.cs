@@ -101,7 +101,7 @@ public static class BreaksInLearningTestHelper
             {
                 StartDate = startDate,
                 EndDate = startDate.AddYears(2),
-                ActualEndDate = pauseDate,
+                PauseDate = pauseDate,
                 LearningSupport = [],
                 LearnAimRef = learnAimRef
             });
