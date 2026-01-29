@@ -48,9 +48,10 @@ public class LearnersController(
     public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
         [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
     {
-        var learnerDataRequests = dataRequests.ToList();
-        logger.LogInformation($"UpdateLearner invoked with batch of {learnerDataRequests.Count} requests for ukprn {ukprn}");
-        var validatorResult = await originalValidator.ValidateAsync(learnerDataRequests);
+        logger.LogInformation("UpdateLearner invoked with batch of {RequestCount} requests for ukprn {Ukprn}",
+            dataRequests.Count(), ukprn);
+
+        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
 
         if (!validatorResult.IsValid)
         {
@@ -65,7 +66,7 @@ public class LearnersController(
                 CorrelationId = correlationId,
                 ReceivedOn = DateTime.Now,
                 AcademicYear = academicyear,
-                Learners = learnerDataRequests
+                Learners = dataRequests
             });
             return Accepted(new CorrelationResponse { CorrelationId = correlationId });
         }
