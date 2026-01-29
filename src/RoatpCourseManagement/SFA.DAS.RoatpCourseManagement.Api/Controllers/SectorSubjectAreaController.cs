@@ -1,12 +1,15 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RoatpCourseManagement.Application.SectorSubjectArea.Queries.GetAllSectorSubjectAreaTier1;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
+[Tags("Lookups")]
+[Route("")]
 public class SectorSubjectAreaController : ControllerBase
 {
     private readonly IMediator _mediator;

@@ -19,7 +19,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
                 Costs = null
             };
 
-            var result = source.MapCosts();
+            var result = source.Costs.GetCostsOrDefault(source.StartDate);
 
             result.Should().ContainSingle()
                 .Which.Should().BeEquivalentTo(new Cost
@@ -40,7 +40,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
                 Costs = new List<CostDetails>()
             };
 
-            var result = source.MapCosts();
+            var result = source.Costs.GetCostsOrDefault(source.StartDate);
 
             result.Should().ContainSingle()
                 .Which.Should().BeEquivalentTo(new Cost
@@ -66,7 +66,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
                 }
             };
 
-            var result = source.MapCosts();
+            var result = source.Costs.GetCostsOrDefault(source.StartDate);
 
             result.Should().HaveCount(2);
             result[0].Should().BeEquivalentTo(new Cost
