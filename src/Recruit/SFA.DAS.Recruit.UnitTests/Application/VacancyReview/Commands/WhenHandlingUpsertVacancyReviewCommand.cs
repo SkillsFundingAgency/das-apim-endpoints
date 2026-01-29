@@ -24,14 +24,6 @@ namespace SFA.DAS.Recruit.UnitTests.Application.VacancyReview.Commands;
 public class WhenHandlingUpsertVacancyReviewCommand
 {
     [Test, MoqAutoData]
-                && c.Tokens["VACcode"] == command.VacancyReview.VacancyReference.ToString()
-                && c.Tokens["location"] == "Recruiting nationally"
-            )
-        ), Times.Once);
-        notificationService.Verify(x => x.Send(It.IsAny<SendEmailCommand>()), Times.Once);
-    }
-
-    [Test, MoqAutoData]
     public async Task Submitted_Vacancy_Sends_Immediate_Emails(
         UpsertVacancyReviewCommand command,
         PostCreateVacancyNotificationsResponse response,
