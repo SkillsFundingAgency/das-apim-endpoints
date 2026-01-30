@@ -1,8 +1,9 @@
 ﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
-using SFA.DAS.LearnerData.Application.Fm36;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
@@ -46,14 +47,7 @@ public static class ApprenticeshipModelExtensions
                 new SharedOuterApi.InnerApi.Responses.Earnings.Episode
                 {
                     Key = Guid.NewGuid(),
-                    Instalments = apprenticeshipModel.Instalments.Select(x => new SharedOuterApi.InnerApi.Responses.Earnings.Instalment
-                    {
-                        EpisodePriceKey = apprenticeshipModel.PriceEpisodes.Single(y => y.PriceEpisodeId == x.PriceEpisodeId).Key,
-                        AcademicYear = x.AcademicYear,
-                        DeliveryPeriod = x.DeliveryPeriod,
-                        Amount = x.Amount,
-                        InstalmentType = x.InstalmentType
-                    }).ToList(),
+                    Instalments = GetEarningsInstalments(apprenticeshipModel),
                     AdditionalPayments = apprenticeshipModel.AdditionalPayments.Select(x =>
                         new SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.AdditionalPayment
                         {
@@ -69,31 +63,98 @@ public static class ApprenticeshipModelExtensions
             Ukprn = 10005077
         };
 
-        //For readability, tests need not describe instalments where they are not relevant to the test
-        //However, FM36 block generation requires each price episode to have at least one instalment in order to join episodes
-        //So, we can auto-generate if instalment information is missing
-        foreach (var episode in earnings.Episodes)
+        var sldLearnerData = new UpdateLearnerRequest
         {
-            if (!episode.Instalments.Any())
+            Learner = new LearnerRequestDetails
             {
-                foreach (var price in learning.Episodes.SelectMany(apprenticeshipEpisode => apprenticeshipEpisode.Prices))
-                {
-                    episode.Instalments.Add(new Instalment
-                    {
-                        Amount = 0,
-                        AcademicYear = 0,
-                        DeliveryPeriod = 0,
-                        EpisodePriceKey = price.Key,
-                        InstalmentType = "Regular"
-                    });
-                }
+                Uln = long.Parse(learning.Uln)
+            },
+            Delivery = new UpdateLearnerRequestDeliveryDetails
+            {
+                OnProgramme = GetSldOnProgrammes(apprenticeshipModel)
             }
-        }
+        };
 
         return new InnerApiResponses
         {
             UnPagedLearningsInnerApiResponse = [learning],
-            EarningsInnerApiResponse = new GetFm36DataResponse { Apprenticeships = new List<Apprenticeship> { earnings } }
+            EarningsInnerApiResponse = new GetFm36DataResponse { Apprenticeships = new List<Apprenticeship> { earnings } },
+            SldLearnerData = [sldLearnerData]
         };
+    }
+
+    /// <summary>
+    /// Returns the test configured instalments, or if none are configured,
+    /// then generates instalments that are close enough to be valid for test purposes
+    /// </summary>
+    /// <remarks>
+    /// The generated instalments will not be correctly calculated, but will be close enough to ensure parsing code does not fall over
+    /// For accurate instalments the Instalment models should be configured in the test data
+    /// </remarks>
+    private static List<Instalment> GetEarningsInstalments(ApprenticeshipModel apprenticeshipModel)
+    {
+        if(apprenticeshipModel.Instalments.Any())
+        {
+            return apprenticeshipModel.Instalments.Select(x => new SharedOuterApi.InnerApi.Responses.Earnings.Instalment
+            {
+                EpisodePriceKey = apprenticeshipModel.PriceEpisodes.Single(y => y.PriceEpisodeId == x.PriceEpisodeId).Key,
+                AcademicYear = x.AcademicYear,
+                DeliveryPeriod = x.DeliveryPeriod,
+                Amount = x.Amount,
+                InstalmentType = x.InstalmentType
+            }).ToList();
+        }
+
+        var instalments = new List<Instalment>();
+        foreach (var priceEpisode in apprenticeshipModel.PriceEpisodes)
+        {
+            var instalmentDate = priceEpisode.StartDate;
+            var numberOfInstalments = priceEpisode.StartDate.GetNumberOfIncludedCensusDatesUntil(priceEpisode.EndDate);
+            
+            if(numberOfInstalments == 0 && priceEpisode.StartDate < priceEpisode.EndDate)
+                numberOfInstalments = 1; // Ensure at least one instalment if episode has duration but is shorter than a month
+
+
+            for (var i = 0; i < numberOfInstalments; i++)
+            {
+                instalments.Add(new Instalment
+                {
+                    EpisodePriceKey = priceEpisode.Key,
+                    AcademicYear = instalmentDate.ToAcademicYear(),
+                    DeliveryPeriod = instalmentDate.ToDeliveryPeriod(),
+                    Amount = 100,
+                    InstalmentType = "Regular"
+                });
+                instalmentDate = instalmentDate.AddMonths(1);
+            }
+        }
+
+        return instalments;
+    }
+
+    private static List<OnProgrammeRequestDetails> GetSldOnProgrammes(ApprenticeshipModel apprenticeshipModel)
+    {
+        if(!apprenticeshipModel.LearningDeliveries.Any())
+        {
+            return new List<OnProgrammeRequestDetails>
+            {
+                new OnProgrammeRequestDetails
+                {
+                    AimSequenceNumber = 1,
+                    StartDate = apprenticeshipModel.PriceEpisodes.Min(x => x.StartDate),
+                    ExpectedEndDate = apprenticeshipModel.PriceEpisodes.Max(x => x.EndDate),
+                    LearnAimRef = "DefaultProg"
+                }
+            };
+        }
+
+        return apprenticeshipModel.LearningDeliveries.Select(ld => new OnProgrammeRequestDetails
+        {
+            StartDate = ld.StartDate,
+            ExpectedEndDate = ld.ExpectedEndDate,
+            ActualEndDate = ld.ActualEndDate,
+            AimSequenceNumber = ld.AimSequenceNumber,
+            LearnAimRef = ld.LearnAimRef
+        }).ToList();
     }
 }

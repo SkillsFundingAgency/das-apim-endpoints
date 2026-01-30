@@ -55,8 +55,6 @@ internal class MockDataGenerator
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        GenerateSldLearnerData();
     }
 
     private void AddSimpleApprenticeship()
@@ -137,6 +135,9 @@ internal class MockDataGenerator
 
         UnpagedLearningsResponse.Add(simpleApprenticeship);
         GetFm36DataResponse.Apprenticeships.Add(earningsApprenticeship);
+
+        var onProgrammes = CreateSldOnProgrammes(simpleApprenticeship.StartDate, simpleApprenticeship.PlannedEndDate);
+        SldLearnerData.Add(GenerateSldLearnerData(simpleApprenticeship, earningsApprenticeship, onProgrammes));
     }
 
     private void AddApprenticeshipWithPriceChange()
@@ -231,20 +232,49 @@ internal class MockDataGenerator
 
         UnpagedLearningsResponse.Add(apprenticeshipWithAPriceChange);
         GetFm36DataResponse.Apprenticeships.Add(earnings);
+
+        var onProgrammes = CreateSldOnProgrammes(apprenticeshipWithAPriceChange.StartDate, apprenticeshipWithAPriceChange.PlannedEndDate);
+
+        SldLearnerData.Add(GenerateSldLearnerData(apprenticeshipWithAPriceChange, earnings, onProgrammes));
     }
 
-    private void GenerateSldLearnerData()
+    private UpdateLearnerRequest GenerateSldLearnerData(Learning learning, Apprenticeship earning, List<OnProgrammeRequestDetails> onProgrammes)
     {
-        foreach (var learning in UnpagedLearningsResponse)
+
+        var periodsInLearning = earning.Episodes
+            .SelectMany(e => e.Instalments.Select(i => new { i.AcademicYear, i.DeliveryPeriod }))
+            .Distinct()
+            .Count();
+
+
+        var updateLearnerRequest = new UpdateLearnerRequest
         {
-            var updateLearnerRequest = new UpdateLearnerRequest
+            Learner = new LearnerRequestDetails
             {
-                Learner = new LearnerRequestDetails
-                {
-                    Uln = long.Parse(learning.Uln)
-                }
-            };
-            SldLearnerData.Add(updateLearnerRequest);
-        }
+                Uln = long.Parse(learning.Uln)
+            },
+            Delivery = new UpdateLearnerRequestDeliveryDetails
+            {
+                OnProgramme = onProgrammes
+            }
+        };
+
+        
+        return updateLearnerRequest;
+    }
+
+    // Note this only works currently for single on-programme periods
+    private List<OnProgrammeRequestDetails> CreateSldOnProgrammes(DateTime startDate, DateTime expectedEndDate)
+    {
+        var onProgrammes = new List<OnProgrammeRequestDetails>();
+
+        onProgrammes.Add(new OnProgrammeRequestDetails
+        {
+            AimSequenceNumber = 1,
+            StartDate = startDate,
+            ExpectedEndDate = expectedEndDate
+        });
+
+        return onProgrammes;
     }
 }

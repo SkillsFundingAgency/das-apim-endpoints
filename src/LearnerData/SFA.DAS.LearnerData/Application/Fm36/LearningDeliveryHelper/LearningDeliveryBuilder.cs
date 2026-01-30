@@ -8,15 +8,15 @@ internal static class LearningDeliveryBuilder
 {
     internal static List<LearningDelivery> GetLearningDeliveries(GetAcademicYearsResponse currentAcademicYear, JoinedLearnerData joinedLearnerData)
     {
-        return
-        [
+        return joinedLearnerData.LearningDeliveries.Select(ld =>
             new LearningDelivery
             {
-                AimSeqNumber = 1,
+                AimSeqNumber = ld.AimSequenceNumber,
                 LearningDeliveryValues = joinedLearnerData.GetLearningDelivery(currentAcademicYear),
                 LearningDeliveryPeriodisedValues = joinedLearnerData.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
                 LearningDeliveryPeriodisedTextValues = joinedLearnerData.GetLearningDeliveryPeriodisedTextValues()
             }
-        ];
+        ).ToList();
+
     }
 }

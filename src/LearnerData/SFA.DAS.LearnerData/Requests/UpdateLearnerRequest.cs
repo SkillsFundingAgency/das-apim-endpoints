@@ -41,7 +41,7 @@ public class OnProgrammeRequestDetails
     public DateTime? ActualEndDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
     public Care Care { get; set; }
-    public int? AimSequenceNumber { get; set; }
+    public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
 }
 

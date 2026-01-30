@@ -7,7 +7,6 @@ using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -152,7 +151,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             }
 
             _logger.LogInformation($"Processing learning with key: {learning.Key}");
-            joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, currentAcademicYear.GetShortAcademicYear()));
+            joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, matchingSld, currentAcademicYear.GetShortAcademicYear()));
 
         }
 

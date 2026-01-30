@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using System.Diagnostics;
@@ -25,6 +26,8 @@ public class JoinedLearnerData
     public DateTime PlannedEndDate { get; set; }
     /// <summary> Derived from combining earnings.Episodes and apprenticeship.Episodes</summary>
     public List<JoinedPriceEpisode> Episodes { get; set; }
+    /// <summary>Derived from combining sld data with earnings.PeriodsInLearning</summary>
+    public List<JoinedLearningDelivery> LearningDeliveries { get; set; } = new List<JoinedLearningDelivery>();
     /// <summary> Derived from Apprenticeships API, apprenticeship.AgeAtStartOfApprenticeship </summary>
     public int AgeAtStartOfApprenticeship { get; set; }
     /// <summary> Derived from Apprenticeships API, apprenticeship.WithdrawnDate </summary>
@@ -34,13 +37,14 @@ public class JoinedLearnerData
     /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
     public DateTime? CompletionDate { get; set; }
 
-    internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
+    internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData, short academicYear)
     {
         Key = learning.Key;
         Uln = learning.Uln;
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
         Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
+        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes);
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
@@ -57,11 +61,6 @@ public class JoinedLearnerData
             {
                 var earningEpisode = earningsApprenticeship.Episodes.SingleOrDefault(x => x.Instalments.Any(y => y.EpisodePriceKey == apprenticeshipEpisodePrice.Key));
 
-                if (earningEpisode == null)
-                {
-                    earningEpisode = ResolveLegacyEpisodes(earningsApprenticeship, apprenticeshipEpisodePrice);
-                }
-
                 var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode);
 
                 joinedEpisodes.Add(joinedEpisode);
@@ -72,13 +71,17 @@ public class JoinedLearnerData
         return joinedEpisodes.OrderBy(x => x.StartDate).ToList();
     }
 
-    // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static EarningsEpisode? ResolveLegacyEpisodes(EarningsApprenticeship earningsApprenticeship, EpisodePrice episodePrice)
+    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes)
     {
-        return earningsApprenticeship.Episodes.SingleOrDefault(x =>
-            x.Instalments.Any(y =>
-                y.AcademicYear.GetDateTime(y.DeliveryPeriod) >= episodePrice.StartDate &&
-                y.AcademicYear.GetDateTime(y.DeliveryPeriod) <= episodePrice.EndDate));
+        var joinedLearningDeliveries = new List<JoinedLearningDelivery>();
+
+        foreach(var onProgram in sldLearnerData.Delivery.OnProgramme)
+        {
+            var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments));
+            joinedLearningDeliveries.Add(delivery);
+        }
+
+        return joinedLearningDeliveries;
     }
 }
 
@@ -228,6 +231,26 @@ public class JoinedPriceEpisode
         return allAdditionalPayments.Where(x =>
                 x.DueDate >= apprenticeshipEpisodePrice.StartDate &&
                 x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
+    }
+}
+
+public class JoinedLearningDelivery
+{
+    public int AimSequenceNumber { get; set; }
+    public string LearnAimRef { get; set; }
+    public List<JoinedInstalment> Instalments { get; set; }
+
+    public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments)
+    {
+        AimSequenceNumber = onProgramme.AimSequenceNumber;
+        LearnAimRef = onProgramme.LearnAimRef;
+
+        Instalments = instalments
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= onProgramme.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.ActualEndDate ?? onProgramme.ExpectedEndDate))
+            .ToList();
+
+
     }
 }
 
