@@ -44,10 +44,9 @@ public static class BreaksInLearningTestHelper
         {
             StartDate = startDate,
             ExpectedEndDate = startDate.AddYears(2),
-            ActualEndDate = pauseDate,
+            PauseDate = pauseDate,
             StandardCode = standardCode,
             AgreementId = agreementId,
-            PauseDate = null,
             Costs = initialCosts,
             LearningSupport = [],
             Care = new Care()
@@ -88,8 +87,7 @@ public static class BreaksInLearningTestHelper
         {
             StartDate = startDate,
             ExpectedEndDate = startDate.AddYears(2),
-            ActualEndDate = pauseDate,
-            PauseDate = null,
+            PauseDate = pauseDate,
             LearningSupport = []
         });
 
@@ -126,6 +124,6 @@ public static class BreaksInLearningTestHelper
             });
         }
 
-            return command;
+        return command;
     }
 }
