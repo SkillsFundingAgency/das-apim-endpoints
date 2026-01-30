@@ -8,23 +8,27 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Extensions;
-using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.Api.Models.Responses;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
 using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
 using SFA.DAS.Recruit.Application.Queries.GetNextVacancyReference;
+using SFA.DAS.Recruit.Data.Models;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
+using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using StrawberryShake;
 using GetNextVacancyReferenceResponse = SFA.DAS.Recruit.Api.Models.Vacancies.Responses.GetNextVacancyReferenceResponse;
+using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
@@ -99,8 +103,9 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
     }
     
     [HttpGet, Route("employer/{accountId:int}/all")]
-    public async Task<IResult> GetVacancyList(
+    public async Task<IResult> GetEmployerAllVacanciesList(
         [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromRoute] long accountId,
         VacancyListFilterParams vacancyListFilterParams,
         SortParams<VacancySortColumn> sortParams,
@@ -120,13 +125,28 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var data = response.Data?.PagedVacancies?.Items?.Select(VacancyListItem.From) ?? [];
-        return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data.PagedVacancies.TotalCount))));
+        var pageInfo = new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data?.PagedVacancies?.TotalCount ?? 0));
+        var items = response.Data?.PagedVacancies?.Items ?? [];
+        if (items is not { Count: > 0 })
+        {
+            return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>([], pageInfo));
+        }
+        
+        var vacancyReferences = items
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Select(x => x.VacancyReference!.Value);
+        
+        var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetEmployerVacancyApplicationStatsRequest(accountId, vacancyReferences));
+        statsResponse.EnsureSuccessStatusCode();
+        
+        var data = items.AssignStatsToVacancies(statsResponse.Body.Data ?? []);
+        return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
     
     [HttpGet, Route("provider/{ukprn:int}/all")]
     public async Task<IResult> GetProviderAllVacanciesList(
         [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromRoute] int ukprn,
         VacancyListFilterParams vacancyListFilterParams,
         SortParams<VacancySortColumn> sortParams,
@@ -146,7 +166,21 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var data = response.Data?.PagedVacancies?.Items?.Select(VacancyListItem.From) ?? [];
-        return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data.PagedVacancies.TotalCount))));
+        var pageInfo = new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data?.PagedVacancies?.TotalCount ?? 0));
+        var items = response.Data?.PagedVacancies?.Items ?? [];
+        if (items is not { Count: > 0 })
+        {
+            return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>([], pageInfo));
+        }
+        
+        var vacancyReferences = items
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Select(x => x.VacancyReference!.Value);
+        
+        var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetProviderVacancyApplicationStatsRequest(ukprn, vacancyReferences));
+        statsResponse.EnsureSuccessStatusCode();
+
+        var data = items.AssignStatsToVacancies(statsResponse.Body.Data ?? []);
+        return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 }
