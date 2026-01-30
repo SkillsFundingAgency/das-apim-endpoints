@@ -1,0 +1,19 @@
+query GetDashboardVacanciesPagedList($filterCriteria: VacancyEntityFilterInput, $sortCriteria: [VacancyEntitySortInput!], $skip: Int, $take: Int) {
+    pagedVacancies (
+        where: $filterCriteria
+        order: $sortCriteria
+        skip: $skip
+        take: $take
+    ) {
+        items {
+            id
+            vacancyReference
+            title
+            employerName
+            closingDate
+            status
+            sourceOrigin
+        }
+        totalCount
+    }
+}

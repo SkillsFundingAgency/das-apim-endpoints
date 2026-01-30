@@ -36,4 +36,17 @@ public static class GqlTypeExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(ownerType), ownerType, null)
         };
     }
+    
+    public static Domain.Vacancy.SourceOrigin? FromQueryType(this SourceOrigin? sourceOrigin)
+    {
+        return sourceOrigin switch
+        {
+            SourceOrigin.Api => Domain.Vacancy.SourceOrigin.Api,
+            SourceOrigin.EmployerWeb => Domain.Vacancy.SourceOrigin.EmployerWeb,
+            SourceOrigin.ProviderWeb => Domain.Vacancy.SourceOrigin.ProviderWeb,
+            SourceOrigin.WebComplaint => Domain.Vacancy.SourceOrigin.WebComplaint,
+            null => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(sourceOrigin), sourceOrigin, null)
+        };
+    }
 }
