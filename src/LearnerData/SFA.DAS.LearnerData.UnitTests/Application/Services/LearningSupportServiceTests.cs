@@ -19,7 +19,7 @@ public class LearningSupportServiceTests
         var lsf1 = new LearningSupportRequestDetails
         {
             StartDate = testData.FirstOnProgramme.StartDate,
-            EndDate = testData.FirstOnProgramme.ActualEndDate!.Value
+            EndDate = testData.FirstOnProgramme.PauseDate!.Value
         };
 
         var lsf2 = new LearningSupportRequestDetails
@@ -55,7 +55,7 @@ public class LearningSupportServiceTests
         var lsf1 = new LearningSupportRequestDetails
         {
             StartDate = testData.FirstOnProgramme.StartDate,
-            EndDate = testData.FirstOnProgramme.ActualEndDate!.Value.AddMonths(1)
+            EndDate = testData.FirstOnProgramme.PauseDate!.Value.AddMonths(1)
         };
         testData.FirstOnProgramme.LearningSupport.Add(lsf1);
 
@@ -73,7 +73,7 @@ public class LearningSupportServiceTests
         var expected = new LearningSupportUpdatedDetails
         {
             StartDate = testData.FirstOnProgramme.StartDate,
-            EndDate = testData.FirstOnProgramme.ActualEndDate.Value
+            EndDate = testData.FirstOnProgramme.PauseDate.Value
         };
 
         actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
@@ -138,7 +138,7 @@ public class LearningSupportServiceTests
         // Assert
         var expected = new[]
         {
-            new LearningSupportUpdatedDetails { StartDate = testData.FirstOnProgramme.StartDate, EndDate = testData.FirstOnProgramme.ActualEndDate.Value },
+            new LearningSupportUpdatedDetails { StartDate = testData.FirstOnProgramme.StartDate, EndDate = testData.FirstOnProgramme.PauseDate.Value },
             new LearningSupportUpdatedDetails { StartDate = testData.LatestOnProgramme.StartDate, EndDate = testData.LatestOnProgramme.ExpectedEndDate }
         };
 
@@ -324,7 +324,7 @@ public class LearningSupportServiceTests
             {
                 StartDate = startDate,
                 ExpectedEndDate = startDate.AddYears(2),
-                ActualEndDate = pauseDate,
+                PauseDate = pauseDate,
                 LearningSupport = []
             });
 

@@ -3,8 +3,6 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.LearnerData.Helpers;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -32,7 +30,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
 
         [TestCase(true)]
         [TestCase(false)]
-        [Ignore("Flaky; ignoring until future fix")]
         public async Task Build_Should_Map_Payload_Without_FundingBandUpdate(bool completion)
         {
             // Arrange
@@ -76,7 +73,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
-                        EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate)!.Value,
+                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
                         OriginalExpectedEndDate = x.ExpectedEndDate
                     }));
             }
@@ -86,7 +83,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
-                        EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate, x.ActualEndDate)!.Value,
+                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
                         OriginalExpectedEndDate = x.ExpectedEndDate
                     }));
             }
