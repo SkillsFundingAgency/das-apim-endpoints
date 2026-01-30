@@ -37,6 +37,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 StartDate = x.StartDate,
                 EndDate = x.PlannedEndDate,
                 Course = x.Course,
+                LearnAimRef = x.LearnAimRef,
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,

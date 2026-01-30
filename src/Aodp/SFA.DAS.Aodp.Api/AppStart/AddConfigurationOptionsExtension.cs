@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
@@ -14,6 +15,14 @@ namespace SFA.DAS.Aodp.Api.AppStart
 
             services.Configure<AodpApiConfiguration>(configuration.GetSection("AodpInnerApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<AodpApiConfiguration>>().Value);
+
+            services.Configure<AodpConfiguration>(configuration.GetSection(nameof(AodpConfiguration)));
+            services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<AodpConfiguration>>().Value);
+
+            services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
+
+
         }
     }
 }

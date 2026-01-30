@@ -58,7 +58,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccount
                 {
                     try
                     {
-                        var vacancy = JsonSerializer.Deserialize<VacancySnapshot>(vacancyReview.VacancySnapshot, Global.JsonSerializerOptionsCaseInsensitive);
+                        var vacancy = JsonSerializer.Deserialize<VacancySnapshot>(vacancyReview.VacancySnapshot, Global.JsonSerializerOptions);
                         await aiService.SendVacancyReviewAsync(vacancy, CancellationToken.None);
                     }
                     catch (Exception e)

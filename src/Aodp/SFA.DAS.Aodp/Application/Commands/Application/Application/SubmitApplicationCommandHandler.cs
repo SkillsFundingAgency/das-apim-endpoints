@@ -1,13 +1,16 @@
 ﻿using MediatR;
+using SFA.DAS.Aodp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
-
+namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
 public class SubmitApplicationCommandHandler : IRequestHandler<SubmitApplicationCommand, BaseMediatrResponse<EmptyResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
-    public SubmitApplicationCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
+    private readonly IEmailService _notificationEmailService;
+    public SubmitApplicationCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient, IEmailService notificationEmailService)
     {
         _apiClient = apiClient;
+        _notificationEmailService = notificationEmailService;
     }
 
 
@@ -20,11 +23,14 @@ public class SubmitApplicationCommandHandler : IRequestHandler<SubmitApplication
 
         try
         {
-            await _apiClient.Put(new SubmitApplicationApiRequest()
-            {
-                ApplicationId = request.ApplicationId,
-                Data = request
-            });
+            var result = await _apiClient.PutWithResponseCode<SubmitApplicationCommandResponse>(
+                new SubmitApplicationApiRequest
+                {
+                    ApplicationId = request.ApplicationId,
+                    Data = request
+                });
+
+            await _notificationEmailService.SendAsync(result.Body?.Notifications);
 
             response.Success = true;
         }

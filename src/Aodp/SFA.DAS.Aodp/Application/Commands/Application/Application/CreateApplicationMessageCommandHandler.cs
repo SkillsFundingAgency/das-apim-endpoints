@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Application.Messages;
+using SFA.DAS.Aodp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -8,9 +9,14 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Application;
 public class CreateApplicationMessageCommandHandler : IRequestHandler<CreateApplicationMessageCommand, BaseMediatrResponse<CreateApplicationMessageCommandResponse>>
 {
     private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
-    public CreateApplicationMessageCommandHandler(IAodpApiClient<AodpApiConfiguration> apiClient)
+    private readonly IEmailService _notificationEmailService;
+
+    public CreateApplicationMessageCommandHandler(
+        IAodpApiClient<AodpApiConfiguration> apiClient,  
+        IEmailService notificationEmailService)
     {
         _apiClient = apiClient;
+        _notificationEmailService = notificationEmailService;
     }
 
     public async Task<BaseMediatrResponse<CreateApplicationMessageCommandResponse>> Handle(CreateApplicationMessageCommand request, CancellationToken cancellationToken)
@@ -28,6 +34,7 @@ public class CreateApplicationMessageCommandHandler : IRequestHandler<CreateAppl
                 Data = request
             });
 
+            response.Value.EmailSent = await _notificationEmailService.SendAsync(result.Body.Notifications);
             response.Value.Id = result.Body.Id;
             response.Success = true;
         }
