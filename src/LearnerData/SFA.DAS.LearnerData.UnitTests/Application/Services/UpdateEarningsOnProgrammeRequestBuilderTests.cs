@@ -74,7 +74,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
-                        EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate)!.Value,
+                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
                         OriginalExpectedEndDate = x.ExpectedEndDate
                     }));
             }
@@ -84,7 +84,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
-                        EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate, x.ActualEndDate)!.Value,
+                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
                         OriginalExpectedEndDate = x.ExpectedEndDate
                     }));
             }

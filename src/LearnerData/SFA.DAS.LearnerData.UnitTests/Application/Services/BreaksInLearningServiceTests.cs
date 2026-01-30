@@ -25,7 +25,7 @@ public class BreaksInLearningServiceTests
         // Assert
         var expectedBreak = new BreakInLearning
         {
-            StartDate = firstEpisode.ActualEndDate!.Value.AddDays(1),
+            StartDate = firstEpisode.PauseDate!.Value.AddDays(1),
             EndDate = secondEpisode.StartDate.AddDays(-1),
             PriorPeriodExpectedEndDate = firstEpisode.ExpectedEndDate
         };
@@ -54,7 +54,7 @@ public class BreaksInLearningServiceTests
         // Assert
         var expectedBreak = new BreakInLearning
         {
-            StartDate = firstEpisode.ActualEndDate!.Value.AddDays(1),
+            StartDate = firstEpisode.PauseDate!.Value.AddDays(1),
             EndDate = secondEpisode.StartDate.AddDays(-1),
             PriorPeriodExpectedEndDate = firstEpisode.EndDate
         };
