@@ -13,6 +13,7 @@ using StrawberryShake;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using SFA.DAS.RecruitJobs.GraphQL;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
