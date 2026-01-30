@@ -1,5 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.Aodp.Application.Queries.Qualifications;
+
+namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
 
 public class GetMatchingQualificationsQuery : IRequest<BaseMediatrResponse<GetMatchingQualificationsQueryResponse>>
 {
