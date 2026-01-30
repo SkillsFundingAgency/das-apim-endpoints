@@ -62,6 +62,7 @@ public class MathsAndEnglishDetails
     public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     public decimal Amount { get; set; }
+    public List<BreakInLearning> BreaksInLearning { get; set; }
 }
 
 public class LearningSupportUpdatedDetails

@@ -40,6 +40,29 @@ public class BreaksInLearningService : IBreaksInLearningService
 
     public List<BreakInLearning> CalculateEnglishAndMathsBreaksInLearning(List<MathsAndEnglish> englishAndMathsItems)
     {
-        throw new NotImplementedException();
+        var breaks = new List<BreakInLearning>();
+        var orderedItems = englishAndMathsItems.OrderBy(e => e.StartDate).ToList();
+
+        for (var i = 0; i < orderedItems.Count; i++)
+        {
+            var current = orderedItems[i];
+
+            // Breaks in learning (skip last item check)
+            if (i >= orderedItems.Count - 1) continue;
+            var next = orderedItems[i + 1];
+
+            if (!current.PauseDate.HasValue || !(current.PauseDate < next.StartDate)) continue;
+            var gapStart = current.PauseDate.Value.AddDays(1);
+            var gapEnd = next.StartDate.AddDays(-1);
+
+            breaks.Add(new BreakInLearning
+            {
+                StartDate = gapStart,
+                EndDate = gapEnd,
+                PriorPeriodExpectedEndDate = current.EndDate
+            });
+        }
+
+        return breaks;
     }
 }
