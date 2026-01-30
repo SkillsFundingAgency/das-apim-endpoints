@@ -247,7 +247,7 @@ public class JoinedLearningDelivery
 
         Instalments = instalments
             .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= onProgramme.StartDate &&
-                        x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.ActualEndDate ?? onProgramme.ExpectedEndDate))
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
             .ToList();
 
 

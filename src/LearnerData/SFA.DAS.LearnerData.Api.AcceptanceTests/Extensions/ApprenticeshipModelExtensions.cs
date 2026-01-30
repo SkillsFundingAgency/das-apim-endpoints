@@ -152,7 +152,7 @@ public static class ApprenticeshipModelExtensions
         {
             StartDate = ld.StartDate,
             ExpectedEndDate = ld.ExpectedEndDate,
-            ActualEndDate = ld.ActualEndDate,
+            PauseDate = ld.ActualEndDate,
             AimSequenceNumber = ld.AimSequenceNumber,
             LearnAimRef = ld.LearnAimRef
         }).ToList();
