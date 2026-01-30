@@ -260,17 +260,16 @@ components:
           type: array
           description: course management api will have a single endpoint
           items:
-            $ref: '#/components/schemas/supportedLearningType'
+            $ref: '#/components/schemas/supportedCourseType'
 
-    supportedLearningType: 
+    supportedCourseType: 
       type: object
       properties:
-        learningType:
+        courseType:
           type: string
           enum:
             - Apprenticeship
-            - ApprentishipUnit
-            - FoundationApprenticeship
+            - ShortCourse
         courses:
           type: array
           $ref: '#/components/schemas/supportCourse'
