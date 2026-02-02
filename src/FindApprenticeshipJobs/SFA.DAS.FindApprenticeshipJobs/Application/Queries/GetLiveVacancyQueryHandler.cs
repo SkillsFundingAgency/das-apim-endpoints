@@ -29,7 +29,8 @@ public class GetLiveVacancyQueryHandler(
 
         if (vacancy.StatusCode == HttpStatusCode.NotFound)
         {
-            throw new Exception($"Vacancy not found: {request.VacancyReference} while processing live vacancy handler");
+            // Return empty result if not found after retries. FAI-2966
+            return new GetLiveVacancyQueryResult();
         }
         
         var standards = await courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
