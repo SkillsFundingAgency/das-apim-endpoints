@@ -1,5 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Interfaces;
 
-public interface ICampaignApiClient<T> : IInternalApiClient<T>
+public interface ICampaignApiClient<T> : IPostApiClient<T>
 {
 }
