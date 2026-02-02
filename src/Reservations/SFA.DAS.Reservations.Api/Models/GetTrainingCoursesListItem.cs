@@ -11,9 +11,7 @@ namespace SFA.DAS.Reservations.Api.Models
 
         public string Level { get; set; }
 
-        public int Id { get; set; }
-
-        public string LarsCode { get; set; }
+        public string Id { get; set; }
 
         public string ApprenticeshipType { get; set; }
 
@@ -21,11 +19,9 @@ namespace SFA.DAS.Reservations.Api.Models
 
         public static implicit operator GetTrainingCoursesListItem(TrainingCourseListItem course)
         {
-            var id = int.TryParse(course.LarsCode, out var parsed) ? parsed : 0;
             return new GetTrainingCoursesListItem
             {
-                Id = id,
-                LarsCode = course.LarsCode,
+                Id = course.LarsCode,
                 Level = course.Level,
                 Title = course.Title ?? string.Empty,
                 EffectiveTo = course.EffectiveTo,

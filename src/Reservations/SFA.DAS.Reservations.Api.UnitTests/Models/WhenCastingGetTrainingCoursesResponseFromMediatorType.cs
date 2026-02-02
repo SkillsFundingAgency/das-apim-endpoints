@@ -13,14 +13,12 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
         {
             var response = (GetTrainingCoursesListItem)source;
 
-            response.LarsCode.Should().Be(source.LarsCode);
+            response.Id.Should().Be(source.LarsCode);
             response.Title.Should().Be(source.Title);
             response.Level.Should().Be(source.Level);
             response.EffectiveTo.Should().Be(source.EffectiveTo);
             response.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
             response.LearningType.Should().Be(source.LearningType);
-            if (int.TryParse(source.LarsCode, out var id))
-                response.Id.Should().Be(id);
         }
 
         [Test]
@@ -32,11 +30,12 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
                 ApprenticeshipType = "Apprenticeship"
             };
             var response = (GetTrainingCoursesListItem)source;
+            response.Id.Should().Be("123");
             response.ApprenticeshipType.Should().Be("Apprenticeship");
         }
 
         [Test]
-        public void Then_Maps_LearningType_And_String_LarsCode_Correctly()
+        public void Then_Maps_LearningType_And_Id_From_LarsCode_Correctly()
         {
             var source = new TrainingCourseListItem
             {
@@ -45,8 +44,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
             };
             var response = (GetTrainingCoursesListItem)source;
             response.LearningType.Should().Be("ApprenticeshipUnit");
-            response.LarsCode.Should().Be("822");
-            response.Id.Should().Be(822);
+            response.Id.Should().Be("822");
         }
     }
 }
