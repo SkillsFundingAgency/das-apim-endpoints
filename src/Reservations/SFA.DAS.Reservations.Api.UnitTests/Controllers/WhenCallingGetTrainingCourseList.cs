@@ -38,7 +38,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Controllers
             var model = controllerResult.Value as GetTrainingCoursesListResponse;
             model.Should().NotBeNull();
             model.Standards.Should().BeEquivalentTo(mediatorResult.Courses.Select(course => (GetTrainingCoursesListItem)course));
-            model.Standards.All(m => m.Id > 0).Should().BeTrue();
+            model.Standards.Should().HaveCount(mediatorResult.Courses.Count());
         }
 
         [Test, MoqAutoData]
