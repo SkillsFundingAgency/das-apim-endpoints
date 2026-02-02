@@ -15,6 +15,7 @@
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="MediatR" />
         <PackageReference Include="Moq" />
+        <PackageReference Include="NSubstitute" />
         <PackageReference Include="nunit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
