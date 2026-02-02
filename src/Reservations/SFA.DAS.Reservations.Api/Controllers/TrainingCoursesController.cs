@@ -25,7 +25,7 @@ public class TrainingCoursesController(
                 
             var model = new GetTrainingCoursesListResponse
             {
-                Standards = queryResult.Courses.Select(c=>(GetTrainingCoursesListItem)c).ToList()
+                Courses = queryResult.Courses.Select(c=>(GetTrainingCoursesListItem)c).ToList()
             };
 
             return Ok(model);

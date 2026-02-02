@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 
-namespace SFA.DAS.Reservations.Api.Models
+namespace SFA.DAS.Reservations.Api.Models;
+
+public class GetTrainingCoursesListResponse
 {
-    public class GetTrainingCoursesListResponse
-    {
-        public IEnumerable<GetTrainingCoursesListItem> Standards { get; set; }
-    }
+    public IEnumerable<GetTrainingCoursesListItem> Courses { get; set; }
 }
