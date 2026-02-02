@@ -109,14 +109,14 @@ namespace SFA.DAS.Approvals.Api.Controllers
         }
 
         [HttpGet]
-        [Route("courses/{ukprn:long}")]
-        public async Task<IActionResult> GetCourses(long ukprn)
+        [Route("{ukprn:long}/coursecodes")]
+        public async Task<IActionResult> GetCourseCodes(long ukprn)
         {
             try
             {
-                var queryResult = await mediator.Send(new GetCoursesQuery() { Ukprn = ukprn});
+                var queryResult = await mediator.Send(new GetCourseCodesQuery() { Ukprn = ukprn});
 
-                var model = new GetCoursesResponse
+                var model = new GetCourseCodesResponse
                 {
                     TrainingProgrammes = queryResult.TrainingProgrammes
                 };

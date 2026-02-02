@@ -12,19 +12,21 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 
-public class GetCoursesQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
+public class GetCourseCodesQueryHandler(ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsApiClient,
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataApiClient)
-        : IRequestHandler<GetCoursesQuery, GetCoursesResult>
+        : IRequestHandler<GetCourseCodesQuery, GetCourseCodesResult>
 {
-    public async Task<GetCoursesResult> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
+    public async Task<GetCourseCodesResult> Handle(GetCourseCodesQuery request, CancellationToken cancellationToken)
     {
-        var response = await commitmentsApiClient.GetWithResponseCode<GetCoursesResponse>(new GetAllTrainingProgrammesRequest());
+        var response = await commitmentsApiClient.GetWithResponseCode<GetCourseCodesResponse>(new GetAllTrainingProgrammesRequest());
 
         var courseCodes = await learnerDataApiClient.GetWithResponseCode<GetCourseCodesByUkprnResponse>(new GetCourseCodesByUkprnRequest(request.Ukprn));
 
-        var trainingProgrammesForUkprn = response.Body.TrainingProgrammes.Where(t => courseCodes.Body.CourseCodes.ToString().Contains(t.CourseCode));
+        var codes = courseCodes.Body.CourseCodes.Select(t => t.ToString());
 
-        return new GetCoursesResult
+        var trainingProgrammesForUkprn = response.Body.TrainingProgrammes.Where(t => codes.Contains(t.CourseCode));
+
+        return new GetCourseCodesResult
         {
             TrainingProgrammes = trainingProgrammesForUkprn
         };

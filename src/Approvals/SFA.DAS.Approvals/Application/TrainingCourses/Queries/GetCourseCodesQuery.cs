@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 
-public class GetCoursesQuery(): IRequest<GetCoursesResult>
+public class GetCourseCodesQuery(): IRequest<GetCourseCodesResult>
 {
     public long Ukprn {  get; set; }
 }
