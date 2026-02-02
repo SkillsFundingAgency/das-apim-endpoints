@@ -18,7 +18,7 @@ public class WhenCallingGetVacancyReviewsCountByUser
         [Greedy] VacancyReviewController controller)
     {
         mediator.Setup(x => x.Send(
-                It.Is<GetVacancyReviewsCountByUserQuery>(c => c.UserId == userId && c.ApprovedFirstTime == approvedFirstTime && c.AssignationExpiry == assignationExpiry),
+                It.Is<GetVacancyReviewsCountByUserQuery>(c => c.UserEmail == userId && c.ApprovedFirstTime == approvedFirstTime && c.AssignationExpiry == assignationExpiry),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new GetVacancyReviewsCountByUserQueryResult { Count = count });
 

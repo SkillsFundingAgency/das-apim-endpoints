@@ -17,7 +17,7 @@ public class WhenHandlingGetVacancyReviewsCountByUserQuery
         GetVacancyReviewsCountByUserQueryHandler handler)
     {
         // Arrange
-        var expectedRequest = new GetVacancyReviewsCountByUserRequest(query.UserId, query.ApprovedFirstTime, query.AssignationExpiry);
+        var expectedRequest = new GetVacancyReviewsCountByUserRequest(query.UserEmail, query.ApprovedFirstTime, query.AssignationExpiry);
         recruitApiClient
             .Setup(x => x.GetWithResponseCode<int>(
                 It.Is<GetVacancyReviewsCountByUserRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
@@ -38,7 +38,7 @@ public class WhenHandlingGetVacancyReviewsCountByUserQuery
         GetVacancyReviewsCountByUserQueryHandler handler)
     {
         // Arrange
-        var expectedRequest = new GetVacancyReviewsCountByUserRequest(query.UserId, query.ApprovedFirstTime, query.AssignationExpiry);
+        var expectedRequest = new GetVacancyReviewsCountByUserRequest(query.UserEmail, query.ApprovedFirstTime, query.AssignationExpiry);
         recruitApiClient
             .Setup(x => x.GetWithResponseCode<int>(
                 It.Is<GetVacancyReviewsCountByUserRequest>(r => r.GetUrl == expectedRequest.GetUrl)))

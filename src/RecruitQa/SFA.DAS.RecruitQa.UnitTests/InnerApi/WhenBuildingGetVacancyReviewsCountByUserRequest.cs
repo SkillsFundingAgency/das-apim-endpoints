@@ -6,20 +6,20 @@ namespace SFA.DAS.RecruitQa.UnitTests.InnerApi;
 public class WhenBuildingGetVacancyReviewsCountByUserRequest
 {
     [Test, AutoData]
-    public void Then_The_Url_Is_Constructed_Correctly(string userId, DateTime assignationExpiry)
+    public void Then_The_Url_Is_Constructed_Correctly(string userEmail, DateTime assignationExpiry)
     {
-        var actual = new GetVacancyReviewsCountByUserRequest(userId, true, assignationExpiry);
+        var actual = new GetVacancyReviewsCountByUserRequest(userEmail, true, assignationExpiry);
 
-        actual.GetUrl.Should().Be($"api/users/VacancyReviews/count?approvedFirstTime=True&assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&userId={HttpUtility.UrlEncode(userId)}");
+        actual.GetUrl.Should().Be($"api/users/VacancyReviews/count?approvedFirstTime=True&assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&userEmail={HttpUtility.UrlEncode(userEmail)}");
     }
 
     [Test, AutoData]
-    public void Then_The_Url_Handles_Null_ApprovedFirstTime(string userId)
+    public void Then_The_Url_Handles_Null_ApprovedFirstTime(string userEmail)
     {
         bool? approvedFirstTime = null;
         DateTime? assignationExpiry = null;
-        var actual = new GetVacancyReviewsCountByUserRequest(userId, approvedFirstTime, assignationExpiry);
+        var actual = new GetVacancyReviewsCountByUserRequest(userEmail, approvedFirstTime, assignationExpiry);
 
-        actual.GetUrl.Should().Be($"api/users/VacancyReviews/count?approvedFirstTime=&assignationExpiry=&userId={HttpUtility.UrlEncode(userId)}");
+        actual.GetUrl.Should().Be($"api/users/VacancyReviews/count?approvedFirstTime=&assignationExpiry=&userEmail={HttpUtility.UrlEncode(userEmail)}");
     }
 }
