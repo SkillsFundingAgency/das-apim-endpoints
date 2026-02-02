@@ -5,5 +5,5 @@ namespace SFA.DAS.RecruitQa.InnerApi.Requests;
 
 public class GetVacancyReviewsByUserRequest(string userId, DateTime? assignationExpiry, string? reviewStatus) : IGetApiRequest
 {
-    public string GetUrl => $"api/users/{HttpUtility.UrlEncode(userId)}/vacancyreviews?assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&status={reviewStatus}";
+    public string GetUrl => $"api/users/vacancyreviews?assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&status={reviewStatus}&userId={HttpUtility.UrlEncode(userId)}";
 }

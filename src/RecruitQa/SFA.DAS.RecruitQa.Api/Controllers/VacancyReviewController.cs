@@ -131,8 +131,8 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     }
 
     [HttpGet]
-    [Route("users/{userId}/VacancyReviews/count")]
-    public async Task<IActionResult> GetCountByUser([FromRoute] string userId, [FromQuery] bool? approvedFirstTime, [FromQuery] DateTime? assignationExpiry)
+    [Route("users/VacancyReviews/count")]
+    public async Task<IActionResult> GetCountByUser([FromQuery] string userId, [FromQuery] bool? approvedFirstTime, [FromQuery] DateTime? assignationExpiry)
     {
         try
         {
@@ -176,8 +176,8 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     }
 
     [HttpGet]
-    [Route("users/{userId}/VacancyReviews")]
-    public async Task<IActionResult> GetByUser([FromRoute] string userId, [FromQuery] DateTime? assignationExpiry, [FromQuery] string? status)
+    [Route("users/VacancyReviews")]
+    public async Task<IActionResult> GetByUser([FromQuery] string userId, [FromQuery] DateTime? assignationExpiry, [FromQuery] string? status)
     {
         try
         {

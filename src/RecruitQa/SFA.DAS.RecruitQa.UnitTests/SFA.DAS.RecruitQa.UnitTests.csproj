@@ -31,8 +31,4 @@
     <Using Include="NUnit.Framework" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Application\Queries\" />
-  </ItemGroup>
-
 </Project>

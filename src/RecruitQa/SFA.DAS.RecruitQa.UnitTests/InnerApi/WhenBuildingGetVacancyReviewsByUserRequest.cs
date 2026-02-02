@@ -10,7 +10,7 @@ public class WhenBuildingGetVacancyReviewsByUserRequest
     {
         var actual = new GetVacancyReviewsByUserRequest(userId, assignationExpiry, status);
 
-        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/vacancyreviews?assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&status={status}");
+        actual.GetUrl.Should().Be($"api/users/vacancyreviews?assignationExpiry={assignationExpiry:yyyy-MMM-dd HH:mm:ss}&status={status}&userId={HttpUtility.UrlEncode(userId)}");
     }
 
     [Test, AutoData]
@@ -18,6 +18,6 @@ public class WhenBuildingGetVacancyReviewsByUserRequest
     {
         var actual = new GetVacancyReviewsByUserRequest(userId, null, null);
 
-        actual.GetUrl.Should().Be($"api/users/{HttpUtility.UrlEncode(userId)}/vacancyreviews?assignationExpiry=&status=");
+        actual.GetUrl.Should().Be($"api/users/vacancyreviews?assignationExpiry=&status=&userId={HttpUtility.UrlEncode(userId)}");
     }
 }
