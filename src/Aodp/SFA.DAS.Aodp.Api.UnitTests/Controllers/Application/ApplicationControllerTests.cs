@@ -435,8 +435,8 @@ public class ApplicationControllerTests
     {
         // Arrange
         var request = _fixture.Create<EditApplicationCommand>();
-        var response = _fixture.Create<EmptyResponse>();
-        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        var response = _fixture.Create<EditApplicationCommandResponse>();
+        BaseMediatrResponse<EditApplicationCommandResponse> wrapper = new()
         {
             Value = response,
             Success = true
@@ -450,11 +450,14 @@ public class ApplicationControllerTests
         var result = await _controller.EditAsync(request, request.ApplicationId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Once());
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
-        var okResult = (OkObjectResult)result;
-        Assert.That(okResult.Value, Is.AssignableFrom<EmptyResponse>());
-        var model = (EmptyResponse)okResult.Value;
-        Assert.That(model, Is.EqualTo(response));
+        Assert.Multiple(() =>
+        {
+            _mediatorMock.Verify(m => m.Send(request, default), Times.Once());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<EditApplicationCommandResponse>());
+            var model = (EditApplicationCommandResponse)okResult.Value;
+            Assert.That(model, Is.EqualTo(response));
+        });
     }
 }
