@@ -1,10 +1,10 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;
+﻿using SFA.DAS.Campaign.Configuration;
+using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Net;
 using System.Threading.Tasks;
 
-namespace SFA.DAS.SharedOuterApi.Services;
+namespace SFA.DAS.Campaign.InnerApi;
 
 public class CampaignApiClient(IInternalApiClient<CampaignApiConfiguration> apiClient) : ICampaignApiClient<CampaignApiConfiguration>
 {

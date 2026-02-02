@@ -1,11 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using RestEase.HttpClientFactory;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Campaign.Application.Services;
 using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.ExternalApi;
+using SFA.DAS.Campaign.InnerApi;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;

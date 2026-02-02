@@ -5,8 +5,6 @@ using Microsoft.Extensions.Logging;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Controllers;
 using SFA.DAS.Campaign.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
@@ -14,6 +12,8 @@ using NSubstitute;
 using SFA.DAS.Campaign.InnerApi.Requests;
 using System.Net;
 using NSubstitute.ExceptionExtensions;
+using SFA.DAS.Campaign.Interfaces;
+using SFA.DAS.Campaign.Configuration;
 
 namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.CampaignEnquiry;
 
