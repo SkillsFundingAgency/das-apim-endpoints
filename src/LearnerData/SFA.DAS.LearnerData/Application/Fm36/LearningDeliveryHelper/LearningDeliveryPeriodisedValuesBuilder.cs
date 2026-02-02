@@ -35,13 +35,13 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     public static void AddInstPerPeriodValues(
         this List<LearningDeliveryPeriodisedValues> list,
-        JoinedLearnerData joinedLearnerData,
+        JoinedLearningDelivery joinedLearningDelivery,
         short academicYear,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
         try
         {
-            list.Add(BuildInstPerPeriodValues(joinedLearnerData, academicYear, instalmentType));
+            list.Add(BuildInstPerPeriodValues(joinedLearningDelivery, academicYear, instalmentType));
         }
         catch (Exception ex)
         {
@@ -51,9 +51,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         }
     }
 
-    private static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(JoinedLearnerData joinedLearnerData, short academicYear, InstalmentType instalmentType)
+    private static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(JoinedLearningDelivery joinedLearningDelivery, short academicYear, InstalmentType instalmentType)
     {
-        var instalments = GetInstalmentsForAcademicYear(joinedLearnerData, academicYear, instalmentType);
+        var instalments = GetInstalmentsForAcademicYear(joinedLearningDelivery, academicYear, instalmentType);
 
         return BuildLearningDeliveryPeriodisedValuesFromFunc(
             EarningsFM36Constants.PeriodisedAttributes.InstPerPeriod,
@@ -64,13 +64,13 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     public static void AddInstallmentAmountValues(
         this List<LearningDeliveryPeriodisedValues> list,
         string attributeName,
-        JoinedLearnerData joinedLearnerData,
+        JoinedLearningDelivery joinedLearningDelivery,
         short academicYear,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
         try
         {
-            list.Add(BuildCoInvestmentValues(joinedLearnerData, academicYear, attributeName, 1, instalmentType));
+            list.Add(BuildCoInvestmentValues(joinedLearningDelivery, academicYear, attributeName, 1, instalmentType));
         }
         catch (Exception ex)
         {
@@ -83,14 +83,14 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     public static void AddCoInvestmentValues(
         this List<LearningDeliveryPeriodisedValues> list,
         string attributeName,
-        JoinedLearnerData joinedLearnerData,
+        JoinedLearningDelivery joinedLearningDelivery,
         short academicYear,
         decimal multiplier,
         InstalmentType instalmentType = InstalmentType.Regular)
     {
         try
         {
-            list.Add(BuildCoInvestmentValues(joinedLearnerData, academicYear, attributeName, multiplier, instalmentType));
+            list.Add(BuildCoInvestmentValues(joinedLearningDelivery, academicYear, attributeName, multiplier, instalmentType));
         }
         catch (Exception ex)
         {
@@ -100,9 +100,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         }
     }
 
-    private static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(JoinedLearnerData joinedLearnerData, short academicYear, string attributeName, decimal multiplier, InstalmentType instalmentType)
+    private static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(JoinedLearningDelivery joinedLearningDelivery, short academicYear, string attributeName, decimal multiplier, InstalmentType instalmentType)
     {
-        var instalments = GetInstalmentsForAcademicYear(joinedLearnerData, academicYear, instalmentType);
+        var instalments = GetInstalmentsForAcademicYear(joinedLearningDelivery, academicYear, instalmentType);
 
         return BuildLearningDeliveryPeriodisedValuesFromFunc(
             attributeName,
@@ -113,14 +113,14 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     public static void AddNthIncentivePaymentValues(
         this List<LearningDeliveryPeriodisedValues> list,
         string attributeName,
-        JoinedLearnerData joinedLearnerData,
+        JoinedLearningDelivery joinedLearningDelivery,
         short academicYear,
         string additionalPaymentType,
         int n)
     {
         try
         {
-            list.Add(BuildNthIncentivePaymentValues(joinedLearnerData, academicYear, attributeName, additionalPaymentType, n));
+            list.Add(BuildNthIncentivePaymentValues(joinedLearningDelivery, academicYear, attributeName, additionalPaymentType, n));
         }
         catch (Exception ex)
         {
@@ -130,9 +130,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         }
     }
 
-    private static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(JoinedLearnerData joinedLearnerData, short academicYear, string attributeName, string additionalPaymentType, int n)
+    private static LearningDeliveryPeriodisedValues BuildNthIncentivePaymentValues(JoinedLearningDelivery joinedLearningDelivery, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
-        var additionalPayments = GetAdditionalPayments(joinedLearnerData, additionalPaymentType);
+        var additionalPayments = GetAdditionalPayments(joinedLearningDelivery, additionalPaymentType);
 
         var nthPayment = additionalPayments
             .OrderBy(i => i.AcademicYear)
@@ -149,13 +149,13 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     public static void AddAdditionalPaymentPerPeriodValues(
         this List<LearningDeliveryPeriodisedValues> list,
         string attributeName,
-        JoinedLearnerData joinedLearnerData,
+        JoinedLearningDelivery joinedLearningDelivery,
         short academicYear,
         string additionalPaymentType)
     {
         try
         {
-            list.Add(BuildAdditionalPaymentPerPeriodValues(joinedLearnerData, academicYear, attributeName, additionalPaymentType));
+            list.Add(BuildAdditionalPaymentPerPeriodValues(joinedLearningDelivery, academicYear, attributeName, additionalPaymentType));
         }
         catch (Exception ex)
         {
@@ -165,9 +165,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         }
     }
 
-    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodValues(JoinedLearnerData joinedLearnerData, short academicYear, string attributeName, string additionalPaymentType)
+    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodValues(JoinedLearningDelivery joinedLearningDelivery, short academicYear, string attributeName, string additionalPaymentType)
     {
-        var additionalPayments = GetAdditionalPayments(joinedLearnerData, additionalPaymentType);
+        var additionalPayments = GetAdditionalPayments(joinedLearningDelivery, additionalPaymentType);
 
         return BuildLearningDeliveryPeriodisedValuesFromFunc(
             attributeName,
@@ -178,13 +178,13 @@ public static class LearningDeliveryPeriodisedValuesBuilder
     public static void AddAdditionalPaymentPerPeriodIndicators(
         this List<LearningDeliveryPeriodisedValues> list,
         string attributeName,
-        JoinedLearnerData apprenticeship,
+        JoinedLearningDelivery joinedLearningDelivery,
         short academicYear,
         string additionalPaymentType)
     {
         try
         {
-            list.Add(BuildAdditionalPaymentPerPeriodIndicators(apprenticeship, academicYear, attributeName, additionalPaymentType));
+            list.Add(BuildAdditionalPaymentPerPeriodIndicators(joinedLearningDelivery, academicYear, attributeName, additionalPaymentType));
         }
         catch (Exception ex)
         {
@@ -194,9 +194,9 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         }
     }
 
-    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodIndicators(JoinedLearnerData joinedLearnerData, short academicYear, string attributeName, string additionalPaymentType)
+    private static LearningDeliveryPeriodisedValues BuildAdditionalPaymentPerPeriodIndicators(JoinedLearningDelivery joinedLearningDelivery, short academicYear, string attributeName, string additionalPaymentType)
     {
-        var additionalPayments = GetAdditionalPayments(joinedLearnerData, additionalPaymentType);
+        var additionalPayments = GetAdditionalPayments(joinedLearningDelivery, additionalPaymentType);
 
         return BuildLearningDeliveryPeriodisedValuesFromFunc(
             attributeName,
@@ -204,18 +204,16 @@ public static class LearningDeliveryPeriodisedValuesBuilder
         );
     }
 
-    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedLearnerData joinedLearnerData, short academicYear, InstalmentType instalmentType)
+    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedLearningDelivery joinedLearningDelivery, short academicYear, InstalmentType instalmentType)
     {
-        return joinedLearnerData.Episodes
-            .SelectMany(episode => episode.Instalments)
+        return joinedLearningDelivery.Instalments
             .Where(i => i.AcademicYear == academicYear && i.InstalmentType == instalmentType)
             .ToList();
     }
 
-    private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedLearnerData joinedLearnerData, string additionalPaymentType)
+    private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedLearningDelivery joinedLearningDelivery, string additionalPaymentType)
     {
-        return joinedLearnerData.Episodes
-            .SelectMany(episode => episode.AdditionalPayments)
+        return joinedLearningDelivery.AdditionalPayments
             .Where(i => i.AdditionalPaymentType == additionalPaymentType)
             .ToList();
     }

@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.LearnerData.Application.Fm36.Common;
@@ -188,6 +186,7 @@ internal static class JoinedDataModelsExtensions
 
     internal static LearningDeliveryValues GetLearningDelivery(
         this JoinedLearnerData joinedLearnerData,
+        JoinedLearningDelivery joinedLearningDelivery,
         GetAcademicYearsResponse currentAcademicYear)
     {
         var daysInLearning = joinedLearnerData.DaysInLearning();
@@ -212,7 +211,7 @@ internal static class JoinedDataModelsExtensions
             Completed = EarningsFM36Constants.Completed,
             FundStart = joinedLearnerData.FundingStart(),
             LDApplic1618FrameworkUpliftTotalActEarnings = EarningsFM36Constants.LDApplic1618FrameworkUpliftTotalActEarnings,
-            LearnAimRef = EarningsFM36Constants.LearnAimRef,
+            LearnAimRef = joinedLearningDelivery.LearnAimRef,
             LearnStartDate = joinedLearnerData.StartDate,
             LearnDel1618AtStart = joinedLearnerData.Episodes.Any(episode =>
                 episode.AdditionalPayments.Any(additionalPayment =>
@@ -259,35 +258,35 @@ internal static class JoinedDataModelsExtensions
     }
 
     internal static List<LearningDeliveryPeriodisedValues> GetLearningDeliveryPeriodisedValues(
-        this JoinedLearnerData joinedLearnerData,
+        this JoinedLearningDelivery joinedLearningDelivery,
         GetAcademicYearsResponse currentAcademicYear)
     {
         var periodisedValues = new List<LearningDeliveryPeriodisedValues>();
 
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.DisadvFirstPayment, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.DisadvSecondPayment, 0);
-        periodisedValues.AddInstPerPeriodValues(joinedLearnerData, currentAcademicYear.GetShortAcademicYear());
+        periodisedValues.AddInstPerPeriodValues(joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear());
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftBalancingPayment, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftCompletionPayment, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LDApplic1618FrameworkUpliftOnProgPayment, 0);
-        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), "EmployerIncentive", 1);
-        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), "ProviderIncentive", 1);
+        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstEmp1618Pay, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), "EmployerIncentive", 1);
+        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelFirstProv1618Pay, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), "ProviderIncentive", 1);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelLearnAddPayment, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelLevyNonPayInd, 0);
-        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondEmp1618Pay, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), "EmployerIncentive", 2);
-        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondProv1618Pay, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), "ProviderIncentive", 2);
+        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondEmp1618Pay, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), "EmployerIncentive", 2);
+        periodisedValues.AddNthIncentivePaymentValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSecondProv1618Pay, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), "ProviderIncentive", 2);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelSEMContWaiver, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelESFAContribPct, 0.95m);
-        periodisedValues.AddAdditionalPaymentPerPeriodIndicators(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
-        periodisedValues.AddAdditionalPaymentPerPeriodValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
+        periodisedValues.AddAdditionalPaymentPerPeriodIndicators(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFund, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
+        periodisedValues.AddAdditionalPaymentPerPeriodValues(EarningsFM36Constants.PeriodisedAttributes.LearnSuppFundCash, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.AdditionalPaymentsTypes.LearningSupport);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.MathEngBalPayment, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.MathEngOnProgPayment, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimBalPayment, 0);
         periodisedValues.AddWithSamePeriodisedValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimCompletionPayment, 0);
-        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, joinedLearnerData, currentAcademicYear.GetShortAcademicYear());
-        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.CoInvestEmployerMultiplier);
-        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, joinedLearnerData, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.CoInvestSfaMultiplier);
-        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund, joinedLearnerData, currentAcademicYear.GetShortAcademicYear());
+        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimOnProgPayment, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear());
+        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMaxEmpCont, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.CoInvestEmployerMultiplier);
+        periodisedValues.AddCoInvestmentValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimProgFundIndMinCoInvest, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear(), EarningsFM36Constants.CoInvestSfaMultiplier);
+        periodisedValues.AddInstallmentAmountValues(EarningsFM36Constants.PeriodisedAttributes.ProgrammeAimTotProgFund, joinedLearningDelivery, currentAcademicYear.GetShortAcademicYear());
 
         return periodisedValues;
     }

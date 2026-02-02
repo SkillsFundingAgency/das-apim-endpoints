@@ -77,7 +77,7 @@ public class JoinedLearnerData
 
         foreach(var onProgram in sldLearnerData.Delivery.OnProgramme)
         {
-            var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments));
+            var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), joinedPriceEpisodes.SelectMany(x=>x.AdditionalPayments));
             joinedLearningDeliveries.Add(delivery);
         }
 
@@ -239,8 +239,9 @@ public class JoinedLearningDelivery
     public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
     public List<JoinedInstalment> Instalments { get; set; }
+    public List<JoinedAdditionalPayment> AdditionalPayments { get; set; }
 
-    public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments)
+    public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, IEnumerable<JoinedAdditionalPayment> additionalPayments)
     {
         AimSequenceNumber = onProgramme.AimSequenceNumber;
         LearnAimRef = onProgramme.LearnAimRef;
@@ -250,6 +251,10 @@ public class JoinedLearningDelivery
                         x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
             .ToList();
 
+        AdditionalPayments = additionalPayments
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= onProgramme.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
+            .ToList();
 
     }
 }

@@ -45,6 +45,7 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : testFixture.CollectionCalendarResponse.EndDate;
         var earningApprenticeship = testFixture.EarningsResponse.Apprenticeships.First();
         var earningEpisode = earningApprenticeship.Episodes.Single();
+        var firstSldOnProg = testFixture.SldLearnerData.First().Delivery.OnProgramme.First();
 
         var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
@@ -69,7 +70,7 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
                 : (DateTime?)null;
         learningDelivery.LearningDeliveryValues.FirstIncentiveThresholdDate.Should().Be(expectedFirstIncentiveThresholdDate);
         learningDelivery.LearningDeliveryValues.LDApplic1618FrameworkUpliftTotalActEarnings.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be("ZPROG001");
+        learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be(firstSldOnProg.LearnAimRef);
         learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
         learningDelivery.LearningDeliveryValues.LearnDel1618AtStart
             .Should()

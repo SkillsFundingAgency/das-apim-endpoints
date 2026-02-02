@@ -12,8 +12,8 @@ internal static class LearningDeliveryBuilder
             new LearningDelivery
             {
                 AimSeqNumber = ld.AimSequenceNumber,
-                LearningDeliveryValues = joinedLearnerData.GetLearningDelivery(currentAcademicYear),
-                LearningDeliveryPeriodisedValues = joinedLearnerData.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
+                LearningDeliveryValues = joinedLearnerData.GetLearningDelivery(ld, currentAcademicYear),
+                LearningDeliveryPeriodisedValues = ld.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
                 LearningDeliveryPeriodisedTextValues = joinedLearnerData.GetLearningDeliveryPeriodisedTextValues()
             }
         ).ToList();

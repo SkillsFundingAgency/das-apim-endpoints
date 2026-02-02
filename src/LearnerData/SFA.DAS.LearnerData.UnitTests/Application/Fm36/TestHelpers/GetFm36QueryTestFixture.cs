@@ -29,6 +29,7 @@ internal class GetFm36QueryTestFixture
     internal List<Learning> UnpagedLearningsResponse;
     internal GetFm36DataResponse EarningsResponse;
     internal GetAcademicYearsResponse CollectionCalendarResponse;
+    internal List<UpdateLearnerRequest> SldLearnerData;
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
     internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
     internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
@@ -56,6 +57,7 @@ internal class GetFm36QueryTestFixture
 
         UnpagedLearningsResponse = dataGenerator.UnpagedLearningsResponse;
         EarningsResponse = dataGenerator.GetFm36DataResponse;
+        SldLearnerData = dataGenerator.SldLearnerData;
 
         CollectionCalendarResponse = BuildCollectionCalendarResponse(UnpagedLearningsResponse);
         SetupMocks(Ukprn, UnpagedLearningsResponse, EarningsResponse, CollectionCalendarResponse, dataGenerator.SldLearnerData);

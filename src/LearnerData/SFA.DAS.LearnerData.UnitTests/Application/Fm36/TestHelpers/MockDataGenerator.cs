@@ -272,7 +272,8 @@ internal class MockDataGenerator
         {
             AimSequenceNumber = 1,
             StartDate = startDate,
-            ExpectedEndDate = expectedEndDate
+            ExpectedEndDate = expectedEndDate,
+            LearnAimRef = Fixture.Create<string>()
         });
 
         return onProgrammes;
