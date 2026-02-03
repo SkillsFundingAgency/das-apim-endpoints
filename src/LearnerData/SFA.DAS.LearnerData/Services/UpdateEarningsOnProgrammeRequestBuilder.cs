@@ -73,7 +73,9 @@ namespace SFA.DAS.LearnerData.Services
         {
             var periodsInLearning = new List<PeriodInLearningItem>();
 
-            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
+            var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
+
+            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
             {
                 //todo:  onProgramme.CompletionDate should be included here in the coalescence. currently left
                 //out of here to avoid re-writing the balancing logic in earnings,
