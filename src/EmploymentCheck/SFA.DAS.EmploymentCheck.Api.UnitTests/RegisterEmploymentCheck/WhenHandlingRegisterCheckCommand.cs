@@ -1,9 +1,9 @@
-﻿using AutoFixture.NUnit3;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
-using SFA.DAS.EmploymentCheck.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.EmploymentCheck.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
