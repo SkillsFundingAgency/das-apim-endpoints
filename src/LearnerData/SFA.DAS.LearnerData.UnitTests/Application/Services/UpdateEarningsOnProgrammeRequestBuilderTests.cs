@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Helpers;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -41,8 +42,12 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                                    .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>())
                                    .Create();
 
-            if(!completion)
+            if (!completion)
+            {
                 putRequest.Data.Learner.CompletionDate = null;
+                command.UpdateLearnerRequest.Delivery.OnProgramme.ForEach(x => x.CompletionDate = null);
+            }
+                
 
             // Act
             var result = await _sut.Build(command, response, putRequest);
@@ -71,7 +76,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
-                        EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate),
+                        EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate)!.Value,
                         OriginalExpectedEndDate = x.ExpectedEndDate
                     }));
             }
@@ -81,7 +86,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                     command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
                     {
                         StartDate = x.StartDate,
-                        EndDate = x.ExpectedEndDate.EarliestOrSelf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate, x.ActualEndDate),
+                        EndDate = DateTimeHelper.EarliestOf(x.ExpectedEndDate, x.PauseDate, x.WithdrawalDate, x.ActualEndDate)!.Value,
                         OriginalExpectedEndDate = x.ExpectedEndDate
                     }));
             }

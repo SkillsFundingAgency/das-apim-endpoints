@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Helpers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -76,22 +77,22 @@ namespace SFA.DAS.LearnerData.Services
 
             foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
             {
+                //todo: this logic is flawed. the end date should just be a coalescence of the nullable terminating dates, with a fallback to enddate
                 DateTime endDate;
 
                 if (onProgramme.CompletionDate.HasValue)
                 {
-                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
-                        onProgramme.ExpectedEndDate,
+                    endDate = DateTimeHelper.EarliestOf(onProgramme.ExpectedEndDate,
                         onProgramme.PauseDate,
-                        onProgramme.WithdrawalDate); //todo for now left CompletionDate (& ActualEndDate in the completion scenario) out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
+                        onProgramme.WithdrawalDate)!.Value; //todo for now left CompletionDate (& ActualEndDate in the completion scenario) out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
                 }
                 else
                 {
-                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
+                    endDate = DateTimeHelper.EarliestOf(
                         onProgramme.ActualEndDate,
                         onProgramme.ExpectedEndDate,
                         onProgramme.PauseDate,
-                        onProgramme.WithdrawalDate);
+                        onProgramme.WithdrawalDate)!.Value;
                 }
 
                 periodsInLearning.Add(new PeriodInLearningItem
