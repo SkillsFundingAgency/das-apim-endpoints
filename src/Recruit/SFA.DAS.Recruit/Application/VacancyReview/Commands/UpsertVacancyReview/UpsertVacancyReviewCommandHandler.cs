@@ -73,14 +73,22 @@ public class UpsertVacancyReviewCommandHandler(
             var providerUsersAttached = await providerUsersAttachedTask;
 
             var usersToNotify = employerUsers
-                .Where(user => user.NotificationPreferences.EventPreferences.Any(c =>
-                c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
+                .Where(user =>
+                    user.NotificationPreferences.EventPreferences
+                        .FirstOrDefault(c => c.Event == NotificationTypes.VacancyApprovedOrRejected)?.Frequency ==
+                    NotificationFrequency.Immediately).ToList();
 
             var providerUsersToNotifyOnVacancyApprovedOrRejected = providerUsers
-                .Where(user => user.NotificationPreferences.EventPreferences.Any(c => c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
+                .Where(user =>
+                    user.NotificationPreferences.EventPreferences
+                        .FirstOrDefault(c => c.Event == NotificationTypes.VacancyApprovedOrRejected)?.Frequency ==
+                    NotificationFrequency.Immediately).ToList();
 
             var providerUsersToNotifyOnAddingToEmployerVacancy = providerUsersAttached
-                .Where(user => user.NotificationPreferences.EventPreferences.Any(c => c.Frequency.Equals(NotificationFrequency.Immediately))).ToList();
+                .Where(user =>
+                    user.NotificationPreferences.EventPreferences
+                        .FirstOrDefault(c => c.Event == NotificationTypes.ProviderAttachedToVacancy)?.Frequency ==
+                    NotificationFrequency.Immediately).ToList();
 
             var emailTasks = usersToNotify
                 .Select(apiResponse => VacancyReviewResponseEmailTemplate(request, apiResponse, request.VacancyReview.ManualOutcome, true))
