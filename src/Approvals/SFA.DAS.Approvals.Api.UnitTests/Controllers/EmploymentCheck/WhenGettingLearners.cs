@@ -1,12 +1,10 @@
+using System;
 using System.Collections.Generic;
-using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Approvals.InnerApi.EmploymentCheckApi.Requests;
+using SFA.DAS.Approvals.Application.EmploymentChecks.Queries.GetEmploymentChecksQuery;
 using SFA.DAS.Approvals.InnerApi.EmploymentCheckApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.EmploymentCheck;
 
@@ -16,12 +14,12 @@ public class WhenGettingLearners
     public async Task Then_Returns_200_And_EvsCheck_List_When_Valid_Ids(
         List<long> apprenticeshipIds,
         List<EvsCheckResponse> evsChecks,
-        [Frozen] Mock<IEmploymentCheckApiClient<EmploymentCheckConfiguration>> client,
+        [Frozen] Mock<IMediator> mediator,
         [Greedy] EmploymentChecksController controller)
     {
-        client
-            .Setup(x => x.GetWithResponseCode<List<EvsCheckResponse>>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
-            .ReturnsAsync(new ApiResponse<List<EvsCheckResponse>>(evsChecks, HttpStatusCode.OK, null));
+        mediator
+            .Setup(x => x.Send(It.IsAny<GetEmploymentChecksQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new GetEmploymentChecksResult { Checks = evsChecks });
 
         var result = await controller.Get(apprenticeshipIds);
 
@@ -64,20 +62,17 @@ public class WhenGettingLearners
     }
 
     [Test, MoqAutoData]
-    public async Task And_Inner_Api_Returns_Error_Then_Propagates_Status(
+    public async Task And_Mediator_Throws_Then_Returns_400(
         List<long> apprenticeshipIds,
-        [Frozen] Mock<IEmploymentCheckApiClient<EmploymentCheckConfiguration>> client,
+        [Frozen] Mock<IMediator> mediator,
         [Greedy] EmploymentChecksController controller)
     {
-        client
-            .Setup(x => x.GetWithResponseCode<List<EvsCheckResponse>>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
-            .ReturnsAsync(new ApiResponse<List<EvsCheckResponse>>(null, HttpStatusCode.InternalServerError, "Inner API error"));
+        mediator
+            .Setup(x => x.Send(It.IsAny<GetEmploymentChecksQuery>(), It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException("Employment check API error"));
 
         var result = await controller.Get(apprenticeshipIds);
 
-        result.Should().BeOfType<ObjectResult>();
-        var obj = (ObjectResult)result;
-        obj.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        obj.Value.Should().Be("Inner API error");
+        result.Should().BeOfType<BadRequestResult>();
     }
 }

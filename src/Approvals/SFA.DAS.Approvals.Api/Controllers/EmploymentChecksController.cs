@@ -1,18 +1,16 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Approvals.InnerApi.EmploymentCheckApi.Requests;
-using SFA.DAS.Approvals.InnerApi.EmploymentCheckApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Application.EmploymentChecks.Queries.GetEmploymentChecksQuery;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class EmploymentChecksController(IEmploymentCheckApiClient<EmploymentCheckConfiguration> client) : ControllerBase
+public class EmploymentChecksController(IMediator mediator, ILogger<EmploymentChecksController> logger) : ControllerBase
 {
     private const int MaxApprenticeshipIds = 1000;
 
@@ -30,16 +28,19 @@ public class EmploymentChecksController(IEmploymentCheckApiClient<EmploymentChec
             return BadRequest($"apprenticeshipIds must not exceed {MaxApprenticeshipIds}.");
         }
 
-        var ids = apprenticeshipIds.AsReadOnly();
-        var request = new GetEmploymentCheckLearnersRequest(ids);
-        var response = await client.GetWithResponseCode<List<EvsCheckResponse>>(request);
-
-        var code = (int)response.StatusCode;
-        if (code is < 200 or >= 300)
+        try
         {
-            return StatusCode(code, response.ErrorContent ?? "Employment check API error.");
+            var result = await mediator.Send(new GetEmploymentChecksQuery
+            {
+                ApprenticeshipIds = apprenticeshipIds.AsReadOnly()
+            });
+            
+            return Ok(result.Checks);
         }
-
-        return Ok(response.Body ?? []);
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting employment checks");
+            return BadRequest();
+        }
     }
 }
