@@ -21,7 +21,7 @@ public class WhenGettingLearnersForProvider
         int? pageSize,
         int? startMonth,
         int startYear,
-        string courseCode,
+        int courseCode,
         GetLearnersForProviderQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] SelectLearnersController controller)
@@ -35,6 +35,7 @@ public class WhenGettingLearnersForProvider
                 q.ProviderId.Should().Be(providerId);
                 q.StartYear.Should().Be(startYear);
                 q.StartMonth.Should().Be(startMonth);
+                q.CourseCode.Should().Be(courseCode);
                 q.AccountLegalEntityId.Should().Be(accountLegalEntityId);
                 q.SearchTerm.Should().Be(searchTerm);
                 q.SortField.Should().Be(sortColumn);
@@ -43,7 +44,7 @@ public class WhenGettingLearnersForProvider
             })
             .ReturnsAsync(mediatorResult);
 
-        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pageSize, startMonth, startYear,courseCode) as ObjectResult;
+        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pageSize, startMonth, startYear,courseCode.ToString()) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
