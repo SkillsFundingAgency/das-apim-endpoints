@@ -4,9 +4,19 @@ namespace SFA.DAS.LearnerData.Extensions;
 
 public static class DateTimeExtensions
 {
+    public static int GetNumberOfDaysUntil(this DateTime start, DateTime end)
+    {
+        var nonInclusiveDays = (end - start).Days;
+
+        if(nonInclusiveDays < 0)
+            return 0;
+
+        return 1 + nonInclusiveDays;
+    }
+
     public static int GetNumberOfIncludedCensusDatesUntil(this DateTime start, DateTime end)
     {
-        var totalDays = 1 + (end - start).Days;
+        var totalDays = start.GetNumberOfDaysUntil(end);
         var includedCensusDateCounter = 0;
         for (var i = 0; i < totalDays; i++)
         {

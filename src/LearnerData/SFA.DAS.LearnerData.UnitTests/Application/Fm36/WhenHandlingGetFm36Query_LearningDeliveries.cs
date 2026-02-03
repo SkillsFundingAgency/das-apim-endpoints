@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.Fm36.Common;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
@@ -83,12 +84,12 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));
         learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
         learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").Sum(x => x.Amount));
-        learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - expectedPriceEpisodeStartDate).Days);
+        learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(apprenticeship.StartDate.GetNumberOfDaysUntil(testFixture.CollectionCalendarResponse.StartDate)); // This is simplified and will fail if there are multiple learning deliveries with different LearnerAimRefs
         learningDelivery.LearningDeliveryValues.LearnDelDisadAmount.Should().Be(0);
         learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
-        learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(1 + (testFixture.CollectionCalendarResponse.EndDate - apprenticeship.StartDate).Days);
+        learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(1 + (testFixture.CollectionCalendarResponse.StartDate - firstSldOnProg.StartDate).Days);// not this is a simplified equation and will fail if the value is negative as the actual calc will return 0
         learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments.Sum(i => i.Amount));
         learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType.Should().Be(earningApprenticeship.FundingLineType);
         learningDelivery.LearningDeliveryValues.LearnDelMathEng.Should().BeFalse();

@@ -28,6 +28,8 @@ public class JoinedLearnerData
     public List<JoinedPriceEpisode> Episodes { get; set; }
     /// <summary>Derived from combining sld data with earnings.PeriodsInLearning</summary>
     public List<JoinedLearningDelivery> LearningDeliveries { get; set; } = new List<JoinedLearningDelivery>();
+    /// <summary> Learning deliveries grouped by LearnAimRef. </summary>
+    public Dictionary<string, List<JoinedLearningDelivery>> ProgramAims { get; set; } = new Dictionary<string, List<JoinedLearningDelivery>>();
     /// <summary> Derived from Apprenticeships API, apprenticeship.AgeAtStartOfApprenticeship </summary>
     public int AgeAtStartOfApprenticeship { get; set; }
     /// <summary> Derived from Apprenticeships API, apprenticeship.WithdrawnDate </summary>
@@ -49,6 +51,9 @@ public class JoinedLearnerData
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
         CompletionDate = learning.CompletionDate;
+        ProgramAims = LearningDeliveries
+            .GroupBy(ld => ld.LearnAimRef)
+            .ToDictionary(g => g.Key, g => g.ToList()); 
     }
 
     private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
@@ -241,6 +246,9 @@ public class JoinedLearningDelivery
     public List<JoinedInstalment> Instalments { get; set; }
     public List<JoinedAdditionalPayment> AdditionalPayments { get; set; }
 
+    public DateTime StartDate { get; set; }
+    public DateTime ExpectedEndDate { get; set; }
+
     public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, IEnumerable<JoinedAdditionalPayment> additionalPayments)
     {
         AimSequenceNumber = onProgramme.AimSequenceNumber;
@@ -256,6 +264,8 @@ public class JoinedLearningDelivery
                         x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
             .ToList();
 
+        StartDate = onProgramme.StartDate;
+        ExpectedEndDate = onProgramme.ExpectedEndDate;
     }
 }
 
