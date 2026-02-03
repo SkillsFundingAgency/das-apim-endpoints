@@ -25,7 +25,8 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
-        services.AddTransient<ICampaignApiClient<CampaignApiConfiguration>, CampaignApiClient>();
+        services.AddTransient<ICampaignApiClient, CampaignApiClient>();
+        services.AddTransient<CampaignApiClient>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<IContentService, ContentService>();
         services.AddTransient<ICourseService, CourseService>();

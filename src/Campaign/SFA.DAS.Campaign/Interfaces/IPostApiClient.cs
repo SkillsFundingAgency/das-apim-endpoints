@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SFA.DAS.Campaign.Interfaces;
 
-public interface IPostApiClient<T>
+public interface IPostApiClient
 {
-    Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true);
+    Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request);
 }

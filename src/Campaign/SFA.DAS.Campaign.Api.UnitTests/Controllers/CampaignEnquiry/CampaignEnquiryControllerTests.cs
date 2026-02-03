@@ -2,23 +2,36 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using NUnit.Framework;
 using SFA.DAS.Campaign.Api.Controllers;
+using SFA.DAS.Campaign.InnerApi.Requests;
+using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models;
 using System;
-using NSubstitute;
-using SFA.DAS.Campaign.InnerApi.Requests;
 using System.Net;
-using NSubstitute.ExceptionExtensions;
-using SFA.DAS.Campaign.Interfaces;
-using SFA.DAS.Campaign.Configuration;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.CampaignEnquiry;
 
 public class CampaignEnquiryControllerTests
 {
+    private ILogger<CampaignEnquiryController> _logger;
+    private ICampaignApiClient _apiClient;
+    private CampaignEnquiryController _controller;
+    private EnquiryUserDataModel _userData;
+
+    [SetUp]
+    public void SetUp()
+    {
+        _logger = Substitute.For<ILogger<CampaignEnquiryController>>();
+        _apiClient = Substitute.For<ICampaignApiClient>();
+        _controller = new CampaignEnquiryController(_logger, _apiClient);
+        _userData = new EnquiryUserDataModel();
+    }
+
     [Test]
     public void RegisterInterest_Has_ProducesResponseType_Attributes()
     {
@@ -42,19 +55,15 @@ public class CampaignEnquiryControllerTests
     public async Task RegisterInterest_Returns_Created_Result_On_Success()
     {
         // Arrange
-        var logger = new LoggerFactory().CreateLogger<CampaignEnquiryController>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
-        var response = new ApiResponse<EnquiryUserDataModel>(userData, HttpStatusCode.Created, null, null)
+        var response = new ApiResponse<EnquiryUserDataModel>(_userData, HttpStatusCode.Created, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
 
         // Act
-        var result = await controller.RegisterInterest(userData);
+        var result = await _controller.RegisterInterest(_userData);
 
         // Assert
         result.Should().BeOfType<CreatedAtActionResult>();
@@ -64,19 +73,15 @@ public class CampaignEnquiryControllerTests
     public async Task RegisterInterest_Returns_BadRequest_Result_On_BadRequest()
     {
         // Arrange
-        var logger = new LoggerFactory().CreateLogger<CampaignEnquiryController>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
         var response = new ApiResponse<EnquiryUserDataModel>(null, HttpStatusCode.BadRequest, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
 
         // Act
-        var result = await controller.RegisterInterest(userData);
+        var result = await _controller.RegisterInterest(_userData);
 
         // Assert
         result.Should().BeOfType<BadRequestResult>();
@@ -86,19 +91,15 @@ public class CampaignEnquiryControllerTests
     public async Task RegisterInterest_Returns_InternalServerError_Result_On_InternalServerError()
     {
         // Arrange
-        var logger = new LoggerFactory().CreateLogger<CampaignEnquiryController>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
         var response = new ApiResponse<EnquiryUserDataModel>(null, HttpStatusCode.InternalServerError, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
 
         // Act
-        var result = await controller.RegisterInterest(userData);
+        var result = await _controller.RegisterInterest(_userData);
 
         // Assert
         result.Should().BeOfType<StatusCodeResult>().Which.StatusCode.Should().Be(StatusCodes.Status500InternalServerError);
@@ -108,19 +109,15 @@ public class CampaignEnquiryControllerTests
     public void RegisterInterest_Throws_InvalidOperationException_On_Unexpected_StatusCode()
     {
         // Arrange
-        var logger = new LoggerFactory().CreateLogger<CampaignEnquiryController>();
-        var apiClient = NSubstitute.Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
         var response = new ApiResponse<EnquiryUserDataModel>(null, HttpStatusCode.Forbidden, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
 
         // Act & Assert
-        FluentActions.Invoking(() => controller.RegisterInterest(userData))
+        FluentActions.Invoking(() => _controller.RegisterInterest(_userData))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Campaign Interest didn't receive a successful response from Inner API");
     }
@@ -129,94 +126,79 @@ public class CampaignEnquiryControllerTests
     public void RegisterInterest_Logs_Error_On_Exception()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Throws(new Exception("Test exception"));
+
         // Act
-        Func<Task> act = async () => { await controller.RegisterInterest(userData); };
+        Func<Task> act = async () => { await _controller.RegisterInterest(_userData); };
+
         // Assert
         act.Should().ThrowAsync<Exception>().WithMessage("Test exception");
-        logger.Received(1).LogError(Arg.Any<Exception>(), "Error attempting to register Campaign Interest");
+        _logger.Received(1).LogError(Arg.Any<Exception>(), "Error attempting to register Campaign Interest");
     }
 
     [Test]
     public async Task RegisterInterest_Logs_Information_On_Success()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
-        var response = new ApiResponse<EnquiryUserDataModel>(userData, HttpStatusCode.Created, null, null)
+        var response = new ApiResponse<EnquiryUserDataModel>(_userData, HttpStatusCode.Created, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
 
         // Act
-        await controller.RegisterInterest(userData);
+        await _controller.RegisterInterest(_userData);
 
         // Assert
-        logger.Received(1).LogInformation("Register Campaign Interest Outer API: Received request to add user details to campaign");
-        logger.Received(1).LogInformation("Register Campaign Interest Outer API: Successfully added user details to campaign");
+        _logger.Received(1).LogInformation("Register Campaign Interest Outer API: Received request to add user details to campaign");
+        _logger.Received(1).LogInformation("Register Campaign Interest Outer API: Successfully added user details to campaign");
     }
 
     [Test]
     public async Task RegisterInterest_Logs_Warning_On_BadRequest()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
         var response = new ApiResponse<EnquiryUserDataModel>(null, HttpStatusCode.BadRequest, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
         // Act
-        await controller.RegisterInterest(userData);
+        await _controller.RegisterInterest(_userData);
         // Assert
-        logger.Received(1).LogWarning("Register Campaign Interest Outer API received Bad request from Inner API");
+        _logger.Received(1).LogWarning("Register Campaign Interest Outer API received Bad request from Inner API");
     }
 
     [Test]
     public async Task RegisterInterest_Logs_Error_On_InternalServerError()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
         var response = new ApiResponse<EnquiryUserDataModel>(null, HttpStatusCode.InternalServerError, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
+
         // Act
-        await controller.RegisterInterest(userData);
+        await _controller.RegisterInterest(_userData);
+
         // Assert
-        logger.Received(1).LogError("Register Campaign Interest Outer API received Internal server error from Inner API");
+        _logger.Received(1).LogError("Register Campaign Interest Outer API received Internal server error from Inner API");
     }
 
     [Test]
     public void RegisterInterest_Throws_Exception_On_ApiClient_Exception()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Throws(new Exception("API client exception"));
+
         // Act & Assert
-        FluentActions.Invoking(() => controller.RegisterInterest(userData))
+        FluentActions.Invoking(() => _controller.RegisterInterest(_userData))
             .Should().ThrowAsync<Exception>()
             .WithMessage("API client exception");
     }
@@ -225,12 +207,10 @@ public class CampaignEnquiryControllerTests
     public void RegisterInterest_Throws_Exception_On_Null_UserData()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
         EnquiryUserDataModel userData = null;
+
         // Act & Assert
-        FluentActions.Invoking(() => controller.RegisterInterest(userData))
+        FluentActions.Invoking(() => _controller.RegisterInterest(userData))
             .Should().ThrowAsync<ArgumentNullException>()
             .WithMessage("*userData*");
     }
@@ -239,14 +219,11 @@ public class CampaignEnquiryControllerTests
     public void RegisterInterest_Throws_Exception_On_ApiClient_Null_Response()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns((ApiResponse<EnquiryUserDataModel>)null);
+
         // Act & Assert
-        FluentActions.Invoking(() => controller.RegisterInterest(userData))
+        FluentActions.Invoking(() => _controller.RegisterInterest(_userData))
             .Should().ThrowAsync<NullReferenceException>()
             .WithMessage("*response*");
     }
@@ -255,18 +232,15 @@ public class CampaignEnquiryControllerTests
     public void RegisterInterest_Throws_Exception_On_ApiClient_Null_StatusCode()
     {
         // Arrange
-        var logger = Substitute.For<ILogger<CampaignEnquiryController>>();
-        var apiClient = Substitute.For<ICampaignApiClient<CampaignApiConfiguration>>();
-        var controller = new CampaignEnquiryController(logger, apiClient);
-        var userData = new EnquiryUserDataModel();
         var response = new ApiResponse<EnquiryUserDataModel>(null, 0, null, null)
         {
             RawContent = null
         };
-        apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
+        _apiClient.PostWithResponseCode<EnquiryUserDataModel>(Arg.Any<PostRegisterInterestApiRequest>())
             .Returns(Task.FromResult(response));
+
         // Act & Assert
-        FluentActions.Invoking(() => controller.RegisterInterest(userData))
+        FluentActions.Invoking(() => _controller.RegisterInterest(_userData))
             .Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Campaign Interest didn't receive a successful response from Inner API");
     }

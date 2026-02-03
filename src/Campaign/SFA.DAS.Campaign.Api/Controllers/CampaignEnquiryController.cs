@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.InnerApi.Requests;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
@@ -16,7 +15,7 @@ namespace SFA.DAS.Campaign.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class CampaignEnquiryController(ILogger<CampaignEnquiryController> logger, ICampaignApiClient<CampaignApiConfiguration> apiClient) : ControllerBase
+public class CampaignEnquiryController(ILogger<CampaignEnquiryController> logger, ICampaignApiClient apiClient) : ControllerBase
 {
     // POST: CampaignEnquiryFormController/RegisterInterest
     [HttpPost("RegisterInterest")]
