@@ -32,8 +32,8 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 x.LearnAimRef = learnAimRef;
                 x.CompletionDate = null;
                 x.WithdrawalDate = null;
-                x.PauseDate = x.ActualEndDate;
-                x.EndDate = x.ActualEndDate.Value.AddDays(30);
+                x.PauseDate = x.PauseDate;
+                x.EndDate = x.PauseDate.Value.AddDays(30);
             });
             var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
             putRequest.Data.MathsAndEnglishCourses.ForEach(x => x.LearnAimRef = learnAimRef);
@@ -52,13 +52,13 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
+                CompletionDate = x.CompletionDate,
                 PauseDate = x.PauseDate,
                 PeriodsInLearning = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(e => e.LearnAimRef == x.LearnAimRef)
                     .Select(y => new PeriodInLearningItem
                     {
                         StartDate = y.StartDate,
-                        EndDate = DateTimeHelper.EarliestOf(y.EndDate, y.ActualEndDate, y.CompletionDate, y.WithdrawalDate) ?? y.EndDate,
+                        EndDate = y.PauseDate ?? y.CompletionDate ?? y.WithdrawalDate ?? y.EndDate,
                         OriginalExpectedEndDate = y.EndDate
                     })
                     .OrderBy(p => p.StartDate)

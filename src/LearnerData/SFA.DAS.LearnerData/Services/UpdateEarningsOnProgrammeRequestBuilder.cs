@@ -79,6 +79,7 @@ namespace SFA.DAS.LearnerData.Services
 
             foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
             {
+                //todo: this logic is flawed. the end date should just be a coalescence of the nullable terminating dates, with a fallback to enddate
                 DateTime endDate;
 
                 if (onProgramme.CompletionDate.HasValue)

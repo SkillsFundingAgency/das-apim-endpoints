@@ -51,8 +51,8 @@ public class BreaksInLearningService : IBreaksInLearningService
             if (i >= orderedItems.Count - 1) continue;
             var next = orderedItems[i + 1];
 
-            if (!current.ActualEndDate.HasValue || !(current.ActualEndDate < next.StartDate)) continue;
-            var gapStart = current.ActualEndDate.Value.AddDays(1);
+            if (!current.PauseDate.HasValue || !(current.PauseDate < next.StartDate)) continue;
+            var gapStart = current.PauseDate.Value.AddDays(1);
             var gapEnd = next.StartDate.AddDays(-1);
 
             breaks.Add(new BreakInLearning
