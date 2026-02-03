@@ -4,5 +4,6 @@ namespace SFA.DAS.Approvals.InnerApi.Requests;
 
 public class GetCourseCodesByUkprnRequest(long ukprn) : IGetApiRequest
 {
-    public string GetUrl => $"providers/{ukprn}/learners/coursecodes";
+    public long Ukprn { get; } = ukprn;
+    public string GetUrl => $"providers/{Ukprn}/learners/coursecodes";
 }
