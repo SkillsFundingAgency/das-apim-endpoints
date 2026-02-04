@@ -40,6 +40,7 @@ public class ProcessLearnersCommandHandler(
             IsFlexiJob = request.IsFlexiJob,
             PlannedOTJTrainingHours = request.PlannedOTJTrainingHours ?? 0,
             StandardCode = request.StandardCode,
+            LarsCode = request.LarsCode ?? request.StandardCode.ToString(),
             CorrelationId = correlationId,
             ReceivedDate = receivedOn,
             AcademicYear = academicYear,

@@ -133,4 +133,61 @@ public class WhenProcessingLearners
         @event.AcademicYear.Should().Be(academicYear);
     }
 
+    [Test]
+    public async Task Then_call_is_successful_with_empty_LarsCode_field_so_StandardCode_is_mapped_to_LarsCode_in_event()
+    {
+        // Arrange
+        var correlationId = Guid.NewGuid();
+        var receivedOn = DateTime.UtcNow;
+        var academicYear = 2223;
+        var request = _fixture.Build<LearnerDataRequest>().Without(m=>m.LarsCode).Create();
+        var @event = new LearnerDataEvent();
+        _mockMessageSession.Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object p, PublishOptions o) =>
+            {
+                @event = (LearnerDataEvent)p;
+            });
+
+        // Act
+        await _sut.Handle(
+            new ProcessLearnersCommand
+            {
+                CorrelationId = correlationId,
+                ReceivedOn = receivedOn,
+                AcademicYear = academicYear,
+                Learners = [request]
+            }, CancellationToken.None);
+
+        // Assert
+        @event.LarsCode.Should().Be(request.StandardCode.ToString());
+    }
+
+    [Test]
+    public async Task Then_call_is_successful_and_has_LarsCode_field_which_Is_mapped_in_event()
+    {
+        // Arrange
+        var correlationId = Guid.NewGuid();
+        var receivedOn = DateTime.UtcNow;
+        var academicYear = 2223;
+        var request = _fixture.Create<LearnerDataRequest>();
+        var @event = new LearnerDataEvent();
+        _mockMessageSession.Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object p, PublishOptions o) =>
+            {
+                @event = (LearnerDataEvent)p;
+            });
+
+        // Act
+        await _sut.Handle(
+            new ProcessLearnersCommand
+            {
+                CorrelationId = correlationId,
+                ReceivedOn = receivedOn,
+                AcademicYear = academicYear,
+                Learners = [request]
+            }, CancellationToken.None);
+
+        // Assert
+        @event.LarsCode.Should().Be(request.LarsCode);
+    }
 }
