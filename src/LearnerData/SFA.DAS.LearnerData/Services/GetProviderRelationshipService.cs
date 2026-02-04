@@ -66,10 +66,12 @@ namespace SFA.DAS.LearnerData.Services
 
         private EmployerDetails CreateEmployerDetails(GetAccountByIdResponse accountDetails, GetAgencyResponse agencyDetails, string legalEntityHashedId)
         {
+            logger.LogInformation($"Inside employer details . accountdetails is  null : {accountDetails is null}  for agreementId : {legalEntityHashedId}");
+            logger.LogInformation($" levy type : {accountDetails?.ApprenticeshipEmployerType}");
             return new EmployerDetails()
             {
                 AgreementId = legalEntityHashedId,
-                IsLevy = accountDetails is null ? false : accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
+                IsLevy = accountDetails is not null && accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
                 IsFlexiEmployer = agencyDetails?.IsGrantFunded ?? false
             };
         }
