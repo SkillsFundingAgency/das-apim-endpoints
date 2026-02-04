@@ -28,8 +28,11 @@ public class LearnerDataRequestValidator : AbstractValidator<LearnerDataRequest>
         RuleFor(model => model.PlannedOTJTrainingHours).GreaterThanOrEqualTo(0)
             .WithMessage(model => $"Learner data contains a negative PlannedOTJTrainingHours {model.PlannedOTJTrainingHours}");
 
-        RuleFor(model => model.StandardCode).GreaterThanOrEqualTo(0)
+        RuleFor(model => model.StandardCode).GreaterThanOrEqualTo(0).When(model => model.StandardCode.HasValue)
             .WithMessage(model => $"Learner data contains a negative StandardCode {model.StandardCode}");
+
+        RuleFor(model => model.LarsCode).NotEmpty().When(model => !model.StandardCode.HasValue)
+            .WithMessage(model => "Learner data must contains a LarsCode when StandardCode is null");
 
         RuleFor(model => model.ConsumerReference)
             .MaximumLength(100)

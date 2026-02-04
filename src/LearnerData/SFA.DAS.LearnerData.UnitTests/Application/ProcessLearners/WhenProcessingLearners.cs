@@ -190,4 +190,33 @@ public class WhenProcessingLearners
         // Assert
         @event.LarsCode.Should().Be(request.LarsCode);
     }
+
+    [Test]
+    public async Task Then_call_is_successful_and_has_StandardCode_should_be_set_to_0_when_null()
+    {
+        // Arrange
+        var correlationId = Guid.NewGuid();
+        var receivedOn = DateTime.UtcNow;
+        var academicYear = 2223;
+        var request = _fixture.Build<LearnerDataRequest>().Without(x => x.StandardCode).Create();
+        var @event = new LearnerDataEvent();
+        _mockMessageSession.Setup(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()))
+            .Callback((object p, PublishOptions o) =>
+            {
+                @event = (LearnerDataEvent)p;
+            });
+
+        // Act
+        await _sut.Handle(
+            new ProcessLearnersCommand
+            {
+                CorrelationId = correlationId,
+                ReceivedOn = receivedOn,
+                AcademicYear = academicYear,
+                Learners = [request]
+            }, CancellationToken.None);
+
+        // Assert
+        @event.StandardCode.Should().Be(0);
+    }
 }
