@@ -4,8 +4,6 @@
         <TargetFramework>net8.0</TargetFramework>
 
         <IsPackable>false</IsPackable>
-
-        <RunSettingsFilePath>C:\Source\das-apim-endpoints\src\Campaign\SFA.DAS.Campaign.UnitTests\bin\Debug\net8.0\fine-code-coverage\coverage-tool-output\SFA.DAS.Campaign.UnitTests-fcc-mscodecoverage-generated.runsettings</RunSettingsFilePath>
     </PropertyGroup>
 
     <ItemGroup>
