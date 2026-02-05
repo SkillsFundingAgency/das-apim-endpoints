@@ -51,21 +51,23 @@ public class WhenValidatingMultipleLearnerData
         result.Errors.First().PropertyName.Should().Contain("x[0].UKPRN");
     }
 
-    // [Test]
-    // public async Task And_when_StartDate_Is_Not_In_AcademicYear()
-    // {
-    //     List<LearnerDataRequest> learners = new()
-    //     {
-    //         CreateValidLearnerDataRequest(),
-    //         CreateValidLearnerDataRequest(),
-    //         CreateValidLearnerDataRequest()
-    //     };
-    //     learners[1].StartDate = DateTime.Today.AddYears(1);
-    //     var result = await RunValidation(learners);
-    //     result.IsValid.Should().BeFalse();
-    //     result.Errors.First().ErrorMessage.Should().Be($"Learner data contains a StartDate {learners[1].StartDate} that is not in the academic year {_academicYear}");
-    //     result.Errors.First().PropertyName.Should().Contain("x[1].StartDate");
-    // }
+    [Test]
+    public async Task And_when_StandardCode_And_LarsCode_Is_Missing_Then_Error_Returned()
+    {
+        List<LearnerDataRequest> learners = new()
+        {
+            CreateValidLearnerDataRequest(),
+            CreateValidLearnerDataRequest(),
+            CreateValidLearnerDataRequest()
+        };
+        learners[0].StandardCode = null;
+        learners[0].LarsCode = null;
+
+        var result = await RunValidation(learners);
+        result.IsValid.Should().BeFalse();
+        result.Errors.First().ErrorMessage.Should().Be("Learner data must contains a LarsCode when StandardCode is null");
+        result.Errors.First().PropertyName.Should().Contain("x[0].LarsCode");
+    }
 
     private LearnerDataRequest CreateValidLearnerDataRequest()
     {
