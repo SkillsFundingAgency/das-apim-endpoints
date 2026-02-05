@@ -15,7 +15,7 @@ public class ProcessLearnersCommandHandler(
         return Parallel.ForEachAsync(request.Learners, new ParallelOptions { MaxDegreeOfParallelism = 5 },
             async (learner, cancellationToken) =>
             {
-                logger.LogTrace("Publishing LearnerDataEvent");
+                logger.LogInformation("Publishing LearnerDataEvent");
                 var evt = MapToEvent(learner, request.CorrelationId, request.ReceivedOn, request.AcademicYear);
                 await messageSession.Publish(evt);
             });
