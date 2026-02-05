@@ -14,7 +14,7 @@ namespace SFA.DAS.LearnerData.Requests
     public class ShortCourseDelivery
     {
         [Required]
-        public List<ShortCourseOnProgramme> OnProgramme { get; set; }
+        public ShortCourseOnProgramme OnProgramme { get; set; }
     }
 
     public class ShortCourseOnProgramme

@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
 {
+    public class CreateDraftShortCourseApiPostRequest(CreateDraftShortCourseRequest data)
+        : IPostApiRequest<CreateDraftShortCourseRequest>
+    {
+        public string PostUrl { get; } = $"shortCourses";
+        public CreateDraftShortCourseRequest Data { get; set; } = data;
+    }
+
     /// <summary>
     /// Request to create a draft short course learner record
     /// </summary>
-    public class CreateDraftShortCourseApiPostRequest
+    public class CreateDraftShortCourseRequest
     {
         /// <summary>
         /// Learner details to be updated
