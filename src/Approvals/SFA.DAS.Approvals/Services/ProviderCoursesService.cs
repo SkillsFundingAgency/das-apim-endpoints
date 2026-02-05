@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -41,19 +41,30 @@ public class ProviderStandardsService(
 
         if (serviceParameters.CallingParty == Party.Employer || !providerDetails.IsMainProvider)
         {
+            var standards = await GetAllStandards();
+            var standardsList = standards.ToList();
+            logger.LogInformation(
+                "Standards fetched for UKPRN {Ukprn}: {Count} standards from Get all standards",
+                providerId,
+                standardsList.Count);
             return new ProviderStandardsData
             {
                 IsMainProvider = providerDetails.IsMainProvider,
-                Standards = await GetAllStandards()
+                Standards = standardsList
             };
         }
 
+        var providerStandards = await GetStandardsForProvider(providerId);
+        var providerStandardsList = providerStandards.ToList();
+        logger.LogInformation(
+            "Standards fetched for UKPRN {Ukprn}: {Count} standards from Get standards for provider",
+            providerId,
+            providerStandardsList.Count);
         return new ProviderStandardsData
         {
             IsMainProvider = providerDetails.IsMainProvider,
-            Standards = await GetStandardsForProvider(providerId)
+            Standards = providerStandardsList
         };
-
     }
 
     private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)
