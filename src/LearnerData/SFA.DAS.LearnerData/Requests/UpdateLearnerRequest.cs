@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.LearnerData.Requests;
 

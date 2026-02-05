@@ -21,6 +21,7 @@
     <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.LearnerData.TestHelpers\SFA.DAS.LearnerData.TestHelpers.csproj" />
     <ProjectReference Include="..\SFA.DAS.LearnerData\SFA.DAS.LearnerData.csproj" />
   </ItemGroup>
 
