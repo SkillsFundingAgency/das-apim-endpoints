@@ -39,6 +39,8 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .With(r => r.Changes, new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>())
                                .Create();
 
+        var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
+
         if (!completion)
         {
             putRequest.Data.Learner.CompletionDate = null;
@@ -70,22 +72,26 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
         if (completion)
         {
             result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
-                {
-                    StartDate = x.StartDate,
-                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                    OriginalExpectedEndDate = x.ExpectedEndDate
-                }));
+                command.UpdateLearnerRequest.Delivery.OnProgramme
+                    .Where(x => x.AgreementId == agreementId)
+                    .Select(x => new PeriodInLearningItem
+                    {
+                        StartDate = x.StartDate,
+                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
+                        OriginalExpectedEndDate = x.ExpectedEndDate
+                    }));
         }
         else
         {
             result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme.Select(x => new PeriodInLearningItem
-                {
-                    StartDate = x.StartDate,
-                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                    OriginalExpectedEndDate = x.ExpectedEndDate
-                }));
+                command.UpdateLearnerRequest.Delivery.OnProgramme
+                    .Where(x => x.AgreementId == agreementId)
+                    .Select(x => new PeriodInLearningItem
+                    {
+                        StartDate = x.StartDate,
+                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
+                        OriginalExpectedEndDate = x.ExpectedEndDate
+                    }));
         }
 
 
