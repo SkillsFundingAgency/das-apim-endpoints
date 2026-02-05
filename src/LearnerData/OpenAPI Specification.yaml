@@ -50,7 +50,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'  
 
-  /providers/{ukprn}/apprenticeshipUnits:
+  /providers/{ukprn}/shortCourses:
     post:
       summary: Create a new record in the AS service due to no match
       security:
@@ -63,7 +63,7 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: '#/components/requestBodies/apprenticeshipUnitRecordRequest'
+        $ref: '#/components/requestBodies/shortCourseRecordRequest'
       responses:
         '201':
           $ref: '#/components/responses/acceptedResponse'
@@ -120,7 +120,7 @@ paths:
         '401':
           $ref: '#/components/responses/unauthorized'
 
-  /providers/{ukprn}/apprenticeshipUnits/{learningKey}:
+  /providers/{ukprn}/shortCourses/{learningKey}:
     delete:
       summary: Deletes a learning record identified by this request for this provider
       security:
@@ -159,7 +159,7 @@ paths:
           schema:
             type: string
       requestBody:
-        $ref: '#/components/requestBodies/apprenticeshipUnitRecordRequest'
+        $ref: '#/components/requestBodies/shortCourseRecordRequest'
       responses:
         '201':
           $ref: '#/components/responses/acceptedResponse'
@@ -203,7 +203,7 @@ paths:
         '200':
           $ref: '#/components/responses/pagedLearningIdentifiersResponse'  
     
-  /providers/{ukprn}/academicyears/{academicyear}/apprenticeshipUnits:
+  /providers/{ukprn}/academicyears/{academicyear}/shortCourses:
     get:
       summary: Returns a paged list of learningIdentifiers for this provider
       security:
@@ -238,9 +238,9 @@ paths:
         '200':
           $ref: '#/components/responses/pagedLearningIdentifiersResponse'  
 
-  /providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/apprenticeshipUnits:
+  /providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses:
     get:
-      summary: Returns earnings data for apprenticeship unit learners
+      summary: Returns earnings data for short course learners
       security:
         - ApiKeyAuth: []
       parameters:
@@ -277,7 +277,7 @@ paths:
             type: integer
       responses:
         '200':
-          $ref: '#/components/responses/pagedApprenticeshipUnitEarningsResponse'
+          $ref: '#/components/responses/pagedShortCourseEarningsResponse'
 
 components:  
   securitySchemes:
@@ -322,13 +322,13 @@ components:
           schema:
             $ref: "#/components/schemas/apprenticeshipLearning"
 
-    apprenticeshipUnitRecordRequest:
+    shortCourseRecordRequest:
       description: Details of an updated learning
       required: true
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/apprenticeshipUnitLearning"
+            $ref: "#/components/schemas/shortCourseLearning"
     
   responses:
     pagedLearningIdentifiersResponse:
@@ -347,8 +347,8 @@ components:
             items:
               $ref: '#/components/schemas/pagedLearningIdentifiers'
 
-    pagedApprenticeshipUnitEarningsResponse:
-      description: A pages apprenticeship units earnings response
+    pagedShortCourseEarningsResponse:
+      description: A pages short course earnings response
       headers:
         Link:
           description: Pagination links (next, prev)
@@ -361,7 +361,7 @@ components:
           schema:
             type: array
             items:
-              $ref: '#/components/schemas/pagedApprenticeshipUnitEarnings'
+              $ref: '#/components/schemas/pagedShortCourseEarnings'
 
     rateLimitExceededResponse:
       description: Too many requests - rate limit exceeded
@@ -461,13 +461,13 @@ components:
         - pageSize  
         - totalPages  
 
-    pagedApprenticeshipUnitEarnings:
+    pagedShortCourseEarnings:
       type: object
       properties:
         learners:
           type: array
           items:
-              $ref: '#/components/schemas/apprenticeshipUnitLearnerAndEarnings'
+              $ref: '#/components/schemas/shortCourseLearnerAndEarnings'
         total:
           type: integer
           minimum: 0
@@ -509,7 +509,7 @@ components:
         uln:
           type: integer
 
-    apprenticeshipUnitLearnerAndEarnings:
+    shortCourseLearnerAndEarnings:
       type: object
       properties:
         learningKey:
@@ -531,9 +531,9 @@ components:
         earnings:
           type: array
           items: 
-            $ref: '#/components/schemas/apprenticeshipUnitEarning'
+            $ref: '#/components/schemas/shortCourseEarning'
 
-    apprenticeshipUnitEarning:
+    shortCourseEarning:
       type: object
       properties:
         collectionYear:
@@ -658,7 +658,7 @@ components:
                     type: string
                     format: date
 
-    apprenticeshipUnitLearning:
+    shortCourseLearning:
       type: object
       properties:
         consumerReference:
