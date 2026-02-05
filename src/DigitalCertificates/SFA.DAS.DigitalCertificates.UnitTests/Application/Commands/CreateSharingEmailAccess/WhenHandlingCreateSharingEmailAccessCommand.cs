@@ -6,7 +6,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingAccess;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmailAccess;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
@@ -14,22 +14,22 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharingAccess
+namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateSharingEmailAccess
 {
-    public class WhenHandlingCreateSharingAccessCommand
+    public class WhenHandlingCreateSharingEmailAccessCommand
     {
         [Test, MoqAutoData]
         public async Task Then_Handler_Completes_When_Inner_Api_Returns_NoContent(
-            CreateSharingAccessCommand command,
+            CreateSharingEmailAccessCommand command,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-            CreateSharingAccessCommandHandler handler)
+            CreateSharingEmailAccessCommandHandler handler)
         {
             // Arrange
             var apiResponse = new ApiResponse<object>(null, HttpStatusCode.NoContent, string.Empty);
 
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateSharingAccessRequestData, object>(
-                    It.Is<PostCreateSharingAccessRequest>(r => r.Data.SharingId == command.SharingId), false))
+                .Setup(client => client.PostWithResponseCode<PostCreateSharingEmailAccessRequestData, object>(
+                    It.Is<PostCreateSharingEmailAccessRequest>(r => r.Data.SharingEmailId == command.SharingEmailId), false))
                 .ReturnsAsync(apiResponse);
 
             // Act / Assert 
@@ -37,20 +37,20 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
             await act.Should().NotThrowAsync<Exception>();
 
             mockDigitalCertificatesApiClient.Verify(client =>
-                client.PostWithResponseCode<PostCreateSharingAccessRequestData, object>(
-                    It.Is<PostCreateSharingAccessRequest>(r => r.Data.SharingId == command.SharingId), false), Times.Once);
+                client.PostWithResponseCode<PostCreateSharingEmailAccessRequestData, object>(
+                    It.Is<PostCreateSharingEmailAccessRequest>(r => r.Data.SharingEmailId == command.SharingEmailId), false), Times.Once);
         }
 
         [Test, MoqAutoData]
         public void Then_Exception_Is_Thrown_If_Api_Call_Fails(
-            CreateSharingAccessCommand command,
-            [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
-            CreateSharingAccessCommandHandler handler)
+        CreateSharingEmailAccessCommand command,
+        [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
+        CreateSharingEmailAccessCommandHandler handler)
         {
             // Arrange
             mockDigitalCertificatesApiClient
-                .Setup(client => client.PostWithResponseCode<PostCreateSharingAccessRequestData, object>(
-                    It.IsAny<PostCreateSharingAccessRequest>(), false))
+                .Setup(client => client.PostWithResponseCode<PostCreateSharingEmailAccessRequestData, object>(
+                    It.IsAny<PostCreateSharingEmailAccessRequest>(), false))
                 .ThrowsAsync(new ApiResponseException(HttpStatusCode.BadRequest, "Bad request"));
 
             // Act
@@ -61,8 +61,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateShari
                 .Where(e => e.Status == HttpStatusCode.BadRequest);
 
             mockDigitalCertificatesApiClient.Verify(client =>
-                client.PostWithResponseCode<PostCreateSharingAccessRequestData, object>(
-                    It.IsAny<PostCreateSharingAccessRequest>(), false), Times.Once);
+                client.PostWithResponseCode<PostCreateSharingEmailAccessRequestData, object>(
+                    It.IsAny<PostCreateSharingEmailAccessRequest>(), false), Times.Once);
         }
     }
 }

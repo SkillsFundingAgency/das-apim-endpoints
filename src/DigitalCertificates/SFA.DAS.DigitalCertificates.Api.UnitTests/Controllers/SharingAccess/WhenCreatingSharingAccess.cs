@@ -14,7 +14,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.SharingAccess
 {
-    public class WhenPostingSharingAccess
+    public class WhenCreatingSharingAccess
     {
         [Test, MoqAutoData]
         public async Task Then_Returns_Ok_And_Mediator_Send_Called(
@@ -28,11 +28,11 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.SharingAccess
                 .ReturnsAsync(Unit.Value);
 
             // Act
-            var actual = await controller.CreateSharingAccess(command) as OkResult;
+            var actual = await controller.CreateSharingAccess(command) as NoContentResult;
 
             // Assert
             actual.Should().NotBeNull();
-            actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.NoContent);
 
             mediator.Verify(m => m.Send(It.Is<CreateSharingAccessCommand>(c => c.SharingId == command.SharingId), It.IsAny<CancellationToken>()), Times.Once);
         }
