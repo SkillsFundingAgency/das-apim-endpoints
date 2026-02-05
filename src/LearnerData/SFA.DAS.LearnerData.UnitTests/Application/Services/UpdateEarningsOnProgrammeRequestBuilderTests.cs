@@ -88,6 +88,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                 }));
         }
 
+
         result.Data.FundingBandMaximum.Should().BeNull();
         result.Data.IncludesFundingBandMaximumUpdate.Should().BeFalse();
     }
@@ -124,7 +125,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
         result.Data.FundingBandMaximum.Should().Be(expectedFundingBand);
         result.Data.IncludesFundingBandMaximumUpdate.Should().BeTrue();
     }
-
+    
     [Test]
     public async Task Build_Should_Set_CareDetails()
     {

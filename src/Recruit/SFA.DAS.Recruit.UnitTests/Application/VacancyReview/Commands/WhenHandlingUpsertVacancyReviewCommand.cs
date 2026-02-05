@@ -53,6 +53,13 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 Frequency = NotificationFrequency.Immediately,
                 Method = "Email",
                 Scope = NotificationScope.OrganisationVacancies
+            },
+            new EventPreference
+            {
+                Event = NotificationTypes.ProviderAttachedToVacancy,
+                Frequency = NotificationFrequency.Immediately,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
             }
         ];
         userApiResponse3.NotificationPreferences.EventPreferences =
@@ -98,6 +105,8 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 && c.Tokens["location"] == "Recruiting nationally"
             )
         ), Times.Once);
+        notificationService.Verify(x => x.Send(
+            It.IsAny<SendEmailCommand>()), Times.Once);
         recruitApiClient
             .Verify(x => x.GetAll<RecruitUserApiResponse>(
                 It.IsAny<GetEmployerRecruitUserNotificationPreferencesApiRequest>()), Times.Never);
@@ -112,6 +121,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         RecruitUserApiResponse userApiResponse2,
         RecruitUserApiResponse userApiResponse3,
         RecruitUserApiResponse userApiResponse4,
+        RecruitUserApiResponse userApiResponse5,
         [Frozen] EmailEnvironmentHelper emailEnvironmentHelper,
         [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Frozen] Mock<INotificationService> notificationService,
@@ -157,6 +167,13 @@ public class WhenHandlingUpsertVacancyReviewCommand
                 Frequency = NotificationFrequency.Daily,
                 Method = "Email",
                 Scope = NotificationScope.OrganisationVacancies
+            },
+            new EventPreference
+            {
+                Event = NotificationTypes.ApplicationSharedWithEmployer,
+                Frequency = NotificationFrequency.Immediately,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
             }
         ];
         userApiResponse4.NotificationPreferences.EventPreferences =
@@ -164,6 +181,23 @@ public class WhenHandlingUpsertVacancyReviewCommand
             new EventPreference
             {
                 Event = NotificationTypes.VacancyApprovedOrRejected,
+                Frequency = NotificationFrequency.Immediately,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            }
+        ];
+        userApiResponse5.NotificationPreferences.EventPreferences =
+        [
+            new EventPreference
+            {
+                Event = NotificationTypes.ProviderAttachedToVacancy,
+                Frequency = NotificationFrequency.Never,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            },
+            new EventPreference
+            {
+                Event = NotificationTypes.ApplicationSubmitted,
                 Frequency = NotificationFrequency.Immediately,
                 Method = "Email",
                 Scope = NotificationScope.OrganisationVacancies
@@ -186,7 +220,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
                 It.Is<GetProviderRecruitUserNotificationPreferencesApiRequest>(c =>
-                    c.GetAllUrl.Equals(expectedGetUrlProviderAttached.GetAllUrl)))).ReturnsAsync([userApiResponse2]);
+                    c.GetAllUrl.Equals(expectedGetUrlProviderAttached.GetAllUrl)))).ReturnsAsync([userApiResponse2, userApiResponse5]);
         var expectedGetUrlEmployer = new GetEmployerRecruitUserNotificationPreferencesApiRequest(command.VacancyReview.AccountId, NotificationTypes.VacancyApprovedOrRejected);
         recruitApiClient
             .Setup(x => x.GetAll<RecruitUserApiResponse>(
@@ -264,6 +298,13 @@ public class WhenHandlingUpsertVacancyReviewCommand
             {
                 Event = NotificationTypes.VacancyApprovedOrRejected,
                 Frequency = NotificationFrequency.NotSet,
+                Method = "Email",
+                Scope = NotificationScope.OrganisationVacancies
+            },
+            new EventPreference
+            {
+                Event = NotificationTypes.ApplicationSharedWithEmployer,
+                Frequency = NotificationFrequency.Immediately,
                 Method = "Email",
                 Scope = NotificationScope.OrganisationVacancies
             }
