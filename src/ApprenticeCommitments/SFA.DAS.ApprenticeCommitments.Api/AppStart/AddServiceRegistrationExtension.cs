@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeCommitments.Api.Controllers;
@@ -33,9 +32,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddTransient<TrainingProviderService>();
             services.AddTransient<CoursesService>();
             services.AddTransient<ApimClient>();
-            services.AddTransient<ResponseReturningApiClient>();            
-            services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
-            services.AddSingleton<ApprenticeAccountsApiConfiguration>(sp => sp.GetRequiredService<IOptions<ApprenticeAccountsApiConfiguration>>().Value);
+            services.AddTransient<ResponseReturningApiClient>();
             services.AddTransient(s =>
                 new TemporaryAccountsResponseReturningApiClient(
                     new ApimClient(
@@ -43,6 +40,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
                         s.GetRequiredService<ApprenticeAccountsConfiguration>(),
                         s.GetRequiredService<IWebHostEnvironment>(),
                         s.GetRequiredService<IAzureClientCredentialHelper>())));
+            
+            services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
         }
     }
 }

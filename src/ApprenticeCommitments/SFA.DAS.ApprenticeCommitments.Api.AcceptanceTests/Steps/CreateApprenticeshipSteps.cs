@@ -52,7 +52,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
             var data = new CreateApprenticeshipFromRegistration.Command()
             {
                 RegistrationId = _registrationId,
-                ApprenticeId = _apprentice.Id,
+                ApprenticeId = _apprentice.ApprenticeId,
             };
             await _context.OuterApiClient.Post("apprenticeships", data);
         }
@@ -73,7 +73,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 .Which.Should().BeEquivalentTo(new
                 {
                     RegistrationId = _registrationId,
-                    _apprentice.Id,
+                    _apprentice.ApprenticeId,
                     _apprentice.LastName,
                     _apprentice.DateOfBirth,
                 });
