@@ -11,7 +11,6 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models.Roatp;
 
@@ -41,29 +40,17 @@ public class ProviderStandardsService(
 
         if (serviceParameters.CallingParty == Party.Employer || !providerDetails.IsMainProvider)
         {
-            var standards = await GetAllStandards();
-            var standardsList = standards.ToList();
-            logger.LogInformation(
-                "Standards fetched for UKPRN {Ukprn}: {Count} standards from Get all standards",
-                providerId,
-                standardsList.Count);
             return new ProviderStandardsData
             {
                 IsMainProvider = providerDetails.IsMainProvider,
-                Standards = standardsList
+                Standards = await GetAllStandards()
             };
         }
 
-        var providerStandards = await GetStandardsForProvider(providerId);
-        var providerStandardsList = providerStandards.ToList();
-        logger.LogInformation(
-            "Standards fetched for UKPRN {Ukprn}: {Count} standards from Get standards for provider",
-            providerId,
-            providerStandardsList.Count);
         return new ProviderStandardsData
         {
             IsMainProvider = providerDetails.IsMainProvider,
-            Standards = providerStandardsList
+            Standards = await GetStandardsForProvider(providerId)
         };
     }
 
