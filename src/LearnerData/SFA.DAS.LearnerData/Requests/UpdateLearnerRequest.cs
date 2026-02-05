@@ -37,7 +37,6 @@ public class OnProgrammeRequestDetails
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
-    public DateTime? ActualEndDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
     public Care Care { get; set; }
 }
