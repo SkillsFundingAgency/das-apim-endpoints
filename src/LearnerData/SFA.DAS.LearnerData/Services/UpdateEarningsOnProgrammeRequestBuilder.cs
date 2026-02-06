@@ -24,7 +24,7 @@ namespace SFA.DAS.LearnerData.Services
             if (learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
                 || learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
             {
-                fundingBandMaximum = 30000;
+                fundingBandMaximum = await GetFundingBandMaximum(command);
                 includesFundingBandMaximumUpdate = true;
             }
 
