@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 
@@ -34,7 +35,8 @@ public class PriceItem
     public decimal TotalPrice { get; set; }
 }
 
-public class BreakInLearningItem
+[DebuggerDisplay("Start={StartDate.ToString(\"yyyy-MM-dd\")}, End={EndDate.ToString(\"yyyy-MM-dd\")}")]
+public class PeriodInLearningItem
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }

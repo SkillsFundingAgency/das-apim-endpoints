@@ -94,18 +94,6 @@ public static class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the later of the two specified <see cref="DateTime"/> values.
-    /// </summary>
-    public static DateTime? LatestOf(this DateTime? first, DateTime? second)
-    {
-        if (first == null && second == null) return null;
-        if (first == null) return second;
-        if (second == null) return first;
-
-        return first.Value.LatestOf(second.Value);
-    }
-
-    /// <summary>
     /// Returns the earlier of the two specified <see cref="DateTime"/> values.
     /// </summary>
     public static DateTime? EarliestOf(this DateTime? first, DateTime? second)

@@ -18,7 +18,7 @@ public class ProviderCoursesControllerGetAllAvailableCoursesTests
 {
     [Test]
     [MoqInlineAutoData(CourseType.Apprenticeship)]
-    [MoqInlineAutoData(CourseType.ApprenticeshipUnit)]
+    [MoqInlineAutoData(CourseType.ShortCourse)]
     public async Task GetAllAvailableCourses_ReturnsCourses(
         CourseType courseType,
         [Frozen] Mock<IMediator> mediatorMock,
