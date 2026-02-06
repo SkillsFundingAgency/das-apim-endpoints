@@ -24,7 +24,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
     {
         // Arrange
         var ukprn = _fixture.Create<long>();
-        var learner = _fixture.Build<LearnerRequestDetails>()
+        var learner = _fixture.Build<ShortCourseLearnerRequestDetails>()
             .With(x => x.FirstName, "Frank")
             .With(x => x.LastName, "Frankinson")
             .With(x => x.Dob, new DateTime(2000, 1, 1))
@@ -32,7 +32,8 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .Create();
 
         var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
-            .With(x => x.CourseCode, "CS101")
+            .With(x => x.CourseCode, "123")
+            .With(x => x.AgreementId, "789")
             .With(x => x.StartDate, DateTime.UtcNow)
             .With(x => x.ExpectedEndDate, DateTime.UtcNow.AddMonths(6))
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
@@ -43,7 +44,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
 
         var request = _fixture.Build<ShortCourseRequest>()
             .With(x => x.Learner, learner)
-            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = onProgramme })
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
             .Create();
 
         // Act
