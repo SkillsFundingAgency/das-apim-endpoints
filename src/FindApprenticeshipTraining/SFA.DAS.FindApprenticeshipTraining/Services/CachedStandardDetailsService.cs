@@ -10,7 +10,7 @@ public class CachedStandardDetailsService : ICachedStandardDetailsService
 {
     private const int StandardDetailsCacheDurationInHours = 24;
 
-    ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+    private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
     private readonly ICacheStorageService _cacheStorageService;
 
     public CachedStandardDetailsService(
