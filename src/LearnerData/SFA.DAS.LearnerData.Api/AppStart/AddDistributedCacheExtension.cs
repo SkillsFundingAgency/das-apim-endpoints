@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using SFA.DAS.SharedOuterApi.AppStart;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.LearnerData.Api.AppStart;
 
@@ -7,11 +8,17 @@ public static class AddDistributedCacheExtension
 {
     public static void AddDistributedCache(this WebApplicationBuilder builder, IConfigurationRoot config)
     {
-#if DEBUG
-        builder.Services.AddDistributedMemoryCache();
-#else
-			AddRedisCache(builder, config);
-#endif
+
+        var useInMemoryCache = config.IsLocalAcceptanceTests() || config.IsLocal();
+
+        if(useInMemoryCache)
+        {
+            builder.Services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            AddRedisCache(builder, config);
+        }
     }
 
     private static void AddRedisCache(WebApplicationBuilder builder, IConfigurationRoot config)
