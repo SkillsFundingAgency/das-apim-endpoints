@@ -56,3 +56,4 @@ stages:
     ConfigurationSecrets:
       NServiceBusLicense: $(NServiceBusLicense)
       UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
+      ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
