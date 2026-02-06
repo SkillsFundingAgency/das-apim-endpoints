@@ -40,7 +40,8 @@ public class CreateLearnerCommandHandler(
             StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
-            ConsumerReference = command.Request.ConsumerReference
+            ConsumerReference = command.Request.ConsumerReference,
+            LearningType = LearningType.Apprenticeship
         };
     }
 }
