@@ -13,16 +13,13 @@ public static class VacancySortColumnExtensions
         {
             SortOrder.Asc => SortEnumType.Asc,
             SortOrder.Desc => SortEnumType.Desc,
-            null => SortEnumType.Asc,
-            _ => throw new ArgumentOutOfRangeException(nameof(sortParams))
+            _ => SortEnumType.Asc,
         };
 
         var sortColumn = sortParams.SortColumn switch
         {
-            VacancySortColumn.ClosingDate => new VacancyEntitySortInput { ClosingDate = so }, // default
-            VacancySortColumn.Id => new VacancyEntitySortInput { Id = so },
-            VacancySortColumn.VacancyReference => new VacancyEntitySortInput { VacancyReference = so },
-            _ => throw new ArgumentOutOfRangeException(nameof(sortParams))
+            VacancySortColumn.ClosingDate => new VacancyEntitySortInput { ClosingDate = so },
+            _ => new VacancyEntitySortInput { CreatedDate = so }
         };
 
         return [sortColumn];

@@ -5,7 +5,6 @@ namespace SFA.DAS.Recruit.Api.Models.Requests;
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum VacancySortColumn
 {
-    ClosingDate, // default sort column
-    Id,
-    VacancyReference,
+    CreatedDate, // default sort column
+    ClosingDate,
 }
