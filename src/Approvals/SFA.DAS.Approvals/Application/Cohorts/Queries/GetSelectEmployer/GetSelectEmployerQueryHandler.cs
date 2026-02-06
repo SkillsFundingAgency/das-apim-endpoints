@@ -87,7 +87,7 @@ public class GetSelectEmployerQueryHandler(
             return new Dictionary<string, string>();
         }
 
-        await Parallel.ForEachAsync(accountHashedIds, new ParallelOptions { MaxDegreeOfParallelism = 10 }, async (accountHashedId, _) =>
+        await Parallel.ForEachAsync(accountHashedIds, new ParallelOptions { MaxDegreeOfParallelism = 50 }, async (accountHashedId, _) =>
         {
             try
             {
