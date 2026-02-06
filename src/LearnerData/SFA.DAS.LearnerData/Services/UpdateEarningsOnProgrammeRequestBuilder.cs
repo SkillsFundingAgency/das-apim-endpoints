@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -74,25 +73,15 @@ namespace SFA.DAS.LearnerData.Services
         {
             var periodsInLearning = new List<PeriodInLearningItem>();
 
-            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme)
-            {
-                DateTime endDate;
+            var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
 
-                if (onProgramme.CompletionDate.HasValue)
-                {
-                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
-                        onProgramme.ExpectedEndDate,
-                        onProgramme.PauseDate,
-                        onProgramme.WithdrawalDate); //todo for now left CompletionDate (& ActualEndDate in the completion scenario) out of here to avoid re-writing the balancing logic in earnings, when we come to do qualification period logic for each PIL we will have to re-write that logic anyway and at that point can include CompletionDate in this calculation
-                }
-                else
-                {
-                    endDate = onProgramme.ExpectedEndDate.EarliestOrSelf(
-                        onProgramme.ActualEndDate,
-                        onProgramme.ExpectedEndDate,
-                        onProgramme.PauseDate,
-                        onProgramme.WithdrawalDate);
-                }
+            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
+            {
+                //todo:  onProgramme.CompletionDate should be included here in the coalescence. currently left
+                //out of here to avoid re-writing the balancing logic in earnings,
+                //when we come to do qualification period logic for each PIL we will have to re-write that logic anyway
+                //and at that point can include CompletionDate in this calculation
+                var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.ExpectedEndDate;
 
                 periodsInLearning.Add(new PeriodInLearningItem
                 {
