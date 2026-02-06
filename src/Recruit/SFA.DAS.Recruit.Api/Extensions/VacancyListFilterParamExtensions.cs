@@ -40,7 +40,7 @@ public static class VacancyListFilterParamExtensions
                     new VacancyEntityFilterInput
                     {
                         OwnerType = new NullableOfOwnerTypeOperationFilterInput { Eq = OwnerType.Provider },
-                        Status = new VacancyStatusOperationFilterInput { Eq = GraphQL.VacancyStatus.Review }
+                        Status = new VacancyStatusOperationFilterInput { Eq = VacancyStatus.Review }
                     },
                 ]
             });
@@ -61,25 +61,41 @@ public static class VacancyListFilterParamExtensions
         }
         else
         {
-            andFilters.Add(new VacancyEntityFilterInput
+            if (accountId is not null)
             {
-                Or = [ // (LegalEntityName like '%searchTerm%' OR Title like '%searchTerm%')
-                    new VacancyEntityFilterInput
+                // employer side, only query the title
+                andFilters.Add(new VacancyEntityFilterInput
+                {
+                    // Title like '%searchTerm%'
+                    Title = new StringOperationFilterInput
                     {
-                        LegalEntityName = new StringOperationFilterInput
-                        {
-                            Contains = filterParams.SearchTerm
-                        }
-                    },
-                    new VacancyEntityFilterInput
-                    {
-                        Title = new StringOperationFilterInput
-                        {
-                            Contains = filterParams.SearchTerm
-                        }
+                        Contains = filterParams.SearchTerm
                     }
-                ]
-            });
+                });
+            }
+            else
+            {
+                // provider side, query both legal entity and title
+                andFilters.Add(new VacancyEntityFilterInput
+                {
+                    Or = [ // (LegalEntityName like '%searchTerm%' OR Title like '%searchTerm%')
+                        new VacancyEntityFilterInput
+                        {
+                            LegalEntityName = new StringOperationFilterInput
+                            {
+                                Contains = filterParams.SearchTerm
+                            }
+                        },
+                        new VacancyEntityFilterInput
+                        {
+                            Title = new StringOperationFilterInput
+                            {
+                                Contains = filterParams.SearchTerm
+                            }
+                        }
+                    ]
+                });
+            }
         }
 
         return new VacancyEntityFilterInput
