@@ -32,11 +32,11 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     .ToList(),
                 OnProgramme = new OnProgramme
                 {
-                    CourseCode = request.Delivery.OnProgramme.CourseCode ?? string.Empty, //todo should this be nullable on the outer?
-                    EmployerId = 0, //todo this isn't on the outer spec but it is on the inner
+                    CourseCode = request.Delivery.OnProgramme.CourseCode,
+                    EmployerId = 0, // todo: is this request.Delivery.OnProgramme.AgreementId and if so what is the correct type?
                     Ukprn = ukprn,
-                    StartDate = request.Delivery.OnProgramme.StartDate ?? throw new InvalidOperationException("StartDate is required"), //todo should this be nullable on the outer?
-                    ExpectedEndDate = request.Delivery.OnProgramme.ExpectedEndDate ?? throw new InvalidOperationException("ExpectedEndDate is required"), //todo should this be nullable on the outer?
+                    StartDate = request.Delivery.OnProgramme.StartDate,
+                    ExpectedEndDate = request.Delivery.OnProgramme.ExpectedEndDate,
                     CompletionDate = request.Delivery.OnProgramme.CompletionDate,
                     WithdrawalDate = request.Delivery.OnProgramme.WithdrawalDate,
                     Milestones = request.Delivery.OnProgramme.Milestones
