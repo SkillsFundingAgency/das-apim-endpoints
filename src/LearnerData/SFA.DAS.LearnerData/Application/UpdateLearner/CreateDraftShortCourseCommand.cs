@@ -29,6 +29,9 @@ public class CreateDraftShortCourseCommandHandler(
 
         await learningApiClient.PostWithResponseCode<CreateDraftShortCourseRequest, Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
 
+        var evt = MapToEvent(command.Ukprn, requestData);
+
+
         //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
 
         //todo failure checking and logging

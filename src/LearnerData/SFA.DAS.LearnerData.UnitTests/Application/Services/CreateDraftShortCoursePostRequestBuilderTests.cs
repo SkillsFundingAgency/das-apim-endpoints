@@ -51,6 +51,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = _sut.Build(request, ukprn);
 
         // Assert
+        result.LearnerUpdateDetails.Uln.Should().Be(learner.Uln);
         result.LearnerUpdateDetails.FirstName.Should().Be(learner.FirstName);
         result.LearnerUpdateDetails.LastName.Should().Be(learner.LastName);
         result.LearnerUpdateDetails.DateOfBirth.Should().Be(learner.Dob);

@@ -9,7 +9,7 @@
 
     public class ShortCourseLearnerRequestDetails : LearnerRequestDetails
     {
-        public long Uln { get; }
+        public long Uln { get; set; }
     }
 
     public class ShortCourseDelivery
