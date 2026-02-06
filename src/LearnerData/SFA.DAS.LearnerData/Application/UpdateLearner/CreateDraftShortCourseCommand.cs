@@ -19,8 +19,8 @@ public class CreateDraftShortCourseCommand : IRequest
 public class CreateDraftShortCourseCommandHandler(
     ILogger<CreateDraftShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    ICreateDraftShortCoursePostRequestBuilder createDraftShortCoursePostRequestBuilder
-    //IMessageSession messageSession
+    ICreateDraftShortCoursePostRequestBuilder createDraftShortCoursePostRequestBuilder,
+    IMessageSession messageSession
 ) : IRequestHandler<CreateDraftShortCourseCommand>
 {
     public async Task Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
@@ -32,7 +32,7 @@ public class CreateDraftShortCourseCommandHandler(
         var evt = MapToEvent(command.Ukprn, requestData);
 
 
-        //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
+        await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
 
         //todo failure checking and logging
 
