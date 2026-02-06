@@ -20,7 +20,7 @@
     <PackageVersion Include="SFA.DAS.Employer.Shared.UI" Version="17.1.109" />
     <PackageVersion Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageVersion Include="SFA.DAS.VacancyServices.Wage" Version="1.0.35" />
-    <PackageVersion Include="StrawberryShake.Blazor" Version="15.1.11" />
+    <PackageVersion Include="StrawberryShake.Blazor" Version="15.1.12" />
     <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageVersion Include="Azure.Identity" Version="1.17.1" />
