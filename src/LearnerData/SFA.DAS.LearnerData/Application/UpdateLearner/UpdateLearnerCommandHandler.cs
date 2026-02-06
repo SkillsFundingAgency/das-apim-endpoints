@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
@@ -27,7 +28,7 @@ public class UpdateLearnerCommandHandler(
     {
         logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
 
-        await distributedCache.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
+        await CacheLearnerData(command, cancellationToken);
 
         var request = updateLearningPutRequestBuilder.Build(command);
 
@@ -74,5 +75,12 @@ public class UpdateLearnerCommandHandler(
         }
 
         logger.LogInformation("Earnings updated for learning {LearningKey}", command.LearningKey);
+    }
+
+    private async Task CacheLearnerData(UpdateLearnerCommand command, CancellationToken cancellationToken)
+    {
+        var foo = distributedCache.GetType().FullName;
+        logger.LogInformation("Caching learner data for learning key {LearningKey} and UKPRN {Ukprn} using {cacheType}", command.LearningKey, command.Ukprn, distributedCache.GetType().FullName);
+        await distributedCache.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
     }
 }
