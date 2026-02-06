@@ -25,7 +25,7 @@ public class WhenGettingStandardDetails
         standardDetailsFromCache.LarsCode = larsCode;
 
         mockCacheService
-            .Setup(service => service.RetrieveFromCache<StandardDetailResponse>(nameof(StandardDetailResponse)))
+            .Setup(service => service.RetrieveFromCache<StandardDetailResponse>($"{nameof(StandardDetailResponse)}-{larsCode}"))
             .ReturnsAsync(standardDetailsFromCache);
 
         var result = await service.GetStandardDetails(larsCode.ToString());
@@ -48,7 +48,7 @@ public class WhenGettingStandardDetails
             .ReturnsAsync(new ApiResponse<StandardDetailResponse>(coursesFromApi, System.Net.HttpStatusCode.OK, ""));
 
         mockCacheService
-            .Setup(service => service.RetrieveFromCache<StandardDetailResponse>(nameof(StandardDetailResponse)))
+            .Setup(service => service.RetrieveFromCache<StandardDetailResponse>($"{nameof(StandardDetailResponse)}-{larsCode}"))
             .ReturnsAsync((StandardDetailResponse)null);
 
         var result = await service.GetStandardDetails(larsCode.ToString());
@@ -56,7 +56,7 @@ public class WhenGettingStandardDetails
         result.Should().BeEquivalentTo(coursesFromApi);
         mockCacheService.Verify(service =>
             service.SaveToCache(
-                nameof(StandardDetailResponse),
+                $"{nameof(StandardDetailResponse)}-{larsCode}",
                 coursesFromApi,
                 expectedExpirationInHours, null));
     }

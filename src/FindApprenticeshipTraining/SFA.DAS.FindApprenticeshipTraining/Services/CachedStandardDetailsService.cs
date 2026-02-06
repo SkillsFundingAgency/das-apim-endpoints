@@ -23,15 +23,16 @@ public class CachedStandardDetailsService : ICachedStandardDetailsService
 
     public async Task<StandardDetailResponse> GetStandardDetails(string larsCode)
     {
+        var standardDetailsCacheKey = $"{nameof(StandardDetailResponse)}-{larsCode}";
         var cachedStandardDetails = await _cacheStorageService
-            .RetrieveFromCache<StandardDetailResponse>(nameof(StandardDetailResponse));
+            .RetrieveFromCache<StandardDetailResponse>(standardDetailsCacheKey);
 
         if (cachedStandardDetails != null)
             return cachedStandardDetails;
 
         var apiResponse = await _coursesApiClient.GetWithResponseCode<StandardDetailResponse>(new GetStandardDetailsByIdRequest(larsCode));
         cachedStandardDetails = apiResponse.Body;
-        await _cacheStorageService.SaveToCache(nameof(StandardDetailResponse), cachedStandardDetails, StandardDetailsCacheDurationInHours);
+        await _cacheStorageService.SaveToCache(standardDetailsCacheKey, cachedStandardDetails, StandardDetailsCacheDurationInHours);
 
         return cachedStandardDetails;
     }
