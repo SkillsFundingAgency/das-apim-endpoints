@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using SFA.DAS.LearnerData.Extensions;
 using System.Net;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
@@ -63,6 +64,12 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithBodyAsJson(apiResponses.EarningsInnerApiResponse)
             );
+
+        var cancellationToken = new CancellationToken();
+        foreach (var sldData in apiResponses.SldLearnerData)
+        {
+            await testContext.Cache.StoreLearner(sldData, 10005077, cancellationToken);
+        }
 
 
         var response = await testContext.OuterApiClient.GetAsync($"/learners/providers/10005077/collectionPeriod/{academicYear}/{deliveryPeriod}/fm36Data");

@@ -4,9 +4,19 @@ namespace SFA.DAS.LearnerData.Extensions;
 
 public static class DateTimeExtensions
 {
+    public static int GetNumberOfDaysUntil(this DateTime start, DateTime end)
+    {
+        var nonInclusiveDays = (end - start).Days;
+
+        if(nonInclusiveDays < 0)
+            return 0;
+
+        return 1 + nonInclusiveDays;
+    }
+
     public static int GetNumberOfIncludedCensusDatesUntil(this DateTime start, DateTime end)
     {
-        var totalDays = 1 + (end - start).Days;
+        var totalDays = start.GetNumberOfDaysUntil(end);
         var includedCensusDateCounter = 0;
         for (var i = 0; i < totalDays; i++)
         {
@@ -75,6 +85,24 @@ public static class DateTimeExtensions
             return (byte)(deliveryPeriod - 5);
         else
             return (byte)(deliveryPeriod + 7);
+    }
+
+    public static short ToAcademicYear(this DateTime dateTime)
+    {
+        var twoDigitYear = short.Parse(dateTime.Year.ToString().Substring(2));
+
+        if (dateTime.Month >= 8)
+            return short.Parse($"{twoDigitYear}{twoDigitYear + 1}");
+
+        return short.Parse($"{twoDigitYear - 1}{twoDigitYear}");
+    }
+
+    public static byte ToDeliveryPeriod(this DateTime dateTime)
+    {
+        if (dateTime.Month >= 8)
+            return (byte)(dateTime.Month - 7);
+        else
+            return (byte)(dateTime.Month + 5);
     }
 
     /// <summary>
