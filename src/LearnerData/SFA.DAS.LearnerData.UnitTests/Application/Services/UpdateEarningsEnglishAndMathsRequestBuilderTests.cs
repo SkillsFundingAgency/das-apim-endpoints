@@ -24,8 +24,18 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
         public void Build_Should_Map_EnglishAndMathsItems_And_LearningKey()
         {
             // Arrange
+            var learnAimRef = _fixture.Create<string>();
             var command = _fixture.Create<UpdateLearnerCommand>();
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x =>
+            {
+                x.LearnAimRef = learnAimRef;
+                x.CompletionDate = null;
+                x.WithdrawalDate = null;
+                x.PauseDate = x.PauseDate;
+                x.EndDate = x.PauseDate.Value.AddDays(30);
+            });
             var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+            putRequest.Data.MathsAndEnglishCourses.ForEach(x => x.LearnAimRef = learnAimRef);
             var response = _fixture.Create<UpdateLearnerApiPutResponse>();
 
             // Act
@@ -41,8 +51,17 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 Amount = x.Amount,
                 WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
-                PauseDate = x.PauseDate
+                CompletionDate = x.CompletionDate,
+                PauseDate = x.PauseDate,
+                PeriodsInLearning = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(e => e.LearnAimRef == x.LearnAimRef)
+                    .Select(y => new PeriodInLearningItem
+                    {
+                        StartDate = y.StartDate,
+                        EndDate = y.PauseDate ?? y.CompletionDate ?? y.WithdrawalDate ?? y.EndDate,
+                        OriginalExpectedEndDate = y.EndDate
+                    })
+                    .OrderBy(p => p.StartDate)
+                    .ToList()
             }).ToList();
 
             result.PutUrl.Should().Be($"learning/{command.LearningKey}/english-and-maths");
