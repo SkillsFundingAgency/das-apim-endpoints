@@ -23,6 +23,7 @@ public class WhenGettingVacancyByReference
     {
         // arrange
         queryResult.Setup(x => x.Data).Returns((IGetVacancyByReferenceResult)null!);
+        queryResult.Setup(x => x.Errors).Returns([]);
         recruitGqlClient
             .Setup(x => x.GetVacancyByReference.ExecuteAsync(vacancyReference, CancellationToken.None))
             .ReturnsAsync(queryResult.Object);
@@ -52,6 +53,7 @@ public class WhenGettingVacancyByReference
         vacancy.Setup(x => x.TransferInfo).Returns(JsonSerializer.Serialize(fixture.Create<TransferInfo>(), Global.JsonSerializerOptions));
         
         queryResult.Setup(x => x.Data).Returns(new GetVacancyByReferenceResult([vacancy.Object]));
+        queryResult.Setup(x => x.Errors).Returns([]);
         recruitGqlClient
             .Setup(x => x.GetVacancyByReference.ExecuteAsync(vacancy.Object.VacancyReference, CancellationToken.None))
             .ReturnsAsync(queryResult.Object);

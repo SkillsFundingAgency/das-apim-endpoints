@@ -1,4 +1,4 @@
-query GetDashboardVacanciesPagedList($filterCriteria: VacancyEntityFilterInput, $sortCriteria: [VacancyEntitySortInput!], $skip: Int, $take: Int) {
+query GetPagedVacanciesList($filterCriteria: VacancyEntityFilterInput, $sortCriteria: [VacancyEntitySortInput!], $skip: Int, $take: Int) {
     pagedVacancies (
         where: $filterCriteria
         order: $sortCriteria
@@ -9,10 +9,14 @@ query GetDashboardVacanciesPagedList($filterCriteria: VacancyEntityFilterInput, 
             id
             vacancyReference
             title
-            employerName
+            legalEntityName
             closingDate
             status
             sourceOrigin
+            apprenticeshipType
+            ownerType
+            applicationMethod
+            hasSubmittedAdditionalQuestions
         }
         totalCount
     }

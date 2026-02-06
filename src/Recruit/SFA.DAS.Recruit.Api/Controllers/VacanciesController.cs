@@ -112,8 +112,8 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         PageParams pageParams,
         CancellationToken cancellationToken = default)
     {
-        var response = await recruitGqlClient.GetDashboardVacanciesPagedList.ExecuteAsync(
-            vacancyListFilterParams.Build(accountId: accountId),
+        var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
+            vacancyListFilterParams.BuildForAllVacancies(accountId: accountId),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),
@@ -153,8 +153,8 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         PageParams pageParams,
         CancellationToken cancellationToken = default)
     {
-        var response = await recruitGqlClient.GetDashboardVacanciesPagedList.ExecuteAsync(
-            vacancyListFilterParams.Build(ukprn: ukprn),
+        var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
+            vacancyListFilterParams.BuildForAllVacancies(ukprn: ukprn),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),

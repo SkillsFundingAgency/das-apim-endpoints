@@ -8,7 +8,7 @@ namespace SFA.DAS.Recruit.Api.Extensions;
 
 public static class VacancyListExtensions
 {
-    public static List<VacancyListItem> AssignStatsToVacancies(this IReadOnlyList<IGetDashboardVacanciesPagedList_PagedVacancies_Items> items, Dictionary<long, VacancyStatsItem> statsData)
+    public static List<VacancyListItem> AssignStatsToVacancies(this IReadOnlyList<IGetPagedVacanciesList_PagedVacancies_Items> items, Dictionary<long, VacancyStatsItem> statsData)
     {
         return items.Select(x =>
         {

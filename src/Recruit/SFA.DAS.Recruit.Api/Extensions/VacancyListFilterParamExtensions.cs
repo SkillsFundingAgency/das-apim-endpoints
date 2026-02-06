@@ -7,7 +7,7 @@ namespace SFA.DAS.Recruit.Api.Extensions;
 
 public static class VacancyListFilterParamExtensions
 {
-    public static VacancyEntityFilterInput Build(this VacancyListFilterParams filterParams, int? ukprn = null, long? accountId = null)
+    public static VacancyEntityFilterInput BuildForAllVacancies(this VacancyListFilterParams filterParams, int? ukprn = null, long? accountId = null)
     {
         List<VacancyEntityFilterInput> andFilters = [new()
         {
