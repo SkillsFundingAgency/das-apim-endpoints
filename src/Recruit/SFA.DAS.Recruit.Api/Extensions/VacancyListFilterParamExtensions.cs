@@ -11,7 +11,7 @@ public static class VacancyListFilterParamExtensions
     {
         List<VacancyEntityFilterInput> andFilters = [new()
         {
-            ClosedDate = new DateTimeOperationFilterInput { Eq = null },
+            DeletedDate = new DateTimeOperationFilterInput { Eq = null },
         }];
         
         if (ukprn is not null)
@@ -23,6 +23,13 @@ public static class VacancyListFilterParamExtensions
         }
         else if (accountId is not null)
         {
+            andFilters.Add(new VacancyEntityFilterInput
+            {
+                AccountId = new LongOperationFilterInput
+                {
+                    Eq = accountId
+                }
+            });
             andFilters.Add(new VacancyEntityFilterInput
             {
                 Or = [ // (OwnerType = Employer OR (OwnerType = Provider AND Status = Review))
