@@ -19,7 +19,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
         /// <summary>
         /// Learner details to be updated
         /// </summary>
-        public LearningUpdateDetails LearnerUpdateDetails { get; set; }
+        public ShortCourseLearningUpdateDetails LearnerUpdateDetails { get; set; }
 
         /// <summary>
         /// Learning support details
@@ -30,6 +30,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
         /// On programme details
         /// </summary>
         public OnProgramme OnProgramme { get; set; }
+    }
+
+    public class ShortCourseLearningUpdateDetails : LearningUpdateDetails
+    {
+        public long Uln { get; set; }
     }
 
     /// <summary>

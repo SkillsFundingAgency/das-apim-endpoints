@@ -14,7 +14,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
     {
         [HttpPost]
         [Route("/providers/{ukprn}/shortCourses")]
-        public async Task<IActionResult> CreateShortCourse(ShortCourseRequest request, [FromQuery] long ukprn)
+        public async Task<IActionResult> CreateShortCourse(ShortCourseRequest request, [FromRoute] long ukprn)
         {
             try
             {

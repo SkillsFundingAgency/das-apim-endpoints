@@ -2,14 +2,19 @@
 {
     public class ShortCourseRequest
     {
-        public LearnerRequestDetails Learner { get; set; }
+        public ShortCourseLearnerRequestDetails Learner { get; set; }
 
         public ShortCourseDelivery Delivery { get; set; }
     }
 
+    public class ShortCourseLearnerRequestDetails : LearnerRequestDetails
+    {
+        public long Uln { get; }
+    }
+
     public class ShortCourseDelivery
     {
-        public ShortCourseOnProgramme OnProgramme { get; set; }
+        public List<ShortCourseOnProgramme> OnProgramme { get; set; }
     }
 
     public class ShortCourseOnProgramme

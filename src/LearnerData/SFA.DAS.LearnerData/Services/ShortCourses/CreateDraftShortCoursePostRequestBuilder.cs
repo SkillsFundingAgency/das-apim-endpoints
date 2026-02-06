@@ -14,16 +14,19 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
     {
         public CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn)
         {
+            var firstOnProg = request.Delivery.OnProgramme.First();
+
             return new CreateDraftShortCourseRequest
             {
-                LearnerUpdateDetails = new LearningUpdateDetails
+                LearnerUpdateDetails = new ShortCourseLearningUpdateDetails
                 {
+                    Uln = request.Learner.Uln,
                     FirstName = request.Learner.FirstName,
                     LastName = request.Learner.LastName,
                     DateOfBirth = request.Learner.Dob,
                     EmailAddress = request.Learner.Email
                 },
-                LearningSupport = request.Delivery.OnProgramme.LearningSupport
+                LearningSupport = firstOnProg.LearningSupport
                     .Select(ls => new LearningSupportUpdatedDetails
                     {
                         StartDate = ls.StartDate,
@@ -32,14 +35,14 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     .ToList(),
                 OnProgramme = new OnProgramme
                 {
-                    CourseCode = request.Delivery.OnProgramme.CourseCode,
-                    EmployerId = 0, // todo: is this request.Delivery.OnProgramme.AgreementId and if so what is the correct type?
+                    CourseCode = firstOnProg.CourseCode,
+                    EmployerId = long.Parse(firstOnProg.AgreementId),
                     Ukprn = ukprn,
-                    StartDate = request.Delivery.OnProgramme.StartDate,
-                    ExpectedEndDate = request.Delivery.OnProgramme.ExpectedEndDate,
-                    CompletionDate = request.Delivery.OnProgramme.CompletionDate,
-                    WithdrawalDate = request.Delivery.OnProgramme.WithdrawalDate,
-                    Milestones = request.Delivery.OnProgramme.Milestones
+                    StartDate = firstOnProg.StartDate,
+                    ExpectedEndDate = firstOnProg.ExpectedEndDate,
+                    CompletionDate = firstOnProg.CompletionDate,
+                    WithdrawalDate = firstOnProg.WithdrawalDate,
+                    Milestones = firstOnProg.Milestones
                         .Select(m =>
                         {
                             if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
