@@ -36,4 +36,41 @@ public static class GqlTypeExtensions
             _ => throw new ArgumentOutOfRangeException(nameof(ownerType), ownerType, null)
         };
     }
+    
+    public static Domain.Vacancy.SourceOrigin? FromQueryType(this SourceOrigin? sourceOrigin)
+    {
+        return sourceOrigin switch
+        {
+            SourceOrigin.Api => Domain.Vacancy.SourceOrigin.Api,
+            SourceOrigin.EmployerWeb => Domain.Vacancy.SourceOrigin.EmployerWeb,
+            SourceOrigin.ProviderWeb => Domain.Vacancy.SourceOrigin.ProviderWeb,
+            SourceOrigin.WebComplaint => Domain.Vacancy.SourceOrigin.WebComplaint,
+            null => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(sourceOrigin), sourceOrigin, null)
+        };
+    }
+    
+    public static SharedOuterApi.Domain.ApprenticeshipTypes? FromQueryType(this ApprenticeshipTypes? sourceOrigin)
+    {
+        return sourceOrigin switch
+        {
+            ApprenticeshipTypes.Standard => SharedOuterApi.Domain.ApprenticeshipTypes.Standard,
+            ApprenticeshipTypes.Foundation => SharedOuterApi.Domain.ApprenticeshipTypes.Foundation,
+            null => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(sourceOrigin), sourceOrigin, null)
+        };
+    }
+    
+    public static Domain.Vacancy.ApplicationMethod? FromQueryType(this ApplicationMethod? sourceOrigin)
+    {
+        return sourceOrigin switch
+        {
+            ApplicationMethod.ThroughFindAnApprenticeship => Domain.Vacancy.ApplicationMethod.ThroughFindAnApprenticeship, 
+            ApplicationMethod.ThroughExternalApplicationSite => Domain.Vacancy.ApplicationMethod.ThroughExternalApplicationSite, 
+            ApplicationMethod.ThroughFindATraineeship => Domain.Vacancy.ApplicationMethod.ThroughFindATraineeship, 
+            ApplicationMethod.Unspecified => Domain.Vacancy.ApplicationMethod.Unspecified, 
+            null => null,
+            _ => throw new ArgumentOutOfRangeException(nameof(sourceOrigin), sourceOrigin, null)
+        };
+    }
 }
