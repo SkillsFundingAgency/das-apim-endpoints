@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Azure.Core;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -12,6 +17,7 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Services;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -83,10 +89,12 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
 
         var learnerDataTask = GetLearnerData(request);
         var standardsTask = GetStandardsData();
+        var coursesTask = GetCourses(request.ProviderId);
 
-        await Task.WhenAll(learnerDataTask, standardsTask);
-        var learnerData = await learnerDataTask;
-        var standards = await standardsTask;
+        await Task.WhenAll(learnerDataTask, standardsTask, coursesTask);
+        var learnerData = learnerDataTask.Result;
+        var standards = standardsTask.Result;
+        var courses = coursesTask.Result;
 
         logger.LogInformation("Building Learner Data result");
 
@@ -100,7 +108,8 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             PageSize = learnerData.PageSize,
             TotalPages = learnerData.TotalPages,
             Learners = await mapper.Map(learnerData.Data, standards.TrainingProgrammes.ToList()),
-            FutureMonths = futureMonths
+            FutureMonths = futureMonths,
+            TrainingCourses = courses.ToList()           
         };
     }
 
@@ -143,5 +152,19 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
         }
 
         return response.Body;
+    }
+
+
+    private async Task<IEnumerable<TrainingProgramme>> GetCourses(long ukprn)
+    {
+        var response = await commitmentsClient.GetWithResponseCode<GetCourseCodesResponse>(new GetAllTrainingProgrammesRequest());
+
+        var courseCodes = await learnerDataClient.GetWithResponseCode<GetCourseCodesByUkprnResponse>(new GetCourseCodesByUkprnRequest(ukprn));
+
+        var codes = courseCodes.Body.CourseCodes.Select(t => t.ToString());
+
+        var trainingProgrammesForUkprn = response.Body.TrainingProgrammes.Where(t => codes.Contains(t.CourseCode));
+
+        return trainingProgrammesForUkprn;
     }
 }
