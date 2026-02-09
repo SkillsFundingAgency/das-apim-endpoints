@@ -84,8 +84,6 @@ public class WhenGettingLearnersForProvider
         GetAccountLegalEntityResponse aleResponse,
         GetAllStandardsRequest coursesRequest,
         GetAllStandardsResponse coursesResponse,
-        GetCourseCodesResponse courseCodesResponse,
-        GetCourseCodesByUkprnResponse courseCodesByUkprnResponse,
         List<LearnerSummary> learners,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
@@ -106,6 +104,20 @@ public class WhenGettingLearnersForProvider
                 new AvailableDateStartWindow { StartDate = DateTime.Now.AddMonths(1) },
                 new AvailableDateStartWindow { StartDate = DateTime.Now.AddMonths(2) }
             }
+        };
+
+        GetCourseCodesResponse courseCodesResponse = new GetCourseCodesResponse()
+        {
+            TrainingProgrammes = [
+                 new TrainingProgramme() { CourseCode = "4" , Name = "course4" },
+                 new TrainingProgramme() { CourseCode = "5" , Name = "course5" },
+                 new TrainingProgramme() { CourseCode = "6" , Name = "course6" }
+             ]
+        };
+
+        GetCourseCodesByUkprnResponse courseCodesByUkprnResponse = new GetCourseCodesByUkprnResponse()
+        {
+            CourseCodes = [4, 5, 6]
         };
 
         learnerDataClient.Setup(x =>
@@ -144,6 +156,8 @@ public class WhenGettingLearnersForProvider
         actual.TotalPages.Should().Be(learnersResponse.TotalPages);
         actual.Learners.Should().BeEquivalentTo(learners);
         actual.FutureMonths.Should().Be(3);
+        actual.TrainingCourses.Count().Should().Be(courseCodesByUkprnResponse.CourseCodes.Count);
+        actual.TrainingCourses.Select(t => t.Name).Should().BeEquivalentTo(courseCodesResponse.TrainingProgrammes.Select(t => t.Name));
     }
 
     [Test, MoqAutoData]
