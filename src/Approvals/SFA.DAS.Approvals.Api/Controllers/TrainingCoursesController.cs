@@ -107,27 +107,5 @@ namespace SFA.DAS.Approvals.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
-
-        [HttpGet]
-        [Route("{ukprn:long}/coursecodes")]
-        public async Task<IActionResult> GetCourseCodes(long ukprn)
-        {
-            try
-            {
-                var queryResult = await mediator.Send(new GetCourseCodesQuery() { Ukprn = ukprn});
-
-                var model = new GetCourseCodesResponse
-                {
-                    TrainingProgrammes = queryResult.TrainingProgrammes
-                };
-
-                return Ok(model);
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Error attempting to get all courses");
-                return BadRequest();
-            }
-        }
     }
 }
