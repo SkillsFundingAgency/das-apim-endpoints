@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,7 +11,6 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models.Roatp;
 
@@ -53,7 +52,6 @@ public class ProviderStandardsService(
             IsMainProvider = providerDetails.IsMainProvider,
             Standards = await GetStandardsForProvider(providerId)
         };
-
     }
 
     private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)

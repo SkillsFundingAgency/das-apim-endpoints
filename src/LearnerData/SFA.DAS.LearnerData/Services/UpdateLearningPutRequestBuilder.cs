@@ -25,7 +25,8 @@ namespace SFA.DAS.LearnerData.Services
             var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(command);
 
             var costs = costsService.GetCosts(allMatchingOnProgrammes);
-            var breaksInLearning = breaksInLearningService.CalculateOnProgrammeBreaksInLearning(allMatchingOnProgrammes);
+            var onProgrammeDetails = BuildOnProgrammeDetails(firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes, costs);
+            var englishAndMathsCourses = BuildEnglishAndMathsDetails(command.UpdateLearnerRequest.Delivery.EnglishAndMaths);
 
             //Determine the effective end date of the latest OnProgramme
             var onProgrammeEndDate = new[]
@@ -39,8 +40,9 @@ namespace SFA.DAS.LearnerData.Services
             var learningSupport = learningSupportService.GetCombinedLearningSupport(
                 allMatchingOnProgrammes,
                 onProgrammeEndDate,
-                command.UpdateLearnerRequest.Delivery.EnglishAndMaths,
-                breaksInLearning);
+                onProgrammeDetails.BreaksInLearning,
+                englishAndMathsCourses,
+                command.EnglishAndMathsLearningSupport());
 
             var body = new UpdateLearningRequestBody
             {
@@ -62,26 +64,8 @@ namespace SFA.DAS.LearnerData.Services
                         CareLeaverEmployerConsentGiven = latestOnProgramme.Care.EmployerConsent
                     }
                 },
-                OnProgramme = new OnProgrammeDetails
-                {
-                    ExpectedEndDate = latestOnProgramme.ExpectedEndDate,
-                    Costs = costs.GetCostsOrDefault(firstOnProgramme.StartDate),
-                    PauseDate = latestOnProgramme.PauseDate,
-                    BreaksInLearning = breaksInLearning
-                },
-                MathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x =>
-                    new MathsAndEnglishDetails
-                    {
-                        Amount = x.Amount,
-                        CompletionDate = x.CompletionDate,
-                        LearnAimRef = x.LearnAimRef,
-                        Course = x.Course,
-                        PlannedEndDate = x.EndDate,
-                        PriorLearningPercentage = x.PriorLearningPercentage,
-                        StartDate = x.StartDate,
-                        WithdrawalDate = x.WithdrawalDate,
-                        PauseDate = x.PauseDate
-                    }).ToList(),
+                OnProgramme = onProgrammeDetails,
+                MathsAndEnglishCourses = englishAndMathsCourses,
                 LearningSupport = learningSupport
             };
 
@@ -108,6 +92,69 @@ namespace SFA.DAS.LearnerData.Services
             return (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes);
         }
 
+        private OnProgrammeDetails BuildOnProgrammeDetails(
+            OnProgrammeRequestDetails firstOnProgramme, 
+            OnProgrammeRequestDetails latestOnProgramme,
+            List<OnProgrammeRequestDetails> allMatchingOnProgrammes,
+            List<CostDetails> costs)
+        {
 
+            var breaksInLearning = breaksInLearningService.CalculateOnProgrammeBreaksInLearning(allMatchingOnProgrammes);
+
+            return new OnProgrammeDetails
+            {
+                ExpectedEndDate = latestOnProgramme.ExpectedEndDate,
+                Costs = costs.GetCostsOrDefault(firstOnProgramme.StartDate),
+                PauseDate = latestOnProgramme.PauseDate,
+                BreaksInLearning = breaksInLearning
+            };
+        }
+
+        private List<MathsAndEnglishDetails> BuildEnglishAndMathsDetails(List<MathsAndEnglish> mathsAndEnglish)
+        {
+            var groupedCourses = mathsAndEnglish.GroupBy(c => c.LearnAimRef);
+
+            return groupedCourses.Select(g =>
+            {
+                if(g.Count() == 1)
+                {
+                    var course = g.First();
+                    return new MathsAndEnglishDetails
+                    {
+                        Amount = course.Amount,
+                        CompletionDate = course.CompletionDate,
+                        LearnAimRef = course.LearnAimRef,
+                        Course = course.Course,
+                        PlannedEndDate = course.EndDate,
+                        PriorLearningPercentage = course.PriorLearningPercentage,
+                        StartDate = course.StartDate,
+                        WithdrawalDate = course.WithdrawalDate,
+                        PauseDate = course.PauseDate,
+                        BreaksInLearning = new List<BreakInLearning>()
+                    };
+                }
+                else
+                {
+                    var breaksInLearning = breaksInLearningService.CalculateEnglishAndMathsBreaksInLearning(g.ToList());
+                    var orderedCourses = g.OrderBy(c => c.StartDate).ToList();
+                    var firstCourse = orderedCourses.First();
+                    var latestCourse = orderedCourses.Last();
+
+                    return new MathsAndEnglishDetails
+                    {
+                        Amount = latestCourse.Amount,
+                        CompletionDate = latestCourse.CompletionDate,
+                        LearnAimRef = latestCourse.LearnAimRef,
+                        Course = latestCourse.Course,
+                        PlannedEndDate = latestCourse.EndDate,
+                        PriorLearningPercentage = latestCourse.PriorLearningPercentage,
+                        StartDate = firstCourse.StartDate,
+                        WithdrawalDate = latestCourse.WithdrawalDate,
+                        PauseDate = latestCourse.PauseDate,
+                        BreaksInLearning = breaksInLearning
+                    };
+                }
+            }).ToList();
+        }
     }
 }
