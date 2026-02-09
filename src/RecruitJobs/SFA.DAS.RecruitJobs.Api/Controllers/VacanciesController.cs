@@ -14,7 +14,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
+using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.GraphQL;
+using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
+using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
