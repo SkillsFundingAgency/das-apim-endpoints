@@ -18,7 +18,8 @@ public class VacancyReviewDto
     public required string Status { get; init; }
     public byte SubmissionCount { get; init; }
     public string ReviewedByUserEmail { get; init; }
-    public required string SubmittedByUserEmail { get; init; }
+    public string? SubmittedByUserEmail { get; init; }
+    public string SubmittedByUserId { get; init; }
     public DateTime? ClosedDate { get; init; }
     public string ManualOutcome { get; set; }
     public string ManualQaComment { get; init; }
@@ -51,6 +52,7 @@ public class VacancyReviewDto
             SubmissionCount = source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUserEmail,
             SubmittedByUserEmail = source.SubmittedByUserEmail,
+            SubmittedByUserId = source.SubmittedByUserId,
             ClosedDate = source.ClosedDate,
             ManualOutcome = source.ManualOutcome,
             ManualQaComment = source.ManualQaComment,
@@ -80,6 +82,7 @@ public class VacancyReviewDto
             SubmissionCount = source.SubmissionCount,
             ReviewedByUserEmail = source.ReviewedByUserEmail,
             SubmittedByUserEmail = source.SubmittedByUserEmail,
+            SubmittedByUserId = source.SubmittedByUserId,
             ClosedDate = source.ClosedDate,
             ManualOutcome = source.ManualOutcome,
             ManualQaComment = source.ManualQaComment,
