@@ -21,7 +21,7 @@ public class UpdateOnProgrammeRequest
     public int? FundingBandMaximum { get; set; }
     public bool IncludesFundingBandMaximumUpdate { get; set; }
     public List<PriceItem> Prices { get; set; } = [];
-    public List<BreakInLearningItem> BreaksInLearning { get; set; } = [];
+    public List<PeriodInLearningItem> BreaksInLearning { get; set; } = [];
     public Care Care { get; set; }
 }
 
