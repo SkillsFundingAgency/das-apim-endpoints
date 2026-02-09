@@ -29,12 +29,12 @@ public class CreateDraftShortCourseCommandHandler(
 
         var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
-        await learningApiClient.PostWithResponseCode<CreateDraftShortCourseRequest, Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
+        await learningApiClient.PostWithResponseCode<Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
 
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
     }
 
-    private LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
+    private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
     {
         return new LearnerDataEvent
         {

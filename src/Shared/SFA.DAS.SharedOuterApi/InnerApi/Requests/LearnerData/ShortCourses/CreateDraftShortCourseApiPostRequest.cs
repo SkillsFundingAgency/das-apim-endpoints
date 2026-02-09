@@ -4,11 +4,10 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
 {
-    public class CreateDraftShortCourseApiPostRequest(CreateDraftShortCourseRequest data)
-        : IPostApiRequest<CreateDraftShortCourseRequest>
+    public class CreateDraftShortCourseApiPostRequest(CreateDraftShortCourseRequest data) : IPostApiRequest
     {
         public string PostUrl { get; } = $"shortCourses";
-        public CreateDraftShortCourseRequest Data { get; set; } = data;
+        public object Data { get; set; } = data;
     }
 
     /// <summary>
