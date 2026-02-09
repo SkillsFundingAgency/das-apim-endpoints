@@ -8,6 +8,7 @@ using SFA.DAS.DigitalCertificates.Application.Commands.DeleteSharing;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -50,6 +51,32 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve sharing {SharingId}", sharingId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("code/{code}")]
+        public async Task<IActionResult> GetSharingByCode([FromRoute] Guid code)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharingByCodeQuery { Code = code });
+
+                if (result == null || result.Response == null)
+                {
+                    return Ok(new { });
+                }
+
+                if (result.BothFound)
+                {
+                    return BadRequest();
+                }
+
+                return Ok(result.Response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to access sharing by code {Code}", code);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
