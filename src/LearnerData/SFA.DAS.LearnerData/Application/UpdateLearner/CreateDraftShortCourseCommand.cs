@@ -25,17 +25,13 @@ public class CreateDraftShortCourseCommandHandler(
 {
     public async Task Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
     {
+        logger.LogInformation("Creating draft short course for provider {ProviderUkprn}", command.Ukprn);
+
         var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
         await learningApiClient.PostWithResponseCode<CreateDraftShortCourseRequest, Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
 
-        var evt = MapToEvent(command.Ukprn, requestData);
-
-
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
-
-        //todo failure checking and logging
-
     }
 
     private LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
