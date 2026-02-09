@@ -44,7 +44,7 @@ public class WhenGettingLearnersForProvider
             })
             .ReturnsAsync(mediatorResult);
 
-        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pageSize, startMonth, startYear,courseCode.ToString()) as ObjectResult;
+        var controllerResult = await controller.Get(providerId, accountLegalEntityId, cohortId, searchTerm, sortColumn, sortDescending, page, pageSize, startMonth, startYear, courseCode.ToString()) as ObjectResult;
 
         controllerResult.Should().NotBeNull();
         controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);

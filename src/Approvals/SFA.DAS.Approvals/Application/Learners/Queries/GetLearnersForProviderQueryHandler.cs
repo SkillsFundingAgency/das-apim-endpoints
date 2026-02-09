@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Azure.Core;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
@@ -17,7 +15,6 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -109,7 +106,7 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             TotalPages = learnerData.TotalPages,
             Learners = await mapper.Map(learnerData.Data, standards.TrainingProgrammes.ToList()),
             FutureMonths = futureMonths,
-            TrainingCourses = courses.ToList()           
+            TrainingCourses = courses.ToList()
         };
     }
 
@@ -124,7 +121,7 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
                 request.SortField,
                 request.SortDescending,
                 request.Page,
-                request.PageSize, 
+                request.PageSize,
                 request.StartMonth,
                 request.StartYear,
                 request.MaxStartDate,
@@ -153,7 +150,6 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
 
         return response.Body;
     }
-
 
     private async Task<IEnumerable<TrainingProgramme>> GetCourses(long ukprn)
     {
