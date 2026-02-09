@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SFA.DAS.Common.Domain.Models;
 using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.GraphQL;
@@ -7,6 +8,8 @@ namespace SFA.DAS.Recruit.Api.Extensions;
 
 public static class VacancyListFilterParamExtensions
 {
+    private const string VacancyPrefix = "VAC";
+    
     public static VacancyEntityFilterInput BuildForAllVacancies(this VacancyListFilterParams filterParams, int? ukprn = null, long? accountId = null)
     {
         List<VacancyEntityFilterInput> andFilters = [new()
@@ -51,8 +54,7 @@ public static class VacancyListFilterParamExtensions
             return new VacancyEntityFilterInput { And = andFilters };
         }
         
-        // this will permit searching by 10000 vs VAC10000
-        if (VacancyReference.TryParse(filterParams.SearchTerm, out var vacancyReference) && vacancyReference != VacancyReference.None)
+        if (filterParams.SearchTerm.StartsWith(VacancyPrefix, StringComparison.CurrentCultureIgnoreCase) && VacancyReference.TryParse(filterParams.SearchTerm, out var vacancyReference) && vacancyReference != VacancyReference.None)
         {
             andFilters.Add(new VacancyEntityFilterInput
             {
