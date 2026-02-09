@@ -35,7 +35,7 @@ public class EmploymentChecksController(IMediator mediator, ILogger<EmploymentCh
                 ApprenticeshipIds = apprenticeshipIds.AsReadOnly()
             });
             
-            return Ok(result.Checks);
+            return Ok(result);
         }
         catch (Exception e)
         {

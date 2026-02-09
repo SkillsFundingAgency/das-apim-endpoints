@@ -17,7 +17,7 @@ public class GetEmploymentChecksQueryHandler(IEmploymentCheckApiClient<Employmen
     public async Task<GetEmploymentChecksResult> Handle(GetEmploymentChecksQuery request, CancellationToken cancellationToken)
     {
         var apiRequest = new GetEmploymentCheckLearnersRequest(request.ApprenticeshipIds);
-        var response = await client.GetWithResponseCode<List<EvsCheckResponse>>(apiRequest);
+        var response = await client.GetWithResponseCode<GetEmploymentChecksResponse>(apiRequest);
 
         if (!response.StatusCode.IsSuccessStatusCode())
         {
@@ -26,7 +26,7 @@ public class GetEmploymentChecksQueryHandler(IEmploymentCheckApiClient<Employmen
 
         return new GetEmploymentChecksResult
         {
-            Checks = response.Body ?? []
+            Checks = response.Body?.Checks ?? []
         };
     }
 }

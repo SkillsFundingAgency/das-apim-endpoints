@@ -23,16 +23,15 @@ public class GetEmploymentChecksQueryHandlerTests
     {
         // Arrange
         client
-            .Setup(x => x.GetWithResponseCode<List<EvsCheckResponse>>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
-            .ReturnsAsync(new ApiResponse<List<EvsCheckResponse>>(evsChecks, HttpStatusCode.OK, null));
+            .Setup(x => x.GetWithResponseCode<GetEmploymentChecksResponse>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
+            .ReturnsAsync(new ApiResponse<GetEmploymentChecksResponse>(new GetEmploymentChecksResponse { Checks = evsChecks }, HttpStatusCode.OK, null));
 
         // Act
         var actual = await handler.Handle(query, CancellationToken.None);
 
         // Assert
         actual.Checks.Should().BeEquivalentTo(evsChecks);
-        client.VerifyAll();
-        client.VerifyNoOtherCalls();
+        client.Verify(x => x.GetWithResponseCode<GetEmploymentChecksResponse>(It.IsAny<GetEmploymentCheckLearnersRequest>()), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -43,8 +42,8 @@ public class GetEmploymentChecksQueryHandlerTests
     {
         // Arrange
         client
-            .Setup(x => x.GetWithResponseCode<List<EvsCheckResponse>>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
-            .ReturnsAsync(new ApiResponse<List<EvsCheckResponse>>(null, HttpStatusCode.OK, null));
+            .Setup(x => x.GetWithResponseCode<GetEmploymentChecksResponse>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
+            .ReturnsAsync(new ApiResponse<GetEmploymentChecksResponse>(null, HttpStatusCode.OK, null));
 
         // Act
         var actual = await handler.Handle(query, CancellationToken.None);
@@ -61,8 +60,8 @@ public class GetEmploymentChecksQueryHandlerTests
     {
         // Arrange
         client
-            .Setup(x => x.GetWithResponseCode<List<EvsCheckResponse>>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
-            .ReturnsAsync(new ApiResponse<List<EvsCheckResponse>>(null, HttpStatusCode.InternalServerError, "Inner API error"));
+            .Setup(x => x.GetWithResponseCode<GetEmploymentChecksResponse>(It.IsAny<GetEmploymentCheckLearnersRequest>()))
+            .ReturnsAsync(new ApiResponse<GetEmploymentChecksResponse>(null, HttpStatusCode.InternalServerError, "Inner API error"));
 
         // Act
         var act = () => handler.Handle(query, CancellationToken.None);

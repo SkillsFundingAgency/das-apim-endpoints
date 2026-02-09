@@ -25,7 +25,7 @@ public class WhenGettingLearners
 
         result.Should().BeOfType<OkObjectResult>();
         var ok = (OkObjectResult)result;
-        ok.Value.Should().BeEquivalentTo(evsChecks);
+        ok.Value.Should().BeEquivalentTo(new GetEmploymentChecksResult { Checks = evsChecks });
     }
 
     [Test, MoqAutoData]
