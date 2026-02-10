@@ -269,7 +269,7 @@ components:
     supportedCourse:
       type: object
       properties:
-        code: 
+        larsCode: 
           type: string
         effectiveFrom:
           type: string
