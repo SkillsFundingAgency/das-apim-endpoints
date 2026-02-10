@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.Common.Domain.Models;
 using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.GraphQL;
@@ -10,12 +11,21 @@ public static class VacancyListFilterParamExtensions
 {
     private const string VacancyPrefix = "VAC";
     
-    public static VacancyEntityFilterInput BuildForAllVacancies(this VacancyListFilterParams filterParams, int? ukprn = null, long? accountId = null)
+    public static VacancyEntityFilterInput Build(this VacancyListFilterParams filterParams, int? ukprn = null, long? accountId = null, List<VacancyStatus> statuses = null)
     {
         List<VacancyEntityFilterInput> andFilters = [new()
         {
             DeletedDate = new DateTimeOperationFilterInput { Eq = null },
         }];
+
+        if (statuses is { Count: >0 })
+        {
+            andFilters.Add(new VacancyEntityFilterInput
+            {
+                // e.g. AND (Status = Live OR Status = Draft)
+                Or = statuses.Select(x => new VacancyEntityFilterInput { Status = new VacancyStatusOperationFilterInput { Eq = x } }).ToArray()
+            });
+        }
         
         if (ukprn is not null)
         {
