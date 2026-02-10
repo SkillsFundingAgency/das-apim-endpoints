@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
@@ -33,6 +34,22 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error attempting to retrieve certificate {CertificateId}", id);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{id}/framework")]
+        public async Task<IActionResult> GetFrameworkCertificate([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetFrameworkCertificateQuery(id));
+
+                return result == null ? NotFound() : Ok(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error attempting to retrieve framework certificate {FrameworkLearnerId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
