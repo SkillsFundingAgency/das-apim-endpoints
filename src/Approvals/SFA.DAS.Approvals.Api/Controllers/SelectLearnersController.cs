@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Learners.Queries;
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -14,17 +15,7 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
     [Route("/providers/{providerId}/unapproved/add/learners/select")]
     public async Task<IActionResult> Get(
         long providerId,
-        [FromQuery] long? accountLegalEntityId,
-        [FromQuery] long? cohortId,
-        [FromQuery] string searchTerm,
-        [FromQuery] string sortColumn,
-        [FromQuery] bool sortDescending,
-        [FromQuery] int page,
-        [FromQuery] int? pageSize,
-        [FromQuery] int? startMonth,
-        [FromQuery] int startYear,
-        [FromQuery] string courseCode
-        )
+        [FromQuery] SearchLearnersRequest request)
     {
         try
         {
@@ -32,16 +23,16 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
             var result = await mediator.Send(new GetLearnersForProviderQuery
             {
                 ProviderId = providerId,
-                AccountLegalEntityId = accountLegalEntityId,
-                CohortId = cohortId,
-                SearchTerm = searchTerm,
-                SortField = sortColumn,
-                SortDescending = sortDescending,
-                Page = page,
-                PageSize = pageSize,
-                StartMonth = startMonth,
-                StartYear = startYear,
-                CourseCode = !string.IsNullOrEmpty(courseCode) ? int.Parse(courseCode) : null
+                AccountLegalEntityId = request.AccountLegalEntityId,
+                CohortId = request.CohortId,
+                SearchTerm = request.SearchTerm,
+                SortField = request.SortColumn,
+                SortDescending = request.SortDescending,
+                Page = request.Page,
+                PageSize = request.PageSize,
+                StartMonth = request.StartMonth,
+                StartYear = request.StartYear,
+                CourseCode = !string.IsNullOrEmpty(request.CourseCode) ? int.Parse(request.CourseCode) : null
             });
             return Ok(result);
         }
