@@ -8,7 +8,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services;
 
 public class CachedStandardDetailsService : ICachedStandardDetailsService
 {
-    private const int StandardDetailsCacheDurationInHours = 24;
+    private const int StandardDetailsCacheDurationInHours = 4;
 
     private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
     private readonly ICacheStorageService _cacheStorageService;

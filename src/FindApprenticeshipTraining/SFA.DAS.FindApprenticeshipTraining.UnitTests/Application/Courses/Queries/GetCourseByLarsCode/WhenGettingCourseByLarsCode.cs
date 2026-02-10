@@ -713,10 +713,8 @@ public sealed class WhenGettingCourseByLarsCode
     public async Task Handle_Returns_Null_When_Training_Providers_Returns_404_Or_400(HttpStatusCode statusCode)
     {
         _cachedStandardDetailsService
-      .Setup(x => x.GetStandardDetails(
-          It.IsAny<string>()
-      ))
-      .ReturnsAsync(new StandardDetailResponse());
+            .Setup(x => x.GetStandardDetails(It.IsAny<string>()))
+            .ReturnsAsync(new StandardDetailResponse());
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>

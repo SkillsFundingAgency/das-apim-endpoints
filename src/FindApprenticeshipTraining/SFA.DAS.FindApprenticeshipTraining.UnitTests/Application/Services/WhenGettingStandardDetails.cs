@@ -40,7 +40,7 @@ public class WhenGettingStandardDetails
         [Frozen] Mock<ICacheStorageService> mockCacheService,
         CachedStandardDetailsService service)
     {
-        var expectedExpirationInHours = 24;
+        var expectedExpirationInHours = 4;
         var larsCode = 123;
         coursesFromApi.LarsCode = larsCode;
 
