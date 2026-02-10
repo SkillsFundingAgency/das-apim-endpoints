@@ -14,7 +14,7 @@ public class GetLearnerForProviderQueryResult
     public DateTime PlannedEndDate { get; set; }
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
-    public int StandardCode { get; set; }
+    public string TrainingCode { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
 
@@ -32,7 +32,7 @@ public class GetLearnerForProviderQueryResult
             PlannedEndDate = source.PlannedEndDate,
             EpaoPrice = source.EpaoPrice,
             TrainingPrice = source.TrainingPrice,
-            StandardCode = source.StandardCode,
+            TrainingCode = source.TrainingCode,
             IsFlexiJob = source.IsFlexiJob,
             PlannedOTJTrainingHours = source.PlannedOTJTrainingHours,
         };
