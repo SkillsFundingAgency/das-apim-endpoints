@@ -138,7 +138,6 @@ public class WhenGettingLearnersForProvider
         learnerDataClient.Setup(x => x.GetWithResponseCode<GetCourseCodesByUkprnResponse>(It.Is<GetCourseCodesByUkprnRequest>(t => t.Ukprn == query.ProviderId)))
             .ReturnsAsync(new ApiResponse<GetCourseCodesByUkprnResponse>(courseCodesByUkprnResponse, HttpStatusCode.OK, null));
 
-
         reservationsClient.Setup(x => x.Get<GetAvailableDatesResponse>(It.IsAny<GetAvailableDatesRequest>()))
             .ReturnsAsync(availableDatesResponse);
 
@@ -236,7 +235,6 @@ public class WhenGettingLearnersForProvider
     [Greedy] GetLearnersForProviderQueryHandler handler
 )
     {
-
         var trainingProgrammes = new List<TrainingProgramme>()
         {
              new TrainingProgramme() { CourseCode = "1" , Name = "course1" },
@@ -248,7 +246,6 @@ public class WhenGettingLearnersForProvider
         getCourseCodesByUkprnResponse.CourseCodes = courseCodes;
 
         courseCodesResponse.TrainingProgrammes = trainingProgrammes;
-
 
         query.AccountLegalEntityId = null;
         GetLearnersForProviderRequest input;
@@ -427,7 +424,6 @@ public class WhenGettingLearnersForProvider
 
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
             .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, "Courses failed"));
-
 
         mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
 
