@@ -25,15 +25,6 @@ paths:
         '429':
           $ref: '#/components/responses/rateLimitExceededResponse'
   
-  /reference-data/providers:
-    get:
-      summary: returns all reference data for providers
-      security:
-        - ApiKeyAuth: []  # Require API Key authentication
-      responses:
-        '200':
-          $ref: '#/components/responses/providerReferenceDataResponseArray' 
-
   /reference-data/providers/{ukprn}:
     get:
       summary: returns reference data pertinant to a provider
@@ -272,9 +263,10 @@ components:
             - ShortCourse
         courses:
           type: array
-          $ref: '#/components/schemas/supportCourse'
+          items:
+            $ref: '#/components/schemas/supportedCourse'
 
-    supportCourse:
+    supportedCourse:
       type: object
       properties:
         code: 
