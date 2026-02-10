@@ -260,8 +260,7 @@ public class CohortController(
         [FromRoute] int providerId,
         [FromQuery] string searchTerm,
         [FromQuery] string sortField,
-        [FromQuery] bool reverseSort,
-        [FromQuery] bool useLearnerData)
+        [FromQuery] bool reverseSort)
     {
         try
         {
@@ -270,8 +269,7 @@ public class CohortController(
                 ProviderId = providerId,
                 SearchTerm = searchTerm,
                 SortField = sortField,
-                ReverseSort = reverseSort,
-                UseLearnerData = useLearnerData
+                ReverseSort = reverseSort
             });
 
             if (result == null)
