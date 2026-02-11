@@ -1,14 +1,9 @@
 ﻿using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Queries.Apprenticeships
 {
     public class GetApprenticeshipByUlnQuery : IRequest<GetApprenticeshipByUlnQueryResponse>
     {
-        public long Uln { get; set; }
+        public string Uln { get; set; }
     }
 }
