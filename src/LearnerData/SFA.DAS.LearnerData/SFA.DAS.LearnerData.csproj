@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Services\Models\**" />
+    <EmbeddedResource Remove="Services\Models\**" />
+    <None Remove="Services\Models\**" />
+  </ItemGroup>
+
+  <ItemGroup>
 	<PackageReference Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" />
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="MediatR" />
