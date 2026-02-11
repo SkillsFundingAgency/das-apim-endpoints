@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
@@ -83,7 +84,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var ukprn = scenarioContext.Get<long>(UkprnKey);
         var sldLearnerData = scenarioContext.Get<UpdateLearnerRequest>(SldLearnerDataKey);
-        var cachedData = await testContext.Cache.GetLearner(ukprn, sldLearnerData.Learner.Uln, CancellationToken.None);
+        var cachedData = await testContext.Cache.GetLearner(ukprn, sldLearnerData.Learner.Uln.ToString(), NullLogger.Instance, CancellationToken.None);
 
         cachedData.Should().NotBeNull();
         cachedData.Should().BeEquivalentTo(sldLearnerData);

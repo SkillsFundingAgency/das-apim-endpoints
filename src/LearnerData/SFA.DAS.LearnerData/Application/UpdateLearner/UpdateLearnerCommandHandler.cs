@@ -102,6 +102,6 @@ public class UpdateLearnerCommandHandler : IRequestHandler<UpdateLearnerCommand>
     private async Task CacheLearnerData(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Caching learner data for learning key {LearningKey} and UKPRN {Ukprn} using {cacheType}", command.LearningKey, command.Ukprn, _distributedCache.GetType().FullName);
-        await _distributedCache.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
+        await _distributedCache.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, _logger, cancellationToken);
     }
 }

@@ -4,6 +4,7 @@ using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Extensions;
 using System.Net;
+using Microsoft.Extensions.Logging.Abstractions;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
@@ -68,7 +69,7 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
         var cancellationToken = new CancellationToken();
         foreach (var sldData in apiResponses.SldLearnerData)
         {
-            await testContext.Cache.StoreLearner(sldData, 10005077, cancellationToken);
+            await testContext.Cache.StoreLearner(sldData, 10005077, NullLogger.Instance,  cancellationToken);
         }
 
 

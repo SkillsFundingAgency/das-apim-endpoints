@@ -49,8 +49,10 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         var currentAcademicYear = await GetCurrentAcademicYear(request);
         var (learnings, totalLearners) = await GetLearnings(request);
 
+        var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x => x.Uln), _logger, cancellationToken);
+
         var earnings = await GetRelatedEarnings(request, learnings);
-        var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x=>x.Uln),cancellationToken);
+        
         var joinedLearnerData = JoinDataSources(learnings, earnings, sldLearners, currentAcademicYear);
         
 

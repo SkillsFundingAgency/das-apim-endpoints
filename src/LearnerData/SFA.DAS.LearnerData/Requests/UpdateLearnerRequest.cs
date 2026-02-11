@@ -19,7 +19,6 @@ public class LearnerRequestDetails
     public string? Email { get; set; }
     public DateTime Dob { get; set; }
     public bool HasEhcp { get; set; }
-    [JsonPropertyName("ULN")]
     public long Uln { get; set; }
 }
 
