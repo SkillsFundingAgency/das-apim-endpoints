@@ -7,7 +7,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
     public class ApprenticeshipBase
     {
         [JsonPropertyName("uln")]
-        public long Uln { get; set; }
+        public string Uln { get; set; }
 
         [JsonPropertyName("apprenticeshipId")]
         public long ApprenticeshipId { get; set; }
