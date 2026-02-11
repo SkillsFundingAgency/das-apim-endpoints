@@ -14,45 +14,116 @@ public class GetProviderRelationshipServiceTests
 {
     [Test, MoqAutoData]
     public async Task GetEmployerDetails_Call_Api_WithcorrectValues(
-        [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationships,
         [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsClient,
         [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
-        List<GetProviderAccountLegalEntityItem> providerLegalEnities,
-        ApprenticeshipEmployerType employerType,
        [Greedy] GetProviderRelationshipService sut)
     {
-        var providerResponse = new GetProviderAccountLegalEntitiesResponse
-        {
-            AccountProviderLegalEntities = providerLegalEnities
-        };
+        GetProviderAccountLegalEntitiesResponse providerDetails = GetProviderAccountDetails();
 
-        foreach (var provider in providerLegalEnities)
+        SetupAgencyDetails(fjaaApiClient);
+
+        foreach (var provider in providerDetails.AccountProviderLegalEntities)
         {
-            accountsClient.Setup(x => x.Get<GetAccountByIdResponse>(new GetAccountByIdRequest(provider.AccountId))).
+            accountsClient.Setup(x => x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(t => t.AccountId == provider.AccountId))).
                 ReturnsAsync(new GetAccountByIdResponse()
                 {
                     ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
-                });
-
-            fjaaApiClient.Setup(x => x.Get<GetAgencyResponse>(new GetAgencyQuery(provider.AccountLegalEntityId))).
-                ReturnsAsync(new GetAgencyResponse()
-                {
-                    IsGrantFunded = true
+                    AccountId = provider.AccountId,
+                    LegalEntities =
+                    [
+                         new() {  Id = "1" },
+                         new () { Id = "4" },
+                         new () { Id = "3" }
+                    ]
                 });
         }
 
         // Act
-        var details = await sut.GetEmployerDetails(providerResponse);
+        var details = await sut.GetEmployerDetails(providerDetails);
 
         //Assert
         details.Should().NotBeNull();
-        details.Should().HaveCount(providerResponse.AccountProviderLegalEntities.Count);
+        details.Should().HaveCount(providerDetails.AccountProviderLegalEntities.Count);
 
-        foreach (var p in providerResponse.AccountProviderLegalEntities)
+        fjaaApiClient.Verify(x => x.Get<GetAgenciesResponse>(It.Is<GetAgenciesQuery>(t=>t.GetUrl == "agencies")), Times.Once());
+
+        foreach (var provider in providerDetails.AccountProviderLegalEntities)
         {
-            accountsClient.Verify(x => x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(t => t.AccountId == p.AccountId)), Times.Once());
-
-            fjaaApiClient.Verify(x => x.Get<GetAgencyResponse>(It.Is<GetAgencyQuery>(t => t.LegalEntityId == p.AccountLegalEntityId)), Times.Once());
+            accountsClient.Verify(x => x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(t => t.AccountId == provider.AccountId)), Times.Once());
+            details.First(t => t.AgreementId == provider.AccountLegalEntityPublicHashedId).IsFlexiEmployer.Should().BeTrue();
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetEmployerDetails_Call_Api(
+       [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsClient,
+       [Frozen] Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient,
+      [Greedy] GetProviderRelationshipService sut)
+    {
+        GetProviderAccountLegalEntitiesResponse providerDetails = GetProviderAccountDetails();
+
+        SetupAgencyDetails(fjaaApiClient);
+
+        accountsClient.Setup(x => x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(t => t.AccountId == providerDetails.AccountProviderLegalEntities.First().AccountId))).
+                ReturnsAsync(new GetAccountByIdResponse()
+                {
+                    ApprenticeshipEmployerType = ApprenticeshipEmployerType.Levy,
+                    AccountId = providerDetails.AccountProviderLegalEntities.First().AccountId,
+                    LegalEntities =
+                    [
+                         new() {  Id = "1" },
+                         new () { Id = "4" },
+                         new () { Id = "3" }
+                    ]
+                });
+
+        accountsClient.Setup(x => x.Get<GetAccountByIdResponse>(It.Is<GetAccountByIdRequest>(t => t.AccountId == providerDetails.AccountProviderLegalEntities.Last().AccountId))).
+              ReturnsAsync(new GetAccountByIdResponse()
+              {
+                  ApprenticeshipEmployerType = ApprenticeshipEmployerType.NonLevy,
+                  AccountId = providerDetails.AccountProviderLegalEntities.Last().AccountId,
+                  LegalEntities =
+                  [
+                       new() {  Id = "5" },
+                       new () { Id = "6" },
+                       new () { Id = "7" }
+                  ]
+              });
+
+        // Act
+        var details = await sut.GetEmployerDetails(providerDetails);
+
+        //Assert
+        details.Should().NotBeNull();
+        details.Should().HaveCount(providerDetails.AccountProviderLegalEntities.Count);
+        var provider = details.First(t => t.AgreementId == "AccHash2");
+        provider.IsFlexiEmployer.Should().BeFalse();
+        provider.IsLevy.Should().BeFalse();
+    }
+
+    private static void SetupAgencyDetails(Mock<IFjaaApiClient<FjaaApiConfiguration>> fjaaApiClient)
+    {
+        fjaaApiClient.Setup(x => x.Get<GetAgenciesResponse>(It.Is<GetAgenciesQuery>(t => t.GetUrl == "agencies"))).
+              ReturnsAsync(new GetAgenciesResponse()
+              {
+                  Agencies =
+                  [
+                       new GetAgencyResponse(){ LegalEntityId = 1, IsGrantFunded = true },
+                       new GetAgencyResponse() { LegalEntityId = 2, IsGrantFunded = true },
+                       new GetAgencyResponse() { LegalEntityId = 3, IsGrantFunded = false },
+                  ]
+              });
+    }
+
+    private static GetProviderAccountLegalEntitiesResponse GetProviderAccountDetails()
+    {
+        return new GetProviderAccountLegalEntitiesResponse
+        {
+            AccountProviderLegalEntities =
+            [
+                 new() { AccountId = 1, AccountLegalEntityPublicHashedId = "AccHash1"},
+                 new() { AccountId = 2, AccountLegalEntityPublicHashedId = "AccHash2"},
+            ]
+        };
     }
 }

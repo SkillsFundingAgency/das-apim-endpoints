@@ -26,24 +26,26 @@ namespace SFA.DAS.LearnerData.Services
         IFjaaApiClient<FjaaApiConfiguration> fjaaApiClient,
         ILogger<GetProviderRelationshipService> logger) : IGetProviderRelationshipService
     {
+        public GetAgenciesResponse GetAgencies { get; set; }
+
         public async Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails)
         {
             logger.LogInformation("Started getting Employer Details");
             ConcurrentBag<EmployerDetails> employerDetails = new ConcurrentBag<EmployerDetails>();
+            GetAgencies = await GetAgencyDetails();
 
             await Parallel.ForEachAsync(providerDetails.AccountProviderLegalEntities,
                  new ParallelOptions { MaxDegreeOfParallelism = 5 },
                  async (legalEntity1, cancellationToken) =>
                  {
                      var accountDetailsTask = GetEmployerAccountDetails(legalEntity1.AccountId);
-                     var agencyDetailsResult = await GetAgencyDetails(legalEntity1.AccountLegalEntityId);
                      var accountDetailsResult = await accountDetailsTask;
+                     var isFunded = accountDetailsResult?.LegalEntities is null ? false : GetIsFunded(accountDetailsResult.LegalEntities);
 
-                     employerDetails.Add(CreateEmployerDetails(accountDetailsResult, agencyDetailsResult, legalEntity1.AccountLegalEntityPublicHashedId));
+                     employerDetails.Add(CreateEmployerDetails(accountDetailsResult, isFunded, legalEntity1.AccountLegalEntityPublicHashedId));
                  });
             logger.LogInformation("Completed getting Employer Details");
             return employerDetails.ToList();
-
         }
 
         private async Task<GetAccountByIdResponse> GetEmployerAccountDetails(long accountId)
@@ -55,16 +57,16 @@ namespace SFA.DAS.LearnerData.Services
             return accountResponse;
         }
 
-        private async Task<GetAgencyResponse> GetAgencyDetails(long legalEntityId)
+        private async Task<GetAgenciesResponse> GetAgencyDetails()
         {
             logger.LogInformation("started calling fjaa api client to get agency details.");
-            var agencyResponse = await fjaaApiClient.Get<GetAgencyResponse>(
-               new GetAgencyQuery(legalEntityId));
+            var agencyResponse = await fjaaApiClient.Get<GetAgenciesResponse>(
+               new GetAgenciesQuery());
             logger.LogInformation("completed calling fjaa api client to get agency details");
             return agencyResponse;
         }
 
-        private EmployerDetails CreateEmployerDetails(GetAccountByIdResponse accountDetails, GetAgencyResponse agencyDetails, string legalEntityHashedId)
+        private EmployerDetails CreateEmployerDetails(GetAccountByIdResponse? accountDetails, bool isFunded, string legalEntityHashedId)
         {
             logger.LogInformation($"Inside employer details . accountdetails is  null : {accountDetails is null}  for agreementId : {legalEntityHashedId}");
             logger.LogInformation($" levy type : {accountDetails?.ApprenticeshipEmployerType}");
@@ -72,7 +74,7 @@ namespace SFA.DAS.LearnerData.Services
             {
                 AgreementId = legalEntityHashedId,
                 IsLevy = accountDetails is not null && accountDetails.ApprenticeshipEmployerType == ApprenticeshipEmployerType.Levy,
-                IsFlexiEmployer = agencyDetails?.IsGrantFunded ?? false
+                IsFlexiEmployer = isFunded
             };
         }
 
@@ -85,6 +87,11 @@ namespace SFA.DAS.LearnerData.Services
             logger.LogInformation($"started calling provider relationship api client to get provider details : {ukprn}");
 
             return providerResponse;
+        }
+
+        public bool GetIsFunded(ResourceList legalEntities)
+        {
+            return GetAgencies.Agencies.Any(t => legalEntities.Any(k => long.Parse(k.Id) == t.LegalEntityId));
         }
     }
 }
