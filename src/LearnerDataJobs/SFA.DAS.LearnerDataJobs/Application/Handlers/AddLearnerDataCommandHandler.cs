@@ -67,7 +67,6 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
             AgreementId = request.AgreementId,
             IsFlexiJob = request.IsFlexiJob,
             PlannedOTJTrainingHours = request.PlannedOTJTrainingHours,
-            StandardCode = request.StandardCode,
             LarsCode = request.LarsCode,
             TrainingName = course.Title,
             ApprenticeshipType = course.ApprenticeshipType == null ? null : EnumExtensions.FromDescription<LearningType>(course.ApprenticeshipType),
