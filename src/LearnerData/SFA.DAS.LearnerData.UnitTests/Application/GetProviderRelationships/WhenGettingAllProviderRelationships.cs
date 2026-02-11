@@ -55,7 +55,7 @@ public class WhenGettingAllProviderRelationships
 
         foreach (var provider in providerSummary.RegisteredProviders)
         {
-            var response = result.Items.First(r => r.UkPRN == provider.Ukprn.ToString());
+            var response = result.Items.First(r => r.Ukprn == provider.Ukprn.ToString());
             response.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), provider.StatusId));
             response.Type.Should().Be(Enum.GetName(typeof(ProviderType), provider.ProviderTypeId));
             response.Employers.Should().BeEquivalentTo(employers[index]);

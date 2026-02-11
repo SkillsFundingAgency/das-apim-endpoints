@@ -38,7 +38,7 @@ public class WhenGettingProviderRelationships
 
         // Assert
         result.Should().NotBeNull();
-        result.UkPRN.Should().BeEquivalentTo(request.Ukprn.ToString());
+        result.Ukprn.Should().BeEquivalentTo(request.Ukprn.ToString());
         result.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), providerSummary.StatusId));
         result.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
         result.Employers?.Length.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);

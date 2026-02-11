@@ -40,7 +40,7 @@ public class GetAllProvidersRelationshipsQueryHandler(
 
                     providerResponse.Add(new GetProviderRelationshipQueryResponse()
                     {
-                        UkPRN = p.Ukprn.ToString(),
+                        Ukprn = p.Ukprn.ToString(),
                         Status = Enum.GetName(typeof(ProviderStatusType), p.StatusId)??string.Empty,
                         Type = Enum.GetName(typeof(ProviderType), p.ProviderTypeId) ?? string.Empty,
                         Employers = employerDetails.ToArray()
