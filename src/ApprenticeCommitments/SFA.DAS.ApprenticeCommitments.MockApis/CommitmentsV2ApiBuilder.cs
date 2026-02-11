@@ -117,7 +117,7 @@ namespace SFA.DAS.ApprenticeCommitments.MockApis
                 var fixedStartDate = new DateTime(2023, 06, 01).Date;
                 var fixedEndDate = new DateTime(2026, 06, 01).Date;
 
-                var uln = 20000000 + apprenticeCommitmentsId;
+                var uln = "20000000" + apprenticeCommitmentsId;
 
                 var response = _fixture.Build<Apis.CommitmentsV2InnerApi.ApprenticeshipResponse>()
                     .With(x => x.Id, apprenticeCommitmentsId)

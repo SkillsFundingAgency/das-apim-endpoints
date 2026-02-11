@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFA.DAS.ApprenticeCommitments.Extensions;
+using System;
 using System.Text.Json.Serialization;
 
 namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
@@ -7,7 +8,8 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi
     public class ApprenticeshipBase
     {
         [JsonPropertyName("uln")]
-        public long Uln { get; set; }
+        [JsonConverter(typeof(StringFromNumberConverter))]
+        public string Uln { get; set; }
 
         [JsonPropertyName("apprenticeshipId")]
         public long ApprenticeshipId { get; set; }

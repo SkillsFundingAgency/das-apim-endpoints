@@ -43,7 +43,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         }
 
         [HttpGet("/apprentice/{uln}")]
-        public async Task<IActionResult> GetApprenticeshipByUln([FromRoute] long uln)
+        public async Task<IActionResult> GetApprenticeshipByUln([FromRoute] string uln)
         {
             var request = new GetApprenticeshipByUlnQuery { Uln = uln };
             var result = await _mediator.Send(request);
