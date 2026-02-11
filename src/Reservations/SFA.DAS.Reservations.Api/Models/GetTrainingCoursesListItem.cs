@@ -13,8 +13,6 @@ namespace SFA.DAS.Reservations.Api.Models
 
         public string Id { get; set; }
 
-        public string ApprenticeshipType { get; set; }
-
         public string LearningType { get; set; }
 
         public static implicit operator GetTrainingCoursesListItem(TrainingCourseListItem course)
@@ -25,7 +23,6 @@ namespace SFA.DAS.Reservations.Api.Models
                 Level = course.Level,
                 Title = course.Title ?? string.Empty,
                 EffectiveTo = course.EffectiveTo,
-                ApprenticeshipType = course.ApprenticeshipType,
                 LearningType = course.LearningType
             };
         }

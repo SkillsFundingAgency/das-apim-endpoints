@@ -39,7 +39,7 @@ namespace SFA.DAS.Reservations.UnitTests.Application.TrainingCourses.Queries
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.Courses.Should().HaveCount(2);
-            result.Courses.Should().ContainSingle(c => c.LarsCode == "1" && c.Title == "Standard 1" && c.Level == "4" && c.LearningType == "Standard");
+            result.Courses.Should().ContainSingle(c => c.LarsCode == "1" && c.Title == "Standard 1" && c.Level == "4" && c.LearningType == "Apprenticeship");
             result.Courses.Should().ContainSingle(c => c.LarsCode == HardcodedAppUnitLarsCode);
             mockApiClient.Verify(client => client.Get<GetStandardsListResponse>(It.IsAny<GetAvailableToStartStandardsListRequest>()), Times.Once);
             mockApiClient.Verify(client => client.Get<GetShortCoursesListResponse>(It.IsAny<GetShortCoursesListRequest>()), Times.Never);

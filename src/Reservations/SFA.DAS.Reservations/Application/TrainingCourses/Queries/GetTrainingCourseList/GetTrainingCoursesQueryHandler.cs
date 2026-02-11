@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -30,7 +31,7 @@ namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCo
                         CourseDates = new ShortCourseDates
                         {
                             EffectiveTo = null,
-                            EffectiveFrom = new System.DateTime(2026, 8, 1)
+                            EffectiveFrom = new DateTime(2026, 1, 1)
                         },
                         CourseType = "ShortCourse",
                         LearningType = "ApprenticeshipUnit"
@@ -65,8 +66,7 @@ namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCo
                     Title = s.Title ?? string.Empty,
                     Level = s.Level.ToString(),
                     EffectiveTo = s.EffectiveTo,
-                    ApprenticeshipType = s.ApprenticeshipType,
-                    LearningType = s.LearningType
+                    LearningType = s.ApprenticeshipType
                 };
             }
         }
@@ -82,7 +82,6 @@ namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCo
                     Title = c.Title ?? string.Empty,
                     Level = c.LevelCode,
                     EffectiveTo = c.CourseDates?.EffectiveTo ?? default,
-                    ApprenticeshipType = c.CourseType,
                     LearningType = c.LearningType
                 };
             }

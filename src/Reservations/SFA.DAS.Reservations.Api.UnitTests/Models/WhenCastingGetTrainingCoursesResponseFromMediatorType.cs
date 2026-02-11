@@ -17,21 +17,7 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
             response.Title.Should().Be(source.Title);
             response.Level.Should().Be(source.Level);
             response.EffectiveTo.Should().Be(source.EffectiveTo);
-            response.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
             response.LearningType.Should().Be(source.LearningType);
-        }
-
-        [Test]
-        public void Then_Maps_ApprenticeshipType_Values_Correctly()
-        {
-            var source = new TrainingCourseListItem
-            {
-                LarsCode = "123",
-                ApprenticeshipType = "Apprenticeship"
-            };
-            var response = (GetTrainingCoursesListItem)source;
-            response.Id.Should().Be("123");
-            response.ApprenticeshipType.Should().Be("Apprenticeship");
         }
 
         [Test]
