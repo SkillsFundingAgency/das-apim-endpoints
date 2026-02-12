@@ -32,16 +32,8 @@ public class GetSelectEmployerQueryHandler(
             return new GetSelectEmployerQueryResult();
         }
 
-        var uniqueAccountHashedIds = providerRelationshipsResponse.AccountProviderLegalEntities
-            .Where(x => !string.IsNullOrWhiteSpace(x.AccountHashedId))
-            .Select(x => x.AccountHashedId)
-            .Distinct()
-            .ToList();
-
-        var accountLevyStatusMap = await GetAccountLevyStatusMap(uniqueAccountHashedIds);
-
         var accountProviderLegalEntities = providerRelationshipsResponse.AccountProviderLegalEntities
-            .Select(x => new AccountProviderLegalEntityItem
+            .ConvertAll(x => new AccountProviderLegalEntityItem
             {
                 AccountId = x.AccountId,
                 AccountPublicHashedId = x.AccountPublicHashedId,
@@ -51,9 +43,8 @@ public class GetSelectEmployerQueryHandler(
                 AccountLegalEntityPublicHashedId = x.AccountLegalEntityPublicHashedId,
                 AccountLegalEntityName = x.AccountLegalEntityName,
                 AccountProviderId = x.AccountProviderId,
-                ApprenticeshipEmployerType = accountLevyStatusMap.GetValueOrDefault(x.AccountHashedId, "NonLevy")
-            })
-            .ToList();
+                ApprenticeshipEmployerType = "NonLevy"
+            });
 
         if (!string.IsNullOrWhiteSpace(request.SearchTerm))
         {
@@ -72,6 +63,19 @@ public class GetSelectEmployerQueryHandler(
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
+
+        var uniqueAccountHashedIdsForPage = paged
+            .Where(x => !string.IsNullOrWhiteSpace(x.AccountHashedId))
+            .Select(x => x.AccountHashedId)
+            .Distinct()
+            .ToList();
+
+        var accountLevyStatusMap = await GetAccountLevyStatusMap(uniqueAccountHashedIdsForPage);
+
+        foreach (var item in paged.Where(item => !string.IsNullOrWhiteSpace(item.AccountHashedId)))
+        {
+            item.ApprenticeshipEmployerType = accountLevyStatusMap.GetValueOrDefault(item.AccountHashedId, "NonLevy");
+        }
 
         var employers = accountProviderLegalEntities
             .SelectMany(x => new[] { x.AccountLegalEntityName, x.AccountName })
