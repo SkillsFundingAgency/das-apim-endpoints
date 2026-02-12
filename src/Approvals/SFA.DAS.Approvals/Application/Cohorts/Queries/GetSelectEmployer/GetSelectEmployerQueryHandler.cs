@@ -65,6 +65,14 @@ public class GetSelectEmployerQueryHandler(
             accountProviderLegalEntities = ApplySort(accountProviderLegalEntities, request.SortField, request.ReverseSort);
         }
 
+        var totalCount = accountProviderLegalEntities.Count;
+        var pageSize = request.PageSize;
+        var pageNumber = request.PageNumber;
+        var paged = accountProviderLegalEntities
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .ToList();
+
         var employers = accountProviderLegalEntities
             .SelectMany(x => new[] { x.AccountLegalEntityName, x.AccountName })
             .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -73,8 +81,9 @@ public class GetSelectEmployerQueryHandler(
 
         return new GetSelectEmployerQueryResult
         {
-            AccountProviderLegalEntities = accountProviderLegalEntities,
-            Employers = employers
+            AccountProviderLegalEntities = paged,
+            Employers = employers,
+            TotalCount = totalCount
         };
     }
 
