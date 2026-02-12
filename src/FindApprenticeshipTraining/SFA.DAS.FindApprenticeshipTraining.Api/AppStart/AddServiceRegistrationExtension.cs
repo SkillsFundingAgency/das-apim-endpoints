@@ -23,6 +23,7 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IEmployerFeedbackApiClient<EmployerFeedbackApiConfiguration>, EmployerFeedbackApiClient>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<ICachedCoursesService, CachedCoursesService>();
+        services.AddTransient<ICachedStandardDetailsService, CachedStandardDetailsService>();
         services.AddTransient<ILocationLookupService, LocationLookupService>();
         services.AddTransient<ICachedLocationLookupService, CachedLocationLookupService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
