@@ -278,7 +278,6 @@ public class CohortController(
                 SearchTerm = searchTerm,
                 SortField = sortField,
                 ReverseSort = reverseSort,
-                UseLearnerData = useLearnerData,
                 PageNumber = pageNumber,
                 PageSize = pageSize
             });

@@ -39,7 +39,6 @@ public class WhenGettingSelectEmployer
                     q.SearchTerm == searchTerm &&
                     q.SortField == sortField &&
                     q.ReverseSort == reverseSort &&
-                    q.UseLearnerData == useLearnerData &&
                     q.PageNumber == pageNumber &&
                     q.PageSize == pageSize),
                 It.IsAny<CancellationToken>()))
