@@ -47,7 +47,7 @@ public static class IDistributedCacheExtensions
             return null;
         }
 
-        logger.LogInformation("CACHE HIT key={Key} json={Json}", key, cachedData);
+        logger.LogInformation("CACHE HIT key={Key}", key);
 
         try
         {
