@@ -143,7 +143,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             if(matchingSld == null)
             {
                 _logger.LogWarning($"No matching SLD data found for learning with key: {learning.Key}");
-                throw new InvalidOperationException($"SLD data missing for learning key: {learning.Key}");
+                continue;
             }
 
             if(matchingEarnings == null)
@@ -154,7 +154,6 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
             _logger.LogInformation($"Processing learning with key: {learning.Key}");
             joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, matchingSld, currentAcademicYear.GetShortAcademicYear()));
-
         }
 
         return joinedApprenticeships;
