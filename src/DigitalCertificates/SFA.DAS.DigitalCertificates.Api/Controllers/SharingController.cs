@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharing;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingById;
 using System;
 using System.Net;
 using System.Threading.Tasks;
@@ -32,6 +33,21 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to create sharing for user {UserId}, certificate {CertificateId}", command.UserId, command.CertificateId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{sharingId}")]
+        public async Task<IActionResult> GetSharingById([FromRoute] Guid sharingId, [FromQuery] int? limit = null)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharingByIdQuery { SharingId = sharingId, Limit = limit });
+                return Ok(result.Response);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve sharing {SharingId}", sharingId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
