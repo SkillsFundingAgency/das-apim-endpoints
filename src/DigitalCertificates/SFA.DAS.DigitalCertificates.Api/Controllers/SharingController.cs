@@ -10,6 +10,7 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertificate;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedFrameworkCertificate;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -125,6 +126,22 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve shared certificate {CertificateId}", id);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("certificates/framework/{id}")]
+        public async Task<IActionResult> GetSharedFrameworkCertificate([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharedFrameworkCertificateQuery(id));
+
+                return result == null ? NotFound() : Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve shared framework certificate {CertificateId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
