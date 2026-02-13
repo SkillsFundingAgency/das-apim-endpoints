@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
+﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests;
 
@@ -54,7 +54,7 @@ public class TestContext : IDisposable
     }
 
     public HttpClient OuterApiClient { get; set; }
-    public IDistributedCache Cache { get; set; }
+    public ILearnerDataCacheService Cache { get; set; }
 
     private bool _isDisposed;
 

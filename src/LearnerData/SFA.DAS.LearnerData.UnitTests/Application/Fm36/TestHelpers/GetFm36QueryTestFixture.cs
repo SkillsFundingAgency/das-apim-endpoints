@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -37,7 +38,7 @@ internal class GetFm36QueryTestFixture
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
     internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
     internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
-    internal Mock<IDistributedCache> MockDistributedCache;
+    internal Mock<ILearnerDataCacheService> MockDistributedCache;
     internal GetFm36Result Result;
 
     private GetFm36QueryHandler _handler;
@@ -51,7 +52,7 @@ internal class GetFm36QueryTestFixture
         MockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
-        MockDistributedCache = new Mock<IDistributedCache>();
+        MockDistributedCache = new Mock<ILearnerDataCacheService>();
 
         Ukprn = Fixture.Create<long>();
         CollectionPeriod = 2;
@@ -202,13 +203,10 @@ internal class GetFm36QueryTestFixture
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{CollectionYear}")))
             .ReturnsAsync(collectionCalendarResponse);
 
-        foreach (var learner in _fm36TestContext.SldLearnerData)
-        {
-            var key = $"LearnerData_{ukprn}_{learner.Learner.Uln}";
-            MockDistributedCache
-                .Setup(x => x.GetAsync(It.Is<string>(k => k == key), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(System.Text.Json.JsonSerializer.SerializeToUtf8Bytes(learner));
-        }
+
+        var learners = _fm36TestContext.SldLearnerData.Select(x => x.Learner.Uln.ToString());
+        MockDistributedCache.Setup(x => x.GetLearners(ukprn, learners, It.IsAny<CancellationToken>()))
+            .ReturnsAsync(_fm36TestContext.SldLearnerData);
     }
 
     public enum QueryType

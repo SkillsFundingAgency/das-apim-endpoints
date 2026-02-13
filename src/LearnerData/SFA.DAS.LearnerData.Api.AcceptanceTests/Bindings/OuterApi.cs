@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using SFA.DAS.LearnerData.Services;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -50,7 +50,7 @@ public class OuterApi
         }
 
         _context!.OuterApiClient = Client;
-        _context.Cache = Factory.Services.GetRequiredService<IDistributedCache>();
+        _context.Cache = Factory.Services.GetRequiredService<ILearnerDataCacheService>();
     }
 
     private static string GenerateBearerToken(string serviceAccount)

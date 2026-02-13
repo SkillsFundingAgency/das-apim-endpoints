@@ -19,14 +19,14 @@ public class UpdateLearnerCommandHandler(
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder,
     IUpdateEarningsEnglishAndMathsRequestBuilder updateEarningsEnglishAndMathsRequestBuilder,
     IUpdateEarningsLearningSupportRequestBuilder updateEarningsLearningSupportRequestBuilder,
-    IDistributedCache distributedCache)
+    ILearnerDataCacheService learnerDataCacheService)
     : IRequestHandler<UpdateLearnerCommand>
 {
     public async Task Handle(UpdateLearnerCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Updating learner with key {LearningKey}", command.LearningKey);
 
-        await CacheLearnerData(command, cancellationToken);
+        await learnerDataCacheService.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
 
         var request = updateLearningPutRequestBuilder.Build(command);
 
@@ -73,11 +73,5 @@ public class UpdateLearnerCommandHandler(
         }
 
         logger.LogInformation("Earnings updated for learning {LearningKey}", command.LearningKey);
-    }
-
-    private async Task CacheLearnerData(UpdateLearnerCommand command, CancellationToken cancellationToken)
-    {
-        logger.LogInformation("Caching learner data for learning key {LearningKey} and UKPRN {Ukprn} using {cacheType}", command.LearningKey, command.Ukprn, distributedCache.GetType().FullName);
-        await distributedCache.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, logger, cancellationToken);
     }
 }

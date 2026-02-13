@@ -84,7 +84,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var ukprn = scenarioContext.Get<long>(UkprnKey);
         var sldLearnerData = scenarioContext.Get<UpdateLearnerRequest>(SldLearnerDataKey);
-        var cachedData = await testContext.Cache.GetLearner(ukprn, sldLearnerData.Learner.Uln.ToString(), NullLogger.Instance, CancellationToken.None);
+        var cachedData = await testContext.Cache.GetLearner(ukprn, sldLearnerData.Learner.Uln.ToString(), CancellationToken.None);
 
         cachedData.Should().NotBeNull();
         cachedData.Should().BeEquivalentTo(sldLearnerData);

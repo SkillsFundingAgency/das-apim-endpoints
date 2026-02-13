@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
@@ -26,13 +27,13 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> _collectionCalendarApiClient;
-    private readonly IDistributedCache _distributedCache;
+    private readonly ILearnerDataCacheService _distributedCache;
     private readonly ILogger<GetFm36QueryHandler> _logger;
 
     public GetFm36QueryHandler(ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
         ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
-        IDistributedCache distributedCache,
+        ILearnerDataCacheService distributedCache,
         ILogger<GetFm36QueryHandler> logger)
     {
         _learningApiClient = learningApiClient;
@@ -49,7 +50,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
         var currentAcademicYear = await GetCurrentAcademicYear(request);
         var (learnings, totalLearners) = await GetLearnings(request);
 
-        var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x => x.Uln), _logger, cancellationToken);
+        var sldLearners = await _distributedCache.GetLearners(request.Ukprn, learnings.Select(x => x.Uln), cancellationToken);
 
         var earnings = await GetRelatedEarnings(request, learnings);
         
