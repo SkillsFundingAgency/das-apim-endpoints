@@ -54,3 +54,4 @@ stages:
     OuterApiName: Aodp
     ConfigurationSecrets:
         NServiceBusLicense: $(NServiceBusLicense)
+        AodpOuterApiDfeSignInApiSecret: $(AodpOuterApiDfeSignInApiSecret)
