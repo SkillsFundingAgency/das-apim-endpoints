@@ -255,13 +255,13 @@ public class JoinedLearningDelivery
         LearnAimRef = onProgramme.LearnAimRef;
 
         Instalments = instalments
-            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= onProgramme.StartDate &&
-                        x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= onProgramme.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
             .ToList();
 
         AdditionalPayments = additionalPayments
-            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod) >= onProgramme.StartDate &&
-                        x.AcademicYear.GetDateTime(x.DeliveryPeriod) <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= onProgramme.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
             .ToList();
 
         StartDate = onProgramme.StartDate;

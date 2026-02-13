@@ -131,4 +131,14 @@ public static class DateTimeExtensions
         if (second == null) return first;
         return first.Value.EarliestOf(second.Value);
     }
+
+    /// <summary>
+    /// Returns the last day of the month of the provided date
+    /// </summary>
+    /// <returns></returns>
+    public static DateTime EndOfMonth(this DateTime datetime)
+    {
+        var firstOfNextMonth = new DateTime(datetime.Year, datetime.Month, 1).AddMonths(1);
+        return firstOfNextMonth.AddDays(-1);
+    }
 }
