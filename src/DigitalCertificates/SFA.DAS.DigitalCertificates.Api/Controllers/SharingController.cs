@@ -64,7 +64,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
 
                 if (result == null || result.Response == null)
                 {
-                    return Ok(new { });
+                    return Ok();
                 }
 
                 if (result.BothFound)
