@@ -2,11 +2,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RecruitJobs.Api.Models;
+using SFA.DAS.RecruitJobs.Api.Models.Mappers;
+using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
-using SFA.DAS.RecruitJobs.Domain.Vacancy;
+using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.DeleteVacancy;
+using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
+using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
+using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
+using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using StrawberryShake;
@@ -14,10 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using SFA.DAS.RecruitJobs.Api.Models.Requests;
-using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
+using VacancyStatus = SFA.DAS.RecruitJobs.Domain.Vacancy.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -196,5 +201,51 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     {
         var results = await recruitApiClient.DeleteWithResponseCode<NullResponse>(new DeleteVacancyByIdRequest(id));
         return Results.StatusCode((int)results.StatusCode);
+    }
+
+    [HttpPost, Route("{vacancyReference:long}/close")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IResult> CloseVacancy(
+        [FromRoute] long vacancyReference,
+        [FromBody] CloseVacancyRequest request,
+        [FromServices] VacancyMapper vacancyMapper,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await recruitGqlClient
+                .GetVacancyById
+                .ExecuteAsync(request.VacancyId, cancellationToken);
+            
+            if (!response.IsSuccessResult())
+            {
+                logger.LogError("An error occured at CloseVacancy: {Errors}", response.FormatErrors());
+                return TypedResults.Problem(response.ToProblemDetails());
+            }
+
+            var vacancy = response.Data!.Vacancies.FirstOrDefault();
+            if (vacancy is null || vacancy.VacancyReference != vacancyReference)
+            {
+                logger.LogWarning("Vacancy with id {VacancyId} not found at CloseVacancy", request.VacancyId);
+                return TypedResults.NotFound();
+            }
+
+            var domainVacancy = GqlVacancyMapper.From(vacancy);
+            domainVacancy.ClosureReason = request.ClosureReason;
+            domainVacancy.Status = VacancyStatus.Closed;
+            domainVacancy.ClosedDate = DateTime.UtcNow;
+
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));
+
+            putResponse.EnsureSuccessStatusCode();
+            return TypedResults.NoContent();
+        }
+        catch (ApiResponseException ex)
+        {
+            logger.LogError(ex, "Error while closing vacancy: {id}", request.VacancyId);
+            return TypedResults.Problem(title: ex.Message, detail: ex.Error);
+        }
     }
 }

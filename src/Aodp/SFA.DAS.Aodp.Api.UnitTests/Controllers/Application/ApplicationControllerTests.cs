@@ -4,6 +4,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using SFA.DAS.Aodp.Application.Commands.Application.Application;
+using SFA.DAS.Aodp.Application.Commands.Application.Review;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Application;
 [TestFixture]
@@ -458,6 +460,131 @@ public class ApplicationControllerTests
             Assert.That(okResult.Value, Is.AssignableFrom<EditApplicationCommandResponse>());
             var model = (EditApplicationCommandResponse)okResult.Value;
             Assert.That(model, Is.EqualTo(response));
+        });
+    }
+
+    [Test]
+    public async Task WithdrawApplicationByIdAsync_ReturnsOkResult()
+    {
+        // Arrange
+        var request = _fixture.Create<WithdrawApplicationCommand>();
+        var response = _fixture.Create<EmptyResponse>();
+        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<WithdrawApplicationCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.WithdrawApplicationByIdAsync(request.ApplicationId, request);
+
+        // Assert
+        _mediatorMock.Verify(m => m.Send(
+            It.Is<WithdrawApplicationCommand>(c =>
+                c.ApplicationId == request.ApplicationId), default), Times.Once());
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<EmptyResponse>());
+            var model = (EmptyResponse)okResult.Value;
+            Assert.That(model, Is.EqualTo(response));
+        });
+    }
+    
+    [Test]
+    public async Task WithdrawApplicationByIdAsync_WhenMediatorFails_ReturnsServerError()
+    {
+        // Arrange
+        var request = _fixture.Create<WithdrawApplicationCommand>();
+        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        {
+            Success = false,
+            ErrorMessage = "Some failure"
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<WithdrawApplicationCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.WithdrawApplicationByIdAsync(request.ApplicationId, request);
+
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = (StatusCodeResult)result;
+            Assert.That(statusResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+        });
+    }
+
+    [Test]
+    public async Task UpdateReviewer_ReturnsOkResult()
+    {
+        var applicationId = Guid.NewGuid();
+        var request = _fixture.Create<SaveReviewerCommand>();
+        request.ApplicationId = Guid.NewGuid();
+
+        var response = _fixture.Create<SaveReviewerCommandResponse>();
+        var wrapper = new BaseMediatrResponse<SaveReviewerCommandResponse>
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<SaveReviewerCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        var result = await _controller.UpdateReviewer(request, applicationId);
+
+        Assert.Multiple(() =>
+        {
+            _mediatorMock.Verify(m => m.Send(
+                It.Is<SaveReviewerCommand>(c => c.ApplicationId == applicationId),
+                default), Times.Once);
+
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<SaveReviewerCommandResponse>());
+            var model = (SaveReviewerCommandResponse)okResult.Value;
+            Assert.That(model, Is.EqualTo(response));
+        });
+    }
+
+    [Test]
+    public async Task UpdateReviewer_WhenMediatorFails_ReturnsServerError()
+    {
+        var applicationId = Guid.NewGuid();
+        var request = _fixture.Create<SaveReviewerCommand>();
+
+        var wrapper = new BaseMediatrResponse<SaveReviewerCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Some failure"
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<SaveReviewerCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        var result = await _controller.UpdateReviewer(request, applicationId);
+
+        Assert.Multiple(() =>
+        {
+            _mediatorMock.Verify(m => m.Send(
+                It.Is<SaveReviewerCommand>(c => c.ApplicationId == applicationId),
+                default), Times.Once);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = (StatusCodeResult)result;
+            Assert.That(statusResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         });
     }
 }
