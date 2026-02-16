@@ -1,6 +1,7 @@
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
@@ -18,6 +19,7 @@ public class WhenGettingAllProviderRelationships
         GetProviderAccountLegalEntitiesResponse[] providerLegalEntitiesresponse,
         GetProvidersResponse providerSummary,
         List<List<EmployerDetails>> employers,
+        List<GetCoursesForProviderResponse> coursesForProviderResponses,
        [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
        [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
        [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
@@ -32,12 +34,16 @@ public class WhenGettingAllProviderRelationships
         {
             var providerDetails = providerLegalEntitiesresponse[index];
             var employerDetails = employers[index];
+            var course = coursesForProviderResponses[index];
 
             getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(provider.Ukprn)).
            ReturnsAsync(providerDetails);
 
             getProviderRelationshipService.Setup(t => t.GetEmployerDetails((providerDetails))).
                 ReturnsAsync(employerDetails);
+
+            getProviderRelationshipService.Setup(t => t.GetCoursesForProviderByUkprn(provider.Ukprn)).
+          ReturnsAsync(course);
             index++;
         }
 
@@ -59,6 +65,7 @@ public class WhenGettingAllProviderRelationships
             response.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), provider.StatusId));
             response.Type.Should().Be(Enum.GetName(typeof(ProviderType), provider.ProviderTypeId));
             response.Employers.Should().BeEquivalentTo(employers[index]);
+            response.SupportedCourses.Should().BeEquivalentTo(coursesForProviderResponses[index].CourseTypes);
         }
     }
 

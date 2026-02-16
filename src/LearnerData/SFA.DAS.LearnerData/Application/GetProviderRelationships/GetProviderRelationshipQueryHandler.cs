@@ -28,14 +28,19 @@ public class GetProviderRelationshipQueryHandler(
             return null;
         }
 
-        var employerDetails = await getProviderRelationshipService.GetEmployerDetails(providerDetails);
+        var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(request.Ukprn);
+
+        var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails);
+
+        await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
 
         return new GetProviderRelationshipQueryResponse()
         {
             Ukprn = request.Ukprn.ToString(),
             Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
             Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
-            Employers = employerDetails.ToArray()
+            Employers = employerDetailsTask.Result?.ToArray() ?? [],
+            SupportedCourses = coursesForProviderTask.Result?.CourseTypes?.ToArray() ?? []
         };
     }
 

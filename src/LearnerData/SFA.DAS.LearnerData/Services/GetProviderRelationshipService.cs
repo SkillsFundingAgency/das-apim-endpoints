@@ -17,32 +17,39 @@ namespace SFA.DAS.LearnerData.Services
         Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails);
 
         Task<GetProviderAccountLegalEntitiesResponse> GetAllProviderRelationShipDetails(int ukprn);
+
+        Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn);
     }
 
     public class GetProviderRelationshipService(
     IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipApiClient,
         IAccountsApiClient<AccountsConfiguration> accountsApiClient,
-        IFjaaApiClient<FjaaApiConfiguration> fjaaApiClient) : IGetProviderRelationshipService
+        IFjaaApiClient<FjaaApiConfiguration> fjaaApiClient,
+        IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> roatpCourseManagementApiClient) : IGetProviderRelationshipService
     {
         public GetAgenciesResponse GetAgencies { get; set; }
 
         public async Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails)
         {
-            ConcurrentBag<EmployerDetails> employerDetails = new ConcurrentBag<EmployerDetails>();
+            ConcurrentBag<EmployerDetails> employerDetails = [];
             GetAgencies = await GetAgencyDetails();
+            ConcurrentBag<GetAccountByIdResponse> accountdetails = [];
 
-            await Parallel.ForEachAsync(providerDetails.AccountProviderLegalEntities,
-                 new ParallelOptions { MaxDegreeOfParallelism = 5 },
-                 async (legalEntity1, cancellationToken) =>
-                 {
-                     var accountDetailsTask = GetEmployerAccountDetails(legalEntity1.AccountId);
-                     var accountDetailsResult = await accountDetailsTask;
-                     var isFunded = accountDetailsResult?.LegalEntities is null ? false : GetIsFunded(accountDetailsResult.LegalEntities);
+            var accountTasks = new ConcurrentDictionary<long, Task<GetAccountByIdResponse>>();
 
-                     employerDetails.Add(CreateEmployerDetails(accountDetailsResult, isFunded, legalEntity1.AccountLegalEntityPublicHashedId));
-                 });
+            var employerTasks = providerDetails.AccountProviderLegalEntities.
+                Select(async legalEntity =>
+                {
+                    var accountTask = accountTasks.GetOrAdd(legalEntity.AccountId, id => GetEmployerAccountDetails(id));
+                    var accountDetails = await accountTask;
+                    var isFunded = accountDetails?.LegalEntities is not null && GetIsFunded(accountDetails.LegalEntities);
 
-            return employerDetails.ToList();
+                    return CreateEmployerDetails(accountDetails, isFunded, legalEntity.AccountLegalEntityPublicHashedId);
+                });
+
+            var results = await Task.WhenAll(employerTasks);
+
+            return results.ToList();
         }
 
         private async Task<GetAccountByIdResponse> GetEmployerAccountDetails(long accountId)
@@ -78,6 +85,37 @@ namespace SFA.DAS.LearnerData.Services
                                   new GetProviderAccountLegalEntitiesRequest(ukprn, [Operation.CreateCohort]));
 
             return providerResponse;
+        }
+
+        public async Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn)
+        {
+            var CoursesTask = await Task.Run(() => new GetCoursesForProviderResponse
+            {
+                CourseTypes =
+                [
+                    new()
+                    {
+                         CourseType = "Apprenticeship",
+                         Courses =
+                         [
+                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, Larscode = "805"   },
+                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, Larscode = "806"   }
+                         ]
+                    },
+                     new()
+                    {
+                         CourseType = "ShortCourse",
+                         Courses =
+                         [
+                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, Larscode = "ZSC00001"   },
+                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, Larscode = "ZSC00002"   }
+                         ]
+                    }
+                ]
+            });
+
+            return CoursesTask;
+            //return await roatpCourseManagementApiClient.Get<GetCoursesForProviderResponse>(new GetCoursesForProviderRequest(ukprn));
         }
 
         public bool GetIsFunded(ResourceList legalEntities)
