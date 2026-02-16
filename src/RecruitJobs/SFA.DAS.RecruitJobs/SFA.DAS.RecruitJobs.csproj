@@ -13,6 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <GraphQL Remove="GraphQL\RecruitInner\fragments.graphql" />
+    <GraphQL Remove="GraphQL\RecruitInner\Queries\GetVacancyById.graphql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
