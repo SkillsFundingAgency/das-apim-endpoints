@@ -48,6 +48,14 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         var earningEpisode = earningApprenticeship.Episodes.Single();
         var firstSldOnProg = testFixture.SldLearnerData.First().Delivery.OnProgramme.First();
 
+        //This is is simplified and will fail if there are multiple learning deliveries with different LearnerAimRefs
+        //It also will not work in the case of Paused, Withdrawn or Completed learnings
+        var effEndDate = apprenticeship.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate
+            ? apprenticeship.PlannedEndDate
+            : testFixture.CollectionCalendarResponse.EndDate;
+
+        var learnDelAppPrevAccDaysIL = apprenticeship.StartDate.GetNumberOfDaysUntil(effEndDate); 
+
         var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.AimSeqNumber.Should().Be(1);
@@ -84,7 +92,7 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));
         learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
         learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").Sum(x => x.Amount));
-        learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(apprenticeship.StartDate.GetNumberOfDaysUntil(testFixture.CollectionCalendarResponse.StartDate)); // This is simplified and will fail if there are multiple learning deliveries with different LearnerAimRefs
+        learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(learnDelAppPrevAccDaysIL);
         learningDelivery.LearningDeliveryValues.LearnDelDisadAmount.Should().Be(0);
         learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();

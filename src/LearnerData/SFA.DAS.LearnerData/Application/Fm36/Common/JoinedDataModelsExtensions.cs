@@ -436,9 +436,9 @@ internal static class JoinedDataModelsExtensions
         var programAimStartDate = programAim.Min(x => x.StartDate);
 
 
-        var endDate = programAimEndDate < currentAcademicYear.StartDate
+        var endDate = programAimEndDate < currentAcademicYear.EndDate
                         ? programAimEndDate
-                        : currentAcademicYear.StartDate;
+                        : currentAcademicYear.EndDate;
 
         return programAimStartDate.GetNumberOfDaysUntil(endDate);
     }
