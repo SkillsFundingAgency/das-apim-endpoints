@@ -51,23 +51,40 @@ public class WhenValidatingMultipleLearnerData
         result.Errors.First().PropertyName.Should().Contain("x[0].UKPRN");
     }
 
-    //[Test]
-    //public async Task And_when_StandardCode_And_LarsCode_Is_Missing_Then_Error_Returned()
-    //{
-    //    List<LearnerDataRequest> learners = new()
-    //    {
-    //        CreateValidLearnerDataRequest(),
-    //        CreateValidLearnerDataRequest(),
-    //        CreateValidLearnerDataRequest()
-    //    };
-    //    learners[0].StandardCode = null;
-    //    learners[0].LarsCode = null;
+    [Test]
+    public async Task And_when_StandardCode_And_LarsCode_Is_Missing_Then_Error_Returned()
+    {
+        List<LearnerDataRequest> learners = new()
+        {
+            CreateValidLearnerDataRequest(),
+            CreateValidLearnerDataRequest(),
+            CreateValidLearnerDataRequest()
+        };
+        learners[0].StandardCode = null;
+        learners[0].LarsCode = null;
 
-    //    var result = await RunValidation(learners);
-    //    result.IsValid.Should().BeFalse();
-    //    result.Errors.First().ErrorMessage.Should().Be("Learner data must contains a LarsCode when StandardCode is null");
-    //    result.Errors.First().PropertyName.Should().Contain("x[0].LarsCode");
-    //}
+        var result = await RunValidation(learners);
+        result.IsValid.Should().BeFalse();
+        result.Errors.First().ErrorMessage.Should().Be("Learner data must contain the LarsCode when StandardCode is null");
+        result.Errors.First().PropertyName.Should().Contain("x[0].LarsCode");
+    }
+
+    [Test]
+    public async Task And_when_StandardCode_Is_Not_missing_And_LarsCode_Is_Missing_Then_No_Error_Returned()
+    {
+        List<LearnerDataRequest> learners = new()
+        {
+            CreateValidLearnerDataRequest(),
+            CreateValidLearnerDataRequest(),
+            CreateValidLearnerDataRequest()
+        };
+        learners[0].StandardCode = 123;
+        learners[0].LarsCode = null;
+
+        var result = await RunValidation(learners);
+        result.IsValid.Should().BeTrue();
+    }
+
 
     private LearnerDataRequest CreateValidLearnerDataRequest()
     {

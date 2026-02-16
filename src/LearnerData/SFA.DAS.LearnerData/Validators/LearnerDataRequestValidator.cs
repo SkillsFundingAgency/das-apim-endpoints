@@ -31,8 +31,8 @@ public class LearnerDataRequestValidator : AbstractValidator<LearnerDataRequest>
         RuleFor(model => model.StandardCode).GreaterThanOrEqualTo(0).When(model => model.StandardCode.HasValue)
             .WithMessage(model => $"Learner data contains a negative StandardCode {model.StandardCode}");
 
-        //RuleFor(model => model.LarsCode).NotEmpty().When(model => !model.StandardCode.HasValue)
-        //    .WithMessage(model => "Learner data must contains a LarsCode when StandardCode is null");
+        RuleFor(model => model.LarsCode).NotEmpty().When(model => !model.StandardCode.HasValue)
+            .WithMessage(model => "Learner data must contain the LarsCode when StandardCode is null");
 
         RuleFor(model => model.ConsumerReference)
             .MaximumLength(100)
