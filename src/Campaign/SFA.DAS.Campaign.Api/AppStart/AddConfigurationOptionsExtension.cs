@@ -28,6 +28,9 @@ namespace SFA.DAS.Campaign.Api.AppStart
             
             services.Configure<ContentfulPreviewApiConfiguration>(configuration.GetSection(nameof(ContentfulPreviewApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ContentfulPreviewApiConfiguration>>().Value);
+
+            services.Configure<CampaignApiConfiguration>(configuration.GetSection(nameof(CampaignApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CampaignApiConfiguration>>().Value);
         }
     }
 }
