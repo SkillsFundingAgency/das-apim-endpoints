@@ -285,9 +285,15 @@ internal static class JoinedDataModelsExtensions
     /// <summary>
     /// Returns Days the learning delivery has been active in the previous academic years
     /// </summary>
-    private static int? GetLearnDelHistDaysThisApp(GetAcademicYearsResponse currentAcademicYear, JoinedLearningDelivery joinedLearningDelivery)
+    private static int GetLearnDelHistDaysThisApp(GetAcademicYearsResponse currentAcademicYear, JoinedLearningDelivery joinedLearningDelivery)
     {
-        return joinedLearningDelivery.StartDate.GetNumberOfDaysUntil(currentAcademicYear.StartDate);
+        var start = joinedLearningDelivery.StartDate;
+        var end = currentAcademicYear.StartDate.AddDays(-1);
+
+        if (start > end)
+            return 0;
+
+        return (end - start).Days + 1; // inclusive
     }
 
     internal static List<LearningDeliveryPeriodisedValues> GetLearningDeliveryPeriodisedValues(

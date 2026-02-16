@@ -54,9 +54,13 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
             ? apprenticeship.PlannedEndDate
             : testFixture.CollectionCalendarResponse.EndDate;
 
-        var learnDelAppPrevAccDaysIL = apprenticeship.StartDate.GetNumberOfDaysUntil(effEndDate); 
+        var learnDelAppPrevAccDaysIL = apprenticeship.StartDate.GetNumberOfDaysUntil(effEndDate);
 
         var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+
+        // note this is a simplified equation and will fail if the value is negative as the actual calc will return 0
+        var learnDelHistDaysThisApp = (testFixture.CollectionCalendarResponse.StartDate - firstSldOnProg.StartDate).Days;
+
         learningDelivery.Should().NotBeNull();
         learningDelivery.AimSeqNumber.Should().Be(1);
         learningDelivery.LearningDeliveryValues.ActualDaysIL.Should().Be(0);
@@ -97,7 +101,7 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
-        learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(1 + (testFixture.CollectionCalendarResponse.StartDate - firstSldOnProg.StartDate).Days);// not this is a simplified equation and will fail if the value is negative as the actual calc will return 0
+        learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(learnDelHistDaysThisApp);
         learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments.Sum(i => i.Amount));
         learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType.Should().Be(earningApprenticeship.FundingLineType);
         learningDelivery.LearningDeliveryValues.LearnDelMathEng.Should().BeFalse();
