@@ -53,7 +53,6 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
     {
         logger.LogInformation("Creating LearnerDataRequest to add new learner data for LarsCode {0}, apprenticeship type {1}, course {2}", course.LarsCode, course.ApprenticeshipType, course.Title);
 
-
         var learnerDataRequest = new LearnerDataRequest
         {
             ULN = request.ULN,
