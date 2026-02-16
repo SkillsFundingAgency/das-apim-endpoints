@@ -16,7 +16,7 @@ public class ApplicationsReviewController : BaseController
     [HttpPost("/api/application-reviews")]
     [ProducesResponseType(typeof(GetApplicationsForReviewQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetApplicationReviews(GetApplicationsForReviewQuery query)
+    public async Task<IActionResult> GetApplicationReviews([FromBody]GetApplicationsForReviewQuery query)
     {
         return await SendRequestAsync(query);
     }
