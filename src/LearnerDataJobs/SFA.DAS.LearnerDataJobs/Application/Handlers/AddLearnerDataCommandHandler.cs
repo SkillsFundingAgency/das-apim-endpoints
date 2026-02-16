@@ -72,7 +72,7 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
             StandardCode = request.StandardCode,
             LarsCode = request.LarsCode,
             TrainingName = course.Title,
-            ApprenticeshipType = course.ApprenticeshipType == null ? LearningType.Apprenticeship : EnumExtensions.FromDescription<LearningType>(course.ApprenticeshipType),
+            LearningType = course.ApprenticeshipType == null ? null : EnumExtensions.FromDescription<LearningType>(course.ApprenticeshipType),
             CorrelationId = request.CorrelationId,
             ReceivedDate = request.ReceivedDate,
             AcademicYear = request.AcademicYear,

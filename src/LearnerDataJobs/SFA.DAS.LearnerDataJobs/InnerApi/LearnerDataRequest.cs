@@ -5,7 +5,7 @@ namespace SFA.DAS.LearnerDataJobs.InnerApi;
 public class LearnerDataRequest : LearnerDataIncomingRequest
 {
     public string TrainingName { get; set; }
-    public LearningType? ApprenticeshipType { get; set; }
+    public LearningType? LearningType { get; set; }
 }
 
 public enum LearningType : byte
