@@ -51,6 +51,9 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
 
     private LearnerDataRequest CreateLearnerDataRequest(LearnerDataIncomingRequest request, StandardDetailResponse course)
     {
+        logger.LogInformation("Creating LearnerDataRequest to add new learner data for LarsCode {0}, apprenticeship type {1}, course {2}", course.LarsCode, course.ApprenticeshipType, course.Title);
+
+
         var learnerDataRequest = new LearnerDataRequest
         {
             ULN = request.ULN,
@@ -70,7 +73,7 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
             StandardCode = request.StandardCode,
             LarsCode = request.LarsCode,
             TrainingName = course.Title,
-            ApprenticeshipType = course.ApprenticeshipType == null ? null : EnumExtensions.FromDescription<LearningType>(course.ApprenticeshipType),
+            ApprenticeshipType = course.ApprenticeshipType == null ? LearningType.Apprenticeship : EnumExtensions.FromDescription<LearningType>(course.ApprenticeshipType),
             CorrelationId = request.CorrelationId,
             ReceivedDate = request.ReceivedDate,
             AcademicYear = request.AcademicYear,
