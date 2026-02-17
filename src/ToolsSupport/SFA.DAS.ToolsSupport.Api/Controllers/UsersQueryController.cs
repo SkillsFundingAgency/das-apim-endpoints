@@ -3,35 +3,28 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Queries;
 using SFA.DAS.ToolsSupport.Application.Queries.GetUserOverview;
+using SFA.DAS.ToolsSupport.Application.Queries.GetUserByUserRef;
 using System.Net;
 
 namespace SFA.DAS.ToolsSupport.Api.Controllers;
 
 [ApiController]
-[Route("users/query")]
-public class UsersQueryController : ControllerBase
+[Route("users")]
+public class UsersQueryController(IMediator mediator, ILogger<UsersQueryController> logger) : ControllerBase
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<UsersQueryController> _logger;
-
-    public UsersQueryController(IMediator mediator, ILogger<UsersQueryController> logger)
-    {
-        _mediator = mediator;
-        _logger = logger;
-    }
-
     [HttpGet]
+    [Route("query")]
     public async Task<IActionResult> Get([FromQuery] string email)
     {
         try
         {
-            var response = await _mediator.Send(new GetUsersByEmailQuery {Email = email});
+            var response = await mediator.Send(new GetUsersByEmailQuery {Email = email});
 
             return Ok(response);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error attempting to query by email");
+            logger.LogError(ex, "Error attempting to query by email");
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
     }
@@ -42,7 +35,7 @@ public class UsersQueryController : ControllerBase
     {
         try
         {
-            var response = await _mediator.Send(
+            var response = await mediator.Send(
                 new GetUserOverviewQuery 
                 { 
                     UserId = userId
@@ -52,7 +45,28 @@ public class UsersQueryController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error attempting to get user summary");
+            logger.LogError(ex, "Error attempting to get user summary");
+            return StatusCode((int) HttpStatusCode.InternalServerError);
+        }
+    }
+    
+    [HttpGet]
+    [Route("{userRef}")]
+    public async Task<IActionResult> GetUserByUserRef([FromRoute] string userRef)
+    {
+        try
+        {
+            var response = await mediator.Send(
+                new GetUserByUserRefQuery 
+                { 
+                    UserRef = userRef
+                });
+
+            return Ok(response);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Error attempting to get user by UserRef");
             return StatusCode((int) HttpStatusCode.InternalServerError);
         }
     }
