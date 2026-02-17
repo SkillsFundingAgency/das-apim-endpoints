@@ -22,6 +22,6 @@ public class Course
 
     public DateTime EffectiveFrom { get; set; }
 
-    [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingNull)]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public DateTime? EffectiveTo { get; set; }
 }
