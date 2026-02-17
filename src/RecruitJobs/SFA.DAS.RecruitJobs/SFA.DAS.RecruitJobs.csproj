@@ -6,11 +6,29 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\**" />
+    <EmbeddedResource Remove="Application\**" />
+    <GraphQL Remove="Application\**" />
+    <None Remove="Application\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <GraphQL Remove="GraphQL\RecruitInner\fragments.graphql" />
+    <GraphQL Remove="GraphQL\RecruitInner\Queries\GetVacancyById.graphql" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="StrawberryShake.Blazor" />
   </ItemGroup>
 
+  <ItemGroup>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+  </ItemGroup>
 </Project>

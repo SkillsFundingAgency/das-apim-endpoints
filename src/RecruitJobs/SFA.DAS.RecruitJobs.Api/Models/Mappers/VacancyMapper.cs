@@ -1,0 +1,73 @@
+﻿using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
+
+namespace SFA.DAS.RecruitJobs.Api.Models.Mappers;
+
+public class VacancyMapper
+{
+    public static PutVacancyRequestData ToInnerDto(Domain.Vacancy.Vacancy vacancy)
+    {
+        return new PutVacancyRequestData
+        {
+            AccountId = vacancy.AccountId,
+            AccountLegalEntityId = vacancy.AccountLegalEntityId,
+            AdditionalQuestion1 = vacancy.AdditionalQuestion1,
+            AdditionalQuestion2 = vacancy.AdditionalQuestion2,
+            AdditionalTrainingDescription = vacancy.AdditionalTrainingDescription,
+            AnonymousReason = vacancy.AnonymousReason,
+            ApplicationInstructions = vacancy.ApplicationInstructions,
+            ApplicationMethod = vacancy.ApplicationMethod,
+            ApplicationUrl = vacancy.ApplicationUrl,
+            ApprenticeshipType = vacancy.ApprenticeshipType,
+            ApprovedDate = vacancy.ApprovedDate,
+            ClosedDate = vacancy.ClosedDate,
+            ClosingDate = vacancy.ClosingDate,
+            ClosureReason = vacancy.ClosureReason,
+            Contact = vacancy.Contact,
+            CreatedDate = vacancy.CreatedDate,
+            DeletedDate = vacancy.DeletedDate,
+            Description = vacancy.Description,
+            DisabilityConfident = vacancy.DisabilityConfident,
+            EmployerDescription = vacancy.EmployerDescription,
+            EmployerLocationInformation = vacancy.EmployerLocationInformation,
+            EmployerLocationOption = vacancy.EmployerLocationOption,
+            EmployerLocations = vacancy.EmployerLocations,
+            EmployerName = vacancy.EmployerName,
+            EmployerNameOption = vacancy.EmployerNameOption,
+            EmployerRejectedReason = vacancy.EmployerRejectedReason,
+            EmployerReviewFieldIndicators = vacancy.EmployerReviewFieldIndicators,
+            EmployerWebsiteUrl = vacancy.EmployerWebsiteUrl,
+            GeoCodeMethod = vacancy.GeoCodeMethod,
+            HasChosenProviderContactDetails = vacancy.HasChosenProviderContactDetails,
+            HasOptedToAddQualifications = vacancy.HasOptedToAddQualifications,
+            HasSubmittedAdditionalQuestions = vacancy.HasSubmittedAdditionalQuestions,
+            LastUpdatedDate = vacancy.LastUpdatedDate,
+            LegalEntityName = vacancy.LegalEntityName,
+            LiveDate = vacancy.LiveDate,
+            NumberOfPositions = vacancy.NumberOfPositions,
+            OutcomeDescription = vacancy.OutcomeDescription,
+            OwnerType = vacancy.OwnerType,
+            ProgrammeId = vacancy.ProgrammeId,
+            ProviderReviewFieldIndicators = vacancy.ProviderReviewFieldIndicators,
+            Qualifications = vacancy.Qualifications,
+            ReviewCount = vacancy.ReviewCount,
+            ReviewRequestedByUserId = vacancy.ReviewRequestedByUserId.ToString(),
+            ReviewRequestedDate = vacancy.ReviewRequestedDate,
+            ShortDescription = vacancy.ShortDescription,
+            Skills = vacancy.Skills,
+            SourceOrigin = vacancy.SourceOrigin,
+            SourceType = vacancy.SourceType,
+            SourceVacancyReference = vacancy.SourceVacancyReference,
+            StartDate = vacancy.StartDate,
+            Status = vacancy.Status,
+            SubmittedByUserId = vacancy.SubmittedByUserId.ToString(),
+            SubmittedDate = vacancy.SubmittedDate,
+            ThingsToConsider = vacancy.ThingsToConsider,
+            Title = vacancy.Title,
+            TrainingDescription = vacancy.TrainingDescription,
+            TrainingProvider = vacancy.TrainingProvider,
+            TransferInfo = vacancy.TransferInfo,
+            VacancyReference = vacancy.VacancyReference,
+            Wage = vacancy.Wage,
+        };
+    }
+}
