@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -7,6 +7,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCoursePr
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
+
 public class WhenBuildingGetProvidersByCourseIdRequest
 {
     private const string CourseId = "1";
@@ -141,13 +142,6 @@ public class WhenBuildingGetProvidersByCourseIdRequest
     }
 
     [Test]
-    public void Version_WhenRequested_ReturnsTwo()
-    {
-        var actual = new GetProvidersByCourseIdRequest() { CourseId = CourseId, OrderBy = OrderBy };
-        actual.Version.Should().Be("2.0");
-    }
-
-    [Test]
     public void GetUrl_WithLocation_AppendsLocation()
     {
         var location = "London";
@@ -161,5 +155,12 @@ public class WhenBuildingGetProvidersByCourseIdRequest
         var userId = Guid.NewGuid();
         var actual = new GetProvidersByCourseIdRequest() { CourseId = CourseId, OrderBy = OrderBy, UserId = userId };
         actual.GetUrl.Should().Be($"{BaseUrl}&userId={userId}");
+    }
+
+    [Test]
+    public void Version_WhenRequested_ReturnsTwo()
+    {
+        var actual = new GetProvidersByCourseIdRequest() { CourseId = CourseId, OrderBy = OrderBy };
+        actual.Version.Should().Be("2.0");
     }
 }
