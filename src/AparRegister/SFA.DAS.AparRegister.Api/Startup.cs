@@ -18,10 +18,10 @@ using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.AparRegister.Api;
 
-[ExcludeFromCodeCoverage]
 /// <summary>
 /// 
 /// </summary>
+[ExcludeFromCodeCoverage]
 public class Startup
 {
     private readonly IConfiguration _configuration;
