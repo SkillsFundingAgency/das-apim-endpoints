@@ -51,6 +51,54 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
             result.VacancyLocationType.Should().Be(expectedLocationType);
         }
 
+        [Test]
+        [MoqInlineAutoData(null)]
+        [MoqInlineAutoData(OwnerType.Provider)]
+        [MoqInlineAutoData(OwnerType.Employer)]
+        [MoqInlineAutoData(OwnerType.External)]
+        [MoqInlineAutoData(OwnerType.Unknown)]
+        public void Then_The_Mapped_Vacancy_Has_The_Correct_ContactDetails(
+            OwnerType? ownerType,
+            ContactDetail expectedContactDetails,
+            LiveVacancy source,
+            [Frozen] Mock<ICourseService> courseService,
+            LiveVacancyMapper sut)
+        {
+            // arrange
+            source.OwnerType = ownerType;
+            var mockStandardsListResponse = SetupCoursesApiResponse(source);
+
+            // act
+            var result = sut.Map(source, mockStandardsListResponse);
+
+            // assert
+            switch (ownerType)
+            {
+                case OwnerType.Employer:
+                    result.EmployerContactEmail.Should().Be(source.Contact?.Email);
+                    result.EmployerContactPhone.Should().Be(source.Contact?.Phone);
+                    result.EmployerContactName.Should().Be(source.Contact?.Name);
+                    break;
+                case OwnerType.Provider:
+                    result.ProviderContactEmail.Should().Be(source.Contact?.Email);
+                    result.ProviderContactPhone.Should().Be(source.Contact?.Phone);
+                    result.ProviderContactName.Should().Be(source.Contact?.Name);
+                    break;
+                case OwnerType.External:
+                case OwnerType.Unknown:
+                case null:
+                    result.EmployerContactEmail.Should().BeNull();
+                    result.EmployerContactPhone.Should().BeNull();
+                    result.EmployerContactName.Should().BeNull();
+                    result.EmployerContactEmail.Should().BeNull();
+                    result.EmployerContactPhone.Should().BeNull();
+                    result.EmployerContactName.Should().BeNull();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ownerType), ownerType, null);
+            }
+        }
+
         [Test, MoqAutoData]
         public void Then_The_Nhs_Vacancy_Is_Mapped(GetNhsJobApiDetailResponse source, LiveVacancyMapper liveVacancyMapper, DateTime closeDate, DateTime postDate, GetLocationsListItem address, string address1, string postCode1, string postCode2, GetRoutesListItem route)
         {
@@ -130,9 +178,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 ProviderName = source.TrainingProvider.Name,
                 source.TrainingProvider.Ukprn,
                 IsPositiveAboutDisability = false,
-                source.EmployerContactName,
-                source.EmployerContactEmail,
-                source.EmployerContactPhone,
                 IsEmployerAnonymous = source.IsAnonymous,
                 VacancyLocationType = "NonNational",
                 ApprenticeshipLevel = "Higher",
@@ -189,6 +234,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 .WithMapping("EmployerLocations", "EmploymentLocations")
                 .WithMapping("EmployerLocationOption", "EmploymentLocationOption")
                 .WithMapping("EmployerLocationInformation", "EmploymentLocationInformation")
+                .WithMapping("Contact", "Contact")
             );
         }
 
