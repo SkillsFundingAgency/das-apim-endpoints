@@ -46,8 +46,8 @@ public class WhenGettingProviderRelationships
         result.Ukprn.Should().BeEquivalentTo(request.Ukprn.ToString());
         result.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), providerSummary.StatusId));
         result.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
-        result.Employers?.Length.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
-        result.SupportedCourses?.Length.Should().Be(coursesResponse.CourseTypes.Count);
+        result.Employers.Count.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
+        result.SupportedCourses.Count.Should().Be(coursesResponse.CourseTypes.Count);
     }
 
     [Test, MoqAutoData]

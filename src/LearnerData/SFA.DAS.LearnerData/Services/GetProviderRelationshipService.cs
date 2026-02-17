@@ -40,7 +40,7 @@ namespace SFA.DAS.LearnerData.Services
             var employerTasks = providerDetails.AccountProviderLegalEntities.
                 Select(async legalEntity =>
                 {
-                    var accountTask = accountTasks.GetOrAdd(legalEntity.AccountId, id => GetEmployerAccountDetails(id));
+                    var accountTask = accountTasks.GetOrAdd(legalEntity.AccountId, GetEmployerAccountDetails);
                     var accountDetails = await accountTask;
                     var isFunded = accountDetails?.LegalEntities is not null && GetIsFunded(accountDetails.LegalEntities);
 

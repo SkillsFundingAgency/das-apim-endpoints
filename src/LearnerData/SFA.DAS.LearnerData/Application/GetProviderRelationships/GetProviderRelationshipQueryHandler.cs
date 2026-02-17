@@ -39,8 +39,8 @@ public class GetProviderRelationshipQueryHandler(
             Ukprn = request.Ukprn.ToString(),
             Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
             Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
-            Employers = employerDetailsTask.Result?.ToArray() ?? [],
-            SupportedCourses = coursesForProviderTask.Result?.CourseTypes?.ToArray() ?? []
+            Employers = employerDetailsTask.Result ?? [],
+            SupportedCourses = coursesForProviderTask.Result?.CourseTypes ?? []
         };
     }
 
