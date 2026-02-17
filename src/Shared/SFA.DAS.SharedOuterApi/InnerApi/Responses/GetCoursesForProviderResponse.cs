@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
 public class GetCoursesForProviderResponse
 {
-    public long Ukprn { get; set; }
-
-    public string Status { get; set; }
-
-    public string Type { get; set; }
-
     public List<CourseTypes> CourseTypes { get; set; }
 }
 
@@ -27,5 +22,6 @@ public class Course
 
     public DateTime EffectiveFrom { get; set; }
 
+    [JsonIgnore(Condition =JsonIgnoreCondition.WhenWritingNull)]
     public DateTime? EffectiveTo { get; set; }
 }
