@@ -14,7 +14,7 @@ using System.Net;
 namespace SFA.DAS.Aodp.Application.Tests.Commands.Application.Application
 {
     [TestFixture]
-    public class WithdrawApplicationCommandHandlerOuterTests
+    public class WithdrawApplicationCommandHandlerTests
     {
         private static readonly Guid ApplicationId = Guid.NewGuid();
         private const string WithdrawnBy = "Test User";
