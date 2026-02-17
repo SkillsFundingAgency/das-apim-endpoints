@@ -14,9 +14,9 @@ using SFA.DAS.AparRegister.Api.Models;
 using SFA.DAS.AparRegister.Application.Queries.ProviderRegister;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.AparRegister.Api.UnitTests.Controllers;
+namespace SFA.DAS.AparRegister.Api.UnitTests.Controllers.ProvidersControllerTests;
 
-public class ProvidersControllerTests
+public class ProviderControllerGetProviderTests
 {
     [Test, MoqAutoData]
     public async Task GetProviders_InvokesMediator(

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +18,7 @@ using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.AparRegister.Api;
 
+[ExcludeFromCodeCoverage]
 /// <summary>
 /// 
 /// </summary>

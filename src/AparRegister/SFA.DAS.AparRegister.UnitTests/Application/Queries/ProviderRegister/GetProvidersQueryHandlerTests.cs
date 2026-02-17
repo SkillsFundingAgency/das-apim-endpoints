@@ -16,7 +16,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.AparRegister.UnitTests.Application.ProviderRegister;
+namespace SFA.DAS.AparRegister.UnitTests.Application.Queries.ProviderRegister;
 
 public class GetProvidersQueryHandlerTests
 {
