@@ -7,6 +7,7 @@ using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
+using SFA.DAS.RecruitJobs.InnerApi.Requests.DeleteVacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
@@ -14,6 +15,7 @@ using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using StrawberryShake;
 using System.Collections.Generic;
@@ -33,8 +35,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(GetOneVacancyAnalyticsResponse), StatusCodes.Status200OK)]
-    public async Task<IResult> GetOne(
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    public async Task<IResult> GetOne([FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromRoute] long vacancyReference,
         CancellationToken token = default)
     {
@@ -56,7 +57,8 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Unable to get vacancy analytics : An error occurred");
+            logger.LogError(e,
+                "Unable to get vacancy analytics : An error occurred");
             return Results.Problem(statusCode: (int)HttpStatusCode.InternalServerError);
         }
     }
@@ -66,10 +68,8 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<IResult> PutOne(
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
-        [FromRoute] long vacancyReference,
-        [FromBody] PutVacancyAnalyticsRequest request,
+    public async Task<IResult> PutOne([FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] long vacancyReference, [FromBody] PutVacancyAnalyticsRequest request,
         CancellationToken token = default)
     {
         try
@@ -85,12 +85,13 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
         catch (Exception e)
         {
-            logger.LogError(e, "Unable to create vacancy analytics : An error occurred");
+            logger.LogError(e,
+                "Unable to create vacancy analytics : An error occurred");
             return Results.Problem(statusCode: (int)HttpStatusCode.InternalServerError);
         }
     }
 
-    [HttpGet, Route("getVacanciesToClose")]
+    [HttpGet, Route("stale/live")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<VacancyIdentifier>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetVacanciesToClose(
         [FromQuery, Required] DateTime pointInTime,
@@ -115,6 +116,93 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         return TypedResults.Ok(new DataResponse<IEnumerable<VacancyIdentifier>>(data));
     }
 
+    [HttpGet, Route("stale/draft")]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetDraftVacanciesToClose(
+        [FromQuery, Required] DateTime pointInTime,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient
+            .GetDraftVacanciesCreatedBefore
+            .ExecuteAsync(pointInTime, cancellationToken);
+
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("An error occured at GetDraftVacanciesToClose: {Errors}", response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var data = response
+            .Data!
+            .Vacancies
+            .Select(x =>
+                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Draft, x.CreatedDate!.Value.UtcDateTime));
+        return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
+    }
+
+    [HttpGet, Route("stale/employer-reviewed")]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetEmployerReviewedVacanciesToClose(
+        [FromQuery, Required] DateTime pointInTime,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient
+            .GetEmployerReviewedVacanciesCreatedBefore
+            .ExecuteAsync(pointInTime, cancellationToken);
+
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("An error occured at GetEmployerReviewedVacanciesToClose: {Errors}", response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var data = response
+            .Data!
+            .Vacancies
+            .Select(x =>
+                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Referred, x.CreatedDate!.Value.UtcDateTime));
+        return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
+    }
+
+    [HttpGet, Route("stale/rejected")]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetRejectedEmployerVacanciesToClose(
+        [FromQuery, Required] DateTime pointInTime,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient
+            .GetRejectedEmployerVacanciesCreatedBefore
+            .ExecuteAsync(pointInTime, cancellationToken);
+
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("An error occured at GetRejectedEmployerVacanciesToClose: {Errors}", response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var data = response
+            .Data!
+            .Vacancies
+            .Select(x =>
+                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Rejected, x.CreatedDate!.Value.UtcDateTime));
+        return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
+    }
+
+    [HttpPost, Route("delete")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IResult> DeleteOne(
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromBody, Required] Guid id)
+    {
+        var results = await recruitApiClient.DeleteWithResponseCode<NullResponse>(new DeleteVacancyByIdRequest(id));
+        return Results.StatusCode((int)results.StatusCode);
+    }
+
     [HttpPost, Route("{vacancyReference:long}/close")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IResult> CloseVacancy(
@@ -130,7 +218,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             var response = await recruitGqlClient
                 .GetVacancyById
                 .ExecuteAsync(request.VacancyId, cancellationToken);
-            
+
             if (!response.IsSuccessResult())
             {
                 logger.LogError("An error occured at CloseVacancy: {Errors}", response.FormatErrors());
