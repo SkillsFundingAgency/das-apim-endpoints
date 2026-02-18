@@ -75,7 +75,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         // Assert
         _learningApiClient.Verify(x =>
-            x.PostWithResponseCode<CreateDraftShortCourseRequest, Guid>(
+            x.PostWithResponseCode<Guid>(
                 It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == builtRequest), true),
             Times.Once);
     }
