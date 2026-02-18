@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectEmployer;
 
 namespace SFA.DAS.Approvals.Api.Models.Cohorts;
@@ -8,12 +7,13 @@ public class GetSelectEmployerResponse
 {
     public List<AccountProviderLegalEntityResponseItem> AccountProviderLegalEntities { get; set; }
     public List<string> Employers { get; set; }
+    public int TotalCount { get; set; }
 
     public static implicit operator GetSelectEmployerResponse(GetSelectEmployerQueryResult source)
     {
         return new GetSelectEmployerResponse
         {
-            AccountProviderLegalEntities = source.AccountProviderLegalEntities?.Select(x => new AccountProviderLegalEntityResponseItem
+            AccountProviderLegalEntities = source.AccountProviderLegalEntities?.ConvertAll(x => new AccountProviderLegalEntityResponseItem
             {
                 AccountId = x.AccountId,
                 AccountPublicHashedId = x.AccountPublicHashedId,
@@ -24,8 +24,9 @@ public class GetSelectEmployerResponse
                 AccountLegalEntityName = x.AccountLegalEntityName,
                 AccountProviderId = x.AccountProviderId,
                 ApprenticeshipEmployerType = x.ApprenticeshipEmployerType
-            }).ToList() ?? new List<AccountProviderLegalEntityResponseItem>(),
-            Employers = source.Employers ?? new List<string>()
+            }) ?? [],
+            Employers = source.Employers ?? [],
+            TotalCount = source.TotalCount
         };
     }
 }
