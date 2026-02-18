@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.Common.Domain.Models;
+using SFA.DAS.Recruit.Api.Models.Requests;
+using SFA.DAS.Recruit.GraphQL;
+
+namespace SFA.DAS.Recruit.Api.Extensions;
+
+public static class VacancyListFilterParamExtensions
+{
+    private const string VacancyPrefix = "VAC";
+    
+    public static VacancyEntityFilterInput BuildForAllVacancies(this VacancyListFilterParams filterParams, int? ukprn = null, long? accountId = null)
+    {
+        List<VacancyEntityFilterInput> andFilters = [new()
+        {
+            DeletedDate = new DateTimeOperationFilterInput { Eq = null },
+        }];
+        
+        if (ukprn is not null)
+        {
+            andFilters.Add(new VacancyEntityFilterInput { // Ukprn = 123 AND OwnerType = Provider
+                Ukprn = new IntOperationFilterInput { Eq = ukprn },
+                OwnerType = new NullableOfOwnerTypeOperationFilterInput { Eq = OwnerType.Provider }
+            });
+        }
+        else if (accountId is not null)
+        {
+            andFilters.Add(new VacancyEntityFilterInput
+            {
+                AccountId = new LongOperationFilterInput
+                {
+                    Eq = accountId
+                }
+            });
+            andFilters.Add(new VacancyEntityFilterInput
+            {
+                Or = [ // (OwnerType = Employer OR (OwnerType = Provider AND Status = Review))
+                    new VacancyEntityFilterInput
+                    {
+                        OwnerType = new NullableOfOwnerTypeOperationFilterInput { Eq = OwnerType.Employer }
+                    },
+                    new VacancyEntityFilterInput
+                    {
+                        OwnerType = new NullableOfOwnerTypeOperationFilterInput { Eq = OwnerType.Provider },
+                        Status = new VacancyStatusOperationFilterInput { Eq = VacancyStatus.Review }
+                    },
+                ]
+            });
+        }
+        
+        if (string.IsNullOrWhiteSpace(filterParams.SearchTerm))
+        {
+            return new VacancyEntityFilterInput { And = andFilters };
+        }
+        
+        if (filterParams.SearchTerm.StartsWith(VacancyPrefix, StringComparison.CurrentCultureIgnoreCase) && VacancyReference.TryParse(filterParams.SearchTerm, out var vacancyReference) && vacancyReference != VacancyReference.None)
+        {
+            andFilters.Add(new VacancyEntityFilterInput
+            {
+                VacancyReference = new LongOperationFilterInput { Eq = vacancyReference.Value }
+            });
+        }
+        else
+        {
+            if (accountId is not null)
+            {
+                // employer side, only query the title
+                andFilters.Add(new VacancyEntityFilterInput
+                {
+                    // Title like '%searchTerm%'
+                    Title = new StringOperationFilterInput
+                    {
+                        Contains = filterParams.SearchTerm
+                    }
+                });
+            }
+            else
+            {
+                // provider side, query both legal entity and title
+                andFilters.Add(new VacancyEntityFilterInput
+                {
+                    Or = [ // (LegalEntityName like '%searchTerm%' OR Title like '%searchTerm%')
+                        new VacancyEntityFilterInput
+                        {
+                            LegalEntityName = new StringOperationFilterInput
+                            {
+                                Contains = filterParams.SearchTerm
+                            }
+                        },
+                        new VacancyEntityFilterInput
+                        {
+                            Title = new StringOperationFilterInput
+                            {
+                                Contains = filterParams.SearchTerm
+                            }
+                        }
+                    ]
+                });
+            }
+        }
+
+        return new VacancyEntityFilterInput
+        {
+            And = andFilters
+        };
+    }
+}
