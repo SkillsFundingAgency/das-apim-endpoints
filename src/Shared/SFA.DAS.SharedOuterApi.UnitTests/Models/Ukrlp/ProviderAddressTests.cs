@@ -1,8 +1,8 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp;
+using SFA.DAS.SharedOuterApi.Models.Ukrlp;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 {

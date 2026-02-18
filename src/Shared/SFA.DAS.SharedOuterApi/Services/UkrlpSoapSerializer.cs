@@ -4,8 +4,10 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.Xml.XPath;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
+namespace SFA.DAS.SharedOuterApi.Services
 {
     public class UkrlpSoapSerializer : IUkrlpSoapSerializer
     {
@@ -73,7 +75,7 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
                 // wrapping tag, so can't serialize using XmlArray
                 var matchingRecordsSerializer = new XmlSerializer(typeof(Provider));
                 var contactSerializer = new XmlSerializer(typeof(ProviderContact));
-           
+
                 Provider provider =
                     (Provider)matchingRecordsSerializer.Deserialize(queryResponse.CreateReader());
 

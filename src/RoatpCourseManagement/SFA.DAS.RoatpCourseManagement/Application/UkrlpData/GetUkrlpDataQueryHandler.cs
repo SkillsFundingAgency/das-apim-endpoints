@@ -8,8 +8,11 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using SFA.DAS.RoatpCourseManagement.Configuration;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Ukrlp;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.Ukrlp;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {

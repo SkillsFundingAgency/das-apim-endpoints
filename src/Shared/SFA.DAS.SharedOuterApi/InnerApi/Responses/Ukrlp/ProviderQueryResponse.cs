@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp
 {
     [Serializable]
     [XmlRoot(ElementName = "MatchingProviderRecords")]

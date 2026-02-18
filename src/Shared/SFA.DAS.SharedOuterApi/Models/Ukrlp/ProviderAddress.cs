@@ -1,8 +1,7 @@
 ﻿using System.Linq;
-using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp;
 
-
-namespace SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp
+namespace SFA.DAS.SharedOuterApi.Models.Ukrlp
 {
     public class ProviderAddress
     {
