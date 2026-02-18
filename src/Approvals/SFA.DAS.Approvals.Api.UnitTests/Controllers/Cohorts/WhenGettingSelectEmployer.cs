@@ -16,7 +16,6 @@ public class WhenGettingSelectEmployer
         string searchTerm,
         string sortField,
         bool reverseSort,
-        bool useLearnerData,
         [Frozen] Mock<ISender> mediator,
         [Greedy] CohortController controller)
     {
@@ -33,11 +32,10 @@ public class WhenGettingSelectEmployer
                 c.ProviderId == providerId &&
                 c.SearchTerm == searchTerm &&
                 c.SortField == sortField &&
-                c.ReverseSort == reverseSort &&
-                c.UseLearnerData == useLearnerData), It.IsAny<CancellationToken>())).ReturnsAsync(result);
+                c.ReverseSort == reverseSort), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
         // Act
-        var actual = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData) as OkObjectResult;
+        var actual = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort) as OkObjectResult;
 
         // Assert
         actual.Should().NotBeNull();
@@ -53,7 +51,6 @@ public class WhenGettingSelectEmployer
         string searchTerm,
         string sortField,
         bool reverseSort,
-        bool useLearnerData,
         [Frozen] Mock<ISender> mediator,
         [Greedy] CohortController controller)
     {
@@ -63,7 +60,7 @@ public class WhenGettingSelectEmployer
             It.IsAny<GetSelectEmployerQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(nullResult);
 
         // Act
-        var actual = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData);
+        var actual = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort);
 
         // Assert
         actual.Should().BeOfType<NotFoundResult>();
@@ -75,7 +72,6 @@ public class WhenGettingSelectEmployer
         string searchTerm,
         string sortField,
         bool reverseSort,
-        bool useLearnerData,
         [Frozen] Mock<ISender> mediator,
         [Frozen] Mock<ILogger<DraftApprenticeshipController>> logger,
         [Greedy] CohortController controller)
@@ -85,7 +81,7 @@ public class WhenGettingSelectEmployer
             It.IsAny<GetSelectEmployerQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("Test exception"));
 
         // Act
-        var actual = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort, useLearnerData);
+        var actual = await controller.GetSelectEmployer(providerId, searchTerm, sortField, reverseSort);
 
         // Assert
         actual.Should().BeOfType<BadRequestResult>();
