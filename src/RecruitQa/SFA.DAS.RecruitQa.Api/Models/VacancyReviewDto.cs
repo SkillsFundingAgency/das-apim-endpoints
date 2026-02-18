@@ -15,7 +15,7 @@ public class VacancyReviewDto
     public DateTime? ReviewedDate { get; init; }
     public required string Status { get; init; }
     public byte SubmissionCount { get; init; }
-    public string ReviewedByUserEmail { get; init; }
+    public string? ReviewedByUserEmail { get; init; }
     public required string SubmittedByUserEmail { get; init; }
     public DateTime? ClosedDate { get; init; }
     public string? ManualOutcome { get; set; }
