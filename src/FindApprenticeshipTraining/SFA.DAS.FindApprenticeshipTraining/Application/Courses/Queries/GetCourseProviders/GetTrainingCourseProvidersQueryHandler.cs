@@ -26,7 +26,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
+                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.LarsCode));
 
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
@@ -34,7 +34,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                 {
                     PageSize = 10,
                     Page = 1,
-                    LarsCode = request.Id,
+                    LarsCode = request.LarsCode,
                     Providers = [],
                     QarPeriod = string.Empty,
                     ReviewPeriod = string.Empty,
@@ -49,7 +49,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(
                 new GetProvidersByCourseIdRequest()
                 {
-                    CourseId = request.Id,
+                    CourseId = request.LarsCode,
                     OrderBy = request.OrderBy,
                     Distance = request.Distance,
                     Latitude = locationItem?.Latitude,
