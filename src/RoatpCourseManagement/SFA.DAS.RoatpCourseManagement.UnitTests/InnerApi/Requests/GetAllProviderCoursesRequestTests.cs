@@ -5,6 +5,7 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests;
+
 public class GetAllProviderCoursesRequestTests
 {
     [Test, AutoData]

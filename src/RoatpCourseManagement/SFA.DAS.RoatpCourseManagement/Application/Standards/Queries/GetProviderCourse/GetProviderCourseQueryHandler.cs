@@ -12,72 +12,69 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse
+namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
+
+public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQuery, GetProviderCourseResult>
 {
-    public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQuery, GetProviderCourseResult>
+    private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
+    private readonly ILogger<GetProviderCourseQueryHandler> _logger;
+
+    public GetProviderCourseQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILogger<GetProviderCourseQueryHandler> logger)
     {
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
-        private readonly ILogger<GetProviderCourseQueryHandler> _logger;
+        _courseManagementApiClient = courseManagementApiClient;
+        _logger = logger;
+    }
 
-        public GetProviderCourseQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ILogger<GetProviderCourseQueryHandler> logger)
+    public async Task<GetProviderCourseResult> Handle(GetProviderCourseQuery request, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Get Provider Course request received for ukprn {Ukprn}, LarsCode {LarsCode}", request.Ukprn, request.LarsCode);
+
+        var standardResponse = await _courseManagementApiClient.GetWithResponseCode<GetStandardResponseFromCourseManagementApi>(new GetStandardLookRequest(request.LarsCode));
+        if (standardResponse.StatusCode != HttpStatusCode.OK)
         {
-            _coursesApiClient = coursesApiClient;
-            _courseManagementApiClient = courseManagementApiClient;
-            _logger = logger;
+            var errorMessage =
+                $"Response status code does not indicate success: {(int)standardResponse.StatusCode} - Standard data not found for Lars Code: {request.LarsCode}";
+            _logger.LogError(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
-
-        public async Task<GetProviderCourseResult> Handle(GetProviderCourseQuery request, CancellationToken cancellationToken)
+        var standard = standardResponse.Body;
+        var courseResponse = await _courseManagementApiClient.GetWithResponseCode<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
+        if (courseResponse.StatusCode != HttpStatusCode.OK)
         {
-            _logger.LogInformation("Get Provider Course request received for ukprn {ukprn}, LarsCode {larsCode}", request.Ukprn, request.LarsCode);
-
-            var standardResponse = await _coursesApiClient.GetWithResponseCode<GetStandardResponseFromCoursesApi>(new GetStandardRequest(request.LarsCode));
-            if (standardResponse.StatusCode != HttpStatusCode.OK)
-            {
-                var errorMessage =
-                    $"Response status code does not indicate success: {(int)standardResponse.StatusCode} - Standard data not found for Lars Code: {request.LarsCode}";
-                _logger.LogError(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
-            var standard = standardResponse.Body;
-            var courseResponse = await _courseManagementApiClient.GetWithResponseCode<GetProviderCourseResponse>(new GetProviderCourseRequest(request.Ukprn, request.LarsCode));
-            if (courseResponse.StatusCode != HttpStatusCode.OK)
-            {
-                var errorMessage =
-                   $"Response status code does not indicate success: {(int)courseResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
-                _logger.LogError(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
-            var course = courseResponse.Body;
-            var providerCourseLocationsResponse = await _courseManagementApiClient.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.Ukprn, request.LarsCode));
-            if (providerCourseLocationsResponse.StatusCode != HttpStatusCode.OK)
-            {
-                var errorMessage =
-                   $"Response status code does not indicate success: {(int)providerCourseLocationsResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
-                _logger.LogError(errorMessage);
-                throw new InvalidOperationException(errorMessage);
-            }
-            var providerCourseLocations = providerCourseLocationsResponse.Body;
-
-            var locations = providerCourseLocations.Select(x => (ProviderCourseLocationModel)x).ToList();
-            return new GetProviderCourseResult
-            {
-                LarsCode = course.LarsCode,
-                IfateReferenceNumber = standard.IfateReferenceNumber,
-                CourseName = standard.Title,
-                Level = standard.Level,
-                Version = standard.Version,
-                ApprenticeshipType = standard.ApprenticeshipType,
-                RegulatorName = standard.ApprovalBody,
-                Sector = standard.Route,
-                StandardInfoUrl = course.StandardInfoUrl,
-                ContactUsPhoneNumber = course.ContactUsPhoneNumber,
-                ContactUsEmail = course.ContactUsEmail,
-                ProviderCourseLocations = locations,
-                IsApprovedByRegulator = course.IsApprovedByRegulator,
-                IsRegulatedForProvider = course.IsRegulatedForProvider,
-                HasLocations = course.HasLocations
-            };
+            var errorMessage =
+                $"Response status code does not indicate success: {(int)courseResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
+            _logger.LogError(errorMessage);
+            throw new InvalidOperationException(errorMessage);
         }
+        var course = courseResponse.Body;
+        var providerCourseLocationsResponse = await _courseManagementApiClient.GetWithResponseCode<List<GetProviderCourseLocationsResponse>>(new GetProviderCourseLocationsRequest(request.Ukprn, request.LarsCode));
+        if (providerCourseLocationsResponse.StatusCode != HttpStatusCode.OK)
+        {
+            var errorMessage =
+                $"Response status code does not indicate success: {(int)providerCourseLocationsResponse.StatusCode} - Provider course details not found for ukprn: {request.Ukprn} LarsCode: {request.LarsCode}";
+            _logger.LogError(errorMessage);
+            throw new InvalidOperationException(errorMessage);
+        }
+        var providerCourseLocations = providerCourseLocationsResponse.Body;
+
+        var locations = providerCourseLocations.Select(x => (ProviderCourseLocationModel)x).ToList();
+        return new GetProviderCourseResult
+        {
+            LarsCode = course.LarsCode,
+            IfateReferenceNumber = standard.IfateReferenceNumber,
+            CourseName = standard.Title,
+            Level = standard.Level,
+            ApprenticeshipType = standard.ApprenticeshipType,
+            RegulatorName = standard.ApprovalBody,
+            Sector = standard.Route,
+            StandardInfoUrl = course.StandardInfoUrl,
+            ContactUsPhoneNumber = course.ContactUsPhoneNumber,
+            ContactUsEmail = course.ContactUsEmail,
+            ProviderCourseLocations = locations,
+            IsApprovedByRegulator = course.IsApprovedByRegulator,
+            IsRegulatedForProvider = course.IsRegulatedForProvider,
+            HasLocations = course.HasLocations,
+            HasOnlineDeliveryOption = course.HasOnlineDeliveryOption,
+        };
     }
 }
