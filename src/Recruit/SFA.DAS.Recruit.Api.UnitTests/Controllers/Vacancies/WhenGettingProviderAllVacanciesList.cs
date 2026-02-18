@@ -63,7 +63,7 @@ public class WhenGettingProviderAllVacanciesList
             CancellationToken.None);
 
         // assert
-        capturedFilter.Should().BeEquivalentTo(filterParams.BuildForAllVacancies(ukprn: ukprn));
+        capturedFilter.Should().BeEquivalentTo(filterParams.Build(ukprn: ukprn));
         capturedSort.Should().BeEquivalentTo(sortParams.Build());
         capturedSkip.Should().Be(0);
         capturedTake.Should().Be(10);

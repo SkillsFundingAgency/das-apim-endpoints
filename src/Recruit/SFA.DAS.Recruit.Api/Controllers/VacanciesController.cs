@@ -113,7 +113,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         CancellationToken cancellationToken = default)
     {
         var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
-            vacancyListFilterParams.BuildForAllVacancies(accountId: accountId),
+            vacancyListFilterParams.Build(accountId: accountId),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),
@@ -154,7 +154,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         CancellationToken cancellationToken = default)
     {
         var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
-            vacancyListFilterParams.BuildForAllVacancies(ukprn: ukprn),
+            vacancyListFilterParams.Build(ukprn: ukprn),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),
@@ -181,6 +181,64 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         statsResponse.EnsureSuccessStatusCode();
 
         var data = items.AssignStatsToVacancies(statsResponse.Body.Data ?? []);
+        return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
+    }
+    
+    [HttpGet, Route("employer/{accountId:int}/draft")]
+    public async Task<IResult> GetEmployerDraftVacanciesList(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromRoute] long accountId,
+        VacancyListFilterParams vacancyListFilterParams,
+        SortParams<VacancySortColumn> sortParams,
+        PageParams pageParams,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
+            vacancyListFilterParams.Build(accountId: accountId, statuses: [VacancyStatus.Draft]),
+            sortParams.Build(),
+            pageParams.Skip(),
+            pageParams.Take(),
+            cancellationToken
+        );
+        
+        if (response.IsErrorResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var pageInfo = new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data?.PagedVacancies?.TotalCount ?? 0));
+        var items = response.Data?.PagedVacancies?.Items ?? [];
+        var data = items is { Count: 0 } ? [] : items.Select(x => VacancyListItem.From(x, null));
+        
+        return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
+    }
+    
+    [HttpGet, Route("provider/{ukprn:int}/draft")]
+    public async Task<IResult> GetProviderDraftVacanciesList(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromRoute] int ukprn,
+        VacancyListFilterParams vacancyListFilterParams,
+        SortParams<VacancySortColumn> sortParams,
+        PageParams pageParams,
+        CancellationToken cancellationToken = default)
+    {
+        var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
+            vacancyListFilterParams.Build(ukprn: ukprn, statuses: [VacancyStatus.Draft]),
+            sortParams.Build(),
+            pageParams.Skip(),
+            pageParams.Take(),
+            cancellationToken
+        );
+        
+        if (response.IsErrorResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var pageInfo = new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data?.PagedVacancies?.TotalCount ?? 0));
+        var items = response.Data?.PagedVacancies?.Items ?? [];
+        var data = items is { Count: 0 } ? [] : items.Select(x => VacancyListItem.From(x, null));
+        
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 }
