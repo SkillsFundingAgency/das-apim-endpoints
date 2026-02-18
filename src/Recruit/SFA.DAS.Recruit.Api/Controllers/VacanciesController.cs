@@ -36,7 +36,7 @@ namespace SFA.DAS.Recruit.Api.Controllers;
 [Route("[controller]/")]
 public class VacanciesController(ILogger<VacanciesController> logger): ControllerBase
 {
-    [HttpGet, Route("vacancyreference")]
+    [HttpGet, Route("vacancyReference")]
     public async Task<IActionResult> GetNextVacancyReference([FromServices] IMediator mediator)
     {
         var result = await mediator.Send(new GetNextVacancyReferenceQuery());
@@ -212,33 +212,43 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
-    
-    [HttpGet, Route("provider/{ukprn:int}/draft")]
-    public async Task<IResult> GetProviderDraftVacanciesList(
+
+    [HttpGet, Route("provider/{ukprn:int}/{status}")]
+    public async Task<IResult> GetProviderVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] int ukprn,
+        [FromRoute] Domain.Vacancy.VacancyStatus status,
         VacancyListFilterParams vacancyListFilterParams,
         SortParams<VacancySortColumn> sortParams,
         PageParams pageParams,
         CancellationToken cancellationToken = default)
     {
+        if (!GqlVacancyStatusMapper.TryMapToGqlStatus(status, out var gqlStatus))
+            return TypedResults.BadRequest(new { message = $"Unsupported status '{status}'." });
+
+        if (!Enum.IsDefined(typeof(VacancyStatus), gqlStatus) ||
+            (gqlStatus != VacancyStatus.Draft && gqlStatus != VacancyStatus.Review))
+        {
+            return TypedResults.BadRequest(new { message = "Status must be 'draft' or 'review'." });
+        }
+
         var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
-            vacancyListFilterParams.Build(ukprn: ukprn, statuses: [VacancyStatus.Draft]),
+            vacancyListFilterParams.Build(ukprn: ukprn, statuses: [gqlStatus]),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),
             cancellationToken
         );
-        
-        if (response.IsErrorResult())
-        {
-            return TypedResults.Problem(response.ToProblemDetails());
-        }
 
-        var pageInfo = new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data?.PagedVacancies?.TotalCount ?? 0));
+        if (response.IsErrorResult())
+            return TypedResults.Problem(response.ToProblemDetails());
+
+        var total = Convert.ToUInt32(response.Data?.PagedVacancies?.TotalCount ?? 0);
+        var pageInfo = new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, total);
+
         var items = response.Data?.PagedVacancies?.Items ?? [];
-        var data = items is { Count: 0 } ? [] : items.Select(x => VacancyListItem.From(x, null));
-        
+        var data = items.Count == 0 ? [] : items.Select(x => VacancyListItem.From(x, null));
+
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 }

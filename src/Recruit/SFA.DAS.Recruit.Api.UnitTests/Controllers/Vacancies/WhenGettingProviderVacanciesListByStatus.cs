@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using AutoFixture;
+﻿using AutoFixture;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Extensions;
@@ -9,15 +6,22 @@ using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.Api.Models.Responses;
 using SFA.DAS.Recruit.Data.Models;
 using SFA.DAS.Recruit.GraphQL;
+using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using StrawberryShake;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Vacancies;
 
-public class WhenGettingProviderDraftVacanciesList
+public class WhenGettingProviderVacanciesListByStatus
 {
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Review)]
     public async Task The_The_Gql_Query_Is_Built_Correctly(
+        Domain.Vacancy.VacancyStatus status,
         int ukprn,
         IOperationResult<IGetPagedVacanciesListResult> vacanciesResult,
         VacancyListFilterParams filterParams,
@@ -45,25 +49,31 @@ public class WhenGettingProviderDraftVacanciesList
                 capturedTake = take;
             })
             .ReturnsAsync(vacanciesResult);
-        
+
+        GqlVacancyStatusMapper.TryMapToGqlStatus(status, out var gqlStatus);
+
         // act
-        await sut.GetProviderDraftVacanciesList(
+        await sut.GetProviderVacanciesListByStatus(
             gqlClient.Object,
             ukprn,
+            status,
             filterParams,
             sortParams,
             new PageParams { PageNumber = 1, PageSize = 10 },
             CancellationToken.None);
 
         // assert
-        capturedFilter.Should().BeEquivalentTo(filterParams.Build(ukprn: ukprn, statuses: [VacancyStatus.Draft]));
+        capturedFilter.Should().BeEquivalentTo(filterParams.Build(ukprn: ukprn, statuses: [gqlStatus]));
         capturedSort.Should().BeEquivalentTo(sortParams.Build());
         capturedSkip.Should().Be(0);
         capturedTake.Should().Be(10);
     }
     
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Review)]
     public async Task Then_Gql_Errors_Are_Handled(
+        Domain.Vacancy.VacancyStatus status,
         int ukprn,
         IOperationResult<IGetPagedVacanciesListResult> vacanciesResult,
         VacancyListFilterParams filterParams,
@@ -82,9 +92,10 @@ public class WhenGettingProviderDraftVacanciesList
             .ReturnsAsync(vacanciesResult);
         
         // act
-        var result = await sut.GetProviderDraftVacanciesList(
+        var result = await sut.GetProviderVacanciesListByStatus(
             gqlClient.Object,
             ukprn,
+            status,
             filterParams,
             sortParams,
             new PageParams
@@ -98,8 +109,11 @@ public class WhenGettingProviderDraftVacanciesList
         result.Should().NotBeNull();
     }
 
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Review)]
     public async Task Then_The_Vacancies_Are_Returned(
+        Domain.Vacancy.VacancyStatus status,
         int ukprn,
         Mock<IOperationResult<IGetPagedVacanciesListResult>> vacanciesResult,
         DataResponse<Dictionary<long, VacancyStatsItem>> statsResult,
@@ -127,9 +141,10 @@ public class WhenGettingProviderDraftVacanciesList
         var expectedItems = vacancies.Select(x => VacancyListItem.From(x, null));
 
         // act
-        var result = await sut.GetProviderDraftVacanciesList(
+        var result = await sut.GetProviderVacanciesListByStatus(
             gqlClient.Object,
             ukprn,
+            status,
             filterParams,
             sortParams,
             new PageParams
