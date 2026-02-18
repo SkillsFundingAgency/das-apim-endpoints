@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Ukrlp
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
 {
     public class UkrlpDataQuery : IRequest<GetUkrlpDataQueryResponse>
     {

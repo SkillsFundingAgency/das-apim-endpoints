@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Models.Ukrlp;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
 {
     public class GetUkrlpDataQueryResponse
     {

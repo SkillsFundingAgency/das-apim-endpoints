@@ -4,10 +4,8 @@ using System.Linq;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using System.Xml.XPath;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Services
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
 {
     public class UkrlpSoapSerializer : IUkrlpSoapSerializer
     {

@@ -9,9 +9,8 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Ukrlp;
+using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Ukrlp;
-using SFA.DAS.SharedOuterApi.Models.Ukrlp;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers

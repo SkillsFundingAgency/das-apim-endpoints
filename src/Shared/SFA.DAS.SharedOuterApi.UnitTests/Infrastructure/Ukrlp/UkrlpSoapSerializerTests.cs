@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData.UkrlpSoapSerializer
+namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Ukrlp
 {
     [TestFixture]
     public class UkrlpSoapSerializerTests
