@@ -163,7 +163,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Id = source.JobCode ?? string.Empty,
                 EmployerName = source.Department.En,
                 VacancyReference = source.JobReference ?? string.Empty,
-                Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMinimum),
+                Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMaximum),
                 ApplicationUrl = source.JobUrl,
                 ClosingDate = source.KeyTimes.ClosingTime,
                 PostedDate = source.KeyTimes.PublishedTime,

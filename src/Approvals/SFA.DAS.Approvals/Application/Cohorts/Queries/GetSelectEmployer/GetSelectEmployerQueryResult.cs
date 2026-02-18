@@ -6,6 +6,7 @@ public class GetSelectEmployerQueryResult
 {
     public List<AccountProviderLegalEntityItem> AccountProviderLegalEntities { get; init; } = [];
     public List<string> Employers { get; init; } = [];
+    public int TotalCount { get; init; }
 }
 
 public class AccountProviderLegalEntityItem
