@@ -4,7 +4,7 @@ namespace SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests
 {
     public class GetApprenticeshipIdsByCommitmentIdRequest : IGetApiRequest
     {
-        private long _commitmentId;
+        private readonly long _commitmentId;
 
         public GetApprenticeshipIdsByCommitmentIdRequest(long commitmentId)
         {

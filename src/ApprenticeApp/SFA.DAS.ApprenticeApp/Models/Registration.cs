@@ -14,11 +14,11 @@ namespace SFA.DAS.ApprenticeApp.Models
         public Email Email { get; set; }
         public Guid? ApprenticeId { get; set; }
         public Approvals Approval { get; set; }
-        public DateTime? CreatedOn { get; private set; } = DateTime.UtcNow;
-        public DateTime? FirstViewedOn { get; private set; }
-        public DateTime? SignUpReminderSentOn { get; private set; }
-        public Apprenticeship? Apprenticeship { get; private set; }
-        public DateTime? StoppedReceivedOn { get; private set; }
+        public DateTime? CreatedOn { get; set; } = DateTime.UtcNow;
+        public DateTime? FirstViewedOn { get; set; }
+        public DateTime? SignUpReminderSentOn { get; set; }
+        public Apprenticeship? Apprenticeship { get; set; }
+        public DateTime? StoppedReceivedOn { get; set; }
     }
 
     public class  Approvals
@@ -55,12 +55,12 @@ namespace SFA.DAS.ApprenticeApp.Models
     public class CourseDetails
     {
         public string Name { get; }
-        public int Level { get; private set; }
-        public string? Option { get; private set; }
-        public DateTime PlannedStartDate { get; private set; }
-        public DateTime PlannedEndDate { get; private set; }
-        public DateTime? EmploymentEndDate { get; private set; }
-        public int CourseDuration { get; private set; }
+        public int Level { get; set; }
+        public string? Option { get; set; }
+        public DateTime PlannedStartDate { get; set; }
+        public DateTime PlannedEndDate { get; set; }
+        public DateTime? EmploymentEndDate { get; set; }
+        public int CourseDuration { get; set; }
     }
 
     public class RplDetails
