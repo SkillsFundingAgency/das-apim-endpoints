@@ -91,7 +91,7 @@ public class RecruitArtificialIntelligenceService(
         var discriminationPrompt = new AzureAiClientPrompt(configuration.DiscriminationPrompt.SystemPrompt, configuration.DiscriminationPrompt.UserHeader, configuration.DiscriminationPrompt.UserInstruction);
         var contentEvaluationPrompt = new AzureAiClientPrompt(configuration.MissingContentPrompt.SystemPrompt, configuration.MissingContentPrompt.UserHeader, configuration.MissingContentPrompt.UserInstruction);
         
-        var spellcheckTask = azureAiClient.PerformCheckAsync<Dictionary<string, int>>(spellcheckPrompt, spellcheckFields, cancellationToken);
+        var spellcheckTask = azureAiClient.PerformCheckAsync<Dictionary<string, string>>(spellcheckPrompt, spellcheckFields, cancellationToken);
         var discriminationTask = azureAiClient.PerformCheckAsync<Dictionary<string, string>>(discriminationPrompt, fieldsToCheck, cancellationToken);
         var contentEvaluationTask = azureAiClient.PerformCheckAsync<Dictionary<string, string>>(contentEvaluationPrompt, fieldsToCheck, cancellationToken);
         

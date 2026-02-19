@@ -12,7 +12,7 @@ namespace SFA.DAS.RecruitJobs.UnitTests.Ai;
 
 public class WhenGettingAzureAiResponse
 {
-    public class MockPipelineResponse : PipelineResponse
+    private class MockPipelineResponse : PipelineResponse
     {
         public override BinaryData BufferContent(CancellationToken cancellationToken = new CancellationToken())
         {

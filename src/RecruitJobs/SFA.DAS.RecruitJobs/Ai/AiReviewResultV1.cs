@@ -8,7 +8,7 @@ namespace SFA.DAS.RecruitJobs.Ai;
 
 public class AiReviewResultV1: AiReviewResult
 {
-    public AzureAiResponse<Dictionary<string, int>> SpellcheckResult { get; set; }
+    public AzureAiResponse<Dictionary<string, string>> SpellcheckResult { get; set; }
     public AzureAiResponse<Dictionary<string, string>> DiscriminationResult { get; set; }
     public AzureAiResponse<Dictionary<string, string>> ContentEvaluationResult { get; set; }
 
@@ -22,8 +22,8 @@ public class AiReviewResultV1: AiReviewResult
     private double GetSpellcheckScore()
     {
         var total = GetStatusScore(SpellcheckResult?.StatusCode);
-        var errorCount = SpellcheckResult?.Result?.Sum(x => x.Value) ?? 0;
-        return total + (errorCount > 0 ? 0.5 : 0);
+        var anyErrors = SpellcheckResult?.Result?.Any(x => !string.IsNullOrWhiteSpace(x.Value)) ?? false;
+        return total + (anyErrors ? 0.5 : 0);
     }
 
     public override double GetScore()

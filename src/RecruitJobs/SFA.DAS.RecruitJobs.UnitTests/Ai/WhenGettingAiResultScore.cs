@@ -26,7 +26,7 @@ public class WhenGettingAiResultScore
         // arrange
         var sut = new AiReviewResultV1
         {
-            SpellcheckResult = new AzureAiResponse<Dictionary<string, int>> { StatusCode = HttpStatusCode.OK },
+            SpellcheckResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK },
             DiscriminationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK },
             ContentEvaluationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK },
         };
@@ -44,7 +44,7 @@ public class WhenGettingAiResultScore
         // arrange
         var sut = new AiReviewResultV1
         {
-            SpellcheckResult = new AzureAiResponse<Dictionary<string, int>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, int>() },
+            SpellcheckResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
             DiscriminationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
             ContentEvaluationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
         };
@@ -62,7 +62,7 @@ public class WhenGettingAiResultScore
         // arrange
         var sut = new AiReviewResultV1
         {
-            SpellcheckResult = new AzureAiResponse<Dictionary<string, int>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, int>() },
+            SpellcheckResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
             DiscriminationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string> { ["fieldName"] = "problem" } },
             ContentEvaluationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
         };
@@ -80,7 +80,7 @@ public class WhenGettingAiResultScore
         // arrange
         var sut = new AiReviewResultV1
         {
-            SpellcheckResult = new AzureAiResponse<Dictionary<string, int>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, int>() },
+            SpellcheckResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
             DiscriminationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
             ContentEvaluationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string> { ["fieldName"] = "problem" } },
         };
@@ -98,7 +98,7 @@ public class WhenGettingAiResultScore
         // arrange
         var sut = new AiReviewResultV1
         {
-            SpellcheckResult = new AzureAiResponse<Dictionary<string, int>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, int> { ["fieldName"] = 1 } },
+            SpellcheckResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string> { ["fieldName"] = "something" } },
             DiscriminationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
             ContentEvaluationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
         };
@@ -116,7 +116,7 @@ public class WhenGettingAiResultScore
         // arrange
         var sut = new AiReviewResultV1
         {
-            SpellcheckResult = new AzureAiResponse<Dictionary<string, int>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, int> { ["fieldName"] = 3 } },
+            SpellcheckResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string> { ["fieldName"] = "something" } },
             DiscriminationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
             ContentEvaluationResult = new AzureAiResponse<Dictionary<string, string>> { StatusCode = HttpStatusCode.OK, Result = new Dictionary<string, string>() },
         };
