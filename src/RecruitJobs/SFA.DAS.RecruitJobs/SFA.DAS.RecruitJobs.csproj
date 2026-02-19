@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Azure.AI.OpenAI" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="StrawberryShake.Blazor" />
   </ItemGroup>
