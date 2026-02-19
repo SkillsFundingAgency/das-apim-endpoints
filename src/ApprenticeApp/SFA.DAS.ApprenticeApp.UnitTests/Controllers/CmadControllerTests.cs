@@ -103,7 +103,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
                         q.RevisionId == query.RevisionId),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
-        }       
+        }
 
         [Test, MoqAutoData]
         public async Task GetCommitmentsApprenticeshipById_Returns_Ok_With_Response(
@@ -164,6 +164,38 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
                         c.ApprenticeId == apprenticeId &&
                         c.LastName == lastName &&
                         c.DateOfBirth == dateOfBirth),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+
+
+        [Test, MoqAutoData]
+        public async Task CreateMyApprenticeship_Returns_Ok_And_Sends_Command(
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] CmadController controller,
+            Guid apprenticeId,
+            CreateMyApprenticeshipData data)
+        {
+            // Arrange
+            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.IsAny<CreateMyApprenticeshipCommand>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(MediatR.Unit.Value);
+
+            // Act
+            var actionResult = await controller.CreateMyApprenticeship(apprenticeId, data);
+
+            // Assert
+            actionResult.Should().BeOfType<OkResult>();
+
+            mediatorMock.Verify(m => m.Send(
+                    It.Is<CreateMyApprenticeshipCommand>(c =>
+                        c.ApprenticeId == apprenticeId &&
+                        c.Data == data),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }
