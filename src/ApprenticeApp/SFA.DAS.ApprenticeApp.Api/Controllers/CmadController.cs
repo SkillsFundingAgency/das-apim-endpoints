@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands.Cmad;
-using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetApprenticeshipIdsByCommitmentId;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetCommitmentsApprenticeshipById;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByAccountDetails;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
@@ -47,18 +46,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 });       
             
             return Ok(result.Revision);
-        }
-
-        [HttpGet("/commitments/{commitmentId}")]
-        public async Task<IActionResult> GetApprenticeshipIdsByCommitmentId(long commitmentId)
-        {
-            var result = await _mediator.Send(new GetApprenticeshipIdsByCommitmentIdQuery
-            {
-                CommitmentId = commitmentId
-            });            
-
-            return Ok(result);
-        }
+        }       
 
         [HttpGet("commitments-apprenticeships/{apprenticeshipId}")]
         public async Task<IActionResult> GetCommitmentsApprenticeshipById(long apprenticeshipId)

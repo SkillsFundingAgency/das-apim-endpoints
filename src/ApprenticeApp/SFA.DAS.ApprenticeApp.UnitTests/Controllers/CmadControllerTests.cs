@@ -7,7 +7,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Commands.Cmad;
-using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetApprenticeshipIdsByCommitmentId;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetCommitmentsApprenticeshipById;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByAccountDetails;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
@@ -104,36 +103,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
                         q.RevisionId == query.RevisionId),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
-        }
-
-        [Test, MoqAutoData]
-        public async Task GetApprenticeshipIdsByCommitmentId_Returns_Ok_With_Result(
-            [Frozen] Mock<IMediator> mediatorMock,
-            [Greedy] CmadController controller,
-            long commitmentId,
-            GetApprenticeshipIdsByCommitmentIdQueryResult expectedResult)
-        {
-            // Arrange
-            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
-
-            mediatorMock
-                .Setup(m => m.Send(
-                    It.Is<GetApprenticeshipIdsByCommitmentIdQuery>(q => q.CommitmentId == commitmentId),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(expectedResult);
-
-            // Act
-            var actionResult = await controller.GetApprenticeshipIdsByCommitmentId(commitmentId);
-
-            // Assert
-            var ok = actionResult.Should().BeOfType<OkObjectResult>().Subject;
-            ok.Value.Should().BeSameAs(expectedResult);
-
-            mediatorMock.Verify(m => m.Send(
-                    It.Is<GetApprenticeshipIdsByCommitmentIdQuery>(q => q.CommitmentId == commitmentId),
-                    It.IsAny<CancellationToken>()),
-                Times.Once);
-        }
+        }       
 
         [Test, MoqAutoData]
         public async Task GetCommitmentsApprenticeshipById_Returns_Ok_With_Response(
