@@ -78,7 +78,7 @@ public class RecruitAiApiClient(IInternalApiClient<RecruitAiApiConfiguration> ap
 
     public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
     {
-        return apiClient.PatchWithResponseCode<TData>(request);
+        return apiClient.PatchWithResponseCode(request);
     }
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
     {
@@ -92,6 +92,6 @@ public class RecruitAiApiClient(IInternalApiClient<RecruitAiApiConfiguration> ap
 
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
-        throw new NotImplementedException();
+        return apiClient.PutWithResponseCode<TData, TResponse>(request);
     }
 }
