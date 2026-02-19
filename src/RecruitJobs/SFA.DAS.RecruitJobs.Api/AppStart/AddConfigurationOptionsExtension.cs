@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using SFA.DAS.RecruitJobs.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.RecruitJobs.Api.AppStart;
@@ -16,5 +17,11 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
         services.Configure<BusinessMetricsConfiguration>(configuration.GetSection("BusinessMetricsApi"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<BusinessMetricsConfiguration>>().Value);
+        services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+        services.Configure<VacancyAiConfiguration>(configuration.GetSection("VacancyAiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<VacancyAiConfiguration>>().Value);
+        services.Configure<RecruitAiApiConfiguration>(configuration.GetSection("RecruitAiApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitAiApiConfiguration>>().Value);
     }
 }

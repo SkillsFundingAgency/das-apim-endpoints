@@ -8,6 +8,7 @@
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
         <PackageReference Include="MediatR" />
         <PackageReference Include="Microsoft.ApplicationInsights" />
+        <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
