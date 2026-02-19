@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.RecruitJobs.Ai.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain.Recruit.Ai;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RecruitAi;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Recruit;
@@ -18,8 +20,33 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 [Route("[controller]/")]
 public class AiController: ControllerBase
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+    };
+    
     [HttpPost]
-    [Route("vacancy/{vacancyId:guid}/review")]
+    [Route("vacancies/{vacancyId:guid}/review/{vacancyReviewId:guid}")]
+    public async Task<IResult> CreateVacancyReviewAsync(
+        [FromServices] IRecruitAiApiClient<RecruitAiApiConfiguration> recruitAiApiClient,
+        [FromRoute] Guid vacancyId,
+        [FromRoute] Guid vacancyReviewId
+        
+        )
+    {
+        var response = await recruitAiApiClient.PutWithResponseCode<PutAiVacancyReviewDto, NullResponse>(new PutAiVacancyReviewRequest(vacancyReviewId, new PutAiVacancyReviewDto()
+        {
+            ManualReviewRequired = false,
+            Output = null,
+            Status = AiReviewStatus.Pending,
+            VacancyId = vacancyId,
+        }));
+        return response.StatusCode.IsSuccessStatusCode() ? TypedResults.Ok() : TypedResults.Problem();
+    }
+    
+    [HttpPost]
+    [Route("vacancies/{vacancyId:guid}/review")]
     public async Task<IResult> PerformVacancyReviewAsync(
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromServices] IRecruitAiApiClient<RecruitAiApiConfiguration> recruitAiApiClient,
@@ -33,7 +60,7 @@ public class AiController: ControllerBase
         var response = await recruitApiClient.GetWithResponseCode<GetVacancyResponse>(new GetVacancyRequest(vacancyId));
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
-            return TypedResults.NotFound("Vacancy not found");            
+            return TypedResults.NotFound("Vacancy not found");
         }
         
         // send to chat gpt
@@ -44,7 +71,7 @@ public class AiController: ControllerBase
         var patchDocument = new JsonPatchDocument<PatchableAiVacancyReviewDto>();
         patchDocument.Replace(x => x.Status, reviewStatus);
         patchDocument.Replace(x => x.ManualReviewRequired, flagForReview);
-        patchDocument.Replace(x => x.Output, JsonSerializer.Serialize(result));
+        patchDocument.Replace(x => x.Output, JsonSerializer.Serialize(result, JsonOptions));
     
         var patchResponse = await recruitAiApiClient.PatchWithResponseCode(new PatchAiVacancyReviewRequest(vacancyReviewId, patchDocument));
         if (patchResponse.StatusCode == HttpStatusCode.NotFound)
