@@ -7,7 +7,7 @@ public class WhenFlaggingForReview
 {
     [Test, MoqAutoData]
     public void Then_A_Passing_Review_Will_Not_Get_Flagged(
-        Mock<AiReviewResult> aiResult,
+        Mock<AiReviewResultV1> aiResult,
         [Frozen] Mock<IRandomNumberGenerator> generator,
         [Greedy] AiReviewResultChecker sut)
     {
@@ -29,7 +29,7 @@ public class WhenFlaggingForReview
     public void Then_A_Passing_Review_Has_A_5_Percent_Chance_To_Be_Flagged_For_Review(
         double chance,
         bool isFlagged,
-        Mock<AiReviewResult> aiResult,
+        Mock<AiReviewResultV1> aiResult,
         [Frozen] Mock<IRandomNumberGenerator> generator,
         [Greedy] AiReviewResultChecker sut)
     {
@@ -51,7 +51,7 @@ public class WhenFlaggingForReview
     [MoqInlineAutoData(0.95)]
     public void Then_A_Failed_Review_Will_Always_Get_Flagged(
         double chance,
-        Mock<AiReviewResult> aiResult,
+        Mock<AiReviewResultV1> aiResult,
         [Frozen] Mock<IRandomNumberGenerator> generator,
         [Greedy] AiReviewResultChecker sut)
     {
@@ -78,7 +78,7 @@ public class WhenFlaggingForReview
         double score,
         double chance,
         bool isFlagged,
-        Mock<AiReviewResult> aiResult,
+        Mock<AiReviewResultV1> aiResult,
         [Frozen] Mock<IRandomNumberGenerator> generator,
         [Greedy] AiReviewResultChecker sut)
     {

@@ -14,7 +14,7 @@ namespace SFA.DAS.RecruitJobs.Ai.Services;
 
 public interface IRecruitArtificialIntelligenceService
 {
-    Task<AiReviewResult> ReviewVacancyAsync(Vacancy vacancy, CancellationToken cancellationToken);
+    Task<AiReviewResultV1> ReviewVacancyAsync(Vacancy vacancy, CancellationToken cancellationToken);
 }
 
 public class RecruitArtificialIntelligenceService(
@@ -56,13 +56,13 @@ public class RecruitArtificialIntelligenceService(
         return allTrainingProgrammes.FirstOrDefault(c => c.Id.Equals(programmeId, StringComparison.CurrentCultureIgnoreCase));
     }
 
-    public async Task<AiReviewResult> ReviewVacancyAsync(Vacancy vacancy, CancellationToken cancellationToken)
+    public async Task<AiReviewResultV1> ReviewVacancyAsync(Vacancy vacancy, CancellationToken cancellationToken)
     {
         var programme = await GetTrainingProgrammeById(vacancy.ProgrammeId);
         if (programme is null)
         {
             logger.LogError("Failed to locate programme '{ProgrammeId}' for vacancy '{VacancyId}' when trying to perform AI review", vacancy.ProgrammeId, vacancy.Id);
-            return new AiReviewResult(); // will force manual review
+            return new AiReviewResultV1(); // will force manual review
         }
         
         var skills = JsonSerializer.Serialize(vacancy.Skills ?? [], jsonOptions);
@@ -97,7 +97,7 @@ public class RecruitArtificialIntelligenceService(
         
         await Task.WhenAll(spellcheckTask, discriminationTask, contentEvaluationTask);
 
-        return new AiReviewResult
+        return new AiReviewResultV1
         {
             SpellcheckResult = spellcheckTask.Result,
             DiscriminationResult = discriminationTask.Result,
