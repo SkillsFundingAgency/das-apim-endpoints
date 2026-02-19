@@ -5,6 +5,7 @@ using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetApprenticeshipIdsByCommi
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetCommitmentsApprenticeshipById;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByAccountDetails;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
+using SFA.DAS.ApprenticeApp.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -80,6 +81,14 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 LastName = lastName,
                 DateOfBirth = dateOfBirth
             });           
+
+            return Ok();
+        }
+
+        [HttpPost("/apprentices/{id}/MyApprenticeship")]
+        public async Task<IActionResult> CreateMyApprenticeship(Guid id, CreateMyApprenticeshipData data)
+        {
+            var result = await _mediator.Send(new CreateMyApprenticeshipCommand { ApprenticeId = id, Data = data });
 
             return Ok();
         }
