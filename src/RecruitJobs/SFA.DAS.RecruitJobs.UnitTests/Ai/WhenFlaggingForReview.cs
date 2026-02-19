@@ -24,9 +24,9 @@ public class WhenFlaggingForReview
     }
     
     [Test]
-    [MoqInlineAutoData(0.94, false)]
-    [MoqInlineAutoData(0.95, true)]
-    public void Then_A_Passing_Review_Has_A_5_Percent_Chance_To_Be_Flagged_For_Review(
+    [MoqInlineAutoData(0.98, false)]
+    [MoqInlineAutoData(0.99, true)]
+    public void Then_A_Passing_Review_Has_A_1_Percent_Chance_To_Be_Flagged_For_Review(
         double chance,
         bool isFlagged,
         Mock<AiReviewResultV1> aiResult,

@@ -19,9 +19,16 @@ public class AiReviewResultV1: AiReviewResult
             : status.Value.IsSuccessStatusCode() ? 0 : 1;
     }
 
+    private double GetSpellcheckScore()
+    {
+        var total = GetStatusScore(SpellcheckResult?.StatusCode);
+        var errorCount = SpellcheckResult?.Result?.Sum(x => x.Value) ?? 0;
+        return total + (errorCount > 0 ? 0.5 : 0);
+    }
+
     public override double GetScore()
     {
-        var spellCheckScore = GetStatusScore(SpellcheckResult?.StatusCode) + (SpellcheckResult?.Result?.Sum(x => x.Value) ?? 2) * 0.5; // default is 2 as we want it to fail if there's no result
+        var spellCheckScore = GetSpellcheckScore();
         var discriminationScore = GetStatusScore(DiscriminationResult?.StatusCode) + (DiscriminationResult?.Result?.Count(x => !string.IsNullOrWhiteSpace(x.Value)) ?? 1);
         var contentScore = GetStatusScore(ContentEvaluationResult?.StatusCode) + (ContentEvaluationResult?.Result?.Count(x => !string.IsNullOrWhiteSpace(x.Value)) ?? 1);
         return spellCheckScore + discriminationScore + contentScore;

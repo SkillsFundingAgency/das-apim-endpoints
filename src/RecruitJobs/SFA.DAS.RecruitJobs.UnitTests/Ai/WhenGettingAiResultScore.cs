@@ -17,7 +17,7 @@ public class WhenGettingAiResultScore
         var actual = sut.GetScore();
 
         // assert
-        actual.Should().Be(6);
+        actual.Should().Be(5);
     }
     
     [Test, MoqAutoData]
@@ -35,7 +35,7 @@ public class WhenGettingAiResultScore
         var actual = sut.GetScore();
 
         // assert
-        actual.Should().Be(3);
+        actual.Should().Be(2);
     }
     
     [Test, MoqAutoData]
@@ -125,6 +125,6 @@ public class WhenGettingAiResultScore
         var actual = sut.GetScore();
 
         // assert
-        actual.Should().Be(1.5);
+        actual.Should().Be(0.5);
     }
 }

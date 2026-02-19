@@ -16,12 +16,12 @@ public class AiReviewResultChecker(IRandomNumberGenerator generator): IAiReviewR
 
         switch (totalScore)
         {
-            case 0: // 5% chance of a review with no problems getting reviewed
+            case 0: // 1% chance of a review with no problems getting reviewed
             {
                 status = AiReviewStatus.Passed;
-                return 0.05 + generator.NextDouble() >= 1;
+                return 0.01 + generator.NextDouble() >= 1;
             }
-            case < 1: 
+            case < 1:
             {
                 status = AiReviewStatus.Passed;
                 return totalScore + generator.NextDouble() >= 1;
