@@ -50,7 +50,7 @@ public class WhenGettingAzureAiResponse
         actual.Refusal.Should().Be(exception.Message);
     }
     
-    [Test, MoqAutoData]
+    [Test]
     public void Then_Empty_Results_Are_Mapped_Correctly()
     {
         // arrange
@@ -68,7 +68,7 @@ public class WhenGettingAzureAiResponse
         actual.Result.Should().BeNull();
     }
     
-    [Test, MoqAutoData]
+    [Test]
     public void Then_Results_Are_Mapped_Correctly()
     {
         // arrange
@@ -86,5 +86,24 @@ public class WhenGettingAzureAiResponse
         actual.RawResult.Should().Be(contentPart.Text);
         actual.Result.Should().NotBeNull();
         actual.Result.Should().ContainEquivalentOf(new KeyValuePair<string, string>("title", "title text"));
+    }
+    
+    [Test]
+    public void Then_Invalid_Result_Text_Does_Not_Cause_An_Error()
+    {
+        // arrange
+        var pipelineResponse = new MockPipelineResponse();
+        var contentPart = ChatMessageContentPart.CreateTextPart("this text should be a json object of the expected result type");
+        var chatCompletion = OpenAIChatModelFactory.ChatCompletion(role: ChatMessageRole.User, refusal: "rejection text", content: [contentPart]);
+        var clientResult = ClientResult.FromValue(chatCompletion, pipelineResponse);
+        
+        // act
+        var actual = AzureAiResponse<Dictionary<string, string>>.From(clientResult);
+
+        // assert
+        actual.StatusCode.Should().Be((HttpStatusCode)pipelineResponse.Status);
+        actual.Refusal.Should().Be(chatCompletion.Refusal);
+        actual.RawResult.Should().Be(contentPart.Text);
+        actual.Result.Should().BeNull();
     }
 }
