@@ -184,23 +184,27 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
     
-    [HttpGet, Route("employer/{accountId:int}/draft")]
-    public async Task<IResult> GetEmployerDraftVacanciesList(
+    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted)$)}")]
+    public async Task<IResult> GetEmployerVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] long accountId,
+        [FromRoute] Domain.Vacancy.VacancyStatus status,
         VacancyListFilterParams vacancyListFilterParams,
         SortParams<VacancySortColumn> sortParams,
         PageParams pageParams,
         CancellationToken cancellationToken = default)
     {
+        if (!GqlTypeExtensions.TryMapToGqlStatus(status, out var gqlStatus))
+            return TypedResults.BadRequest(new { message = $"Unsupported status '{status}'." });
+
         var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
-            vacancyListFilterParams.Build(accountId: accountId, statuses: [VacancyStatus.Draft]),
+            vacancyListFilterParams.Build(accountId: accountId, statuses: [gqlStatus]),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),
             cancellationToken
         );
-        
+
         if (response.IsErrorResult())
         {
             return TypedResults.Problem(response.ToProblemDetails());
@@ -209,11 +213,11 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         var pageInfo = new PageInfo(pageParams.PageNumber!.Value, pageParams.PageSize!.Value, Convert.ToUInt32(response.Data?.PagedVacancies?.TotalCount ?? 0));
         var items = response.Data?.PagedVacancies?.Items ?? [];
         var data = items is { Count: 0 } ? [] : items.Select(x => VacancyListItem.From(x, null));
-        
+
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 
-    [HttpGet, Route("provider/{ukprn:int}/{status}")]
+    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|review|submitted)$)}")]
     public async Task<IResult> GetProviderVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] int ukprn,
@@ -223,14 +227,8 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         PageParams pageParams,
         CancellationToken cancellationToken = default)
     {
-        if (!GqlVacancyStatusMapper.TryMapToGqlStatus(status, out var gqlStatus))
+        if (!GqlTypeExtensions.TryMapToGqlStatus(status, out var gqlStatus))
             return TypedResults.BadRequest(new { message = $"Unsupported status '{status}'." });
-
-        if (!Enum.IsDefined(typeof(VacancyStatus), gqlStatus) ||
-            (gqlStatus != VacancyStatus.Draft && gqlStatus != VacancyStatus.Review))
-        {
-            return TypedResults.BadRequest(new { message = "Status must be 'draft' or 'review'." });
-        }
 
         var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
             vacancyListFilterParams.Build(ukprn: ukprn, statuses: [gqlStatus]),
