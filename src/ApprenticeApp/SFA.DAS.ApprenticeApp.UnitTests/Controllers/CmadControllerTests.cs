@@ -12,9 +12,11 @@ using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByAccountDe
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -171,7 +173,41 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
 
 
         [Test, MoqAutoData]
-        public async Task CreateMyApprenticeship_Returns_Ok_And_Sends_Command(
+        public async Task CreateMyApprenticeship_Returns_StatusCode_And_Sends_Command_When_Success(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CmadController controller,
+        Guid apprenticeId,
+        CreateMyApprenticeshipData data)
+        {
+            // Arrange
+            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
+
+            var apiResponse = new ApiResponse<object>(null, HttpStatusCode.OK, null);
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.IsAny<CreateMyApprenticeshipCommand>(),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(apiResponse);
+
+            // Act
+            var actionResult = await controller.CreateMyApprenticeship(apprenticeId, data);
+
+            // Assert
+            actionResult.Should().BeOfType<StatusCodeResult>();
+            var statusCodeResult = (StatusCodeResult)actionResult;
+            statusCodeResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+
+            mediatorMock.Verify(m => m.Send(
+                    It.Is<CreateMyApprenticeshipCommand>(c =>
+                        c.ApprenticeId == apprenticeId &&
+                        c.Data == data),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task CreateMyApprenticeship_Returns_StatusCode_With_ErrorContent_When_Failure(
             [Frozen] Mock<IMediator> mediatorMock,
             [Greedy] CmadController controller,
             Guid apprenticeId,
@@ -180,17 +216,22 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
             // Arrange
             controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
 
+            var apiResponse = new ApiResponse<object>(null, HttpStatusCode.BadRequest, "Something went wrong");
+
             mediatorMock
                 .Setup(m => m.Send(
                     It.IsAny<CreateMyApprenticeshipCommand>(),
                     It.IsAny<CancellationToken>()))
-                .ReturnsAsync(MediatR.Unit.Value);
+                .ReturnsAsync(apiResponse);
 
             // Act
             var actionResult = await controller.CreateMyApprenticeship(apprenticeId, data);
 
-            // Assert
-            actionResult.Should().BeOfType<OkResult>();
+            // Assert - when there's ErrorContent the controller returns StatusCode(int, object) which produces an ObjectResult
+            actionResult.Should().BeOfType<ObjectResult>();
+            var objectResult = (ObjectResult)actionResult;
+            objectResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
+            objectResult.Value.Should().Be("Something went wrong");
 
             mediatorMock.Verify(m => m.Send(
                     It.Is<CreateMyApprenticeshipCommand>(c =>

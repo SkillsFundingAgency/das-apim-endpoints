@@ -14,7 +14,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
     public class CmadController : ControllerBase
     {
         private readonly IMediator _mediator;
-        
+
         public CmadController(IMediator mediator)
         {
             _mediator = mediator;
@@ -29,7 +29,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                     FirstName = firstName,
                     LastName = lastName,
                     DateOfBirth = dateOfBirth
-                });            
+                });
 
             return Ok(result.Registrations);
         }
@@ -43,10 +43,10 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                     ApprenticeId = apprenticeId,
                     ApprenticeshipId = apprenticeshipId,
                     RevisionId = revisionId
-                });       
-            
+                });
+
             return Ok(result.Revision);
-        }       
+        }
 
         [HttpGet("commitments-apprenticeships/{apprenticeshipId}")]
         public async Task<IActionResult> GetCommitmentsApprenticeshipById(long apprenticeshipId)
@@ -68,7 +68,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                 ApprenticeId = apprenticeId,
                 LastName = lastName,
                 DateOfBirth = dateOfBirth
-            });           
+            });
 
             return Ok();
         }
@@ -76,9 +76,11 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         [HttpPost("/apprentices/{id}/MyApprenticeship")]
         public async Task<IActionResult> CreateMyApprenticeship(Guid id, CreateMyApprenticeshipData data)
         {
-            var result = await _mediator.Send(new CreateMyApprenticeshipCommand { ApprenticeId = id, Data = data });
+            var result = await _mediator.Send(new CreateMyApprenticeshipCommand { ApprenticeId = id, Data = data });            
 
-            return Ok();
+            return string.IsNullOrEmpty(result.ErrorContent)
+                ? StatusCode((int)result.StatusCode)
+                : StatusCode((int)result.StatusCode, result.ErrorContent);
         }
     }
 }

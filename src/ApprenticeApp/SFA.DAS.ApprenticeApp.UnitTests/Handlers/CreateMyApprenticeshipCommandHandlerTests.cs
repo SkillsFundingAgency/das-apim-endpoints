@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using MediatR;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Commands.Cmad;
@@ -10,6 +9,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -49,23 +49,32 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
                 StandardUId = standardUId
             };
 
+            // create a successful ApiResponse<object> (immutable type - use ctor)
+            var apiResponse = new ApiResponse<object>(
+                body: null,
+                statusCode: HttpStatusCode.OK,
+                errorContent: null);
+
             clientMock
-                .Setup(c => c.PostWithResponseCode<object>(It.IsAny<CreateMyApprenticeshipRequest>(), false))
-                .Returns(Task.FromResult<ApiResponse<object>>(null));
+                .Setup(c => c.PostWithResponseCode<object>(
+                    It.IsAny<CreateMyApprenticeshipRequest>(),
+                    It.IsAny<bool>()))
+                .ReturnsAsync(apiResponse);
 
             var sut = new CreateMyApprenticeshipCommandHandler(clientMock.Object);
 
             // act
             var result = await sut.Handle(command, cancellationToken);
 
-            // assert
-            result.Should().Be(Unit.Value);
+            // assert - handler now returns ApiResponse<object>
+            result.Should().BeSameAs(apiResponse);
 
             clientMock.Verify(
                 c => c.PostWithResponseCode<object>(
                     It.Is<CreateMyApprenticeshipRequest>(req =>
                         req.ApprenticeId == apprenticeId
-                        && (req.Data as CreateMyApprenticeshipData) != null
+                        && req.Data != null
+                        && req.Data.GetType() == typeof(CreateMyApprenticeshipData)
                         && ((CreateMyApprenticeshipData)req.Data).Uln == uln
                         && ((CreateMyApprenticeshipData)req.Data).ApprenticeshipId == apprenticeshipId
                         && ((CreateMyApprenticeshipData)req.Data).EmployerName == employerName

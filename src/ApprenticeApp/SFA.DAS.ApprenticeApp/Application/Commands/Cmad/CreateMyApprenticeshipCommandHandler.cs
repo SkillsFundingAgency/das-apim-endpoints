@@ -3,12 +3,13 @@ using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands.Cmad
 {
-    public class CreateMyApprenticeshipCommandHandler : IRequestHandler<CreateMyApprenticeshipCommand, Unit>
+    public class CreateMyApprenticeshipCommandHandler : IRequestHandler<CreateMyApprenticeshipCommand, ApiResponse<object>>
     {
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _client;
 
@@ -17,7 +18,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.Cmad
             _client = client;
         }
 
-        public async Task<Unit> Handle(CreateMyApprenticeshipCommand command, CancellationToken cancellationToken)
+        public async Task<ApiResponse<object>> Handle(CreateMyApprenticeshipCommand command, CancellationToken cancellationToken)
         {
             var data = new CreateMyApprenticeshipData
             {
@@ -32,8 +33,9 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.Cmad
                 StandardUId = command.Data.StandardUId
             };
 
-            var response = await _client.PostWithResponseCode<object>(new CreateMyApprenticeshipRequest(command.ApprenticeId, data), false);
-            return Unit.Value;
+            var response = await _client.PostWithResponseCode<object>(new CreateMyApprenticeshipRequest(command.ApprenticeId, data), false);            
+
+            return response;
         }
 
     }
