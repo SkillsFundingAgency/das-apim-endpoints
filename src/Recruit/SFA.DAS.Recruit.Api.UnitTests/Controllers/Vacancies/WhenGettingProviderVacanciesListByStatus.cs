@@ -20,6 +20,7 @@ public class WhenGettingProviderVacanciesListByStatus
     [Test]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Review)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
     public async Task The_The_Gql_Query_Is_Built_Correctly(
         Domain.Vacancy.VacancyStatus status,
         int ukprn,
@@ -72,6 +73,7 @@ public class WhenGettingProviderVacanciesListByStatus
     [Test]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Review)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
     public async Task Then_Gql_Errors_Are_Handled(
         Domain.Vacancy.VacancyStatus status,
         int ukprn,
@@ -112,6 +114,7 @@ public class WhenGettingProviderVacanciesListByStatus
     [Test]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Review)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
     public async Task Then_The_Vacancies_Are_Returned(
         Domain.Vacancy.VacancyStatus status,
         int ukprn,
