@@ -51,7 +51,7 @@ public class WhenGettingProviderVacanciesListByStatus
             })
             .ReturnsAsync(vacanciesResult);
 
-        GqlVacancyStatusMapper.TryMapToGqlStatus(status, out var gqlStatus);
+        GqlTypeExtensions.TryMapToGqlStatus(status, out var gqlStatus);
 
         // act
         await sut.GetProviderVacanciesListByStatus(
