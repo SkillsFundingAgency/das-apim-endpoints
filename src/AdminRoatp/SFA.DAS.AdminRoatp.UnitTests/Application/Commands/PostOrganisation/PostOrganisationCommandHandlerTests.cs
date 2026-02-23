@@ -5,6 +5,7 @@ using Moq;
 using SFA.DAS.AdminRoatp.Application.Commands.PostOrganisation;
 using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
@@ -99,8 +100,8 @@ public class PostOrganisationCommandHandlerTests
 
         var courseTypes = new List<int>();
 
-        if (deliversApprenticeships) courseTypes.Add((int)CourseType.Apprenticeship);
-        if (deliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ApprenticeshipUnit);
+        if (deliversApprenticeships) courseTypes.Add((int)ApprenticeshipType.Apprenticeship);
+        if (deliversApprenticeshipUnits) courseTypes.Add((int)ApprenticeshipType.ApprenticeshipUnit);
 
 
         HttpResponseMessage response = new HttpResponseMessage { StatusCode = postOrganisationStatus };
