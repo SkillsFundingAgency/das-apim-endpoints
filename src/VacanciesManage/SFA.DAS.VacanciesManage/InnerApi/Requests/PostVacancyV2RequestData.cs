@@ -28,13 +28,13 @@ public class PostVacancyV2RequestData
     public string SourceType { get; set; }
 
     [JsonPropertyName("submittedDate")]
-    public DateTimeOffset SubmittedDate { get; set; }
+    public DateTime SubmittedDate { get; set; }
 
     [JsonPropertyName("startDate")]
-    public DateTimeOffset StartDate { get; set; }
+    public DateTime StartDate { get; set; }
 
     [JsonPropertyName("closingDate")]
-    public DateTimeOffset ClosingDate { get; set; }
+    public DateTime ClosingDate { get; set; }
 
     [JsonPropertyName("applicationUrl")]
     public string ApplicationUrl { get; set; }
