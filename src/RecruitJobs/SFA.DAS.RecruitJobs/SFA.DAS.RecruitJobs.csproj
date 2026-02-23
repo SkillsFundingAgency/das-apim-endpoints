@@ -15,9 +15,9 @@
   <ItemGroup>
     <GraphQL Remove="GraphQL\RecruitInner\fragments.graphql" />
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetDraftVacanciesCreatedBefore.graphql" />
+    <GraphQL Remove="GraphQL\RecruitInner\Queries\GetEmployerRejectedVacanciesCreatedBefore.graphql" />
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetEmployerReviewedVacanciesCreatedBefore.graphql" />
-    <GraphQL Remove="GraphQL\RecruitInner\Queries\GetRejectedEmployerVacanciesCreatedBefore.graphql" />
-    <GraphQL Remove="GraphQL\RecruitInner\Queries\GetRejectedQaVacanciesCreatedBefore.graphql" />
+    <GraphQL Remove="GraphQL\RecruitInner\Queries\GetQaRejectedVacanciesCreatedBefore.graphql" />
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetVacancyById.graphql" />
   </ItemGroup>
 

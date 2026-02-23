@@ -162,24 +162,24 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             .Data!
             .Vacancies
             .Select(x =>
-                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Referred, x.CreatedDate!.Value.UtcDateTime));
+                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Review, x.CreatedDate!.Value.UtcDateTime));
         return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
     }
 
     [HttpGet, Route("stale/employer/rejected")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetRejectedEmployerVacanciesToClose(
+    public async Task<IResult> GetEmployerRejectedVacanciesToClose(
         [FromQuery, Required] DateTime pointInTime,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         CancellationToken cancellationToken)
     {
         var response = await recruitGqlClient
-            .GetRejectedEmployerVacanciesCreatedBefore
+            .GetEmployerRejectedVacanciesCreatedBefore
             .ExecuteAsync(pointInTime, cancellationToken);
 
         if (!response.IsSuccessResult())
         {
-            logger.LogError("An error occured at GetRejectedEmployerVacanciesToClose: {Errors}", response.FormatErrors());
+            logger.LogError("An error occured at GetEmployerRejectedVacanciesToClose: {Errors}", response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
@@ -193,7 +193,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
     [HttpGet, Route("stale/qa/rejected")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetRejectedQaVacanciesToClose(
+    public async Task<IResult> GetQaRejectedVacanciesToClose(
         [FromQuery, Required] DateTime pointInTime,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         CancellationToken cancellationToken)
@@ -204,7 +204,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
         if (!response.IsSuccessResult())
         {
-            logger.LogError("An error occured at GetRejectedQaVacanciesToClose: {Errors}", response.FormatErrors());
+            logger.LogError("An error occured at GetQaRejectedVacanciesToClose: {Errors}", response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
@@ -212,7 +212,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             .Data!
             .Vacancies
             .Select(x =>
-                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Rejected, x.CreatedDate!.Value.UtcDateTime));
+                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Referred, x.CreatedDate!.Value.UtcDateTime));
         return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
     }
 

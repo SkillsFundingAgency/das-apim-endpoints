@@ -1,8 +1,7 @@
-﻿query GetRejectedEmployerVacanciesCreatedBefore($pointInTime: DateTime) {
+﻿query GetQaRejectedVacanciesCreatedBefore($pointInTime: DateTime) {
     vacancies(
         where: {
-        status: { eq: REJECTED },
-        ownerType: { eq: PROVIDER }
+        status: { eq: REFERRED },        
         createdDate: { lt: $pointInTime },
         deletedDate: { eq: null },
         closedDate: { eq: null }
