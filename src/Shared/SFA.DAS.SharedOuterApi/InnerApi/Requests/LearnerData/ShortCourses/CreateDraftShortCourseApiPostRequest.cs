@@ -89,7 +89,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
 
     public enum Milestone
     {
-        ThirtyPercentLearningComplete,
-        LearningComplete
+        ThirtyPercentLearningComplete = 1,
+        LearningComplete = 2
     }
 }

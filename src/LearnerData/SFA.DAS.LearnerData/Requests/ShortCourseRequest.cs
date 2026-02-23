@@ -34,7 +34,7 @@
 
     public enum Milestone
     {
-        ThirtyPercentLearningComplete,
-        LearningComplete
+        ThirtyPercentLearningComplete = 1,
+        LearningComplete = 2
     }
 }
