@@ -67,13 +67,11 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
             .ReturnsAsync(queryResult);
 
             // Act
-            var actual = await controller.GetSharingByCode(code) as ObjectResult;
+            var actual = await controller.GetSharingByCode(code) as OkResult;
 
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().NotBeNull();
-            actual.Value.GetType().GetProperties().Should().BeEmpty();
 
             mediator.Verify(m => m.Send(It.Is<GetSharingByCodeQuery>(q => q.Code == code), It.IsAny<CancellationToken>()), Times.Once);
         }
