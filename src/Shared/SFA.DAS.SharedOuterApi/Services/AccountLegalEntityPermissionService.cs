@@ -47,7 +47,9 @@ namespace SFA.DAS.SharedOuterApi.Services
                         {
                             Name = legalEntityItem.AccountLegalEntityName,
                             AccountLegalEntityPublicHashedId = legalEntityItem.AccountLegalEntityPublicHashedId,
-                            AccountHashedId = legalEntityItem.AccountHashedId
+                            AccountHashedId = legalEntityItem.AccountHashedId,
+                            AccountId = legalEntityItem.AccountId,
+                            AccountLegalEntityId = legalEntityItem.AccountLegalEntityId
                         };
                     }
                     else
@@ -75,7 +77,9 @@ namespace SFA.DAS.SharedOuterApi.Services
                             {
                                 Name = legalEntityResponse.AccountLegalEntityName,
                                 AccountLegalEntityPublicHashedId = legalEntityResponse.AccountLegalEntityPublicHashedId,
-                                AccountHashedId = accountIdentifier.AccountHashedId
+                                AccountHashedId = accountIdentifier.AccountHashedId,
+                                AccountId = resourceListResponse.AccountId,
+                                AccountLegalEntityId = legalEntityResponse.AccountLegalEntityId
                             };
                         }
                     }
