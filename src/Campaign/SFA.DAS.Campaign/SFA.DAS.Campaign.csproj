@@ -5,11 +5,23 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Compile Remove="Application\Commands\**" />
+      <EmbeddedResource Remove="Application\Commands\**" />
+      <None Remove="Application\Commands\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="InnerApi\Requests\PostRegisterInterestRequest.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR"  />
+      <PackageReference Include="MediatR" />
+      <PackageReference Include="RestEase" />
+      <PackageReference Include="RestEase.HttpClientFactory" />
     </ItemGroup>
 
 </Project>

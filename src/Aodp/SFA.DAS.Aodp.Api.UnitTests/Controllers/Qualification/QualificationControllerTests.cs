@@ -5,13 +5,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
-using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
-using Microsoft.AspNetCore.Http;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 {
@@ -500,6 +499,47 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                 Assert.That(envelope.Value, Is.Null);
                 Assert.That(envelope.ErrorMessage, Is.EqualTo("No qualification output file logs found."));
             });
+        }
+
+        [Test]
+        public async Task GetMatchingQualifications_ReturnsOkResult_WithMatchingQualifications()
+        {
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetMatchingQualificationsQueryResponse>>();
+            queryResponse.Success = true;
+            queryResponse.Value = _fixture.Create<GetMatchingQualificationsQueryResponse>();
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetMatchingQualificationsQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetMatchingQualifications("search-term", 0, 10);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<GetMatchingQualificationsQueryResponse>());
+            var model = (GetMatchingQualificationsQueryResponse)okResult.Value;
+            Assert.That(model, Is.SameAs(queryResponse.Value));
+        }
+
+        [Test]
+        public async Task GetMatchingQualifications_ReturnsNotFound_WhenQueryFails()
+        {
+            // Arrange
+            var queryResponse = _fixture.Create<BaseMediatrResponse<GetMatchingQualificationsQueryResponse>>();
+            queryResponse.Success = false;
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<GetMatchingQualificationsQuery>(), default))
+                         .ReturnsAsync(queryResponse);
+
+            // Act
+            var result = await controller.GetMatchingQualifications("search-term", 0, 10);
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
         }
     }
     public class DateOnlySpecimenBuilder : ISpecimenBuilder

@@ -40,14 +40,14 @@ public sealed class CoursesController(IMediator _mediator) : ControllerBase
     }
 
     [HttpGet]
-    [Route("{id}/providers")]
+    [Route("{larscode}/providers")]
     [Produces("application/json")]
     [ProducesResponseType(typeof(GetCourseProvidersResponse), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetCourseProviders(string id, [FromQuery] GetCourseProvidersModel model)
+    public async Task<IActionResult> GetCourseProviders(string larscode, [FromQuery] GetCourseProvidersModel model)
     {
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
-            Id = id,
+            LarsCode = larscode,
             OrderBy = model.OrderBy,
             Distance = model.Distance,
             Location = model.Location,
