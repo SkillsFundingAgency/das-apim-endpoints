@@ -10,6 +10,7 @@ using SFA.DAS.Campaign.Models;
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using Ganss.Xss;
 
 namespace SFA.DAS.Campaign.Api.Controllers;
 
@@ -24,11 +25,32 @@ public class CampaignEnquiryController(ILogger<CampaignEnquiryController> logger
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> RegisterInterest([FromBody] EnquiryUserDataModel userData)
     {
+        Response.Headers.StrictTransportSecurity = "max-age=31536000";
+
         try
         {
             logger.LogInformation("Register Campaign Interest Outer API: Received request to add user details to campaign");
 
-            var request = new PostRegisterInterestApiRequest(userData);
+            if (!ModelState.IsValid)
+            {
+                logger.LogError("Invalid data received");
+                return BadRequest(ModelState);
+            }
+
+            var userDataDto = new EnquiryUserDataModel()
+            {
+                FirstName = InputSanitizer.Clean(userData.FirstName),
+                LastName = InputSanitizer.Clean(userData.LastName),
+                Email = InputSanitizer.Clean(userData.Email),
+                UkEmployerSize = InputSanitizer.Clean(userData.UkEmployerSize),
+                PrimaryIndustry = InputSanitizer.Clean(userData.PrimaryIndustry),
+                PrimaryLocation = InputSanitizer.Clean(userData.PrimaryLocation),
+                AppsgovSignUpDate = userData.AppsgovSignUpDate,
+                PersonOrigin = InputSanitizer.Clean(userData.PersonOrigin),
+                IncludeInUR = userData.IncludeInUR
+            };
+
+            var request = new PostRegisterInterestApiRequest(userDataDto);
             var response = await apiClient.PostWithResponseCode<EnquiryUserDataModel>(request);
 
             switch (response.StatusCode)
@@ -62,4 +84,9 @@ public class CampaignEnquiryController(ILogger<CampaignEnquiryController> logger
     }
 }
 
+public static class InputSanitizer
+{
+    private static readonly HtmlSanitizer _sanitizer = new();
 
+    public static string Clean(string input) => string.IsNullOrWhiteSpace(input) ? input : _sanitizer.Sanitize(input.Trim());
+}
