@@ -38,6 +38,10 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<VacancyMapper>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
             services.AddTransient<IBankHolidaysService, BankHolidaysService>();
+            
+            services.AddTransient<IInternalApiClient<RecruitArtificialIntelligenceConfiguration>, InternalApiClient<RecruitArtificialIntelligenceConfiguration>>();
+            services.AddTransient<IRecruitArtificialIntelligenceClient, RecruitArtificialIntelligenceClient>();
+            services.AddTransient<IRecruitArtificialIntelligenceService, RecruitArtificialIntelligenceService>();
         }
     }
 }

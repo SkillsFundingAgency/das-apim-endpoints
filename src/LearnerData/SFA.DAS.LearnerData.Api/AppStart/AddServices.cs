@@ -29,5 +29,11 @@ public static class AddApiServicesExtension
         services.AddTransient<IUpdateEarningsLearningSupportRequestBuilder, UpdateEarningsLearningSupportRequestBuilder>();
         services.AddTransient<ICostsService, CostsService>();
         services.AddTransient<ICreateDraftShortCoursePostRequestBuilder, CreateDraftShortCoursePostRequestBuilder>();
+        services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+        services.AddTransient<IFjaaApiClient<FjaaApiConfiguration>, FjaaApiClient>();
+        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+        services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
+        services.AddTransient<IGetProviderRelationshipService, GetProviderRelationshipService>();
     }
 }
