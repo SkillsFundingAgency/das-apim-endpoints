@@ -4,7 +4,6 @@
   "extensions": {
     "strawberryShake": {
       "name": "RecruitGqlClient",
-      "namespace": "SFA.DAS.RecruitJobs.GraphQL",
       "url": "https://localhost:7288/graphql/",
       "records": {
         "inputs": false,

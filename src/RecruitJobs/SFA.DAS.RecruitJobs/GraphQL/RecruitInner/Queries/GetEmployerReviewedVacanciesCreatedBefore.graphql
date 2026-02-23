@@ -1,15 +1,15 @@
 ﻿query GetEmployerReviewedVacanciesCreatedBefore($pointInTime: DateTime) {
     vacancies(
         where: {
-        status: { eq: REFERRED },
-        submittedDate: { lt: $pointInTime },
+        status: { eq: REVIEW },
+        createdDate: { lt: $pointInTime },
         deletedDate: { eq: null },
         closedDate: { eq: null }
     }
     )
     {
         id
-            vacancyReference
+        vacancyReference
         createdDate
     }
 }
