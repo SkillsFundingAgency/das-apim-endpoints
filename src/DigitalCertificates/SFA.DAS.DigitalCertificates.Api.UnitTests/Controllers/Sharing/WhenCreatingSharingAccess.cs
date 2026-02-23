@@ -12,7 +12,7 @@ using SFA.DAS.DigitalCertificates.Api.Controllers;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingAccess;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.SharingAccess
+namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Sharing
 {
     public class WhenCreatingSharingAccess
     {
@@ -20,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.SharingAccess
         public async Task Then_Returns_Ok_And_Mediator_Send_Called(
             CreateSharingAccessCommand command,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] SharingAccessController controller)
+            [Greedy] SharingController controller)
         {
             // Arrange
             mediator
@@ -41,7 +41,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.SharingAccess
         public async Task Then_InternalServerError_Returned_If_An_Exception_Is_Thrown(
             CreateSharingAccessCommand command,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy] SharingAccessController controller)
+            [Greedy] SharingController controller)
         {
             // Arrange
             mediator.Setup(x => x.Send(It.IsAny<CreateSharingAccessCommand>(), CancellationToken.None))

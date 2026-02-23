@@ -13,7 +13,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             Data = data;
         }
 
-        public string PostUrl => "api/sharingaccess";
+        public string PostUrl => "api/sharing/sharingaccess";
     }
 
     public class PostCreateSharingAccessRequestData

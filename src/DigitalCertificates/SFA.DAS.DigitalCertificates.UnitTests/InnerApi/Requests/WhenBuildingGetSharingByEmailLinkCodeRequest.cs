@@ -13,7 +13,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
         {
             var request = new GetSharingByEmailLinkCodeRequest(code);
 
-            request.GetUrl.Should().Be($"api/sharingemail/emaillinkcode/{code}");
+            request.GetUrl.Should().Be($"api/sharing/emaillinkcode/{code}");
         }
     }
 }
