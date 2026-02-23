@@ -199,7 +199,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         CancellationToken cancellationToken)
     {
         var response = await recruitGqlClient
-            .GetRejectedQaVacanciesCreatedBefore
+            .GetQaRejectedVacanciesCreatedBefore
             .ExecuteAsync(pointInTime, cancellationToken);
 
         if (!response.IsSuccessResult())
