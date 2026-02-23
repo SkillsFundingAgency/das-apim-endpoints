@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.Application.Application;
+using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
@@ -185,5 +186,23 @@ public class ApplicationsController : BaseController
     {
         withdrawApplicationCommand.ApplicationId = applicationId;
         return await SendRequestAsync(withdrawApplicationCommand);
+    }
+
+    [HttpPut("/api/applications/{applicationId}/reviewer")]
+    [ProducesResponseType(typeof(SaveReviewerCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> UpdateReviewer(SaveReviewerCommand command, Guid applicationId)
+    {
+        command.ApplicationId = applicationId;
+        return await SendRequestAsync(command);
+    }
+
+    [HttpGet("/api/applications/qualifications/{qan}")]
+    [ProducesResponseType(typeof(GetApplicationsByQanQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationsByQan(string qan)
+    {
+        var query = new GetApplicationsByQanQuery(qan);
+        return await SendRequestAsync(query);
     }
 }
