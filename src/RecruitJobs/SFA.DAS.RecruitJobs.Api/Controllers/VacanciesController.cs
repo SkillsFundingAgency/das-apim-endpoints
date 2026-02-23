@@ -141,7 +141,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
     }
 
-    [HttpGet, Route("stale/employer-reviewed")]
+    [HttpGet, Route("stale/employer/reviewed")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetEmployerReviewedVacanciesToClose(
         [FromQuery, Required] DateTime pointInTime,
@@ -166,7 +166,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
     }
 
-    [HttpGet, Route("stale/rejected")]
+    [HttpGet, Route("stale/employer/rejected")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetRejectedEmployerVacanciesToClose(
         [FromQuery, Required] DateTime pointInTime,
@@ -180,6 +180,31 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         if (!response.IsSuccessResult())
         {
             logger.LogError("An error occured at GetRejectedEmployerVacanciesToClose: {Errors}", response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var data = response
+            .Data!
+            .Vacancies
+            .Select(x =>
+                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Rejected, x.CreatedDate!.Value.UtcDateTime));
+        return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
+    }
+
+    [HttpGet, Route("stale/qa/rejected")]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetRejectedQaVacanciesToClose(
+        [FromQuery, Required] DateTime pointInTime,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient
+            .GetRejectedQaVacanciesCreatedBefore
+            .ExecuteAsync(pointInTime, cancellationToken);
+
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("An error occured at GetRejectedQaVacanciesToClose: {Errors}", response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
