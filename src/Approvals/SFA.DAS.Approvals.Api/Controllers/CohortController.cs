@@ -261,8 +261,15 @@ public class CohortController(
         [FromQuery] string searchTerm,
         [FromQuery] string sortField,
         [FromQuery] bool reverseSort,
-        [FromQuery] bool useLearnerData)
+        [FromQuery] bool useLearnerData,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 50)
     {
+        if (pageNumber < 1 || pageSize < 1 || pageSize > 100)
+        {
+            return BadRequest();
+        }
+
         try
         {
             var result = await mediator.Send(new GetSelectEmployerQuery
@@ -271,7 +278,8 @@ public class CohortController(
                 SearchTerm = searchTerm,
                 SortField = sortField,
                 ReverseSort = reverseSort,
-                UseLearnerData = useLearnerData
+                PageNumber = pageNumber,
+                PageSize = pageSize
             });
 
             if (result == null)

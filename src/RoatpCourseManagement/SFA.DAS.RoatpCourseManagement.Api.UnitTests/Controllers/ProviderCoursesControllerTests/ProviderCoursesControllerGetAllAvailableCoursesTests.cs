@@ -1,4 +1,6 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +10,6 @@ using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCoursesControllerTests;
 
@@ -18,7 +18,7 @@ public class ProviderCoursesControllerGetAllAvailableCoursesTests
 {
     [Test]
     [MoqInlineAutoData(CourseType.Apprenticeship)]
-    [MoqInlineAutoData(CourseType.ApprenticeshipUnit)]
+    [MoqInlineAutoData(CourseType.ShortCourse)]
     public async Task GetAllAvailableCourses_ReturnsCourses(
         CourseType courseType,
         [Frozen] Mock<IMediator> mediatorMock,
