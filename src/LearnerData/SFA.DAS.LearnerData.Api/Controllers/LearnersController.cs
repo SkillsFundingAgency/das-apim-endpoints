@@ -109,7 +109,8 @@ public class LearnersController(
             await mediator.Send(new UpdateLearnerCommand
             {
                 LearningKey = learningKey,
-                UpdateLearnerRequest = request
+                UpdateLearnerRequest = request,
+                Ukprn = ukprn
             });
             return Accepted();
         }
