@@ -14,6 +14,7 @@
     <PackageVersion Include="AutoFixture.NUnit3" Version="4.18.1" />
     <PackageVersion Include="Azure.AI.OpenAI" Version="2.1.0" />
     <PackageVersion Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" Version="0.1.17" />
+    <PackageVersion Include="HtmlSanitizer" Version="9.0.892" />
     <PackageVersion Include="Humanizer" Version="2.14.1" />
     <PackageVersion Include="Microsoft.ApplicationInsights" Version="2.23.0" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.1.0" />
@@ -22,7 +23,7 @@
     <PackageVersion Include="SFA.DAS.Employer.Shared.UI" Version="17.1.109" />
     <PackageVersion Include="SFA.DAS.Encoding" Version="1.1.76" />
     <PackageVersion Include="SFA.DAS.VacancyServices.Wage" Version="1.0.35" />
-    <PackageVersion Include="StrawberryShake.Blazor" Version="15.1.11" />
+    <PackageVersion Include="StrawberryShake.Blazor" Version="16.0.0-p.11.6" />
     <PackageVersion Include="System.Text.Json" Version="8.0.5" />
     <PackageVersion Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageVersion Include="Azure.Identity" Version="1.16.0" />
