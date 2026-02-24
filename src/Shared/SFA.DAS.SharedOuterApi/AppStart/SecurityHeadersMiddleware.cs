@@ -11,6 +11,16 @@ namespace SFA.DAS.SharedOuterApi.AppStart
 
         public async Task InvokeAsync(HttpContext context)
         {
+            context.Response.OnStarting(() =>
+            {
+                context.Response.Headers.Remove("Server");
+                context.Response.Headers.Remove("X-Powered-By");
+                context.Response.Headers.Remove("X-AspNet-Version");
+                context.Response.Headers.Remove("X-AspNetMvc-Version");
+
+                return Task.CompletedTask;
+            });
+
             context.Response.Headers.AddIfNotPresent("x-frame-options", new StringValues("DENY"));
             context.Response.Headers.AddIfNotPresent("x-content-type-options", new StringValues("nosniff"));
             context.Response.Headers.AddIfNotPresent("X-Permitted-Cross-Domain-Policies", new StringValues("none"));
