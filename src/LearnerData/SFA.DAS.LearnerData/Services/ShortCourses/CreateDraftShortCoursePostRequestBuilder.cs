@@ -36,7 +36,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                 OnProgramme = new OnProgramme
                 {
                     CourseCode = firstOnProg.CourseCode,
-                    EmployerId = long.Parse(firstOnProg.AgreementId),
+                    EmployerId = 0,
                     Ukprn = ukprn,
                     StartDate = firstOnProg.StartDate,
                     ExpectedEndDate = firstOnProg.ExpectedEndDate,
