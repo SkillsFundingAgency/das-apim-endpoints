@@ -9,6 +9,8 @@ using System;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharingByCode;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertificate;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedFrameworkCertificate;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingAccess;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingEmailAccess;
 
@@ -140,6 +142,38 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to create sharing email access for {SharingEmailId}", command?.SharingEmailId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("certificates/{id}")]
+        public async Task<IActionResult> GetSharedStandardCertificate([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharedStandardCertificateQuery(id));
+
+                return result == null ? NotFound() : Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve shared certificate {CertificateId}", id);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("certificates/framework/{id}")]
+        public async Task<IActionResult> GetSharedFrameworkCertificate([FromRoute] Guid id)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetSharedFrameworkCertificateQuery(id));
+
+                return result == null ? NotFound() : Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve shared framework certificate {CertificateId}", id);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
