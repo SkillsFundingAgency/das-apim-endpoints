@@ -46,7 +46,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
         }
 
         var response =
-            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(
+            await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponse>(
                 new GetProvidersByCourseIdRequest()
                 {
                     CourseId = request.LarsCode,
