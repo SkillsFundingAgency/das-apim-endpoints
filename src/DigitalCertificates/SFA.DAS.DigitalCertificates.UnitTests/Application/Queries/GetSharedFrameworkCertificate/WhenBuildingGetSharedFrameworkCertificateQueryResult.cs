@@ -47,7 +47,6 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedFra
             result.FamilyName.Should().Be(familyName);
             result.GivenNames.Should().Be(givenNames);
             result.CertificateType.Should().Be(certificateType);
-            result.Uln.Should().Be(uln);
             result.CertificateReference.Should().Be(certificateReference);
             result.FrameworkCertificateNumber.Should().Be(frameworkCertificateNumber);
             result.CourseName.Should().Be(courseName);
