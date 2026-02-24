@@ -29,5 +29,6 @@ public static class AddApiServicesExtension
         services.AddTransient<IUpdateEarningsLearningSupportRequestBuilder, UpdateEarningsLearningSupportRequestBuilder>();
         services.AddTransient<ICostsService, CostsService>();
         services.AddTransient<ICreateDraftShortCoursePostRequestBuilder, CreateDraftShortCoursePostRequestBuilder>();
+        services.AddTransient<ICreateUnapprovedShortCourseLearningRequestBuilder, CreateUnapprovedShortCourseLearningRequestBuilder>();
     }
 }
