@@ -25,8 +25,6 @@ public class CampaignEnquiryController(ILogger<CampaignEnquiryController> logger
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> RegisterInterest([FromBody] EnquiryUserDataModel userData)
     {
-        Response.Headers.StrictTransportSecurity = "max-age=31536000";
-
         try
         {
             logger.LogInformation("Register Campaign Interest Outer API: Received request to add user details to campaign");
