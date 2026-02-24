@@ -5,7 +5,6 @@ using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -69,7 +68,6 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
             return null;
 
         return response.StatusCode.IsSuccessStatusCode()
-            ? (GetCourseProvidersResponse)response.Body
-            : new GetCourseProvidersResponse();
+            ? response.Body : new GetCourseProvidersResponse();
     }
 }
