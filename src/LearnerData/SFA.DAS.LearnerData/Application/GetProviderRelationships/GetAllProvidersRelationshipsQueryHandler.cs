@@ -48,7 +48,7 @@ public class GetAllProvidersRelationshipsQueryHandler(
                         Status = Enum.GetName(typeof(ProviderStatusType), p.StatusId) ?? string.Empty,
                         Type = Enum.GetName(typeof(ProviderType), p.ProviderTypeId) ?? string.Empty,
                         Employers = employerDetailsTask.Result ?? [],
-                        SupportedCourses = coursesForProviderTask.Result?.CourseTypes ?? []
+                        SupportedCourses = coursesForProviderTask.Result
                     });
                 });
 

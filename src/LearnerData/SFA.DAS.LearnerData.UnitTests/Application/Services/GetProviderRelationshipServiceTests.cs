@@ -1,3 +1,4 @@
+using Moq;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
@@ -7,6 +8,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Rofjaa;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -118,8 +120,8 @@ public class GetProviderRelationshipServiceTests
                          CourseType = "Apprenticeship",
                          Courses =
                          [
-                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, Larscode = "805"   },
-                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, Larscode = "806"   }
+                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, LarsCode = "805"   },
+                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, LarsCode = "806"   }
                          ]
                     },
                      new()
@@ -127,23 +129,23 @@ public class GetProviderRelationshipServiceTests
                          CourseType = "ShortCourse",
                          Courses =
                          [
-                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, Larscode = "ZSC00001"   },
-                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, Larscode = "ZSC00002"   }
+                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, LarsCode = "ZSC00001"   },
+                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, LarsCode = "ZSC00002"   }
                          ]
                     }
                ]
         };
 
-        roatpClient.Setup(t => t.Get<GetCoursesForProviderResponse>(It.Is<GetCoursesForProviderRequest>(t => t.Ukprn == ukprn)))
-            .ReturnsAsync(CoursesForProvider);
+        roatpClient.Setup(t => t.GetWithResponseCode<GetCoursesForProviderResponse>(It.Is<GetCoursesForProviderRequest>(t => t.Ukprn == ukprn)))
+            .ReturnsAsync(new ApiResponse<GetCoursesForProviderResponse>(CoursesForProvider, System.Net.HttpStatusCode.OK,""));
 
         var details = await sut.GetCoursesForProviderByUkprn(ukprn);
 
         details.Should().NotBeNull();
         details.CourseTypes.Should().NotBeNull();
         details.CourseTypes.Should().BeEquivalentTo(CoursesForProvider.CourseTypes);
-        details.CourseTypes.Should().ContainSingle(t => t.CourseType == "Apprenticeship" && t.Courses.Any(k => k.EffectiveTo == null && k.Larscode == "806" && k.EffectiveFrom == new DateTime(2026, 1, 1)));
-        details.CourseTypes.Should().ContainSingle(t => t.CourseType == "ShortCourse" && t.Courses.Any(k => k.EffectiveTo == null && k.Larscode == "ZSC00001" && k.EffectiveFrom == new DateTime(2026, 4, 1)));
+        details.CourseTypes.Should().ContainSingle(t => t.CourseType == "Apprenticeship" && t.Courses.Any(k => k.EffectiveTo == null && k.LarsCode == "806" && k.EffectiveFrom == new DateTime(2026, 1, 1)));
+        details.CourseTypes.Should().ContainSingle(t => t.CourseType == "ShortCourse" && t.Courses.Any(k => k.EffectiveTo == null && k.LarsCode == "ZSC00001" && k.EffectiveFrom == new DateTime(2026, 4, 1)));
 
         roatpClient.Verify(client => client.Get<GetCourseLevelsListResponse>(It.IsAny<GetCoursesForProviderRequest>()), Times.Never);
     }

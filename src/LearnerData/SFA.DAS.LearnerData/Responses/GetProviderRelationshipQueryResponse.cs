@@ -9,5 +9,5 @@ public class GetProviderRelationshipQueryResponse
     public string Type { get; set; }
     public string Status { get; set; }
     public List<EmployerDetails> Employers { get; set; }
-    public List<CourseTypes> SupportedCourses { get; set; }
+    public GetCoursesForProviderResponse SupportedCourses { get; set; }
 }

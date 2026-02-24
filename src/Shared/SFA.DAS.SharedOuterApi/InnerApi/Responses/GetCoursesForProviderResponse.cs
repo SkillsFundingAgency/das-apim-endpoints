@@ -18,7 +18,7 @@ public class CourseTypes
 
 public class Course
 {
-    public string Larscode { get; set; }
+    public string LarsCode { get; set; }
 
     public DateTime EffectiveFrom { get; set; }
 

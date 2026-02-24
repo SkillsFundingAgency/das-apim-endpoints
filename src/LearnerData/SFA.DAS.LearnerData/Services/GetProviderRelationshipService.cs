@@ -89,33 +89,8 @@ namespace SFA.DAS.LearnerData.Services
 
         public async Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn)
         {
-            var CoursesTask = await Task.Run(() => new GetCoursesForProviderResponse
-            {
-                CourseTypes =
-                [
-                    new()
-                    {
-                         CourseType = "Apprenticeship",
-                         Courses =
-                         [
-                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, Larscode = "805"   },
-                              new() {  EffectiveFrom = new DateTime(2026, 1, 1) , EffectiveTo = null, Larscode = "806"   }
-                         ]
-                    },
-                     new()
-                    {
-                         CourseType = "ShortCourse",
-                         Courses =
-                         [
-                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, Larscode = "ZSC00001"   },
-                              new() {  EffectiveFrom = new DateTime(2026, 4, 1) , EffectiveTo = null, Larscode = "ZSC00002"   }
-                         ]
-                    }
-                ]
-            });
-
-            return CoursesTask;
-            //return await roatpCourseManagementApiClient.Get<GetCoursesForProviderResponse>(new GetCoursesForProviderRequest(ukprn));
+            var coursesApiResponse =  await roatpCourseManagementApiClient.GetWithResponseCode<GetCoursesForProviderResponse>(new GetCoursesForProviderRequest(ukprn));
+            return coursesApiResponse.Body;
         }
 
         public bool GetIsFunded(ResourceList legalEntities)
