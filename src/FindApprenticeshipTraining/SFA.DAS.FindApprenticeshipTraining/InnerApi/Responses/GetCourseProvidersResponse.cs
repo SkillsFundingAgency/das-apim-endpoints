@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
+using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.InnerApi;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
@@ -12,6 +14,9 @@ public class GetCourseProvidersResponseBase
     public int TotalCount { get; set; }
 
     public string StandardName { get; set; }
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
+
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
 
@@ -19,7 +24,7 @@ public class GetCourseProvidersResponseBase
 }
 public class GetCourseProvidersResponseFromCourseApi : GetCourseProvidersResponseBase
 {
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
 }
 
 public class GetCourseProvidersResponse : GetCourseProvidersResponseBase
@@ -35,10 +40,12 @@ public class GetCourseProvidersResponse : GetCourseProvidersResponseBase
             TotalPages = source.TotalPages,
             TotalCount = source.TotalCount,
             StandardName = source.StandardName,
+            CourseType = source.CourseType,
+            ApprenticeshipType = source.ApprenticeshipType,
             QarPeriod = source.QarPeriod,
             ReviewPeriod = source.ReviewPeriod,
             Providers = source.Providers,
-            LarsCode = source.LarsCode.ToString()
+            LarsCode = source.LarsCode
         };
     }
 }

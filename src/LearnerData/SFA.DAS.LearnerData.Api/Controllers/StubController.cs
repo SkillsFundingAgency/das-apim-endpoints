@@ -1,8 +1,5 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using System.Diagnostics.CodeAnalysis;
 
@@ -34,29 +31,29 @@ namespace SFA.DAS.LearnerData.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("providers/{ukprn}/apprenticeshipUnits/{learningKey}")]
-        public IActionResult UpdateApprenticeshipUnitsLearner([FromBody] StubUpdateApprenticeshipUnitRequest payload)
+        [HttpPut("providers/{ukprn}/shortCourses/{learningKey}")]
+        public IActionResult UpdateShortCoursesLearner([FromBody] StubUpdateShortCourseRequest payload)
         {
             return Ok();
         }
 
         [HttpDelete]
-        [Route("providers/{ukprn}/apprenticeshipUnits/{learningKey}")]
+        [Route("providers/{ukprn}/shortCourses/{learningKey}")]
         [ProducesResponseType(200)]
-        public IActionResult DeleteApprenticeshipUnitsLearner([FromRoute] Guid learningKey)
+        public IActionResult DeleteShortCoursesLearner([FromRoute] Guid learningKey)
         {
             return Ok();
         }
 
         [HttpPost]
-        [Route("providers/{ukprn}/apprenticeshipUnits")]
-        public async Task<IActionResult> CreateApprenticeshipUnitsLearningRecord([FromRoute] long ukprn, [FromBody] StubUpdateApprenticeshipUnitRequest payload)
+        [Route("providers/{ukprn}/shortCourses")]
+        public async Task<IActionResult> CreateShortCoursesLearningRecord([FromRoute] long ukprn, [FromBody] StubUpdateShortCourseRequest payload)
         {
             return Ok();
         }
 
-        [HttpGet("providers/{ukprn}/academicyears/{academicyear}/apprenticeshipUnits")]
-        public async Task<IActionResult> GetApprenticeshipUnitLearners([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+        [HttpGet("providers/{ukprn}/academicyears/{academicyear}/shortCourses")]
+        public async Task<IActionResult> GetShortCourseLearners([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
         {
             return Ok(new GetLearnersResponse());
         }
