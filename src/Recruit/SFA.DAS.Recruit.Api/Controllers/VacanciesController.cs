@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -13,11 +10,17 @@ using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyAnalytics;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
+using SFA.DAS.Recruit.InnerApi.Recruit.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using GetNextVacancyReferenceResponse = SFA.DAS.Recruit.Api.Models.Vacancies.Responses.GetNextVacancyReferenceResponse;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
@@ -78,5 +81,38 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return result is { Data.Vacancies.Count: 1 }
             ? TypedResults.Ok(new DataResponse<Vacancy>(GqlVacancyMapper.From(result.Data.Vacancies[0])))
             : TypedResults.NotFound();
+    }
+
+    [HttpGet]
+    [Route("{vacancyReference:long}/analytics")]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(GetOneVacancyAnalyticsResponse), StatusCodes.Status200OK)]
+    public async Task<IResult> GetOne(
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] long vacancyReference,
+        CancellationToken token = default)
+    {
+        try
+        {
+            logger.LogInformation("Recruit API: Received request to get vacancy analytics for vacancy reference: {VacancyReference}", vacancyReference);
+
+            var result = await recruitApiClient.Get<GetOneVacancyAnalyticsResponse>(new GetOneVacancyAnalyticsApiRequest(vacancyReference));
+
+            var response = result ?? new GetOneVacancyAnalyticsResponse
+            {
+                VacancyReference = vacancyReference,
+                Analytics = []
+            };
+
+            response.Analytics ??= [];
+
+            return TypedResults.Ok(response);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Unable to get vacancy analytics : An error occurred");
+            return Results.Problem(statusCode: (int)HttpStatusCode.InternalServerError);
+        }
     }
 }
