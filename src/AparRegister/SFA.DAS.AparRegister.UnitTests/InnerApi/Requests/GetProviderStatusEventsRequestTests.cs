@@ -12,6 +12,6 @@ public class GetProviderStatusEventsRequestTests
     {
         GetProviderStatusEventsRequest sut = new(sinceEventId, pageSize, pageNumber);
 
-        sut.GetUrl.Should().Be($"organisations/status-events?sinceEventId={sinceEventId}&pageSez={pageSize}&pageNumber={pageNumber}");
+        sut.GetUrl.Should().Be($"organisations/status-events?sinceEventId={sinceEventId}&pageSize={pageSize}&pageNumber={pageNumber}");
     }
 }
