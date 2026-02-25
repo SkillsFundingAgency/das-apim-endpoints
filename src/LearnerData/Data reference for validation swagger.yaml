@@ -42,10 +42,6 @@ paths:
           $ref: '#/components/responses/providerReferenceDataResponse' 
         '404':
           description: The provider was not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error'                        
 
 components:  
   securitySchemes:
