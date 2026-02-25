@@ -36,11 +36,11 @@ public class GetProviderRelationshipQueryHandler(
 
         return new GetProviderRelationshipQueryResponse()
         {
-            Ukprn = request.Ukprn.ToString(),
+            Ukprn = request.Ukprn,
             Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
             Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
             Employers = employerDetailsTask.Result ?? [],
-            SupportedCourses =coursesForProviderTask.Result
+            SupportedCourses = coursesForProviderTask.Result?.CourseTypes ?? []
         };
     }
 

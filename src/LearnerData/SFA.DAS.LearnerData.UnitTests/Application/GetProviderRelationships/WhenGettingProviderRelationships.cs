@@ -43,11 +43,11 @@ public class WhenGettingProviderRelationships
 
         // Assert
         result.Should().NotBeNull();
-        result.Ukprn.Should().BeEquivalentTo(request.Ukprn.ToString());
+        result.Ukprn.Should().Be(request.Ukprn);
         result.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), providerSummary.StatusId));
         result.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
         result.Employers.Count.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
-        result.SupportedCourses.CourseTypes.Count.Should().Be(coursesResponse.CourseTypes.Count);
+        result.SupportedCourses.Count.Should().Be(coursesResponse.CourseTypes.Count);
     }
 
     [Test, MoqAutoData]
