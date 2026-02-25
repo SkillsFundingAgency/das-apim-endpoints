@@ -147,7 +147,7 @@ public static class PriceEpisodePeriodisedValuesBuilder
 
     public static void AddNthIncentivePaymentValues(
         this List<PriceEpisodePeriodisedValues> list,
-        JoinedEarningsApprenticeship joinedApprenticeship,
+        JoinedLearnerData joinedLearnerData,
         JoinedPriceEpisode joinedPriceEpisode,
         short academicYear,
         string attributeName,
@@ -156,7 +156,7 @@ public static class PriceEpisodePeriodisedValuesBuilder
     {
         try
         {
-            list.Add(BuildNthIncentivePaymentValues(joinedApprenticeship, joinedPriceEpisode, academicYear, attributeName, additionalPaymentType, n));
+            list.Add(BuildNthIncentivePaymentValues(joinedLearnerData, joinedPriceEpisode, academicYear, attributeName, additionalPaymentType, n));
         }
         catch (Exception ex)
         {
@@ -166,9 +166,9 @@ public static class PriceEpisodePeriodisedValuesBuilder
         }
     }
 
-    private static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedEarningsApprenticeship joinedApprenticeship, JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
+    private static PriceEpisodePeriodisedValues BuildNthIncentivePaymentValues(JoinedLearnerData joinedLearnerData, JoinedPriceEpisode joinedPriceEpisode, short academicYear, string attributeName, string additionalPaymentType, int n)
     {
-        var allAdditionalPayments = joinedApprenticeship.Episodes.SelectMany(x =>
+        var allAdditionalPayments = joinedLearnerData.Episodes.SelectMany(x =>
             x.AdditionalPayments.Where(y => y.AdditionalPaymentType == additionalPaymentType))
             .OrderBy(i => i.AcademicYear)
             .ThenBy(i => i.DeliveryPeriod)
