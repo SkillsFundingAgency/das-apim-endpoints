@@ -16,7 +16,8 @@ query GetPagedVacanciesList($filterCriteria: VacancyEntityFilterInput, $sortCrit
             apprenticeshipType
             ownerType
             applicationMethod
-            hasSubmittedAdditionalQuestions
+            hasSubmittedAdditionalQuestions,
+            transferInfo
         }
         totalCount
     }

@@ -65,8 +65,8 @@ public abstract class ApiClient<T> : GetApiClient<T>, IApiClient<T> where T : IA
             errorContent = json;
             HandleException(response, json);
         }
-        else if (includeResponse)
-        {
+        else if (includeResponse && !string.IsNullOrWhiteSpace(json))
+        {            
             responseBody = JsonSerializer.Deserialize<TResponse>(json, JsonSerializationOptions);
         }
 

@@ -6,17 +6,17 @@ namespace SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 
 internal static class LearningDeliveryBuilder
 {
-    internal static List<LearningDelivery> GetLearningDeliveries(GetAcademicYearsResponse currentAcademicYear, JoinedEarningsApprenticeship joinedApprenticeship)
+    internal static List<LearningDelivery> GetLearningDeliveries(GetAcademicYearsResponse currentAcademicYear, JoinedLearnerData joinedLearnerData)
     {
-        return
-        [
+        return joinedLearnerData.LearningDeliveries.Select(ld =>
             new LearningDelivery
             {
-                AimSeqNumber = 1,
-                LearningDeliveryValues = joinedApprenticeship.GetLearningDelivery(currentAcademicYear),
-                LearningDeliveryPeriodisedValues = joinedApprenticeship.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
-                LearningDeliveryPeriodisedTextValues = joinedApprenticeship.GetLearningDeliveryPeriodisedTextValues()
+                AimSeqNumber = ld.AimSequenceNumber,
+                LearningDeliveryValues = joinedLearnerData.GetLearningDelivery(ld, currentAcademicYear),
+                LearningDeliveryPeriodisedValues = ld.GetLearningDeliveryPeriodisedValues(currentAcademicYear),
+                LearningDeliveryPeriodisedTextValues = joinedLearnerData.GetLearningDeliveryPeriodisedTextValues()
             }
-        ];
+        ).ToList();
+
     }
 }

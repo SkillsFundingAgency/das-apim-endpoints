@@ -20,7 +20,6 @@ public class GetLearnersForProviderQueryHandler(
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsClient,
     IMapLearnerRecords mapper,
-    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
     IReservationApiClient<ReservationApiConfiguration> _reservationsApiClient,
 ILogger<GetLearnersForProviderQueryHandler> logger)
     : IRequestHandler<GetLearnersForProviderQuery, GetLearnersForProviderQueryResult>

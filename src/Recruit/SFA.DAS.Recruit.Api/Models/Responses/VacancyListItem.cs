@@ -22,6 +22,7 @@ public record VacancyListItem(
     OwnerType? OwnerType,
     ApplicationMethod? ApplicationMethod,
     bool? HasSubmittedAdditionalQuestions,
+    string TransferInfo,
     VacancyStatsItem Stats)
 {
     public static VacancyListItem From(IGetPagedVacanciesList_PagedVacancies_Items source, VacancyStatsItem stats)
@@ -38,6 +39,7 @@ public record VacancyListItem(
             source.OwnerType.FromQueryType(),
             source.ApplicationMethod.FromQueryType(),
             source.HasSubmittedAdditionalQuestions,
+            source.TransferInfo,
             stats
         );
     }

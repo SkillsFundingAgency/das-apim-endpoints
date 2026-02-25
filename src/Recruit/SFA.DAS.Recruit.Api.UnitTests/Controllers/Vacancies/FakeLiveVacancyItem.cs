@@ -16,4 +16,5 @@ public class FakeLiveVacancyItem : IGetPagedVacanciesList_PagedVacancies_Items
     public OwnerType? OwnerType { get; set; }
     public ApplicationMethod? ApplicationMethod { get; set; }
     public bool? HasSubmittedAdditionalQuestions { get; set; }
+    public string? TransferInfo { get; set; }
 }
