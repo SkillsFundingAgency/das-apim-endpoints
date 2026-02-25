@@ -1,7 +1,6 @@
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
@@ -112,5 +111,77 @@ public class WhenGettingAllProviderRelationships
 
         // Assert
         result?.Items.Should().HaveCount(0);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenProvidersNull_Returns_Empty_Response(
+        [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+        [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+        [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
+    {
+        roatpService
+            .Setup(s => s.GetProviders(It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetProvidersResponse?)null);
+
+        var request = new GetAllProviderRelationshipQuery { Page = 1, PageSize = 10 };
+
+        // Act
+        var result = await sut.Handle(request, CancellationToken.None);
+
+        // Assert
+
+        result.Should().NotBeNull();
+        result.Page.Should().Be(1);
+        result.PageSize.Should().Be(10);
+        result.Items.Should().NotBeNull();
+        result.Items.Should().HaveCount(0);
+    }
+
+
+    [Test, MoqAutoData]
+    public async Task ShouldProcessProvider_InParallel(
+        GetAllProviderRelationshipQuery request,
+        CancellationToken cancellation,
+        GetProviderAccountLegalEntitiesResponse[] providerLegalEntitiesresponse,
+        GetProvidersResponse providerSummary,
+        List<List<EmployerDetails>> employers,
+        List<GetCoursesForProviderResponse> coursesForProviderResponses,
+       [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
+       [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
+       [Greedy] GetAllProvidersRelationshipsQueryHandler sut)
+    {
+        var providers = Enumerable.Range(1, 20)
+            .Select(t => new Provider
+            {
+                Ukprn = t,
+                StatusId = 1,
+                ProviderTypeId = 1
+            });
+
+        request.Page = 1;
+        request.PageSize = 10;
+
+        roatpService.Setup(t => t.GetProviders(cancellation))
+            .ReturnsAsync(new GetProvidersResponse()
+            {
+                RegisteredProviders = providers
+            });
+
+        getProviderRelationshipService.Setup(s => s.GetAllProviderRelationShipDetails(It.IsAny<int>()))
+            .ReturnsAsync(new GetProviderAccountLegalEntitiesResponse());
+
+        getProviderRelationshipService.Setup(s => s.GetCoursesForProviderByUkprn(It.IsAny<long>())).
+            ReturnsAsync(new GetCoursesForProviderResponse());
+
+        getProviderRelationshipService.Setup(s => s.GetEmployerDetails(It.IsAny<GetProviderAccountLegalEntitiesResponse>())).
+            ReturnsAsync(new List<EmployerDetails>());
+
+        var result = await sut.Handle(request, cancellation);
+
+        result.Should().NotBeNull();
+        result.Items.Should().HaveCount(10);
+        result.TotalItems.Should().Be(20);
+
+        getProviderRelationshipService.Verify(x => x.GetAllProviderRelationShipDetails(It.IsAny<int>()), Times.Exactly(10));
     }
 }
