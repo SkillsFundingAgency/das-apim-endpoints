@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -12,7 +14,7 @@ public class GetCoursesQueryHandler(ICoursesApiClient<CoursesApiConfiguration> c
 {
     public async Task<GetCoursesResult> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
     {
-        var response = await coursesApiClient.Get<GetCoursesListResponse>(new GetCoursesExportRequest());
+        var response = await coursesApiClient.Get<GetCoursesListResponse>(new GetCoursesExportRequest());        
 
         return new GetCoursesResult
         {

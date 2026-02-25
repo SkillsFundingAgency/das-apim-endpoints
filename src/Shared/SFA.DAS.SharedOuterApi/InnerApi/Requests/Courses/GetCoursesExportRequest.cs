@@ -3,5 +3,5 @@
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 public class GetCoursesExportRequest : IGetApiRequest
 {
-    public string GetUrl => "ops/export";
+    public string GetUrl => "api/Courses/search";
 }
