@@ -20,10 +20,25 @@ public class TrainingProgramme
 
     public static implicit operator TrainingProgramme(GetStandardsListItem source)
     {
+        var apprenticeshipType = !string.IsNullOrEmpty(source.ApprenticeshipType) && source.ApprenticeshipType.Contains("foundation", StringComparison.CurrentCultureIgnoreCase) 
+            ? TrainingType.Foundation 
+            : TrainingType.Standard;
+        
         return new TrainingProgramme
         {
             Id = source.LarsCode.ToString(),
-            Title = source.Title
+            ApprenticeshipType = apprenticeshipType,
+            Title = source.Title,
+            EffectiveFrom = source.StandardDates.EffectiveFrom,
+            EffectiveTo = source.StandardDates.EffectiveTo,
+            LastDateStarts = source.StandardDates.LastDateStarts,
+            ApprenticeshipLevel = ApprenticeshipLevelMapper.RemapFromInt(source.Level),
+            Duration = source.TypicalDuration,
+            IsActive = source.IsActive,
+            EducationLevelNumber = source.Level,
+            SectorCode = source.SectorCode,
+            FrameworkCode = 0,
+            Ssa1 = 0
         };
     }
 
