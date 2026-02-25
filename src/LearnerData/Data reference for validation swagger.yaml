@@ -227,7 +227,7 @@ components:
       type: object
       properties:
         ukprn:
-          type: string
+          type: integer
         type:
           type: string
           description: 1 -main, 2 - provider, 3 - supporting
@@ -265,6 +265,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/supportedCourse'
+
 
     supportedCourse:
       type: object
