@@ -129,7 +129,6 @@ public class WhenGettingAllProviderRelationships
         var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
-
         result.Should().NotBeNull();
         result.Page.Should().Be(1);
         result.PageSize.Should().Be(10);

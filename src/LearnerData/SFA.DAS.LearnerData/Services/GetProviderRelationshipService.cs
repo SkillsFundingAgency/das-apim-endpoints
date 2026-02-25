@@ -89,7 +89,7 @@ namespace SFA.DAS.LearnerData.Services
 
         public async Task<GetCoursesForProviderResponse> GetCoursesForProviderByUkprn(long ukprn)
         {
-            var coursesApiResponse =  await roatpCourseManagementApiClient.GetWithResponseCode<GetCoursesForProviderResponse>(new GetCoursesForProviderRequest(ukprn));
+            var coursesApiResponse = await roatpCourseManagementApiClient.GetWithResponseCode<GetCoursesForProviderResponse>(new GetCoursesForProviderRequest(ukprn));
             return coursesApiResponse.Body;
         }
 
