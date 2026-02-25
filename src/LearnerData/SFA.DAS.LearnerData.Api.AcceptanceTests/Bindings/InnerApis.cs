@@ -45,7 +45,8 @@ public class InnerApis(TestContext context)
                 {"CollectionCalendarApiConfiguration:url", context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"CoursesApiConfiguration:url", context?.CoursesApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
-                {"AzureAD:identifier", ""}
+                {"AzureAD:identifier", ""},
+                {"UseInMemoryCache", "true"}
             };
 
 

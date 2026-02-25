@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Application.Application;
+using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Application.Queries.Application.Application;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Application;
 [TestFixture]
@@ -437,8 +439,8 @@ public class ApplicationControllerTests
     {
         // Arrange
         var request = _fixture.Create<EditApplicationCommand>();
-        var response = _fixture.Create<EmptyResponse>();
-        BaseMediatrResponse<EmptyResponse> wrapper = new()
+        var response = _fixture.Create<EditApplicationCommandResponse>();
+        BaseMediatrResponse<EditApplicationCommandResponse> wrapper = new()
         {
             Value = response,
             Success = true
@@ -452,12 +454,15 @@ public class ApplicationControllerTests
         var result = await _controller.EditAsync(request, request.ApplicationId);
 
         // Assert
-        _mediatorMock.Verify(m => m.Send(request, default), Times.Once());
-        Assert.That(result, Is.InstanceOf<OkObjectResult>());
-        var okResult = (OkObjectResult)result;
-        Assert.That(okResult.Value, Is.AssignableFrom<EmptyResponse>());
-        var model = (EmptyResponse)okResult.Value;
-        Assert.That(model, Is.EqualTo(response));
+        Assert.Multiple(() =>
+        {
+            _mediatorMock.Verify(m => m.Send(request, default), Times.Once());
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<EditApplicationCommandResponse>());
+            var model = (EditApplicationCommandResponse)okResult.Value;
+            Assert.That(model, Is.EqualTo(response));
+        });
     }
 
     [Test]
@@ -519,5 +524,127 @@ public class ApplicationControllerTests
             var statusResult = (StatusCodeResult)result;
             Assert.That(statusResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
         });
+    }
+
+    [Test]
+    public async Task UpdateReviewer_ReturnsOkResult()
+    {
+        var applicationId = Guid.NewGuid();
+        var request = _fixture.Create<SaveReviewerCommand>();
+        request.ApplicationId = Guid.NewGuid();
+
+        var response = _fixture.Create<SaveReviewerCommandResponse>();
+        var wrapper = new BaseMediatrResponse<SaveReviewerCommandResponse>
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<SaveReviewerCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        var result = await _controller.UpdateReviewer(request, applicationId);
+
+        Assert.Multiple(() =>
+        {
+            _mediatorMock.Verify(m => m.Send(
+                It.Is<SaveReviewerCommand>(c => c.ApplicationId == applicationId),
+                default), Times.Once);
+
+            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            var okResult = (OkObjectResult)result;
+            Assert.That(okResult.Value, Is.AssignableFrom<SaveReviewerCommandResponse>());
+            var model = (SaveReviewerCommandResponse)okResult.Value;
+            Assert.That(model, Is.EqualTo(response));
+        });
+    }
+
+    [Test]
+    public async Task UpdateReviewer_WhenMediatorFails_ReturnsServerError()
+    {
+        var applicationId = Guid.NewGuid();
+        var request = _fixture.Create<SaveReviewerCommand>();
+
+        var wrapper = new BaseMediatrResponse<SaveReviewerCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Some failure"
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<SaveReviewerCommand>(), default))
+            .ReturnsAsync(wrapper);
+
+        var result = await _controller.UpdateReviewer(request, applicationId);
+
+        Assert.Multiple(() =>
+        {
+            _mediatorMock.Verify(m => m.Send(
+                It.Is<SaveReviewerCommand>(c => c.ApplicationId == applicationId),
+                default), Times.Once);
+
+            Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+            var statusResult = (StatusCodeResult)result;
+            Assert.That(statusResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+        });
+    }
+
+    [Test]
+    public async Task GetApplicationsByQan_ReturnsOkResult()
+    {
+        // Arrange
+        var qan = _fixture.Create<string>();
+        var response = _fixture.Create<GetApplicationsByQanQueryResponse>();
+        BaseMediatrResponse<GetApplicationsByQanQueryResponse> wrapper = new()
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<GetApplicationsByQanQuery>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.GetApplicationsByQan(qan);
+
+        // Assert
+        _mediatorMock.Verify(m => m.Send(It.IsAny<GetApplicationsByQanQuery>(), default), Times.Once());
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<GetApplicationsByQanQuery>(q =>
+                    q.Qan == qan
+        ), default), Times.Once());
+
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var okResult = (OkObjectResult)result;
+        Assert.That(okResult.Value, Is.AssignableFrom<GetApplicationsByQanQueryResponse>());
+        var model = (GetApplicationsByQanQueryResponse)okResult.Value;
+        Assert.That(model, Is.EqualTo(response));
+    }
+
+    [Test]
+    public async Task GetApplicationsByQan_WhenMediatorFails_ReturnsServerError()
+    {
+        // Arrange
+        var qan = _fixture.Create<string>();
+        BaseMediatrResponse<GetApplicationsByQanQueryResponse> wrapper = new()
+        {
+            Success = false,
+            ErrorMessage = "Some failure"
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<GetApplicationsByQanQuery>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.GetApplicationsByQan(qan);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+        var statusResult = (StatusCodeResult)result;
+        Assert.That(statusResult.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
     }
 }
