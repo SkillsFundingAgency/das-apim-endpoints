@@ -1,12 +1,14 @@
 ﻿using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using System.Net;
 using System.Net.Http.Headers;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -22,6 +24,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     private const string LearnerKey = "LearnerKey";
     private const string UkprnKey = "UkprnKey";
     private const string FundingBandMaximumKey = "FundingBandMaximumKey";
+    private const string SldLearnerDataKey = "SldLearnerDataKey";
 
     [Given(@"there is a learner")]
     public void GivenThereIsALearner()
@@ -76,6 +79,17 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         requests.Should().BeEmpty("Expected no requests to the earnings domain, but found some.");
     }
 
+    [Then(@"sld data is stored to the cache")]
+    public async Task ThenSldDataIsStoredToTheCache()
+    {
+        var ukprn = scenarioContext.Get<long>(UkprnKey);
+        var sldLearnerData = scenarioContext.Get<UpdateLearnerRequest>(SldLearnerDataKey);
+        var cachedData = await testContext.Cache.GetLearner(ukprn, sldLearnerData.Learner.Uln.ToString(), CancellationToken.None);
+
+        cachedData.Should().NotBeNull();
+        cachedData.Should().BeEquivalentTo(sldLearnerData);
+    }
+
     [Given("the funding band maximum for that learner is set")]
     public void GivenTheFundingBandMaximumForThatApprenticeshipIsSet()
     {
@@ -114,6 +128,7 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
     {
         var changes = scenarioContext.Get<List<UpdateLearnerApiPutResponse.LearningUpdateChanges>>(ChangesKey);
         var learnerKey = scenarioContext.Get<Guid>(LearnerKey);
+
 
         var response = new UpdateLearnerApiPutResponse();
         if (changes.Any())
@@ -157,6 +172,8 @@ internal class UpdateLearnerSteps(TestContext testContext, ScenarioContext scena
         var response = await testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/learning/{learnerKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();
         response.IsSuccessStatusCode.Should().BeTrue($"Expected successful response from outer Api call, but got {response.StatusCode}. Content: {contentString}");
+
+        scenarioContext.Set(requestBody, SldLearnerDataKey);
     }
 
     private string GetEarningsRequestUrl(string updateRequestType)
