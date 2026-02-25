@@ -1,25 +1,23 @@
-﻿using SFA.DAS.LearnerData.Application.GetLearners;
+﻿using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application;
 
-
 [TestFixture]
-public class WhenHandlingGetLearnersQuery
+public class WhenHandlingGetShortCourseLearnersQuery
 {
-
     [Test, MoqAutoData]
     public async Task Then_Gets_Learners(
-        GetLearnersQuery query,
-        GetLearnersQueryResult expectedResult,
+        GetShortCourseLearnersQuery query,
+        GetShortCourseLearnersQueryResult expectedResult,
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient)
     {
         // Arrange
-        var handler = new GetLearnersQueryHandler(learningApiClient.Object);
+        var handler = new GetShortCourseLearnersQueryHandler(learningApiClient.Object);
         learningApiClient
-            .Setup(x => x.Get<GetLearnersQueryResult>(It.IsAny<GetAllLearningsRequest>()))
+            .Setup(x => x.Get<GetShortCourseLearnersQueryResult>(It.IsAny<GetAllShortCourseLearningsRequest>()))
             .ReturnsAsync(expectedResult);
 
         // Act
@@ -28,21 +26,21 @@ public class WhenHandlingGetLearnersQuery
         // Assert
         result.Should().BeEquivalentTo(expectedResult);
 
-        learningApiClient.Verify(x => x.Get<GetLearnersQueryResult>(
-            It.IsAny<GetAllLearningsRequest>()), Times.Once);
+        learningApiClient.Verify(x => x.Get<GetShortCourseLearnersQueryResult>(
+            It.IsAny<GetAllShortCourseLearningsRequest>()), Times.Once);
     }
 
     [Test, MoqAutoData]
     public void Handle_WhenApiClientThrows_ThrowsException(
-        GetLearnersQuery query,
-        GetLearnersQueryResult expectedResult,
+        GetShortCourseLearnersQuery query,
+        GetShortCourseLearnersQueryResult expectedResult,
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient)
     {
         // Arrange
-        var handler = new GetLearnersQueryHandler(learningApiClient.Object);
+        var handler = new GetShortCourseLearnersQueryHandler(learningApiClient.Object);
 
         learningApiClient
-            .Setup(x => x.Get<GetLearnersQueryResult>(It.IsAny<GetAllLearningsRequest>()))
+            .Setup(x => x.Get<GetShortCourseLearnersQueryResult>(It.IsAny<GetAllShortCourseLearningsRequest>()))
             .ThrowsAsync(new Exception("API failure"));
 
         // Act & Assert
