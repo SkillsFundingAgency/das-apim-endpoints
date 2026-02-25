@@ -3,8 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitJobs.Ai;
-using SFA.DAS.RecruitJobs.Ai.Clients;
-using SFA.DAS.RecruitJobs.Ai.Services;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -27,12 +25,9 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IRecruitAiApiClient<RecruitAiApiConfiguration>, RecruitAiApiClient>();
         services.AddTransient<IBusinessMetricsApiClient<BusinessMetricsConfiguration>, BusinessMetricsApiClient>();
         services.AddTransient<INotificationService, NotificationService>();
-        services.AddTransient<IRandomNumberGenerator, RandomNumberGenerator>();
-        services.AddTransient<IAiReviewResultChecker, AiReviewResultChecker>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<ICourseService, CourseService>();
-        services.AddTransient<IAzureAiClient, AzureAiClient>();
-        services.AddTransient<IRecruitArtificialIntelligenceService, RecruitArtificialIntelligenceService>();
+        services.AddTransient<IRecruitAiService, RecruitAiService>();
         services.AddTransient<VacancyMapper>();
     }
 }
