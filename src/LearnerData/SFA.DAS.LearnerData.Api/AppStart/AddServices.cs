@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.LearnerData.Services.SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -27,5 +26,12 @@ public static class AddApiServicesExtension
         services.AddTransient<IUpdateEarningsEnglishAndMathsRequestBuilder, UpdateEarningsEnglishAndMathsRequestBuilder>();
         services.AddTransient<IUpdateEarningsLearningSupportRequestBuilder, UpdateEarningsLearningSupportRequestBuilder>();
         services.AddTransient<ICostsService, CostsService>();
+        services.AddTransient<ILearnerDataCacheService, LearnerDataCacheService>();
+        services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+        services.AddTransient<IFjaaApiClient<FjaaApiConfiguration>, FjaaApiClient>();
+        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+        services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
+        services.AddTransient<IGetProviderRelationshipService, GetProviderRelationshipService>();
     }
 }
