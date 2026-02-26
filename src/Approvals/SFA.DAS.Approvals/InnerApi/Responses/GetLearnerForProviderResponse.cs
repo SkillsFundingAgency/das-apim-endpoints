@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses;
 
@@ -15,6 +15,9 @@ public record GetLearnerForProviderResponse
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
     public int StandardCode { get; set; }
+    public string? TrainingCode { get; set; }
+    public string? TrainingName { get; set; }
+    public string? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
 

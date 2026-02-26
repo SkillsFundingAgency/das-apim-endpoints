@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -10,31 +10,36 @@ namespace SFA.DAS.Approvals.Services;
 
 public interface IMapLearnerRecords
 {
-    Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> data, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes);
+    Task<List<LearnerSummary>> Map(List<LearnerDataRecord> data, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes);
 }
 
 public class MapLearnerRecords(ILogger<IMapLearnerRecords> logger) : IMapLearnerRecords
 {
-    public async Task<List<LearnerSummary>> Map(IEnumerable<LearnerDataRecord> learners, List<GetAllStandardsResponse.TrainingProgramme> list)
+    public async Task<List<LearnerSummary>> Map(List<LearnerDataRecord> learners, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes)
     {
-        logger.LogInformation("Getting all Courses, to match with Learner Records");
-        var learnerSummaries = new List<LearnerSummary>();
-
         logger.LogInformation("Mapping Learner record to summary");
-        foreach (var learner in learners)
-        {
-            learnerSummaries.Add(new LearnerSummary
-            {
-                Id = learner.Id,
-                FirstName = learner.FirstName,
-                LastName = learner.LastName,
-                Uln = learner.Uln,
-                Course = list.FirstOrDefault(x => x.CourseCode == learner.StandardCode.ToString())?.Name,
-                StartDate = learner.StartDate
-            });
-        }
 
-        return learnerSummaries;
+        return learners.ConvertAll(learner =>
+            {
+                var courseName = learner.TrainingName;
+
+                if (string.IsNullOrEmpty(courseName))
+                {
+                    var matchingProgramme = trainingProgrammes.FirstOrDefault(p => p.CourseCode == learner.StandardCode.ToString());
+
+                    courseName = matchingProgramme?.Name;
+                }
+
+                return new LearnerSummary
+                {
+                    Id = learner.Id,
+                    FirstName = learner.FirstName,
+                    LastName = learner.LastName,
+                    Uln = learner.Uln,
+                    Course = courseName,
+                    StartDate = learner.StartDate
+                };
+            });
     }
 
 }

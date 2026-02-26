@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
 
@@ -15,6 +15,9 @@ public class GetLearnerForProviderQueryResult
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
     public int StandardCode { get; set; }
+    public string? TrainingCode { get; set; }
+    public string? TrainingName { get; set; }
+    public string? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
 
@@ -33,6 +36,9 @@ public class GetLearnerForProviderQueryResult
             EpaoPrice = source.EpaoPrice,
             TrainingPrice = source.TrainingPrice,
             StandardCode = source.StandardCode,
+            TrainingCode = source.TrainingCode,
+            TrainingName = source.TrainingName,
+            LearningType = source.LearningType,
             IsFlexiJob = source.IsFlexiJob,
             PlannedOTJTrainingHours = source.PlannedOTJTrainingHours,
         };
