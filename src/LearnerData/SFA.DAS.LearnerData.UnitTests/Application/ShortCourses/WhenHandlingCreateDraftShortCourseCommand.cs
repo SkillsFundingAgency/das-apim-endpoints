@@ -1,12 +1,13 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net;
+using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -70,14 +71,20 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .Setup(x => x.Build(shortCourseRequest, ukprn))
             .Returns(builtRequest);
 
+        var apiResponse = new ApiResponse<Guid>(Guid.NewGuid(), HttpStatusCode.Created, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<Guid>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(apiResponse);
+
         // Act
-        await _handler.Handle(command, CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         _learningApiClient.Verify(x =>
                 x.PostWithResponseCode<Guid>(
                     It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == builtRequest), true),
             Times.Once);
+        result.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     //[Test]

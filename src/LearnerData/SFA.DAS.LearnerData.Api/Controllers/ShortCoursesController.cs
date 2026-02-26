@@ -1,11 +1,12 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.GetLearners;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using System.Net;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -21,16 +22,22 @@ public class ShortCoursesController(
     {
         try
         {
-            await mediator.Send(new CreateDraftShortCourseCommand
+            var result = await mediator.Send(new CreateDraftShortCourseCommand
             {
                 Ukprn = ukprn,
                 ShortCourseRequest = request
             });
-            return Accepted();
+
+            if (result.StatusCode.IsSuccessStatusCode())
+                return Accepted();
+            else if(result.StatusCode == HttpStatusCode.Conflict)
+                return Conflict();
+            else
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
         catch (Exception e)
         {
-            logger.LogError(e, $"Internal error occurred when creating short course");
+            logger.LogError(e, "Internal error occurred when creating short course");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
