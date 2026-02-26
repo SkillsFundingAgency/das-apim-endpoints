@@ -20,6 +20,8 @@ public class WhenGettingEmployerVacanciesListByStatus
     [Test]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
     public async Task The_The_Gql_Query_Is_Built_Correctly(
         Domain.Vacancy.VacancyStatus status,
         long accountId,
@@ -72,6 +74,8 @@ public class WhenGettingEmployerVacanciesListByStatus
     [Test]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
     public async Task Then_Gql_Errors_Are_Handled(
         Domain.Vacancy.VacancyStatus status,
         long accountId,
@@ -112,6 +116,8 @@ public class WhenGettingEmployerVacanciesListByStatus
     [Test]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
     public async Task Then_The_Vacancies_Are_Returned(
         Domain.Vacancy.VacancyStatus status,
         long accountId,

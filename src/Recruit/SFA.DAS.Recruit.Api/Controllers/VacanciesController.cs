@@ -219,7 +219,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
     
-    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted)$)}")]
+    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted|live|closed)$)}")]
     public async Task<IResult> GetEmployerVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] long accountId,
@@ -252,7 +252,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 
-    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|review|submitted)$)}")]
+    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed)$)}")]
     public async Task<IResult> GetProviderVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] int ukprn,
