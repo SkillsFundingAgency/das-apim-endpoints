@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using AutoFixture;
+﻿using AutoFixture;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Extensions;
@@ -9,15 +6,24 @@ using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.Api.Models.Responses;
 using SFA.DAS.Recruit.Data.Models;
 using SFA.DAS.Recruit.GraphQL;
+using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using StrawberryShake;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Vacancies;
 
-public class WhenGettingEmployerDraftVacanciesList
+public class WhenGettingEmployerVacanciesListByStatus
 {
-    [Test, MoqAutoData]
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
     public async Task The_The_Gql_Query_Is_Built_Correctly(
+        Domain.Vacancy.VacancyStatus status,
         long accountId,
         IOperationResult<IGetPagedVacanciesListResult> vacanciesResult,
         VacancyListFilterParams filterParams,
@@ -45,25 +51,33 @@ public class WhenGettingEmployerDraftVacanciesList
                 capturedTake = take;
             })
             .ReturnsAsync(vacanciesResult);
-        
+
+        GqlTypeExtensions.TryMapToGqlStatuses(status, out var gqlStatus);
+
         // act
-        await sut.GetEmployerDraftVacanciesList(
+        await sut.GetEmployerVacanciesListByStatus(
             gqlClient.Object,
             accountId,
+            status,
             filterParams,
             sortParams,
             new PageParams { PageNumber = 1, PageSize = 10 },
             CancellationToken.None);
 
         // assert
-        capturedFilter.Should().BeEquivalentTo(filterParams.Build(accountId: accountId, statuses: [VacancyStatus.Draft]));
+        capturedFilter.Should().BeEquivalentTo(filterParams.Build(accountId: accountId, statuses: gqlStatus.ToList()));
         capturedSort.Should().BeEquivalentTo(sortParams.Build());
         capturedSkip.Should().Be(0);
         capturedTake.Should().Be(10);
     }
-    
-    [Test, MoqAutoData]
+
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
     public async Task Then_Gql_Errors_Are_Handled(
+        Domain.Vacancy.VacancyStatus status,
         long accountId,
         IOperationResult<IGetPagedVacanciesListResult> vacanciesResult,
         VacancyListFilterParams filterParams,
@@ -80,11 +94,12 @@ public class WhenGettingEmployerDraftVacanciesList
                 It.IsAny<int?>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacanciesResult);
-        
+
         // act
-        var result = await sut.GetEmployerDraftVacanciesList(
+        var result = await sut.GetEmployerVacanciesListByStatus(
             gqlClient.Object,
             accountId,
+            status,
             filterParams,
             sortParams,
             new PageParams
@@ -97,9 +112,14 @@ public class WhenGettingEmployerDraftVacanciesList
         // assert
         result.Should().NotBeNull();
     }
-    
-    [Test, MoqAutoData]
+
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
     public async Task Then_The_Vacancies_Are_Returned(
+        Domain.Vacancy.VacancyStatus status,
         long accountId,
         Mock<IOperationResult<IGetPagedVacanciesListResult>> vacanciesResult,
         DataResponse<Dictionary<long, VacancyStatsItem>> statsResult,
@@ -127,9 +147,10 @@ public class WhenGettingEmployerDraftVacanciesList
         var expectedItems = vacancies.Select(x => VacancyListItem.From(x, null));
 
         // act
-        var result = await sut.GetEmployerDraftVacanciesList(
+        var result = await sut.GetEmployerVacanciesListByStatus(
             gqlClient.Object,
             accountId,
+            status,
             filterParams,
             sortParams,
             new PageParams
