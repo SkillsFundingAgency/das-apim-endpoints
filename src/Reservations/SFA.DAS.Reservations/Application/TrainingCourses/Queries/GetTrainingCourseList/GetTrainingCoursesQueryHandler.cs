@@ -41,7 +41,6 @@ namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCo
             
             await Task.WhenAll(standardsTask, shortCoursesTask);
             
-
             var standards = (await standardsTask).Standards ?? [];
             var shortCoursesResponse = await shortCoursesTask;
             var standardCourses = MapStandardsToTrainingCourseListItem(standards);
