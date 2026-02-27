@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -16,37 +17,51 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private CreateDraftShortCourseCommandHandler _handler;
     private Mock<ILogger<CreateDraftShortCourseCommandHandler>> _logger;
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
+    private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ICreateDraftShortCoursePostRequestBuilder> _createDraftShortCoursePostRequestBuilder;
+    private Mock<ICreateUnapprovedShortCourseLearningRequestBuilder> _createUnapprovedShortCourseLearningRequestBuilder;
     private Mock<IMessageSession> _messageSession;
+
+    private CreateDraftShortCourseCommand _command;
+    private CreateDraftShortCourseRequest _builtRequest;
+    private long _ukprn;
+    private Guid _learningKey;
+    private ShortCourseRequest _shortCourseRequest;
+    private CreateUnapprovedShortCourseLearningRequest _builtEarningsRequest;
 
     [SetUp]
     public void Setup()
     {
         _logger = new Mock<ILogger<CreateDraftShortCourseCommandHandler>>();
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
+        _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _createDraftShortCoursePostRequestBuilder = new Mock<ICreateDraftShortCoursePostRequestBuilder>();
+        _createUnapprovedShortCourseLearningRequestBuilder = new Mock<ICreateUnapprovedShortCourseLearningRequestBuilder>();
         _messageSession = new Mock<IMessageSession>();
 
         _handler = new CreateDraftShortCourseCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
+            _earningsApiClient.Object,
             _createDraftShortCoursePostRequestBuilder.Object,
+            _createUnapprovedShortCourseLearningRequestBuilder.Object,
             _messageSession.Object);
-    }
 
-    [Test]
-    public async Task Then_Learning_Is_Updated_With_ShortCourse()
-    {
         // Arrange
-        var ukprn = 12345;
-        var shortCourseRequest = new ShortCourseRequest();
-        var command = new CreateDraftShortCourseCommand
+        _ukprn = 12345;
+        _learningKey = Guid.NewGuid();
+        
+        _builtEarningsRequest = new CreateUnapprovedShortCourseLearningRequest();
+        
+        _shortCourseRequest = new ShortCourseRequest();
+
+        _command = new CreateDraftShortCourseCommand
         {
-            Ukprn = ukprn,
-            ShortCourseRequest = shortCourseRequest
+            Ukprn = _ukprn,
+            ShortCourseRequest = _shortCourseRequest
         };
 
-        var builtRequest = new CreateDraftShortCourseRequest
+        _builtRequest = new CreateDraftShortCourseRequest
         {
             LearnerUpdateDetails = new()
             {
@@ -67,16 +82,29 @@ public class WhenHandlingCreateDraftShortCourseCommand
         };
 
         _createDraftShortCoursePostRequestBuilder
-            .Setup(x => x.Build(shortCourseRequest, ukprn))
-            .Returns(builtRequest);
+            .Setup(x => x.Build(_shortCourseRequest, _ukprn))
+            .Returns(_builtRequest);
 
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<Guid>(
+                It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(new ApiResponse<Guid>(_learningKey, System.Net.HttpStatusCode.OK, string.Empty));
+
+        _createUnapprovedShortCourseLearningRequestBuilder
+            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _ukprn))
+            .Returns(_builtEarningsRequest);
+    }
+
+    [Test]
+    public async Task Then_Learning_Is_Updated_With_ShortCourse()
+    {
         // Act
-        await _handler.Handle(command, CancellationToken.None);
+        await _handler.Handle(_command, CancellationToken.None);
 
         // Assert
         _learningApiClient.Verify(x =>
                 x.PostWithResponseCode<Guid>(
-                    It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == builtRequest), true),
+                    It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == _builtRequest), true),
             Times.Once);
     }
 
@@ -91,7 +119,6 @@ public class WhenHandlingCreateDraftShortCourseCommand
     //        Ukprn = ukprn,
     //        ShortCourseRequest = shortCourseRequest
     //    };
-
     //    var builtRequest = new CreateDraftShortCourseRequest
     //    {
     //        LearnerUpdateDetails = new()
@@ -111,11 +138,9 @@ public class WhenHandlingCreateDraftShortCourseCommand
     //            CourseCode = "91"
     //        }
     //    };
-
     //    _createDraftShortCoursePostRequestBuilder
     //        .Setup(x => x.Build(shortCourseRequest, ukprn))
     //        .Returns(builtRequest);
-
     //    // Act
     //    await _handler.Handle(command, CancellationToken.None);
 
@@ -135,4 +160,20 @@ public class WhenHandlingCreateDraftShortCourseCommand
     //                It.IsAny<PublishOptions>()),
     //        Times.Once);
     //}
+
+    [Test]
+    public async Task Then_Earnings_Is_Updated_With_Unapproved_ShortCourse_Learning()
+    {
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _createUnapprovedShortCourseLearningRequestBuilder.Verify(x =>
+                x.Build(_shortCourseRequest, _learningKey, _ukprn),
+            Times.Once);
+
+        _earningsApiClient.Verify(x =>
+            x.Post(It.Is<PostCreateUnapprovedShortCourseLearningRequest>(
+                r => r.Data == _builtEarningsRequest)));
+    }
 }
