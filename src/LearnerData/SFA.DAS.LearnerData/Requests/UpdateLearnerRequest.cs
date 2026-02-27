@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.Requests;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using System.Text.Json.Serialization;
+namespace SFA.DAS.LearnerData.Requests;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -15,6 +17,7 @@ public class LearnerRequestDetails
     public string? Email { get; set; }
     public DateTime Dob { get; set; }
     public bool HasEhcp { get; set; }
+    public long Uln { get; set; }
 }
 
 public class UpdateLearnerRequestDeliveryDetails
@@ -37,6 +40,8 @@ public class OnProgrammeRequestDetails
     public DateTime? PauseDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
     public Care Care { get; set; }
+    public int AimSequenceNumber { get; set; }
+    public string LearnAimRef { get; set; }
 }
 
 public class CostDetails
@@ -59,7 +64,7 @@ public class MathsAndEnglish
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
-    
+    public int? AimSequenceNumber { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 

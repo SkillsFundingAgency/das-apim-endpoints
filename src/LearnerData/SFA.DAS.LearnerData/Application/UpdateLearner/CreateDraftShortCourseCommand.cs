@@ -38,7 +38,8 @@ public class CreateDraftShortCourseCommandHandler(
 
         await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
-        await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
+        //removed for now until downstream fixed
+        //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
     }
 
     private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
