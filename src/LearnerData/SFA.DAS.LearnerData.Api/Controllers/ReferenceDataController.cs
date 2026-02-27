@@ -19,10 +19,7 @@ ILogger<ReferenceDataController> logger) : ControllerBase
             Ukprn = ukprn
         };
 
-        logger.LogInformation("Started handling provider relationshipquery");
         var response = await mediator.Send(query);
-        logger.LogInformation("finished handling provider relationshipquery");
-        logger.LogInformation($" is response null : {response is null}");
 
         if (response is null) return NotFound();
 
