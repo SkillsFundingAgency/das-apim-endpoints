@@ -75,21 +75,21 @@ public static class GqlTypeExtensions
         };
     }
 
-    public static bool TryMapToGqlStatus(
+    public static bool TryMapToGqlStatuses(
         Domain.Vacancy.VacancyStatus status,
-        out VacancyStatus gqlStatus)
-        => Map.TryGetValue(status, out gqlStatus);
+        out VacancyStatus[] gqlStatuses)
+        => Map.TryGetValue(status, out gqlStatuses);
 
-    private static readonly IReadOnlyDictionary<Domain.Vacancy.VacancyStatus, VacancyStatus>
-        Map = new Dictionary<Domain.Vacancy.VacancyStatus, VacancyStatus>
+    private static readonly IReadOnlyDictionary<Domain.Vacancy.VacancyStatus, VacancyStatus[]>
+        Map = new Dictionary<Domain.Vacancy.VacancyStatus, VacancyStatus[]>
         {
-            [Domain.Vacancy.VacancyStatus.Draft] = VacancyStatus.Draft,
-            [Domain.Vacancy.VacancyStatus.Review] = VacancyStatus.Review,
-            [Domain.Vacancy.VacancyStatus.Submitted] = VacancyStatus.Submitted,
-            [Domain.Vacancy.VacancyStatus.Approved] = VacancyStatus.Approved,
-            [Domain.Vacancy.VacancyStatus.Closed] = VacancyStatus.Closed,
-            [Domain.Vacancy.VacancyStatus.Live] = VacancyStatus.Live,
-            [Domain.Vacancy.VacancyStatus.Referred] = VacancyStatus.Referred,
-            [Domain.Vacancy.VacancyStatus.Rejected] = VacancyStatus.Rejected,
+            [Domain.Vacancy.VacancyStatus.Draft] = [VacancyStatus.Draft],
+            [Domain.Vacancy.VacancyStatus.Review] = [VacancyStatus.Review],
+            [Domain.Vacancy.VacancyStatus.Submitted] = [VacancyStatus.Submitted],
+            [Domain.Vacancy.VacancyStatus.Approved] = [VacancyStatus.Approved],
+            [Domain.Vacancy.VacancyStatus.Closed] = [VacancyStatus.Closed],
+            [Domain.Vacancy.VacancyStatus.Live] = [VacancyStatus.Live],
+            [Domain.Vacancy.VacancyStatus.Referred] = [VacancyStatus.Referred, VacancyStatus.Rejected],
+            [Domain.Vacancy.VacancyStatus.Rejected] = [VacancyStatus.Referred, VacancyStatus.Rejected],
         };
 }
