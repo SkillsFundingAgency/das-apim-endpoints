@@ -13,7 +13,7 @@ public class WhenSendingAPayload
     [Test, MoqAutoData]
     public async Task Then_The_Payload_Is_Sent_To_The_Correct_Endpoint(
         object payload,
-        [Frozen] Mock<IInternalApiClient<RecruitArtificialIntelligenceConfiguration>> internalApiClient,
+        [Frozen] Mock<IInternalApiClient<RecruitAiApiConfiguration>> internalApiClient,
         [Greedy] RecruitArtificialIntelligenceClient sut)
     {
         // arrange

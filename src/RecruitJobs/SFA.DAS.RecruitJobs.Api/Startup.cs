@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
@@ -12,10 +17,6 @@ using SFA.DAS.RecruitJobs.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.Http.Headers;
-using System.Text.Json.Serialization;
 
 namespace SFA.DAS.RecruitJobs.Api;
 
@@ -43,6 +44,11 @@ public static class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
+        services.AddSingleton(new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNameCaseInsensitive = true,
+        });
         services.AddServiceRegistration();
 
         services.Configure<RouteOptions>(options =>
