@@ -52,7 +52,7 @@ public class WhenGettingEmployerVacanciesListByStatus
             })
             .ReturnsAsync(vacanciesResult);
 
-        GqlTypeExtensions.TryMapToGqlStatus(status, out var gqlStatus);
+        GqlTypeExtensions.TryMapToGqlStatuses(status, out var gqlStatus);
 
         // act
         await sut.GetEmployerVacanciesListByStatus(
@@ -65,7 +65,7 @@ public class WhenGettingEmployerVacanciesListByStatus
             CancellationToken.None);
 
         // assert
-        capturedFilter.Should().BeEquivalentTo(filterParams.Build(accountId: accountId, statuses: [gqlStatus]));
+        capturedFilter.Should().BeEquivalentTo(filterParams.Build(accountId: accountId, statuses: gqlStatus.ToList()));
         capturedSort.Should().BeEquivalentTo(sortParams.Build());
         capturedSkip.Should().Be(0);
         capturedTake.Should().Be(10);

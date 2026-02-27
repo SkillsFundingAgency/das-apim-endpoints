@@ -219,7 +219,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
     
-    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted|live|closed)$)}")]
+    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected)$)}")]
     public async Task<IResult> GetEmployerVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] long accountId,
@@ -229,11 +229,11 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         PageParams pageParams,
         CancellationToken cancellationToken = default)
     {
-        if (!GqlTypeExtensions.TryMapToGqlStatus(status, out var gqlStatus))
+        if (!GqlTypeExtensions.TryMapToGqlStatuses(status, out var gqlStatus))
             return TypedResults.BadRequest(new { message = $"Unsupported status '{status}'." });
 
         var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
-            vacancyListFilterParams.Build(accountId: accountId, statuses: [gqlStatus]),
+            vacancyListFilterParams.Build(accountId: accountId, statuses: gqlStatus.ToList()),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),
@@ -252,7 +252,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 
-    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed)$)}")]
+    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected)$)}")]
     public async Task<IResult> GetProviderVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] int ukprn,
@@ -262,11 +262,11 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         PageParams pageParams,
         CancellationToken cancellationToken = default)
     {
-        if (!GqlTypeExtensions.TryMapToGqlStatus(status, out var gqlStatus))
+        if (!GqlTypeExtensions.TryMapToGqlStatuses(status, out var gqlStatus))
             return TypedResults.BadRequest(new { message = $"Unsupported status '{status}'." });
 
         var response = await recruitGqlClient.GetPagedVacanciesList.ExecuteAsync(
-            vacancyListFilterParams.Build(ukprn: ukprn, statuses: [gqlStatus]),
+            vacancyListFilterParams.Build(ukprn: ukprn, statuses: gqlStatus.ToList()),
             sortParams.Build(),
             pageParams.Skip(),
             pageParams.Take(),

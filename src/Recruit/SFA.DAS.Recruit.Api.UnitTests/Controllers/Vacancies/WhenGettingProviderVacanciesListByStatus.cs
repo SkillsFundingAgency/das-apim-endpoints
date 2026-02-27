@@ -15,6 +15,7 @@ using System.Threading;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Vacancies;
 
+[TestFixture]
 public class WhenGettingProviderVacanciesListByStatus
 {
     [Test]
@@ -52,7 +53,7 @@ public class WhenGettingProviderVacanciesListByStatus
             })
             .ReturnsAsync(vacanciesResult);
 
-        GqlTypeExtensions.TryMapToGqlStatus(status, out var gqlStatus);
+        GqlTypeExtensions.TryMapToGqlStatuses(status, out var gqlStatus);
 
         // act
         await sut.GetProviderVacanciesListByStatus(
@@ -65,7 +66,7 @@ public class WhenGettingProviderVacanciesListByStatus
             CancellationToken.None);
 
         // assert
-        capturedFilter.Should().BeEquivalentTo(filterParams.Build(ukprn: ukprn, statuses: [gqlStatus]));
+        capturedFilter.Should().BeEquivalentTo(filterParams.Build(ukprn: ukprn, statuses: gqlStatus.ToList()));
         capturedSort.Should().BeEquivalentTo(sortParams.Build());
         capturedSkip.Should().Be(0);
         capturedTake.Should().Be(10);
