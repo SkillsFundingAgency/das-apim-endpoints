@@ -51,7 +51,7 @@ public class EarningsApiClient : IEarningsApiClient<EarningsApiConfiguration>
 
     public Task Post<TData>(IPostApiRequest<TData> request)
     {
-        throw new NotImplementedException();
+        return _apiClient.Post<TData>(request);
     }
 
     public async Task Delete(IDeleteApiRequest request)

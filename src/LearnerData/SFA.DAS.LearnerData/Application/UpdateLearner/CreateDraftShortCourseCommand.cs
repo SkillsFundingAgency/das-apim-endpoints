@@ -5,6 +5,7 @@ using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -19,7 +20,9 @@ public class CreateDraftShortCourseCommand : IRequest
 public class CreateDraftShortCourseCommandHandler(
     ILogger<CreateDraftShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
     ICreateDraftShortCoursePostRequestBuilder createDraftShortCoursePostRequestBuilder,
+    ICreateUnapprovedShortCourseLearningRequestBuilder createUnapprovedShortCourseLearningRequestBuilder,
     IMessageSession messageSession
 ) : IRequestHandler<CreateDraftShortCourseCommand>
 {
@@ -29,7 +32,11 @@ public class CreateDraftShortCourseCommandHandler(
 
         var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
-        await learningApiClient.PostWithResponseCode<Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
+        var learningResponse = await learningApiClient.PostWithResponseCode<Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
+
+        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body, command.Ukprn);
+
+        await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
         //removed for now until downstream fixed
         //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
