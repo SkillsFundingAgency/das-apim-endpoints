@@ -43,7 +43,8 @@ public class ProcessLearnersCommandHandler(
             CorrelationId = correlationId,
             ReceivedDate = receivedOn,
             AcademicYear = academicYear,
-            ConsumerReference = request.ConsumerReference
+            ConsumerReference = request.ConsumerReference,
+            LearningType = LearningType.Apprenticeship
         };
     }
 }
