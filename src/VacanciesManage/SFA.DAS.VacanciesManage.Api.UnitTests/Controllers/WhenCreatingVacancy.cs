@@ -77,6 +77,9 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
                         && c.PostVacancyRequestData.EmployerContact.Name.Equals(request.SubmitterContactDetails.Name)
                         && c.PostVacancyRequestData.EmployerContact.Phone.Equals(request.SubmitterContactDetails.Phone)
                         && c.PostVacancyRequestData.EmployerContact.Email.Equals(request.SubmitterContactDetails.Email)
+                        && c.PostVacancyV2RequestData.Contact.Name.Equals(request.SubmitterContactDetails.Name)
+                        && c.PostVacancyV2RequestData.Contact.Phone.Equals(request.SubmitterContactDetails.Phone)
+                        && c.PostVacancyV2RequestData.Contact.Email.Equals(request.SubmitterContactDetails.Email)
                         && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
