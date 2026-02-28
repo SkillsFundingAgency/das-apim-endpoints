@@ -13,6 +13,7 @@ public class GetChangedQualificationsQueryResponse
 }
 public class ChangedQualification
 {
+    public Guid Id { get; set; }
     public string QualificationReference { get; set; } = string.Empty;
     public string AwardingOrganisation { get; set; } = string.Empty;
     public string QualificationTitle { get; set; } = string.Empty;
