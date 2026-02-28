@@ -39,4 +39,5 @@ public class DraftApprenticeship
     public bool HasLearnerDataChanges { get; set; }
     public DateTime? LastLearnerDataSync { get; set; }
     public long? LearnerDataId { get; set; }
+    public string ApprenticeshipType { get; set; }
 }
