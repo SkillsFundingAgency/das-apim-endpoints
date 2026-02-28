@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
 
@@ -13,6 +15,8 @@ public sealed class GetCourseProviderQueryResult
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
@@ -35,8 +39,10 @@ public sealed class GetCourseProviderQueryResult
             ProviderAddress = source.Address,
             Contact = source.Contact,
             CourseName = source.CourseName,
+            CourseType = source.CourseType,
+            ApprenticeshipType = source.ApprenticeshipType,
             Level = source.Level,
-            LarsCode = source.LarsCode.ToString(),
+            LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,
             Qar = source.QAR,
             Reviews = source.Reviews,

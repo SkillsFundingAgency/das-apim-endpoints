@@ -29,7 +29,7 @@ public sealed class WhenMappingGetCourseProviderQueryResultFromModel
             Assert.That(sut.Contact.PhoneNumber, Is.EquivalentTo(response.Contact.PhoneNumber));
             Assert.That(sut.CourseName, Is.EqualTo(response.CourseName));
             Assert.That(sut.Level, Is.EqualTo(response.Level));
-            Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode.ToString()));
+            Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode));
             Assert.That(sut.IFateReferenceNumber, Is.EqualTo(response.IFateReferenceNumber));
             Assert.That(sut.Qar.Period, Is.EqualTo(response.QAR.Period));
             Assert.That(sut.Qar.Leavers, Is.EqualTo(response.QAR.Leavers));
