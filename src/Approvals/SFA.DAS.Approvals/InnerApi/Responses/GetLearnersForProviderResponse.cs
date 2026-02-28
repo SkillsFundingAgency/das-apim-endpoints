@@ -31,7 +31,7 @@ public record LearnerDataRecord
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
     public string AgreementId { get; set; }
-    public int StandardCode { get; set; }
+    public string TrainingCode { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
     public DateTime ReceivedDate { get; set; }
