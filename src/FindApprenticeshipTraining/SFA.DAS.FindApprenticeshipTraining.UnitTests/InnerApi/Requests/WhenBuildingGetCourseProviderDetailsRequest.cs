@@ -12,9 +12,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 public sealed class WhenBuildingGetCourseProviderDetailsRequest
 {
     [Test, AutoData]
-    public void GetUrl_LocationProvided_ReturnsUrlWithEncodedLocation(string larsCode, long ukprn)
+    public void GetUrl_LocationProvided_ReturnsUrlWithEncodedLocation(string larsCode, long ukprn, decimal? longitude, decimal? latitude)
     {
-        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, "BT47 2DH", 123.456M, 54.321M, null);
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, "BT47 2DH", longitude, latitude, null);
 
         var result = sut.GetUrl;
 
@@ -25,14 +25,14 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
     }
 
     [Test, AutoData]
-    public void GetUrl_LatitudeAndLongitudeProvided_ReturnsUrlWithLatLong(string larsCode, long ukprn)
+    public void GetUrl_LatitudeAndLongitudeProvided_ReturnsUrlWithLatLong(string larsCode, long ukprn, decimal? longitude, decimal? latitude)
     {
-        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, 123.456M, 54.321M, null);
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, longitude, latitude, null);
 
         var result = sut.GetUrl;
 
-        result.Should().Contain("longitude=123.456");
-        result.Should().Contain("latitude=54.321");
+        result.Should().Contain($"longitude={longitude}");
+        result.Should().Contain($"latitude={latitude}");
     }
 
     [Test, AutoData]
@@ -52,16 +52,16 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
     }
 
     [Test, AutoData]
-    public void GetUrl_AllParameters_BuildsValidUrl(string larsCode, long ukprn, Guid shortlistId)
+    public void GetUrl_AllParameters_BuildsValidUrl(string larsCode, long ukprn, decimal? longitude, decimal? latitude, Guid shortlistId)
     {
-        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, "SW1 111", -1.234M, 53.123M, shortlistId);
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, "SW1 111", longitude, latitude, shortlistId);
 
         var result = sut.GetUrl;
 
         result.Should().StartWith($"api/courses/{larsCode}/providers/{ukprn}/details?");
         result.Should().Contain($"location={HttpUtility.UrlEncode("SW1 111")}");
-        result.Should().Contain("latitude=53.123");
-        result.Should().Contain("longitude=-1.234");
+        result.Should().Contain($"longitude={longitude}");
+        result.Should().Contain($"latitude={latitude}");
         result.Should().Contain($"shortlistUserId={shortlistId}");
     }
 
