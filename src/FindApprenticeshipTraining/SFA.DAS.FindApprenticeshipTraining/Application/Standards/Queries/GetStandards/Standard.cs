@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Standards.Queries.GetStandards;
 
-public record Standard(int LarsCode, string Title)
+public record Standard(string LarsCode, string Title)
 {
-    public static implicit operator Standard(GetStandardsListItem response) => new(response.LarsCode, response.Title);
+    public static implicit operator Standard(GetStandardsListItem response) => new(response.LarsCode.ToString(), response.Title);
 }
 

@@ -15,6 +15,6 @@ public class WhenBuildingDeleteShortlistItemRequest
         var sut = new DeleteShortlistItemRequest(id);
 
         //Assert
-        sut.DeleteUrl.Should().Be($"api/shortlists/{id}");
+        sut.DeleteUrl.Should().Be($"shortlists/{id}");
     }
 }

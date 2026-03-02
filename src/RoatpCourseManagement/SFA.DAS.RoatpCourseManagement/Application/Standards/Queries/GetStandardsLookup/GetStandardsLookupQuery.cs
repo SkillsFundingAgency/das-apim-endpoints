@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup
 {
-    public class GetStandardsLookupQuery : IRequest<ApiResponse<GetStandardsLookupResponse>>
+    public class GetStandardsLookupQuery : IRequest<ApiResponse<GetStandardsLookupResponseFromCoursesApi>>
     {
     }
 }

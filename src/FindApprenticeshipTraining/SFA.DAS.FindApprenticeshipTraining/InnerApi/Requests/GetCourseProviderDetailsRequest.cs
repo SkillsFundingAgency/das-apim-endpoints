@@ -1,12 +1,12 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 using System.Web;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 public sealed class GetCourseProviderDetailsRequest : IGetApiRequest
 {
-    private int LarsCode { get; }
+    private string LarsCode { get; }
     private long Ukprn { get; }
     private string Location { get; }
     private decimal? Longitude { get; }
@@ -15,7 +15,7 @@ public sealed class GetCourseProviderDetailsRequest : IGetApiRequest
 
     public string GetUrl => BuildUrl();
 
-    public GetCourseProviderDetailsRequest(int larsCode, long ukprn, string location, decimal? longitude, decimal? latitude, Guid? shortlistUserId)
+    public GetCourseProviderDetailsRequest(string larsCode, long ukprn, string location, decimal? longitude, decimal? latitude, Guid? shortlistUserId)
     {
         LarsCode = larsCode;
         Ukprn = ukprn;

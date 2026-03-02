@@ -48,6 +48,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraf
                 TrainingCourseOption = apprenticeship.TrainingCourseOption,
                 TrainingCourseVersionConfirmed = apprenticeship.TrainingCourseVersionConfirmed,
                 StandardUId = apprenticeship.StandardUId,
+                TrainingPrice = apprenticeship.TrainingPrice,
+                EndPointAssessmentPrice = apprenticeship.EndPointAssessmentPrice,
                 Cost = apprenticeship.Cost,
                 StartDate = apprenticeship.StartDate,
                 ActualStartDate = apprenticeship.ActualStartDate,
@@ -72,7 +74,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraf
                 EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed,
                 DurationReducedByHours = apprenticeship.DurationReducedByHours,
                 IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl,
-                TrainingTotalHours = apprenticeship.TrainingTotalHours,
+                TrainingTotalHours = apprenticeship.TrainingTotalHours
             };
         }
     }

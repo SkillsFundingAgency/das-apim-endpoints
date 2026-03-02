@@ -1,11 +1,10 @@
 ﻿using System;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreateProviderCourse
+namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.CreateProviderCourse;
+
+public class ProviderCourseLocationCommandModel
 {
-    public class ProviderCourseLocationCommandModel
-    {
-        public Guid ProviderLocationId { get; set; }
-        public bool HasDayReleaseDeliveryOption { get; set; }
-        public bool HasBlockReleaseDeliveryOption { get; set; }
-    }
+    public Guid ProviderLocationId { get; set; }
+    public bool HasDayReleaseDeliveryOption { get; set; }
+    public bool HasBlockReleaseDeliveryOption { get; set; }
 }

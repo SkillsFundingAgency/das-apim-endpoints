@@ -1,7 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -9,7 +9,7 @@ public sealed class GetCourseByLarsCodeQueryResult
 {
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
     public int TotalProvidersCount { get; set; }
     public string Title { get; set; }
@@ -33,7 +33,7 @@ public sealed class GetCourseByLarsCodeQueryResult
         {
             StandardUId = source.StandardUId,
             IFateReferenceNumber = source.IfateReferenceNumber,
-            LarsCode = source.LarsCode,
+            LarsCode = source.LarsCode.ToString(),
             Title = source.Title,
             Level = source.Level,
             Version = source.Version,

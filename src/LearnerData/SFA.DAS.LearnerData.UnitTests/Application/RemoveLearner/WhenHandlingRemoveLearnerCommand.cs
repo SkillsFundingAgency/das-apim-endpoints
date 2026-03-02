@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.RemoveLearner;
 
@@ -52,9 +53,9 @@ public class WhenHandlingRemoveLearnerCommand
                 It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
             .ReturnsAsync(new ApiResponse<RemoveLearnerResponse>(new RemoveLearnerResponse{ LastDayOfLearning = startDate }, HttpStatusCode.NoContent, ""));
 
-        _earningsApiClient.Setup(x => x.PatchWithResponseCode<WithdrawLearnerRequest>(
-                It.IsAny<WithdrawLearnerPatchRequest>()))
-            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.NoContent, ""));
+        _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+                It.IsAny<DeleteLearningRequest>(), false))
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
@@ -63,8 +64,8 @@ public class WhenHandlingRemoveLearnerCommand
         _learningApiClient.Verify(x => x.DeleteWithResponseCode<RemoveLearnerResponse>(
             It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey && r.Ukprn == command.Ukprn), It.IsAny<bool>()), Times.Once);
 
-        _earningsApiClient.Verify(x => x.PatchWithResponseCode<WithdrawLearnerRequest>(
-            It.Is<WithdrawLearnerPatchRequest>(r => r.LearningKey == command.LearningKey && r.Data.WithdrawalDate == startDate)), Times.Once);
+        _earningsApiClient.Verify(x => x.DeleteWithResponseCode<NullResponse>(
+            It.Is<DeleteLearningRequest>(r => r.LearningKey == command.LearningKey), false), Times.Once());
     }
 
     [Test]
@@ -96,7 +97,7 @@ public class WhenHandlingRemoveLearnerCommand
     }
 
     [Test]
-    public void Then_Throws_If_Earnings_Patch_Fails()
+    public void Then_Throws_If_Earnings_Delete_Fails()
     {
         // Arrange
         var command = _fixture.Create<RemoveLearnerCommand>();
@@ -106,9 +107,9 @@ public class WhenHandlingRemoveLearnerCommand
                 It.Is<RemoveLearnerApiDeleteRequest>(r => r.LearningKey == command.LearningKey), It.IsAny<bool>()))
             .ReturnsAsync(new ApiResponse<RemoveLearnerResponse>(new RemoveLearnerResponse { LastDayOfLearning = startDate }, HttpStatusCode.NoContent, ""));
 
-        _earningsApiClient.Setup(x => x.PatchWithResponseCode<WithdrawLearnerRequest>(
-                It.IsAny<WithdrawLearnerPatchRequest>()))
-            .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.InternalServerError, ""));
+        _earningsApiClient.Setup(x => x.DeleteWithResponseCode<NullResponse>(
+                It.IsAny<DeleteLearningRequest>(), false))
+            .ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.InternalServerError, ""));
 
         // Act & Assert
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));

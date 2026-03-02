@@ -1,5 +1,5 @@
-﻿using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 
@@ -17,7 +17,7 @@ public sealed class StandardModel
     public int Ordering { get; set; }
     public string StandardUId { get; set; }
     public string IfateReferenceNumber { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public float? SearchScore { get; set; }
     public int ProvidersCount { get; set; } = 0;
     public int TotalProvidersCount { get; set; } = 0;
@@ -42,7 +42,7 @@ public sealed class StandardModel
             Ordering = order,
             StandardUId = source.StandardUId,
             IfateReferenceNumber = source.IfateReferenceNumber,
-            LarsCode = source.LarsCode,
+            LarsCode = source.LarsCode.ToString(),
             SearchScore = source.SearchScore,
             ProvidersCount = providerCount,
             TotalProvidersCount = totalProvidersCount,

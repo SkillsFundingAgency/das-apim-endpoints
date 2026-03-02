@@ -1,10 +1,8 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.InnerApi;
 
+[TestFixture]
 public class WhenBuildingGetClosedVacancyApiRequest
 {
     [Test, AutoData]
@@ -12,6 +10,6 @@ public class WhenBuildingGetClosedVacancyApiRequest
     {
         var actual = new GetClosedVacancyApiRequest(vacancyReference);
 
-        actual.GetUrl.Should().Be($"api/closedvacancies/{vacancyReference}");
+        actual.GetUrl.Should().Be($"api/vacancies/{vacancyReference}/closed");
     }
 }

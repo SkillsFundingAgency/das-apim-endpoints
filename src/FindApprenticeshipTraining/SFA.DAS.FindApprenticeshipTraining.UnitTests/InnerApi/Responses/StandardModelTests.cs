@@ -30,7 +30,7 @@ public sealed class StandardModelTests
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(totalProvidersCount));
             Assert.That(sut.StandardUId, Is.EqualTo(standardListItem.StandardUId));
             Assert.That(sut.IfateReferenceNumber, Is.EqualTo(standardListItem.IfateReferenceNumber));
-            Assert.That(sut.LarsCode, Is.EqualTo(standardListItem.LarsCode));
+            Assert.That(sut.LarsCode, Is.EqualTo(standardListItem.LarsCode.ToString()));
             Assert.That(sut.SearchScore, Is.EqualTo(standardListItem.SearchScore));
             Assert.That(sut.Title, Is.EqualTo(standardListItem.Title));
             Assert.That(sut.Level, Is.EqualTo(standardListItem.Level));

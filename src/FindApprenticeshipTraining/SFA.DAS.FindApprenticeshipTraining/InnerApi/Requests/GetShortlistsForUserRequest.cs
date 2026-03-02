@@ -5,5 +5,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 public record GetShortlistsForUserRequest(Guid UserId) : IGetApiRequest
 {
-    public string GetUrl => $"api/shortlists/users/{UserId}";
+    public string GetUrl => $"shortlists/users/{UserId}";
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -7,6 +8,7 @@ using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
+    [ExcludeFromCodeCoverage]
     public class ApprenticeAccountsApiClient : IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>
     {
         private readonly IInternalApiClient<ApprenticeAccountsApiConfiguration> _apiClient;
@@ -53,7 +55,7 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task Delete(IDeleteApiRequest request)
         {
-            throw new System.NotImplementedException();
+            return _apiClient.Delete(request);
         }
 
         public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)

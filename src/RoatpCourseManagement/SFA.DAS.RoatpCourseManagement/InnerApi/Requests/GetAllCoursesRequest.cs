@@ -1,17 +1,14 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.InnerApi;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+
+public class GetAllCoursesRequest : IGetApiRequest
 {
-    public class GetAllCoursesRequest : IGetApiRequest
+    public string GetUrl => $"standards?coursetype={CourseType}";
+    public CourseType? CourseType { get; }
+    public GetAllCoursesRequest(CourseType? courseType)
     {
-        public string GetUrl => $"providers/{Ukprn}/courses?excludeCoursesWithoutLocation={ExcludeInvalidCourses}";
-        public int Ukprn { get; }
-        public bool ExcludeInvalidCourses { get; }
-
-        public GetAllCoursesRequest(int ukprn)
-        {
-            Ukprn = ukprn;
-            ExcludeInvalidCourses = false;
-        }
+        CourseType = courseType;
     }
 }

@@ -6,10 +6,10 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Commands.DeletePro
     public class DeleteProviderCourseCommand : IRequest<Unit>
     {
         public int Ukprn { get; set; }
-        public int LarsCode { get; set; }
+        public string LarsCode { get; set; }
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
-        public static implicit operator DeleteProviderCourseRequest(DeleteProviderCourseCommand command) 
+        public static implicit operator DeleteProviderCourseRequest(DeleteProviderCourseCommand command)
             => new DeleteProviderCourseRequest
             {
                 Ukprn = command.Ukprn,

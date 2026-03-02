@@ -8,7 +8,6 @@ using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
 using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
-using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
 using SFA.DAS.NServiceBus.Configuration;
@@ -47,6 +46,8 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
+builder.AddDistributedCache(configuration);
+
 builder.Services.AddSingleton<ITelemetryInitializer, CorrelationTelemetryInitializer>();
 builder.Services.AddSingleton<IMessageSession>(provider =>
 {
@@ -81,7 +82,8 @@ builder.Services.AddConfigurationOptions(configuration);
 builder.Services.AddHealthChecks()
     .AddCheck<LearningApiHealthCheck>(LearningApiHealthCheck.HealthCheckResultDescription)
     .AddCheck<EarningsApiHealthCheck>(EarningsApiHealthCheck.HealthCheckResultDescription)
-    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription);
+    .AddCheck<CollectionCalendarApiHealthCheck>(CollectionCalendarApiHealthCheck.HealthCheckResultDescription)
+    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
 
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(CreateLearnerCommand).Assembly));
 builder.Services.AddHttpContextAccessor();
@@ -107,6 +109,7 @@ app.UseSwagger()
     .UseAuthentication();
 
 app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateLearnerRequest>>();
+app.UseMiddleware<ConcurrencyTrackingMiddleware>();
 
 app.MapControllers();
 

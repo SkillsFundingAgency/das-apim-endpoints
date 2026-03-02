@@ -14,7 +14,7 @@ public class GetVacancyReviewResponse
     public required string Status { get; init; }
     public byte SubmissionCount { get; init; }
     public string ReviewedByUserEmail { get; init; }
-    public required string SubmittedByUserEmail { get; init; }
+    public string? SubmittedByUserEmail { get; init; }
     public DateTime? ClosedDate { get; init; }
     public string ManualOutcome { get; set; }
     public string ManualQaComment { get; init; }
@@ -26,4 +26,5 @@ public class GetVacancyReviewResponse
     public required string VacancySnapshot { get; set; }
     public string OwnerType { get; set; }
     public Guid VacancyId { get; set; }
+    public string SubmittedByUserId { get; set; }
 }

@@ -3,17 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Compile Remove="InnerApi\Assessor\**" />
-      <EmbeddedResource Remove="InnerApi\Assessor\**" />
-      <None Remove="InnerApi\Assessor\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Remove="InnerApi\Requests\GetLevelsListRequest.cs" />
-    </ItemGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
         <PackageReference Include="MediatR" />

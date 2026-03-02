@@ -54,3 +54,4 @@ stages:
     OuterApiName: EmployerFeedback
     ConfigurationSecrets:
       ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
+      NServiceBusLicense: $(NServiceBusLicense)

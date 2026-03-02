@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,8 +11,8 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.Roatp;
 
 namespace SFA.DAS.Approvals.Services;
 
@@ -52,21 +52,20 @@ public class ProviderStandardsService(
             IsMainProvider = providerDetails.IsMainProvider,
             Standards = await GetStandardsForProvider(providerId)
         };
-
     }
 
-    private async Task<TrainingProviderResponse> GetTrainingProviderDetails(long providerId)
+    private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)
     {
         var cacheKey = $"{ProviderDetailsCacheKey}-{providerId}";
 
-        var cacheResult = await cacheStorageService.RetrieveFromCache<TrainingProviderResponse>(cacheKey);
+        var cacheResult = await cacheStorageService.RetrieveFromCache<ProviderDetailsModel>(cacheKey);
 
         if (cacheResult != null)
         {
             return cacheResult;
         }
 
-        var result = await trainingProviderService.GetTrainingProviderDetails(providerId);
+        var result = await trainingProviderService.GetProviderDetails((int)providerId);
         await cacheStorageService.SaveToCache(cacheKey, result, CacheExpiryHours);
         return result;
     }
@@ -78,12 +77,12 @@ public class ProviderStandardsService(
 
         if (cacheResult != null)
         {
-            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
+            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
         }
-
+        
         var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
         await cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
-        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
+        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
     }
 
     private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
@@ -101,7 +100,7 @@ public class ProviderStandardsService(
             }
 
             return providerStandards.Select(
-                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name).ToList();
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel, x.Level)).OrderBy(x => x.Name).ToList();
         }
         catch (Exception e)
         {

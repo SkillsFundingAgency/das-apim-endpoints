@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.LearnerData.Requests;
 
@@ -15,11 +17,14 @@ public class LearnerRequestDetails
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? Email { get; set; }
+    public DateTime Dob { get; set; }
+    public bool HasEhcp { get; set; }
+    public long Uln { get; set; }
 }
 
 public class UpdateLearnerRequestDeliveryDetails
 {
-    public OnProgrammeRequestDetails OnProgramme { get; set; }
+    public List<OnProgrammeRequestDetails> OnProgramme { get; set; }
 
     public List<MathsAndEnglish> EnglishAndMaths { get; set; }
 
@@ -27,29 +32,41 @@ public class UpdateLearnerRequestDeliveryDetails
 
 public class OnProgrammeRequestDetails
 {
+    public int StandardCode { get; set; }
+    public string? AgreementId { get; set; }
+    public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
-    public List<CostDetails> Costs { get; set; }
+    public List<CostDetails>? Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
+    public Care Care { get; set; }
+    public int AimSequenceNumber { get; set; }
+    public string LearnAimRef { get; set; }
 }
 
 public class CostDetails
 {
-    public int TrainingPrice { get; set; }
+    public int? TrainingPrice { get; set; }
     public int? EpaoPrice { get; set; }
     public DateTime? FromDate { get; set; }
 }
 
 public class MathsAndEnglish
 {
-    public string Course { get; set; }
+    //These fields exist currently only for the PUT, until we do the work to look up the course from the course code and align the Update
+    //with the CreateLearner requests
+    public string Course { get; set; } = "";
+    public string LearnAimRef { get; set; }
+    public decimal Amount { get; set; } = 0;
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
-    public decimal Amount { get; set; }
+    public int? AimSequenceNumber { get; set; }
     public List<LearningSupportRequestDetails> LearningSupport { get; set; }
 }
 
@@ -57,6 +74,12 @@ public class LearningSupportRequestDetails
 {
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+}
+
+public class Care
+{
+    public bool Careleaver { get; set; }
+    public bool EmployerConsent { get; set; }
 }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

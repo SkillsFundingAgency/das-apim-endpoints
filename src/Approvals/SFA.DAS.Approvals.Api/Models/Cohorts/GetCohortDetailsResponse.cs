@@ -38,7 +38,7 @@ public class GetCohortDetailsResponse
     public IEnumerable<DraftApprenticeship> DraftApprenticeships { get; set; }
     public IEnumerable<ApprenticeshipEmailOverlap> ApprenticeshipEmailOverlaps { get; set; }
     public IEnumerable<long> RplErrorDraftApprenticeshipIds { get; set; }
-    public bool HasFoundationApprenticeships { get; set; }
+    public bool HasAgeRestrictedApprenticeships { get; set; }
 
     public static implicit operator GetCohortDetailsResponse(GetCohortDetailsQueryResult source)
     {
@@ -73,7 +73,7 @@ public class GetCohortDetailsResponse
             DraftApprenticeships = source.DraftApprenticeships.Select(x=>(DraftApprenticeship)x),
             ApprenticeshipEmailOverlaps = source.ApprenticeshipEmailOverlaps.Select(x=>(ApprenticeshipEmailOverlap)x),
             RplErrorDraftApprenticeshipIds = source.RplErrorDraftApprenticeshipIds,
-            HasFoundationApprenticeships = source.HasFoundationApprenticeships
+            HasAgeRestrictedApprenticeships = source.HasAgeRestrictedApprenticeships
         };
     }
 }
@@ -124,6 +124,8 @@ public class DraftApprenticeship
     public bool? EmailAddressConfirmed { get; set; }
     public int? DurationReducedByHours { get; set; }
     public string ApprenticeshipType { get; set; }
+    public bool HasLearnerDataChanges { get; set; }
+    public DateTime? LastLearnerDataSync { get; set; }
     public long? LearnerDataId { get; set; }
 
     public static implicit operator DraftApprenticeship(
@@ -157,6 +159,8 @@ public class DraftApprenticeship
             IsOnFlexiPaymentPilot = source.IsOnFlexiPaymentPilot,
             EmailAddressConfirmed = source.EmailAddressConfirmed,
             DurationReducedByHours = source.DurationReducedByHours,
+            HasLearnerDataChanges = source.HasLearnerDataChanges,
+            LastLearnerDataSync = source.LastLearnerDataSync,
             LearnerDataId = source.LearnerDataId
         };
     }

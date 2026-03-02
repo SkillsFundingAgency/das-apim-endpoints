@@ -13,7 +13,7 @@ using SFA.DAS.SharedOuterApi.Models;
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries;
 
 public class GetLiveVacancyQueryHandler(
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    IRecruitApiClient<RecruitApiV2Configuration> recruitApiClient,
     ILiveVacancyMapper liveVacancyMapper,
     ICourseService courseService,
     ILogger<GetLiveVacancyQueryHandler> logger)
@@ -29,7 +29,8 @@ public class GetLiveVacancyQueryHandler(
 
         if (vacancy.StatusCode == HttpStatusCode.NotFound)
         {
-            throw new Exception($"Vacancy not found: {request.VacancyReference} while processing live vacancy handler");
+            // Return empty result if not found after retries. FAI-2966
+            return new GetLiveVacancyQueryResult();
         }
         
         var standards = await courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
@@ -49,7 +50,7 @@ public class GetLiveVacancyQueryHandler(
             .WaitAndRetryAsync(3, _ => TimeSpan.FromSeconds(4), 
                 (_, _, retryCount, _) =>
                 {
-                    logger.LogInformation($"GetLiveVacancyQueryHandler: Unable to find {request.VacancyReference}. Retry {retryCount} due to 404 response");
+                    logger.LogInformation("GetLiveVacancyQueryHandler: Unable to find {RequestVacancyReference}. Retry {RetryCount} due to 404 response", request.VacancyReference, retryCount);
                 });
     }
 }
