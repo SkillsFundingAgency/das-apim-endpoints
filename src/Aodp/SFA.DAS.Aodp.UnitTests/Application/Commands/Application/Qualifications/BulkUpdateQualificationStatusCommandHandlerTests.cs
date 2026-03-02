@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
-using Microsoft.Azure.Amqp.Framing;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Qualifications;
 using SFA.DAS.AODP.Application.Commands.Qualifications;
@@ -41,17 +40,21 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Qualifications
             _apiClientMock
                 .Setup(x => x.PutWithResponseCode<BulkUpdateQualificationStatusCommandResponse>(
                     It.IsAny<BulkUpdateQualificationStatusApiRequest>()))
-                .ReturnsAsync(new ApiResponse<BulkUpdateQualificationStatusCommandResponse>(apiResponse, System.Net.HttpStatusCode.OK, ""));
+                .ReturnsAsync(new ApiResponse<BulkUpdateQualificationStatusCommandResponse>(
+                    apiResponse, System.Net.HttpStatusCode.OK, ""));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.That(result.Success, Is.True);
-            Assert.That(result.Value, Is.Not.Null);
-            Assert.That(result.Value.RequestedCount, Is.EqualTo(apiResponse.RequestedCount));
-            Assert.That(result.Value.UpdatedCount, Is.EqualTo(apiResponse.UpdatedCount));
-            Assert.That(result.Value.ErrorCount, Is.EqualTo(apiResponse.ErrorCount));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Success, Is.True);
+                Assert.That(result.Value, Is.Not.Null);
+                Assert.That(result.Value.RequestedCount, Is.EqualTo(apiResponse.RequestedCount));
+                Assert.That(result.Value.UpdatedCount, Is.EqualTo(apiResponse.UpdatedCount));
+                Assert.That(result.Value.ErrorCount, Is.EqualTo(apiResponse.ErrorCount));
+            });
 
             _apiClientMock.Verify(x =>
                 x.PutWithResponseCode<BulkUpdateQualificationStatusCommandResponse>(
@@ -75,8 +78,11 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Qualifications
             var result = await _handler.Handle(command, CancellationToken.None);
 
             // Assert
-            Assert.That(result.Success, Is.False);
-            Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
+            Assert.Multiple(() =>
+            {
+                Assert.That(result.Success, Is.False);
+                Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
+            });
 
             _apiClientMock.Verify(x =>
                 x.PutWithResponseCode<BulkUpdateQualificationStatusCommandResponse>(
