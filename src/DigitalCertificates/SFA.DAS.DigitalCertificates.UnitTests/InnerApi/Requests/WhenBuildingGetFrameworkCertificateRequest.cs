@@ -16,6 +16,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
 
             // Assert
             request.GetUrl.Should().Be($"api/v1/learnerdetails/framework-learner/{id}?allLogs=false");
+
+            var withLogsRequest = new GetFrameworkCertificateRequest(id, true);
+            withLogsRequest.GetUrl.Should().Be($"api/v1/learnerdetails/framework-learner/{id}");
         }
     }
 }
