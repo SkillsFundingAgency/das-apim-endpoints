@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Net;
+using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
@@ -90,6 +91,10 @@ public class WhenHandlingCreateDraftShortCourseCommand
                 It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
             .ReturnsAsync(new ApiResponse<Guid>(_learningKey, System.Net.HttpStatusCode.OK, string.Empty));
 
+        var apiResponse = new ApiResponse<Guid>(Guid.NewGuid(), HttpStatusCode.Created, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<Guid>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(apiResponse);
         _createUnapprovedShortCourseLearningRequestBuilder
             .Setup(x => x.Build(_shortCourseRequest, _learningKey, _ukprn))
             .Returns(_builtEarningsRequest);
@@ -99,13 +104,14 @@ public class WhenHandlingCreateDraftShortCourseCommand
     public async Task Then_Learning_Is_Updated_With_ShortCourse()
     {
         // Act
-        await _handler.Handle(_command, CancellationToken.None);
+        var result = await _handler.Handle(command, CancellationToken.None);
 
         // Assert
         _learningApiClient.Verify(x =>
                 x.PostWithResponseCode<Guid>(
                     It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == _builtRequest), true),
             Times.Once);
+        result.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     //[Test]

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Events;
@@ -11,10 +12,15 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 
-public class CreateDraftShortCourseCommand : IRequest
+public class CreateDraftShortCourseCommand : IRequest<CreateDraftShortCourseResult>
 {
     public long Ukprn { get; set; }
     public ShortCourseRequest ShortCourseRequest { get; set; }
+}
+
+public class CreateDraftShortCourseResult
+{
+    public HttpStatusCode StatusCode { get; set; }
 }
 
 public class CreateDraftShortCourseCommandHandler(
@@ -24,9 +30,9 @@ public class CreateDraftShortCourseCommandHandler(
     ICreateDraftShortCoursePostRequestBuilder createDraftShortCoursePostRequestBuilder,
     ICreateUnapprovedShortCourseLearningRequestBuilder createUnapprovedShortCourseLearningRequestBuilder,
     IMessageSession messageSession
-) : IRequestHandler<CreateDraftShortCourseCommand>
+) : IRequestHandler<CreateDraftShortCourseCommand, CreateDraftShortCourseResult>
 {
-    public async Task Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
+    public async Task<CreateDraftShortCourseResult> Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating draft short course for provider {ProviderUkprn}", command.Ukprn);
 
@@ -40,6 +46,11 @@ public class CreateDraftShortCourseCommandHandler(
 
         //removed for now until downstream fixed
         //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
+
+        return new CreateDraftShortCourseResult
+        {
+            StatusCode = result.StatusCode
+        };
     }
 
     private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
@@ -55,8 +66,8 @@ public class CreateDraftShortCourseCommandHandler(
             StartDate = request.OnProgramme.StartDate,
             PlannedEndDate = request.OnProgramme.ExpectedEndDate,
             PercentageLearningToBeDelivered = 100,
-            TrainingPrice = (int) request.OnProgramme.Price,
-            AgreementId =  request.OnProgramme.EmployerId.ToString(),
+            TrainingPrice = (int)request.OnProgramme.Price,
+            AgreementId = request.OnProgramme.EmployerId.ToString(),
             StandardCode = Convert.ToInt32(request.OnProgramme.CourseCode),
             ReceivedDate = DateTime.UtcNow,
             LearningType = LearningType.ApprenticeshipUnit
