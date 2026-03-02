@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using System.Diagnostics;
@@ -8,8 +9,12 @@ using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
-// The Models in this file are used to join data from the Apprenticeships and Earnings APIs
-public class JoinedEarningsApprenticeship
+// The Models in this file are used to join data from the Learning and Earnings APIs, as well as cached SLD data
+
+/// <summary>
+/// This object is the combination of data from the Learning Api, Earnings API and SLD cache for a single learner
+/// </summary>
+public class JoinedLearnerData
 {
     /// <summary> Derived from Apprenticeships API, apprenticeship.Key </summary>
     public Guid Key { get; set; }
@@ -21,6 +26,10 @@ public class JoinedEarningsApprenticeship
     public DateTime PlannedEndDate { get; set; }
     /// <summary> Derived from combining earnings.Episodes and apprenticeship.Episodes</summary>
     public List<JoinedPriceEpisode> Episodes { get; set; }
+    /// <summary>Derived from combining sld data with earnings.PeriodsInLearning</summary>
+    public List<JoinedLearningDelivery> LearningDeliveries { get; set; } = new List<JoinedLearningDelivery>();
+    /// <summary> Learning deliveries grouped by LearnAimRef. </summary>
+    public Dictionary<string, List<JoinedLearningDelivery>> ProgramAims { get; set; } = new Dictionary<string, List<JoinedLearningDelivery>>();
     /// <summary> Derived from Apprenticeships API, apprenticeship.AgeAtStartOfApprenticeship </summary>
     public int AgeAtStartOfApprenticeship { get; set; }
     /// <summary> Derived from Apprenticeships API, apprenticeship.WithdrawnDate </summary>
@@ -30,17 +39,21 @@ public class JoinedEarningsApprenticeship
     /// <summary> Derived from Apprenticeships API, apprenticeship.CompletionDate </summary>
     public DateTime? CompletionDate { get; set; }
 
-    internal JoinedEarningsApprenticeship(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
+    internal JoinedLearnerData(Learning learning, EarningsApprenticeship earningsApprenticeship, UpdateLearnerRequest sldLearnerData, short academicYear)
     {
         Key = learning.Key;
         Uln = learning.Uln;
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
         Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
+        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes);
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
         CompletionDate = learning.CompletionDate;
+        ProgramAims = LearningDeliveries
+            .GroupBy(ld => ld.LearnAimRef)
+            .ToDictionary(g => g.Key, g => g.ToList()); 
     }
 
     private static List<JoinedPriceEpisode> JoinEpisodes(Learning learning, EarningsApprenticeship earningsApprenticeship, short academicYear)
@@ -53,11 +66,6 @@ public class JoinedEarningsApprenticeship
             {
                 var earningEpisode = earningsApprenticeship.Episodes.SingleOrDefault(x => x.Instalments.Any(y => y.EpisodePriceKey == apprenticeshipEpisodePrice.Key));
 
-                if (earningEpisode == null)
-                {
-                    earningEpisode = ResolveLegacyEpisodes(earningsApprenticeship, apprenticeshipEpisodePrice);
-                }
-
                 var joinedEpisode = new JoinedPriceEpisode(apprenticeshipEpisode, apprenticeshipEpisodePrice, earningEpisode);
 
                 joinedEpisodes.Add(joinedEpisode);
@@ -68,13 +76,17 @@ public class JoinedEarningsApprenticeship
         return joinedEpisodes.OrderBy(x => x.StartDate).ToList();
     }
 
-    // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static EarningsEpisode? ResolveLegacyEpisodes(EarningsApprenticeship earningsApprenticeship, EpisodePrice episodePrice)
+    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes)
     {
-        return earningsApprenticeship.Episodes.SingleOrDefault(x =>
-            x.Instalments.Any(y =>
-                y.AcademicYear.GetDateTime(y.DeliveryPeriod) >= episodePrice.StartDate &&
-                y.AcademicYear.GetDateTime(y.DeliveryPeriod) <= episodePrice.EndDate));
+        var joinedLearningDeliveries = new List<JoinedLearningDelivery>();
+
+        foreach(var onProgram in sldLearnerData.Delivery.OnProgramme)
+        {
+            var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), joinedPriceEpisodes.SelectMany(x=>x.AdditionalPayments));
+            joinedLearningDeliveries.Add(delivery);
+        }
+
+        return joinedLearningDeliveries;
     }
 }
 
@@ -224,6 +236,36 @@ public class JoinedPriceEpisode
         return allAdditionalPayments.Where(x =>
                 x.DueDate >= apprenticeshipEpisodePrice.StartDate &&
                 x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
+    }
+}
+
+public class JoinedLearningDelivery
+{
+    public int AimSequenceNumber { get; set; }
+    public string LearnAimRef { get; set; }
+    public List<JoinedInstalment> Instalments { get; set; }
+    public List<JoinedAdditionalPayment> AdditionalPayments { get; set; }
+
+    public DateTime StartDate { get; set; }
+    public DateTime ExpectedEndDate { get; set; }
+
+    public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, IEnumerable<JoinedAdditionalPayment> additionalPayments)
+    {
+        AimSequenceNumber = onProgramme.AimSequenceNumber;
+        LearnAimRef = onProgramme.LearnAimRef;
+
+        Instalments = instalments
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= onProgramme.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
+            .ToList();
+
+        AdditionalPayments = additionalPayments
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= onProgramme.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
+            .ToList();
+
+        StartDate = onProgramme.StartDate;
+        ExpectedEndDate = onProgramme.ExpectedEndDate;
     }
 }
 
