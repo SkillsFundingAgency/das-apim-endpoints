@@ -71,9 +71,10 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
         result.Should().Contain($"shortlistUserId={shortlistId}");
     }
 
-    [Test, InlineAutoData("   ")]
-    public void GetUrl_LocationIsWhitespace_ReturnsBaseUrlOnly(string location, string larsCode, long ukprn)
+    [Test, AutoData]
+    public void GetUrl_LocationIsWhitespace_ReturnsBaseUrlOnly(string larsCode, long ukprn)
     {
+        string location = "  ";
         var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, location, null, null, null);
 
         sut.GetUrl.Should().Be($"api/courses/{larsCode}/providers/{ukprn}/details");
