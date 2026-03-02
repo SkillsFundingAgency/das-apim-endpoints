@@ -11,27 +11,34 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
 public sealed class WhenBuildingGetCourseProviderDetailsRequest
 {
-    [Test, InlineAutoData("BT47 2DH")]
-    public void GetUrl_LocationProvided_IncludesEncodedLocation(string location, string larsCode, long ukprn, decimal longitude, decimal latitude)
+    [Test]
+    public void Then_GetUrl_Includes_Encoded_Location()
     {
-        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, location, longitude, latitude, null);
+        var sut = new GetCourseProviderDetailsRequest("101", 10000003, "BT47 2DH", 123.456M, 54.321M, null);
 
         var result = sut.GetUrl;
-        var expected = HttpUtility.UrlEncode(location);
 
-        result.Should().StartWith($"api/courses/{larsCode}/providers/{ukprn}/details?");
-        result.Should().Contain($"location={expected}");
+        var expected = HttpUtility.UrlEncode("BT47 2DH");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Does.Contain($"location={expected}"));
+            Assert.That(result, Does.StartWith("api/courses/101/providers/10000003/details?"));
+        });
     }
 
-    [Test, AutoData]
-    public void GetUrl_LatitudeAndLongitudeProvided_IncludesCoordinates(string larsCode, long ukprn, decimal longitude, decimal latitude)
+    [Test]
+    public void Then_GetUrl_Includes_Latitude_And_Longitude_When_Present()
     {
-        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, longitude, latitude, null);
+        var sut = new GetCourseProviderDetailsRequest("101", 10000003, string.Empty, 123.456M, 54.321M, null);
 
         var result = sut.GetUrl;
 
-        result.Should().Contain($"longitude={longitude.ToString(CultureInfo.InvariantCulture)}");
-        result.Should().Contain($"latitude={latitude.ToString(CultureInfo.InvariantCulture)}");
+        Assert.Multiple(() =>
+        {
+            Assert.That(result, Does.Contain("longitude=123.456"));
+            Assert.That(result, Does.Contain("latitude=54.321"));
+        });
     }
 
     [Test, AutoData]
