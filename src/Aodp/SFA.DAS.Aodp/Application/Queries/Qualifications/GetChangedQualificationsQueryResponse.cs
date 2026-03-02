@@ -1,9 +1,10 @@
 ﻿
-namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
+using System.Diagnostics.CodeAnalysis;
 
+namespace SFA.DAS.Aodp.Application.Queries.Qualifications;
+[ExcludeFromCodeCoverage]
 public class GetChangedQualificationsQueryResponse
 {
-
     public int TotalRecords { get; set; }
     public int? Skip { get; set; }
     public int Take { get; set; }
@@ -11,6 +12,7 @@ public class GetChangedQualificationsQueryResponse
     public Job Job { get; set; } = new();
 
 }
+[ExcludeFromCodeCoverage]
 public class ChangedQualification
 {
     public Guid Id { get; set; }

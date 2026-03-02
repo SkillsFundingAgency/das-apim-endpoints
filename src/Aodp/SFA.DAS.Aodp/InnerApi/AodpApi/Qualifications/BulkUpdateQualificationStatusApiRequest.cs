@@ -1,8 +1,10 @@
 ﻿using SFA.DAS.AODP.Application.Commands.Qualifications;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.AODP.Domain.Qualifications.Requests
 {
+    [ExcludeFromCodeCoverage]
     public class BulkUpdateQualificationStatusApiRequest : IPutApiRequest
     {
 
