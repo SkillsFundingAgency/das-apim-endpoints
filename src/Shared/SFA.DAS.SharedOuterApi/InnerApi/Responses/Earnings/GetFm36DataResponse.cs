@@ -36,6 +36,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings
         public byte DeliveryPeriod { get; set; }
         public decimal Amount { get; set; }
         public Guid EpisodePriceKey { get; set; }
+        public Guid PeriodInLearningKey { get; set; }
         public string InstalmentType { get; set; }
     }
 

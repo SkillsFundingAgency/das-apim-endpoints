@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             };
 
             var expectedUrl =
-                $"apprentices?firstName={query.FirstName}&lastName={query.LastName}&dateOfBirth={query.DateOfBirth}";
+                $"apprentices?firstName={query.FirstName}&lastName={query.LastName}&dateOfBirth={query.DateOfBirth.Date.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}";
 
 
             var apiResponse = new List<ApprenticeAccount>
