@@ -11,7 +11,7 @@ public sealed class GetCourseProviderDetailsResponse
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
     public int Level { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel QAR { get; set; }
     public ReviewModel Reviews { get; set; }
