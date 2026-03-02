@@ -49,7 +49,7 @@ public class CreateDraftShortCourseCommandHandler(
 
         return new CreateDraftShortCourseResult
         {
-            StatusCode = result.StatusCode
+            StatusCode = learningResponse.StatusCode
         };
     }
 
