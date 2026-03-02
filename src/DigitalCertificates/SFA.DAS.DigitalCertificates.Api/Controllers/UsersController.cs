@@ -10,6 +10,7 @@ using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Models;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -101,6 +102,22 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve sharings {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{userId}/actions")]
+        public async Task<IActionResult> CreateUserAction([FromRoute] Guid userId, [FromBody] CreateUserActionCommand command)
+        {
+            try
+            {
+                command.UserId = userId;
+                var result = await _mediator.Send(command);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create user action for user {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
