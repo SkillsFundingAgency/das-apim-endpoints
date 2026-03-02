@@ -695,9 +695,6 @@ components:
                     items:
                       type: object
                       $ref: '#/components/schemas/learningSupport'
-                  pauseDate:
-                    type: string
-                    format: date
                   aimSequenceNumber:
                     type: integer
                   actualEndDate:
