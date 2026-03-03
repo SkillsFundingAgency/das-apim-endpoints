@@ -28,6 +28,12 @@ public class CampaignEnquiryController(ILogger<CampaignEnquiryController> logger
         {
             logger.LogInformation("Register Campaign Interest Outer API: Received request to add user details to campaign");
 
+            if (!ModelState.IsValid)
+            {
+                logger.LogError("Invalid data received");
+                return BadRequest(ModelState);
+            }
+
             var request = new PostRegisterInterestApiRequest(userData);
             var response = await apiClient.PostWithResponseCode<EnquiryUserDataModel>(request);
 
@@ -61,5 +67,3 @@ public class CampaignEnquiryController(ILogger<CampaignEnquiryController> logger
         }
     }
 }
-
-

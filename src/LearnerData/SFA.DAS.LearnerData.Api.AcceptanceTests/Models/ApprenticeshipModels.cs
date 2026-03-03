@@ -1,5 +1,7 @@
 ﻿namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 
+#pragma warning disable CS8618 
+
 public class ApprenticeshipModel
 {
     public ApprenticeshipModel()
@@ -7,13 +9,24 @@ public class ApprenticeshipModel
         PriceEpisodes = new List<PriceEpisodeModel>();
         AdditionalPayments = new List<AdditionalPaymentModel>();
         Instalments = new List<InstalmentModel>();
+        LearningDeliveries = new List<LearningDeliveryModel>();
         WithdrawnDate = null;
     }
 
     public List<PriceEpisodeModel> PriceEpisodes { get; set; }
     public List<AdditionalPaymentModel> AdditionalPayments { get; set; }
     public List<InstalmentModel> Instalments { get; set; }
+    public List<LearningDeliveryModel> LearningDeliveries { get; set; }
     public DateTime? WithdrawnDate { get; set; }
+}
+
+public class LearningDeliveryModel
+{
+    public int AimSequenceNumber { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime ExpectedEndDate { get; set; }
+    public DateTime? ActualEndDate { get; set; }
+    public string LearnAimRef { get; set; }
 }
 
 public class PriceEpisodeModel
@@ -52,3 +65,4 @@ public class PeriodisedValuesModel
 
 }
 
+#pragma warning restore CS8618
