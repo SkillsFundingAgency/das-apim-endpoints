@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
