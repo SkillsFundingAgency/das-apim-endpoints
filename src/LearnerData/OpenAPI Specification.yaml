@@ -515,22 +515,12 @@ components:
         learningKey:
           type: string
           format: uuid
-        uln:
-          type: integer
         learnerRef:
           type: string
-        firstname:
-          type: string
-        lastname:
-          type: string
-        dob:
-          type: string
-          format: date
-        earningsApproved:
-          type: boolean
-        course:
-          type: object
-          $ref: '#/components/schemas/shortCourseCourse'
+        courses:
+          type: array
+          items:
+            $ref: '#/components/schemas/shortCourseCourse'
 
     shortCourseCourse:
       type: object
@@ -560,6 +550,8 @@ components:
             - LearningComplete
         amount:
           type: number
+        approved:
+          type: boolean
 
     apprenticeshipLearning:
       type: object
