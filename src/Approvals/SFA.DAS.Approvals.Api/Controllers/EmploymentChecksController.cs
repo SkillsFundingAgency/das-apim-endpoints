@@ -12,7 +12,7 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 [Route("[controller]/")]
 public class EmploymentChecksController(IMediator mediator, ILogger<EmploymentChecksController> logger) : ControllerBase
 {
-    private const int MaxApprenticeshipIds = 1000;
+    private const int MaxApprenticeshipIds = 50;
 
     [HttpGet]
     [Route("")]

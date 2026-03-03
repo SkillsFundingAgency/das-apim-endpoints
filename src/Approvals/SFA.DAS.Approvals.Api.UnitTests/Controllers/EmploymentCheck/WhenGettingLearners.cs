@@ -49,16 +49,16 @@ public class WhenGettingLearners
     }
 
     [Test, MoqAutoData]
-    public async Task And_More_Than_1000_Ids_Then_Returns_400(
+    public async Task And_More_Than_50_Ids_Then_Returns_400(
         [Greedy] EmploymentChecksController controller)
     {
         var tooMany = new List<long>();
-        for (long i = 0; i < 1001; i++) tooMany.Add(i);
+        for (long i = 0; i < 51; i++) tooMany.Add(i);
 
         var result = await controller.Get(tooMany);
 
         result.Should().BeOfType<BadRequestObjectResult>();
-        ((BadRequestObjectResult)result).Value.Should().Be("apprenticeshipIds must not exceed 1000.");
+        ((BadRequestObjectResult)result).Value.Should().Be("apprenticeshipIds must not exceed 50.");
     }
 
     [Test, MoqAutoData]
