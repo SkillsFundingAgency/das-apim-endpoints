@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
@@ -8,7 +8,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
         public Guid Id { get; }
         public bool IncludeLogs { get; }            
 
-        public GetStandardCertificateRequest(Guid id, bool includeLogs = true)
+        public GetStandardCertificateRequest(Guid id, bool includeLogs = false)
         {
             Id = id;
             IncludeLogs = includeLogs;
