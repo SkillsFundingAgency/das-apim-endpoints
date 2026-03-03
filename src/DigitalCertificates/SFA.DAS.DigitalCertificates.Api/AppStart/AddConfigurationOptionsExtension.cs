@@ -16,11 +16,13 @@ namespace SFA.DAS.DigitalCertificates.Api.AppStart
 
             services.Configure<AssessorsApiConfiguration>(configuration.GetSection(nameof(AssessorsApiConfiguration)));
             services.Configure<DigitalCertificatesApiConfiguration>(configuration.GetSection(nameof(DigitalCertificatesApiConfiguration)));
+            services.Configure<LocationApiConfiguration>(configuration.GetSection(nameof(LocationApiConfiguration)));
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
             services.Configure<DigitalCertificatesConfiguration>(configuration.GetSection(nameof(DigitalCertificatesConfiguration)));
 
             services.AddSingleton(cfg => cfg.GetService<IOptions<AssessorsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<DigitalCertificatesApiConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<DigitalCertificatesConfiguration>>().Value);
         }

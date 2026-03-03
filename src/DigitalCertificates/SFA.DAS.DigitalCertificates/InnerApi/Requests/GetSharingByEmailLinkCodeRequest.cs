@@ -12,6 +12,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             Code = code;
         }
 
-        public string GetUrl => $"api/sharing/emaillinkcode/{Code}";
+        public string GetUrl => $"api/sharing/sharingemail/emaillinkcode/{Code}";
     }
 }
