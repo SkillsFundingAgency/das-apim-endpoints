@@ -528,6 +528,19 @@ components:
           format: date
         earningsApproved:
           type: boolean
+        course:
+          type: object
+          $ref: '#/components/schemas/shortCourseCourse'
+
+    shortCourseCourse:
+      type: object
+      properties:
+        aimSequenceNumber:
+          type: integer
+        fundingLineType:
+          type: string
+        coursePrice:
+          type: number
         earnings:
           type: array
           items: 
@@ -540,6 +553,11 @@ components:
           type: integer
         collectionPeriod:
           type: integer
+        milestone:
+          type: string
+          enum:
+            - ThirtyPercentLearningComplete
+            - LearningComplete
         amount:
           type: number
 
@@ -706,8 +724,7 @@ components:
                       type: string
                       enum:
                         - ThirtyPercentLearningComplete
-                        - LearningComplete
-                      
+                        - LearningComplete          
     learner:
       type: object
       properties:
