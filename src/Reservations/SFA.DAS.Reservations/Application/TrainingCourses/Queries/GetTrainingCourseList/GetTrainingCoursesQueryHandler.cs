@@ -7,6 +7,7 @@ using MediatR;
 using SFA.DAS.Reservations.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList
@@ -17,34 +18,15 @@ namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCo
         public async Task<GetTrainingCoursesResult> Handle(GetTrainingCoursesQuery request, CancellationToken cancellationToken)
         {
             var standardsTask = coursesApiClient.Get<GetStandardsListResponse>(new GetAvailableToStartStandardsListRequest());
-            var shortCoursesTask = Task.Run(() => new GetShortCoursesListResponse
-            {
-                Courses = new List<ShortCourseListItem>
-                {
-                    new()
-                    {
-                        CourseUId = "SC0002_1.0",
-                        ReferenceNumber = "SC0002",
-                        LarsCode = "ZSC00002",
-                        Title = "Teacher Assistant - Apprenticeship Unit",
-                        LevelCode = "4",
-                        CourseDates = new ShortCourseDates
-                        {
-                            EffectiveTo = null,
-                            EffectiveFrom = new DateTime(2026, 1, 1)
-                        },
-                        CourseType = "ShortCourse",
-                        LearningType = "ApprenticeshipUnit"
-                    }
-                }
-            }, cancellationToken); // coursesApiClient.Get<GetShortCoursesListResponse>(new GetShortCoursesListRequest());
-            
+            var shortCoursesTask = coursesApiClient.Get<GetCoursesSearchApiResponse>(new GetCoursesSearchRequest());
+
             await Task.WhenAll(standardsTask, shortCoursesTask);
-            
+
             var standards = (await standardsTask).Standards ?? [];
-            var shortCoursesResponse = await shortCoursesTask;
+            var shortCoursesSearchResponse = await shortCoursesTask;
+            var shortCourseListItems = MapCoursesSearchToShortCourseListItems(shortCoursesSearchResponse?.Courses ?? []);
             var standardCourses = MapStandardsToTrainingCourseListItem(standards);
-            var shortCourses = MapShortCoursesToTrainingCourseListItem(shortCoursesResponse.Courses ?? []);
+            var shortCourses = MapShortCoursesToTrainingCourseListItem(shortCourseListItems);
 
             var combined = standardCourses.Concat(shortCourses).ToList();
 
@@ -54,36 +36,51 @@ namespace SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCo
             };
         }
 
+        private static IEnumerable<ShortCourseListItem> MapCoursesSearchToShortCourseListItems(IEnumerable<CourseSearchItemDto> courses)
+        {
+            return courses.Select(c => new ShortCourseListItem
+            {
+                CourseUId = c.StandardUId,
+                ReferenceNumber = c.LarsCode,
+                LarsCode = c.LarsCode,
+                Title = c.Title ?? string.Empty,
+                LevelCode = c.Level.ToString(),
+                CourseDates = c.CourseDates != null
+                    ? new ShortCourseDates
+                    {
+                        EffectiveFrom = c.CourseDates.EffectiveFrom,
+                        EffectiveTo = c.CourseDates.EffectiveTo
+                    }
+                    : null,
+                CourseType = "ShortCourse",
+                LearningType = "ApprenticeshipUnit"
+            });
+        }
+
         private static IEnumerable<TrainingCourseListItem> MapStandardsToTrainingCourseListItem(IEnumerable<GetStandardsListItem> standards)
         {
-            foreach (var s in standards)
+            return standards.Select(s => new TrainingCourseListItem
             {
-                yield return new TrainingCourseListItem
-                {
-                    StandardUId = s.StandardUId,
-                    LarsCode = s.LarsCode.ToString(),
-                    Title = s.Title ?? string.Empty,
-                    Level = s.Level.ToString(),
-                    EffectiveTo = s.EffectiveTo,
-                    LearningType = s.ApprenticeshipType
-                };
-            }
+                StandardUId = s.StandardUId,
+                LarsCode = s.LarsCode.ToString(),
+                Title = s.Title ?? string.Empty,
+                Level = s.Level.ToString(),
+                EffectiveTo = s.EffectiveTo,
+                LearningType = s.ApprenticeshipType
+            });
         }
 
         private static IEnumerable<TrainingCourseListItem> MapShortCoursesToTrainingCourseListItem(IEnumerable<ShortCourseListItem> shortCourses)
         {
-            foreach (var c in shortCourses)
+            return shortCourses.Select(c => new TrainingCourseListItem
             {
-                yield return new TrainingCourseListItem
-                {
-                    StandardUId = c.CourseUId,
-                    LarsCode = c.LarsCode,
-                    Title = c.Title ?? string.Empty,
-                    Level = c.LevelCode,
-                    EffectiveTo = c.CourseDates?.EffectiveTo ?? default,
-                    LearningType = c.LearningType
-                };
-            }
+                StandardUId = c.CourseUId,
+                LarsCode = c.LarsCode,
+                Title = c.Title ?? string.Empty,
+                Level = c.LevelCode,
+                EffectiveTo = c.CourseDates?.EffectiveTo ?? default,
+                LearningType = c.LearningType
+            });
         }
     }
 }
