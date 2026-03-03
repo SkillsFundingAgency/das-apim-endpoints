@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses;
+namespace SFA.DAS.Approvals.Api.UnitTests.Models;
 public class WhenGettingCourseMaxFunding
 {
     [Test]
