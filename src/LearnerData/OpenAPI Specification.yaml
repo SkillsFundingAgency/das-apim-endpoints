@@ -531,6 +531,8 @@ components:
           type: string
         coursePrice:
           type: number
+        approved:
+          type: boolean
         earnings:
           type: array
           items: 
@@ -550,8 +552,6 @@ components:
             - LearningComplete
         amount:
           type: number
-        approved:
-          type: boolean
 
     apprenticeshipLearning:
       type: object
