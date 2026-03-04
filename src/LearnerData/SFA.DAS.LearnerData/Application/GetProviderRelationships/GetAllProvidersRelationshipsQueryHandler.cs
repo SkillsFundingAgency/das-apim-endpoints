@@ -36,22 +36,27 @@ public class GetAllProvidersRelationshipsQueryHandler(
                         return;
                     }
 
-                    var employerDetails = await getProviderRelationshipService.GetEmployerDetails(providerDetails);
+                    var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(p.Ukprn);
+
+                    var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails);
+
+                    await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
 
                     providerResponse.Add(new GetProviderRelationshipQueryResponse()
                     {
-                        Ukprn = p.Ukprn.ToString(),
-                        Status = Enum.GetName(typeof(ProviderStatusType), p.StatusId)??string.Empty,
+                        Ukprn = p.Ukprn,
+                        Status = Enum.GetName(typeof(ProviderStatusType), p.StatusId) ?? string.Empty,
                         Type = Enum.GetName(typeof(ProviderType), p.ProviderTypeId) ?? string.Empty,
-                        Employers = employerDetails.ToArray()
+                        Employers = employerDetailsTask.Result ?? [],
+                        SupportedCourses = coursesForProviderTask.Result?.CourseTypes?? []
                     });
                 });
 
-        return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = (int)request.PageSize, TotalItems =providers.TotalCount, Items =  providerResponse.ToList() };
+        return new GetAllProviderRelationshipQueryResponse() { Page = request.Page, PageSize = (int)request.PageSize, TotalItems = providers.TotalCount, Items = providerResponse.ToList() };
     }
 
     private async Task<GetProvidersResponse?> GetRegisteredProviderDetails(int page, int pageSize, CancellationToken cancellationToken)
-    {        
+    {
         var providerDetails = await roatpService.GetProviders(cancellationToken);
         if (providerDetails is null) { return null; }
         providerDetails.TotalCount = providerDetails.RegisteredProviders.Count();
