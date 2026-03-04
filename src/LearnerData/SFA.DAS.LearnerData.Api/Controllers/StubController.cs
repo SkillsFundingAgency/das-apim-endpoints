@@ -74,18 +74,13 @@ namespace SFA.DAS.LearnerData.Api.Controllers
                             CoursePrice = 1000, 
                             Earnings = new []
                             {
-                                new ShortCourseEarning { Amount = 300, CollectionMonth = 9, CollectionYear = 2526, Milestone = ShortCourseMilestone.ThirtyPercentLearningComplete },
-                                new ShortCourseEarning { Amount = 700, CollectionMonth = 10, CollectionYear = 2526, Milestone = ShortCourseMilestone.LearningComplete }
+                                new ShortCourseEarning { Amount = 300, CollectionMonth = 9, CollectionYear = 2526, Milestone = ShortCourseMilestone.ThirtyPercentLearningComplete, Approved = true },
+                                new ShortCourseEarning { Amount = 700, CollectionMonth = 10, CollectionYear = 2526, Milestone = ShortCourseMilestone.LearningComplete, Approved = true }
                             },
                             FundingLineType = "GSO Short Courses - Apprenticeship Units - Levy"
                         },
-                        Dob = new DateTime(2010, 5, 1),
-                        EarningsApproved = true,
-                        FirstName = "Joe",
-                        LastName = "Bloggs",
                         LearnerRef = "ABD123",
                         LearningKey = Guid.NewGuid(),
-                        Uln = 213786485
                     }
                 },
                 Page = page,

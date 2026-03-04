@@ -12,12 +12,7 @@
     public class ShortCourseLearnerAndEarnings
     {
         public Guid LearningKey { get; set; }
-        public int Uln { get; set; }
         public string LearnerRef { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime Dob { get; set; }
-        public bool EarningsApproved { get; set; }
         public ShortCourseCourse Course { get; set; }
     }
 
@@ -35,6 +30,7 @@
         public int CollectionMonth { get; set; }
         public ShortCourseMilestone Milestone { get; set; }
         public decimal Amount { get; set; }
+        public bool Approved { get; set; }
     }
 
     public enum ShortCourseMilestone
