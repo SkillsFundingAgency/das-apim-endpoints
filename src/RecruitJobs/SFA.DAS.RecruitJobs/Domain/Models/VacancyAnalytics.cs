@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.RecruitJobs.Core.Domain.Models;
+﻿namespace SFA.DAS.RecruitJobs.Domain.Models;
 
 public record VacancyAnalytics
 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -44,6 +45,14 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
     }
 
     [Test, AutoData]
+    public void GetUrl_ShortlistUserIdProvided_IncludesShortlistUserId(string larsCode, long ukprn, Guid shortlistId)
+    {
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, null, null, shortlistId);
+
+        sut.GetUrl.Should().Contain($"shortlistUserId={shortlistId}");
+    }
+
+    [Test, AutoData]
     public void GetUrl_NoQueryParameters_ReturnsBaseUrlOnly(string larsCode, long ukprn)
     {
         var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, null, null, null);
@@ -52,32 +61,33 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
     }
 
     [Test, AutoData]
-    public void GetUrl_AllParameters_BuildsValidUrl(string larsCode, long ukprn, decimal? longitude, decimal? latitude, Guid shortlistId)
+    public void GetUrl_AllParametersProvided_BuildsValidUrl(string larsCode, long ukprn, string location, decimal longitude, decimal latitude, Guid shortlistId)
     {
-        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, "SW1 111", longitude, latitude, shortlistId);
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, location, longitude, latitude, shortlistId);
 
         var result = sut.GetUrl;
 
         result.Should().StartWith($"api/courses/{larsCode}/providers/{ukprn}/details?");
-        result.Should().Contain($"location={HttpUtility.UrlEncode("SW1 111")}");
-        result.Should().Contain($"longitude={longitude}");
-        result.Should().Contain($"latitude={latitude}");
+        result.Should().Contain($"location={HttpUtility.UrlEncode(location)}");
+        result.Should().Contain($"latitude={latitude.ToString(CultureInfo.InvariantCulture)}");
+        result.Should().Contain($"longitude={longitude.ToString(CultureInfo.InvariantCulture)}");
         result.Should().Contain($"shortlistUserId={shortlistId}");
     }
 
     [Test, AutoData]
-    public void Version_Always_ReturnsApiVersionTwo(string larsCode, long ukprn)
+    public void GetUrl_LocationIsWhitespace_ReturnsBaseUrlOnly(string larsCode, long ukprn)
+    {
+        string location = "  ";
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, location, null, null, null);
+
+        sut.GetUrl.Should().Be($"api/courses/{larsCode}/providers/{ukprn}/details");
+    }
+
+    [Test, AutoData]
+    public void Version_Default_ReturnsApiVersionTwo(string larsCode, long ukprn)
     {
         var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, null, null, null);
 
         sut.Version.Should().Be(ApiVersionNumber.Two);
-    }
-
-    [Test, AutoData]
-    public void GetUrl_WhitespaceOnlyLocation_Ignored_ReturnsBaseUrl(string larsCode, long ukprn)
-    {
-        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, "   ", null, null, null);
-
-        sut.GetUrl.Should().Be($"api/courses/{larsCode}/providers/{ukprn}/details");
     }
 }
