@@ -6,8 +6,8 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailab
 public class GetAvailableCoursesForProviderQuery : IRequest<GetAvailableCoursesForProviderQueryResult>
 {
     public int Ukprn { get; }
-    public CourseType? CourseType { get; }
-    public GetAvailableCoursesForProviderQuery(int ukprn, CourseType? courseType)
+    public CourseType CourseType { get; }
+    public GetAvailableCoursesForProviderQuery(int ukprn, CourseType courseType)
     {
         Ukprn = ukprn;
         CourseType = courseType;
