@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.Json;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -113,11 +115,47 @@ namespace SFA.DAS.Approvals.Api.Controllers
         {
             try
             {
-                var queryResult = await mediator.Send(new GetCoursesQuery());
+                //var queryResult = await mediator.Send(new GetCoursesQuery());
 
-                var model = new GetCoursesListResponse
+                //var model = new GetCoursesListResponse
+                //{
+                //Courses = queryResult.Courses.Select(c => (GetCourseResponse)c).ToList()
+                //};                               
+
+                var model = new Models.GetCoursesListResponse
                 {
-                    Courses = queryResult.Courses.Select(c => (GetCourseResponse)c).ToList()
+                    Courses = new List<GetCourseResponse> {
+                        new GetCourseResponse
+                        {
+                              LarsCode = "274",
+                              Title= "Abattoir worker",
+                              Level= 2,
+                              LearningType= Types.LearningType.Apprenticeship,
+                              MaxFunding= 6000,
+                              EffectiveFrom= DateTime.UtcNow.AddDays(-1),
+                              EffectiveTo= null
+                        },
+                        new GetCourseResponse
+                        {
+                              LarsCode = "272",
+                              Title= "Academic professional",
+                              Level= 7,
+                              LearningType= Types.LearningType.Apprenticeship,
+                              MaxFunding= 9000,
+                              EffectiveFrom= DateTime.UtcNow.AddDays(-10),
+                              EffectiveTo= null
+                        },
+                        new GetCourseResponse
+                        {
+                              LarsCode = "204",
+                              Title= "Accountancy or taxation professional",
+                              Level= 7,
+                              LearningType= Types.LearningType.Apprenticeship,
+                              MaxFunding= 21000,
+                              EffectiveFrom= DateTime.UtcNow.AddDays(-30),
+                              EffectiveTo= null
+                        }
+                    }
                 };
 
                 return Ok(model);
