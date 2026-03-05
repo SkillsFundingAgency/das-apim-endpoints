@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.Web;
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Common;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
@@ -37,40 +41,50 @@ public sealed class WhenBuildingGetCourseProviderDetailsRequest
         });
     }
 
-    [Test]
-    public void Then_GetUrl_Includes_ShortlistUserId_When_Present()
+    [Test, AutoData]
+    public void GetUrl_ShortlistUserIdProvided_IncludesShortlistUserId(string larsCode, long ukprn, Guid shortlistId)
     {
-        var shortlistId = Guid.NewGuid();
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, null, null, shortlistId);
 
-        var sut = new GetCourseProviderDetailsRequest("111", 10000003, string.Empty, null, null, shortlistId);
-
-        Assert.That(sut.GetUrl, Does.Contain($"shortlistUserId={shortlistId}"));
+        sut.GetUrl.Should().Contain($"shortlistUserId={shortlistId}");
     }
 
-    [Test]
-    public void Then_GetUrl_Without_QueryParameters_Returns_BaseUrl_Only()
+    [Test, AutoData]
+    public void GetUrl_NoQueryParameters_ReturnsBaseUrlOnly(string larsCode, long ukprn)
     {
-        var sut = new GetCourseProviderDetailsRequest("999", 10000003, string.Empty, null, null, null);
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, null, null, null);
 
-        Assert.That(sut.GetUrl, Is.EqualTo("api/courses/999/providers/10000003/details"));
+        sut.GetUrl.Should().Be($"api/courses/{larsCode}/providers/{ukprn}/details");
     }
 
-    [Test]
-    public void Then_GetUrl_With_All_Parameters_Builds_Valid_Url()
+    [Test, AutoData]
+    public void GetUrl_AllParametersProvided_BuildsValidUrl(string larsCode, long ukprn, string location, decimal longitude, decimal latitude, Guid shortlistId)
     {
-        var shortlistId = Guid.NewGuid();
-
-        var sut = new GetCourseProviderDetailsRequest("123", 10000003, "SW1 111", -1.234M, 53.123M, shortlistId);
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, location, longitude, latitude, shortlistId);
 
         var result = sut.GetUrl;
 
-        Assert.Multiple(() =>
-        {
-            Assert.That(result, Does.StartWith("api/courses/123/providers/10000003/details?"));
-            Assert.That(result, Does.Contain($"location={HttpUtility.UrlEncode("SW1 111")}"));
-            Assert.That(result, Does.Contain("latitude=53.123"));
-            Assert.That(result, Does.Contain("longitude=-1.234"));
-            Assert.That(result, Does.Contain($"shortlistUserId={shortlistId}"));
-        });
+        result.Should().StartWith($"api/courses/{larsCode}/providers/{ukprn}/details?");
+        result.Should().Contain($"location={HttpUtility.UrlEncode(location)}");
+        result.Should().Contain($"latitude={latitude.ToString(CultureInfo.InvariantCulture)}");
+        result.Should().Contain($"longitude={longitude.ToString(CultureInfo.InvariantCulture)}");
+        result.Should().Contain($"shortlistUserId={shortlistId}");
+    }
+
+    [Test, AutoData]
+    public void GetUrl_LocationIsWhitespace_ReturnsBaseUrlOnly(string larsCode, long ukprn)
+    {
+        string location = "  ";
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, location, null, null, null);
+
+        sut.GetUrl.Should().Be($"api/courses/{larsCode}/providers/{ukprn}/details");
+    }
+
+    [Test, AutoData]
+    public void Version_Default_ReturnsApiVersionTwo(string larsCode, long ukprn)
+    {
+        var sut = new GetCourseProviderDetailsRequest(larsCode, ukprn, string.Empty, null, null, null);
+
+        sut.Version.Should().Be(ApiVersionNumber.Two);
     }
 }
