@@ -8,7 +8,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests;
 
 public class GetAllowedCoursesForProviderRequestTests
 {
-    [Test, AutoData]
+    [Test]
     public void GetUrl_ReturnsExpectedValue()
     {
         int ukprn = 10012002;
