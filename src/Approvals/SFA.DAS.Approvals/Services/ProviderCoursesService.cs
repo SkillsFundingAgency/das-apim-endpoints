@@ -11,14 +11,18 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models.Roatp;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Approvals.Services;
 
 public interface IProviderStandardsService
 {
     Task<ProviderStandardsData> GetStandardsData(long providerId);
+    Task<ProviderStandardsData> GetCoursesData(long providerId);
 }
 
 public class ProviderStandardsService(
@@ -53,6 +57,21 @@ public class ProviderStandardsService(
             Standards = await GetStandardsForProvider(providerId)
         };
     }
+
+    // TODO This is a stub to allow us to test the AppUnits, needs to call the new endpoint once deployed 
+    public async Task<ProviderStandardsData> GetCoursesData(long providerId)
+    {
+        var result = await GetStandardsData(providerId);
+
+        var list = result.Standards.ToList();
+        list.Add(new Standard("ZSC00001", "Stubbed Digital Apprenticeship Unit", 0));
+        list.Add(new Standard("ZSC00002", "Stubbed Teacher Assistent - Apprenticeship Unit", 0));
+        list.Add(new Standard("ZSC00004", "Stubbed Nursing Apprenticeship Unit", 0));
+        result.Standards = list;
+
+        return result;
+    }
+
 
     private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)
     {
@@ -108,4 +127,6 @@ public class ProviderStandardsService(
             return [];
         }
     }
+
+
 }
