@@ -82,8 +82,6 @@ public class ProviderStandardsService(
             return new ProviderStandardsData
             {
                 IsMainProvider = providerDetails.IsMainProvider,
-                // TODO Discuss This behaviour looks different to another place where we deal with IsMainProvider, in ValidateBulkUploadRecordsCommandHandler we simlpy return an empty list
-                // Can we do that here? 
                 Standards = await GetAllCourses()
             };
         }
