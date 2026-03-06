@@ -22,6 +22,7 @@
         public string FundingLineType { get; set; }
         public decimal CoursePrice { get; set; }
         public ShortCourseEarning[] Earnings { get; set; }
+        public bool Approved { get; set; }
     }
 
     public class ShortCourseEarning
@@ -30,7 +31,6 @@
         public int CollectionMonth { get; set; }
         public ShortCourseMilestone Milestone { get; set; }
         public decimal Amount { get; set; }
-        public bool Approved { get; set; }
     }
 
     public enum ShortCourseMilestone
