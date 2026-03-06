@@ -1,6 +1,7 @@
 using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Domain.Recruit.Ai;
@@ -14,17 +15,16 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/")]
-public class AiController: ControllerBase
+[Route("[controller]/vacancies/{vacancyId:guid}")]
+public class AiController(ILogger<AiController> logger): ControllerBase
 {
     [HttpPost]
-    [Route("vacancies/{vacancyId:guid}/review/{vacancyReviewId:guid}")]
+    [Route("review/{vacancyReviewId:guid}")]
     public async Task<IResult> CreateVacancyReviewAsync(
         [FromServices] IRecruitAiApiClient<RecruitAiApiConfiguration> recruitAiApiClient,
         [FromRoute] Guid vacancyId,
-        [FromRoute] Guid vacancyReviewId
-        
-        )
+        [FromRoute] Guid vacancyReviewId,
+        CancellationToken cancellationToken)
     {
         var response = await recruitAiApiClient.PutWithResponseCode<PutAiVacancyReviewDto, NullResponse>(new PutAiVacancyReviewRequest(vacancyReviewId, new PutAiVacancyReviewDto()
         {
@@ -37,7 +37,7 @@ public class AiController: ControllerBase
     }
     
     [HttpPost]
-    [Route("vacancies/{vacancyId:guid}/review")]
+    [Route("review")]
     public async Task<IResult> PerformVacancyReviewAsync(
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromServices] IRecruitAiService aiService,
@@ -55,5 +55,29 @@ public class AiController: ControllerBase
         // send to chat gpt
         var result = await aiService.ReviewVacancyAsync(vacancyReviewId, response.Body, cancellationToken);
         return result ? Results.Ok() : Results.Problem();
+    }
+    
+    [HttpPost]
+    [Route("refer-to-manual")]
+    public async Task<IResult> SendVacancyForManualReviewAsync(
+        [FromRoute] Guid vacancyId,
+        [FromBody] Guid vacancyReviewId,
+        CancellationToken cancellationToken)
+    {
+        // we will update the vacancy review record here
+        logger.LogInformation("Request to send vacancy for review. Id={VacancyId}, ReviewId={VacancyReviewId}", vacancyId, vacancyReviewId);
+        return TypedResults.Ok();
+    }
+    
+    [HttpPost]
+    [Route("approve")]
+    public async Task<IResult> AutoApproveVacancyAsync(
+        [FromRoute] Guid vacancyId,
+        [FromBody] Guid vacancyReviewId,
+        CancellationToken cancellationToken)
+    {
+        // we will close the vacancy review and send the vacancy to faa here
+        logger.LogInformation("Request to auto approve vacancy. Id={VacancyId}, ReviewId={VacancyReviewId}", vacancyId, vacancyReviewId);
+        return TypedResults.Ok();
     }
 }
