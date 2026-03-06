@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -88,7 +89,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Course = new GetCourseLookupResponse { LearningType = ApprenticeshipType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -198,7 +199,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = standardResponse,
+                Course = new GetCourseLookupResponse { LearningType = ApprenticeshipType },
                 LearnerAgeRules = new GetLearnerAgeResponse()
             });
 
@@ -233,7 +234,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = standardResponse,
+                Course = new GetCourseLookupResponse { LearningType = ApprenticeshipType },
                 LearnerAgeRules = getLearnerAgeResponse
             });
 
@@ -270,7 +271,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem(),
+                Course = new GetCourseLookupResponse(),
                 LearnerAgeRules = new GetLearnerAgeResponse()
             });
 
