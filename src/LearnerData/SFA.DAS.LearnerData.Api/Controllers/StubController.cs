@@ -11,8 +11,9 @@ namespace SFA.DAS.LearnerData.Api.Controllers
     [ExcludeFromCodeCoverage]
     public class StubController : ControllerBase
     {
-        [HttpPut("providers/{ukprn}/apprenticeships/{learningKey}")]
-        public IActionResult UpdateLearner([FromBody] StubUpdateLearnerRequest payload)
+        [HttpPut]
+        [Route("providers/{ukprn}/apprenticeships/{learningKey}")]
+        public IActionResult UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] StubUpdateLearnerRequest payload)
         {
             return Ok();
         }
@@ -20,7 +21,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
         [HttpDelete]
         [Route("providers/{ukprn}/apprenticeships/{learningKey}")]
         [ProducesResponseType(200)]
-        public IActionResult DeleteLearner([FromRoute] Guid learningKey)
+        public IActionResult DeleteLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey)
         {
             return Ok();
         }
@@ -32,8 +33,9 @@ namespace SFA.DAS.LearnerData.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("providers/{ukprn}/shortCourses/{learningKey}")]
-        public IActionResult UpdateShortCoursesLearner([FromBody] StubUpdateShortCourseRequest payload)
+        [HttpPut]
+        [Route("providers/{ukprn}/shortCourses/{learningKey}")]
+        public async Task<IActionResult> UpdateShortCoursesLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] StubUpdateShortCourseRequest payload)
         {
             return Ok();
         }
@@ -41,7 +43,7 @@ namespace SFA.DAS.LearnerData.Api.Controllers
         [HttpDelete]
         [Route("providers/{ukprn}/shortCourses/{learningKey}")]
         [ProducesResponseType(200)]
-        public IActionResult DeleteShortCoursesLearner([FromRoute] Guid learningKey)
+        public IActionResult DeleteShortCoursesLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey)
         {
             return Ok();
         }
