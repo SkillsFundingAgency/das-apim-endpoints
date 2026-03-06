@@ -29,7 +29,7 @@ public class MapLearnerRecords(ILogger<IMapLearnerRecords> logger) : IMapLearner
                 FirstName = learner.FirstName,
                 LastName = learner.LastName,
                 Uln = learner.Uln,
-                Course = list.FirstOrDefault(x => x.CourseCode == learner.StandardCode.ToString())?.Name,
+                Course = list.FirstOrDefault(x => x.CourseCode == learner.TrainingCode)?.Name,
                 StartDate = learner.StartDate
             });
         }
