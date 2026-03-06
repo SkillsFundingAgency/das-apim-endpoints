@@ -4,13 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 namespace SFA.DAS.Aodp.Application.Commands.Application.Application
 {
     [ExcludeFromCodeCoverage]
-    public class BulkApplicationMessageCommand : IRequest<BaseMediatrResponse<BulkApplicationMessageCommandResponse>>
+    public class BulkApplicationActionCommand : IRequest<BaseMediatrResponse<BulkApplicationActionCommandResponse>>
     {
-        public List<Guid> ApplicationIds { get; set; } = new(); 
+        public List<Guid> ApplicationReviewIds { get; set; } = new();
 
-        public bool ShareWithSkillsEngland { get; set; }
-        public bool ShareWithOfqual { get; set; }
-        public bool Unlock { get; set; }
+        public BulkApplicationActionType? ActionType { get; set; }
 
         public required string UserType { get; set; }
         public required string SentByName { get; set; }

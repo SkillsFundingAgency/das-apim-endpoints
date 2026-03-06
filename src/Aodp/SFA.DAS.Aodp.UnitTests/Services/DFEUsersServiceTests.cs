@@ -31,8 +31,8 @@ public class DfeUsersServiceTests
 
         var expectedUsers = new List<User>
         {
-            new User { Email = "a@test.com", FirstName = "A", LastName="Test" },
-            new User { Email = "b@test.com", FirstName="B", LastName="Test" }
+            new User { Email = "a@test.com", FirstName = "A", LastName="Test" , UserStatus = 1},
+            new User { Email = "b@test.com", FirstName="B", LastName="Test", UserStatus = 1 }
         };
 
         var apiResponse = new OrganisationUsersResponse

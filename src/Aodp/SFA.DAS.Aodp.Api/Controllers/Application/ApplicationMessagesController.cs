@@ -59,11 +59,5 @@ public class ApplicationMessagesController : BaseController
 
     }
 
-    [HttpPost("/api/applications/bulk-messages")]
-    [ProducesResponseType(typeof(BulkApplicationMessageCommandResponse), StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> BulkApplicationMessages([FromBody] BulkApplicationMessageCommand command)
-    {
-        return await SendRequestAsync(command);
-    }
+    
 }
