@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.Common.Domain.Models;
+﻿using SFA.DAS.Common.Domain.Models;
 using SFA.DAS.Recruit.Api.Models.Requests;
 using SFA.DAS.Recruit.GraphQL;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.Recruit.Api.Extensions;
 
 public static class VacancyListFilterParamExtensions
 {
     private const string VacancyPrefix = "VAC";
-    
+
     public static VacancyEntityFilterInput Build(this VacancyListFilterParams filterParams, int? ukprn = null, long? accountId = null, List<VacancyStatus> statuses = null)
     {
         List<VacancyEntityFilterInput> andFilters = [new()
@@ -18,7 +18,7 @@ public static class VacancyListFilterParamExtensions
             DeletedDate = new DateTimeOperationFilterInput { Eq = null },
         }];
 
-        if (statuses is { Count: >0 })
+        if (statuses is { Count: > 0 })
         {
             andFilters.Add(new VacancyEntityFilterInput
             {
@@ -26,10 +26,11 @@ public static class VacancyListFilterParamExtensions
                 Or = statuses.Select(x => new VacancyEntityFilterInput { Status = new VacancyStatusOperationFilterInput { Eq = x } }).ToArray()
             });
         }
-        
+
         if (ukprn is not null)
         {
-            andFilters.Add(new VacancyEntityFilterInput { // Ukprn = 123 AND OwnerType = Provider
+            andFilters.Add(new VacancyEntityFilterInput
+            { // Ukprn = 123 AND OwnerType = Provider
                 Ukprn = new IntOperationFilterInput { Eq = ukprn },
                 OwnerType = new NullableOfOwnerTypeOperationFilterInput { Eq = OwnerType.Provider }
             });
@@ -58,17 +59,30 @@ public static class VacancyListFilterParamExtensions
                 ]
             });
         }
-        
-        if (string.IsNullOrWhiteSpace(filterParams.SearchTerm))
+
+        var searchTerm = filterParams.SearchTerm?.Trim();
+
+        if (string.IsNullOrWhiteSpace(searchTerm))
         {
             return new VacancyEntityFilterInput { And = andFilters };
         }
-        
-        if (filterParams.SearchTerm.StartsWith(VacancyPrefix, StringComparison.CurrentCultureIgnoreCase) && VacancyReference.TryParse(filterParams.SearchTerm, out var vacancyReference) && vacancyReference != VacancyReference.None)
+
+        if (filterParams.SearchTerm.StartsWith(VacancyPrefix,
+                StringComparison.CurrentCultureIgnoreCase) &&
+            VacancyReference.TryParse(searchTerm, out var vacancyReference) &&
+            vacancyReference != VacancyReference.None)
         {
             andFilters.Add(new VacancyEntityFilterInput
             {
                 VacancyReference = new LongOperationFilterInput { Eq = vacancyReference.Value }
+            });
+        }
+        else if (VacancyReference.TryParse(searchTerm, out var numericParsed) &&
+                 numericParsed != VacancyReference.None)
+        {
+            andFilters.Add(new VacancyEntityFilterInput
+            {
+                VacancyReference = new LongOperationFilterInput { Eq = numericParsed.Value }
             });
         }
         else
@@ -81,7 +95,7 @@ public static class VacancyListFilterParamExtensions
                     // Title like '%searchTerm%'
                     Title = new StringOperationFilterInput
                     {
-                        Contains = filterParams.SearchTerm
+                        Contains = searchTerm
                     }
                 });
             }
@@ -95,14 +109,14 @@ public static class VacancyListFilterParamExtensions
                         {
                             LegalEntityName = new StringOperationFilterInput
                             {
-                                Contains = filterParams.SearchTerm
+                                Contains = searchTerm
                             }
                         },
                         new VacancyEntityFilterInput
                         {
                             Title = new StringOperationFilterInput
                             {
-                                Contains = filterParams.SearchTerm
+                                Contains = searchTerm
                             }
                         }
                     ]

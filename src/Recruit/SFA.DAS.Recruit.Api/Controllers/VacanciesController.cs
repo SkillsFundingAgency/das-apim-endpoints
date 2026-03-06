@@ -252,7 +252,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 
-    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected)$)}")]
+    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review)$)}")]
     public async Task<IResult> GetProviderVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromRoute] int ukprn,
