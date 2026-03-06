@@ -7,10 +7,15 @@ using SFA.DAS.Recruit.Api.Models.Responses;
 using SFA.DAS.Recruit.Data.Models;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
+using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using StrawberryShake;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Vacancies;
@@ -22,6 +27,8 @@ public class WhenGettingEmployerVacanciesListByStatus
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Referred)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Rejected)]
     public async Task The_The_Gql_Query_Is_Built_Correctly(
         Domain.Vacancy.VacancyStatus status,
         long accountId,
@@ -29,6 +36,7 @@ public class WhenGettingEmployerVacanciesListByStatus
         VacancyListFilterParams filterParams,
         SortParams<VacancySortColumn> sortParams,
         Mock<IRecruitGqlClient> gqlClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // arrange
@@ -57,6 +65,7 @@ public class WhenGettingEmployerVacanciesListByStatus
         // act
         await sut.GetEmployerVacanciesListByStatus(
             gqlClient.Object,
+            recruitApiClient.Object,
             accountId,
             status,
             filterParams,
@@ -76,6 +85,8 @@ public class WhenGettingEmployerVacanciesListByStatus
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Referred)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Rejected)]
     public async Task Then_Gql_Errors_Are_Handled(
         Domain.Vacancy.VacancyStatus status,
         long accountId,
@@ -83,6 +94,7 @@ public class WhenGettingEmployerVacanciesListByStatus
         VacancyListFilterParams filterParams,
         SortParams<VacancySortColumn> sortParams,
         Mock<IRecruitGqlClient> gqlClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // arrange
@@ -98,6 +110,7 @@ public class WhenGettingEmployerVacanciesListByStatus
         // act
         var result = await sut.GetEmployerVacanciesListByStatus(
             gqlClient.Object,
+            recruitApiClient.Object,
             accountId,
             status,
             filterParams,
@@ -118,6 +131,8 @@ public class WhenGettingEmployerVacanciesListByStatus
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
     [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Referred)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Rejected)]
     public async Task Then_The_Vacancies_Are_Returned(
         Domain.Vacancy.VacancyStatus status,
         long accountId,
@@ -126,6 +141,7 @@ public class WhenGettingEmployerVacanciesListByStatus
         VacancyListFilterParams filterParams,
         SortParams<VacancySortColumn> sortParams,
         Mock<IRecruitGqlClient> gqlClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
         [Greedy] VacanciesController sut)
     {
         // arrange
@@ -144,11 +160,19 @@ public class WhenGettingEmployerVacanciesListByStatus
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(vacanciesResult.Object);
 
-        var expectedItems = vacancies.Select(x => VacancyListItem.From(x, null));
+        var statsDict = vacancies.ToDictionary<FakeLiveVacancyItem?, long, VacancyStatsItem>(v => v!.VacancyReference!.Value, v => f.Create<VacancyStatsItem>());
+        var statsDataResponse = new DataResponse<Dictionary<long, VacancyStatsItem>>(statsDict);
+
+        recruitApiClient
+            .Setup(x => x.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(It.IsAny<GetEmployerVacancyApplicationStatsRequest>()))
+            .ReturnsAsync(new ApiResponse<DataResponse<Dictionary<long, VacancyStatsItem>>>(statsDataResponse, HttpStatusCode.OK, null));
+
+        var expectedItems = vacancies.AssignStatsToVacancies(statsDict);
 
         // act
         var result = await sut.GetEmployerVacanciesListByStatus(
             gqlClient.Object,
+            recruitApiClient.Object,
             accountId,
             status,
             filterParams,
