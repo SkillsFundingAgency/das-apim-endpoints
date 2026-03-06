@@ -17,6 +17,7 @@ public sealed class DfeUsersService : IDfeUsersService
     public async Task<IReadOnlyList<User>> GetUsersByRoleAsync(string ukprn, string role, CancellationToken ct = default)
     {
         var response = await _client.Get<OrganisationUsersResponse>(new GetUsersByRoleApiRequest(ukprn, role));
-        return response.Users;
+
+        return response.Users.Where(u => u.UserStatus == 1).ToList();
     }
 }
