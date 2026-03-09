@@ -108,7 +108,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(apprenticeship.StartDate),
                 LearnerDataId = apprenticeship.LearnerDataId,
                 HasLearnerDataChanges = apprenticeship.HasLearnerDataChanges,
-                LastLearnerDataSync = apprenticeship.LastLearnerDataSync
+                LastLearnerDataSync = apprenticeship.LastLearnerDataSync,
+                TrainingCourseVersion = apprenticeship.TrainingCourseVersion
             };
         }
     }
