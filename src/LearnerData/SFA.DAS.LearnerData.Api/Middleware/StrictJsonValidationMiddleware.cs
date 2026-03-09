@@ -9,7 +9,7 @@ public class StrictJsonValidationMiddleware<T>(RequestDelegate next, ILogger<Str
     public async Task InvokeAsync(HttpContext context)
     {
         if (context.Request.Path.StartsWithSegments("/Stub/providers", StringComparison.OrdinalIgnoreCase) &&
-            context.Request.Method.Equals("PUT", StringComparison.OrdinalIgnoreCase))
+            context.Request.Method.Equals("PUT", StringComparison.OrdinalIgnoreCase) && !context.Request.Path.Value.Contains("shortCourses"))
         {
             context.Request.EnableBuffering();
             context.Request.Body.Position = 0;
