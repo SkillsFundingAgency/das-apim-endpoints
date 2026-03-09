@@ -70,20 +70,23 @@ namespace SFA.DAS.LearnerData.Api.Controllers
                 {
                     new ShortCourseLearnerAndEarnings
                     {
-                        Course = new ShortCourseCourse
-                        {
-                            AimSequenceNumber = 1, 
-                            CoursePrice = 1000, 
-                            Earnings = new []
+                        Courses = new[] 
+                        { 
+                            new ShortCourseCourse
                             {
-                                new ShortCourseEarning { Amount = 300, CollectionMonth = 9, CollectionYear = 2526, Milestone = ShortCourseMilestone.ThirtyPercentLearningComplete },
-                                new ShortCourseEarning { Amount = 700, CollectionMonth = 10, CollectionYear = 2526, Milestone = ShortCourseMilestone.LearningComplete }
+                                AimSequenceNumber = 1,
+                                CoursePrice = 1000,
+                                Earnings = new []
+                                {
+                                    new ShortCourseEarning { Amount = 300, CollectionMonth = 9, CollectionYear = 2526, Milestone = ShortCourseMilestone.ThirtyPercentLearningComplete },
+                                    new ShortCourseEarning { Amount = 700, CollectionMonth = 10, CollectionYear = 2526, Milestone = ShortCourseMilestone.LearningComplete }
+                                },
+                                FundingLineType = "GSO Short Courses - Apprenticeship Units - Levy",
+                                Approved = true
                             },
-                            FundingLineType = "GSO Short Courses - Apprenticeship Units - Levy",
-                            Approved = true
                         },
                         LearnerRef = "ABD123",
-                        LearningKey = Guid.NewGuid(),
+                        LearningKey = Guid.NewGuid()
                     }
                 },
                 Page = page,

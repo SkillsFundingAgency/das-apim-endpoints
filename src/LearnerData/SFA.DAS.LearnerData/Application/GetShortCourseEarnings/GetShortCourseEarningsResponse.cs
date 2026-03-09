@@ -13,7 +13,7 @@
     {
         public Guid LearningKey { get; set; }
         public string LearnerRef { get; set; }
-        public ShortCourseCourse Course { get; set; }
+        public ShortCourseCourse[] Courses { get; set; }
     }
 
     public class ShortCourseCourse
