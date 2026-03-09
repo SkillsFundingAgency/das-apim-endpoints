@@ -1,5 +1,5 @@
-﻿using MediatR;
-using SFA.DAS.EmploymentCheck.Configuration;
+using MediatR;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.EmploymentCheck.Requests;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
