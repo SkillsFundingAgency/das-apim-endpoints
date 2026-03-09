@@ -109,6 +109,7 @@ app.UseSwagger()
     .UseAuthentication();
 
 app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateLearnerRequest>>();
+app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateShortCourseRequest>>();
 app.UseMiddleware<ConcurrencyTrackingMiddleware>();
 
 app.MapControllers();
