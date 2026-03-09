@@ -24,7 +24,7 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
         var courseTypes = new List<int>();
 
         if (command.DeliversApprenticeships) courseTypes.Add((int)CourseType.Apprenticeship);
-        if (command.DeliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ApprenticeshipUnit);
+        if (command.DeliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ShortCourse);
 
         var tasks = new List<Task>();
 
