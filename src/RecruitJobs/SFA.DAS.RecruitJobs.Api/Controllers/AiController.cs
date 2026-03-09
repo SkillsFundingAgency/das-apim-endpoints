@@ -56,17 +56,27 @@ public class AiController(ILogger<AiController> logger): ControllerBase
         var result = await aiService.ReviewVacancyAsync(vacancyReviewId, response.Body, cancellationToken);
         return result ? Results.Ok() : Results.Problem();
     }
-    
+
     [HttpPost]
     [Route("refer-to-manual")]
     public async Task<IResult> SendVacancyForManualReviewAsync(
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromRoute] Guid vacancyId,
         [FromBody] Guid vacancyReviewId,
         CancellationToken cancellationToken)
     {
         // we will update the vacancy review record here
         logger.LogInformation("Request to send vacancy for review. Id={VacancyId}, ReviewId={VacancyReviewId}", vacancyId, vacancyReviewId);
+
         return TypedResults.Ok();
+        
+        // var patchDocument = new JsonPatchDocument<PatchableVacancyReviewDto>();
+        // patchDocument.Replace(x => x.Status, ReviewStatus.PendingReview);
+        // var request = new PatchVacancyReviewRequest(vacancyReviewId, patchDocument);
+        // var response = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyReviewDto>, NullResponse>(request, false);
+        // return response.StatusCode.IsSuccessStatusCode()
+        //     ? TypedResults.Ok()
+        //     : TypedResults.Problem();
     }
     
     [HttpPost]
