@@ -1,0 +1,25 @@
+﻿using System;
+using System.Collections.Generic;
+
+namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
+
+public class Learning
+{
+    public Guid LearningKey { get; set; }
+    public Learner Learner { get; set; }
+    public List<Episode> Episodes { get; set; }
+}
+
+public class Learner
+{
+    public string Uln { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public DateTime DateOfBirth { get; set; }
+}
+
+public class Episode
+{
+    public string CourseCode { get; set; }
+    public bool IsApproved { get; set; }
+}
