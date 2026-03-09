@@ -33,7 +33,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
                 StartDate = firstOnProg.StartDate,
                 CompletionDate = firstOnProg.CompletionDate,
                 CourseCode = firstOnProg.CourseCode,
-                EmployerId = long.Parse(firstOnProg.AgreementId),
+                EmployerId = 0,
                 ExpectedEndDate = firstOnProg.ExpectedEndDate,
                 Milestones = firstOnProg.Milestones.Select(x =>
                     x == Milestone.LearningComplete
