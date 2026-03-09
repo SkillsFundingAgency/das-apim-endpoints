@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
