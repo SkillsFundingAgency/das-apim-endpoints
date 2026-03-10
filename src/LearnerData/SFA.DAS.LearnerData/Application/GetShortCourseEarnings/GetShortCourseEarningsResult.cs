@@ -26,9 +26,9 @@ public class ShortCourseActiveEarnings
 
 public class Course
 {
-    public int CoursePrice { get; set; }
+    public decimal CoursePrice { get; set; }
     public bool Approved { get; set; }
-    public Earning[] Earnings { get; set; }
+    public List<Earning> Earnings { get; set; }
 }
 
 public class Earning
@@ -36,6 +36,6 @@ public class Earning
     public int CollectionYear { get; set; }
     public int CollectionPeriod { get; set; }
     public string Milestone { get; set; }
-    public int Amount { get; set; }
+    public decimal Amount { get; set; }
 }
 #pragma warning restore CS8618
