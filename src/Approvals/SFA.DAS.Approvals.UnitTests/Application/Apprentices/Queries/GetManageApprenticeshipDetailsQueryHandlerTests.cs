@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Moq;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
 using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
@@ -29,6 +32,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     private Mock<IDeliveryModelService> _deliveryModelService;
     private ServiceParameters _serviceParameters;
     private Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _collectionCalendarApiClient;
+    private Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient;
 
     private GetApprenticeshipResponse _apprenticeship;
     private GetManageApprenticeshipDetailsQuery _query;
@@ -40,6 +44,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     private GetChangeOfProviderChainResponse _changeOfProviderChainResponse;
     private GetChangeOfEmployerChainResponse _changeOfEmployerChainResponse;
     private GetOverlappingTrainingDateResponse _overlappingTrainingDateResponse;
+    private GetStandardsListItem    _courseDetailsResponse;
 
     [SetUp]
     public void Setup()
@@ -61,8 +66,10 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _changeOfEmployerChainResponse = fixture.Create<GetChangeOfEmployerChainResponse>();
         _overlappingTrainingDateResponse = fixture.Create<GetOverlappingTrainingDateResponse>();
         _deliveryModels = fixture.Create<List<string>>();
+        _courseDetailsResponse = fixture.Create<GetStandardsListItem>();
 
         _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
+        coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
 
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
@@ -96,6 +103,10 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
                 x.GetWithResponseCode<GetOverlappingTrainingDateResponse>(It.Is<GetOverlappingTrainingDateRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetOverlappingTrainingDateResponse>(_overlappingTrainingDateResponse, HttpStatusCode.OK, string.Empty));
 
+        coursesApiClient.Setup(
+            x=>x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(t => t.Id == _apprenticeship.CourseCode)))
+            .ReturnsAsync(_courseDetailsResponse);
+
         _deliveryModelService = new Mock<IDeliveryModelService>();
 
         _deliveryModelService.Setup(x => x.GetDeliveryModels(
@@ -109,7 +120,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
 
         _collectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
 
-        _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _collectionCalendarApiClient.Object);
+        _handler = new GetManageApprenticeshipDetailsQueryHandler(_apiClient.Object, _deliveryModelService.Object, _serviceParameters, _collectionCalendarApiClient.Object, coursesApiClient.Object);
     }
 
     [TestCase(0, false)]
@@ -279,6 +290,15 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         result.Should().BeNull();
+    }
+
+    [Test]
+    public async Task Handle_Returns_objects_From_Courses_Api()
+    {
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        result.Apprenticeship.Should().Be(_apprenticeship);
+        result.Apprenticeship.ApprenticeshipType.Should().Be(_courseDetailsResponse.ApprenticeshipType);
     }
 
     [Test]
