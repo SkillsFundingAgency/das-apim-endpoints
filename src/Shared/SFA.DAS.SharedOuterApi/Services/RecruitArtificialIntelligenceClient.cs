@@ -12,7 +12,7 @@ public interface IRecruitArtificialIntelligenceClient
 }
 
 public class RecruitArtificialIntelligenceClient(
-    IInternalApiClient<RecruitArtificialIntelligenceConfiguration> internalApiClient) : IRecruitArtificialIntelligenceClient
+    IInternalApiClient<RecruitAiApiConfiguration> internalApiClient) : IRecruitArtificialIntelligenceClient
 {
     private sealed class PostRequest(string url, object data): IPostApiRequest
     {

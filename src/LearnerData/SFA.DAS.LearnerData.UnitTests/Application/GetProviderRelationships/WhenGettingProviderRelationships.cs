@@ -17,9 +17,10 @@ public class WhenGettingProviderRelationships
         GetProviderSummaryResponse providerSummary,
         GetProviderRelationshipQuery request,
         List<EmployerDetails> employers,
+        GetCoursesForProviderResponse coursesResponse,
        [Frozen] Mock<IGetProviderRelationshipService> getProviderRelationshipService,
        [Frozen] Mock<IRoatpV2TrainingProviderService> roatpService,
-       [Greedy] GetProviderRelationshipQueryHandler  sut)
+       [Greedy] GetProviderRelationshipQueryHandler sut)
     {
         // Arrange
         providerSummary.StatusId = 1;
@@ -28,20 +29,25 @@ public class WhenGettingProviderRelationships
         getProviderRelationshipService.Setup(t => t.GetAllProviderRelationShipDetails(request.Ukprn)).
             ReturnsAsync(providerLegalEntitiesresponse);
 
+        getProviderRelationshipService.Setup(t => t.GetCoursesForProviderByUkprn(request.Ukprn)).
+           ReturnsAsync(coursesResponse);
+
         roatpService.Setup(t => t.GetProviderSummary(request.Ukprn)).
             ReturnsAsync(providerSummary);
 
         getProviderRelationshipService.Setup(t => t.GetEmployerDetails(providerLegalEntitiesresponse)).
             ReturnsAsync(employers);
+
         // Act
         var result = await sut.Handle(request, CancellationToken.None);
 
         // Assert
         result.Should().NotBeNull();
-        result.Ukprn.Should().BeEquivalentTo(request.Ukprn.ToString());
+        result.Ukprn.Should().Be(request.Ukprn);
         result.Status.Should().Be(Enum.GetName(typeof(ProviderStatusType), providerSummary.StatusId));
         result.Type.Should().Be(Enum.GetName(typeof(ProviderType), providerSummary.ProviderTypeId));
-        result.Employers?.Length.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
+        result.Employers.Count.Should().Be(providerLegalEntitiesresponse.AccountProviderLegalEntities.Count);
+        result.SupportedCourses.Count.Should().Be(coursesResponse.CourseTypes.Count);
     }
 
     [Test, MoqAutoData]

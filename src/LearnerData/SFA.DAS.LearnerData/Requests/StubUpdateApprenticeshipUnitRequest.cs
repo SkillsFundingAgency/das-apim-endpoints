@@ -37,8 +37,6 @@ public class StubShortCourseOnProgramme
     [Required]
     public List<StubLearningSupport> LearningSupport { get; set; }
     [Required]
-    public DateTime? PauseDate { get; set; }
-    [Required]
     public int? AimSequenceNumber { get; set; }
     public DateTime? ActualEndDate { get; set; }
     public StubMilestone[] Milestones { get; set; }
