@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,19 +47,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEd
                 return null;
             }
 
-            if(string.Equals(apprenticeship.LearningType, "ApprenticeshipUnit", StringComparison.OrdinalIgnoreCase))
-            {
-                var providerCoursesData = await _providerStandardsService.GetApprenticeshipUnitsData(apprenticeship.ProviderId);
-                return new GetEditApprenticeshipCourseQueryResult
-                {
-                    EmployerName = apprenticeship.EmployerName,
-                    ProviderName = apprenticeship.ProviderName,
-                    IsMainProvider = false,
-                    Standards = providerCoursesData.Standards.Select(x =>
-                        new GetEditApprenticeshipCourseQueryResult.Standard { CourseCode = x.CourseCode, Name = x.Name })
-                };
-            }
-            
             var providerStandardsData = await _providerStandardsService.GetStandardsData(apprenticeship.ProviderId);
 
             return new GetEditApprenticeshipCourseQueryResult
