@@ -673,7 +673,7 @@ public class ApplicationControllerTests
         _mediatorMock.Verify(m =>
             m.Send(
                 It.Is<BulkSaveReviewerCommand>(c =>
-                    c.ApplicationIds.SequenceEqual(request.ApplicationIds) &&
+                    c.ApplicationReviewIds.SequenceEqual(request.ApplicationReviewIds) &&
                     c.Reviewer1 == request.Reviewer1 &&
                     c.Reviewer2 == request.Reviewer2 &&
                     c.UserType == request.UserType &&
@@ -714,7 +714,7 @@ public class ApplicationControllerTests
         _mediatorMock.Verify(m =>
             m.Send(
                 It.Is<BulkSaveReviewerCommand>(c =>
-                    c.ApplicationIds.SequenceEqual(request.ApplicationIds)
+                    c.ApplicationReviewIds.SequenceEqual(request.ApplicationReviewIds)
                 ),
                 default),
             Times.Once);

@@ -18,6 +18,10 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Application
     {
         public Guid ApplicationId { get; init; }
         public Guid ApplicationReviewId { get; init; }
+        public int ReferenceNumber { get; init; } = default!;
+        public string? Qan { get; set; }
+        public string? Title { get; set; }
+        public string? AwardingOrganisation { get; set; }
         public BulkApplicationActionErrorType ErrorType { get; init; }
     }
 

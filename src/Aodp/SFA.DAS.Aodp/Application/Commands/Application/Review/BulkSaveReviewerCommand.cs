@@ -4,7 +4,7 @@ namespace SFA.DAS.AODP.Application.Commands.Application.Review
 {
     public class BulkSaveReviewerCommand : IRequest<BaseMediatrResponse<BulkSaveReviewerCommandResponse>>
     {
-        public List<Guid> ApplicationIds { get; set; } = new List<Guid>();
+        public List<Guid> ApplicationReviewIds { get; set; } = new List<Guid>();
         public bool Reviewer1Set { get; set; }
         public string? Reviewer1 { get; set; }
         public bool Reviewer2Set { get; set; }

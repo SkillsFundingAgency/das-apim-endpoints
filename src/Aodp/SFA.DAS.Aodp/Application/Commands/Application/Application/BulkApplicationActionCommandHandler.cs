@@ -30,6 +30,10 @@ public class BulkApplicationActionCommandHandler
         foreach (var applicationReviewId in request.ApplicationReviewIds)
         {
             var succeeded = false;
+
+            var application = await _mediator.Send(
+                new GetApplicationForReviewByIdQuery(applicationReviewId));
+
             switch (request.ActionType)
             {
                 case BulkApplicationActionType.ShareWithOfqual:
@@ -53,9 +57,6 @@ public class BulkApplicationActionCommandHandler
 
                 case BulkApplicationActionType.Unlock:
 
-                    var application = await _mediator.Send(
-                        new GetApplicationForReviewByIdQuery(applicationReviewId));
-
                     var unlockResult = await _mediator.Send(new CreateApplicationMessageCommand
                     {
                         ApplicationId = application.Value.Id,
@@ -68,22 +69,17 @@ public class BulkApplicationActionCommandHandler
                     succeeded = unlockResult.Success;
                     break;
                 default:
-                    errors.Add(new BulkApplicationActionErrorDto
-                    {
-                        
-                        ApplicationReviewId = applicationReviewId,
-                        ErrorType = BulkApplicationActionErrorType.InvalidAction
-                    });
+                    errors.Add(
+                        CreateError(
+                            applicationReviewId, application.Value, BulkApplicationActionErrorType.InvalidAction));
                     continue;
             }
 
             if (!succeeded)
             {
-                errors.Add(new BulkApplicationActionErrorDto
-                {
-                    ApplicationReviewId = applicationReviewId,
-                    ErrorType = BulkApplicationActionErrorType.UpdateFailed,
-                });
+                errors.Add(
+                    CreateError(
+                        applicationReviewId, application.Value, BulkApplicationActionErrorType.UpdateFailed));
                 continue;
             }
 
@@ -97,5 +93,21 @@ public class BulkApplicationActionCommandHandler
 
         response.Success = true;
         return response;
+    }
+
+    private static BulkApplicationActionErrorDto CreateError(
+        Guid applicationReviewId,
+        GetApplicationForReviewByIdQueryResponse applicationResponse,
+        BulkApplicationActionErrorType errorType)
+    {
+        return new BulkApplicationActionErrorDto
+        {
+            ApplicationReviewId = applicationReviewId,
+            AwardingOrganisation = applicationResponse.AwardingOrganisation,
+            Qan = applicationResponse.Qan,
+            Title = applicationResponse.Name,
+            ReferenceNumber = applicationResponse.Reference,
+            ErrorType = errorType
+        };
     }
 }

@@ -115,7 +115,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Review
                         ((BulkSaveReviewerCommand)req.Data).SentByName == command.SentByName &&
                         ((BulkSaveReviewerCommand)req.Data).Reviewer1 == command.Reviewer1 &&
                         ((BulkSaveReviewerCommand)req.Data).Reviewer2 == command.Reviewer2 &&
-                        ((BulkSaveReviewerCommand)req.Data).ApplicationIds.SequenceEqual(command.ApplicationIds)
+                        ((BulkSaveReviewerCommand)req.Data).ApplicationReviewIds.SequenceEqual(command.ApplicationReviewIds)
                     )),
                 Times.Once);
 
