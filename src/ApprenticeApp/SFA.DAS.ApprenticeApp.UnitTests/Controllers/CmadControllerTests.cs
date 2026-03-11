@@ -9,6 +9,7 @@ using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Commands.Cmad;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetCommitmentsApprenticeshipById;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByAccountDetails;
+using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByEmail;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
@@ -62,6 +63,37 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
                         q.FirstName == query.FirstName &&
                         q.LastName == query.LastName &&
                         q.DateOfBirth == query.DateOfBirth),
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetRegistrationsByEmail_Returns_Ok_With_Registrations(
+    [Frozen] Mock<IMediator> mediatorMock,
+    [Greedy] CmadController controller,
+    string email,
+    List<Registration> registrations)
+        {
+            // Arrange
+            controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
+
+            var expectedResult = new GetRegistrationsByEmailQueryResult { Registrations = registrations };
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.Is<GetRegistrationsByEmailQuery>(q => q.Email == email),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(expectedResult);
+
+            // Act
+            var actionResult = await controller.GetRegistrationsByEmail(email);
+
+            // Assert
+            var ok = actionResult.Should().BeOfType<OkObjectResult>().Subject;
+            ok.Value.Should().BeSameAs(registrations);
+
+            mediatorMock.Verify(m => m.Send(
+                    It.Is<GetRegistrationsByEmailQuery>(q => q.Email == email),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }

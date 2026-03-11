@@ -73,7 +73,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         }
 
         result.OnProgramme.CourseCode.Should().Be(onProgramme.CourseCode);
-        result.OnProgramme.EmployerId.Should().Be(long.Parse(onProgramme.AgreementId));
+        result.OnProgramme.EmployerId.Should().Be(0);
         result.OnProgramme.StartDate.Should().Be(onProgramme.StartDate);
         result.OnProgramme.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
         result.OnProgramme.CompletionDate.Should().Be(onProgramme.CompletionDate);
