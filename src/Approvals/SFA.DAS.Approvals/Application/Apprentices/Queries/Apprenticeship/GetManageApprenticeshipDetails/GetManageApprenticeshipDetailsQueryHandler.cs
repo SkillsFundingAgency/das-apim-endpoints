@@ -9,13 +9,11 @@ using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
@@ -29,8 +27,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IDeliveryModelService deliveryModelService,
     ServiceParameters serviceParameters,
-    ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient,
-    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
+    ICollectionCalendarApiClient<CollectionCalendarApiConfiguration> collectionCalendarApiClient)
     : IRequestHandler<GetManageApprenticeshipDetailsQuery, GetManageApprenticeshipDetailsQueryResult>
 {
     public async Task<GetManageApprenticeshipDetailsQueryResult> Handle(GetManageApprenticeshipDetailsQuery request, CancellationToken cancellationToken)
@@ -64,8 +61,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var changeOfEmployerChainResponseTask = apiClient.GetWithResponseCode<GetChangeOfEmployerChainResponse>(new GetChangeOfEmployerChainRequest(apprenticeship.Id));
         var overlappingTrainingDateResponseTask = apiClient.GetWithResponseCode<GetOverlappingTrainingDateResponse>(new GetOverlappingTrainingDateRequest(apprenticeship.Id));
         var deliveryModelTask = deliveryModelService.GetDeliveryModels(apprenticeship.ProviderId, apprenticeship.CourseCode, apprenticeship.AccountLegalEntityId, apprenticeship.ContinuationOfId);
-        var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);
-        var courseDetailsTask = coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(apprenticeship.CourseCode));
+        var canActualStartDateBeChangedTask = CanActualStartDateBeChanged(apprenticeship.ActualStartDate);       
 
         await Task.WhenAll(
             priceEpisodesResponseTask,
@@ -76,8 +72,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             changeOfEmployerChainResponseTask,
             overlappingTrainingDateResponseTask,
             deliveryModelTask,
-            canActualStartDateBeChangedTask,
-            courseDetailsTask
+            canActualStartDateBeChangedTask
         );
 
         var priceEpisodesResponse = priceEpisodesResponseTask.Result;
@@ -89,7 +84,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var overlappingTrainingDateResponse = overlappingTrainingDateResponseTask.Result;
         var deliveryModel = deliveryModelTask.Result;
         var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
-        var courseDetails = courseDetailsTask.Result;
 
         var result = new GetManageApprenticeshipDetailsQueryResult();
         
@@ -107,7 +101,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.PendingStartDateChange = null;
         result.PaymentsStatus = new PaymentsStatus { PaymentsFrozen = false };
         result.LearnerStatusDetails = new LearnerStatusDetails { LearnerStatus = LearnerStatus.None };
-        result.Apprenticeship.ApprenticeshipType = courseDetails?.ApprenticeshipType;
         return result;
     }
 
