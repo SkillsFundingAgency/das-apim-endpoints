@@ -32,7 +32,7 @@ public class BulkApplicationActionCommandHandler
             var succeeded = false;
 
             var application = await _mediator.Send(
-                new GetApplicationForReviewByIdQuery(applicationReviewId));
+                new GetApplicationForReviewByIdQuery(applicationReviewId), cancellationToken);
 
             switch (request.ActionType)
             {

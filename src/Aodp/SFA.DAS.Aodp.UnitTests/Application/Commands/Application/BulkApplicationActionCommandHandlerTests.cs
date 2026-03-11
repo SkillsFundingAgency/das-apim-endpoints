@@ -242,7 +242,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application
                 Assert.That(result.Value.RequestedCount, Is.EqualTo(applicationReviewIds.Count));
                 Assert.That(result.Value.UpdatedCount, Is.EqualTo(2));
                 Assert.That(result.Value.ErrorCount, Is.EqualTo(1));
-                Assert.That(result.Value.Errors.Count, Is.EqualTo(1));
+                Assert.That(result.Value.Errors, Has.Count.EqualTo(1));
                 Assert.That(result.Value.Errors.First().ApplicationReviewId, Is.EqualTo(applicationReviewIds[1]));
                 Assert.That(result.Value.Errors.First().ErrorType, Is.EqualTo(BulkApplicationActionErrorType.UpdateFailed));
                 Assert.That(result.Value.Errors.First().AwardingOrganisation, Is.EqualTo(applicationsByReviewId[applicationReviewIds[1]].Value.AwardingOrganisation));
@@ -314,7 +314,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application
                 Assert.That(result.Value.RequestedCount, Is.EqualTo(applicationReviewIds.Count));
                 Assert.That(result.Value.UpdatedCount, Is.EqualTo(2));
                 Assert.That(result.Value.ErrorCount, Is.EqualTo(1));
-                Assert.That(result.Value.Errors.Count, Is.EqualTo(1));
+                Assert.That(result.Value.Errors, Has.Count.EqualTo(1));
                 Assert.That(result.Value.Errors.First().ApplicationReviewId, Is.EqualTo(applicationReviewIds[1]));
                 Assert.That(result.Value.Errors.First().ErrorType, Is.EqualTo(BulkApplicationActionErrorType.UpdateFailed));
                 Assert.That(result.Value.Errors.First().AwardingOrganisation, Is.EqualTo(applicationsByReviewId[applicationReviewIds[1]].Value.AwardingOrganisation));
@@ -531,7 +531,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application
                 Assert.That(result.Value.RequestedCount, Is.EqualTo(applicationReviewIds.Count));
                 Assert.That(result.Value.UpdatedCount, Is.EqualTo(0));
                 Assert.That(result.Value.ErrorCount, Is.EqualTo(applicationReviewIds.Count));
-                Assert.That(result.Value.Errors.Count, Is.EqualTo(applicationReviewIds.Count));
+                Assert.That(result.Value.Errors, Has.Count.EqualTo(applicationReviewIds.Count));
                 Assert.That(result.Value.Errors.All(x => x.ErrorType == BulkApplicationActionErrorType.InvalidAction), Is.True);
                 Assert.That(result.Value.Errors.Select(x => x.ApplicationReviewId), Is.EquivalentTo(applicationReviewIds));
             });
