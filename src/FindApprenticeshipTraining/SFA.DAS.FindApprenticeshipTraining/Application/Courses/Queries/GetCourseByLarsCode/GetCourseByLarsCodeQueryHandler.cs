@@ -6,7 +6,6 @@ using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
@@ -17,7 +16,7 @@ using SFA.DAS.SharedOuterApi.Models;
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
 public sealed class GetCourseByLarsCodeQueryHandler(
-    ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient,
+    ICachedStandardDetailsService _cachedStandardDetailsService,
     IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient,
     ICachedLocationLookupService _cachedLocationLookupService
 ) : IRequestHandler<GetCourseByLarsCodeQuery, GetCourseByLarsCodeQueryResult>
@@ -45,25 +44,14 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         courseTrainingProvidersCountResponse.EnsureSuccessStatusCode();
 
         CourseTrainingProviderCountModel trainingCourseCountDetails =
-            courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ?
-                courseTrainingProvidersCountResponse.Body.Courses[0] :
-                null;
+            courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ? courseTrainingProvidersCountResponse.Body.Courses[0] : null;
 
-        var coursesApiStandardResponse = await _coursesApiClient.GetWithResponseCode<StandardDetailResponse>(
-            new GetStandardDetailsByIdRequest(
-                query.LarsCode
-            )
-        );
+        StandardDetailResponse cachedStandardDetailResponse = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
 
-        coursesApiStandardResponse.EnsureSuccessStatusCode();
+        ApprenticeshipFunding apprenticeshipFunding = cachedStandardDetailResponse.ApprenticeshipFunding?.Count > 0 ?
+            cachedStandardDetailResponse.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() : null;
 
-        StandardDetailResponse standardDetails = coursesApiStandardResponse.Body;
-
-        ApprenticeshipFunding apprenticeshipFunding = standardDetails.ApprenticeshipFunding?.Count > 0 ?
-            standardDetails.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() :
-        null;
-
-        GetCourseByLarsCodeQueryResult result = standardDetails;
+        GetCourseByLarsCodeQueryResult result = cachedStandardDetailResponse;
 
         result.MaxFunding = apprenticeshipFunding?.MaxEmployerLevyCap ?? 0;
         result.TypicalDuration = apprenticeshipFunding?.Duration ?? 0;

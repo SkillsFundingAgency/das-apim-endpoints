@@ -19,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
 
             if (getStandardsListItem == null)
             {
-                logger.LogError($"Standard not found {source.ProgrammeId}");
+                logger.LogError("Standard not found {ProgrammeId}", source.ProgrammeId);
             }
 
             return new Application.Shared.LiveVacancy
@@ -80,12 +80,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Weighting = q.Weighting
                 }).ToList() ?? [],
                 OutcomeDescription = source.OutcomeDescription,
-                EmployerContactName = source.EmployerContactName,
-                EmployerContactEmail = source.EmployerContactEmail,
-                EmployerContactPhone = source.EmployerContactPhone,
-                ProviderContactEmail = source.ProviderContactEmail,
-                ProviderContactName = source.ProviderContactName,
-                ProviderContactPhone = source.ProviderContactPhone,
+                EmployerContactName = source.OwnerType == OwnerType.Employer ? source.Contact?.Name : null,
+                EmployerContactEmail = source.OwnerType == OwnerType.Employer ? source.Contact?.Email : null,
+                EmployerContactPhone = source.OwnerType == OwnerType.Employer ? source.Contact?.Phone : null,
+                ProviderContactName = source.OwnerType == OwnerType.Provider ? source.Contact?.Name : null,
+                ProviderContactEmail = source.OwnerType == OwnerType.Provider ? source.Contact?.Email : null,
+                ProviderContactPhone = source.OwnerType == OwnerType.Provider ? source.Contact?.Phone : null,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 Address = source.Address,
@@ -144,6 +144,8 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Longitude = locationLookup?.Location?.GeoPoint?.LastOrDefault() ?? 0,
                     Country = locationLookup?.Country
                 },
+                OtherAddresses = [],
+                EmploymentLocationOption = null,
                 Qualifications = [],
                 Skills = [],
                 SearchTags = "NHS National Health Service Health Medical Hospital",
@@ -156,12 +158,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
             {
                 Route = route.Name,
                 RouteCode = route.Id,
-                Title = source.JobTitle.En,
+                Title = source.JobTitle.En ?? string.Empty,
                 Description = string.Empty,
-                Id = source.JobCode,
+                Id = source.JobCode ?? string.Empty,
                 EmployerName = source.Department.En,
-                VacancyReference = source.JobReference,
-                Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMinimum),
+                VacancyReference = source.JobReference ?? string.Empty,
+                Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMaximum),
                 ApplicationUrl = source.JobUrl,
                 ClosingDate = source.KeyTimes.ClosingTime,
                 PostedDate = source.KeyTimes.PublishedTime,
@@ -170,9 +172,16 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Latitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lat : 0,
                     Longitude = source.LocationGeoCoordinates.Count > 0 ? source.LocationGeoCoordinates.FirstOrDefault()?.Lon : 0,
                 },
+                EmploymentLocationOption = source.LocationGeoCoordinates.Count switch
+                {
+                    0 => null,
+                    1 => AvailableWhere.OneLocation,
+                    _ => AvailableWhere.MultipleLocations
+                },
+                OtherAddresses = GetCivilServiceJobOtherAddresses(source.LocationGeoCoordinates),
                 Qualifications = [],
                 Skills = [],
-                SearchTags = "Civil Service Civil Servant Public Sector Whitehall",
+                SearchTags = "Civil Service Civil Servant Public Sector Government",
             };
         }
 
@@ -255,6 +264,18 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Between21AndUnder25NationalMinimumWage = upperBand,
                 Over25NationalMinimumWage = upperBand
             };
+        }
+
+        private static List<Address> GetCivilServiceJobOtherAddresses(
+            List<GetCivilServiceJobsApiResponse.LocationGeoCoordinate>? source)
+        {
+            if (source is null || source.Count == 0) return [];
+            
+            return source.Skip(1).Select(location => new Address
+            {
+                Latitude = location.Lat,
+                Longitude = location.Lon
+            }).ToList();
         }
     }
 }

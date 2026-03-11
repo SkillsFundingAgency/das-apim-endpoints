@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -18,7 +19,7 @@ public class ProviderCoursesControllerGetAllAvailableCoursesTests
 {
     [Test]
     [MoqInlineAutoData(CourseType.Apprenticeship)]
-    [MoqInlineAutoData(CourseType.ApprenticeshipUnit)]
+    [MoqInlineAutoData(CourseType.ShortCourse)]
     public async Task GetAllAvailableCourses_ReturnsCourses(
         CourseType courseType,
         [Frozen] Mock<IMediator> mediatorMock,
@@ -34,6 +35,6 @@ public class ProviderCoursesControllerGetAllAvailableCoursesTests
         var okObjectResult = result as OkObjectResult;
         okObjectResult.Should().NotBeNull();
         var queryResult = okObjectResult.Value as GetAvailableCoursesForProviderQueryResult;
-        queryResult.AvailableCourses.Count.Should().Be(response.AvailableCourses.Count);
+        queryResult.AvailableCourses.Should().HaveCount(response.AvailableCourses.Count());
     }
 }

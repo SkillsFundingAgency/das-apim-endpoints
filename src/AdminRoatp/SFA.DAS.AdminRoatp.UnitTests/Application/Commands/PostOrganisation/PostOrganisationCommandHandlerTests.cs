@@ -14,6 +14,7 @@ using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.Application.Commands.PostOrganisation;
+
 public class PostOrganisationCommandHandlerTests
 {
     [Test, MoqAutoData]
@@ -100,7 +101,7 @@ public class PostOrganisationCommandHandlerTests
         var courseTypes = new List<int>();
 
         if (deliversApprenticeships) courseTypes.Add((int)CourseType.Apprenticeship);
-        if (deliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ApprenticeshipUnit);
+        if (deliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ShortCourse);
 
 
         HttpResponseMessage response = new HttpResponseMessage { StatusCode = postOrganisationStatus };

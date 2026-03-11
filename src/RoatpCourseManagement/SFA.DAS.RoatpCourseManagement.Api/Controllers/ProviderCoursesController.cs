@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
@@ -13,7 +14,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
 [Tags("Provider Courses")]
-[Route("")]
+[Route("providers/{ukprn}")]
 public class ProviderCoursesController : ControllerBase
 {
     private readonly ILogger<ProviderCoursesController> _logger;
@@ -26,7 +27,7 @@ public class ProviderCoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("providers/{ukprn}/courses/{larsCode}")]
+    [Route("courses/{larsCode}")]
     public async Task<IActionResult> GetProviderCourse([FromRoute] int ukprn, [FromRoute] string larsCode)
     {
         if (ukprn <= 9999999)
@@ -53,8 +54,8 @@ public class ProviderCoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("providers/{ukprn}/courses")]
-    public async Task<IActionResult> GetAllProviderCourses([FromRoute] int ukprn)
+    [Route("courses")]
+    public async Task<IActionResult> GetAllProviderCourses([FromRoute] int ukprn, [FromQuery] CourseType? courseType = null)
     {
         if (ukprn <= 0)
         {
@@ -65,7 +66,7 @@ public class ProviderCoursesController : ControllerBase
         _logger.LogInformation("Get Standards for ukprn number {Ukprn}", ukprn);
         try
         {
-            var result = await _mediator.Send(new GetAllProviderCoursesQuery(ukprn));
+            var result = await _mediator.Send(new GetAllProviderCoursesQuery(ukprn, courseType));
 
             if (result == null)
             {
@@ -85,11 +86,11 @@ public class ProviderCoursesController : ControllerBase
     }
 
     [HttpGet]
-    [Route("providers/{ukprn}/available-courses/{courseType}")]
+    [Route("available-courses/{courseType}")]
     public async Task<IActionResult> GetAllAvailableCourses([FromRoute] int ukprn, [FromRoute] CourseType courseType)
     {
         var result = await _mediator.Send(new GetAvailableCoursesForProviderQuery(ukprn, courseType));
-        _logger.LogInformation($"Total {result.AvailableCourses.Count} courses are available for ukprn: {ukprn}");
+        _logger.LogInformation("Total {AvailableCoursesCount} courses are available for ukprn: {Ukprn}", result.AvailableCourses.Count(), ukprn);
         return Ok(result);
     }
 }

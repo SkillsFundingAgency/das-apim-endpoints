@@ -1,16 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseTypes.Queries;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.Testing.AutoFixture;
+using System.Collections.Generic;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.ProviderCourseTypes.Queries
 {
@@ -24,7 +26,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.ProviderCourseType
             GetProviderCourseTypesQuery query,
             GetProviderCourseTypesQueryHandler sut)
         {
-            apiClientMock.Setup(c => c.Get<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ReturnsAsync(providerCourseTypes);
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ReturnsAsync(new ApiResponse<List<ProviderCourseTypeResult>>(providerCourseTypes, HttpStatusCode.OK, ""));
             var result = await sut.Handle(query, new CancellationToken());
 
             result.Should().BeEquivalentTo(providerCourseTypes);
@@ -37,22 +39,10 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.ProviderCourseType
             GetProviderCourseTypesQueryHandler sut)
         {
             var providerCourseTypes = new List<ProviderCourseTypeResult>();
-            apiClientMock.Setup(c => c.Get<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ReturnsAsync(providerCourseTypes);
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ReturnsAsync(new ApiResponse<List<ProviderCourseTypeResult>>(providerCourseTypes, HttpStatusCode.OK, ""));
             var result = await sut.Handle(query, new CancellationToken());
 
             result.Should().BeEmpty();
-        }
-
-        [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ReturnsNullSet(
-            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-            GetProviderCourseTypesQuery query,
-            GetProviderCourseTypesQueryHandler sut)
-        {
-            apiClientMock.Setup(c => c.Get<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ReturnsAsync((List<ProviderCourseTypeResult>)null);
-            var result = await sut.Handle(query, new CancellationToken());
-
-            result.Should().BeNull();
         }
 
         [Test, MoqAutoData]
@@ -61,8 +51,8 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.ProviderCourseType
             GetProviderCourseTypesQuery query,
             GetProviderCourseTypesQueryHandler sut)
         {
-            apiClientMock.Setup(c => c.Get<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ThrowsAsync(new Exception());
-            Assert.ThrowsAsync<Exception>(() => sut.Handle(query, new CancellationToken()));
+            apiClientMock.Setup(c => c.GetWithResponseCode<List<ProviderCourseTypeResult>>(It.IsAny<GetProviderCourseTypesRequest>())).ReturnsAsync(new ApiResponse<List<ProviderCourseTypeResult>>(null, HttpStatusCode.InternalServerError, ""));
+            Assert.ThrowsAsync<ApiResponseException>(() => sut.Handle(query, new CancellationToken()));
         }
     }
 }

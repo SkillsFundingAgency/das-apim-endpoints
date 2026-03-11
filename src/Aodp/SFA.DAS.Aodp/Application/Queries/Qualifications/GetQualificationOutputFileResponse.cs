@@ -2,9 +2,9 @@
 {
     public class GetQualificationOutputFileResponse
     {
-        public byte[] ZipFileContent { get; init; } = Array.Empty<byte>();
+        public byte[] FileContent { get; init; } = Array.Empty<byte>();
         public string FileName { get; init; } = string.Empty;       
-        public string ContentType { get; init; } = "application/zip";
+        public string ContentType { get; init; } = "text/csv";
     }
 
 }

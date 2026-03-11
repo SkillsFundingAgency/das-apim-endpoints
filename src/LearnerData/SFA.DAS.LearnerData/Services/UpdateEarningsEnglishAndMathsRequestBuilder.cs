@@ -23,13 +23,39 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
                 LearnAimRef = x.LearnAimRef,
                 Course = x.Course,
                 Amount = x.Amount,
-                WithdrawalDate = x.WithdrawalDate,
                 PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
-                PauseDate = x.PauseDate
+                PauseDate = x.PauseDate,
+                WithdrawalDate = x.WithdrawalDate,
+                CompletionDate = x.CompletionDate,
+                PeriodsInLearning = GetPeriodsInLearning(x.LearnAimRef, command)
             }).ToList()
         };
             
         return new UpdateEnglishAndMathsApiPutRequest(command.LearningKey, body);
+    }
+
+    private List<PeriodInLearningItem> GetPeriodsInLearning(string learnAimRef, UpdateLearnerCommand command)
+    {
+        var periodsInLearning = new List<PeriodInLearningItem>();
+
+        var matchingEnglishAndMaths =
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(x => x.LearnAimRef == learnAimRef);
+
+        foreach (var mathsAndEnglish in matchingEnglishAndMaths)
+        {
+            var endDate = mathsAndEnglish.CompletionDate
+                          ?? mathsAndEnglish.PauseDate
+                          ?? mathsAndEnglish.WithdrawalDate
+                          ?? mathsAndEnglish.EndDate;
+
+            periodsInLearning.Add(new PeriodInLearningItem
+            {
+                StartDate = mathsAndEnglish.StartDate,
+                EndDate = endDate,
+                OriginalExpectedEndDate = mathsAndEnglish.EndDate
+            });
+        }
+
+        return periodsInLearning.OrderBy(x => x.StartDate).ToList();
     }
 }

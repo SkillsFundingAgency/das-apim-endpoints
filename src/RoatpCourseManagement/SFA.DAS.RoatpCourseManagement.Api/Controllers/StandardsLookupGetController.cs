@@ -1,13 +1,13 @@
-﻿using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
@@ -49,7 +49,7 @@ public class StandardsLookupGetController : ControllerBase
     [Route("lookup/standards/{larsCode}")]
     public async Task<ActionResult<GetStandardInformationQueryResult>> GetStandardInformation([FromRoute] string larsCode)
     {
-        _logger.LogInformation("Outer API: request received to get details for standard: {Larscode} from courses api", larsCode);
+        _logger.LogInformation("Outer API: request received to get details for standard: {Larscode} from course management api", larsCode);
         return await _mediator.Send(new GetStandardInformationQuery(larsCode));
     }
 }

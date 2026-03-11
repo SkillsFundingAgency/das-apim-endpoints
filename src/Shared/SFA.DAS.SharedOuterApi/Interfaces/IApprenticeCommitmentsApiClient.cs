@@ -8,6 +8,7 @@ namespace SFA.DAS.SharedOuterApi.Interfaces
     {
         Task<HttpStatusCode> Patch<TRequest>(IPatchApiRequest<TRequest> request);
         Task<ApiResponse<TResponse>> PatchWithResponseCode<TRequest, TResponse>(
-            IPatchApiRequest<TRequest> request);
+            IPatchApiRequest<TRequest> request);        
+        Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = false);
     }
 }

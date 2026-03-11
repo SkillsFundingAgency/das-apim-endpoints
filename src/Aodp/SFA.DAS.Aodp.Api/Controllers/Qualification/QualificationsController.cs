@@ -1,14 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Api.Controllers;
-using SFA.DAS.AODP.Application.Commands.Qualification;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
-using SFA.DAS.Aodp.Application.Commands.Qualification;
+using SFA.DAS.AODP.Application.Commands.Qualification;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
@@ -171,11 +169,11 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(qualificationStatus);
         }
 
-        [HttpGet("outputfile/{username}")]
+        [HttpPost("outputfile")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationOutputFileResponse>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetQualificationOutputFile([FromRoute] string username)
+        public async Task<IActionResult> GetQualificationOutputFile([FromBody]GetQualificationOutputFileQuery request)
         {
-            var result = await _mediator.Send(new GetQualificationOutputFileQuery(username));
+            var result = await _mediator.Send(request);
             return Ok(result);
         }
 
@@ -263,6 +261,19 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             command.QualificationVersionId = qualificationVersionId;
             return await SendRequestAsync(command);
         }
+
+        [HttpGet("/api/qualifications/GetMatchingQualifications")]
+        [ProducesResponseType(typeof(GetMatchingQualificationsQueryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetMatchingQualifications(
+            [FromQuery] string searchTerm,
+            [FromQuery] int? skip,
+            [FromQuery] int? take)
+        {
+            return await SendRequestAsync(new GetMatchingQualificationsQuery(searchTerm, skip, take));
+        }
+
         private async Task<IActionResult> HandleNewQualificationCSVExport()
         {
             return await SendRequestAsync(new GetNewQualificationsExportQuery());

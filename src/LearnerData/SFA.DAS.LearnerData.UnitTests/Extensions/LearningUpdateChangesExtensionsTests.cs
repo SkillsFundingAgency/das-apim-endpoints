@@ -37,6 +37,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
 
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated)]
         public void HasEnglishAndMathsUpdate_ReturnsTrue_ForEnglishAndMathsChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges> { change };
