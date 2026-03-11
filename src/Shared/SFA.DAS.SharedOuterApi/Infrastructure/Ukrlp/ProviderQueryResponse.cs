@@ -16,6 +16,9 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
 
         [XmlArray(ElementName = "ProviderContact")]
         public List<ProviderContact> ProviderContacts { get; set; }
+
+        [XmlArray(ElementName = "ProviderAliases")]
+        public List<ProviderAlias> ProviderAliases { get; set; }
     }
 
     [Serializable]
@@ -49,5 +52,15 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
 
         [XmlElement]
         public string PostCode { get; set; }
+    }
+
+    [Serializable]
+    public class ProviderAlias
+    {
+        [XmlElement]
+        public string Alias { get; set; }
+
+        [XmlElement]
+        public DateTime? LastUpdated { get; set; }
     }
 }

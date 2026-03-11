@@ -15,7 +15,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Ukrlp
         {
             var dateUpdatedSince = dateUpdated.ToString("yyyy'-'MM'-'dd'T'HH':'mm':'ss");
 
-            var serializer = new SharedOuterApi.Services.UkrlpSoapSerializer();
+            var serializer = new SharedOuterApi.Infrastructure.Ukrlp.UkrlpSoapSerializer();
             var actualRequest =
                 serializer.BuildGetAllUkrlpsUpdatedSinceSoapRequest(dateUpdated, stakeholderId, queryId);
 
@@ -40,7 +40,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Ukrlp
                 ukprn1,
                 ukprn2
             };
-            var serializer = new SharedOuterApi.Services.UkrlpSoapSerializer();
+            var serializer = new SharedOuterApi.Infrastructure.Ukrlp.UkrlpSoapSerializer();
             var actualRequest =
                 serializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprns, stakeholderId, queryId);
 
@@ -58,7 +58,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.Ukrlp
         public void DeserialiseMatchingProviderRecordsResponse_ReturnsMatchingRecords()
         {
             var soapXml = "<?xml version='1.0' encoding='UTF-8'?>\r\n<S:Envelope\r\n\txmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">\r\n\t<S:Body>\r\n\t\t<ns0:ProviderQueryResponse\r\n\t\t\txmlns:ns0=\"http://ukrlp.co.uk.server.ws.v3\"\r\n\t\t\txmlns:ns2=\"http://www.govtalk.gov.uk/people/PersonDescriptives\">\r\n\t\t\t<MatchingProviderRecords>\r\n\t\t\t\t<UnitedKingdomProviderReferenceNumber>10000001</UnitedKingdomProviderReferenceNumber>\r\n\t\t\t\t<ProviderName>Company name 1</ProviderName>\r\n\t\t\t\t<ProviderStatus>Active</ProviderStatus>\r\n\t\t\t\t<ProviderContact>\r\n\t\t\t\t\t<ContactType>L</ContactType>\r\n\t\t\t\t\t<ContactAddress>\r\n\t\t\t\t\t\t<Address1>address line 1 for 1</Address1>\r\n\t\t\t\t\t\t<Address2>address line 2 for 1</Address2>\r\n\t\t\t\t\t\t<Address3>address line 3 for 1</Address3>\r\n\t\t\t\t\t\t<Address4>address line 4 for 1</Address4>\r\n\t\t\t\t\t\t<Town>Town 1</Town>\r\n\t\t\t\t\t\t<PostCode>Postcode 1</PostCode>\r\n\t\t\t\t\t</ContactAddress>\r\n\t\t\t\t\t<ContactPersonalDetails/>\r\n\t\t\t\t\t<ContactTelephone1>12345678</ContactTelephone1>\r\n\t\t\t\t\t<ContactFax>8888888888</ContactFax>\r\n\t\t\t\t\t<LastUpdated>2019-01-09</LastUpdated>\r\n\t\t\t\t</ProviderContact>\r\n\t\t\t\t<ProviderVerificationDate>2022-09-15</ProviderVerificationDate>\r\n\t\t\t\t<ProviderAliases/>\r\n\t\t\t\t<VerificationDetails>\r\n\t\t\t\t\t<PrimaryVerificationSource>true</PrimaryVerificationSource>\r\n\t\t\t\t\t<VerificationAuthority>Companies House</VerificationAuthority>\r\n\t\t\t\t\t<VerificationID>11111111</VerificationID>\r\n\t\t\t\t</VerificationDetails>\r\n\t\t\t</MatchingProviderRecords>\r\n\t\t\t<MatchingProviderRecords>\r\n\t\t\t\t<UnitedKingdomProviderReferenceNumber>10000002</UnitedKingdomProviderReferenceNumber>\r\n\t\t\t\t<ProviderName>Company name 2</ProviderName>\r\n\t\t\t\t<ProviderStatus>Active</ProviderStatus>\r\n\t\t\t\t<ProviderContact>\r\n\t\t\t\t\t<ContactType>L</ContactType>\r\n\t\t\t\t\t<ContactAddress>\r\n\t\t\t\t\t\t<Address1>address line 1 for 2</Address1>\r\n\t\t\t\t\t\t<Address2>address line 2 for 2</Address2>\r\n\t\t\t\t\t\t<Address3>address line 3 for 2</Address3>\r\n\t\t\t\t\t\t<Address4>address line 4 for 2</Address4>\r\n\t\t\t\t\t\t<Town>Town 2</Town>\r\n\t\t\t\t\t\t<Postcode>Postcode 2</Postcode>\r\n\t\t\t\t\t</ContactAddress>\r\n\t\t\t\t\t<ContactPersonalDetails/>\r\n\t\t\t\t\t<ContactTelephone1>12345678</ContactTelephone1>\r\n\t\t\t\t\t<ContactFax>8888888888</ContactFax>\r\n\t\t\t\t\t<LastUpdated>2019-01-09</LastUpdated>\r\n\t\t\t\t</ProviderContact>\r\n\t\t\t\t<ProviderVerificationDate>2022-09-15</ProviderVerificationDate>\r\n\t\t\t\t<ProviderAliases/>\r\n\t\t\t\t<VerificationDetails>\r\n\t\t\t\t\t<PrimaryVerificationSource>true</PrimaryVerificationSource>\r\n\t\t\t\t\t<VerificationAuthority>Companies House</VerificationAuthority>\r\n\t\t\t\t\t<VerificationID>11111111</VerificationID>\r\n\t\t\t\t</VerificationDetails>\r\n\t\t\t</MatchingProviderRecords>\r\n\t\t\t<QueryId>2</QueryId>\r\n\t\t\t<StakeholderId>2</StakeholderId>\r\n\t\t</ns0:ProviderQueryResponse>\r\n\t</S:Body>\r\n</S:Envelope>";
-            var serializer = new SharedOuterApi.Services.UkrlpSoapSerializer();
+            var serializer = new SharedOuterApi.Infrastructure.Ukrlp.UkrlpSoapSerializer();
             var response = serializer.DeserialiseMatchingProviderRecordsResponse(soapXml);
             Assert.That(response.Count, Is.EqualTo(2));
 
