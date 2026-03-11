@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -55,6 +55,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICourseTypesApiClient, CourseTypesApiClient>();
         AddCommitmentApiInternalClient(services, configuration);
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+        services.AddTransient<IEmploymentCheckApiClient<EmploymentCheckConfiguration>, EmploymentCheckApiClient>();
         services.AddTransient<IReservationApiClient<ReservationApiConfiguration>, ReservationApiClient>();
         services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
         services.AddTransient<IDeliveryModelService, DeliveryModelService>();
