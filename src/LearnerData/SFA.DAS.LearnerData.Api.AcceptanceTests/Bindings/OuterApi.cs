@@ -1,7 +1,9 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using SFA.DAS.LearnerData.Services;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
@@ -9,10 +11,11 @@ namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 [Binding]
 public class OuterApi
 {
+#pragma warning disable CS8618
     public static HttpClient Client { get; set; }
     public static LocalWebApplicationFactory<Program> Factory { get; set; }
     public static Dictionary<string, string> Config { get; set; }
-
+#pragma warning restore CS8618
 
     private readonly TestContext _context;
 
@@ -46,7 +49,8 @@ public class OuterApi
             Client.DefaultRequestHeaders.Add("Authorization", $"Bearer {GenerateBearerToken("Earnings")}");
         }
 
-        _context.OuterApiClient = Client;
+        _context!.OuterApiClient = Client;
+        _context.Cache = Factory.Services.GetRequiredService<ILearnerDataCacheService>();
     }
 
     private static string GenerateBearerToken(string serviceAccount)

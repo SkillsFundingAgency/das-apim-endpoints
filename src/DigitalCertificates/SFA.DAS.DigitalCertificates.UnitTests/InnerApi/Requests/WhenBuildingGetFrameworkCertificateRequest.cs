@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -16,6 +16,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
 
             // Assert
             request.GetUrl.Should().Be($"api/v1/learnerdetails/framework-learner/{id}?allLogs=false");
+
+            var withLogsRequest = new GetFrameworkCertificateRequest(id, true);
+            withLogsRequest.GetUrl.Should().Be($"api/v1/learnerdetails/framework-learner/{id}");
         }
     }
 }

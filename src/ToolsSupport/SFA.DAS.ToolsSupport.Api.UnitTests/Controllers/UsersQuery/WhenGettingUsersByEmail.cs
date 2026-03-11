@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Api.Controllers;
@@ -14,7 +14,7 @@ public class WhenGettingUsersByEmail
         string email,
         GetUsersByEmailQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] UsersQueryController sut)
+        [Greedy] UsersController sut)
     {
         mockMediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(p => p.Email == email), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
@@ -33,7 +33,7 @@ public class WhenGettingUsersByEmail
         string email,
         GetUsersByEmailQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] UsersQueryController sut)
+        [Greedy] UsersController sut)
     {
         mockMediator.Setup(x => x.Send(It.IsAny<GetUsersByEmailQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 

@@ -196,4 +196,13 @@ public class ApplicationsController : BaseController
         command.ApplicationId = applicationId;
         return await SendRequestAsync(command);
     }
+
+    [HttpGet("/api/applications/qualifications/{qan}")]
+    [ProducesResponseType(typeof(GetApplicationsByQanQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetApplicationsByQan(string qan)
+    {
+        var query = new GetApplicationsByQanQuery(qan);
+        return await SendRequestAsync(query);
+    }
 }
