@@ -161,7 +161,8 @@ public class DraftApprenticeship
             DurationReducedByHours = source.DurationReducedByHours,
             HasLearnerDataChanges = source.HasLearnerDataChanges,
             LastLearnerDataSync = source.LastLearnerDataSync,
-            LearnerDataId = source.LearnerDataId
+            LearnerDataId = source.LearnerDataId,
+            ApprenticeshipType = source.ApprenticeshipType
         };
     }
 }

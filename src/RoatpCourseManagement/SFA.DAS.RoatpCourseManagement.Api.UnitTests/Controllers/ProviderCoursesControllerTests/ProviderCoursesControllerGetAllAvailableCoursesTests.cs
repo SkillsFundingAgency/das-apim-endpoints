@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -34,6 +35,6 @@ public class ProviderCoursesControllerGetAllAvailableCoursesTests
         var okObjectResult = result as OkObjectResult;
         okObjectResult.Should().NotBeNull();
         var queryResult = okObjectResult.Value as GetAvailableCoursesForProviderQueryResult;
-        queryResult.AvailableCourses.Count.Should().Be(response.AvailableCourses.Count);
+        queryResult.AvailableCourses.Should().HaveCount(response.AvailableCourses.Count());
     }
 }
