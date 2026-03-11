@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.EmploymentCheck.Configuration;
+using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.EmploymentCheck.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;

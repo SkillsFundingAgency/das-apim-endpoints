@@ -1,15 +1,13 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations
+namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
+
+public class GetAvailableDatesRequest(long accountLegalEntityId, string courseId = null) : IGetApiRequest
 {
-    public class GetAvailableDatesRequest : IGetApiRequest
-    {
-        public long AccountLegalEntityId { get; }
-        public string GetUrl => $"api/rules/available-dates/{AccountLegalEntityId}";
+    public long AccountLegalEntityId { get; } = accountLegalEntityId;
+    public string CourseId { get; } = courseId;
 
-        public GetAvailableDatesRequest(long accountLegalEntityId)
-        {
-            AccountLegalEntityId = accountLegalEntityId;
-        }
-    }
+    public string GetUrl => string.IsNullOrEmpty(CourseId)
+        ? $"api/rules/available-dates/{AccountLegalEntityId}"
+        : $"api/rules/available-dates/{AccountLegalEntityId}?courseId={System.Uri.EscapeDataString(CourseId)}";
 }

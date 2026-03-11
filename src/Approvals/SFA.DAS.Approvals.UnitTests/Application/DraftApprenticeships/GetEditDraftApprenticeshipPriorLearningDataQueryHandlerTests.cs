@@ -84,5 +84,12 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.That(result.PriceReduced, Is.EqualTo(_draftApprenticeship.PriceReducedBy));
         }
+
+        [Test]
+        public async Task Handle_LearnerDataId_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.That(result.LearnerDataId, Is.EqualTo(_draftApprenticeship.LearnerDataId));
+        }
     }
 }
