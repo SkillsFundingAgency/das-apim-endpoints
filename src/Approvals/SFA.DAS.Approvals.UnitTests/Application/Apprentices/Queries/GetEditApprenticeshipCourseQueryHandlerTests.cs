@@ -47,6 +47,35 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         }
 
         [Test, MoqAutoData]
+        public async Task ApprenticeshipUnit_Courses_Are_Mapped_Correctly(
+            GetEditApprenticeshipCourseQuery query,
+            GetApprenticeshipResponse apprenticeship,
+            ProviderStandardsData providerStandardsData,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+        {
+            var serviceParameters = new ServiceParameters(Party.Provider, apprenticeship.ProviderId);
+            apprenticeship.LearningType = "ApprenticeshipUnit";
+
+            var handler = new GetEditApprenticeshipCourseQueryHandler(apiClient.Object,
+                providerStandardsService.Object, serviceParameters);
+
+            apiClient.Setup(x => x.GetWithResponseCode<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == query.ApprenticeshipId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(apprenticeship, HttpStatusCode.OK, string.Empty));
+
+            providerStandardsService.Setup(x => x.GetApprenticeshipUnitsData(apprenticeship.ProviderId))
+                .ReturnsAsync(providerStandardsData);
+
+            var standardsData = providerStandardsData.Standards.Select(x =>
+                    new GetEditApprenticeshipCourseQueryResult.Standard
+                    { CourseCode = x.CourseCode, Name = x.Name });
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Standards.ToList().Should().BeEquivalentTo(standardsData);
+        }
+
+        [Test, MoqAutoData]
         public async Task IsMainProvider_Is_Mapped_Correctly(
             GetEditApprenticeshipCourseQuery query,
             GetApprenticeshipResponse apprenticeship,
