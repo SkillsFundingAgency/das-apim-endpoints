@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
+using SFA.DAS.AODP.Application.Commands.Application.Review;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
 
@@ -194,6 +195,14 @@ public class ApplicationsController : BaseController
     public async Task<IActionResult> UpdateReviewer(SaveReviewerCommand command, Guid applicationId)
     {
         command.ApplicationId = applicationId;
+        return await SendRequestAsync(command);
+    }
+
+    [HttpPut("/api/applications/bulk-reviewer")]
+    [ProducesResponseType(typeof(BulkSaveReviewerCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> BulkUpdateReviewer(BulkSaveReviewerCommand command)
+    {
         return await SendRequestAsync(command);
     }
 
