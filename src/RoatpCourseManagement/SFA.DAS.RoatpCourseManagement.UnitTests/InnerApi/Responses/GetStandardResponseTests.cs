@@ -19,7 +19,7 @@ public class GetStandardResponseTests
         // Assert
         result.StandardUId.Should().Be(source.StandardUId);
         result.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
-        result.LarsCode.Should().Be(source.LarsCode.ToString());
+        result.LarsCode.Should().Be(source.LarsCode);
         result.Title.Should().Be(source.Title);
         result.Level.Should().Be(source.Level);
         result.ApprenticeshipType.Should().Be(source.LearningType);

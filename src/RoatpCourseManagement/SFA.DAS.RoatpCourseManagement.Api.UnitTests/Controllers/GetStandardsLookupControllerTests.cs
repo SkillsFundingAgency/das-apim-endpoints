@@ -45,7 +45,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
             actualResponse!.Standards.Should().BeEquivalentTo(getAllStandardsResponse.Courses, options => options
                 .Excluding(x => x.LearningType)
                 .ExcludingMissingMembers());
-            Assert.That(getAllStandardsResponse.Courses[0].LarsCode.ToString(), Is.SameAs(actualResponse.Standards[0].LarsCode));
+            Assert.That(getAllStandardsResponse.Courses[0].LarsCode, Is.SameAs(actualResponse.Standards[0].LarsCode));
             Assert.That((int)HttpStatusCode.OK, Is.EqualTo(statusCodeResult!.StatusCode.GetValueOrDefault()));
         }
 
