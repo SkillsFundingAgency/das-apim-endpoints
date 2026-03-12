@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Apprenticeships.Types;
+using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
 using System;
@@ -76,6 +76,8 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             public int? DurationReducedByHours { get; set; }
             public int? TrainingTotalHours { get; set; }
             public bool? IsDurationReducedByRpl { get; set; }
+            public int? EmployerVerificationStatus { get; set; }
+            public string EmployerVerificationNotes { get; set; }
         }
 
         public class PriceEpisode
