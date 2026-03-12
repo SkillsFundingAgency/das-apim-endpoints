@@ -21,5 +21,7 @@ public class GetProviderCourseResult
     public bool IsRegulatedForProvider { get; set; }
     public bool HasLocations { get; set; }
     public bool HasOnlineDeliveryOption { get; set; }
+    public int Duration { get; set; }
+    public DurationUnits DurationUnits { get; set; }
 
 }

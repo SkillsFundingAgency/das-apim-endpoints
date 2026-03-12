@@ -70,5 +70,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }
         public bool IsRegulatedForProvider { get; set; }
+        public int Duration { get; set; }
+        public DurationUnits DurationUnits { get; set; }
     }
 }
