@@ -24,8 +24,10 @@ public class GetStandardResponseTests
         result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
-        result.SectorSubjectAreaTier1.Should().Be(source.SectorSubjectAreaTier1);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
+        result.Duration.Should().Be(source.Duration);
+        result.DurationUnits.Should().Be(source.DurationUnits);
+        result.CourseType.Should().Be(source.CourseType);
     }
 
     [Test, AutoData]
@@ -43,8 +45,10 @@ public class GetStandardResponseTests
         result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
-        result.SectorSubjectAreaTier1.Should().Be(source.SectorSubjectAreaTier1);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
+        result.Duration.Should().Be(source.Duration);
+        result.DurationUnits.Should().Be(source.DurationUnits);
+        result.CourseType.Should().Be(source.CourseType);
     }
 
     [Test]

@@ -40,7 +40,7 @@ public class StandardsLookupGetController : ControllerBase
 
         _logger.LogInformation("Active standards gathered");
 
-        var mappedResponse = new GetStandardsLookupResponse { Standards = result.Body.Standards.Select(standard => (GetStandardResponse)standard).ToList() };
+        var mappedResponse = new GetStandardsLookupResponse { Standards = result.Body.Courses.Select(standard => (GetStandardResponse)standard).ToList() };
 
         return Ok(mappedResponse);
     }
