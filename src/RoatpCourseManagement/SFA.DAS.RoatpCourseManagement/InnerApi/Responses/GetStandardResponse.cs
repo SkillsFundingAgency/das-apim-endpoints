@@ -96,4 +96,5 @@ public class GetStandardResponseFromCourseManagementApi
     public bool IsRegulatedForProvider { get; set; }
     public int Duration { get; set; }
     public DurationUnits DurationUnits { get; set; }
+
 }
