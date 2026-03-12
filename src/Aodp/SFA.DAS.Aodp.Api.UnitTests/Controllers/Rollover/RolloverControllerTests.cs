@@ -24,70 +24,66 @@ public class RolloverControllerTests
     public async Task GetRolloverWorkflowCandidates_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
     {
         // Arrange
-        var payload = new GetRolloverWorkflowCandidatesQueryResponse();
-        var mediatrResponse = new BaseMediatrResponse<GetRolloverWorkflowCandidatesQueryResponse>
+        var payload = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
+        {
+            Value = new GetRolloverWorkflowCandidatesCountQueryResponse
+            {
+                TotalRecords = 5
+            },
+        };
+        var mediatrResponse = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
         {
             Success = true,
-            Value = payload
+            Value = payload.Value
         };
 
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         _mockMediator
-            .Setup(m => m.Send(It.IsAny<GetRolloverWorkflowCandidatesQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(m => m.Send(It.IsAny<GetRolloverWorkflowCandidatesCountQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(mediatrResponse);
 
         // Act
-        var actionResult = await controller.GetRolloverWorkflowCandidates(1, 2);
+        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(default);
 
         // Assert
         Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
         var ok = (OkObjectResult)actionResult;
-        Assert.That(ok.Value, Is.SameAs(payload));
+        Assert.That(ok.StatusCode, Is.EqualTo(200));
+        Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>());
+        var returned = (BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>)ok.Value;
+        Assert.That(returned.Success, Is.EqualTo(true));
+        Assert.That(returned.Value, Is.EqualTo(payload.Value));
+
+        _mockMediator.Verify(m => m.Send(It.IsAny<GetRolloverWorkflowCandidatesCountQuery>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
-    public async Task GetRolloverWorkflowCandidates_WhenMediatorReturnsFailure_ShouldReturn500AndLogError()
+    public async Task GetRolloverWorkflowCandidates_WhenMediatorReturnsFailure_ShouldReturnErrorMessage()
     {
         // Arrange
-        var mediatrResponse = new BaseMediatrResponse<GetRolloverWorkflowCandidatesQueryResponse>
+        var mediatrResponse = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
         {
             Success = false,
             ErrorMessage = "some error"
         };
 
         _mockMediator
-            .Setup(m => m.Send(It.IsAny<GetRolloverWorkflowCandidatesQuery>(), It.IsAny<CancellationToken>()))
+            .Setup(m => m.Send(It.IsAny<GetRolloverWorkflowCandidatesCountQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(mediatrResponse);
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var actionResult = await controller.GetRolloverWorkflowCandidates(null, null);
+        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(default);
 
         // Assert
-        const int expectedStatus = 500;
+        Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
+        var status = (OkObjectResult)actionResult;
 
-        if (actionResult is ObjectResult objectResult)
-        {
-            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
-        }
-        else if (actionResult is StatusCodeResult statusCodeResult)
-        {
-            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
-        }
-        else
-        {
-            Assert.Fail($"Expected ObjectResult or StatusCodeResult with status {expectedStatus} but got {actionResult?.GetType().FullName ?? "null"}");
-        }
+        Assert.That(status.Value, Is.InstanceOf<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>());
+        var value = (BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>)status.Value;
 
-        // verify logger.LogError was called with a message containing the mediatr error message
-        _mockLogger.Verify(
-            x => x.Log(
-                It.Is<Microsoft.Extensions.Logging.LogLevel>(l => l == Microsoft.Extensions.Logging.LogLevel.Error),
-                It.IsAny<EventId>(),
-                It.Is<It.IsAnyType>((v, t) => v != null && v.ToString().Contains("Error thrown handling request: some error")),
-                It.IsAny<Exception?>(),
-                It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
+        Assert.That(value.Success, Is.False);
+        Assert.That(value.ErrorMessage, Is.EqualTo("some error"));
     }
 }
