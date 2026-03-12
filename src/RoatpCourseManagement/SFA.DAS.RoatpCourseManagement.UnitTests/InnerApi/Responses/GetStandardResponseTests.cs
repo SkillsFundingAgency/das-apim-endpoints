@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -21,12 +22,12 @@ public class GetStandardResponseTests
         result.LarsCode.Should().Be(source.LarsCode.ToString());
         result.Title.Should().Be(source.Title);
         result.Level.Should().Be(source.Level);
-        result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
+        result.ApprenticeshipType.Should().Be(source.LearningType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
-        result.Duration.Should().Be(source.Duration);
-        result.DurationUnits.Should().Be(source.DurationUnits);
+        result.Duration.Should().Be(source.ApprenticeshipFunding.FirstOrDefault().Duration);
+        result.DurationUnits.Should().Be(source.ApprenticeshipFunding.FirstOrDefault().DurationUnits);
         result.CourseType.Should().Be(source.CourseType);
     }
 
@@ -58,10 +59,10 @@ public class GetStandardResponseTests
         GetStandardResponseFromCoursesApi source = null;
 
         // Act
-        Action act = () => { var _ = (GetStandardResponse)source; };
+        var result = (GetStandardResponse)source;
 
         // Assert
-        act.Should().Throw<NullReferenceException>();
+        result.Should().BeNull();
     }
 
     [Test]
