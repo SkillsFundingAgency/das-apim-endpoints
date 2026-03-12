@@ -62,7 +62,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 
     public class GetStandardResponseFromCoursesApi
     {
-        public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
+        public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; } = new();
         public string StandardUId { get; set; }
         public string IfateReferenceNumber { get; set; }
         public string LarsCode { get; set; }
