@@ -28,7 +28,7 @@
     public class ShortCourseEarning
     {
         public int CollectionYear { get; set; }
-        public int CollectionMonth { get; set; }
+        public int CollectionPeriod { get; set; }
         public ShortCourseMilestone Milestone { get; set; }
         public decimal Amount { get; set; }
     }
