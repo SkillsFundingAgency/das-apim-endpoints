@@ -71,9 +71,21 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         var body = new UpdateShortCourseLearningRequestBody
         {
+            LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
+            {
+                Uln = command.Request.Learner.Uln,
+                FirstName = command.Request.Learner.FirstName,
+                LastName = command.Request.Learner.LastName,
+                DateOfBirth = command.Request.Learner.Dob,
+                EmailAddress = command.Request.Learner.Email
+            },
             OnProgramme = new ShortCourseOnProgrammeUpdateDetails
             {
+                StartDate = currentOnProgramme.StartDate,
+                ExpectedEndDate = currentOnProgramme.ExpectedEndDate,
+                CompletionDate = currentOnProgramme.CompletionDate,
                 WithdrawalDate = currentOnProgramme.WithdrawalDate,
+                CourseCode = currentOnProgramme.CourseCode,
                 Milestones = milestones
             }
         };

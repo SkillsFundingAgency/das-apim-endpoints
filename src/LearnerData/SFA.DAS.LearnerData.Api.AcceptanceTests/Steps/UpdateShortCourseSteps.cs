@@ -79,7 +79,7 @@ public class UpdateShortCourseSteps
         var response = new UpdateShortCourseLearningPutResponse();
         if (changes.Any())
         {
-            response.Changes = changes.ToArray();
+            response.Changes = changes.Select(x=>x.ToString()).ToArray();
         }
 
         _testContext.ApprenticeshipsApi.MockServer
