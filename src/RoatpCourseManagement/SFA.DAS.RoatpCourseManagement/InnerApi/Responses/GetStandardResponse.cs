@@ -24,7 +24,8 @@ public class GetStandardResponse
     public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source)
     {
         if (source == null) return null;
-        var apprenticeshipFunding = source.ApprenticeshipFunding?.Count() > 0 ?
+
+        var apprenticeshipFunding = source.ApprenticeshipFunding?.Count > 0 ?
             source.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() : null;
 
         return new GetStandardResponse
