@@ -52,6 +52,7 @@ public class ShortlistProviderModel
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Website { get; set; }
+    public bool HasOnlineDeliveryOption { get; set; }
     public string Leavers { get; set; }
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
