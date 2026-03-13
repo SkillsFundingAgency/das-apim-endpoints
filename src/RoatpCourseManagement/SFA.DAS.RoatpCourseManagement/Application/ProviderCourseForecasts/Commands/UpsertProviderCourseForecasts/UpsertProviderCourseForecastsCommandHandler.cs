@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.ProviderCourseForecasts.Commands.UpsertProviderCourseForecasts;
@@ -11,6 +12,8 @@ public class UpsertProviderCourseForecastsCommandHandler(IRoatpCourseManagementA
 {
     public async Task Handle(UpsertProviderCourseForecastsCommand request, CancellationToken cancellationToken)
     {
-        await _courseManagementApiClient.PostWithResponseCode<object>(new UpsertProviderCourseForecastsRequest(request.Ukprn, request.LarsCode, request.Forecasts), false);
+        var response = await _courseManagementApiClient.PostWithResponseCode<object>(new UpsertProviderCourseForecastsRequest(request.Ukprn, request.LarsCode, request.Forecasts), false);
+
+        response.EnsureSuccessStatusCode();
     }
 }
