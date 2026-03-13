@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi;
@@ -23,8 +24,8 @@ public class GetStandardResponse
     public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source)
     {
         if (source == null) return null;
-
-        var funding = source.ApprenticeshipFunding?.FirstOrDefault();
+        var apprenticeshipFunding = source.ApprenticeshipFunding?.Count() > 0 ?
+            source.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() : null;
 
         return new GetStandardResponse
         {
@@ -37,8 +38,8 @@ public class GetStandardResponse
             ApprovalBody = source.ApprovalBody,
             Route = source.Route,
             IsRegulatedForProvider = source.IsRegulatedForProvider,
-            Duration = funding?.Duration ?? 0,
-            DurationUnits = funding?.DurationUnits ?? default(DurationUnits),
+            Duration = apprenticeshipFunding?.Duration ?? 0,
+            DurationUnits = apprenticeshipFunding?.DurationUnits ?? default(DurationUnits),
             CourseType = source.CourseType
         };
     }
@@ -76,8 +77,8 @@ public class GetStandardResponseFromCoursesApi
 }
 public class ApprenticeshipFunding
 {
+    public DateTime EffectiveFrom { get; set; }
     public DurationUnits DurationUnits { get; set; }
-
     public int Duration { get; set; }
 }
 

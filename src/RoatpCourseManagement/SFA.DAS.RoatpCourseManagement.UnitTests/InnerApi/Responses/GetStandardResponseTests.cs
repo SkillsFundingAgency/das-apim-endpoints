@@ -17,6 +17,7 @@ public class GetStandardResponseTests
         GetStandardResponse result = source;
 
         // Assert
+        var expectedApprenticeshipFunding = source.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).FirstOrDefault();
         result.StandardUId.Should().Be(source.StandardUId);
         result.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
         result.LarsCode.Should().Be(source.LarsCode);
@@ -26,8 +27,8 @@ public class GetStandardResponseTests
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
-        result.Duration.Should().Be(source.ApprenticeshipFunding.FirstOrDefault().Duration);
-        result.DurationUnits.Should().Be(source.ApprenticeshipFunding.FirstOrDefault().DurationUnits);
+        result.Duration.Should().Be(expectedApprenticeshipFunding.Duration);
+        result.DurationUnits.Should().Be(expectedApprenticeshipFunding.DurationUnits);
         result.CourseType.Should().Be(source.CourseType);
     }
 
