@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Aodp.Application.Constants;
 using SFA.DAS.Aodp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -13,14 +14,17 @@ namespace SFA.DAS.Aodp.Application.Queries.Application.Review
         private readonly IAodpApiClient<AodpApiConfiguration> _apiClient;
         private readonly IDfeUsersService _dfeUsersService;
         private readonly DfeSignInApiConfiguration _cfg;
+        private readonly ILogger<GetApplicationsForReviewQueryHandler> _logger;
 
         public GetApplicationsForReviewQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient,
             IDfeUsersService dfeUsersService,
-            DfeSignInApiConfiguration cfg)
+            DfeSignInApiConfiguration cfg,
+            ILogger<GetApplicationsForReviewQueryHandler> logger)
         {
             _apiClient = apiClient;
             _dfeUsersService = dfeUsersService;
             _cfg = cfg;
+            _logger = logger;
         }
 
         public async Task<BaseMediatrResponse<GetApplicationsForReviewQueryResponse>> Handle(GetApplicationsForReviewQuery request, CancellationToken cancellationToken)
@@ -42,9 +46,20 @@ namespace SFA.DAS.Aodp.Application.Queries.Application.Review
 
                 response.Success = true;
             }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Failed calling a downstream service");
+                response.ErrorMessage = "A dependent service is unavailable.";
+            }
+            catch (ApplicationException ex)
+            {
+                _logger.LogError(ex, "Failed retrieving reviewer users");
+                response.ErrorMessage = ex.Message;
+            }
             catch (Exception ex)
             {
-                response.ErrorMessage = ex.Message;
+                _logger.LogError(ex, "Unexpected error retrieving application reviews");
+                response.ErrorMessage = "An unexpected error occurred.";
             }
 
             return response;
