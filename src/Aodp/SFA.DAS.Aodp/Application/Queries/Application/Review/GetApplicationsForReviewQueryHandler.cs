@@ -33,17 +33,20 @@ namespace SFA.DAS.Aodp.Application.Queries.Application.Review
             response.Success = false;
             try
             {
-                var result = await _apiClient.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(new GetApplicationsForReviewApiRequest()
-                {
-                    Data = request
-                });
+                _logger.LogInformation("Calling AODP inner API for application reviews");
+                var result = await _apiClient.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(
+                    new GetApplicationsForReviewApiRequest { Data = request });
+
                 result.EnsureSuccessStatusCode();
+                _logger.LogInformation("AODP inner API call succeeded");
 
                 response.Value = result.Body;
 
+                _logger.LogInformation("Calling DfE users service for reviewers. Ukprn: {Ukprn}", _cfg.QfauUkprn);
                 var users = await _dfeUsersService.GetUsersByRoleAsync(_cfg.QfauUkprn, DfeRoles.Reviewer);
-                response.Value.AvailableReviewers = users.Select(u => (Reviewer)u).ToList();
+                _logger.LogInformation("DfE users service call succeeded. Users returned: {Count}", users.Count);
 
+                response.Value.AvailableReviewers = users.Select(u => (Reviewer)u).ToList();
                 response.Success = true;
             }
             catch (HttpRequestException ex)
