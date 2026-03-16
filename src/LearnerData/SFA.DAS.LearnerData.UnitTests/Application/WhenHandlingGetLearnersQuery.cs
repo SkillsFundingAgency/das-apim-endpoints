@@ -1,11 +1,7 @@
-﻿using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.LearnerData.Application.GetLearners;
+﻿using SFA.DAS.LearnerData.Application.GetLearners;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application;
 
