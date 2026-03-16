@@ -10,13 +10,13 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Rollover
     public class GetRolloverCandidatesQueryHandlerTests
     {
         private Mock<IAodpApiClient<AodpApiConfiguration>> _mockApiClient = null!;
-        private GetRolloverWorkflowCandidatesQueryHandler _handler = null!;
+        private GetRolloverCandidatesQueryHandler _handler = null!;
 
         [SetUp]
         public void SetUp()
         {
             _mockApiClient = new Mock<IAodpApiClient<AodpApiConfiguration>>();
-            _handler = new GetRolloverWorkflowCandidatesQueryHandler(_mockApiClient.Object);
+            _handler = new GetRolloverCandidatesQueryHandler(_mockApiClient.Object);
         }
 
         [Test]
