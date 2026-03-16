@@ -18,5 +18,6 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries
         public int StartYear { get; set; }
         public DateTime? MaxStartDate { get; set; }
         public List<string> ExcludeUlns { get; set; } = new();
+        public int? CourseCode { get; set; }
     }
 }
