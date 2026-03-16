@@ -45,7 +45,8 @@ public class GetAllProviderCoursesQueryHandler : IRequestHandler<GetAllProviderC
                     IsApprovedByRegulator = c.IsApprovedByRegulator,
                     IsRegulatedForProvider = c.IsRegulatedForProvider,
                     HasLocations = c.HasLocations,
-                    HasOnlineDeliveryOption = c.HasOnlineDeliveryOption
+                    HasOnlineDeliveryOption = c.HasOnlineDeliveryOption,
+                    CourseType = c.CourseType
                 };
                 results.Add(course);
             }
