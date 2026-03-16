@@ -56,18 +56,19 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrin
 
             response.EnsureSuccessStatusCode();
 
-            await SendConfirmationEmail(command).ConfigureAwait(false);
+            await SendConfirmationEmail(command, certificate.Type).ConfigureAwait(false);
 
             return Unit.Value;
         }
 
-        private async Task SendConfirmationEmail(CreateCertificatePrintRequestCommand command)
+        private async Task SendConfirmationEmail(CreateCertificatePrintRequestCommand command, string certificateType)
         {
             var tokens = new Dictionary<string, string>
             {
                 { "UserName", command.Email?.UserName },
                 { "LinkDomain", command.Email?.LinkDomain },
-                { "CertificateId", command.CertificateId.ToString() }
+                { "CertificateId", command.CertificateId.ToString() },
+                { "Type", certificateType }
             };
 
             _logger.LogInformation("Sending print confirmation email for certificate {CertificateId} using template {TemplateId}", command.CertificateId, command.Email?.TemplateId);
