@@ -68,7 +68,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrin
                 { "UserName", command.Email?.UserName },
                 { "LinkDomain", command.Email?.LinkDomain },
                 { "CertificateId", command.CertificateId.ToString() },
-                { "Type", certificateType }
+                { "Type", certificateType?.ToLower() }
             };
 
             _logger.LogInformation("Sending print confirmation email for certificate {CertificateId} using template {TemplateId}", command.CertificateId, command.Email?.TemplateId);
