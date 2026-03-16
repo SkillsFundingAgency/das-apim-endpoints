@@ -1,23 +1,25 @@
 ﻿using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
 public interface ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, long ukprn);
+    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, CreateShortCoursePostResponse learningResponse, long ukprn);
 }
 
 public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, long ukprn)
+    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, CreateShortCoursePostResponse learningResponse, long ukprn)
     {
         var firstOnProg = request.Delivery.OnProgramme.First();
 
         return new CreateUnapprovedShortCourseLearningRequest
         {
-            LearningKey = learningKey,
+            LearningKey = learningResponse.LearningKey,
+            EpisodeKey = learningResponse.EpisodeKey,
             Learner = new Learner
             {
                 DateOfBirth = request.Learner.Dob,

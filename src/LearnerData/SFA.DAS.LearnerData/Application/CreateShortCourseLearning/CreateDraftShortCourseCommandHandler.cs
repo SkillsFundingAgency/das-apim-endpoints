@@ -1,28 +1,17 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Events;
-using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LearnerData.Application.UpdateLearner;
+namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 
-public class CreateDraftShortCourseCommand : IRequest<CreateDraftShortCourseResult>
-{
-    public long Ukprn { get; set; }
-    public ShortCourseRequest ShortCourseRequest { get; set; }
-}
-
-public class CreateDraftShortCourseResult
-{
-    public HttpStatusCode StatusCode { get; set; }
-}
-
+#pragma warning disable CS8618
 public class CreateDraftShortCourseCommandHandler(
     ILogger<CreateDraftShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
@@ -38,7 +27,7 @@ public class CreateDraftShortCourseCommandHandler(
 
         var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
-        var learningResponse = await learningApiClient.PostWithResponseCode<Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
+        var learningResponse = await learningApiClient.PostWithResponseCode<CreateShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
 
         var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body, command.Ukprn);
 
@@ -74,3 +63,4 @@ public class CreateDraftShortCourseCommandHandler(
         };
     }
 }
+#pragma warning restore CS8618
