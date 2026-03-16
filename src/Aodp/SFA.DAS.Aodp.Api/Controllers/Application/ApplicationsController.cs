@@ -201,8 +201,24 @@ public class ApplicationsController : BaseController
     [HttpPut("/api/applications/bulk-reviewer")]
     [ProducesResponseType(typeof(BulkSaveReviewerCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> BulkUpdateReviewer(BulkSaveReviewerCommand command)
+    public async Task<IActionResult> BulkUpdateReviewer([FromBody] BulkSaveReviewerCommand command)
     {
+        _logger.LogInformation(
+        "OUTER API CONTROLLER: BulkUpdateReviewer hit. Count={Count}, Reviewer1Set={Reviewer1Set}, Reviewer1={Reviewer1}, Reviewer2Set={Reviewer2Set}, Reviewer2={Reviewer2}, UserType={UserType}",
+        command?.ApplicationReviewIds?.Count,
+        command?.Reviewer1Set,
+        command?.Reviewer1,
+        command?.Reviewer2Set,
+        command?.Reviewer2,
+        command?.UserType);
+
+        if (command?.ApplicationReviewIds != null && command.ApplicationReviewIds.Any())
+        {
+            _logger.LogInformation(
+                "OUTER API CONTROLLER: FirstApplicationReviewId={FirstApplicationReviewId}",
+                command.ApplicationReviewIds.First());
+        }
+
         return await SendRequestAsync(command);
     }
 

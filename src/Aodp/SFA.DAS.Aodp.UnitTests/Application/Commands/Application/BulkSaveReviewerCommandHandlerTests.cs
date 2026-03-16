@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
+using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.InnerApi.Application.Review;
 using SFA.DAS.AODP.Application.Commands.Application.Review;
@@ -16,13 +17,15 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Review
         private IFixture _fixture;
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
         private BulkSaveReviewerCommandHandler _handler;
+        private Mock<ILogger<BulkSaveReviewerCommandHandler>> _loggerMock;
 
         [SetUp]
         public void SetUp()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
-            _handler = new BulkSaveReviewerCommandHandler(_apiClientMock.Object);
+            _loggerMock = _fixture.Freeze<Mock<ILogger<BulkSaveReviewerCommandHandler>>>();
+            _handler = new BulkSaveReviewerCommandHandler(_apiClientMock.Object, _loggerMock.Object);
         }
 
         [Test]
