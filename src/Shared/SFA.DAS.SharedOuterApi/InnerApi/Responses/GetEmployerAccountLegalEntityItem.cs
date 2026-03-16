@@ -12,7 +12,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
         public string AccountPublicHashedId { get ; set ; }
         public string AccountName { get ; set ; }
         public List<Agreement> Agreements { get; set; }
-        public long AccountLegalEntityId { get; set; }
     }
     
     public class Agreement
