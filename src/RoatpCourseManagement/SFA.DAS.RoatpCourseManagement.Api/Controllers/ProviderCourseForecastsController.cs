@@ -1,8 +1,10 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseForecasts.Commands.UpsertProviderCourseForecasts;
 using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseForecasts.Queries.GetProviderCourseForecasts;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
@@ -17,5 +19,12 @@ public class ProviderCourseForecastsController(IMediator _mediator) : Controller
     {
         GetProviderCourseForecastsQueryResult result = await _mediator.Send(new GetProviderCourseForecastsQuery(ukprn, larsCode), cancellationToken);
         return Ok(result);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UpsertProviderCourseForecasts([FromRoute] int ukprn, [FromRoute] string larsCode, [FromBody] IEnumerable<UpsertProviderCourseForecastModel> forecasts, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new UpsertProviderCourseForecastsCommand(ukprn, larsCode, forecasts), cancellationToken);
+        return NoContent();
     }
 }
