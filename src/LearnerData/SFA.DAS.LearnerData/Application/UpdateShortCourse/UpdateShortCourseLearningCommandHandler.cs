@@ -81,6 +81,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             },
             OnProgramme = new ShortCourseOnProgrammeUpdateDetails
             {
+                Ukprn = command.Ukprn,
+                Price = 1000,
                 StartDate = currentOnProgramme.StartDate,
                 ExpectedEndDate = currentOnProgramme.ExpectedEndDate,
                 CompletionDate = currentOnProgramme.CompletionDate,
