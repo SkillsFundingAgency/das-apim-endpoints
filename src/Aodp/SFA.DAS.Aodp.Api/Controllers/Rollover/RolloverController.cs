@@ -17,13 +17,14 @@ public class RolloverController : BaseController
         _logger = logger;
     }
 
-    [HttpGet("/api/rollover/workflowcandidates")]
-    [ProducesResponseType(typeof(GetRolloverWorkflowCandidatesQueryResponse), StatusCodes.Status200OK)]
+    [HttpGet("/api/rollover/workflowcandidatescount")]
+    [ProducesResponseType(typeof(GetRolloverWorkflowCandidatesCountQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetRolloverWorkflowCandidates([FromQuery] int? skip, [FromQuery] int? take)
+    public async Task<IActionResult> GetRolloverWorkflowCandidatesCount(CancellationToken cancellationToken)
     {
-        var query = new GetRolloverWorkflowCandidatesQuery(skip, take);
-        return await SendRequestAsync(query);
+        var query = new GetRolloverWorkflowCandidatesCountQuery();
+        var result = await _mediator.Send(query, cancellationToken);
+        return Ok(result);
     }
 
     [HttpGet("/api/rollover/rollovercandidates")]
