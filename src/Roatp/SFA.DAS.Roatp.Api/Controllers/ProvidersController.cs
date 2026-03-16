@@ -19,7 +19,7 @@ public class ProvidersController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPut]
+    [HttpPost]
     [Route("update-names")]
     public async Task<IActionResult> UpdateProviderNames()
     {
