@@ -5,6 +5,7 @@ using SFA.DAS.AdminRoatp.Infrastructure;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -23,8 +24,8 @@ public class PostOrganisatonCommandHandler(IRoatpServiceRestApiClient _roatpServ
 
         var courseTypes = new List<int>();
 
-        if (command.DeliversApprenticeships) courseTypes.Add((int)ApprenticeshipType.Apprenticeship);
-        if (command.DeliversApprenticeshipUnits) courseTypes.Add((int)ApprenticeshipType.ApprenticeshipUnit);
+        if (command.DeliversApprenticeships) courseTypes.Add((int)CourseType.Apprenticeship);
+        if (command.DeliversApprenticeshipUnits) courseTypes.Add((int)CourseType.ShortCourse);
 
         var tasks = new List<Task>();
 
