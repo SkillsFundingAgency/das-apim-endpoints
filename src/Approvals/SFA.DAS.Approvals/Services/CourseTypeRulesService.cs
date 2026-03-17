@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -18,39 +19,39 @@ namespace SFA.DAS.Approvals.Services
     {
         public async Task<CourseTypeRulesResult> GetCourseTypeRulesAsync(string courseCode)
         {
-            var standard = await GetStandardAsync(courseCode);
-            var learnerAge = await GetLearnerAgeRulesAsync(standard.ApprenticeshipType);
+            var course = await GetCourseAsync(courseCode);
+            var learnerAge = await GetLearnerAgeRulesAsync(course.LearningType);
 
             return new CourseTypeRulesResult
             {
-                Standard = standard,
+                Course = course,
                 LearnerAgeRules = learnerAge
             };
         }
 
         public async Task<RplRulesResult> GetRplRulesAsync(string courseCode)
         {
-            var standard = await GetStandardAsync(courseCode);
-            var rplRules = await GetRplRulesInternalAsync(standard.ApprenticeshipType);
+            var course = await GetCourseAsync(courseCode);
+            var rplRules = await GetRplRulesInternalAsync(course.LearningType);
 
             return new RplRulesResult
             {
-                Standard = standard,
+                Course = course,
                 RplRules = rplRules
             };
         }
 
-        private async Task<GetStandardsListItem> GetStandardAsync(string courseCode)
+        private async Task<GetCourseLookupResponse> GetCourseAsync(string courseCode)
         {
-            var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
+            var course = await coursesApiClient.Get<GetCourseLookupResponse>(new GetCourseLookupByIdRequest(courseCode));
             
-            if (standard == null)
+            if (course == null)
             {
-                logger.LogError("Standard not found for course ID {CourseId}", courseCode);
-                throw new Exception($"Standard not found for course ID {courseCode}");
+                logger.LogError("Course not found for course ID {CourseId}", courseCode);
+                throw new Exception($"Course not found for course ID {courseCode}");
             }
 
-            return standard;
+            return course;
         }
 
         private async Task<GetLearnerAgeResponse> GetLearnerAgeRulesAsync(string apprenticeshipType)

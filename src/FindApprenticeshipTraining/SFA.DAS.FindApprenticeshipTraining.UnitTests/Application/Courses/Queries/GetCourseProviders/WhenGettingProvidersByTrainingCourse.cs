@@ -21,7 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
     {
         [Test, MoqAutoData]
         public async Task Handle_ReturnsExpectedReponse(
-            GetCourseProvidersResponseFromCourseApi apiResponse,
+            GetCourseProvidersResponse apiResponse,
             GetCourseProvidersQuery query,
             [Frozen] Mock<ICachedLocationLookupService> cachedLocationLookupService,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
@@ -30,12 +30,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             )
         {
             courseManagementApiMock
-                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(It.Is<GetProvidersByCourseIdRequest>(
+                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
                     c => c.GetUrl.Contains(query.LarsCode)
                       && c.GetUrl.Contains($"api/courses/{query.LarsCode}/providers")
                     )
                 ))
-                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponseFromCourseApi>(apiResponse,
+                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse,
                     HttpStatusCode.OK, ""));
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -87,7 +87,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 
         [Test, MoqAutoData]
         public async Task Handler_NoLocationEntered_GetExpectedResponse(
-            GetCourseProvidersResponseFromCourseApi apiResponse,
+            GetCourseProvidersResponse apiResponse,
             GetCourseProvidersQuery query,
             [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> courseManagementApiMock,
             [Frozen] Mock<ILocationLookupService> locationLookupServiceMock,
@@ -100,12 +100,12 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             query.Location = null;
 
             courseManagementApiMock
-                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(It.Is<GetProvidersByCourseIdRequest>(
+                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.Is<GetProvidersByCourseIdRequest>(
                         c => c.GetUrl.Contains(query.LarsCode.ToString())
                              && c.GetUrl.Contains($"api/courses/{query.LarsCode}/providers")
                     )
                 ))
-                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponseFromCourseApi>(apiResponse,
+                .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(apiResponse,
                     HttpStatusCode.OK, ""));
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -113,7 +113,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             result.Should().BeEquivalentTo(apiResponse, options => options.Excluding(x => x.LarsCode));
             result.LarsCode.Should().BeEquivalentTo(apiResponse.LarsCode.ToString());
             coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(x => x.StandardId == query.LarsCode)), Times.Never);
-            courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Once);
+            courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Once);
             courseManagementApiMock.Verify(x => x.Get<GetAcademicYearsLatestQueryResponse>(It.IsAny<GetAcademicYearsLatestRequest>()), Times.Never);
         }
 
@@ -132,10 +132,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             query.Location = null;
 
             courseManagementApiMock
-                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponseFromCourseApi>(It.IsAny<GetProvidersByCourseIdRequest>()
+                .Setup(client => client.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()
                     )
                 )
-                 .ReturnsAsync(new ApiResponse<GetCourseProvidersResponseFromCourseApi>(null, statusCode, "Error"));
+                 .ReturnsAsync(new ApiResponse<GetCourseProvidersResponse>(null, statusCode, "Error"));
 
             var result = await handler.Handle(query, CancellationToken.None);
 
