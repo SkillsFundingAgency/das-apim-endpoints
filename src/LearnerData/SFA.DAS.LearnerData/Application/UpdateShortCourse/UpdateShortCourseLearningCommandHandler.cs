@@ -112,6 +112,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         var body =  new UpdateShortCourseOnProgrammeRequestBody
         {
             WithdrawalDate = currentOnProgramme.WithdrawalDate,
+            CompletionDate = currentOnProgramme.CompletionDate,
             Milestones = milestones
         };
 
