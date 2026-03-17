@@ -5,7 +5,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests.Courses;
 public class GetKsbsForCourseOptionRequestTests
 {
     [Test, AutoData]
-    public void GetUrl_WithLarsCode_ReturnsExpectedEndpointAndPreservesLarsCode(string larsCode)
+    public void GetUrl_WhenBuildingGetKsbsForCourseOptionRequest_ReturnsCorrectUrl(string larsCode)
     {
         var request = new GetKsbsForCourseOptionRequest(larsCode);
 
