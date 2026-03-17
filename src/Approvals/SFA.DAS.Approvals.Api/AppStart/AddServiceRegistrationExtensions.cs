@@ -68,6 +68,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IAutoReservationsService, AutoReservationsService>();
         services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
+        services.AddTransient<ITrainingProgrammeResolutionService, TrainingProgrammeResolutionService>();
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
         services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();

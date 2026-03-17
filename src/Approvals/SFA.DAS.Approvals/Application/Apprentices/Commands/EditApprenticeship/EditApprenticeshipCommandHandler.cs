@@ -3,8 +3,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -17,6 +15,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 
 public class EditApprenticeshipCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
+    ITrainingProgrammeResolutionService trainingProgrammeResolutionService,
     ICourseTypeRulesService courseTypeRulesService,
     ServiceParameters serviceParameters)
     : IRequestHandler<EditApprenticeshipCommand, EditApprenticeshipResult>
@@ -38,28 +37,14 @@ public class EditApprenticeshipCommandHandler(
         
         if (triggerCalculate)
         {
-            TrainingProgramme trainingProgramme;
+            var trainingProgrammeResponse = await trainingProgrammeResolutionService.GetTrainingProgrammeAsync(command.CourseCode, command.StartDate);
+            var trainingProgramme = trainingProgrammeResponse?.TrainingProgramme;
 
-            if (int.TryParse(command.CourseCode, out var standardId))
+            if (trainingProgramme != null)
             {
-                var calculatedTrainingProgrammeVersionRequest = new GetCalculatedTrainingProgrammeVersionRequest(
-                    standardId,
-                    command.StartDate.Value);
-                
-                var calculatedTrainingProgrammeVersion = await commitmentsV2ApiClient.Get<GetTrainingProgrammeResponse>(calculatedTrainingProgrammeVersionRequest);
-
-                trainingProgramme = calculatedTrainingProgrammeVersion.TrainingProgramme;
+                versionToValidate = trainingProgramme.Version;
+                hasOptions = trainingProgramme.Options.Any();
             }
-            else
-            {
-                var trainingProgrammeRequest = new GetTrainingProgrammeRequest(command.CourseCode);
-                var trainingProgrammeResponse = await commitmentsV2ApiClient.Get<GetTrainingProgrammeResponse>(trainingProgrammeRequest);
-                
-                trainingProgramme = trainingProgrammeResponse.TrainingProgramme;
-            }
-
-            versionToValidate = trainingProgramme.Version;
-            hasOptions = trainingProgramme.Options.Any();
         }
         
         var courseTypeRules = await courseTypeRulesService.GetCourseTypeRulesAsync(command.CourseCode);
