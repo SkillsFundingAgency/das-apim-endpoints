@@ -44,8 +44,7 @@ public sealed class WhenGettingCourseByLarsCode
         );
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_Returns_Correct_CourseDetails(GetCourseByLarsCodeQuery query)
     {
         var standardDetailResponse = new StandardDetailResponse
@@ -173,8 +172,7 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handler_Returns_Ksbs(GetCourseByLarsCodeQuery query)
     {
         var ksbType = "Knowledge";
@@ -192,7 +190,7 @@ public sealed class WhenGettingCourseByLarsCode
                 {
                     Type = ksbType,
                     Id = ksbId,
-                    Description = ksbDescription
+                    Detail = ksbDescription
                 }
             }
         };
@@ -204,6 +202,14 @@ public sealed class WhenGettingCourseByLarsCode
                 )
             ))
             .ReturnsAsync(standardDetailResponse);
+
+        _cachedStandardDetailsService
+            .Setup(x => x.GetKsbsForCourseOption(
+                It.Is<string>(r =>
+                    r == query.LarsCode.ToString()
+                )
+            ))
+            .ReturnsAsync(new GetKsbsForCourseOptionResponse { Ksbs = standardDetailResponse.Ksbs });
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -232,8 +238,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handler_Returns_RelatedOccupations(GetCourseByLarsCodeQuery query)
     {
         var relatedOccupationsTitle1 = "Plumbing and heating technician";
@@ -288,8 +293,7 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_Returns_Default_Funding_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
     {
         _cachedStandardDetailsService
@@ -324,8 +328,7 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_Returns_Default_Provider_Counts_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
     {
         _cachedStandardDetailsService
@@ -360,8 +363,7 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task Handle_Gets_Location_Information_And_Queries_Provider_Count_By_Longitude_And_Latitude(
         LocationItem locationItem,
         StandardDetailResponse standardDetailsResponse,
@@ -476,7 +478,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_No_End_Date(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_Calculates_IncentivePayment_Using_The_CURRENT_Active_Funding_Record_With_No_End_Date(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
         {
@@ -526,7 +528,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_End_Date_In_Future(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_Calculates_IncentivePayment_Using_The_CURRENT_Active_Funding_Record_With_End_Date_In_Future(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
         {
@@ -646,7 +648,7 @@ public sealed class WhenGettingCourseByLarsCode
     [TestCase(1, null, null, 1)]
     [TestCase(1, 2, 3, 6)]
 
-    public async Task Handle_Returns_Expected_IncentivePayment_When_3_Payments_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
+    public async Task Handle_Returns_Expected_IncentivePayment_When_3_PayMENTS_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
     {
         var larsCode = "123";
 

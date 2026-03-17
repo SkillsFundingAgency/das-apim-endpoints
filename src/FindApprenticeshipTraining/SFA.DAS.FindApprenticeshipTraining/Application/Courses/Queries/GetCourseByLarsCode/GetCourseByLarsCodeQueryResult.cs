@@ -47,7 +47,6 @@ public sealed class GetCourseByLarsCodeQueryResult
             StandardPageUrl = source.StandardPageUrl,
             CourseType = source.CourseType,
             ApprenticeshipType = source.ApprenticeshipType,
-            Ksbs = source.Ksbs == null ? new List<Ksb>() : source.Ksbs.Select(c => (Ksb)c).ToList(),
             RelatedOccupations = source.RelatedOccupations == null ? new List<RelatedOccupation>() : source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }

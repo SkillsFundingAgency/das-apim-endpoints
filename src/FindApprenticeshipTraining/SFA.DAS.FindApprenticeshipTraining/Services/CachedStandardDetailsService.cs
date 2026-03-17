@@ -21,6 +21,20 @@ public class CachedStandardDetailsService : ICachedStandardDetailsService
         _cacheStorageService = cacheStorageService;
     }
 
+    public async Task<GetKsbsForCourseOptionResponse> GetKsbsForCourseOption(string larsCode)
+    {
+        var ksbsCacheKey = $"{nameof(GetKsbsForCourseOptionResponse)}-{larsCode}";
+        var cachedKsbsForCourseOption = await _cacheStorageService.RetrieveFromCache<GetKsbsForCourseOptionResponse>(ksbsCacheKey);
+
+        if (cachedKsbsForCourseOption != null)
+            return cachedKsbsForCourseOption;
+
+        var apiResponse = await _coursesApiClient.GetWithResponseCode<GetKsbsForCourseOptionResponse>(new GetKsbsForCourseOptionRequest(larsCode));
+        var ksbsResponse = apiResponse.Body;
+        await _cacheStorageService.SaveToCache(ksbsCacheKey, ksbsResponse, StandardDetailsCacheDurationInHours);
+        return ksbsResponse;
+    }
+
     public async Task<StandardDetailResponse> GetStandardDetails(string larsCode)
     {
         var standardDetailsCacheKey = $"{nameof(StandardDetailResponse)}-{larsCode}";
