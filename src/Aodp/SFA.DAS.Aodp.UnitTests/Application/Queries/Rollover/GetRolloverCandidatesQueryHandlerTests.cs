@@ -30,7 +30,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Rollover
                    new RolloverCandidate
                    {
                        Id = Guid.NewGuid(),
-                       Qan = "1234"
+                       QualificationNumber = "1234"
                    }
                }
             };

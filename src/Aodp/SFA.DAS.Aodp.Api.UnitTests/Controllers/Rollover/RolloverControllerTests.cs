@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SFA.DAS.Aodp.Api.Controllers.Rollover;
 using SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification;
+using SFA.DAS.Aodp.Application.Commands.Rollover;
 using SFA.DAS.Aodp.Application.Queries.Rollover;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Rollover;
@@ -189,5 +190,79 @@ public class RolloverControllerTests
                 $"Expected ObjectResult or StatusCodeResult with status {expectedStatus}, " +
                 $"but got {actionResult?.GetType().FullName ?? "null"}");
         }
+    }
+
+    [Test]
+    public async Task CreateRolloverWorkflowRun_WhenMediatorReturnsSuccess_ShouldReturn200()
+    {
+        // Arrange
+        var cmd = new CreateRolloverWorkflowRunCommand
+        {
+            AcademicYear = "2024/25",
+            RolloverCandidateIds =  new List<Guid> { Guid.NewGuid() }
+        };
+
+        var createdId = Guid.NewGuid();
+        var mediatorResponse = new BaseMediatrResponse<CreateRolloverWorkflowRunCommandResponse>
+        {
+            Success = true,
+            Value = new CreateRolloverWorkflowRunCommandResponse { RolloverWorkflowRunId = createdId }
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<CreateRolloverWorkflowRunCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.CreateRolloverWorkflowRun(cmd);
+
+        // Assert
+        var ok = result as OkObjectResult;
+        Assert.That(ok, Is.Not.Null);
+        Assert.That(ok!.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+        // Expect the inner payload
+        Assert.That(ok.Value, Is.InstanceOf<CreateRolloverWorkflowRunCommandResponse>());
+        var payload = (CreateRolloverWorkflowRunCommandResponse)ok.Value!;
+        Assert.That(payload.RolloverWorkflowRunId, Is.EqualTo(createdId));
+
+    }
+
+    [Test]
+    public async Task CreateRolloverWorkflowRun_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var cmd = new CreateRolloverWorkflowRunCommand
+        {
+            AcademicYear = "2024/25",
+            RolloverCandidateIds = new List<Guid> { Guid.NewGuid() }
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<CreateRolloverWorkflowRunCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Unexpected failure"
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<CreateRolloverWorkflowRunCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.CreateRolloverWorkflowRun(cmd);
+
+        // Assert
+        const int expected = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expected));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expected));
+        else
+            Assert.Fail($"Expected ObjectResult or StatusCodeResult with {expected}, got {result?.GetType().FullName ?? "null"}");
     }
 }
