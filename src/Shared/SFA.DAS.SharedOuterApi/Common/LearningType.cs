@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.Approvals.Types;
+﻿namespace SFA.DAS.SharedOuterApi.Common;
 
 public enum LearningType : byte
 {
