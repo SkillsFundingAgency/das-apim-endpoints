@@ -1,13 +1,12 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
+public class WhenBuildingTheGetStandardDetailsByStandardUIdRequest
 {
-    public class WhenBuildingTheGetStandardDetailsByStandardUIdRequest
+    [Test, AutoData]
+    public void GetUrl_WhenBuildingRequest_ReturnsCorrectUrl(GetStandardDetailsByIdRequest actual)
     {
-        [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Built(GetStandardDetailsByIdRequest actual)
-        {
-            actual.GetUrl.Should().Be($"api/courses/lookup/{actual.Id}");
-        }
+        actual.GetUrl.Should().Be($"api/courses/lookup/{actual.Id}");
     }
 }
