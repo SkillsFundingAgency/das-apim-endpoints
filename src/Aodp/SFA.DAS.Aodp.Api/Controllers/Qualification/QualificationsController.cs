@@ -7,6 +7,7 @@ using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
 using SFA.DAS.AODP.Application.Commands.Qualification;
+using SFA.DAS.AODP.Application.Commands.Qualifications;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
 
 namespace SFA.DAS.AODP.Api.Controllers.Qualification
@@ -159,6 +160,14 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 return BadRequest(new { message = "Qualification reference cannot be empty" });
             }
             return await SendRequestAsync(new GetDiscussionHistoriesForQualificationQuery { QualificationReference = qualificationReference });
+        }
+
+        [HttpPut("bulk-status")]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> BulkStatusUpdate([FromBody] BulkUpdateQualificationStatusCommand bulkUpdateCommand)
+        {
+            return await SendRequestAsync(bulkUpdateCommand);
         }
 
         [HttpPost("qualificationstatus")]
