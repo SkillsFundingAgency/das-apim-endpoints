@@ -70,10 +70,72 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 Title = source.Title,
                 TrainingDescription = source.TrainingDescription,
                 User = Map(source.SubmitterContactDetails, source.ContractingParties),
-                Wage = source.Wage,
+                Wage = source.Wage
             };
         }
 
+        public static implicit operator PostVacancyV2RequestData(CreateVacancyRequest source)
+        {
+            var locationOption = source.RecruitingNationally
+                ? AvailableWhere.AcrossEngland
+                : source.MultipleAddresses is { Count: > 0 }
+                    ? AvailableWhere.MultipleLocations
+                    : AvailableWhere.OneLocation;
+            List<PostVacancyV2EmployerLocation> addresses = null;
+            switch (locationOption)
+            {
+                case AvailableWhere.OneLocation:
+                    addresses = source.Address is null
+                        ? null
+                        : [source.Address];
+                    break;
+                case AvailableWhere.MultipleLocations:
+                    addresses = source.MultipleAddresses.Select(x => (PostVacancyV2EmployerLocation)x).ToList();
+                    break;
+            }
+            
+            return new PostVacancyV2RequestData
+            {
+                AdditionalQuestion1 = source.AdditionalQuestion1,
+                AdditionalQuestion2 = source.AdditionalQuestion2,
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
+                EmployerLocations = addresses,
+                AnonymousReason = source.AnonymousReason,
+                ApplicationInstructions = source.ApplicationInstructions,
+                ApplicationMethod = source.ApplicationMethod.ToString(),
+                ApplicationUrl = source.ApplicationUrl,
+                ClosingDate = source.ClosingDate,
+                Description = source.Description,
+                DisabilityConfident = source.DisabilityConfident == CreateVacancyDisabilityConfident.Yes,
+                EmployerDescription = source.EmployerDescription,
+                EmployerLocationInformation = source.RecruitingNationallyDetails,
+                EmployerLocationOption = locationOption.ToString(),
+                EmployerName = source.EmployerName,
+                EmployerNameOption = source.EmployerNameOption.ToString(),
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                NumberOfPositions = source.NumberOfPositions,
+                OutcomeDescription = source.OutcomeDescription,
+                ProgrammeId = source.ProgrammeId,
+                Qualifications = source.Qualifications != null
+                    ? source.Qualifications.Select(c => (PostVacancyV2Qualification)c).ToList()
+                    : [],
+                ShortDescription = source.ShortDescription,
+                Skills = source.Skills != null ? source.Skills.ToList() : [],
+                StartDate = source.StartDate,
+                ThingsToConsider = source.ThingsToConsider,
+                Title = source.Title,
+                TrainingDescription = source.TrainingDescription,
+                Status = "Submitted",
+                SourceType = "New",
+                SourceOrigin = "Api",
+                //User = Map(source.SubmitterContactDetails, source.ContractingParties),
+                TrainingProvider = new PostVacancyV2TrainingProvider
+                {
+                    Ukprn = source.ContractingParties.Ukprn,
+                },
+                Wage = source.Wage,
+            };
+        }
         /// <summary>
         /// The title for the apprenticeship vacancy on Find an apprenticeship. Must include: <b>apprentice</b> or <b>apprenticeship</b>.
         /// </summary>
@@ -317,6 +379,20 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                     Postcode = source.Postcode
                 };
         }
+
+        public static implicit operator PostVacancyV2EmployerLocation(CreateVacancyAddress source)
+        {
+            return source is null
+                ? null
+                : new PostVacancyV2EmployerLocation
+                {
+                    AddressLine1 = source.AddressLine1,
+                    AddressLine2 = source.AddressLine2,
+                    AddressLine3 = source.AddressLine3,
+                    AddressLine4 = source.AddressLine4,
+                    Postcode = source.Postcode
+                };
+        }
         /// <summary>
         /// First line of the address where the apprentice will work.
         /// </summary>
@@ -363,6 +439,21 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 FixedWageYearlyAmount = source.WageType == WageType.FixedWage ?  source.FixedWageYearlyAmount : null,
                 DurationUnit = (InnerApi.Requests.DurationUnit)durationUnit,
                 WageType = (InnerApi.Requests.WageType)wageType,
+                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
+            };
+        }
+
+        public static implicit operator PostVacancyV2Wage(CreateVacancyWage source)
+        {
+            return new PostVacancyV2Wage
+            {
+                Duration = source.Duration,
+                DurationUnit = source.DurationUnit.ToString(),
+                WageType = source.WageType.ToString(),
+                WeeklyHours = source.WeeklyHours,
+                WorkingWeekDescription = source.WorkingWeekDescription,
+                FixedWageYearlyAmount = source.WageType == WageType.FixedWage ?  source.FixedWageYearlyAmount : null,
+                WageAdditionalInformation = source.WageAdditionalInformation,
                 CompanyBenefitsInformation = source.CompanyBenefitsInformation,
             };
         }
@@ -431,6 +522,19 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                 Subject = source.Subject,
                 Weighting = (InnerApi.Requests.QualificationWeighting)weighting,
                 Level = source.Level,
+            };
+        }
+
+        public static implicit operator PostVacancyV2Qualification(CreateVacancyQualification source)
+        {
+            return new PostVacancyV2Qualification
+            {
+                Grade = source.Grade,
+                Level = source.Level,
+                Subject = source.Subject,
+                Weighting = source.Weighting.ToString(),
+                QualificationType = source.QualificationType,
+                //OtherQualificationName = source.
             };
         }
         /// <summary>
