@@ -20,13 +20,13 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Returns_200_Range_HttpStatusCode(
         AddLearnerDataCommand command,
-        StandardDetailResponse courseResponse,
+        CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
 
-        courseResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "Apprenticeship";
 
         var expectedUrl =
             $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
@@ -36,8 +36,8 @@ public class AddLearnerDataCommandHandlerTests
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
 
         courseClient.Setup(x =>
-                x.Get<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+                x.Get<CourseLookupDetailResponse>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
             .ReturnsAsync(courseResponse);
 
         var result = await handler.Handle(command, CancellationToken.None);
@@ -62,17 +62,16 @@ public class AddLearnerDataCommandHandlerTests
 
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Throws_Exception(
-        StandardDetailResponse courseResponse,
+        CourseLookupDetailResponse courseResponse,
         AddLearnerDataCommand command,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-        courseResponse.ApprenticeshipType = "Unknown";
-
+        courseResponse.LearningType = "Unknown";
 
         courseClient.Setup(x =>
-                x.Get<StandardDetailResponse?>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+                x.Get<CourseLookupDetailResponse?>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
             .ReturnsAsync(courseResponse);
 
         var act = async () => await handler.Handle(command, CancellationToken.None);
@@ -98,11 +97,11 @@ public class AddLearnerDataCommandHandlerTests
     [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
     [Greedy] AddLearnerDataCommandHandler handler)
     {
-        StandardDetailResponse? courseResponse = null;
+        CourseLookupDetailResponse? courseResponse = null;
 
         courseClient.Setup(x =>
-                x.Get<StandardDetailResponse?>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+                x.Get<CourseLookupDetailResponse?>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
             .ReturnsAsync(courseResponse);
 
         var act = async () => await handler.Handle(command, CancellationToken.None);
@@ -113,13 +112,12 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Maps_To_Inner_Api_Successfully(
         AddLearnerDataCommand command,
-        StandardDetailResponse courseResponse,
+        CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-
-        courseResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "ApprenticeshipUnit";
 
         var expectedUrl =
             $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
@@ -129,8 +127,8 @@ public class AddLearnerDataCommandHandlerTests
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
 
         courseClient.Setup(x =>
-                x.Get<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+                x.Get<CourseLookupDetailResponse>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
             .ReturnsAsync(courseResponse);
 
         var result = await handler.Handle(command, CancellationToken.None);
