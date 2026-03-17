@@ -6,6 +6,7 @@ using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
@@ -35,6 +36,35 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                 .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(apprenticeship, HttpStatusCode.OK, string.Empty));
 
             providerStandardsService.Setup(x => x.GetStandardsData(apprenticeship.ProviderId))
+                .ReturnsAsync(providerStandardsData);
+
+            var standardsData = providerStandardsData.Standards.Select(x =>
+                    new GetEditApprenticeshipCourseQueryResult.Standard
+                    { CourseCode = x.CourseCode, Name = x.Name });
+
+            var result = await handler.Handle(query, CancellationToken.None);
+
+            result.Standards.ToList().Should().BeEquivalentTo(standardsData);
+        }
+
+        [Test, MoqAutoData]
+        public async Task ApprenticeshipUnit_Courses_Are_Mapped_Correctly(
+            GetEditApprenticeshipCourseQuery query,
+            GetApprenticeshipResponse apprenticeship,
+            ProviderStandardsData providerStandardsData,
+            [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+        {
+            var serviceParameters = new ServiceParameters(Party.Provider, apprenticeship.ProviderId);
+            apprenticeship.LearningType = LearningType.ApprenticeshipUnit;
+
+            var handler = new GetEditApprenticeshipCourseQueryHandler(apiClient.Object,
+                providerStandardsService.Object, serviceParameters);
+
+            apiClient.Setup(x => x.GetWithResponseCode<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == query.ApprenticeshipId)))
+                .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(apprenticeship, HttpStatusCode.OK, string.Empty));
+
+            providerStandardsService.Setup(x => x.GetApprenticeshipUnitsData(apprenticeship.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var standardsData = providerStandardsData.Standards.Select(x =>
