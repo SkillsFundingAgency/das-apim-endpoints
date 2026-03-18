@@ -1,4 +1,6 @@
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.BrowseByInterestsLocation
 {

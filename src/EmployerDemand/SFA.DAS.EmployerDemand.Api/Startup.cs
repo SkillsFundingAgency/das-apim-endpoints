@@ -18,6 +18,7 @@ using SFA.DAS.EmployerDemand.Application.Locations.Queries.GetLocations;
 using SFA.DAS.EmployerDemand.Domain.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.EmployerDemand.Api
 {

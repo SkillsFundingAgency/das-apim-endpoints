@@ -4,6 +4,7 @@ using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;

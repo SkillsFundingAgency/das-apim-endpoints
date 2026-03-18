@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Extensions;
 using System.Net;

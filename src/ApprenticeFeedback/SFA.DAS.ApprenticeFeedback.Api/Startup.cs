@@ -12,6 +12,7 @@ using SFA.DAS.ApprenticeFeedback.Api.AppStart;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;

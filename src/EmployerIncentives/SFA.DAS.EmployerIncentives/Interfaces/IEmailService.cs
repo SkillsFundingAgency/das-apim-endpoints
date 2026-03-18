@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces

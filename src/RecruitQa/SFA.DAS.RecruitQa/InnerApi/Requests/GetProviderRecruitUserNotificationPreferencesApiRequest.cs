@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.RecruitQa.Domain;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RecruitQa.InnerApi.Requests;

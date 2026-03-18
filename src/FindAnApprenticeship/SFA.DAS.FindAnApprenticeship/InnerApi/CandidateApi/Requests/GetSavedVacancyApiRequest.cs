@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using static SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference.GetApprenticeshipVacancyQueryResult;
 

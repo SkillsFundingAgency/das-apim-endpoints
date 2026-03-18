@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;

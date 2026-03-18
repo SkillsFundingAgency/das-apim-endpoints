@@ -5,8 +5,9 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Extensions;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RecalculateApplicationCostProjections
 {

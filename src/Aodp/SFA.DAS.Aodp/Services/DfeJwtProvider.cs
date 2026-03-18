@@ -3,9 +3,12 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SFA.DAS.Aodp.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure.Authentication;
 
 namespace SFA.DAS.Aodp.Services;
+public interface IDfeJwtProvider
+{
+    public string CreateToken();
+}
 
 public sealed class DfeJwtProvider : IDfeJwtProvider
 {

@@ -9,6 +9,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using SFA.DAS.VacanciesManage.Api.AppStart;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.VacanciesManage.Configuration;

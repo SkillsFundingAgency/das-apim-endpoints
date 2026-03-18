@@ -2,8 +2,12 @@
 using Microsoft.Extensions.Options;
 using SFA.DAS.Aodp.Application.Constants;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.Aodp.Application.Queries.Application.Review.GetApplicationForReviewByIdQueryResponse;
 

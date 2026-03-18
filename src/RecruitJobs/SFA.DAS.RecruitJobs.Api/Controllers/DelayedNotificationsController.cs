@@ -6,8 +6,10 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.DelayedNotifications;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;

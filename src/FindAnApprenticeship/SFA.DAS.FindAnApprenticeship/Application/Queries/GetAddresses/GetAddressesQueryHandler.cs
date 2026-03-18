@@ -1,13 +1,19 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using SFA.DAS.FindAnApprenticeship.Domain.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.GetAddresses
 {

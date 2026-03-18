@@ -7,7 +7,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindAnApprenticeship.Api.Models.SavedSearches;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.SavedSearches;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.SavedSearchController;
 

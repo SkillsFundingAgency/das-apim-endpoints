@@ -7,6 +7,7 @@ using SFA.DAS.EmployerAan.Common;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.EmployerAan.InnerApi.CalendarEvents;
 using SFA.DAS.EmployerAan.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

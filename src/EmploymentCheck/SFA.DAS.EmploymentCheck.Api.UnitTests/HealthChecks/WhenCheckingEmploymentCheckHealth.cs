@@ -3,14 +3,18 @@ using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.EmploymentCheck.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.InnerApi.Requests;
 
 namespace SFA.DAS.EmploymentCheck.Api.UnitTests.HealthChecks
 {

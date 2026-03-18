@@ -5,6 +5,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.EmploymentCheck;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerIncentives.Application.Services

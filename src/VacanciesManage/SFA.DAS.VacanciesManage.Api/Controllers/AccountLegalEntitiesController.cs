@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.VacanciesManage.Application.Providers.Queries.GetProviderAccountLegalEntities;

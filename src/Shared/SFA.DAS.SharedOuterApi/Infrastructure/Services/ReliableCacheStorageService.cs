@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
-
 namespace SFA.DAS.SharedOuterApi.Infrastructure.Services
 {
     public class ReliableCacheStorageService<TConfiguration> : IReliableCacheStorageService where TConfiguration : IApiConfiguration

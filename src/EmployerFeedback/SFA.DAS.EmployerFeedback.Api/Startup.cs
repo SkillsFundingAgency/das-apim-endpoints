@@ -15,6 +15,7 @@ using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

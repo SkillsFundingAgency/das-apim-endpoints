@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using SFA.DAS.RecruitJobs.Domain.Vacancy;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 
@@ -41,7 +42,7 @@ public static class GqlVacancyMapper
             ApplicationInstructions = source.ApplicationInstructions,
             ApplicationMethod = NullOrEnum<Domain.Vacancy.ApplicationMethod>(source.ApplicationMethod?.ToString()),
             ApplicationUrl = source.ApplicationUrl,
-            ApprenticeshipType = NullOrEnum<SharedOuterApi.Domain.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
+            ApprenticeshipType = NullOrEnum<SharedOuterApi.Types.Domain.Domain.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
             ApprovedDate = source.ApprovedDate?.UtcDateTime,
             CreatedDate = source.CreatedDate?.UtcDateTime,
             ClosedDate = source.ClosedDate?.UtcDateTime,
@@ -122,11 +123,11 @@ public static class GqlVacancyMapper
         };
     }
 
-    private static SharedOuterApi.Domain.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Address> employerLocations)
+    private static SFA.DAS.SharedOuterApi.Types.Domain.Domain.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Address> employerLocations)
     {
         if (source is { EmployerLocationOption: not null })
         {
-            return NullOrEnum<SharedOuterApi.Domain.AvailableWhere>(source.EmployerLocationOption.ToString());
+            return NullOrEnum<SFA.DAS.SharedOuterApi.Types.Domain.Domain.AvailableWhere>(source.EmployerLocationOption.ToString());
         }
 
         return source.Status switch
@@ -137,9 +138,9 @@ public static class GqlVacancyMapper
             // field should be set by now, so guesstimate it based on the locations
             _ => employerLocations switch
             {
-                { Count: 1 } => SharedOuterApi.Domain.AvailableWhere.OneLocation,
-                { Count: > 1 } => SharedOuterApi.Domain.AvailableWhere.MultipleLocations,
-                _ => SharedOuterApi.Domain.AvailableWhere.AcrossEngland
+                { Count: 1 } => SharedOuterApi.Types.Domain.Domain.AvailableWhere.OneLocation,
+                { Count: > 1 } => SharedOuterApi.Types.Domain.Domain.AvailableWhere.MultipleLocations,
+                _ => SharedOuterApi.Types.Domain.Domain.AvailableWhere.AcrossEngland
             }
         };
     }

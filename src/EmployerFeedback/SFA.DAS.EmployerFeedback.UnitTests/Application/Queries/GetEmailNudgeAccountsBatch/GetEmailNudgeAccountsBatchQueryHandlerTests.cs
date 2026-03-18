@@ -7,8 +7,11 @@ using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetEmailNudgeAccountsBatch;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetEmailNudgeAccountsBatch

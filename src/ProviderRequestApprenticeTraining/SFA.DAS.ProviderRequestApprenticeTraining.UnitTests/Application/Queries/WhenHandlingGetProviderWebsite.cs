@@ -8,13 +8,16 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderW
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderCoursesService;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCoursesService;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderCoursesService;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderCoursesService;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Testing.Builders;
 using System;

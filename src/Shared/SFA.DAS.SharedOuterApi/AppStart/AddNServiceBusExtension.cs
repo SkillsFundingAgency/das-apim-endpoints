@@ -9,6 +9,7 @@ using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Hosting;
 using SFA.DAS.SharedOuterApi.Configuration;
 
+
 namespace SFA.DAS.SharedOuterApi.AppStart
 {
     public static class AddNServiceBusExtension

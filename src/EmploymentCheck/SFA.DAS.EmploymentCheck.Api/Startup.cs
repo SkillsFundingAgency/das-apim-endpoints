@@ -13,7 +13,8 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmploymentCheck.Api.AppStart;
 using SFA.DAS.EmploymentCheck.Api.ErrorHandler;
 using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.EmploymentCheck.Infrastructure;
 using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;

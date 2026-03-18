@@ -1,11 +1,16 @@
 ﻿using Moq;
 using NUnit.Framework;
+using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.ExternalApi.DfeSignIn;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models.DfeSignIn;
+using SFA.DAS.SharedOuterApi.Types.Models.DfeSignIn;
 
 namespace SFA.DAS.Aodp.Services;
 

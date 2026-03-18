@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
-using SFA.DAS.SharedOuterApi.Domain;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests
 {

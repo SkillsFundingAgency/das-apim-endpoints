@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.LearnerData.Application.GetProviderRelationships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.LearnerData.Responses;
 

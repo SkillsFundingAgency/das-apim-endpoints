@@ -6,6 +6,7 @@ using Moq.Protected;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services;

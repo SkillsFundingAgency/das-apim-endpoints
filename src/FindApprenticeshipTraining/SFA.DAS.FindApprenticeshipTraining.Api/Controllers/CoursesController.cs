@@ -11,7 +11,8 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCoursePr
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 

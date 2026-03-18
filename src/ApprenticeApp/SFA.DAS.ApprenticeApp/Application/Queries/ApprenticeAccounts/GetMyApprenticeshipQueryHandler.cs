@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts

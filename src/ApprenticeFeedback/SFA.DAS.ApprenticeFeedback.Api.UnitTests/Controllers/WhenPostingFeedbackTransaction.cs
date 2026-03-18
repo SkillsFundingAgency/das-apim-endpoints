@@ -9,10 +9,12 @@ using SFA.DAS.ApprenticeFeedback.Api.Controllers;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessEmailTransaction;
 using SFA.DAS.ApprenticeFeedback.Application.Queries.GetApprentice;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.ApprenticeFeedback.Api.UnitTests.Controllers
 {

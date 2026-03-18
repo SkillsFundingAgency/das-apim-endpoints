@@ -2,11 +2,16 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using SFA.DAS.Recruit.Application.Queries.GetBulkPostcodeData;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Location;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetBulkPostcodeData;
 

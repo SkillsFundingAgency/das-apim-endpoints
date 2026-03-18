@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.LearnerDataJobs.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerDataJobs.Api.UnitTests.AppStart;

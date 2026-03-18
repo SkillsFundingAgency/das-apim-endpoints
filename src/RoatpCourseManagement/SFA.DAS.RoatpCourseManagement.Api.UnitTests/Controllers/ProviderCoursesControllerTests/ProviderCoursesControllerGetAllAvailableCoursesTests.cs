@@ -10,6 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.SharedOuterApi.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderCoursesControllerTests;

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.InnerApi.Requests.Roatp;
 public class GetAllowedProvidersListRequest : IGetApiRequest

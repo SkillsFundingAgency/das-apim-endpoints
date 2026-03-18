@@ -1,7 +1,8 @@
 ﻿using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.Domain;
+
 using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared
 {

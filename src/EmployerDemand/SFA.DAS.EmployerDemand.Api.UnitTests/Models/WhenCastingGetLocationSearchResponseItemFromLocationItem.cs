@@ -3,6 +3,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerDemand.Api.UnitTests.Models
 {

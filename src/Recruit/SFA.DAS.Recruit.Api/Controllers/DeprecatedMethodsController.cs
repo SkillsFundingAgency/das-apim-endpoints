@@ -12,7 +12,9 @@ using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.Recruit.Domain.Vacancy.VacancyStatus;

@@ -3,6 +3,8 @@ using System.Linq;
 using SFA.DAS.EmployerDemand.Application.Locations.Queries.GetLocations;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerDemand.Api.Models
 {

@@ -4,7 +4,8 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.LevyTransferMatching.Models.Constants;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Opportunity.GetIndex
 {

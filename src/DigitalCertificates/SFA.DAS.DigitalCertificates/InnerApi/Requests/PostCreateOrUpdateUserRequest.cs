@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.DigitalCertificates.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.DigitalCertificates.InnerApi.Requests.PostCreateOrUpdateUserRequest;
 

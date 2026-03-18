@@ -2,8 +2,10 @@ using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.Domain;
+
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Recruit.Api.Models;
 

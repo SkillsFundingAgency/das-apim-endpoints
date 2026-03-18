@@ -8,13 +8,16 @@ using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.EmployerPR.InnerApi.Responses;
 using SFA.DAS.EmployerPR.UnitTests.Common;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.PensionRegulator;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.PensionsRegulator;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PensionRegulator;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PensionsRegulator;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.UnitTests.Application.Requests.Queries.ValidatePermissionsRequest;

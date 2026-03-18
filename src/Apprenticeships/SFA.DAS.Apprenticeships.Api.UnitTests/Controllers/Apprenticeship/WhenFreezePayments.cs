@@ -12,10 +12,13 @@ using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship;
 

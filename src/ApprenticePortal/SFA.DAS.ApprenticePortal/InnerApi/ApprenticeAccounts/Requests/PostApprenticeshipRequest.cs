@@ -1,5 +1,6 @@
 ﻿using System;
 using SFA.DAS.ApprenticePortal.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticePortal.InnerApi.ApprenticeAccounts.Requests

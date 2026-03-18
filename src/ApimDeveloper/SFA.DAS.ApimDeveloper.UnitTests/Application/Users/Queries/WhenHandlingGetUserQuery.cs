@@ -12,6 +12,7 @@ using SFA.DAS.ApimDeveloper.InnerApi.Responses;
 using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApimDeveloper.UnitTests.Application.Users.Queries

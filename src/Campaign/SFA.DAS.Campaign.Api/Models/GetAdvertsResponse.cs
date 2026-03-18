@@ -4,6 +4,8 @@ using System.Linq;
 using SFA.DAS.Campaign.Application.Queries.Adverts;
 using SFA.DAS.Campaign.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Campaign.Api.Models
 {

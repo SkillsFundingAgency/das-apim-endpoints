@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using System.Collections.Generic;
 using System.Web;
 

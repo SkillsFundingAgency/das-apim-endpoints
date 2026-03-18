@@ -3,10 +3,12 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LearnerData;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;

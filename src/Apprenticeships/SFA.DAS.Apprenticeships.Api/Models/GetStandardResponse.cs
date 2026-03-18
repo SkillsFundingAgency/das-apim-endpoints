@@ -1,5 +1,7 @@
 ﻿using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Apprenticeships.Api.Models;
 

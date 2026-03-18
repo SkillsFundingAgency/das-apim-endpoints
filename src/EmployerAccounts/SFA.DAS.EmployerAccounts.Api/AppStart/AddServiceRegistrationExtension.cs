@@ -5,11 +5,14 @@ using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerAccounts.Configuration;
 using SFA.DAS.EmployerAccounts.ExternalApi;
 using SFA.DAS.EmployerAccounts.Strategies;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
-using PublicSectorOrganisationApiConfiguration = SFA.DAS.SharedOuterApi.Configuration.PublicSectorOrganisationApiConfiguration;
+using SFA.DAS.SharedOuterApi.Types.Services;
+using PublicSectorOrganisationApiConfiguration = SFA.DAS.SharedOuterApi.Types.Configuration.PublicSectorOrganisationApiConfiguration;
 
 namespace SFA.DAS.EmployerAccounts.Api.AppStart
 {

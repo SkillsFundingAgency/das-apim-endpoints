@@ -6,9 +6,13 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.TrainingCourses;
 using SFA.DAS.Apprenticeships.InnerApi;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.TrainingCourses;

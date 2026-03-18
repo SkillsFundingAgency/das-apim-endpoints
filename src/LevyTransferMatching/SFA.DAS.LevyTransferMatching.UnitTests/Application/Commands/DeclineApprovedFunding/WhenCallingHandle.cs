@@ -10,6 +10,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.DeclineApprovedFunding;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Commands.DeclineApprovedFunding;
 

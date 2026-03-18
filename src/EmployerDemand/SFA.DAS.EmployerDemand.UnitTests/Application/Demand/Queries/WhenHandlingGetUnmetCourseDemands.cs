@@ -8,7 +8,9 @@ using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemands;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.EmployerDemand.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

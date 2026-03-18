@@ -6,8 +6,10 @@ using SFA.DAS.AdminAan.Application.Entities;
 using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Domain.InnerApi.AanHubApi;
 using SFA.DAS.AdminAan.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.CalendarEvents.Queries.GetCalendarEvents;

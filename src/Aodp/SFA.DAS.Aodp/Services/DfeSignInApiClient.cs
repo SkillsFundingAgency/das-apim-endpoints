@@ -1,7 +1,6 @@
 using System.Net.Http.Headers;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Authentication;
 
 namespace SFA.DAS.Aodp.Services;
 

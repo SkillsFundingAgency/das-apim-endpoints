@@ -2,10 +2,16 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.AdminAan.Application.Locations.Queries.GetLocationsBySearch;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.Locations.Queries.GetLocationsBySearch;

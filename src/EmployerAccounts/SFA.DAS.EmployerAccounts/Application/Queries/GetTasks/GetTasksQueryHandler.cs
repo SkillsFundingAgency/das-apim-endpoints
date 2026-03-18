@@ -6,17 +6,21 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerAccounts.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFinance;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;
 

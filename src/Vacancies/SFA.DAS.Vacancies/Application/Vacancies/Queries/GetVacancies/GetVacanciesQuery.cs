@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
 

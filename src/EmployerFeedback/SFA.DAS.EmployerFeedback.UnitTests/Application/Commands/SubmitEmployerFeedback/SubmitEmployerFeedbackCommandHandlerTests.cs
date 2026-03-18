@@ -5,8 +5,11 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Application.Commands.SubmitEmployerFeedback;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.EmployerFeedback.Models;
 using System.Collections.Generic;

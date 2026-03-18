@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Services;

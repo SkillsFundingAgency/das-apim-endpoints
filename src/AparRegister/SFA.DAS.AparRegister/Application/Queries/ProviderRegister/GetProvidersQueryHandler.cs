@@ -3,11 +3,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AparRegister.Application.Queries.ProviderRegister;

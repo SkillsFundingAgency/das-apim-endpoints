@@ -2,7 +2,9 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;

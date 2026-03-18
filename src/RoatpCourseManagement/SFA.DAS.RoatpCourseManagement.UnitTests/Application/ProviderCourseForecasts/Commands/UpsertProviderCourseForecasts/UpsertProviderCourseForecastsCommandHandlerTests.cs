@@ -8,10 +8,13 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.ProviderCourseForecasts.Commands.UpsertProviderCourseForecasts;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.ProviderCourseForecasts.Commands.UpsertProviderCourseForecasts;
 

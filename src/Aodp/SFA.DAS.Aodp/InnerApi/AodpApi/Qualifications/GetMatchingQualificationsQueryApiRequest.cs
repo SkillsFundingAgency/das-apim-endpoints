@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Aodp.Application.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Specialized;
 

@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using CreateApprenticeshipPriceChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipPriceChangeRequest;
 using CreateApprenticeshipStartDateChangeRequest = SFA.DAS.Apprenticeships.Api.Models.CreateApprenticeshipStartDateChangeRequest;
 

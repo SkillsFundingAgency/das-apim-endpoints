@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands.Cmad

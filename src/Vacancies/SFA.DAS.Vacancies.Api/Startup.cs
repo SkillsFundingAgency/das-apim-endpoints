@@ -11,6 +11,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using SFA.DAS.Vacancies.Api.AppStart;
 using SFA.DAS.Vacancies.Api.OpenApi;
 using SFA.DAS.Vacancies.Application.TrainingCourses.Queries;

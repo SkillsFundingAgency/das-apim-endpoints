@@ -5,7 +5,8 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.ProviderAccounts.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

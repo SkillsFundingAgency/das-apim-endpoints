@@ -3,8 +3,10 @@ using System.Net;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Approvals.Api.Clients
 {

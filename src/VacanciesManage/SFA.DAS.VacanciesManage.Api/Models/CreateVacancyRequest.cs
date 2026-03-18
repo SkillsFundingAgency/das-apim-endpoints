@@ -1,11 +1,12 @@
 using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Domain;
+
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 
 namespace SFA.DAS.VacanciesManage.Api.Models
 {

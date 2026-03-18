@@ -1,7 +1,9 @@
 ﻿using System.Net;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.TrackProgress.Apis.CommitmentsV2InnerApi;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.TrackProgress.Application.Services;

@@ -4,12 +4,14 @@ using NUnit.Framework;
 using SFA.DAS.Campaign.ExternalApi.Responses;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.Campaign.Application.Queries.Panel;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Campaign.ExternalApi.Requests;
 using FluentAssertions;
 

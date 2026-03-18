@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmploymentCheck.Requests

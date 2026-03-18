@@ -7,10 +7,13 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
 using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;

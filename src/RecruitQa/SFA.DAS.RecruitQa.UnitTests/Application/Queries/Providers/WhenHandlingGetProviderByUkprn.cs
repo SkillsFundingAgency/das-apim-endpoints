@@ -1,7 +1,9 @@
 ﻿using SFA.DAS.RecruitQa.Application.Provider.GetProvider;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderCourses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderCourses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.Queries.Providers;

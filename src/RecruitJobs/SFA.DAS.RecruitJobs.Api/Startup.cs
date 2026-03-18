@@ -15,7 +15,8 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitJobs.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Infrastructure;
 
 namespace SFA.DAS.RecruitJobs.Api;

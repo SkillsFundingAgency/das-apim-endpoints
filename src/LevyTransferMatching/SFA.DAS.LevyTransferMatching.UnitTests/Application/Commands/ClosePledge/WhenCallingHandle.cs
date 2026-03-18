@@ -6,6 +6,7 @@ using SFA.DAS.LevyTransferMatching.Application.Commands.ClosePledge;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System;
 using System.Net;
 using System.Threading;

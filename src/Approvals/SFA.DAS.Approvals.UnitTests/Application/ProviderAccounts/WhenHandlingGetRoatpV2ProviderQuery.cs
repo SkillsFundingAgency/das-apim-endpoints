@@ -1,7 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.ProviderAccounts

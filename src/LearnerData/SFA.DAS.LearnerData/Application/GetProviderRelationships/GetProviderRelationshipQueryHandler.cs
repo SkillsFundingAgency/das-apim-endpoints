@@ -2,8 +2,9 @@
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.GetProviderRelationships;

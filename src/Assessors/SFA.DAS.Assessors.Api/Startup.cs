@@ -15,6 +15,7 @@ using SFA.DAS.Assessors.Api.AppStart;
 using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Assessors.Api

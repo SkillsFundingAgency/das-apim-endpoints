@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetProviderSummary;
 

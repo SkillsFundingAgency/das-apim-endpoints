@@ -5,9 +5,13 @@ using SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch.CreateSaveSea
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.SaveSearch;
 

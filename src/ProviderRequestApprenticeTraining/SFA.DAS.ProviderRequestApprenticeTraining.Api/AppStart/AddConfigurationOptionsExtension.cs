@@ -2,9 +2,12 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.ProviderRequestApprenticeTraining.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.Configuration;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.Api.AppStart
 {

@@ -9,7 +9,9 @@ using NUnit.Framework;
 using SFA.DAS.EmployerFeedback.Application.Commands.SyncEmployerAccounts;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SyncEmployerAccounts

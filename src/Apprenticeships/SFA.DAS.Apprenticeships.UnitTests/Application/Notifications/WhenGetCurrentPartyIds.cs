@@ -2,16 +2,19 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System;
 using FluentAssertions.Common;
 using AutoFixture;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
 using FluentAssertions;
 using SFA.DAS.Encoding;
 

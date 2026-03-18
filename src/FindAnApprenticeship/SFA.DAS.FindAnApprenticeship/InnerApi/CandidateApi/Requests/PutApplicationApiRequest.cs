@@ -1,9 +1,12 @@
 ﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Domain;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests
 {

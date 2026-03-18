@@ -10,12 +10,15 @@ using SFA.DAS.Recruit.Extensions;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.Recruit.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
 using Microsoft.Extensions.Logging;
 

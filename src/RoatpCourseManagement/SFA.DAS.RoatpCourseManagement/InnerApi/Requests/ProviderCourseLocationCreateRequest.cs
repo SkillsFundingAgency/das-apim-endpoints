@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.CreateProviderLocation;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests

@@ -16,6 +16,7 @@ using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.FindEpao.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.FindEpao.Api
 {

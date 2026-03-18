@@ -4,6 +4,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Linq;

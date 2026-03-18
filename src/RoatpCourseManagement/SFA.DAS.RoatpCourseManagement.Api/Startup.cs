@@ -16,6 +16,7 @@ using SFA.DAS.RoatpCourseManagement.Api.AppStart;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.RoatpCourseManagement.Api
 {

@@ -6,16 +6,19 @@ using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.TestHelpers;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using Episode = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 

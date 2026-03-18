@@ -1,8 +1,11 @@
 ﻿using System;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Domain;
+
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.Index;
 

@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.EmployerFeedback.Application.Commands.SubmitEmployerFeedback;
 using SFA.DAS.EmployerFeedback.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;

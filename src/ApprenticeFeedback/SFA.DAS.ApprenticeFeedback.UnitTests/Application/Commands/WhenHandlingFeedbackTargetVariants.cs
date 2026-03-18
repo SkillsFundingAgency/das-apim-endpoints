@@ -4,11 +4,14 @@ using NUnit.Framework;
 using SFA.DAS.ApprenticeFeedback.Application.Commands.ProcessFeedbackTargetVariants;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.NServiceBus;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;

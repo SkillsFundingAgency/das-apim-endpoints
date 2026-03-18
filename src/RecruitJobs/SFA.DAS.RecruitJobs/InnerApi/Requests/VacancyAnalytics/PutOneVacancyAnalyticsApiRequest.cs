@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using static SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics.PutOneVacancyAnalyticsApiRequest;
 

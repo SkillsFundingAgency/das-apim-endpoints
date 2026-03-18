@@ -3,6 +3,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Application.Commands.SupportResendInvitation;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;

@@ -5,8 +5,10 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetIdentifiableOrganisationTypes;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

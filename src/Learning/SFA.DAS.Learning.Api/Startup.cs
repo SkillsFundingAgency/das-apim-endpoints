@@ -6,6 +6,7 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Learning.Api.AppStart;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 

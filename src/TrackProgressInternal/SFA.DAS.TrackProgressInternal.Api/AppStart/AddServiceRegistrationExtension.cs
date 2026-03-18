@@ -1,8 +1,10 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.TrackProgressInternal.Application.Configuration;
 using SFA.DAS.TrackProgressInternal.Application.Services;
 

@@ -11,7 +11,9 @@ using SFA.DAS.Apprenticeships.Api.Controllers;
 using SFA.DAS.Apprenticeships.Api.Models;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Apprenticeships.Api.UnitTests.Controllers.Apprenticeship

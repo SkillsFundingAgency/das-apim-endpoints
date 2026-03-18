@@ -8,9 +8,12 @@ using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerVacancies;
 using SFA.DAS.EmployerAccounts.InnerApi.Requests;
 using SFA.DAS.EmployerAccounts.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.GetEmployerVacancies;

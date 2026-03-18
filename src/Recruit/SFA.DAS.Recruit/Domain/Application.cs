@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using SFA.DAS.Recruit.Enums;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using JsonException = System.Text.Json.JsonException;
 
 namespace SFA.DAS.Recruit.Domain

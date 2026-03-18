@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 

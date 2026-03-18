@@ -23,6 +23,7 @@
     <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining.Api\SFA.DAS.FindApprenticeshipTraining.Api.csproj" />
     <ProjectReference Include="..\SFA.DAS.FindApprenticeshipTraining\SFA.DAS.FindApprenticeshipTraining.csproj" />
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 
 </Project>

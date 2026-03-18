@@ -1,7 +1,9 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;

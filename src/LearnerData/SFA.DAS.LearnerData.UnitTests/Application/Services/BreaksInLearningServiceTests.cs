@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 

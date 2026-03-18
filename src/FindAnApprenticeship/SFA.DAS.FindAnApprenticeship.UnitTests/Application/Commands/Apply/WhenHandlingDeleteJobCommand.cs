@@ -3,8 +3,10 @@ using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteJob;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using MediatR;
 using FluentAssertions;

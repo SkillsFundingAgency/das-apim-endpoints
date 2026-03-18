@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using System.Text.Json.Serialization;
 namespace SFA.DAS.LearnerData.Requests;
 

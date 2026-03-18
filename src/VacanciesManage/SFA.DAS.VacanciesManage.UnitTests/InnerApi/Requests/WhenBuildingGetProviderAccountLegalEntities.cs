@@ -2,8 +2,8 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.InnerApi.Requests
 {

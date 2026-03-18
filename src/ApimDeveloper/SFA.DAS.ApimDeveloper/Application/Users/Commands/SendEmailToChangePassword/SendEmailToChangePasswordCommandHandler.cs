@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.Models;
 using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApimDeveloper.Application.Users.Commands.SendEmailToChangePassword

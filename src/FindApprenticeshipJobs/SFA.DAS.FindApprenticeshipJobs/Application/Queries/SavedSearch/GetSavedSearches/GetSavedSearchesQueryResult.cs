@@ -1,5 +1,6 @@
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearches;
 

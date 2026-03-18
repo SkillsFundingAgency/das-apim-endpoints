@@ -16,6 +16,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api;
 

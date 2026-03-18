@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseByLarsCode;

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.LearnerData.Extensions;
 

@@ -5,11 +5,14 @@ using SFA.DAS.ApimDeveloper.Application.Services;
 using SFA.DAS.ApimDeveloper.Configuration;
 using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.ApimDeveloper.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.ApimDeveloper.Api.AppStart
 {

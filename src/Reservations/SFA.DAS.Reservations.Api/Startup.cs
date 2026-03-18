@@ -16,9 +16,11 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Reservations.Api.AppStart;
 using SFA.DAS.Reservations.Application.TrainingCourses.Queries.GetTrainingCourseList;
 using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Reservations.Api
 {

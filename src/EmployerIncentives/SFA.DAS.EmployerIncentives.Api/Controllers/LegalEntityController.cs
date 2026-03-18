@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpPatch("legalentities/vendorregistrationform/status")]
+        [HttpPatch("legalentities/vendorregistrationform/status"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public async Task<IActionResult> RefreshVendorRegistrationFormStatus(DateTime from)
         {
             var nextRunDateTime = await _mediator.Send(new RefreshVendorRegistrationFormCaseStatusCommand(from));

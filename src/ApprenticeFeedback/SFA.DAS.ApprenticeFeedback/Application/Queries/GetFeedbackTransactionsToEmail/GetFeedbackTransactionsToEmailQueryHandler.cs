@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 

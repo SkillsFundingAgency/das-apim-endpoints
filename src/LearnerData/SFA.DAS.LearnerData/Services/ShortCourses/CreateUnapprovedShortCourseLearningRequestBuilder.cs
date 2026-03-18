@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
 using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;

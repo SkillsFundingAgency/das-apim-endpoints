@@ -39,5 +39,6 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.VacanciesManage\SFA.DAS.VacanciesManage.csproj" />
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 </Project>

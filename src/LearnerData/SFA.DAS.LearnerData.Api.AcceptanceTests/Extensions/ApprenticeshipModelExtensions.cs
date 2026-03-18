@@ -1,9 +1,9 @@
 ﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
-using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+using Episode = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
@@ -49,7 +49,7 @@ public static class ApprenticeshipModelExtensions
                     Key = Guid.NewGuid(),
                     Instalments = GetEarningsInstalments(apprenticeshipModel),
                     AdditionalPayments = apprenticeshipModel.AdditionalPayments.Select(x =>
-                        new SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.AdditionalPayment
+                        new SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings.AdditionalPayment
                         {
                             AdditionalPaymentType = x.Type,
                             Amount = x.Amount,

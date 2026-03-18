@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;

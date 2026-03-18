@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.AdminAan.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;

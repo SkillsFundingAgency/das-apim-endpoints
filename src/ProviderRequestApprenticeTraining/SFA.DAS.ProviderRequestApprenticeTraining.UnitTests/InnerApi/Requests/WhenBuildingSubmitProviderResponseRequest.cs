@@ -2,7 +2,8 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using System.Collections.Generic;
 using System;
 using Azure;

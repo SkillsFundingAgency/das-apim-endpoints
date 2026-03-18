@@ -1,6 +1,8 @@
 ﻿using System.Net;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.ToolsSupport.Configuration;
 using SFA.DAS.ToolsSupport.Interfaces;
 

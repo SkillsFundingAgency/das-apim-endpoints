@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using System.ComponentModel;
 using System.Diagnostics;
 

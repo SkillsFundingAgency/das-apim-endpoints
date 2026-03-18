@@ -3,7 +3,13 @@ using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Application.Qualifications;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications

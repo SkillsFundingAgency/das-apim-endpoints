@@ -6,9 +6,12 @@ using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Net;

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using static SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.PostSubmitEmployerRequestRequest;

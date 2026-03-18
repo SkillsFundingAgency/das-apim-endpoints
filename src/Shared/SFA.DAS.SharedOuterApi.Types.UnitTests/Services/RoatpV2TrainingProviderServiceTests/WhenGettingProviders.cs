@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using System.Threading;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;

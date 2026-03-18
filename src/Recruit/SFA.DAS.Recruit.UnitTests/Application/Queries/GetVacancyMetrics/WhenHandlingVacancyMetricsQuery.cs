@@ -3,9 +3,11 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Application.Queries.GetVacancyMetrics;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.BusinessMetrics;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.BusinessMetrics;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.BusinessMetrics;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.BusinessMetrics;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;

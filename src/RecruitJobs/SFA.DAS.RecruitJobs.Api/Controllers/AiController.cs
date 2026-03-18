@@ -3,13 +3,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RecruitJobs.Ai;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain.Recruit.Ai;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit.Ai;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RecruitAi;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Recruit;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;

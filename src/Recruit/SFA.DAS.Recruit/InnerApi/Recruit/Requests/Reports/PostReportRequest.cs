@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Recruit.Enums;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using static SFA.DAS.Recruit.InnerApi.Recruit.Requests.Reports.PostReportRequest;

@@ -5,10 +5,13 @@ using Moq;
 using SFA.DAS.AdminRoatp.Application.Queries.GetProvidersAllowedList;
 using SFA.DAS.AdminRoatp.InnerApi.Requests.Roatp;
 using SFA.DAS.AdminRoatp.InnerApi.Responses.Roatp;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Exceptions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 

@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.DigitalCertificates.Application.Commands.CreateSharingAccess;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 

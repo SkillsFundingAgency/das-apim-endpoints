@@ -12,6 +12,7 @@ using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
 using SFA.DAS.EmployerIncentives.Interfaces;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests

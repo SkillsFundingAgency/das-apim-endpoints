@@ -2,6 +2,9 @@
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
+using AodpApiConfiguration = SFA.DAS.Aodp.Configuration.AodpApiConfiguration;
+using DfeSignInApiConfiguration = SFA.DAS.Aodp.Configuration.DfeSignInApiConfiguration;
+
 
 namespace SFA.DAS.Aodp.Api.AppStart
 {

@@ -1,5 +1,5 @@
-using SFA.DAS.SharedOuterApi.Domain;
-using DomainAddress = SFA.DAS.SharedOuterApi.Models.Address;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using DomainAddress = SFA.DAS.SharedOuterApi.Types.Models.Address;
 
 namespace SFA.DAS.RecruitQa.Domain;
 

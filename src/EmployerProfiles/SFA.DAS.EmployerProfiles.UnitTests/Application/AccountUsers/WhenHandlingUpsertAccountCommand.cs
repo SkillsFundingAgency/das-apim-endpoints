@@ -6,7 +6,9 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerProfiles.UnitTests.Application.AccountUsers

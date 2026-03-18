@@ -6,10 +6,15 @@ using Moq;
 using SFA.DAS.Aodp.Application.Constants;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Models.DfeSignIn;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models.DfeSignIn;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
 {

@@ -1,6 +1,7 @@
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,13 @@ using Microsoft.OpenApi.Extensions;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.Services;
-using SFA.DAS.SharedOuterApi.Domain;
+
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
+
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference
 {

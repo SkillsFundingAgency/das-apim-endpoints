@@ -1,7 +1,9 @@
 using System.Threading;
 using SFA.DAS.Recruit.Application.Queries.GetPostcodeData;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetPostcodeData;
 

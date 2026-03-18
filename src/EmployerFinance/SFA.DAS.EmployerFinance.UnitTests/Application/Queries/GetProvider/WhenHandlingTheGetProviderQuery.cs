@@ -1,7 +1,9 @@
 ﻿using AutoFixture;
 using SFA.DAS.EmployerFinance.Application.Queries.GetProvider;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetProvider;
@@ -22,7 +24,7 @@ public class WhenHandlingTheGetProviderQuery
         _query = fixture.Create<GetProviderQuery>();
         _roatpServiceApiResponse = fixture.Create<GetProviderResponse>();
         _providerCoursesApiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
-        _providerCoursesApiClient.Setup(x => x.Get<GetProviderResponse>(It.Is<SharedOuterApi.InnerApi.Requests.ProviderCourses.GetProviderRequest>(r => r.GetUrl.Equals($"api/providers/{_query.Id}"))))
+        _providerCoursesApiClient.Setup(x => x.Get<GetProviderResponse>(It.Is<SharedOuterApi.Types.InnerApi.Requests.ProviderCourses.GetProviderRequest>(r => r.GetUrl.Equals($"api/providers/{_query.Id}"))))
             .ReturnsAsync(_roatpServiceApiResponse);
 
         _handler = new GetProviderQueryHandler( _providerCoursesApiClient.Object);

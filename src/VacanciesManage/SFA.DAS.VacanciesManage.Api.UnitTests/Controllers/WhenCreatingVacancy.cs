@@ -12,6 +12,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Api.Controllers;
 using SFA.DAS.VacanciesManage.Api.Models;

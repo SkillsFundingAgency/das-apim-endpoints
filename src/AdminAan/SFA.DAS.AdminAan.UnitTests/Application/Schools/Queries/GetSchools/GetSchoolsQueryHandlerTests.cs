@@ -3,11 +3,14 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.AdminAan.Application.Schools.Queries;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.Schools.Queries.GetSchools;

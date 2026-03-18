@@ -6,7 +6,9 @@ using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.CommitmentsV2;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses.CommitmentsV2;
 using SFA.DAS.LevyTransferMatching.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplication

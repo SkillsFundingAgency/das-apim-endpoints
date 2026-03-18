@@ -13,6 +13,7 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerContactForms.Api.AppStart;
 using SFA.DAS.EmployerContactForms.Application.Queries.GetAddresses;

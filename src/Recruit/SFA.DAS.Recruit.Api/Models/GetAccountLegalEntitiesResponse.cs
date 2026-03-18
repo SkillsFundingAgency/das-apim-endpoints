@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
 using SFA.DAS.Recruit.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.Recruit.Api.Models
 {

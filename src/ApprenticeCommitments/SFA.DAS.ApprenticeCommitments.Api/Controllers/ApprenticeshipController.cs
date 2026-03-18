@@ -62,7 +62,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public Task<IActionResult> GetApprenticeshipRevisions(Guid apprenticeId, long apprenticeshipId)
             => _client.Get($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions");
 
-        [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
+        [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public Task PatchApprenticeship(Guid apprenticeId, long apprenticeshipId, [FromBody] JsonPatchDocument<ApprenticeshipResponse> changes)
             => _client.Patch($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}", changes);
     }

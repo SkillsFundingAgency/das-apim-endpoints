@@ -11,7 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Api.Controllers;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails;
 using SFA.DAS.EmployerAccounts.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.Api.UnitTests.Controllers.SearchOrganisations

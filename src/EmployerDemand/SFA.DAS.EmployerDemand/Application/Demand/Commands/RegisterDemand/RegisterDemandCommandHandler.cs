@@ -7,8 +7,10 @@ using MediatR;
 using SFA.DAS.EmployerDemand.Domain.Models;
 using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using Location = SFA.DAS.EmployerDemand.InnerApi.Requests.Location;
 using LocationPoint = SFA.DAS.EmployerDemand.InnerApi.Requests.LocationPoint;

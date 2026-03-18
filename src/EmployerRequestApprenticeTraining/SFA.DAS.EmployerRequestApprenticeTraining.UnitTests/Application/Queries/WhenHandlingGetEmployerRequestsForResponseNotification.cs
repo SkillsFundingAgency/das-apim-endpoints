@@ -3,12 +3,15 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequestsForResponseNotification;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
@@ -39,7 +42,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Querie
             var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            actual.EmployerRequests.Should().BeEquivalentTo(employerRequests.Select(s => (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequestForResponseNotification)s).ToList(), 
+            actual.EmployerRequests.Should().BeEquivalentTo(employerRequests.Select(s => (SharedOuterApi.Types.Models.RequestApprenticeTraining.EmployerRequestForResponseNotification)s).ToList(), 
                 options => options.ExcludingMissingMembers());
         }
 

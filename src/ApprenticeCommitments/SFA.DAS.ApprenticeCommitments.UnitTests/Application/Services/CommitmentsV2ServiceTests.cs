@@ -5,8 +5,10 @@ using NUnit.Framework;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
 using System.Threading.Tasks;
 

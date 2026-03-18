@@ -9,6 +9,7 @@ using SFA.DAS.ProviderFeedback.Api.ErrorHandler;
 using SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedback;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 [ExcludeFromCodeCoverage]
 public class Startup

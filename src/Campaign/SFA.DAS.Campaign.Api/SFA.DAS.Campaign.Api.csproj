@@ -22,6 +22,7 @@
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.Campaign\SFA.DAS.Campaign.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
     </ItemGroup>
 
 </Project>

@@ -8,7 +8,9 @@ using SFA.DAS.Reservations.Application.Cohorts.Queries.GetCohort;
 using SFA.DAS.Reservations.Application.Providers.Queries.GetCohort;
 using SFA.DAS.Reservations.InnerApi.Requests;
 using SFA.DAS.Reservations.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

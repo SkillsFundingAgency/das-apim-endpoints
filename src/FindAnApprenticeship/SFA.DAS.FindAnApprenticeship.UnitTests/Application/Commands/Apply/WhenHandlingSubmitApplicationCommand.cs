@@ -6,14 +6,18 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Responses;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands.Apply;
 
