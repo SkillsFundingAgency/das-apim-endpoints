@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Apim.Shared.Common;
+﻿using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
@@ -47,7 +47,7 @@ public class WhenBuildingTheGetAllStandardsListRequest
     }
 
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed_With_ApprenticeshipType(ApprenticeshipType type)
+    public void Then_The_Url_Is_Correctly_Constructed_With_ApprenticeshipType(LearningType type)
     {
         var _sut = new GetActiveStandardsListRequest
         {

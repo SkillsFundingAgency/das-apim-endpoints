@@ -18,6 +18,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -34,7 +35,7 @@ public sealed class WhenGettingCourses
         LocationItem locationItem,
         GetStandardsListResponse coursesResponse,
         GetCourseTrainingProvidersCountResponse roatpResponse,
-        ApprenticeshipType apprenticeshipType,
+        LearningType apprenticeshipType,
         CancellationToken cancellationToken
     )
     {

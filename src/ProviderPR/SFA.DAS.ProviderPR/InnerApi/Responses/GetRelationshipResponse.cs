@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.ProviderPR.Common;
 using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.ProviderPR.InnerApi.Responses;

@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
 {
@@ -9,7 +10,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
+        public LearningType ApprenticeshipType { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }
@@ -52,7 +53,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
+        public LearningType ApprenticeshipType { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }
@@ -65,7 +66,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
         public string LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
+        public LearningType ApprenticeshipType { get; set; }
         public string ApprovalBody { get; set; }
         public string Route { get; set; }
         public int SectorSubjectAreaTier1 { get; set; }

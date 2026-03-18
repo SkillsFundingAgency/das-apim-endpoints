@@ -12,6 +12,7 @@ using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
@@ -71,7 +72,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
                 c.LarsCode.ToString() == request.PostVacancyRequestData.ProgrammeId);
             request.PostVacancyRequestData.ApprenticeshipType = "Standard";
             
-            if (course is { ApprenticeshipType: ApprenticeshipType.FoundationApprenticeship })
+            if (course is { ApprenticeshipType: LearningType.FoundationApprenticeship })
             {
                 request.PostVacancyRequestData.Qualifications = [];
                 request.PostVacancyRequestData.Skills = [];

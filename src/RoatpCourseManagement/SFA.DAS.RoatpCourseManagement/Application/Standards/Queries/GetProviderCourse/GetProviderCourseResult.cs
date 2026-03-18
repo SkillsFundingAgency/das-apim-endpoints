@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 
@@ -9,7 +10,7 @@ public class GetProviderCourseResult
     public string CourseName { get; set; }
     public int Level { get; set; }
     public string IfateReferenceNumber { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public string RegulatorName { get; set; }
     public string LarsCode { get; set; }
     public string Sector { get; set; }
