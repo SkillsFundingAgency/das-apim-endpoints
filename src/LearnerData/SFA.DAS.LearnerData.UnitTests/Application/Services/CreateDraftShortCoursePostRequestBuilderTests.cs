@@ -56,6 +56,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         result.LearnerUpdateDetails.LastName.Should().Be(learner.LastName);
         result.LearnerUpdateDetails.DateOfBirth.Should().Be(learner.Dob);
         result.LearnerUpdateDetails.EmailAddress.Should().Be(learner.Email);
+        result.LearnerUpdateDetails.LearnerRef.Should().Be(learner.LearnerRef);
 
         result.LearningSupport.Should().HaveCount(onProgramme.LearningSupport.Count);
         for (int i = 0; i < onProgramme.LearningSupport.Count; i++)

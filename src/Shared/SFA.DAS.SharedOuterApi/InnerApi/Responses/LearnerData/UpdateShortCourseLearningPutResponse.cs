@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Channels;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 
@@ -26,5 +25,7 @@ public enum ShortCourseUpdateChanges
 {
     WithdrawalDate = 0,
     Milestone = 1,
-    CompletionDate = 2
+    CompletionDate = 2,
+    LearnerRef = 3
+
 }
