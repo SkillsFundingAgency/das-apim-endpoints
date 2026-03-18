@@ -19,5 +19,6 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries
         public DateTime? MaxStartDate { get; set; }
         public List<string> ExcludeUlns { get; set; } = new();
         public int? CourseCode { get; set; }
+        public string LearningType { get; set; }
     }
 }

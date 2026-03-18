@@ -32,7 +32,8 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
                 PageSize = request.PageSize,
                 StartMonth = request.StartMonth,
                 StartYear = request.StartYear,
-                CourseCode = !string.IsNullOrEmpty(request.CourseCode) ? int.Parse(request.CourseCode) : null
+                CourseCode = !string.IsNullOrEmpty(request.CourseCode) ? int.Parse(request.CourseCode) : null,
+                LearningType = request.LearningType
             });
             return Ok(result);
         }

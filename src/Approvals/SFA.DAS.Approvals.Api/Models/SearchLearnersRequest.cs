@@ -12,4 +12,5 @@ public class SearchLearnersRequest
     public long? AccountLegalEntityId { get; set; }
     public long? CohortId { get; set; }
     public string SearchTerm { get; set; } = string.Empty;
+    public string LearningType { get; set; } = string.Empty;
 }
