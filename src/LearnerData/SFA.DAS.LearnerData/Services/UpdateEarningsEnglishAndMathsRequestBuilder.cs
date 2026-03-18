@@ -16,7 +16,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
     {
         var body = new UpdateEnglishAndMathsRequest
         {
-            EnglishAndMaths = putRequest.Data.MathsAndEnglishCourses.Select(x => new EnglishAndMathsItem
+            EnglishAndMaths = putRequest.Data.EnglishAndMathsCourses.Select(x => new EnglishAndMathsItem
             {
                 StartDate = x.StartDate,
                 EndDate = x.PlannedEndDate,

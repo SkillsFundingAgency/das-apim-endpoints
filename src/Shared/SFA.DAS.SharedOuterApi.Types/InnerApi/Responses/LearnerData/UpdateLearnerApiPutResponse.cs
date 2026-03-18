@@ -19,7 +19,7 @@ public class UpdateLearnerApiPutResponse
     public enum LearningUpdateChanges
     {
         CompletionDate = 0,
-        MathsAndEnglish = 1,
+        EnglishAndMaths = 1,
         LearningSupport = 2,
         Prices = 3,
         ExpectedEndDate = 4,
@@ -28,7 +28,7 @@ public class UpdateLearnerApiPutResponse
 		PersonalDetails = 7,
         BreakInLearningStarted = 8,
         BreakInLearningRemoved = 9,
-        MathsAndEnglishWithdrawal = 10,
+        EnglishAndMathsWithdrawal = 10,
         BreaksInLearningUpdated = 11,
         DateOfBirthChanged = 12,
         Care = 13,

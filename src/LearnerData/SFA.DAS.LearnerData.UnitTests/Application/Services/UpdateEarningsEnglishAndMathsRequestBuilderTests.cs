@@ -30,14 +30,14 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services
                 x.EndDate = x.PauseDate.Value.AddDays(30);
             });
             var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
-            putRequest.Data.MathsAndEnglishCourses.ForEach(x => x.LearnAimRef = learnAimRef);
+            putRequest.Data.EnglishAndMathsCourses.ForEach(x => x.LearnAimRef = learnAimRef);
             var response = _fixture.Create<UpdateLearnerApiPutResponse>();
 
             // Act
             var result = _sut.Build(command, response, putRequest);
 
             // Assert
-            var expectedItems = putRequest.Data.MathsAndEnglishCourses.Select(x => new EnglishAndMathsItem
+            var expectedItems = putRequest.Data.EnglishAndMathsCourses.Select(x => new EnglishAndMathsItem
             {
                 StartDate = x.StartDate,
                 EndDate = x.PlannedEndDate,

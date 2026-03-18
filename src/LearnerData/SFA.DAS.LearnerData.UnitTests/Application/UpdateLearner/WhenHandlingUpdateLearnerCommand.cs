@@ -175,7 +175,7 @@ public class WhenHandlingUpdateLearnerCommand
 
         var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
         updateLearningApiResponse.Changes.Clear();
-        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish); // E&M change
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths); // E&M change
 
         _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
             .Returns(englishAndMathsApiPutRequest);

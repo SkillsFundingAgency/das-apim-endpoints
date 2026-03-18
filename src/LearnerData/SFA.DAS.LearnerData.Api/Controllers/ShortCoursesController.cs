@@ -1,7 +1,6 @@
-﻿using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.LearnerData.Application.GetLearners;
+using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
@@ -62,6 +61,24 @@ public class ShortCoursesController(
         HttpContext.SetPageLinksInResponseHeaders(query, response);
 
         return Ok((GetShortCourseLearnersResponse)response);
+
+    }
+
+    // This is the short course equivalent of FM36
+    [HttpGet("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
+    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromRoute] int collectionYear, [FromRoute] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+
+        logger.LogInformation("GetShortCourseEarnings for ukprn {Ukprn}, year {Year} and period {period}", ukprn, collectionYear, collectionPeriod);
+
+        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
+
+        var query = new GetShortCourseEarningsQuery(ukprn, collectionYear, collectionPeriod, page, pagesize);
+
+        var response = await mediator.Send(query);
+        HttpContext.SetPageLinksInResponseHeaders(query, response);
+
+        return Ok(response);
 
     }
 }
