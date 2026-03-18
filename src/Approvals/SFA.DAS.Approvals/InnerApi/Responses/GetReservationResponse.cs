@@ -1,4 +1,6 @@
 using System;
+using System.Text.Json.Serialization;
+using SFA.DAS.Approvals.Types;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses;
 
@@ -10,5 +12,6 @@ public class GetReservationResponse
 
 public class ReservationCourseResponse
 {
-    public byte? LearningType { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public LearningType? LearningType { get; set; }
 }

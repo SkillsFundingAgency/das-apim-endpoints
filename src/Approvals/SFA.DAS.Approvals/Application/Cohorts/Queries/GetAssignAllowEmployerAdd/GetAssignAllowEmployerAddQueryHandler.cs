@@ -5,6 +5,7 @@ using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -25,28 +26,28 @@ public class GetAssignAllowEmployerAddQueryHandler(
         }
 
         var learningType = reservationResponse.Course.LearningType;
-        var learningTypeString = LearningTypeToString(learningType);
         
-        if (string.IsNullOrEmpty(learningTypeString))
+        if (!learningType.HasValue)
         {
-            return new GetAssignAllowEmployerAddQueryResult { LearningType = learningType, AllowEmployerAdd = true };
+            return new GetAssignAllowEmployerAddQueryResult { LearningType = null, AllowEmployerAdd = true };
         }
 
+        var learningTypeString = LearningTypeToString(learningType);
         var allowEmployerAddResponse = await courseTypesApiClient.Get<GetAllowEmployerAddResponse>(new GetAllowEmployerAddRequest(learningTypeString));
         return new GetAssignAllowEmployerAddQueryResult
         {
-            LearningType = learningType,
+            LearningType = (byte)learningType,
             AllowEmployerAdd = allowEmployerAddResponse.AllowEmployerAdd
         };
     }
 
-    private static string? LearningTypeToString(byte? learningType)
+    private static string? LearningTypeToString(LearningType? learningType)
     {
         return learningType switch
         {
-            0 => "Apprenticeship",
-            1 => "FoundationApprenticeship",
-            2 => "ApprenticeshipUnit",
+            LearningType.Apprenticeship => "Apprenticeship",
+            LearningType.FoundationApprenticeship => "FoundationApprenticeship",
+            LearningType.ApprenticeshipUnit => "ApprenticeshipUnit",
             _ => null
         };
     }
