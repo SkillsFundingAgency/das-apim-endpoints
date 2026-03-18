@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Recruit.Application.Queries.Routes
 {

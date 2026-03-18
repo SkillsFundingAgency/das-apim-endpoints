@@ -5,9 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
     <ItemGroup>
-      <ProjectReference Include="..\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+        <PackageReference Include="SFA.DAS.Apim.Shared" />
+        <PackageReference Include="SFA.DAS.Apprenticeships.Types" />
     </ItemGroup>
-
 </Project>

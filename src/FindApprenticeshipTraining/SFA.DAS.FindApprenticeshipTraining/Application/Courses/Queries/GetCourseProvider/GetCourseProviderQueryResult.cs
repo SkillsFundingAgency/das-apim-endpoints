@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;

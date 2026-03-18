@@ -23,7 +23,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Application.Queries.SearchOrganisations;

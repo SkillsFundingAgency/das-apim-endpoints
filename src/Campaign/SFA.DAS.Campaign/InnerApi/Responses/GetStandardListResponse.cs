@@ -1,9 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using System;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.Campaign.InnerApi.Responses
 {

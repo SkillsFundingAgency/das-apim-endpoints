@@ -1,5 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 public class GetApplicationFormStatusByApplicationIdApiRequest : IGetApiRequest
 {

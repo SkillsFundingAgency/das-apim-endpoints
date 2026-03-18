@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.RoatpProviderModeration.Api.AppStart;
 using SFA.DAS.RoatpProviderModeration.Api.HealthCheck;
 using SFA.DAS.RoatpProviderModeration.Application.Provider.Queries.GetProvider;
 using SFA.DAS.RoatpProviderModeration.OuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 

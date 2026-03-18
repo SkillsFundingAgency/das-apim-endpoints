@@ -5,7 +5,7 @@ using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;

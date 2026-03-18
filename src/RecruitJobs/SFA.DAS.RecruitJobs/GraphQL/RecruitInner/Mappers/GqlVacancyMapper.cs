@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json;
 using SFA.DAS.RecruitJobs.Domain.Vacancy;
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;

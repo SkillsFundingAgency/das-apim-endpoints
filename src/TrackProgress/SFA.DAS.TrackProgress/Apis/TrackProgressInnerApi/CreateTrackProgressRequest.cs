@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.TrackProgress.Application.DTOs;
 
 namespace SFA.DAS.TrackProgress.Apis.TrackProgressInnerApi;

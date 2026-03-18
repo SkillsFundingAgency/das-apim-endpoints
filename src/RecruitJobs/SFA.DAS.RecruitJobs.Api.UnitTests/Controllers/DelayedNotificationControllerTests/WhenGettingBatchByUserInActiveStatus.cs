@@ -7,7 +7,7 @@ using SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Collections.Generic;
 using NotificationEmail = SFA.DAS.RecruitJobs.Api.Models.NotificationEmail;
 

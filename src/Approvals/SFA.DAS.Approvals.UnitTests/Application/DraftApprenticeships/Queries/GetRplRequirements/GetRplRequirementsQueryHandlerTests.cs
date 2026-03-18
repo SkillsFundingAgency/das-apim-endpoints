@@ -5,7 +5,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequirements;
 using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Queries.GetRplRequirements;

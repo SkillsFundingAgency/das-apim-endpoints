@@ -5,7 +5,6 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ReferenceDataJobs.Application.Commands;
 public class StartDataLoadsCommandHandler : IRequestHandler<StartDataLoadsCommand>

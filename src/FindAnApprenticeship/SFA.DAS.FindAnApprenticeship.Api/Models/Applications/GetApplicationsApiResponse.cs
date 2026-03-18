@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Applications.GetApplications;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
-
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 using SFA.DAS.SharedOuterApi.Types.Models;
 

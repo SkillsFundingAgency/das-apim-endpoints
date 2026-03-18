@@ -1,7 +1,4 @@
-﻿using SFA.DAS.ApprenticeFeedback.InnerApi.Responses;
-using System;
-
-namespace SFA.DAS.ApprenticeFeedback.Models
+﻿namespace SFA.DAS.ApprenticeFeedback.Models
 {
     public class FeedbackTargetVariant
     {

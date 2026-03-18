@@ -5,7 +5,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Apim.Shared.Configuration;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Api.AppStart
 {

@@ -5,7 +5,7 @@ using SFA.DAS.EmployerFeedback.Application.Commands.SendFeedbackEmail;
 using SFA.DAS.EmployerFeedback.Models;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

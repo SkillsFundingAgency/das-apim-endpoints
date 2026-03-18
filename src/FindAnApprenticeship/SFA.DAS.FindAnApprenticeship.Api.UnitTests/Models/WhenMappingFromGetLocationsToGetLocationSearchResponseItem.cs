@@ -1,10 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Models;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+﻿using SFA.DAS.FindAnApprenticeship.Api.Models;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models

@@ -10,7 +10,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PensionRegulator;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PensionsRegulator;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerPR.Application.Requests.Queries.ValidateRequest;
 

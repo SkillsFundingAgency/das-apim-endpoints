@@ -2,7 +2,7 @@
 using AutoFixture;
 using SFA.DAS.RecruitJobs.Domain.Vacancy;
 using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using ApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
 using ClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;

@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
-using MediatR;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
@@ -13,10 +12,9 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Assessors.Api.AppStart;
 using SFA.DAS.Assessors.Application.Queries.GetTrainingCourses;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.Assessors.Api
 {

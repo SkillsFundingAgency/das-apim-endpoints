@@ -1,13 +1,13 @@
 ﻿using System.Net;
 using System.Threading;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.RecruitArtificialIntelligenceClientTests;
 
 public class WhenSendingAPayload

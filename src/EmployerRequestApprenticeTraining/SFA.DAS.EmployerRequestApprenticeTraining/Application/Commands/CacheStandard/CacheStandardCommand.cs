@@ -1,6 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
-using System;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Commands.CacheStandard
 {

@@ -12,7 +12,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.SelectFunding.Queries;
 public class GetSelectFundingOptionsQueryHandler : IRequestHandler<GetSelectFundingOptionsQuery, GetSelectFundingOptionsQueryResult>

@@ -17,7 +17,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Assessor;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Providers.Queries;

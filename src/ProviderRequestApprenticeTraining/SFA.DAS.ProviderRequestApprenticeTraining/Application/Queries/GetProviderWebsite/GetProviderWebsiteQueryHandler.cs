@@ -5,7 +5,7 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

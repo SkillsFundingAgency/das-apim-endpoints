@@ -12,7 +12,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using GetAccountRequest = SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests.GetAccountRequest;
 using Pledge = SFA.DAS.LevyTransferMatching.Models.Pledge;

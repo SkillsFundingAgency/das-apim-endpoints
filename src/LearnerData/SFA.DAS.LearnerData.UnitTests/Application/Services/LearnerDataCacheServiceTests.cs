@@ -1,11 +1,5 @@
 ﻿using System.Text;
 using System.Text.Json;
-using AutoFixture;
-using FluentAssertions;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 

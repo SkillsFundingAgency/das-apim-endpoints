@@ -10,7 +10,7 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.RegisteredProviders.Queries;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.RegisteredProvider;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers

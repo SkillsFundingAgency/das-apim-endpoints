@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.SharedOuterApi.Common;
+namespace SFA.DAS.EmployerPR.Common;
 
 public enum PermissionAction : short
 {

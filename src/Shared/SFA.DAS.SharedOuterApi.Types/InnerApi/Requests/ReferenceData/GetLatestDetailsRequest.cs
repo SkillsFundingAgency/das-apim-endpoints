@@ -1,7 +1,9 @@
 ﻿using System.Web;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ReferenceData
 {

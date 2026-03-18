@@ -1,6 +1,5 @@
-﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi;
+﻿using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;

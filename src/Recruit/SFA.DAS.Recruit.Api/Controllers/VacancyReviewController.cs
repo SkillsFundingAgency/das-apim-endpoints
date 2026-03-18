@@ -1,6 +1,4 @@
 using System;
-using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +6,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
-using SFA.DAS.Recruit.Domain.Vacancy;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 

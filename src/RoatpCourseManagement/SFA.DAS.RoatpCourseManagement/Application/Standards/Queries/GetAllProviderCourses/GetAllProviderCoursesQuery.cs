@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.SharedOuterApi.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses

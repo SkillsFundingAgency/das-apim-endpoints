@@ -10,8 +10,8 @@
 // using Moq;
 // using Moq.Protected;
 // using NUnit.Framework;
-// using SFA.DAS.SharedOuterApi.Infrastructure;
-// using SFA.DAS.SharedOuterApi.Interfaces;
+// using SFA.DAS.Apim.Shared.Infrastructure;
+// using SFA.DAS.Apim.Shared.Interfaces;
 // using SFA.DAS.SharedOuterApi.Types.Services;
 // using SFA.DAS.SharedOuterApi.UnitTests.Infrastructure.InternalApi;
 //

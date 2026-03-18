@@ -8,7 +8,6 @@ using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.AppStart
 {

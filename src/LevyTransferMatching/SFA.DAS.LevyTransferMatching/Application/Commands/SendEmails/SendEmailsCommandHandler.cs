@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.Apim.Shared.Common;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Responses
 {

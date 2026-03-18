@@ -7,11 +7,11 @@ using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.UnitTests.Application;

@@ -5,7 +5,6 @@ using SFA.DAS.EmployerDemand.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerDemand.Application.Demand.Commands.AnonymiseDemand
 {

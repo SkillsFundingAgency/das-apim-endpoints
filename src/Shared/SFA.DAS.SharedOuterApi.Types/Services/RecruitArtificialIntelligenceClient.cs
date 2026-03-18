@@ -1,6 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.Infrastructure;
+﻿using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
 

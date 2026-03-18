@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.ProviderFeedback.Services
 {

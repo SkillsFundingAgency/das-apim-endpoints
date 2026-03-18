@@ -3,14 +3,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.EmployerFeedback.Application.Commands.GenerateFeedbackSummaries;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.GenerateFeedbackSummaries
 {
@@ -55,7 +56,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.GenerateFeedba
                     false))
                 .ReturnsAsync(apiResponse);
 
-            Assert.ThrowsAsync<SFA.DAS.SharedOuterApi.Exceptions.ApiResponseException>(async () =>
+            Assert.ThrowsAsync<ApiResponseException>(async () =>
                 await _handler.Handle(new GenerateFeedbackSummariesCommand(), CancellationToken.None));
         }
     }

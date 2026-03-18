@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 

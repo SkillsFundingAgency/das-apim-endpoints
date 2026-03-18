@@ -3,9 +3,7 @@ using System.Linq;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Requests;

@@ -4,8 +4,7 @@ using Moq;
 using SFA.DAS.LearnerDataJobs.Application.Queries;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.LearnerDataJobs.Responses;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerDataJobs.UnitTests.Application.Queries;

@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
-using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 

@@ -2,14 +2,12 @@
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.Recruit.Application.ApplicationReview.Command.PatchApplicationReview
 {

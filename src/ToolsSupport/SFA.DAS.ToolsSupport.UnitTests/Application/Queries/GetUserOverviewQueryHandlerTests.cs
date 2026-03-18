@@ -4,7 +4,7 @@ using Moq;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Application.Queries.GetUserOverview;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;

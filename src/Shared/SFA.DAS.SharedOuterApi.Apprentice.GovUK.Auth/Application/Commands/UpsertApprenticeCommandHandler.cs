@@ -1,10 +1,7 @@
 using MediatR;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
 

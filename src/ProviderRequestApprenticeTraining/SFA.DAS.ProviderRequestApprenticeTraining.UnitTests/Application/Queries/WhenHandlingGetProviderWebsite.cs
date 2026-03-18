@@ -15,8 +15,8 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderCoursesService;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.Apim.Shared.Interfaces;
+
 using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Testing.Builders;

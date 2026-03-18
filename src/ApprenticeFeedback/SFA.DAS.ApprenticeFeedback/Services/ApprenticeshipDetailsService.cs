@@ -8,7 +8,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Assessor;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeAccounts;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Assessor;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading.Tasks;
 

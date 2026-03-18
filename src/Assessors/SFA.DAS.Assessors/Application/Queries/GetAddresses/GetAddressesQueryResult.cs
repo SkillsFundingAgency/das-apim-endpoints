@@ -1,6 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 
 namespace SFA.DAS.Assessors.Application.Queries.GetAddresses
 {

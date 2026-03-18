@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using SFA.DAS.LevyTransferMatching.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
+﻿using SFA.DAS.LevyTransferMatching.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetApplications

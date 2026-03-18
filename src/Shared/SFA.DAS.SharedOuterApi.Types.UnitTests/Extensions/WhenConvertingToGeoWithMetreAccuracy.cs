@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Extensions;
+﻿using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions;
 

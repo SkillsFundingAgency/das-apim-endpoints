@@ -7,7 +7,6 @@ using SFA.DAS.ApprenticeFeedback.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

@@ -1,5 +1,3 @@
-using SFA.DAS.SharedOuterApi.Common;
-
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
 using System.Collections.Generic;

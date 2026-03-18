@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using SFA.DAS.SharedOuterApi.Exceptions;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Exceptions;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {

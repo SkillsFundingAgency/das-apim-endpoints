@@ -3,15 +3,8 @@ using Moq;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.Apim.Shared.Models;
 using System.Net;
-using SFA.DAS.Aodp.Configuration;
-using SFA.DAS.Aodp.Services;
 
 namespace SFA.DAS.Aodp.Application.Tests.Commands.Application
 {

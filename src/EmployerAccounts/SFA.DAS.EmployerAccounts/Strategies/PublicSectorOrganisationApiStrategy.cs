@@ -7,7 +7,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.EmployerAccounts.Strategies
 {

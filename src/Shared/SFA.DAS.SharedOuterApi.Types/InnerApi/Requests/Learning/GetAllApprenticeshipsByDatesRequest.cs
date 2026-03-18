@@ -1,4 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
 public class GetAllApprenticeshipsByDatesRequest(string ukprn, string startDate, string endDate, int page, int? pageSize = 20) : IGetApiRequest

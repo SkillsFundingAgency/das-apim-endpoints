@@ -1,19 +1,5 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
-using Newtonsoft.Json;
-using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LearnerData;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http.Headers;
-using TechTalk.SpecFlow;
-using WireMock.Matchers;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 

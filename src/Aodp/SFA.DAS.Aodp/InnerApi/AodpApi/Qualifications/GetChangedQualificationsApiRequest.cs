@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Aodp.Application.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Collections.Specialized;
 
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications

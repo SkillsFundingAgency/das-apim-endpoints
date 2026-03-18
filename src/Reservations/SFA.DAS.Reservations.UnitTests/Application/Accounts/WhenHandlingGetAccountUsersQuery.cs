@@ -6,9 +6,9 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Reservations.Application.Accounts.Queries;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
-using SFA.DAS.SharedOuterApi.Services;
+
 using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.Testing.AutoFixture;
 

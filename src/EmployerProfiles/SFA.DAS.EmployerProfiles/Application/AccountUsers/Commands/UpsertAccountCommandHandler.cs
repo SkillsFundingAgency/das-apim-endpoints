@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
-using SFA.DAS.SharedOuterApi.Services;
+
 using SFA.DAS.SharedOuterApi.Types.Services;
 using System.Threading.Tasks;
 using System.Threading;

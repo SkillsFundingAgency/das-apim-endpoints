@@ -9,7 +9,7 @@ using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.ApimDeveloper.UnitTests.Application.ApiSubscriptions.Commands

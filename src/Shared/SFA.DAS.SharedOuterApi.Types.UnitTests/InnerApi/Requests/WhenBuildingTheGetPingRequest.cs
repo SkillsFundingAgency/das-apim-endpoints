@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.InnerApi.InnerApi.Requests;
+using SFA.DAS.Apim.Shared.InnerApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
 {

@@ -3,9 +3,9 @@ using SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using GetStandardRequest = SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Requests.GetStandardRequest;

@@ -7,8 +7,8 @@ using SFA.DAS.Recruit.InnerApi.Recruit.Responses.Vacancies;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Vacancies.Queries;

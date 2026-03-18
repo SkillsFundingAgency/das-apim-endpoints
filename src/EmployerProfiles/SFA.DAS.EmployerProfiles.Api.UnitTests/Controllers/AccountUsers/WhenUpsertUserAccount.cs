@@ -11,7 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerProfiles.Api.Controllers;
 using SFA.DAS.EmployerProfiles.Api.Models;
 using SFA.DAS.EmployerProfiles.Application.AccountUsers.Commands;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 

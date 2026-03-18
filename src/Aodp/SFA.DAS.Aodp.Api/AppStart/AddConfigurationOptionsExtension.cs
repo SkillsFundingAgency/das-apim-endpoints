@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Apim.Shared.Configuration;
 using AodpApiConfiguration = SFA.DAS.Aodp.Configuration.AodpApiConfiguration;
 using DfeSignInApiConfiguration = SFA.DAS.Aodp.Configuration.DfeSignInApiConfiguration;
 

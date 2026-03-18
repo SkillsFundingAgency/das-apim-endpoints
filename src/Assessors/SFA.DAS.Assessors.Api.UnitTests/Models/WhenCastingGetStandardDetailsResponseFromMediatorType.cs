@@ -1,6 +1,5 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using SFA.DAS.Assessors.Api.Models;
 using SFA.DAS.Assessors.InnerApi.Responses;

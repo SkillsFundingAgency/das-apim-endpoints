@@ -5,7 +5,6 @@ using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyMetrics;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.ComponentModel.DataAnnotations;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;

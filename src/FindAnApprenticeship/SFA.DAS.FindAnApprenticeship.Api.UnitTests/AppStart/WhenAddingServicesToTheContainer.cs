@@ -9,7 +9,6 @@ using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.AppStart

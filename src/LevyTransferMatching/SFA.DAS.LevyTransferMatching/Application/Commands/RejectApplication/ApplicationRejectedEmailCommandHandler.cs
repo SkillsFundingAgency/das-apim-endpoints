@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.Interfaces;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.RejectApplication
 {

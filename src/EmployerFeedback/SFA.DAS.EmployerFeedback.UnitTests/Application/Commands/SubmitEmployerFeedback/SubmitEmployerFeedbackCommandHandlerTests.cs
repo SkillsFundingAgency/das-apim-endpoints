@@ -7,12 +7,13 @@ using SFA.DAS.EmployerFeedback.Application.Commands.SubmitEmployerFeedback;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.EmployerFeedback.Models;
 using System.Collections.Generic;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SubmitEmployerFeedbackRequest = SFA.DAS.EmployerFeedback.InnerApi.Requests.SubmitEmployerFeedbackRequest;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SubmitEmployerFeedback
@@ -81,7 +82,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.SubmitEmployer
                     It.IsAny<SubmitEmployerFeedbackRequest>(), false))
                 .ReturnsAsync(apiResponse);
 
-            Assert.ThrowsAsync<SharedOuterApi.Exceptions.ApiResponseException>(async () =>
+            Assert.ThrowsAsync<ApiResponseException>(async () =>
                 await _handler.Handle(command, CancellationToken.None));
         }
     }

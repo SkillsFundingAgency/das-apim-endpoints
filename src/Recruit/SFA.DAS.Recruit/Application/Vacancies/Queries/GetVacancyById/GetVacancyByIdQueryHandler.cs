@@ -8,7 +8,6 @@ using SFA.DAS.Recruit.InnerApi.Recruit.Responses.Vacancies;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Recruit.Application.Vacancies.Queries.GetVacancyById;
 

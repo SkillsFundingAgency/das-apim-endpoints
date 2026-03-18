@@ -3,7 +3,6 @@ using SFA.DAS.ApprenticeFeedback.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Threading.Tasks;
 using System.Threading;
 using SFA.DAS.ApprenticeFeedback.Models;

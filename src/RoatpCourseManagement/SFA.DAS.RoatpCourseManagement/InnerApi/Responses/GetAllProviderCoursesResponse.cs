@@ -1,5 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses

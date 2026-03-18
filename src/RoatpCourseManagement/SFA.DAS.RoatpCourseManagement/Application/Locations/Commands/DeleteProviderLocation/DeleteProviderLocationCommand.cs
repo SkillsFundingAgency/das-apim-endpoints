@@ -1,7 +1,7 @@
 ﻿using System;
 using MediatR;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.DeleteProviderLocation;

@@ -3,8 +3,8 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.InnerApi.Requests;
 using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Apim.Shared.InnerApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck
 {

@@ -8,8 +8,6 @@ using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.Recruit.Application.Services;

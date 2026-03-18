@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -16,8 +15,8 @@ using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.EmploymentCheck.Infrastructure;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.EmploymentCheck.Api
 {

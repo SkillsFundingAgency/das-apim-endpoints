@@ -1,5 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using System.Web;
 
 namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests

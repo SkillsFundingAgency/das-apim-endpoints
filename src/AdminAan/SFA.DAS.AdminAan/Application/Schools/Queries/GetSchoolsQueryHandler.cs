@@ -5,7 +5,6 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.AdminAan.Application.Schools.Queries;
 public class GetSchoolsQueryHandler(IEducationalOrganisationApiClient<EducationalOrganisationApiConfiguration> apiClient, ILogger<GetSchoolsQueryHandler> logger)

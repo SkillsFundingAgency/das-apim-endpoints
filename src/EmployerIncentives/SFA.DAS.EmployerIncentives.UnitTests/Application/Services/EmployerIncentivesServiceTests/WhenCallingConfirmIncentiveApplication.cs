@@ -11,7 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 using System.Threading.Tasks;
 using FluentAssertions;
 using SFA.DAS.EmployerIncentives.Exceptions;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.EmployerIncentivesServiceTests

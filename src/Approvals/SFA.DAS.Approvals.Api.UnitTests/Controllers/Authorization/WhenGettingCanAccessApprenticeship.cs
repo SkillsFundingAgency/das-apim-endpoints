@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Authorization;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Authorization;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 

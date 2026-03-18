@@ -7,7 +7,6 @@ using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.ApprenticeApp.Extensions;
 using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeCommitments.Requests;
 

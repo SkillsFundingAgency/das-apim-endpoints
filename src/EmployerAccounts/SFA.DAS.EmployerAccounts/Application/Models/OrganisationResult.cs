@@ -1,7 +1,6 @@
 ﻿using System;
 using SFA.DAS.EmployerAccounts.ExternalApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PublicSectorOrganisation;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;

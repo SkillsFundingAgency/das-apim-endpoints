@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System.Linq;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 

@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Exceptions;
-using System;
+﻿using System;
+using SFA.DAS.Apim.Shared.Exceptions;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Exceptions
 {

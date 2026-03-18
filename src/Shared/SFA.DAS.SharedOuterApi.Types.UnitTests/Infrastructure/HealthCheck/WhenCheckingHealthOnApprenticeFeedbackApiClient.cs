@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using System.Threading;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using SFA.DAS.SharedOuterApi.InnerApi.InnerApi.Requests;
+using SFA.DAS.Apim.Shared.InnerApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;

@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Approvals.Api.Clients

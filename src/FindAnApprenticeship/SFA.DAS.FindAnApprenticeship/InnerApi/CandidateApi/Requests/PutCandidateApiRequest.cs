@@ -1,7 +1,6 @@
 ﻿using System;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 public class PutCandidateApiRequest(Guid candidateId, PutCandidateApiRequestData data) : IPutApiRequest

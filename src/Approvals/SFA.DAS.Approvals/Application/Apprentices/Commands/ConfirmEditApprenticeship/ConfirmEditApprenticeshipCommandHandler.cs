@@ -10,8 +10,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using Azure.Core;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 

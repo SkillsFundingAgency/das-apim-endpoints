@@ -1,5 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using static SFA.DAS.TrackProgressInternal.Apis.TrackProgressInnerApi.PopulateKsbsRequest;
 
 namespace SFA.DAS.TrackProgressInternal.Apis.TrackProgressInnerApi;

@@ -1,14 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Apim.Shared.Configuration;
 
 namespace SFA.DAS.EmployerFeedback.Api.AppStart
 {

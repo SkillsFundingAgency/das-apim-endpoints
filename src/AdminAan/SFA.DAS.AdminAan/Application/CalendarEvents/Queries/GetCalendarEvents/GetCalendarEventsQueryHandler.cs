@@ -2,7 +2,7 @@
 using SFA.DAS.AdminAan.Infrastructure;
 using SFA.DAS.AdminAan.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AdminAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 public class GetCalendarEventsQueryHandler(IAanHubRestApiClient apiClient, ILocationLookupService locationLookupService, ICacheStorageService cacheService)

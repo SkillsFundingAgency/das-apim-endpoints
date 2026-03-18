@@ -13,8 +13,7 @@ using SFA.DAS.ApimDeveloper.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.ApimDeveloper.Api.UnitTests.AppStart

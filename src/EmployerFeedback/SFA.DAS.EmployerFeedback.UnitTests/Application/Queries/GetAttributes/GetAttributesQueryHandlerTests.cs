@@ -4,15 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAttributes
 {
@@ -60,7 +61,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetAttributes
 
             var handler = new GetAttributesQueryHandler(_apiClientMock.Object);
 
-            Assert.ThrowsAsync<SFA.DAS.SharedOuterApi.Exceptions.ApiResponseException>(async () =>
+            Assert.ThrowsAsync<ApiResponseException>(async () =>
                 await handler.Handle(new GetAttributesQuery(), CancellationToken.None));
         }
 

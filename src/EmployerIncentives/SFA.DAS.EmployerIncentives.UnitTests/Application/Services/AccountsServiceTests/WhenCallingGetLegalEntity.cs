@@ -9,7 +9,6 @@ using SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerIncentives.UnitTests.Application.Services.AccountsServiceTests

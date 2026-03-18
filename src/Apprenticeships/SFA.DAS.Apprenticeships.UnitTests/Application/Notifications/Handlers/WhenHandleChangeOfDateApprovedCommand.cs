@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications.Handlers;
-using SFA.DAS.Apprenticeships.Constants;
 using SFA.DAS.Employer.Shared.UI;
 using System;
 using System.Collections.Generic;

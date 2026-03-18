@@ -1,14 +1,11 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
-using SFA.DAS.SharedOuterApi.Extensions;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
-
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 using SFA.DAS.SharedOuterApi.Types.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Models;

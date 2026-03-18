@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.SharedOuterApi.Common;
+namespace SFA.DAS.SharedOuterApi.Types.Constants;
 
-public enum ApprenticeshipType
+public enum LearningType
 {
     Apprenticeship,
     FoundationApprenticeship,

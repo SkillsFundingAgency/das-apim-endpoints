@@ -6,10 +6,8 @@ using SFA.DAS.ApprenticeCommitments.Application.Services;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService;
-using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.ApprenticeCommitments.Extensions;
-using SFA.DAS.ApprenticeCommitments.Types;
 using static System.String;
 using ApprenticeshipResponse = SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi.ApprenticeshipResponse;
 

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
-using SFA.DAS.SharedOuterApi.Common;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 

@@ -1,6 +1,4 @@
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
-
-using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 using SFA.DAS.SharedOuterApi.Types.Models;
 

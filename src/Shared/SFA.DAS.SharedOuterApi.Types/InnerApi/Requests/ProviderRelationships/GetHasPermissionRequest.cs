@@ -1,5 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
+
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
 

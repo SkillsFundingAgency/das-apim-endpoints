@@ -1,8 +1,5 @@
-﻿using SFA.DAS.LearnerData.Application.Fm36;
-using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+﻿using SFA.DAS.LearnerData.Extensions;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 

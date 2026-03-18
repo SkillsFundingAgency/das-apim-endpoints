@@ -9,7 +9,7 @@ using SFA.DAS.Campaign.Api.Controllers;
 using SFA.DAS.Campaign.InnerApi.Requests;
 using SFA.DAS.Campaign.Interfaces;
 using SFA.DAS.Campaign.Models;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using System;
 using System.Net;

@@ -1,6 +1,5 @@
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;

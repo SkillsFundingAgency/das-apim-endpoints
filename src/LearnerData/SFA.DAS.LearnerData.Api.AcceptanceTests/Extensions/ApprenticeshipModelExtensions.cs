@@ -1,8 +1,4 @@
 ﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
-using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using Episode = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;

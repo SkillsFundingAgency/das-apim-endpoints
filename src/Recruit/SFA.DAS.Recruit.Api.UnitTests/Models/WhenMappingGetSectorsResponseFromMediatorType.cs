@@ -1,9 +1,5 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.Recruit.Api.Models;
+﻿using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Models
 {

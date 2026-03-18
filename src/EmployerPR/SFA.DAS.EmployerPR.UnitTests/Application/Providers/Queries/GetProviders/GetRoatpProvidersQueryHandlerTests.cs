@@ -5,7 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.EmployerPR.Application.RoatpProviders.Queries.GetRoatpProviders;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerPR.UnitTests.Application.Providers.Queries.GetProviders;

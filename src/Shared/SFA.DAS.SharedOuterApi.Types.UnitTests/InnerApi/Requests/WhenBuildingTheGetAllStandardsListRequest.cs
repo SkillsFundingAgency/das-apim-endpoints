@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
-using SFA.DAS.SharedOuterApi.Common;
+﻿using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 

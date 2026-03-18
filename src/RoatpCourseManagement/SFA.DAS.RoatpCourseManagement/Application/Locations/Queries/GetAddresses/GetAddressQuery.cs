@@ -1,6 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAddresses;
 public class GetAddressesQuery : IGetApiRequest, IRequest<GetAddressesQueryResult>

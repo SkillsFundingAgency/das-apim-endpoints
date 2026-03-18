@@ -1,8 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.InnerApi.Requests
 {

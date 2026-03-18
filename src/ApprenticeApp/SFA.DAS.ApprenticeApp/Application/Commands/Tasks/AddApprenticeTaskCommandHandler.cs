@@ -5,7 +5,6 @@ using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeProgress.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands
 {
