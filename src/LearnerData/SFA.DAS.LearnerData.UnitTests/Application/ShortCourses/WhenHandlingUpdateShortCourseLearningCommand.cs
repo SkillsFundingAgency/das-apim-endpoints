@@ -117,4 +117,29 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             x.Put(It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()),
             Times.Never);
     }
+
+    [Test]
+    public async Task Then_LearningComplete_Milestone_Is_Added_When_CompletionDate_Set_And_Milestone_Absent()
+    {
+        // Arrange
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learningKey,
+            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningPutResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.Put(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
+                r.Data.Milestones.Contains(Milestone.LearningComplete))),
+            Times.Once);
+    }
 }
