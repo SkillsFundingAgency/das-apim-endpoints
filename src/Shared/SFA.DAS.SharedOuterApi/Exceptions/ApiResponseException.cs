@@ -1,6 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Models;
-using System;
+﻿using System;
 using System.Net;
+using SFA.DAS.SharedOuterApi.Models;
+
 
 namespace SFA.DAS.SharedOuterApi.Exceptions
 {

@@ -1,13 +1,14 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure
 {

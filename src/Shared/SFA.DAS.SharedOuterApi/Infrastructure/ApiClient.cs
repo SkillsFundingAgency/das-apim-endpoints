@@ -1,6 +1,4 @@
 using Newtonsoft.Json;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -8,6 +6,9 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
+
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace SFA.DAS.SharedOuterApi.Infrastructure;

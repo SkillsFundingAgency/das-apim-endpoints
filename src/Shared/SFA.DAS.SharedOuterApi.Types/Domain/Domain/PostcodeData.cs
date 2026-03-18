@@ -1,0 +1,3 @@
+namespace SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+
+public record PostcodeData(string Postcode, string Country, double? Latitude, double? Longitude);

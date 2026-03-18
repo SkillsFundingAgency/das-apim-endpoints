@@ -1,0 +1,15 @@
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning
+{
+    public class GetPendingPriceChangeRequest : IGetApiRequest
+    {
+	    public GetPendingPriceChangeRequest(Guid apprenticeshipKey)
+	    {
+		    ApprenticeshipKey = apprenticeshipKey;
+	    }
+
+	    public Guid ApprenticeshipKey { get; }
+        public string GetUrl => $"{ApprenticeshipKey}/priceHistory/pending";
+    }
+}
