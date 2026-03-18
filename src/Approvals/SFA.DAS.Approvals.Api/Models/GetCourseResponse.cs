@@ -18,7 +18,7 @@ public class GetCourseResponse
     {
         return new GetCourseResponse
         {
-            LarsCode = source.LarsCode,
+            LarsCode = source.LarsCode.ToString(),
             Title = source.Title,
             Level = source.Level,
             LearningType = source.LearningType,
