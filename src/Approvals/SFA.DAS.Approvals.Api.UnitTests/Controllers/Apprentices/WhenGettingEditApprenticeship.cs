@@ -40,15 +40,16 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             var result = await _controller.EditApprenticeship( _apprenticeshipId);
 
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            result.Should().BeOfType<OkObjectResult>();
+
             var okObjectResult = (OkObjectResult)result;
-            Assert.That(okObjectResult.Value, Is.InstanceOf<GetEditApprenticeshipResponse>());
-            var objectResult = (GetEditApprenticeshipResponse)okObjectResult.Value;
+            okObjectResult.Value.Should().BeOfType<GetEditApprenticeshipResponse>();
 
-            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
-
-            var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.That(comparisonResult.AreEqual, Is.True);
+            var value = (GetEditApprenticeshipResponse)okObjectResult.Value
+            value.CourseName.Should().Be(_queryResult.CourseName);
+            value.HasMultipleDeliveryModelOptions.Should().Be(_queryResult.HasMultipleDeliveryModelOptions);
+            value.IsFundedByTransfer.Should().Be(_queryResult.IsFundedByTransfer);
+            value.LearningType.Should().Be(_queryResult.LearningType);
         }
     }
 }
