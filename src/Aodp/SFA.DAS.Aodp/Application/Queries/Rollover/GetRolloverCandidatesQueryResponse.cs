@@ -12,7 +12,6 @@
         public string? QualificationNumber { get; init; }
         public Guid FundingOfferId { get; set; }
         public string? FundingOfferName { get; init; }
-        public bool IsActive { get; set; }
         public string? AcademicYear { get; set; }
     }
 }

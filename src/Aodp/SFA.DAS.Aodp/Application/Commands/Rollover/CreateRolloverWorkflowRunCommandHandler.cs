@@ -20,7 +20,11 @@ namespace SFA.DAS.Aodp.Application.Commands.Rollover
 
             try
             {
-                var result = await _apiClient.PostWithResponseCode<CreateRolloverWorkflowRunCommandResponse>(new CreateRolloverWorkflowRunApiRequest(request));
+                var result = await _apiClient.PostWithResponseCode<CreateRolloverWorkflowRunCommandResponse>(new CreateRolloverWorkflowRunApiRequest()
+                { 
+                    Data = request
+                });
+
                 response.Value.RolloverWorkflowRunId = result.Body.RolloverWorkflowRunId;
                 response.Success = true;
             }
