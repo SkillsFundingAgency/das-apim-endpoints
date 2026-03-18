@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
@@ -47,19 +45,6 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEd
             if (!apprenticeship.CheckParty(_serviceParameters))
             {
                 return null;
-            }
-
-            if (apprenticeship.LearningType == LearningType.ApprenticeshipUnit)
-            {
-                var providerCoursesData = await _providerStandardsService.GetApprenticeshipUnitsData(apprenticeship.ProviderId);
-                return new GetEditApprenticeshipCourseQueryResult
-                {
-                    EmployerName = apprenticeship.EmployerName,
-                    ProviderName = apprenticeship.ProviderName,
-                    IsMainProvider = false,
-                    Standards = providerCoursesData.Standards.Select(x =>
-                        new GetEditApprenticeshipCourseQueryResult.Standard { CourseCode = x.CourseCode, Name = x.Name })
-                };
             }
 
             var providerStandardsData = await _providerStandardsService.GetStandardsData(apprenticeship.ProviderId);

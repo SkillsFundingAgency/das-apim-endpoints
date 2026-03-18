@@ -22,7 +22,6 @@ public interface IProviderStandardsService
 {
     Task<ProviderStandardsData> GetStandardsData(long providerId);
     Task<ProviderStandardsData> GetCoursesData(long providerId);
-    Task<ProviderStandardsData> GetApprenticeshipUnitsData(long providerId);
 }
 
 public class ProviderStandardsService(
@@ -92,22 +91,6 @@ public class ProviderStandardsService(
             IsMainProvider = providerDetails.IsMainProvider,
             Standards = await GetCoursesForProvider(providerId)
         };
-    }
-
-    // TODO This is a stub to allow us to test the Changing an AppUnit to another appUnit
-    public async Task<ProviderStandardsData> GetApprenticeshipUnitsData(long providerId)
-    {
-        var result = await GetStandardsData(providerId);
-
-        var list = new List<Standard>
-        {
-            new Standard("ZSC00001", "Stubbed Digital Apprenticeship Unit", 0),
-            new Standard("ZSC00002", "Stubbed Teacher Assistent - Apprenticeship Unit", 0),
-            new Standard("ZSC00004", "Stubbed Nursing Apprenticeship Unit", 0)
-        };
-        result.Standards = list;
-
-        return result;
     }
 
     private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)
