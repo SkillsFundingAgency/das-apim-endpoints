@@ -25,13 +25,13 @@ public class GetSelectNewEmployerQueryHandler(
     ILogger<GetSelectNewEmployerQueryHandler> logger)
     : IRequestHandler<GetSelectNewEmployerQuery, GetSelectNewEmployerQueryResult>
 {
-    public async Task<GetSelectNewEmployerQueryResult> Handle(GetSelectNewEmployerQuery request, CancellationToken cancellationToken)
+    public async Task<GetSelectNewEmployerQueryResult> Handle(GetSelectNewEmployerQuery selectEmployerRequest, CancellationToken cancellationToken)
     {
-        var providerRelationshipsRequest = new GetProviderAccountLegalEntitiesRequest(request.ProviderId, [Operation.Recruitment]);
+        var providerRelationshipsRequest = new GetProviderAccountLegalEntitiesRequest(selectEmployerRequest.ProviderId, [Operation.Recruitment]);
 
         var providerRelationshipsResponse = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(providerRelationshipsRequest);
 
-        var apprenticeshipRequest = new GetApprenticeshipRequest(request.ApprenticeshipId);
+        var apprenticeshipRequest = new GetApprenticeshipRequest(selectEmployerRequest.ApprenticeshipId);
         var apprenticeship = await commitmentsV2ApiClient.Get<GetApprenticeshipResponse>(apprenticeshipRequest);
 
         if (providerRelationshipsResponse?.AccountProviderLegalEntities == null || !providerRelationshipsResponse.AccountProviderLegalEntities.Any())
@@ -55,33 +55,33 @@ public class GetSelectNewEmployerQueryHandler(
                })
                .ToList();
 
-        if (!string.IsNullOrWhiteSpace(request.SearchTerm))
+        if (!string.IsNullOrWhiteSpace(selectEmployerRequest.SearchTerm))
         {
-            accountProviderLegalEntities = ApplySearch(accountProviderLegalEntities, request.SearchTerm);
+            accountProviderLegalEntities = ApplySearch(accountProviderLegalEntities, selectEmployerRequest.SearchTerm);
         }
 
-        if (!string.IsNullOrWhiteSpace(request.SortField))
+        if (!string.IsNullOrWhiteSpace(selectEmployerRequest.SortField))
         {
-            accountProviderLegalEntities = ApplySort(accountProviderLegalEntities, request.SortField, request.ReverseSort);
+            accountProviderLegalEntities = ApplySort(accountProviderLegalEntities, selectEmployerRequest.SortField, selectEmployerRequest.ReverseSort);
         }
 
         var totalCount = accountProviderLegalEntities.Count;
-        var pageSize = request.PageSize;
-        var pageNumber = request.PageNumber;
-        var paged = accountProviderLegalEntities
+        var pageSize = selectEmployerRequest.PageSize;
+        var pageNumber = selectEmployerRequest.PageNumber;
+        var pagedAccountLegalEntities = accountProviderLegalEntities
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .ToList();
 
-        var uniqueAccountHashedIdsForPage = paged
+        var uniqueAccountHashedIdsForPage = pagedAccountLegalEntities
             .Where(x => !string.IsNullOrWhiteSpace(x.AccountHashedId))
             .Select(x => x.AccountHashedId)
             .Distinct()
             .ToList();
 
-        var accountLevyStatusMap = await GetAccountLevyStatusMap(uniqueAccountHashedIdsForPage);
+        var accountLevyStatusMap = await GetAccountLevyStatus(uniqueAccountHashedIdsForPage);
 
-        foreach (var item in paged.Where(item => !string.IsNullOrWhiteSpace(item.AccountHashedId)))
+        foreach (var item in pagedAccountLegalEntities.Where(item => !string.IsNullOrWhiteSpace(item.AccountHashedId)))
         {
             item.ApprenticeshipEmployerType = accountLevyStatusMap.GetValueOrDefault(item.AccountHashedId, "NonLevy");
         }
@@ -94,16 +94,16 @@ public class GetSelectNewEmployerQueryHandler(
 
         return new GetSelectNewEmployerQueryResult
         {
-            AccountProviderLegalEntities = paged,
+            AccountProviderLegalEntities = pagedAccountLegalEntities,
             Employers = employers,
             TotalCount = totalCount,
             EmployerName = apprenticeship.EmployerName
         };
     }
 
-    private async Task<Dictionary<string, string>> GetAccountLevyStatusMap(List<string> accountHashedIds)
+    private async Task<Dictionary<string, string>> GetAccountLevyStatus(List<string> accountHashedIds)
     {
-        var levyStatusMap = new ConcurrentDictionary<string, string>();
+        var accountLevyStatusMap = new ConcurrentDictionary<string, string>();
 
         if (!accountHashedIds.Any())
         {
@@ -117,16 +117,16 @@ public class GetSelectNewEmployerQueryHandler(
                 var accountResponse = await accountsApiClient.Get<GetAccountResponse>(
                     new GetAccountRequest(accountHashedId));
 
-                levyStatusMap[accountHashedId] = accountResponse?.ApprenticeshipEmployerType ?? "NonLevy";
+                accountLevyStatusMap[accountHashedId] = accountResponse?.ApprenticeshipEmployerType ?? "NonLevy";
             }
             catch (Exception ex)
             {
                 logger.LogWarning(ex, "Failed to get account levy status for account {AccountHashedId}, defaulting to NonLevy", accountHashedId);
-                levyStatusMap[accountHashedId] = "NonLevy";
+                accountLevyStatusMap[accountHashedId] = "NonLevy";
             }
         });
 
-        return new Dictionary<string, string>(levyStatusMap);
+        return new Dictionary<string, string>(accountLevyStatusMap);
     }
 
     private static List<AccountProviderLegalEntityItem> ApplySearch(
@@ -161,7 +161,7 @@ public class GetSelectNewEmployerQueryHandler(
     }
 
     private static List<AccountProviderLegalEntityItem> ApplySort(
-        List<AccountProviderLegalEntityItem> accountProviderLegalEntities,
+        List<AccountProviderLegalEntityItem> accountProviderLegalEntitiesItems,
         string sortField,
         bool reverseSort)
     {
@@ -171,7 +171,7 @@ public class GetSelectNewEmployerQueryHandler(
 
         if (string.IsNullOrWhiteSpace(sortField))
         {
-            return accountProviderLegalEntities;
+            return accountProviderLegalEntitiesItems;
         }
 
         if (!string.IsNullOrWhiteSpace(sortField))
@@ -179,38 +179,38 @@ public class GetSelectNewEmployerQueryHandler(
             switch (sortField)
             {
                 case EmployerAccountLegalEntityNameConst:
-                    accountProviderLegalEntities = reverseSort
-                        ? accountProviderLegalEntities.OrderByDescending(x => x.AccountLegalEntityName)
+                    accountProviderLegalEntitiesItems = reverseSort
+                        ? accountProviderLegalEntitiesItems.OrderByDescending(x => x.AccountLegalEntityName)
                         .ThenBy(x => x.AccountName)
                         .ThenBy(x => x.AccountLegalEntityPublicHashedId).ToList()
-                        : accountProviderLegalEntities.OrderBy(x => x.AccountLegalEntityName)
+                        : accountProviderLegalEntitiesItems.OrderBy(x => x.AccountLegalEntityName)
                         .ThenBy(x => x.AccountName)
                         .ThenBy(x => x.AccountLegalEntityPublicHashedId).ToList();
                     break;
 
                 case EmployerAccountNameConst:
-                    accountProviderLegalEntities = reverseSort
-                     ? accountProviderLegalEntities.OrderByDescending(x => x.AccountName)
+                    accountProviderLegalEntitiesItems = reverseSort
+                     ? accountProviderLegalEntitiesItems.OrderByDescending(x => x.AccountName)
                       .ThenBy(x => x.AccountLegalEntityName)
                       .ThenBy(x => x.AccountLegalEntityPublicHashedId).ToList()
-                     : accountProviderLegalEntities.OrderBy(x => x.AccountName)
+                     : accountProviderLegalEntitiesItems.OrderBy(x => x.AccountName)
                       .ThenBy(x => x.AccountLegalEntityName)
                       .ThenBy(x => x.AccountLegalEntityPublicHashedId).ToList();
                     break;
 
                 case AgreementId:
-                    accountProviderLegalEntities = reverseSort
-                     ? accountProviderLegalEntities.OrderByDescending
+                    accountProviderLegalEntitiesItems = reverseSort
+                     ? accountProviderLegalEntitiesItems.OrderByDescending
                       (x => x.AccountLegalEntityPublicHashedId)
                      .ThenBy(x => x.AccountName)
                       .ThenBy(x => x.AccountLegalEntityName).ToList()
-                     : accountProviderLegalEntities.OrderBy(x => x.AccountLegalEntityPublicHashedId)
+                     : accountProviderLegalEntitiesItems.OrderBy(x => x.AccountLegalEntityPublicHashedId)
                       .ThenBy(x => x.AccountLegalEntityName)
                       .ThenBy(x => x.AccountName).ToList();
                     break;
             }
         }
 
-        return accountProviderLegalEntities;
+        return accountProviderLegalEntitiesItems;
     }
 }
