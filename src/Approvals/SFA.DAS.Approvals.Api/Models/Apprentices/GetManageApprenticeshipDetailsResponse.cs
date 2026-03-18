@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
+using SFA.DAS.Approvals.Types;
 using System;
 using System.Collections.Generic;
 
@@ -76,6 +77,7 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             public int? DurationReducedByHours { get; set; }
             public int? TrainingTotalHours { get; set; }
             public bool? IsDurationReducedByRpl { get; set; }
+            public LearningType? LearningType { get; set; }
         }
 
         public class PriceEpisode
