@@ -72,7 +72,7 @@ public class ShortCoursesController(
 
         logger.LogInformation("GetShortCourseEarnings for ukprn {Ukprn}, year {Year} and period {period}", ukprn, collectionYear, collectionPeriod);
 
-        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
+        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 10000) : pagesize;
 
         var query = new GetShortCourseEarningsQuery(ukprn, collectionYear, collectionPeriod, page, pagesize);
 
