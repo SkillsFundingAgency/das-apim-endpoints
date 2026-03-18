@@ -104,7 +104,7 @@ public class GetCohortDetailsQueryHandler(
         }
 
         var isOnRegisterTask = fjaaService.IsAccountLegalEntityOnFjaaRegister(cohort.AccountLegalEntityId);
-        var providerCoursesTask = providerStandardsService.GetStandardsData(cohort.ProviderId);
+        var providerCoursesTask = providerStandardsService.GetCoursesData(cohort.ProviderId);
 
         await Task.WhenAll(isOnRegisterTask, providerCoursesTask);
 
