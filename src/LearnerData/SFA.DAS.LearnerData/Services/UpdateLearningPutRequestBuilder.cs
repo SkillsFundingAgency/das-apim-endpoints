@@ -61,7 +61,7 @@ public class UpdateLearningPutRequestBuilder(
                 }
             },
             OnProgramme = onProgrammeDetails,
-            MathsAndEnglishCourses = englishAndMathsCourses,
+            EnglishAndMathsCourses = englishAndMathsCourses,
             LearningSupport = learningSupport
         };
 
