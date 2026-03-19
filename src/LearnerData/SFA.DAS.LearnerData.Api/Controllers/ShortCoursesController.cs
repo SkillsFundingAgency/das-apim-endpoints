@@ -5,7 +5,6 @@ using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Extensions;
 using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
@@ -22,18 +21,13 @@ public class ShortCoursesController(
     {
         try
         {
-            var result = await mediator.Send(new CreateDraftShortCourseCommand
+            await mediator.Send(new CreateDraftShortCourseCommand
             {
                 Ukprn = ukprn,
                 ShortCourseRequest = request
             });
 
-            if (result.StatusCode.IsSuccessStatusCode())
-                return Accepted();
-            else if(result.StatusCode == HttpStatusCode.Conflict)
-                return Conflict();
-            else
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Accepted();
         }
         catch (Exception e)
         {
