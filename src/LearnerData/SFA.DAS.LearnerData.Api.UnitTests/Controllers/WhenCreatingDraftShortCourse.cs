@@ -1,5 +1,8 @@
 using System.Net;
 using SFA.DAS.LearnerData.Api.Controllers;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 

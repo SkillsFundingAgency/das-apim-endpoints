@@ -1,4 +1,3 @@
-﻿using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
@@ -12,18 +11,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.LearnerData.Application.UpdateLearner;
-
-public class CreateDraftShortCourseCommand : IRequest<CreateDraftShortCourseResult>
-{
-    public long Ukprn { get; set; }
-    public ShortCourseRequest ShortCourseRequest { get; set; }
-}
-
-public class CreateDraftShortCourseResult
-{
-    public HttpStatusCode StatusCode { get; set; }
-}
+namespace SFA.DAS.LearnerData.Application.CreateShortCourse;
 
 public class CreateDraftShortCourseCommandHandler(
     ILogger<CreateDraftShortCourseCommandHandler> logger,

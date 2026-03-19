@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.LearnerData.Application.GetShortCourseEarnings
+namespace SFA.DAS.LearnerData.Responses.Stub
 {
     public class GetShortCourseEarningsResponse
     {
