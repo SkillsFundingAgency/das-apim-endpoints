@@ -68,14 +68,13 @@ public class EmployerProfileController(IMediator mediator, ILogger<EmployerProfi
         }
     }
 
-    [HttpPut]
-    [Route("profiles/{accountLegalEntityId:long}")]
-    public async Task<IResult> PatchOne([FromRoute] long accountLegalEntityId,
-        [FromBody] EmployerProfile request)
+    [HttpPost]
+    [Route("profiles")]
+    public async Task<IResult> PatchOne([FromBody] EmployerProfile request)
     {
         try
         {
-            await mediator.Send(new PatchEmployerProfileCommand(accountLegalEntityId, request));
+            await mediator.Send(new PatchEmployerProfileCommand(request.AccountLegalEntityId, request));
 
             return Results.NoContent();
         }
