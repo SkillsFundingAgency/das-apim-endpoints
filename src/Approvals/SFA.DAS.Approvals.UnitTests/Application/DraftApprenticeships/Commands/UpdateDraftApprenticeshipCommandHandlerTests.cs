@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.UpdateDraftApprenticeship;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -21,19 +22,19 @@ public class UpdateDraftApprenticeshipCommandHandlerTests
     public async Task Handle_Update_Draft_Apprenticeship(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
-        GetStandardsListItem standardResponse,
+        GetCourseLookupResponse courseResponse,
         GetLearnerAgeResponse learnerAgeResponse,
         UpdateDraftApprenticeshipCommand request,
         UpdateDraftApprenticeshipCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "Apprenticeship";
             
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = standardResponse,
+                Course = courseResponse,
                 LearnerAgeRules = learnerAgeResponse
             });
 
