@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -76,10 +76,10 @@ public class ShortCoursesController(
 
         var query = new GetShortCourseEarningsQuery(ukprn, collectionYear, collectionPeriod, page, pagesize);
 
-        var response = await mediator.Send(query);
-        HttpContext.SetPageLinksInResponseHeaders(query, response);
+        var result = await mediator.Send(query);
+        HttpContext.SetPageLinksInResponseHeaders(query, result);
 
-        return Ok(response);
+        return Ok(result);
 
     }
 }
