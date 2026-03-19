@@ -620,9 +620,6 @@ components:
                     type: integer
                   learnAimRef:
                     type: string
-                  actualEndDate:
-                    type: string
-                    format: date
                   achievementDate:
                     type: string
                     format: date
@@ -661,9 +658,6 @@ components:
                     type: integer
                   learnAimRef:
                     type: string
-                  actualEndDate:
-                    type: string
-                    format: date
                   achievementDate:
                     type: string
                     format: date
