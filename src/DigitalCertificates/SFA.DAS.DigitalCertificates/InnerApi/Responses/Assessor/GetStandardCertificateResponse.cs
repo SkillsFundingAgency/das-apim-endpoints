@@ -21,6 +21,8 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
         public int? StandardLevel { get; set; }
         public DateTime? AchievementDate { get; set; }
         public DateTime? LearningStartDate { get; set; }
+        public string LatestEPAOutcome { get; set; }
+        public string Status { get; set; }
         public CertificateData CertificateData { get; set; }
     }
 
