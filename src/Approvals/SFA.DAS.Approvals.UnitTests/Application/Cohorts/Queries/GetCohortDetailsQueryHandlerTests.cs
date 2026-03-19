@@ -99,7 +99,7 @@ public class GetCohortDetailsQueryHandlerTests
 
         _providerStandards = fixture.Create<List<Standard>>();
         _providerCoursesService = new Mock<IProviderStandardsService>();
-        _providerCoursesService.Setup(x => x.GetStandardsData(It.Is<long>(id => id == _cohort.ProviderId)))
+        _providerCoursesService.Setup(x => x.GetCoursesData(It.Is<long>(id => id == _cohort.ProviderId)))
             .ReturnsAsync(() => new ProviderStandardsData { Standards = _providerStandards });
 
         _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();

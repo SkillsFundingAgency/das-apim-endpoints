@@ -21,7 +21,7 @@ public class UpdateLearningRequestBody
 {
     public Delivery Delivery { get; set; }
     public LearningUpdateDetails Learner { get; set; }
-    public List<MathsAndEnglishDetails> MathsAndEnglishCourses { get; set; }
+    public List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; }
     public List<LearningSupportUpdatedDetails> LearningSupport { get; set; }
     public OnProgrammeDetails OnProgramme { get; set; }
 }

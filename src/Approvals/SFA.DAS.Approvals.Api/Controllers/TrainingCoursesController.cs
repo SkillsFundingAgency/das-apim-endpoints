@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Courses.Queries;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 
 namespace SFA.DAS.Approvals.Api.Controllers
 {
