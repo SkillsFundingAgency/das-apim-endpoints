@@ -28,7 +28,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         {
             var mediatorMock = new Mock<IMediator>();
             var getAllStandardsResponse = new GetStandardsLookupResponseFromCoursesApi
-            { Standards = new List<GetStandardResponseFromCoursesApi> { new() { LarsCode = 235 } } };
+            { Courses = new List<GetStandardResponseFromCoursesApi> { new() { LarsCode = "235" } } };
 
             var apiResponse = new ApiResponse<GetStandardsLookupResponseFromCoursesApi>(getAllStandardsResponse, HttpStatusCode.OK, "");
 
@@ -43,8 +43,10 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
 
             var okResult = response as OkObjectResult;
             var actualResponse = (GetStandardsLookupResponse)okResult.Value;
-            actualResponse!.Standards.Should().BeEquivalentTo(getAllStandardsResponse.Standards, options => options.Excluding(x => x.LarsCode));
-            Assert.That(getAllStandardsResponse.Standards[0].LarsCode.ToString(), Is.SameAs(actualResponse.Standards[0].LarsCode));
+            actualResponse!.Standards.Should().BeEquivalentTo(getAllStandardsResponse.Courses, options => options
+                .Excluding(x => x.LearningType)
+                .ExcludingMissingMembers());
+            Assert.That(getAllStandardsResponse.Courses[0].LarsCode, Is.SameAs(actualResponse.Standards[0].LarsCode));
             Assert.That((int)HttpStatusCode.OK, Is.EqualTo(statusCodeResult!.StatusCode.GetValueOrDefault()));
         }
 
@@ -59,7 +61,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
         {
             var errorMessage = "Error in retrieval";
             var mediatorMock = new Mock<IMediator>();
-            var getAllStandardsResponse = new GetStandardsLookupResponseFromCoursesApi { Standards = null };
+            var getAllStandardsResponse = new GetStandardsLookupResponseFromCoursesApi { Courses = null };
 
             var apiResponse =
                 new ApiResponse<GetStandardsLookupResponseFromCoursesApi>(getAllStandardsResponse, statusCode,

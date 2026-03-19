@@ -16,11 +16,16 @@ public sealed record PostVacancyReviewDto(
     string ShortDescription,
     string Description,
     string EmployerDescription,
-    string Skills,
-    string Qualifications,
     string ThingsToConsider,
     string TrainingDescription,
     string AdditionalTrainingDescription,
     string TrainingProgrammeTitle,
-    string TrainingProgrammeLevel
+    string TrainingProgrammeLevel,
+    string OutcomeDescription,
+    string ApplicationInstructions,
+    string AdditionalQuestion1,
+    string AdditionalQuestion2,
+    string WageAdditionalInformation,
+    string WageCompanyBenefitsInformation,
+    string WageWorkingWeekDescription
 );
