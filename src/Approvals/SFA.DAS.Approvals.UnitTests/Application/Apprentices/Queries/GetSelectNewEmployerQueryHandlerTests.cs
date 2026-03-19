@@ -64,10 +64,6 @@ public class GetSelectNewEmployerQueryHandlerTests
 
         commitmentsApiClient
             .Setup(x => x.Get<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == query.ApprenticeshipId)))
-            .ReturnsAsync(new GetApprenticeshipResponse { AccountLegalEntityId = 2 });
-
-        commitmentsApiClient
-            .Setup(x => x.Get<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == query.ApprenticeshipId)))
             .ReturnsAsync(new GetApprenticeshipResponse { AccountLegalEntityId = 3 });
 
         // Act

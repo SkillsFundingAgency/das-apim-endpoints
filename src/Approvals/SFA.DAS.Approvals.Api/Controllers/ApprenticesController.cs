@@ -268,10 +268,10 @@ public class ApprenticesController(
     }
 
     [HttpGet]
-    [Route("/provider/{providerId}/apprentices/select-employer")]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/select-employer")]
     public async Task<IActionResult> GetSelectEmployer(
         [FromRoute] int providerId,
-        [FromQuery] int apprenticeshipId,
+        [FromRoute] long apprenticeshipId,
         [FromQuery] string searchTerm,
         [FromQuery] string sortField,
         [FromQuery] bool reverseSort,
