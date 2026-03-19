@@ -45,7 +45,7 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
             var okObjectResult = (OkObjectResult)result;
             okObjectResult.Value.Should().BeOfType<GetEditApprenticeshipResponse>();
 
-            var value = (GetEditApprenticeshipResponse)okObjectResult.Value
+            var value = (GetEditApprenticeshipResponse)okObjectResult.Value;
             value.CourseName.Should().Be(_queryResult.CourseName);
             value.HasMultipleDeliveryModelOptions.Should().Be(_queryResult.HasMultipleDeliveryModelOptions);
             value.IsFundedByTransfer.Should().Be(_queryResult.IsFundedByTransfer);
