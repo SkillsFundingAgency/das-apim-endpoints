@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Commands.SaveSearch.CreateSaveSearch;

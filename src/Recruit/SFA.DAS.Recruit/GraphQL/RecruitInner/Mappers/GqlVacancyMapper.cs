@@ -44,7 +44,7 @@ public static class GqlVacancyMapper
             ApplicationInstructions = source.ApplicationInstructions,
             ApplicationMethod = NullOrEnum<Domain.Vacancy.ApplicationMethod>(source.ApplicationMethod?.ToString()),
             ApplicationUrl = source.ApplicationUrl,
-            ApprenticeshipType = NullOrEnum<SharedOuterApi.Types.Domain.Domain.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
+            ApprenticeshipType = NullOrEnum<SharedOuterApi.Types.Domain.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
             ApprovedDate = source.ApprovedDate?.UtcDateTime,
             CreatedDate = source.CreatedDate?.UtcDateTime,
             ClosedDate = source.ClosedDate?.UtcDateTime,
@@ -125,11 +125,11 @@ public static class GqlVacancyMapper
         };
     }
 
-    private static SharedOuterApi.Types.Domain.Domain.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Address> employerLocations)
+    private static SharedOuterApi.Types.Domain.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Address> employerLocations)
     {
         if (source is { EmployerLocationOption: not null })
         {
-            return NullOrEnum<SharedOuterApi.Types.Domain.Domain.AvailableWhere>(source.EmployerLocationOption.ToString());
+            return NullOrEnum<SharedOuterApi.Types.Domain.AvailableWhere>(source.EmployerLocationOption.ToString());
         }
 
         return source.Status switch
@@ -140,9 +140,9 @@ public static class GqlVacancyMapper
             // field should be set by now, so guesstimate it based on the locations
             _ => employerLocations switch
             {
-                { Count: 1 } => SharedOuterApi.Types.Domain.Domain.AvailableWhere.OneLocation,
-                { Count: > 1 } => SharedOuterApi.Types.Domain.Domain.AvailableWhere.MultipleLocations,
-                _ => SharedOuterApi.Types.Domain.Domain.AvailableWhere.AcrossEngland
+                { Count: 1 } => SharedOuterApi.Types.Domain.AvailableWhere.OneLocation,
+                { Count: > 1 } => SharedOuterApi.Types.Domain.AvailableWhere.MultipleLocations,
+                _ => SharedOuterApi.Types.Domain.AvailableWhere.AcrossEngland
             }
         };
     }

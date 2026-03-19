@@ -2,7 +2,7 @@ using MediatR;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships;

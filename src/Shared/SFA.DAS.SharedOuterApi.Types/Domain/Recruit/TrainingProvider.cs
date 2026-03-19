@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.Models;
 
-namespace SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit;
+namespace SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 
 public class TrainingProvider
 {

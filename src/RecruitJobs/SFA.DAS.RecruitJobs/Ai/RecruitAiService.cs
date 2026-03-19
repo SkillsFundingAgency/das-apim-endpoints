@@ -4,8 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
@@ -13,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 
 namespace SFA.DAS.RecruitJobs.Ai;
 

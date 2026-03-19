@@ -12,8 +12,8 @@ using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.Models;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.Commands;
 

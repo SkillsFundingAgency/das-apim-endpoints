@@ -1,8 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit.Ai;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 using SFA.DAS.Apim.Shared.Interfaces;
-
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Ai;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
 

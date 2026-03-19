@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit.Ai;
+namespace SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Ai;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum AiReviewStatus

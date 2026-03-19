@@ -1,6 +1,6 @@
 using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitQa.Api.Models;

@@ -7,7 +7,7 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 

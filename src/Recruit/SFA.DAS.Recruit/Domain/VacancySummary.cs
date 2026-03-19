@@ -1,7 +1,7 @@
 ﻿using SFA.DAS.Recruit.Domain.Vacancy;
 
 using System;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 
 namespace SFA.DAS.Recruit.Domain;
 

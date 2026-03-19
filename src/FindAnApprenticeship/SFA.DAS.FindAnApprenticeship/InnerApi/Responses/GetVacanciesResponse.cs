@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Types.Models;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 

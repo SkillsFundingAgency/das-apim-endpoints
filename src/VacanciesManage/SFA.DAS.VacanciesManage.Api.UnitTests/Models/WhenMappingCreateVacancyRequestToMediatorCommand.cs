@@ -6,7 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using CreateVacancyDisabilityConfident = SFA.DAS.VacanciesManage.Api.Models.CreateVacancyDisabilityConfident;
 using WageType = SFA.DAS.VacanciesManage.Api.Models.WageType;
 

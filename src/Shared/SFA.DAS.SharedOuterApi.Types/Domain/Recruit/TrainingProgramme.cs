@@ -37,4 +37,4 @@
 //         };
 //     }
 
-namespace SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit;
+namespace SFA.DAS.SharedOuterApi.Types.Domain.Recruit;

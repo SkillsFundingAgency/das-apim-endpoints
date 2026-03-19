@@ -9,4 +9,7 @@
         <PackageReference Include="SFA.DAS.Apim.Shared" />
         <PackageReference Include="SFA.DAS.Apprenticeships.Types" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Domain\Domain\Recruit\Ai\" />
+    </ItemGroup>
 </Project>

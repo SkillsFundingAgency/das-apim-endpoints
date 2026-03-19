@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Shared;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 
 
 namespace SFA.DAS.FindAnApprenticeship.Api.Models.Applications;

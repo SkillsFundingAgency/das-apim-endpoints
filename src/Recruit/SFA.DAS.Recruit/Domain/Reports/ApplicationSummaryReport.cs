@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Recruit.Enums;
 using System;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 
 
 namespace SFA.DAS.Recruit.Domain.Reports;

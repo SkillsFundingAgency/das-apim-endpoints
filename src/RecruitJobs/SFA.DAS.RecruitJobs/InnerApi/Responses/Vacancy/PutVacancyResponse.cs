@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.RecruitJobs.Domain.Vacancy;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;

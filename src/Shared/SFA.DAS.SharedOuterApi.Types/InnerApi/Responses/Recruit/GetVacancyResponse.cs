@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Recruit;
 

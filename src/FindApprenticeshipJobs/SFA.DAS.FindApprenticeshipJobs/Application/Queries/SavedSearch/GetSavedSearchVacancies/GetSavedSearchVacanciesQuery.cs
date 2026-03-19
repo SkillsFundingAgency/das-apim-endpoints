@@ -1,6 +1,6 @@
 using MediatR;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSearchVacancies;

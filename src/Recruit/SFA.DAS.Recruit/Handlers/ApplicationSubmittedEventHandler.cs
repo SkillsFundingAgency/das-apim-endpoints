@@ -17,7 +17,7 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Types.Domain.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.Extensions;
 
 namespace SFA.DAS.Recruit.Handlers;
