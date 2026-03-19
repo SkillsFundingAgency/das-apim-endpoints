@@ -58,16 +58,25 @@ public class WhenCourseTypeIsApprenticeship
     }
 
     [Test, AutoData]
-    public async Task Handle_IfCourseTypeIsShortCourse_FilteredList(GetAllStandardsResponse getAllStandardsResponse, GetAvailableCoursesForProviderQuery request)
+    public async Task Handle_IfCourseTypeIsShortCourse_FilteredList(GetAllStandardsResponse getAllStandardsResponse, int ukprn)
     {
-        var larsCode = getAllStandardsResponse.Standards.First().LarsCode;
+        var request = new GetAvailableCoursesForProviderQuery(ukprn, CourseType.ShortCourse);
+
+        var providerLarsCode = getAllStandardsResponse.Standards.First().LarsCode;
         _apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(getAllStandardsResponse);
-        _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>() { new GetAllProviderCoursesResponse { LarsCode = larsCode.ToString() } });
+        _apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse>() { new GetAllProviderCoursesResponse { LarsCode = providerLarsCode } });
+
+        var allowed = getAllStandardsResponse.Standards
+            .Select(s => new ProviderAllowedCourseModel(s.LarsCode, s.Title ?? string.Empty, s.Level))
+            .ToList();
+
+        _apiClientMock.Setup(a => a.Get<GetAllowedCoursesForProviderResponse>(It.IsAny<GetAllowedCoursesForProviderRequest>()))
+            .ReturnsAsync(new GetAllowedCoursesForProviderResponse(allowed));
 
         var result = await _sut.Handle(request, new CancellationToken());
 
         result.AvailableCourses.Should().HaveCount(getAllStandardsResponse.Standards.Count - 1);
-        result.AvailableCourses.Any(c => c.LarsCode == larsCode.ToString()).Should().BeFalse();
+        result.AvailableCourses.Any(c => c.LarsCode == providerLarsCode).Should().BeFalse();
     }
 }
 
@@ -87,7 +96,7 @@ public class WhenCourseTypeIsShortCourse
         apiClientMock.Setup(a => a.Get<GetAllStandardsResponse>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(getAllStandardsResponse);
 
         var providerCourse = fixture.Build<GetAllProviderCoursesResponse>().With(p => p.LarsCode, _standards[0].LarsCode).Create();
-        apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync([providerCourse]);
+        apiClientMock.Setup(a => a.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(new List<GetAllProviderCoursesResponse> { providerCourse });
 
         IEnumerable<ProviderAllowedCourseModel> allowedCourses = _standards[1..4].Select(s => fixture.Build<ProviderAllowedCourseModel>().With(r => r.LarsCode, s.LarsCode).Create());
 
