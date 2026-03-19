@@ -2,7 +2,7 @@
 using SFA.DAS.LearnerData.Application.GetLearners;
 using SFA.DAS.LearnerData.Requests;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
+using SFA.DAS.LearnerData.Responses.Stub;
 
 namespace SFA.DAS.LearnerData.Api.Controllers
 {
