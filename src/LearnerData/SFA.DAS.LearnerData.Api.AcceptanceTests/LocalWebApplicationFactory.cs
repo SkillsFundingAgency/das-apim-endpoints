@@ -1,8 +1,4 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
-
-namespace SFA.DAS.LearnerData.Api.AcceptanceTests;
+﻿namespace SFA.DAS.LearnerData.Api.AcceptanceTests;
 
 public class LocalWebApplicationFactory<TEntryPoint> : WebApplicationFactory<TEntryPoint> where TEntryPoint : class
 {

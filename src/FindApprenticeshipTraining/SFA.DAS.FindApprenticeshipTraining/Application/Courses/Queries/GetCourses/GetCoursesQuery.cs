@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;

@@ -11,10 +11,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Roatp.Api.AppStart;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Application.Charities.Queries;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 namespace SFA.DAS.Roatp.Api;
 

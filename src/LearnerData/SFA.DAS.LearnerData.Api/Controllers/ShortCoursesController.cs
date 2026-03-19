@@ -1,12 +1,11 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Extensions;
-using System.Net;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 

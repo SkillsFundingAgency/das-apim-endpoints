@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Newtonsoft.Json;
 
 namespace SFA.DAS.LearnerData.Api.Middleware;
 

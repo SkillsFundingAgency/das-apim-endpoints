@@ -1,6 +1,4 @@
-﻿using WireMock.Server;
-
-namespace SFA.DAS.LearnerData.Api.AcceptanceTests;
+﻿namespace SFA.DAS.LearnerData.Api.AcceptanceTests;
 
 public class MockApi : IDisposable
 {

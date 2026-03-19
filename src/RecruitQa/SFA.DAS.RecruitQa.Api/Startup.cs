@@ -4,8 +4,8 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.RecruitQa.Api.AppStart;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetQaDashboard;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.RecruitQa.Api;
 

@@ -1,10 +1,4 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using FluentAssertions;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
-
-namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
+﻿namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 
 [Binding]
 public class PeriodisedValuesSteps(TestContext testContext, ScenarioContext scenarioContext)

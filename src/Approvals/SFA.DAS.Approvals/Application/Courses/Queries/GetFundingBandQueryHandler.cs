@@ -4,8 +4,10 @@ using MediatR;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Courses.Queries;
 

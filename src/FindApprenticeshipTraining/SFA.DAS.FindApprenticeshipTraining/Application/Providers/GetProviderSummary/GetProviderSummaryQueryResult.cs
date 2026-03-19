@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetProviderSummary;
 
@@ -28,7 +29,7 @@ public class GetProviderSummaryQueryResult
 public class CourseDetails
 {
     public string CourseName { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IfateReferenceNumber { get; set; }

@@ -1,0 +1,10 @@
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
+
+public class GetAllLearningsRequest(string ukprn, int academicYear, int page, int? pageSize) : IGetApiRequest
+{
+    public string GetUrl => $"/{ukprn}/academicyears/{academicYear}/learnings?page={page}&pageSize={pageSize}";
+}

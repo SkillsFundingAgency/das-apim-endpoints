@@ -5,16 +5,17 @@ using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Apprenticeship;
 using SFA.DAS.Apprenticeships.InnerApi;
 using SFA.DAS.Apprenticeships.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.Apprenticeships.UnitTests.Application.Apprenticeship;
 

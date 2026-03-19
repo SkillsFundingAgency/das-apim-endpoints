@@ -3,8 +3,10 @@ using System.Text.Json;
 using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Services.RecruitArtificialIntelligenceServiceTests;
 

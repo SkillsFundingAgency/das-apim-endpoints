@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using SFA.DAS.Apprenticeships.Application.Notifications.Templates;
-using SFA.DAS.Apprenticeships.Constants;
 using SFA.DAS.Employer.Shared.UI;
 
 namespace SFA.DAS.Apprenticeships.Application.Notifications.Handlers

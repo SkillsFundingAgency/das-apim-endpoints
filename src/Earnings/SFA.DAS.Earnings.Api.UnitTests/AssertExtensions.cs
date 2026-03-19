@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-
-namespace SFA.DAS.Earnings.Api.UnitTests;
+﻿namespace SFA.DAS.Earnings.Api.UnitTests;
 
 public static class AssertExtensions
 {

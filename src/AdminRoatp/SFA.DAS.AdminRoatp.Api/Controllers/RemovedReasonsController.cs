@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Queries.GetRemovedReasons;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;

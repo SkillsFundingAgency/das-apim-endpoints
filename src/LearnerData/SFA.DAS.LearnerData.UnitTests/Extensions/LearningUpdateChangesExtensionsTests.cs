@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
-using SFA.DAS.LearnerData.Extensions;
+﻿using SFA.DAS.LearnerData.Extensions;
 
 namespace SFA.DAS.LearnerData.UnitTests.Extensions
 {

@@ -7,7 +7,8 @@ using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using StrawberryShake;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Vacancies;

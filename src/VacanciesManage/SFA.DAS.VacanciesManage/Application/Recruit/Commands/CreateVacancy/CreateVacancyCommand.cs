@@ -1,6 +1,6 @@
 using System;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
