@@ -21,7 +21,7 @@ public class WhenGettingStandardDetails
         [Frozen] Mock<ICacheStorageService> mockCacheService,
         CachedStandardDetailsService service)
     {
-        var larsCode = 123;
+        var larsCode = "123";
         standardDetailsFromCache.LarsCode = larsCode;
 
         mockCacheService
@@ -41,7 +41,7 @@ public class WhenGettingStandardDetails
         CachedStandardDetailsService service)
     {
         var expectedExpirationInHours = 4;
-        var larsCode = 123;
+        var larsCode = "123";
         coursesFromApi.LarsCode = larsCode;
 
         mockCoursesApiClient.Setup(client => client.GetWithResponseCode<StandardDetailResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))

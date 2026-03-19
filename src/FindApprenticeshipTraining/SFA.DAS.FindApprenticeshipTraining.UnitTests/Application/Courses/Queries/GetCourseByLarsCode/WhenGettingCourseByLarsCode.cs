@@ -9,6 +9,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 using SFA.DAS.FindApprenticeshipTraining.Services;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
@@ -47,8 +48,6 @@ public sealed class WhenGettingCourseByLarsCode
     [MoqAutoData]
     public async Task Handle_Returns_Correct_CourseDetails(GetCourseByLarsCodeQuery query)
     {
-        string apprenticeshipType = "FoundationApprenticeship";
-
         var standardDetailResponse = new StandardDetailResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding>
@@ -56,7 +55,7 @@ public sealed class WhenGettingCourseByLarsCode
                 new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, Duration = 12 },
                 new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, Duration = 18 }
             },
-            ApprenticeshipType = apprenticeshipType
+            ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship
         };
 
         var courseProvidersResponse = new GetCourseTrainingProvidersCountResponse
@@ -99,7 +98,7 @@ public sealed class WhenGettingCourseByLarsCode
         Assert.Multiple(() =>
         {
             Assert.That(sut, Is.Not.Null);
-            Assert.That(sut.ApprenticeshipType, Is.EqualTo(apprenticeshipType));
+            Assert.That(sut.ApprenticeshipType, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship));
             Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(10));
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(20));
         });
