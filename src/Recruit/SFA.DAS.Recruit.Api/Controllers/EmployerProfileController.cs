@@ -7,6 +7,8 @@ using SFA.DAS.Recruit.Application.EmployerProfile.Queries.GetEmployerProfileByLe
 using SFA.DAS.Recruit.Application.EmployerProfile.Queries.GetEmployerProfilesByAccountId;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Application.EmployerProfile.Commands.PatchEmployerProfile;
+using SFA.DAS.Recruit.InnerApi.Models;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
@@ -62,6 +64,24 @@ public class EmployerProfileController(IMediator mediator, ILogger<EmployerProfi
         catch (Exception e)
         {
             logger.LogError(e, "Error while posting profile by legal entity id");
+            return Results.Problem();
+        }
+    }
+
+    [HttpPut]
+    [Route("profiles/{accountLegalEntityId:long}")]
+    public async Task<IResult> PatchOne([FromRoute] long accountLegalEntityId,
+        [FromBody] EmployerProfile request)
+    {
+        try
+        {
+            await mediator.Send(new PatchEmployerProfileCommand(accountLegalEntityId, request));
+
+            return Results.NoContent();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error while updating profile by legal entity id");
             return Results.Problem();
         }
     }
