@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Approvals.Types;
 using System;
 using System.Collections.Generic;
 
@@ -19,5 +20,6 @@ namespace SFA.DAS.Approvals.Application.Learners.Queries
         public DateTime? MaxStartDate { get; set; }
         public List<string> ExcludeUlns { get; set; } = new();
         public int? CourseCode { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 }
