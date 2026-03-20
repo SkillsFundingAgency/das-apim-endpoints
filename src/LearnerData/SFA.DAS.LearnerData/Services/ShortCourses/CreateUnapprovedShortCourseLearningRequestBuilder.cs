@@ -1,4 +1,4 @@
-﻿using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
@@ -15,6 +15,14 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
     public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, CreateShortCoursePostResponse learningResponse, long ukprn)
     {
         var firstOnProg = request.Delivery.OnProgramme.First();
+
+        var milestones = firstOnProg.Milestones.Select(x =>
+            x == Milestone.LearningComplete
+                ? SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete
+                : SharedOuterApi.InnerApi.Requests.Earnings.Milestone.ThirtyPercentLearningComplete).ToList();
+
+        if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
+            milestones.Add(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
 
         return new CreateUnapprovedShortCourseLearningRequest
         {
@@ -35,12 +43,8 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
                 StartDate = firstOnProg.StartDate,
                 CompletionDate = firstOnProg.CompletionDate,
                 CourseCode = firstOnProg.CourseCode,
-                EmployerId = 0,
                 ExpectedEndDate = firstOnProg.ExpectedEndDate,
-                Milestones = firstOnProg.Milestones.Select(x =>
-                    x == Milestone.LearningComplete
-                        ? SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete
-                        : SharedOuterApi.InnerApi.Requests.Earnings.Milestone.ThirtyPercentLearningComplete).ToList(),
+                Milestones = milestones,
                 TotalPrice = 1000, //todo future story FLP-1530, default to 1000 until courses api ready
                 Ukprn = ukprn,
                 WithdrawalDate = firstOnProg.WithdrawalDate

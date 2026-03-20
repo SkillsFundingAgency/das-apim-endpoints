@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.Application.UpdateShortCourse;
 
@@ -29,7 +30,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     public async Task Handle(UpdateShortCourseLearningCommand command, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Handling UpdateShortCourseLearningCommand for Ukprn: {Ukprn}", command.Ukprn);
-    
+
         var learningRequest = MapToLearningRequest(command);
 
         var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningPutResponse>(learningRequest);
@@ -52,12 +53,11 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         var earningRequest = MapToEarningRequest(command);
         await _earningsApiClient.Put(earningRequest);
-
     }
 
     private UpdateShortCourseLearningPutRequest MapToLearningRequest(UpdateShortCourseLearningCommand command)
     {
-        var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x=>x.StartDate);
+        var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x => x.StartDate);
 
         if (currentOnProgramme == null)
         {
@@ -66,8 +66,11 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
 
         var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone>(sourceMilestone.ToString())
+            Enum.Parse<Milestone>(sourceMilestone.ToString())
         ).ToList();
+
+        if (currentOnProgramme.CompletionDate.HasValue && !currentOnProgramme.Milestones.Contains(SourceMilestone.LearningComplete))
+            milestones.Add(Milestone.LearningComplete);
 
         var body = new UpdateShortCourseLearningRequestBody
         {
@@ -106,12 +109,16 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
 
         var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone>(sourceMilestone.ToString())
+            Enum.Parse<Milestone>(sourceMilestone.ToString())
         ).ToList();
 
-        var body =  new UpdateShortCourseOnProgrammeRequestBody
+        if (currentOnProgramme.CompletionDate.HasValue && !currentOnProgramme.Milestones.Contains(SourceMilestone.LearningComplete))
+            milestones.Add(Milestone.LearningComplete);
+
+        var body = new UpdateShortCourseOnProgrammeRequestBody
         {
             WithdrawalDate = currentOnProgramme.WithdrawalDate,
+            CompletionDate = currentOnProgramme.CompletionDate,
             Milestones = milestones
         };
 
