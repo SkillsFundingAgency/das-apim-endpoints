@@ -22,6 +22,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
 
         var learner = _fixture.Build<ShortCourseLearnerRequestDetails>()
             .With(x => x.Dob, new DateTime(2000, 1, 1))
@@ -54,10 +55,11 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, ukprn);
+        var result = _sut.Build(request, learningKey, episodeKey, ukprn);
 
         // Assert
         result.LearningKey.Should().Be(learningKey);
+        result.EpisodeKey.Should().Be(episodeKey);
 
         result.Learner.Uln.Should().Be(learner.Uln.ToString());
         result.Learner.DateOfBirth.Should().Be(learner.Dob);
@@ -101,7 +103,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, ukprn);
+        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn);
 
         // Assert
         result.OnProgramme.Milestones.Should().Contain(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
@@ -124,7 +126,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, ukprn);
+        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn);
 
         // Assert
         result.OnProgramme.Milestones.Should().ContainSingle(m =>
@@ -148,7 +150,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, ukprn);
+        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn);
 
         // Assert
         result.OnProgramme.Milestones.Should().NotContain(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
