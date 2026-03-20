@@ -2,8 +2,8 @@
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-public class GetStandardDetailsByIdRequest(string id) : IGetApiRequest
+public class GetStandardDetailsLookupRequest(string id) : IGetApiRequest
 {
     public string Id { get; } = id;
-    public string GetUrl => $"api/courses/standards/{Id}";
+    public string GetUrl => $"api/courses/lookup/{Id}";
 }
