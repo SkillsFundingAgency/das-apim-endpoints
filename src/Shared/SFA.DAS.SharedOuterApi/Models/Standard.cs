@@ -9,7 +9,7 @@ namespace SFA.DAS.SharedOuterApi.Models
     {
         public string StandardUId { get; set; }
         public string IfateReferenceNumber { get; set; }
-        public string LarsCode { get; set; }
+        public int LarsCode { get; set; }
         public string Title { get; set; }
         public int Level { get; set; }
         public string Route { get; set; }

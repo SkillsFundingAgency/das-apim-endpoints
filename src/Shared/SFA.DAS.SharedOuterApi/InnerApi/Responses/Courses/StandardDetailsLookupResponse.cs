@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 {
     [ExcludeFromCodeCoverage]
-    public class StandardDetailResponse : StandardApiResponseBase
+    public class StandardDetailsLookupResponse : StandardApiResponseBase
     {
         public string StandardUId { get; set; }
         public string IfateReferenceNumber { get; set; }
-        public int LarsCode { get; set; }
+        public string LarsCode { get; set; }
         public string Status { get; set; }
         public float? SearchScore { get; set; }
         public string Title { get; set; }
@@ -24,7 +25,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
         public string TrailBlazerContact { get; set; }
         public string TypicalJobTitles { get; set; }
         public List<string> Skills { get; set; }
-        public string ApprenticeshipType { get; set; }
+        public ApprenticeshipType ApprenticeshipType { get; set; }
         public List<KsbResponse> Ksbs { get; set; }
         public List<RelatedOccupation> RelatedOccupations { get; set; }
         public string StandardPageUrl { get; set; }
