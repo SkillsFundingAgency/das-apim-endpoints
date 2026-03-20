@@ -4,7 +4,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-public class GetActiveStandardsListRequest : IGetApiRequest
+public class GetActiveStandardsSearchRequest : IGetApiRequest
 {
     public List<int> RouteIds { get; set; } = [];
     public List<int> Levels { get; set; } = [];
@@ -14,7 +14,7 @@ public class GetActiveStandardsListRequest : IGetApiRequest
 
     public string GetUrl => BuildUrl();
 
-    private const string _BASE_URL = "api/courses/standards";
+    private const string _BASE_URL = "api/courses/search";
 
     private string BuildUrl()
     {
@@ -43,7 +43,7 @@ public class GetActiveStandardsListRequest : IGetApiRequest
 
         if (!string.IsNullOrWhiteSpace(ApprenticeshipType))
         {
-            queryParams.Add($"apprenticeshipType={ApprenticeshipType}");
+            queryParams.Add($"learningType={ApprenticeshipType}");
         }
 
         queryParams.Add("filter=Active");

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Common;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 
@@ -29,7 +30,7 @@ public sealed class StandardModel
     public int RouteCode { get; set; }
     public int MaxFunding { get; set; }
     public int TypicalDuration { get; set; }
-    public string ApprenticeshipType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
 
     public static StandardModel CreateFrom(
         GetStandardsListItem source,
@@ -42,7 +43,7 @@ public sealed class StandardModel
             Ordering = order,
             StandardUId = source.StandardUId,
             IfateReferenceNumber = source.IfateReferenceNumber,
-            LarsCode = source.LarsCode.ToString(),
+            LarsCode = source.LarsCode,
             SearchScore = source.SearchScore,
             ProvidersCount = providerCount,
             TotalProvidersCount = totalProvidersCount,
@@ -54,6 +55,6 @@ public sealed class StandardModel
             RouteCode = source.RouteCode,
             MaxFunding = source.MaxFunding,
             TypicalDuration = source.TypicalDuration,
-            ApprenticeshipType = source.ApprenticeshipType.ToString()
+            ApprenticeshipType = source.LearningType
         };
 }
