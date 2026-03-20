@@ -32,7 +32,7 @@ public sealed class GetCoursesQueryHandler(
 
         var coursesStandardsResponse =
             await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(
-                new GetActiveStandardsListRequest()
+                new GetActiveStandardsSearchRequest()
                 {
                     Keyword = query.Keyword ?? string.Empty,
                     OrderBy = query.OrderBy,

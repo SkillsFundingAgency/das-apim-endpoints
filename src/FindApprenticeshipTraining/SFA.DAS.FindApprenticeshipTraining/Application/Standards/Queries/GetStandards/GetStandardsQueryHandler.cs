@@ -14,7 +14,7 @@ public class GetStandardsQueryHandler(ICoursesApiClient<CoursesApiConfiguration>
 {
     public async Task<GetStandardsQueryResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
     {
-        var standardsResponse = await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+        var standardsResponse = await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetActiveStandardsSearchRequest());
 
         standardsResponse.EnsureSuccessStatusCode();
 

@@ -6,54 +6,54 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 public class WhenBuildingTheGetAllStandardsListRequest
 {
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed_As_Default()
+    public void GetUrl_DefaultParameters_ReturnsExpectedUrl()
     {
         var _sut = new GetActiveStandardsListRequest();
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed_With_Keyword()
+    public void GetUrl_KeywordProvided_ReturnsExpectedUrl()
     {
         var _sut = new GetActiveStandardsListRequest
         {
             Keyword = "Construction"
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?keyword=Construction&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?keyword=Construction&filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed_With_Levels()
+    public void GetUrl_LevelsProvided_ReturnsExpectedUrl()
     {
         var _sut = new GetActiveStandardsListRequest
         {
             Levels = [1, 2]
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?levels=1&levels=2&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?levels=1&levels=2&filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed_With_Route_Ids()
+    public void GetUrl_RouteIdsProvided_ReturnsExpectedUrl()
     {
         var _sut = new GetActiveStandardsListRequest
         {
             RouteIds = [1, 2]
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?routeIds=1&routeIds=2&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?routeIds=1&routeIds=2&filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
-    public void Then_The_Url_Is_Correctly_Constructed_With_ApprenticeshipType(ApprenticeshipType type)
+    public void GetUrl_ApprenticeshipTypeProvided_ReturnsExpectedUrl(ApprenticeshipType type)
     {
         var _sut = new GetActiveStandardsListRequest
         {
             ApprenticeshipType = type.ToString()
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/search?learningType={type.ToString()}&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/standards?apprenticeshipType={type.ToString()}&filter=Active&orderby=Score"));
     }
 }
