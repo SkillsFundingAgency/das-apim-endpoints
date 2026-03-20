@@ -16,7 +16,8 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services;
 public class WhenGettingStandardDetails
 {
     [Test, MoqAutoData]
-    public async Task And_StandardDetails_Cached_Then_Gets_StandardDetails_From_Cache(
+    public async Task GetStandardDetails_StandardDetailsFoundInCache_ReturnsCachedStandardDetails(
+
         StandardDetailsLookupResponse standardDetailsFromCache,
         [Frozen] Mock<ICacheStorageService> mockCacheService,
         CachedStandardDetailsService service)
@@ -34,7 +35,8 @@ public class WhenGettingStandardDetails
     }
 
     [Test, MoqAutoData]
-    public async Task And_StandardDetails_Not_Cached_Then_Gets_From_Api_And_Stores_In_Cache(
+    public async Task GetStandardDetails_StandardDetailsNotFoundInCache_GetsFromApiAndStoresInCache(
+
         StandardDetailsLookupResponse coursesFromApi,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
         [Frozen] Mock<ICacheStorageService> mockCacheService,
