@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.Services;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
@@ -22,6 +23,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
         public string CourseName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool IsFundedByTransfer { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 
     public class GetEditApprenticeshipQueryHandler : IRequestHandler<GetEditApprenticeshipQuery, GetEditApprenticeshipQueryResult>
@@ -61,7 +63,8 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
             {
                 CourseName = apprenticeship.CourseName,
                 IsFundedByTransfer = apprenticeship.TransferSenderId.HasValue,
-                HasMultipleDeliveryModelOptions = deliveryModel.Count > 1
+                HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
+                LearningType = apprenticeship.LearningType
             };
         }
     }
