@@ -73,4 +73,71 @@ public class CreateDraftShortCoursePostRequestBuilderTests
 
         result.OnProgramme.Milestones.Should().BeEquivalentTo(onProgramme.Milestones);
     }
+
+    [Test]
+    public void Build_Adds_LearningComplete_Milestone_When_CompletionDate_Set_And_Milestone_Absent()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().Contain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+    }
+
+    [Test]
+    public void Build_Does_Not_Duplicate_LearningComplete_When_Already_Present()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().ContainSingle(m =>
+            m == SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+    }
+
+    [Test]
+    public void Build_Does_Not_Add_LearningComplete_When_CompletionDate_Not_Set()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, (DateTime?)null)
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().NotContain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+    }
 }
