@@ -2,7 +2,7 @@
 using SFA.DAS.LearnerData.Application.GetLearners;
 using SFA.DAS.LearnerData.Requests;
 using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
+using SFA.DAS.LearnerData.Responses.Stub;
 
 namespace SFA.DAS.LearnerData.Api.Controllers
 {
@@ -78,8 +78,8 @@ namespace SFA.DAS.LearnerData.Api.Controllers
                                 CoursePrice = 1000,
                                 Earnings = new []
                                 {
-                                    new ShortCourseEarning { Amount = 300, CollectionMonth = 9, CollectionYear = 2526, Milestone = ShortCourseMilestone.ThirtyPercentLearningComplete },
-                                    new ShortCourseEarning { Amount = 700, CollectionMonth = 10, CollectionYear = 2526, Milestone = ShortCourseMilestone.LearningComplete }
+                                    new ShortCourseEarning { Amount = 300, CollectionPeriod = 9, CollectionYear = 2526, Milestone = ShortCourseMilestone.ThirtyPercentLearningComplete },
+                                    new ShortCourseEarning { Amount = 700, CollectionPeriod = 10, CollectionYear = 2526, Milestone = ShortCourseMilestone.LearningComplete }
                                 },
                                 FundingLineType = "GSO Short Courses - Apprenticeship Units - Levy",
                                 Approved = true

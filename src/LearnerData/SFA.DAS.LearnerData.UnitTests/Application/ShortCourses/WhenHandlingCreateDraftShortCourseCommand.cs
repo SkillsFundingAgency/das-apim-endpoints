@@ -1,7 +1,7 @@
 ﻿using System.Net;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;

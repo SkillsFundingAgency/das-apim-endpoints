@@ -1,12 +1,13 @@
-﻿using System.Net;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.LearnerData.Application.GetLearners;
+using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
+using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Extensions;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -63,5 +64,44 @@ public class ShortCoursesController(
 
         return Ok((GetShortCourseLearnersResponse)response);
 
+    }
+
+    // This is the short course equivalent of FM36
+    [HttpGet("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
+    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromRoute] int collectionYear, [FromRoute] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+
+        logger.LogInformation("GetShortCourseEarnings for ukprn {Ukprn}, year {Year} and period {period}", ukprn, collectionYear, collectionPeriod);
+
+        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
+
+        var query = new GetShortCourseEarningsQuery(ukprn, collectionYear, collectionPeriod, page, pagesize);
+
+        var result = await mediator.Send(query);
+        HttpContext.SetPageLinksInResponseHeaders(query, result);
+
+        return Ok(result);
+
+    }
+
+    [HttpPut("/providers/{ukprn}/shortCourses/{learningKey}")]
+    public async Task<IActionResult> UpdateShortCourseLearning(Guid learningKey, ShortCourseRequest request, long ukprn)
+    {
+        try
+        {
+            await mediator.Send(new UpdateShortCourseLearningCommand
+            {
+                LearningKey = learningKey,
+                Ukprn = ukprn,
+                Request = request
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when updating short course learning");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+
+        return Accepted();
     }
 }

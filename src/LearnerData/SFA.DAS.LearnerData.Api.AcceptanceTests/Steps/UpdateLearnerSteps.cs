@@ -1,8 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using Microsoft.Extensions.Logging.Abstractions;
 using Newtonsoft.Json;
-using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
