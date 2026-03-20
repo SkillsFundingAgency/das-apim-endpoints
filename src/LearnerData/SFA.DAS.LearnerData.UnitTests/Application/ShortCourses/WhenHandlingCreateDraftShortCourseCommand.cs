@@ -54,14 +54,9 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _ukprn = 12345;
         _learningKey = Guid.NewGuid();
         _episodeKey = Guid.NewGuid();
-        var learningResponse = new CreateShortCoursePostResponse
-        {
-            LearningKey = _learningKey,
-            EpisodeKey = _episodeKey
-        };
 
         _builtEarningsRequest = new CreateUnapprovedShortCourseLearningRequest();
-        
+
         _shortCourseRequest = new ShortCourseRequest();
 
         _command = new CreateDraftShortCourseCommand
@@ -94,14 +89,16 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .Setup(x => x.Build(_shortCourseRequest, _ukprn))
             .Returns(_builtRequest);
 
-        var apiResponse = new ApiResponse<CreateShortCoursePostResponse>(learningResponse, HttpStatusCode.Created, "");
-        
+        var apiResponse = new ApiResponse<CreateShortCoursePostResponse>(
+            new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey },
+            HttpStatusCode.Created, "");
+
         _learningApiClient
             .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
             .ReturnsAsync(apiResponse);
 
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, It.IsAny<CreateShortCoursePostResponse>(), _ukprn))
+            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _episodeKey, _ukprn))
             .Returns(_builtEarningsRequest);
     }
 
