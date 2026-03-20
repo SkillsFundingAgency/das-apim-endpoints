@@ -31,6 +31,6 @@ public class WhenGettingStandards
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
         // Assert
-        result.Standards.Count.Should().Be(expectedResponse.Standards.Count());
+        result.Standards.Count.Should().Be(expectedResponse.Courses.Count());
     }
 }

@@ -1,5 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using SFA.DAS.SharedOuterApi.Common;
+﻿using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
@@ -11,7 +10,7 @@ public class WhenBuildingTheGetAllStandardsListRequest
     {
         var _sut = new GetActiveStandardsListRequest();
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
@@ -22,7 +21,7 @@ public class WhenBuildingTheGetAllStandardsListRequest
             Keyword = "Construction"
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?keyword=Construction&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?keyword=Construction&filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
@@ -33,7 +32,7 @@ public class WhenBuildingTheGetAllStandardsListRequest
             Levels = [1, 2]
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?levels=1&levels=2&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?levels=1&levels=2&filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
@@ -44,7 +43,7 @@ public class WhenBuildingTheGetAllStandardsListRequest
             RouteIds = [1, 2]
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/standards?routeIds=1&routeIds=2&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo("api/courses/search?routeIds=1&routeIds=2&filter=Active&orderby=Score"));
     }
 
     [Test, AutoData]
@@ -55,6 +54,6 @@ public class WhenBuildingTheGetAllStandardsListRequest
             ApprenticeshipType = type.ToString()
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/standards?apprenticeshipType={type.ToString()}&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/search?learningType={type.ToString()}&filter=Active&orderby=Score"));
     }
 }

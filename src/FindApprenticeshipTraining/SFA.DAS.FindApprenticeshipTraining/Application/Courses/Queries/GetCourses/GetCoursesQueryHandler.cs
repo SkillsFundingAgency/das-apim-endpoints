@@ -44,7 +44,7 @@ public sealed class GetCoursesQueryHandler(
 
         coursesStandardsResponse.EnsureSuccessStatusCode();
 
-        if (!coursesStandardsResponse.Body.Standards.Any())
+        if (!coursesStandardsResponse.Body.Courses.Any())
         {
             return GetEmptyResponse(query.PageSize);
         }
@@ -56,7 +56,7 @@ public sealed class GetCoursesQueryHandler(
             return GetEmptyResponse(query.PageSize);
         }
 
-        var pagedStandards = coursesStandardsResponse.Body.Standards
+        var pagedStandards = coursesStandardsResponse.Body.Courses
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToArray();
@@ -86,7 +86,7 @@ public sealed class GetCoursesQueryHandler(
         {
             GetStandardsListItem standard = pagedStandards[index];
 
-            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode.ToString());
+            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode);
 
             standardModels.Add(
                 StandardModel.CreateFrom(

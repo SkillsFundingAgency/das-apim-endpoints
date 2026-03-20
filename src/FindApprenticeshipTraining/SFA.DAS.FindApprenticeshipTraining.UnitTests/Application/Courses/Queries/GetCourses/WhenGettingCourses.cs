@@ -178,7 +178,7 @@ public sealed class WhenGettingCourses
         CancellationToken cancellationToken
     )
     {
-        coursesResponse.Standards = [];
+        coursesResponse.Courses = [];
 
         GetCoursesQuery query = new GetCoursesQuery()
         {
@@ -266,7 +266,7 @@ public sealed class WhenGettingCourses
             Location = "SW1"
         };
 
-        var pagedStandards = coursesResponse.Standards
+        var pagedStandards = coursesResponse.Courses
             .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
             .Take(query.PageSize)
             .ToArray();
@@ -345,7 +345,7 @@ public sealed class WhenGettingCourses
             Location = "SW1"
         };
 
-        var pagedStandards = coursesResponse.Standards
+        var pagedStandards = coursesResponse.Courses
             .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
             .Take(query.PageSize).ToArray();
 
@@ -428,7 +428,7 @@ public sealed class WhenGettingCourses
             Page = 43431
         };
 
-        var pagedStandards = coursesResponse.Standards
+        var pagedStandards = coursesResponse.Courses
             .Skip(query.Page == 1 ? 0 : query.Page * query.PageSize)
             .Take(query.PageSize).ToArray();
 

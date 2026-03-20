@@ -18,7 +18,7 @@ public class GetStandardsQueryHandler(ICoursesApiClient<CoursesApiConfiguration>
 
         standardsResponse.EnsureSuccessStatusCode();
 
-        var standards = standardsResponse.Body.Standards.Select(s => (Standard)s).ToList();
+        var standards = standardsResponse.Body.Courses.Select(s => (Standard)s).ToList();
 
         return new GetStandardsQueryResult(standards);
     }
