@@ -57,7 +57,12 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
     private UpdateShortCourseLearningPutRequest MapToLearningRequest(UpdateShortCourseLearningCommand command)
     {
-        var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x=>x.StartDate);
+        if (command.Request.Delivery.OnProgramme.Count > 1)
+        {
+            _logger.LogWarning("Multiple OnProgramme elements supplied for LearningKey: {LearningKey}. Element with earliest StartDate will be processed; subsequent will be ignored", command.LearningKey);
+        }
+
+        var currentOnProgramme = command.Request.Delivery.OnProgramme.MinBy(x=>x.StartDate);
 
         if (currentOnProgramme == null)
         {
@@ -66,7 +71,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
 
         var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone>(sourceMilestone.ToString())
+            Enum.Parse<Milestone>(sourceMilestone.ToString())
         ).ToList();
 
         var body = new UpdateShortCourseLearningRequestBody
