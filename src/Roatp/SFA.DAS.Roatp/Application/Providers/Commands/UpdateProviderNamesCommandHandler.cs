@@ -13,7 +13,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
 namespace SFA.DAS.Roatp.Application.Providers.Commands;
 
 public class
-    UpdateProviderNamesCommandHandler : IRequestHandler<UpdateProviderNamesCommand, Unit>
+    UpdateProviderNamesCommandHandler : IRequestHandler<UpdateProviderNamesCommand>
 {
     private readonly IRoatpApiClient _roatpApiClient;
     private readonly HttpClient _httpClient;
@@ -32,7 +32,7 @@ public class
         _logger = logger;
     }
 
-    public async Task<Unit> Handle(UpdateProviderNamesCommand command,
+    public async Task Handle(UpdateProviderNamesCommand command,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Getting organisations");
@@ -62,14 +62,12 @@ public class
             if (ukprnResponse == null || !ukprnResponse.Success)
             {
                 _logger.LogWarning("The response from UKRLP was failure");
-                return Unit.Value;
+                return;
             }
 
             await ProcessNameUpdates(ukprnResponse.Results, organisations);
             ukrlpData.Results.AddRange(ukprnResponse.Results);
         }
-
-        return Unit.Value;
     }
 
 
