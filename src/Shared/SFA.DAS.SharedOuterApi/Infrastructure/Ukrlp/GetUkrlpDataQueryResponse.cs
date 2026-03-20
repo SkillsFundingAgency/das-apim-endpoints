@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
 {
     public class GetUkrlpDataQueryResponse
     {
