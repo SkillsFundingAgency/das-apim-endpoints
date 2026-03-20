@@ -64,6 +64,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                 result.IsApprovedByRegulator.Should().Be(course.IsApprovedByRegulator);
                 result.IsRegulatedForProvider.Should().Be(course.IsRegulatedForProvider);
                 result.HasLocations.Should().Be(course.HasLocations);
+                result.CourseType.Should().Be(standard.CourseType);
+                result.Duration.Should().Be(standard.Duration);
+                result.DurationUnits.Should().Be(standard.DurationUnits);
             }
         }
 
