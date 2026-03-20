@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Domain;
-using DomainAddress = SFA.DAS.SharedOuterApi.Models.Address;
 
-namespace SFA.DAS.RecruitJobs.Domain.Vacancy;
+namespace SFA.DAS.RecruitJobs.Domain;
 
 public class Vacancy
 {
     public Guid Id { get; init; }
     public long? VacancyReference { get; init; }
-    public long? AccountId { get; set; }
+    public long? AccountId { get; init; }
     public required VacancyStatus Status { get; set; }
     public ApprenticeshipTypes? ApprenticeshipType { get; init; }
     public string? Title { get; init; }
-    public OwnerType? OwnerType { get; set; }
+    public OwnerType? OwnerType { get; init; }
     public SourceOrigin? SourceOrigin { get; init; }
     public SourceType? SourceType { get; init; }
     public long? SourceVacancyReference { get; init; }
@@ -36,8 +35,8 @@ public class Vacancy
     public bool? DisabilityConfident { get; init; }
     public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; init; }
-    public List<DomainAddress>? EmployerLocations { get; set; }
-    public AvailableWhere? EmployerLocationOption { get; set; }
+    public List<Address>? EmployerLocations { get; set; }
+    public AvailableWhere? EmployerLocationOption { get; init; }
     public string? EmployerLocationInformation { get; init; }
     public string? EmployerName { get; init; }
     public EmployerNameOption? EmployerNameOption { get; init; }
@@ -48,7 +47,7 @@ public class Vacancy
     public long? AccountLegalEntityId { get; init; }
     public int? NumberOfPositions { get; init; }
     public string? OutcomeDescription { get; init; }
-    public string? ProgrammeId { get; set; }
+    public string? ProgrammeId { get; init; }
     public List<string>? Skills { get; init; }
     public List<Qualification>? Qualifications { get; set; }
     public string? ThingsToConsider { get; init; }
@@ -65,6 +64,6 @@ public class Vacancy
     public bool? HasOptedToAddQualifications { get; init; }
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
-    public Guid? SubmittedByUserId { get; set; }
-    public Guid? ReviewRequestedByUserId { get; set; }
+    public Guid? SubmittedByUserId { get; init; }
+    public Guid? ReviewRequestedByUserId { get; init; }
 }
