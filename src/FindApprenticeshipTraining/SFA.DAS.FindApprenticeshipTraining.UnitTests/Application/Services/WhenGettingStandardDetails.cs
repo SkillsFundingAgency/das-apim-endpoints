@@ -16,7 +16,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services;
 public class WhenGettingStandardDetails
 {
     [Test, MoqAutoData]
-    public async Task GetStandardDetails_StandardDetailsCached_ReturnsStandardDetailsFromCache(
+    public async Task GetStandardDetails_StandardDetailsFoundInCache_ReturnsCachedStandardDetails(
 
         StandardDetailsLookupResponse standardDetailsFromCache,
         [Frozen] Mock<ICacheStorageService> mockCacheService,
@@ -35,7 +35,7 @@ public class WhenGettingStandardDetails
     }
 
     [Test, MoqAutoData]
-    public async Task GetStandardDetails_StandardDetailsNotCached_GetsFromApiAndStoresInCache(
+    public async Task GetStandardDetails_StandardDetailsNotFoundInCache_GetsFromApiAndStoresInCache(
 
         StandardDetailsLookupResponse coursesFromApi,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
@@ -65,7 +65,7 @@ public class WhenGettingStandardDetails
     }
 
     [Test, MoqAutoData]
-    public async Task GetKsbsForCourseOption_KsbsCached_ReturnsKsbsFromCache(
+    public async Task GetKsbsForCourseOption_KsbsFoundInCache_ReturnsCachedKsbs(
         GetKsbsForCourseOptionResponse ksbsFromCache,
         [Frozen] Mock<ICacheStorageService> mockCacheService,
         CachedStandardDetailsService service)
@@ -82,7 +82,7 @@ public class WhenGettingStandardDetails
     }
 
     [Test, MoqAutoData]
-    public async Task GetKsbsForCourseOption_KsbsNotCached_GetsFromApiAndStoresInCache(
+    public async Task GetKsbsForCourseOption_KsbsNotFoundInCache_GetsFromApiAndStoresInCache(
         GetKsbsForCourseOptionResponse ksbsFromApi,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
         [Frozen] Mock<ICacheStorageService> mockCacheService,
