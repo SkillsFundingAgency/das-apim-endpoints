@@ -6,7 +6,6 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
@@ -27,7 +26,7 @@ public class CreateDraftShortCourseCommandHandler(
 
         var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
-        var learningResponse = await learningApiClient.PostWithResponseCode<CreateShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
+        var learningResponse = await learningApiClient.PostWithResponseCode<Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
 
         var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body, command.Ukprn);
 

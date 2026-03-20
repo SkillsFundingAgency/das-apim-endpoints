@@ -1,10 +1,6 @@
 ﻿using AutoFixture;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
-
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
 [TestFixture]
@@ -26,8 +22,6 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningKey = Guid.NewGuid();
-        var episodeKey = Guid.NewGuid();
-        var learningResponse = new CreateShortCoursePostResponse { LearningKey = learningKey, EpisodeKey = episodeKey };
 
         var learner = _fixture.Build<ShortCourseLearnerRequestDetails>()
             .With(x => x.Dob, new DateTime(2000, 1, 1))
@@ -60,11 +54,10 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningResponse, ukprn);
+        var result = _sut.Build(request, learningKey, ukprn);
 
         // Assert
         result.LearningKey.Should().Be(learningKey);
-        result.EpisodeKey.Should().Be(episodeKey);
 
         result.Learner.Uln.Should().Be(learner.Uln.ToString());
         result.Learner.DateOfBirth.Should().Be(learner.Dob);

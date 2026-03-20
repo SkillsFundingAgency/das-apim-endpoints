@@ -7,7 +7,6 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -28,7 +27,6 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private CreateDraftShortCourseRequest _builtRequest;
     private long _ukprn;
     private Guid _learningKey;
-    private Guid _episodeKey;
     private ShortCourseRequest _shortCourseRequest;
     private CreateUnapprovedShortCourseLearningRequest _builtEarningsRequest;
 
@@ -53,15 +51,9 @@ public class WhenHandlingCreateDraftShortCourseCommand
         // Arrange
         _ukprn = 12345;
         _learningKey = Guid.NewGuid();
-        _episodeKey = Guid.NewGuid();
-        var learningResponse = new CreateShortCoursePostResponse
-        {
-            LearningKey = _learningKey,
-            EpisodeKey = _episodeKey
-        };
 
         _builtEarningsRequest = new CreateUnapprovedShortCourseLearningRequest();
-        
+
         _shortCourseRequest = new ShortCourseRequest();
 
         _command = new CreateDraftShortCourseCommand
@@ -94,14 +86,14 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .Setup(x => x.Build(_shortCourseRequest, _ukprn))
             .Returns(_builtRequest);
 
-        var apiResponse = new ApiResponse<CreateShortCoursePostResponse>(learningResponse, HttpStatusCode.Created, "");
-        
+        var apiResponse = new ApiResponse<Guid>(_learningKey, HttpStatusCode.Created, "");
+
         _learningApiClient
-            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .Setup(x => x.PostWithResponseCode<Guid>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
             .ReturnsAsync(apiResponse);
 
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, It.IsAny<CreateShortCoursePostResponse>(), _ukprn))
+            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _ukprn))
             .Returns(_builtEarningsRequest);
     }
 
@@ -113,7 +105,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         // Assert
         _learningApiClient.Verify(x =>
-                x.PostWithResponseCode<CreateShortCoursePostResponse>(
+                x.PostWithResponseCode<Guid>(
                     It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == _builtRequest), true),
             Times.Once);
         result.StatusCode.Should().Be(HttpStatusCode.Created);
