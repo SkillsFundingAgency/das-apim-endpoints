@@ -145,7 +145,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetStandardC
         }
 
         [Test]
-        public void Then_DeliveryInformation_Is_Ordered_Chronologically_By_EventTime()
+        public void Then_DeliveryInformation_Is_Ordered_By_EventTime_MostRecentFirst()
         {
             var baseTime = new DateTime(2026, 1, 1, 0, 0, 0);
             var reprintId = Guid.NewGuid();
