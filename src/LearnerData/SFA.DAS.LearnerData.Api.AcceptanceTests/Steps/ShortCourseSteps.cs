@@ -3,6 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
+using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
 using System.Net;
@@ -59,7 +60,7 @@ public class ShortCourseSteps
         var log = _testContext.ApprenticeshipsApi.MockServer.LogEntries;
         var last = log.LastOrDefault();
 
-        var shortCourseEarningsResponse = JsonConvert.DeserializeObject<GetShortCourseEarningsResult>(contentString);
+        var shortCourseEarningsResponse = JsonConvert.DeserializeObject<GetShortCourseEarningsQueryResult>(contentString);
         _scenarioContext.Set(shortCourseEarningsResponse, GetShortCourseResponseKey);
     }
 
@@ -67,11 +68,11 @@ public class ShortCourseSteps
     public void ThenTheResponseShouldContainTheFollowingPaginationDetails(Table table)
     {
         var paginationExpectations = table.CreateSet<ShortCoursePaginationExpectations>().Single();
-        var response = _scenarioContext.Get<GetShortCourseEarningsResult>(GetShortCourseResponseKey);
-        response.TotalItems.Should().Be(paginationExpectations.TotalRecords, "Expected TotalItems to match");
+        var response = _scenarioContext.Get<GetShortCourseEarningsQueryResult>(GetShortCourseResponseKey);
+        response.Total.Should().Be(paginationExpectations.TotalRecords, "Expected Total to match");
         response.Page.Should().Be(paginationExpectations.PageNumber, "Expected Page to match");
         response.PageSize.Should().Be(paginationExpectations.PageSize, "Expected PageSize to match");
-        response.Items.Count.Should().Be(paginationExpectations.NumberOfRecordsInPage, "Expected NumberOfRecordsInPage to match");
+        response.Learners.Count.Should().Be(paginationExpectations.NumberOfRecordsInPage, "Expected NumberOfRecordsInPage to match");
     }
 
     [Given(@"for ukprn (.*) there are short course learning with")]
@@ -133,11 +134,11 @@ public class ShortCourseSteps
     public void ThenTheShortCourseResponseShouldContainARecordWithTheFollowingDetails(Table table)
     {
         var expectedEarnings = table.CreateSet<ShortCourseDetailsExpectations>().ToList();
-        var response = _scenarioContext.Get<GetShortCourseEarningsResult>(GetShortCourseResponseKey);
+        var response = _scenarioContext.Get<GetShortCourseEarningsQueryResult>(GetShortCourseResponseKey);
 
         foreach (var expected in expectedEarnings)
         {
-            var record = response.Items.SingleOrDefault(r => r.Courses.Any(c => c.Approved == expected.IsApproved && c.CoursePrice == expected.Price));
+            var record = response.Learners.SingleOrDefault(r => r.Courses.Any(c => c.Approved == expected.IsApproved && c.CoursePrice == expected.Price));
 
             record.Should().NotBeNull($"Expected to find a record with IsApproved {expected.IsApproved} and Price {expected.Price} but did not.");
             
@@ -153,7 +154,7 @@ public class ShortCourseSteps
     private void MockInnerApiResponses(ShortCourseTestData testData, int academicYear, byte period, int pageNumber, int pageSize)
     {
         var slicedLearnings = testData.ShortCourseLearnings.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        var learningResponse = new GetPagedLearnersFromLearningInner
+        var learningResponse = new GetPagedShortCourseLearnersResponse
         {
             Page = pageNumber,
             PageSize = pageSize,

@@ -77,10 +77,10 @@ public class ShortCoursesController(
 
         var query = new GetShortCourseEarningsQuery(ukprn, collectionYear, collectionPeriod, page, pagesize);
 
-        var response = await mediator.Send(query);
-        HttpContext.SetPageLinksInResponseHeaders(query, response);
+        var result = await mediator.Send(query);
+        HttpContext.SetPageLinksInResponseHeaders(query, result);
 
-        return Ok(response);
+        return Ok(result);
 
     }
 
