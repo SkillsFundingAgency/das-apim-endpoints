@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.DigitalCertificates.Constants;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
+using SFA.DAS.DigitalCertificates.Models;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate
 {
@@ -23,8 +25,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
         public string PrintRequestedBy { get; set; }
         public string CertificateType { get; set; }
         public List<QualificationDetails> QualificationsAndAwardingBodies { get; set; }
-        // TODO: This 'DeliveryInformation field is not required for P2-2551. We need to discuss with Alan what data is actually required for this field.
-        public List<object> DeliveryInformation { get; set; }
+        public List<DeliveryInformation> DeliveryInformation { get; set; }
 
         // TODO: The fields below are not available from the Inner API and are not required for P2-2551.
         // They can be populated in future tickets if needed or it can be remove if not required for the upcoming tickets
@@ -54,8 +55,29 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
                 StartDate = source.ApprenticeStartdate,
                 QualificationsAndAwardingBodies = source.QualificationsAndAwardingBodies?.Select(q => new QualificationDetails { Name = q.Name, AwardingBody = q.AwardingBody }).ToList(),
                 PrintRequestedAt = source.PrintRequestedAt,
-                PrintRequestedBy = source.PrintRequestedBy
+                PrintRequestedBy = source.PrintRequestedBy,
+                DeliveryInformation = BuildDeliveryInformation(source.CertificateLogs),
             };
+        }
+
+        private static List<DeliveryInformation> BuildDeliveryInformation(List<CertificateLog> logs)
+        {
+            if (logs == null || logs.Count == 0)
+                return null;
+
+            return logs
+                .Where(log => CertificateConstants.DeliveryInformationStatuses.Any(entry => entry.Action == log.Action && entry.Status == log.Status))
+                .GroupBy(log => (log.Action, log.Status))
+                .Select(group => group.OrderByDescending(log => log.EventTime).First())
+                .OrderByDescending(log => log.EventTime)
+                .Select(log => new DeliveryInformation
+                {
+                    Id = log.Id,
+                    Action = log.Action,
+                    Status = log.Status,
+                    EventTime = log.EventTime,
+                })
+                .ToList();
         }
     }
 
@@ -65,3 +87,4 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
         public string AwardingBody { get; set; }
     }
 }
+
