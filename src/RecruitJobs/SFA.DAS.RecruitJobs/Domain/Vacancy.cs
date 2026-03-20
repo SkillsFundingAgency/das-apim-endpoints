@@ -8,7 +8,7 @@ public class Vacancy
     public Guid Id { get; init; }
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
-    public required VacancyStatus Status { get; init; }
+    public required VacancyStatus Status { get; set; }
     public ApprenticeshipTypes? ApprenticeshipType { get; init; }
     public string? Title { get; init; }
     public OwnerType? OwnerType { get; init; }
@@ -20,7 +20,7 @@ public class Vacancy
     public DateTime? LastUpdatedDate { get; init; }
     public DateTime? SubmittedDate { get; init; }
     public DateTime? ReviewRequestedDate { get; init; }
-    public DateTime? ClosedDate { get; init; }
+    public DateTime? ClosedDate { get; set; }
     public DateTime? DeletedDate { get; init; }
     public DateTime? LiveDate { get; init; }
     public DateTime? StartDate { get; init; }
@@ -55,7 +55,7 @@ public class Vacancy
     public string? AdditionalTrainingDescription { get; init; }
     public TrainingProvider? TrainingProvider { get; init; }
     public Wage? Wage { get; set; }
-    public ClosureReason? ClosureReason { get; init; }
+    public ClosureReason? ClosureReason { get; set; }
     public TransferInfo? TransferInfo { get; init; }
     public string? AdditionalQuestion1 { get; init; }
     public string? AdditionalQuestion2 { get; init; }

@@ -5,6 +5,7 @@ using System.Threading;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
+using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
 using StrawberryShake;
 
