@@ -104,14 +104,13 @@ public class WhenHandlingCreateDraftShortCourseCommand
     public async Task Then_Learning_Is_Updated_With_ShortCourse()
     {
         // Act
-        var result = await _handler.Handle(_command, CancellationToken.None);
+        await _handler.Handle(_command, CancellationToken.None);
 
         // Assert
         _learningApiClient.Verify(x =>
                 x.PostWithResponseCode<Guid>(
                     It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == _builtRequest), true),
             Times.Once);
-        result.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     //[Test]

@@ -35,10 +35,7 @@ public class CreateDraftShortCourseCommandHandler(
         //removed for now until downstream fixed
         //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
 
-        return new CreateDraftShortCourseResult
-        {
-            StatusCode = learningResponse.StatusCode
-        };
+        return new CreateDraftShortCourseResult();
     }
 
     private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
