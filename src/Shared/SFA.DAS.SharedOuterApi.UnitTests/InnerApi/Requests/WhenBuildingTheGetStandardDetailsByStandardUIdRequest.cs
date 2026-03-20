@@ -5,8 +5,8 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 public class WhenBuildingTheGetStandardDetailsByStandardUIdRequest
 {
     [Test, AutoData]
-    public void GetUrl_WhenBuildingRequest_ReturnsCorrectUrl(GetStandardDetailsByIdRequest actual)
+    public void GetUrl_WhenBuildingByIdRequest_ReturnsExpectedUrl(GetStandardDetailsByIdRequest actual)
     {
-        actual.GetUrl.Should().Be($"api/courses/lookup/{actual.Id}");
+        actual.GetUrl.Should().Be($"api/courses/standards/{actual.Id}");
     }
 }
