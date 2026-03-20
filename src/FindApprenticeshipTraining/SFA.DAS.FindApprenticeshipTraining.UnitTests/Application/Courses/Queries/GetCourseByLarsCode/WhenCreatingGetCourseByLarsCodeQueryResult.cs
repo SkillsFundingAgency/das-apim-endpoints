@@ -9,7 +9,7 @@ public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
 {
     [Test]
     [MoqAutoData]
-    public void Then_StandardDetailResponse_Should_Convert_Correctly(StandardDetailsLookupResponse response)
+    public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(StandardDetailsLookupResponse response)
     {
         GetCourseByLarsCodeQueryResult sut = response;
         Assert.Multiple(() =>
