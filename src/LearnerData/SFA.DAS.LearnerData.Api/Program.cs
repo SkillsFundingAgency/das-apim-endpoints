@@ -46,6 +46,8 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
+builder.AddDistributedCache(configuration);
+
 builder.Services.AddSingleton<ITelemetryInitializer, CorrelationTelemetryInitializer>();
 builder.Services.AddSingleton<IMessageSession>(provider =>
 {
@@ -107,6 +109,8 @@ app.UseSwagger()
     .UseAuthentication();
 
 app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateLearnerRequest>>();
+app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateShortCourseRequest>>();
+app.UseMiddleware<ConcurrencyTrackingMiddleware>();
 
 app.MapControllers();
 

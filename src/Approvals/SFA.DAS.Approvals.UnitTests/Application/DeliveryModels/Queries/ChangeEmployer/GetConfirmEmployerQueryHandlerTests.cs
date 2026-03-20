@@ -1,8 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.ConfirmEmployer;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;

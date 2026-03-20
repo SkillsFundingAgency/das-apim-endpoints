@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.DigitalCertificates.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
-using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.DigitalCertificates.Api.AppStart
 {

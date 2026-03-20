@@ -19,7 +19,8 @@ public class CreateLearnerCommandHandler(
 
     private LearnerDataEvent MapToEvent(CreateLearnerCommand command)
     {
-        var cost = command.Request.Delivery.OnProgramme.First().MapCosts().First();
+        var onProgramme = command.Request.Delivery.OnProgramme.First();
+        var cost = onProgramme.Costs.GetCostsOrDefault(onProgramme.StartDate).First();
 
         return new LearnerDataEvent
         {
@@ -39,7 +40,8 @@ public class CreateLearnerCommandHandler(
             StandardCode = command.Request.Delivery.OnProgramme.First().StandardCode,
             CorrelationId = command.CorrelationId,
             ReceivedDate = command.ReceivedOn,
-            ConsumerReference = command.Request.ConsumerReference
+            ConsumerReference = command.Request.ConsumerReference,
+            LearningType = LearningType.Apprenticeship
         };
     }
 }

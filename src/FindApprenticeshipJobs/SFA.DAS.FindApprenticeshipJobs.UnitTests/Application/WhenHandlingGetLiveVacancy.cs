@@ -71,7 +71,7 @@ public class WhenHandlingGetLiveVacancy
     }
     
     [Test, MoqAutoData]
-    public void Then_If_Not_Found_Exception_Is_Thrown(
+    public async Task Then_If_Not_Found_Empty_Ok_Is_Thrown(
         GetLiveVacancyQuery query,
         ApiResponse<GetLiveVacancyApiResponse> apiResponse,
         GetStandardsListResponse standards,
@@ -93,6 +93,8 @@ public class WhenHandlingGetLiveVacancy
         mockVacancyMapper.Setup(x => x.Map(It.Is<LiveVacancy>(v => v == apiResponse.Body), standards))
             .Returns(mapperResult);
 
-        Assert.ThrowsAsync<Exception>(()=>sut.Handle(query, CancellationToken.None));
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        result.LiveVacancy.Should().BeNull();
     }
 }

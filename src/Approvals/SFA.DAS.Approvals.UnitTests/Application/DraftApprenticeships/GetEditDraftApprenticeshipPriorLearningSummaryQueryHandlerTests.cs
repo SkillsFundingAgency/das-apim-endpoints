@@ -1,8 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningSummary;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -125,6 +122,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.That(_draftApprenticeship.HasStandardOptions, Is.EqualTo(result.HasStandardOptions));
+        }
+
+        [Test]
+        public async Task Handle_LearnerDataId_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            Assert.That(_draftApprenticeship.LearnerDataId, Is.EqualTo(result.LearnerDataId));
         }
     }
 }

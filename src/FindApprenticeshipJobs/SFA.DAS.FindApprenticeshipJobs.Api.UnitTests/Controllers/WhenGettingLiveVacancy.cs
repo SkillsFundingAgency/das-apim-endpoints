@@ -34,5 +34,23 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
                 actual.Value.Should().BeEquivalentTo((GetLiveVacanciesApiResponse.LiveVacancy)mockQueryResult.LiveVacancy);
             }
         }
+
+        [Test, MoqAutoData]
+        public async Task Then_Live_Vacancies_Not_Found_Returned_From_Mediator(
+            long vacancyReference,
+            GetLiveVacancyQueryResult mockQueryResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] LiveVacanciesController sut)
+        {
+            mockMediator.Setup(x => x.Send(It.IsAny<GetLiveVacancyQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetLiveVacancyQueryResult());
+
+            var actual = await sut.GetLiveVacancy(vacancyReference, It.IsAny<CancellationToken>()) as OkResult;
+
+            using (new AssertionScope())
+            {
+                actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            }
+        }
     }
 }

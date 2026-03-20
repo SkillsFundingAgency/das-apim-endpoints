@@ -1,14 +1,9 @@
 using System;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Services;
 
@@ -28,15 +23,15 @@ public class BulkCourseMetadataServiceTests
         var courseCodes = new[] { courseCode1, courseCode2 };
         var rplResponse1 = new GetRecognitionOfPriorLearningResponse { OffTheJobTrainingMinimumHours = otjHours1 };
         var rplResponse2 = new GetRecognitionOfPriorLearningResponse { OffTheJobTrainingMinimumHours = otjHours2 };
-        var standard = new GetStandardsListItem();
+        var course = new GetCourseLookupResponse();
 
         courseTypeRulesService
             .Setup(x => x.GetRplRulesAsync(courseCode1))
-            .ReturnsAsync(new RplRulesResult { Standard = standard, RplRules = rplResponse1 });
+            .ReturnsAsync(new RplRulesResult { Course = course, RplRules = rplResponse1 });
 
         courseTypeRulesService
             .Setup(x => x.GetRplRulesAsync(courseCode2))
-            .ReturnsAsync(new RplRulesResult { Standard = standard, RplRules = rplResponse2 });
+            .ReturnsAsync(new RplRulesResult { Course = course, RplRules = rplResponse2 });
 
         var result = await service.GetOtjTrainingHoursForBulkUploadAsync(courseCodes);
 
@@ -56,11 +51,11 @@ public class BulkCourseMetadataServiceTests
     {
         var courseCodes = new[] { courseCode1, courseCode2 };
         var rplResponse1 = new GetRecognitionOfPriorLearningResponse { OffTheJobTrainingMinimumHours = otjHours1 };
-        var standard = new GetStandardsListItem();
+        var course = new GetCourseLookupResponse();
 
         courseTypeRulesService
             .Setup(x => x.GetRplRulesAsync(courseCode1))
-            .ReturnsAsync(new RplRulesResult { Standard = standard, RplRules = rplResponse1 });
+            .ReturnsAsync(new RplRulesResult { Course = course, RplRules = rplResponse1 });
 
         courseTypeRulesService
             .Setup(x => x.GetRplRulesAsync(courseCode2))
@@ -81,11 +76,11 @@ public class BulkCourseMetadataServiceTests
         string courseCode)
     {
         var courseCodes = new[] { courseCode };
-        var standard = new GetStandardsListItem();
+        var course = new GetCourseLookupResponse();
 
         courseTypeRulesService
-            .Setup(x => x.GetRplRulesAsync(courseCode))
-            .ReturnsAsync(new RplRulesResult { Standard = standard, RplRules = null });
+        .Setup(x => x.GetRplRulesAsync(courseCode))
+            .ReturnsAsync(new RplRulesResult { Course = course, RplRules = null });
 
         var result = await service.GetOtjTrainingHoursForBulkUploadAsync(courseCodes);
 
@@ -103,11 +98,11 @@ public class BulkCourseMetadataServiceTests
     {
         var courseCodes = new[] { courseCode, courseCode, courseCode };
         var rplResponse = new GetRecognitionOfPriorLearningResponse { OffTheJobTrainingMinimumHours = otjHours };
-        var standard = new GetStandardsListItem();
+        var course = new GetCourseLookupResponse();
 
         courseTypeRulesService
             .Setup(x => x.GetRplRulesAsync(courseCode))
-            .ReturnsAsync(new RplRulesResult { Standard = standard, RplRules = rplResponse });
+            .ReturnsAsync(new RplRulesResult { Course = course, RplRules = rplResponse });
 
         var result = await service.GetOtjTrainingHoursForBulkUploadAsync(courseCodes);
 

@@ -10,7 +10,6 @@ public class CreateApplicationCommandHandler : IRequestHandler<CreateApplication
         _apiClient = apiClient;
     }
 
-
     public async Task<BaseMediatrResponse<CreateApplicationCommandResponse>> Handle(CreateApplicationCommand request, CancellationToken cancellationToken)
     {
         var response = new BaseMediatrResponse<CreateApplicationCommandResponse>
@@ -25,8 +24,11 @@ public class CreateApplicationCommandHandler : IRequestHandler<CreateApplication
                 Data = request
             });
 
-            response.Value.Id = result.Body.Id;
             response.Success = true;
+
+            response.Value.Id = result.Body.Id;
+            response.Value.IsQanValid = result.Body.IsQanValid;
+            response.Value.QanValidationMessage = result.Body.QanValidationMessage;
         }
         catch (Exception ex)
         {

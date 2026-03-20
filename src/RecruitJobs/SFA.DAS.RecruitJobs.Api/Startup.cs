@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http.Headers;
+using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,7 +45,12 @@ public static class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddServiceRegistration(configuration);
+        services.AddSingleton(new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNameCaseInsensitive = true,
+        });
+        services.AddServiceRegistration();
 
         services.Configure<RouteOptions>(options =>
             {
@@ -75,12 +82,12 @@ public static class Startup
             {
                 var clientConfig = sp.GetService<RecruitApiConfiguration>();
                 x.BaseAddress = new Uri($"{clientConfig.Url.TrimEnd('/')}/graphql");
-                
+
                 if (configuration.IsLocalOrDev())
                 {
                     return;
                 }
-                
+
                 var correlationId = CorrelationContext.CorrelationId;
                 if (!string.IsNullOrWhiteSpace(correlationId))
                 {

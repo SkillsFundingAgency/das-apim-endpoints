@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
+using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -20,7 +23,6 @@ public class GetLearnersForProviderQueryHandler(
     IInternalApiClient<LearnerDataInnerApiConfiguration> learnerDataClient,
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsClient,
     IMapLearnerRecords mapper,
-    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
     IReservationApiClient<ReservationApiConfiguration> _reservationsApiClient,
 ILogger<GetLearnersForProviderQueryHandler> logger)
     : IRequestHandler<GetLearnersForProviderQuery, GetLearnersForProviderQueryResult>
@@ -83,10 +85,12 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
 
         var learnerDataTask = GetLearnerData(request);
         var standardsTask = GetStandardsData();
+        var coursesTask = GetCourses(request.ProviderId);
 
-        await Task.WhenAll(learnerDataTask, standardsTask);
-        var learnerData = await learnerDataTask;
-        var standards = await standardsTask;
+        await Task.WhenAll(learnerDataTask, standardsTask, coursesTask);
+        var learnerData = learnerDataTask.Result;
+        var standards = standardsTask.Result;
+        var courses = coursesTask.Result;
 
         logger.LogInformation("Building Learner Data result");
 
@@ -100,7 +104,8 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             PageSize = learnerData.PageSize,
             TotalPages = learnerData.TotalPages,
             Learners = await mapper.Map(learnerData.Data, standards.TrainingProgrammes.ToList()),
-            FutureMonths = futureMonths
+            FutureMonths = futureMonths,
+            TrainingCourses = courses.ToList()
         };
     }
 
@@ -115,11 +120,12 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
                 request.SortField,
                 request.SortDescending,
                 request.Page,
-                request.PageSize, 
+                request.PageSize,
                 request.StartMonth,
                 request.StartYear,
                 request.MaxStartDate,
-                string.Join(",", request.ExcludeUlns)
+                string.Join(",", request.ExcludeUlns),
+                request.CourseCode
             ));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
@@ -142,5 +148,18 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
         }
 
         return response.Body;
+    }
+
+    private async Task<IEnumerable<TrainingProgramme>> GetCourses(long ukprn)
+    {
+        var response = await commitmentsClient.GetWithResponseCode<GetCourseCodesResponse>(new GetAllTrainingProgrammesRequest());
+
+        var courseCodes = await learnerDataClient.GetWithResponseCode<GetCourseCodesByUkprnResponse>(new GetCourseCodesByUkprnRequest(ukprn));
+
+        var codes = courseCodes.Body.CourseCodes.Select(t => t.ToString());
+
+        var trainingProgrammesForUkprn = response.Body.TrainingProgrammes.Where(t => codes.Contains(t.CourseCode));
+
+        return trainingProgrammesForUkprn;
     }
 }

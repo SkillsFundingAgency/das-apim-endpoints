@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
@@ -11,7 +11,6 @@ public class GetUsersByEmailQueryHandler(IInternalApiClient<EmployerProfilesApiC
     public async Task<GetUsersByEmailQueryResult> Handle(GetUsersByEmailQuery request, CancellationToken cancellationToken)
     {
         var response = await client.Get<GetUsersByEmailResponse>(new GetUsersByEmailRequest(request.Email));
-        
         return new GetUsersByEmailQueryResult { Users = response.Users };
     }
 }

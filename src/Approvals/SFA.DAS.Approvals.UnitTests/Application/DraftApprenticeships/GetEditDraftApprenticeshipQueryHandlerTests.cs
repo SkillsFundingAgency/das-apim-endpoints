@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
@@ -222,6 +218,13 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         {
             var result = await _handler.Handle(_query, CancellationToken.None);
             Assert.That(_draftApprenticeship.EmployerHasEditedCost, Is.EqualTo(result.EmployerHasEditedCost));
+        }
+
+        [Test]
+        public async Task Handle_TraingingCouser_Version_Is_Mapped()
+        {
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.TrainingCourseVersion.Should().Be(_draftApprenticeship.TrainingCourseVersion);
         }
 
         [TestCase(0, false)]

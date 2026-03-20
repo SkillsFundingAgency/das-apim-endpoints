@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,14 +11,17 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models.Roatp;
 
 namespace SFA.DAS.Approvals.Services;
 
 public interface IProviderStandardsService
 {
     Task<ProviderStandardsData> GetStandardsData(long providerId);
+    Task<ProviderStandardsData> GetCoursesData(long providerId);
 }
 
 public class ProviderStandardsService(
@@ -30,6 +33,7 @@ public class ProviderStandardsService(
     ILogger<ProviderStandardsService> logger)
     : IProviderStandardsService
 {
+    public const string AllCoursesCacheKey = "ProviderCoursesService.GetAllCoursesResponse";
     public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
     public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
     public const int CacheExpiryHours = 12;
@@ -52,21 +56,55 @@ public class ProviderStandardsService(
             IsMainProvider = providerDetails.IsMainProvider,
             Standards = await GetStandardsForProvider(providerId)
         };
-
     }
 
-    private async Task<TrainingProviderResponse> GetTrainingProviderDetails(long providerId)
+    // TODO This is a stub to allow us to test the AppUnits, needs to call the new endpoint once deployed 
+    public async Task<ProviderStandardsData> GetCoursesData(long providerId)
+    {
+        var result = await GetStandardsData(providerId);
+
+        var list = result.Standards.ToList();
+        list.Add(new Standard("ZSC00001", "Stubbed Digital Apprenticeship Unit", 0));
+        list.Add(new Standard("ZSC00002", "Stubbed Teacher Assistent - Apprenticeship Unit", 0));
+        list.Add(new Standard("ZSC00004", "Stubbed Nursing Apprenticeship Unit", 0));
+        result.Standards = list;
+
+        return result;
+    }
+
+    // This needs to be completed once the GetCoursesForProvider endpoint is complete.
+    public async Task<ProviderStandardsData> GetCoursesDataRealImplementation(long providerId)
+    {
+        var providerDetails = await GetTrainingProviderDetails(providerId);
+
+        if (serviceParameters.CallingParty == Party.Employer || !providerDetails.IsMainProvider)
+        {
+            return new ProviderStandardsData
+            {
+                IsMainProvider = providerDetails.IsMainProvider,
+                Standards = await GetAllCourses()
+            };
+        }
+
+        return new ProviderStandardsData
+        {
+            IsMainProvider = providerDetails.IsMainProvider,
+            Standards = await GetCoursesForProvider(providerId)
+        };
+    }
+
+    private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)
     {
         var cacheKey = $"{ProviderDetailsCacheKey}-{providerId}";
 
-        var cacheResult = await cacheStorageService.RetrieveFromCache<TrainingProviderResponse>(cacheKey);
+        var cacheResult = await cacheStorageService.RetrieveFromCache<ProviderDetailsModel>(cacheKey);
 
         if (cacheResult != null)
         {
             return cacheResult;
         }
 
-        var result = await trainingProviderService.GetTrainingProviderDetails(providerId);
+        var result = await trainingProviderService.GetProviderDetails((int)providerId);
         await cacheStorageService.SaveToCache(cacheKey, result, CacheExpiryHours);
         return result;
     }
@@ -78,12 +116,29 @@ public class ProviderStandardsService(
 
         if (cacheResult != null)
         {
-            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
+            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
+        }
+        
+        var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
+        await cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
+        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
+    }
+
+    //DOTO This needs to be reworked to use Witeks endpoint to get all course
+    // one difference to consider is the Level will no longer be an integer, it's a string
+    private async Task<IEnumerable<Standard>> GetAllCourses()
+    {
+        var cacheResult =
+            await cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllCoursesCacheKey);
+
+        if (cacheResult != null)
+        {
+            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
         }
 
         var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-        await cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
-        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name)).OrderBy(x => x.Name);
+        await cacheStorageService.SaveToCache(AllCoursesCacheKey, result, CacheExpiryHours);
+        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
     }
 
     private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
@@ -101,11 +156,42 @@ public class ProviderStandardsService(
             }
 
             return providerStandards.Select(
-                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel)).OrderBy(x => x.Name).ToList();
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel, x.Level)).OrderBy(x => x.Name).ToList();
         }
         catch (Exception e)
         {
             logger.LogError($"No Standards Declared For Provider {providerId}", e);
+            return [];
+        }
+    }
+
+    // The GetCoursesForProvider endpoint is not yet implemented, the implementation will chnage this code
+    private async Task<IEnumerable<Standard>> GetCoursesForProvider(long providerId)
+    {
+        try
+        {
+            var providerCourseResponse =
+                await providerCoursesApiClient.Get<GetCoursesForProviderResponse>(
+                    new GetCoursesForProviderRequest(providerId));
+
+
+            var allCourses = providerCourseResponse.CourseTypes
+                .SelectMany(ct => ct.Courses)
+                .ToList();
+
+            if (allCourses.Any() != true)
+            {
+                logger.LogWarning($"No Courses declared For Provider {providerId}");
+                return [];
+            }
+            return allCourses.Select(
+                x => new Standard(x.LarsCode, null, null)).OrderBy(x => x.Name);
+        }
+        catch (Exception e)
+        {
+            // TODO Discuss this, this is a catch all to stop the service from breaking if there is an issue with the provider courses endpoint,
+            // but there should be a better way to handle this. It leads to unpredicatable behaviour in the system. Anmd should be considered an auti-pattern
+            logger.LogError($"No Courses Declared For Provider {providerId}, due to exception", e);
             return [];
         }
     }

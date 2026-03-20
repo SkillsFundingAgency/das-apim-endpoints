@@ -4,7 +4,6 @@ using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Learning.Api.AppStart;
-using SFA.DAS.Learning.Application.TrainingCourses;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
 using System.Diagnostics.CodeAnalysis;
@@ -46,7 +45,6 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetStandardQuery).Assembly));
         services.AddServiceRegistration(_configuration);
 
         services

@@ -1,4 +1,8 @@
-﻿using AutoFixture.NUnit3;
+﻿using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,10 +11,6 @@ using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Api.Controllers;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
 {
@@ -43,11 +43,14 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
         {
+            // Arrange
             mediator.Setup(x => x.Send(It.IsAny<GetUserQuery>(), CancellationToken.None))
                 .ThrowsAsync(new Exception());
 
+            // Act
             var actual = await controller.GetUser(govUkIdentifier) as StatusCodeResult;
 
+            // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         }

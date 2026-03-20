@@ -1,9 +1,9 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using System.Collections.Generic;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
@@ -32,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(tc => tc.ApprenticeshipType)
             );
 
-            response.Id.Should().Be(source.LarsCode);
+            response.Id.Should().Be(source.LarsCode.ToString());
         }
 
         [Test, AutoData]

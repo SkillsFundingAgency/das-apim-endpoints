@@ -22,7 +22,7 @@ public class VacancyReviewDto
     public required string Status { get; set; }
     public required byte? SubmissionCount { get; init; }
     public string? ReviewedByUserEmail { get; init; }
-    public required string SubmittedByUserEmail { get; init; }
+    public string? SubmittedByUserEmail { get; init; }
     public DateTime? ClosedDate { get; init; }
     public string? ManualOutcome { get; set; }
     public string? ManualQaComment { get; init; }
@@ -41,4 +41,5 @@ public class VacancyReviewDto
     public AvailableWhere EmployerLocationOption { get; set; }
     public List<Address> EmployerLocations { get; set; }
     public Guid VacancyId { get; set; }
+    public string SubmittedByUserId { get; set; }
 }
