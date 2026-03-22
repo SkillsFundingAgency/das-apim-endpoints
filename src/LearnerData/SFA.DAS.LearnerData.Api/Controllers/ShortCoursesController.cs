@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
+using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.Apim.Shared.Extensions;
@@ -80,5 +81,26 @@ public class ShortCoursesController(
 
         return Ok(result);
 
+    }
+
+    [HttpPut("/providers/{ukprn}/shortCourses/{learningKey}")]
+    public async Task<IActionResult> UpdateShortCourseLearning(Guid learningKey, ShortCourseRequest request, long ukprn)
+    {
+        try
+        {
+            await mediator.Send(new UpdateShortCourseLearningCommand
+            {
+                LearningKey = learningKey,
+                Ukprn = ukprn,
+                Request = request
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when updating short course learning");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+
+        return Accepted();
     }
 }

@@ -1,7 +1,8 @@
-﻿using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData.ShortCourses;
 using Milestone = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
+using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses
 {
@@ -15,6 +16,17 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
         public CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn)
         {
             var firstOnProg = request.Delivery.OnProgramme.First();
+
+            var milestones = firstOnProg.Milestones
+                .Select(m =>
+                {
+                    if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
+                    throw new InvalidOperationException($"Invalid milestone value: {m}");
+                })
+                .ToList();
+
+            if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(SourceMilestone.LearningComplete))
+                milestones.Add(Milestone.LearningComplete);
 
             return new CreateDraftShortCourseRequest
             {
@@ -36,19 +48,12 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                 OnProgramme = new OnProgramme
                 {
                     CourseCode = firstOnProg.CourseCode,
-                    EmployerId = 0,
                     Ukprn = ukprn,
                     StartDate = firstOnProg.StartDate,
                     ExpectedEndDate = firstOnProg.ExpectedEndDate,
                     CompletionDate = firstOnProg.CompletionDate,
                     WithdrawalDate = firstOnProg.WithdrawalDate,
-                    Milestones = firstOnProg.Milestones
-                        .Select(m =>
-                        {
-                            if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
-                            throw new InvalidOperationException($"Invalid milestone value: {m}");
-                        })
-                        .ToList(),
+                    Milestones = milestones,
                     Price = 1000
                 }
             };
