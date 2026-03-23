@@ -2,8 +2,10 @@
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.EmployerProfiles;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.Recruit.Application.EmployerProfile.Commands.PatchEmployerProfile;
 
@@ -22,6 +24,13 @@ public class PatchEmployerProfileCommandHandler(IRecruitApiClient<RecruitApiConf
         if (command.EmployerProfile.Addresses != null)
             patch.Replace(x => x.Addresses, command.EmployerProfile.Addresses);
 
-        await recruitApiClient.PatchWithResponseCode(new PatchEmployerProfileApiRequest(command.AccountLegalEntityId, patch));
+        var patchResponse = await recruitApiClient.PatchWithResponseCode(new PatchEmployerProfileApiRequest(command.AccountLegalEntityId, patch));
+
+        if (patchResponse.StatusCode == HttpStatusCode.NotFound)
+        {
+            return;
+        }
+
+        patchResponse.EnsureSuccessStatusCode();
     }
 }
