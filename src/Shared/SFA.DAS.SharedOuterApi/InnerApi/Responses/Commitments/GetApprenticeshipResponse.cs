@@ -58,8 +58,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
         public int? DurationReducedByHours { get; set; }
         public int? TrainingTotalHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
-
         [JsonConverter(typeof(StringEnumConverter))]
-        public LearningType LearningType { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 }

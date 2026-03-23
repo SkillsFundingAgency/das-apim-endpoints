@@ -23,7 +23,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
         public string CourseName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool IsFundedByTransfer { get; set; }
-        public LearningType LearningType { get; set; }
+        public LearningType? LearningType { get; set; }
     }
 
     public class GetEditApprenticeshipQueryHandler : IRequestHandler<GetEditApprenticeshipQuery, GetEditApprenticeshipQueryResult>
