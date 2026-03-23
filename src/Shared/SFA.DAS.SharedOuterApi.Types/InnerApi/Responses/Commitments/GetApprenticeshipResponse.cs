@@ -1,4 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments
 {
@@ -54,5 +57,7 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments
         public int? DurationReducedByHours { get; set; }
         public int? TrainingTotalHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
     }
 }

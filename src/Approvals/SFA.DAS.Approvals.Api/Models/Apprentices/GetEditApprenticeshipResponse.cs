@@ -1,4 +1,7 @@
-﻿using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices
 {
@@ -7,6 +10,8 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
         public string CourseName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool IsFundedByTransfer { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
 
         public static implicit operator GetEditApprenticeshipResponse(GetEditApprenticeshipQueryResult source)
         {
@@ -14,7 +19,8 @@ namespace SFA.DAS.Approvals.Api.Models.Apprentices
             {
                 CourseName = source.CourseName,
                 IsFundedByTransfer = source.IsFundedByTransfer,
-                HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions
+                HasMultipleDeliveryModelOptions = source.HasMultipleDeliveryModelOptions,
+                LearningType = source.LearningType
             };
         }
     }

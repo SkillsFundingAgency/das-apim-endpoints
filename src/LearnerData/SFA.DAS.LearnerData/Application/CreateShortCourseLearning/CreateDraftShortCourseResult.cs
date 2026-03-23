@@ -1,6 +1,6 @@
-using System.Net;
+﻿using System.Net;
 
-namespace SFA.DAS.LearnerData.Application.CreateShortCourse;
+namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 
 public class CreateDraftShortCourseResult
 {

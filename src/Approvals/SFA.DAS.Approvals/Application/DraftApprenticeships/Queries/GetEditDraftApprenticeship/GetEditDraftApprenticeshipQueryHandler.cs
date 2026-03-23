@@ -63,7 +63,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 courseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
             var course = (await _apiClient.Get<GetTrainingProgrammeResponse>(new GetCalculatedVersionOfTrainingProgrammeRequest(courseCode, apprenticeship.StartDate)))?.TrainingProgramme;
-
+            if (course == null)
+            {
+                course = (await _apiClient.Get<GetTrainingProgrammeResponse>(new GetTrainingProgrammeRequest(courseCode)))?.TrainingProgramme;
+            }
             return new GetEditDraftApprenticeshipQueryResult
             {
                 FirstName = apprenticeship.FirstName,
