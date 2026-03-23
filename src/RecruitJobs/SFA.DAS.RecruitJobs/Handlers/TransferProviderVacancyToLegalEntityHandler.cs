@@ -92,39 +92,28 @@ public class TransferProviderVacancyToLegalEntityHandler(
         var patchResponse = await recruitApiClient.PatchWithResponseCode(patchRequest);
         patchResponse.EnsureSuccessStatusCode();
         
-        switch (vacancyDetails.Status)
+        if (vacancyDetails.Status is GraphQL.VacancyStatus.Submitted)
         {
-            case GraphQL.VacancyStatus.Submitted:
-                switch (vacancyReview)
+            switch (vacancyReview)
+            {
+                case { Status: ReviewStatus.New or ReviewStatus.PendingReview }:
                 {
-                    case { Status: ReviewStatus.New or ReviewStatus.PendingReview }:
-                    {
-                        var vacancyReviewPatch = new JsonPatchDocument<VacancyReview>();
-                        vacancyReviewPatch.Replace(x => x.ManualOutcome,
-                            transferReason == TransferReason.BlockedByQa
-                                ? nameof(ManualQaOutcome.Blocked)
-                                : nameof(ManualQaOutcome.Transferred));
-                        vacancyReviewPatch.Replace(x => x.Status, ReviewStatus.Closed);
-                        vacancyReviewPatch.Replace(x => x.ClosedDate, now);
+                    var vacancyReviewPatch = new JsonPatchDocument<VacancyReview>();
+                    vacancyReviewPatch.Replace(x => x.ManualOutcome,
+                        transferReason == TransferReason.BlockedByQa
+                            ? nameof(ManualQaOutcome.Blocked)
+                            : nameof(ManualQaOutcome.Transferred));
+                    vacancyReviewPatch.Replace(x => x.Status, ReviewStatus.Closed);
+                    vacancyReviewPatch.Replace(x => x.ClosedDate, now);
 
-                        var vacancyReviewPatchResponse = await recruitApiClient.PatchWithResponseCode(new PatchVacancyReviewRequest(vacancyReview.Id, vacancyReviewPatch));
-                        vacancyReviewPatchResponse.EnsureSuccessStatusCode();
-                        break;
-                    }
-                    case { Status: ReviewStatus.UnderReview }:
-                        logger.LogWarning("Latest vacancy review for vacancy '{VacancyReference}' that has been transferred is currently being reviewed.", vacancyReview.VacancyReference);
-                        break;
+                    var vacancyReviewPatchResponse = await recruitApiClient.PatchWithResponseCode(new PatchVacancyReviewRequest(vacancyReview.Id, vacancyReviewPatch));
+                    vacancyReviewPatchResponse.EnsureSuccessStatusCode();
+                    break;
                 }
-                break;
-            // TODO: handle VacancyClosedEvent
-            // case VacancyStatus.Approved:
-            // case VacancyStatus.Live:
-            //     await _messaging.PublishEvent(new VacancyClosedEvent
-            //     {
-            //         VacancyReference = vacancy.VacancyReference.Value,
-            //         VacancyId = vacancy.Id
-            //     });
-            //     break;
+                case { Status: ReviewStatus.UnderReview }:
+                    logger.LogWarning("Latest vacancy review for vacancy '{VacancyReference}' that has been transferred is currently being reviewed.", vacancyReview.VacancyReference);
+                    break;
+            }
         }
     }
 }
