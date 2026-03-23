@@ -45,7 +45,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Returns_Correct_CourseDetails(GetCourseByLarsCodeQuery query)
+    public async Task Handle_ValidResponses_ReturnsCorrectCourseDetails(GetCourseByLarsCodeQuery query)
     {
         var standardDetailsLookupResponse = new StandardDetailsLookupResponse
         {
@@ -173,7 +173,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, MoqAutoData]
-    public async Task Handler_Returns_Ksbs(GetCourseByLarsCodeQuery query)
+    public async Task Handle_KsbsReturned_ReturnsKsbs(GetCourseByLarsCodeQuery query)
     {
         var ksbType = "Knowledge";
         var ksbId = Guid.NewGuid();
@@ -239,7 +239,7 @@ public sealed class WhenGettingCourseByLarsCode
 
 
     [Test, MoqAutoData]
-    public async Task Handler_Returns_RelatedOccupations(GetCourseByLarsCodeQuery query)
+    public async Task Handle_RelatedOccupationsReturned_ReturnsRelatedOccupations(GetCourseByLarsCodeQuery query)
     {
         var relatedOccupationsTitle1 = "Plumbing and heating technician";
         var relatedOccupationsLevel1 = 2;
@@ -294,7 +294,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Returns_Default_Funding_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
+    public async Task Handle_NoFundingRecords_ReturnsDefaultFundingValues(GetCourseByLarsCodeQuery query)
     {
         _cachedStandardDetailsService
             .Setup(x => x.GetStandardDetails(
@@ -329,7 +329,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Returns_Default_Provider_Counts_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
+    public async Task Handle_NoProviderCoursesReturned_ReturnsDefaultProviderCounts(GetCourseByLarsCodeQuery query)
     {
         _cachedStandardDetailsService
              .Setup(x => x.GetStandardDetails(
@@ -364,7 +364,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Gets_Location_Information_And_Queries_Provider_Count_By_Longitude_And_Latitude(
+    public async Task Handle_LocationProvided_QueriesProviderCountUsingCoordinates(
         LocationItem locationItem,
         StandardDetailsLookupResponse standardDetailsLookupResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse
@@ -413,7 +413,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Gets_Funding_Data_From_Latest_Record(GetCourseByLarsCodeQuery query, StandardDetailsLookupResponse standardDetailsLookupResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_MultipleFundingRecords_ReturnsLatestFundingData(GetCourseByLarsCodeQuery query, StandardDetailsLookupResponse standardDetailsLookupResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding futureFundingRecord = new()
         {
@@ -478,7 +478,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_No_End_Date(GetCourseByLarsCodeQuery query, StandardDetailsLookupResponse standardDetailsLookupResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_ActiveFundingWithoutEndDate_ReturnsIncentivePaymentFromActiveRecord(GetCourseByLarsCodeQuery query, StandardDetailsLookupResponse standardDetailsLookupResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
         {
@@ -528,7 +528,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_End_Date_In_Future(GetCourseByLarsCodeQuery query, StandardDetailsLookupResponse standardDetailsLookupResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_ActiveFundingWithFutureEndDate_ReturnsIncentivePaymentFromActiveRecord(GetCourseByLarsCodeQuery query, StandardDetailsLookupResponse standardDetailsLookupResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
         {
@@ -586,7 +586,7 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test]
-    public async Task Handle_Returns_Zero_IncentivePayment_When_No_Apprenticeship_Funding()
+    public async Task Handle_NoApprenticeshipFunding_ReturnsZeroIncentivePayment()
     {
         var larsCode = "123";
 
@@ -648,7 +648,7 @@ public sealed class WhenGettingCourseByLarsCode
     [TestCase(1, null, null, 1)]
     [TestCase(1, 2, 3, 6)]
 
-    public async Task Handle_Returns_Expected_IncentivePayment_When_3_PayMENTS_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
+    public async Task Handle_VariousPaymentCombinations_ReturnsExpectedIncentivePayment_When_3_PayMENTS_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
     {
         var larsCode = "123";
 
@@ -711,7 +711,7 @@ public sealed class WhenGettingCourseByLarsCode
 
     [TestCase(HttpStatusCode.NotFound)]
     [TestCase(HttpStatusCode.BadRequest)]
-    public async Task Handle_Returns_Null_When_Training_Providers_Returns_404_Or_400(HttpStatusCode statusCode)
+    public async Task Handle_TrainingProvidersReturnsBadRequestOrNotFound_ReturnsNull(HttpStatusCode statusCode)
     {
         _cachedStandardDetailsService
             .Setup(x => x.GetStandardDetails(It.IsAny<string>()))
