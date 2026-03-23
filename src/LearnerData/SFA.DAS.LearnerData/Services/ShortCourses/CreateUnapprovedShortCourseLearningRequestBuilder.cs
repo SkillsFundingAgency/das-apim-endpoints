@@ -6,12 +6,12 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
 public interface ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, long ukprn);
+    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, Guid episodeKey, long ukprn);
 }
 
 public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, long ukprn)
+    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, Guid episodeKey, long ukprn)
     {
         var firstOnProg = request.Delivery.OnProgramme.First();
 
@@ -26,6 +26,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
         return new CreateUnapprovedShortCourseLearningRequest
         {
             LearningKey = learningKey,
+            EpisodeKey = episodeKey,
             Learner = new Learner
             {
                 DateOfBirth = request.Learner.Dob,
