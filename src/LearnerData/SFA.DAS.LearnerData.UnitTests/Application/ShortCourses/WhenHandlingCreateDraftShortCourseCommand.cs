@@ -178,4 +178,36 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _earningsApiClient.Verify(x =>
             x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()));
     }
+
+    [Test]
+    public async Task Then_When_Learning_Returns_NoContent_Earnings_Is_Not_Called()
+    {
+        // Arrange
+        var noContentResponse = new ApiResponse<CreateShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(noContentResponse);
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_When_Learning_Returns_NoContent_A_Result_Is_Returned()
+    {
+        // Arrange
+        var noContentResponse = new ApiResponse<CreateShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(noContentResponse);
+
+        // Act
+        var result = await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
+    }
 }

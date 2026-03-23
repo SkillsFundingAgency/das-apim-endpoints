@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
@@ -29,6 +30,12 @@ public class CreateDraftShortCourseCommandHandler(
         var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
         var learningResponse = await learningApiClient.PostWithResponseCode<CreateShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
+
+        //Short-circuit where learning ignored the request due to temporary rules around unhandled scenarios
+        if (learningResponse.StatusCode == HttpStatusCode.NoContent)
+        {
+            return new CreateDraftShortCourseResult();
+        }
 
         var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn);
 
