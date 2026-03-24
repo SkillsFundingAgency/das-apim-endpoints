@@ -46,8 +46,7 @@ public class CreateDraftShortCourseSteps
         {
             EffectiveFrom = DateTime.Parse(row["From"]),
             EffectiveTo = string.IsNullOrEmpty(row["To"]) ? (DateTime?)null : DateTime.Parse(row["To"]),
-            MaxEmployerLevyCap = int.Parse(row["Price"]),
-            Duration = 12
+            MaxEmployerLevyCap = int.Parse(row["Price"])
         }).ToList();
         _scenarioContext.Set(bands, FundingBandsKey);
     }
@@ -138,8 +137,7 @@ public class CreateDraftShortCourseSteps
                 {
                     MaxEmployerLevyCap = 6000,
                     EffectiveFrom = new DateTime(2020, 1, 1),
-                    EffectiveTo = null,
-                    Duration = 12
+                    EffectiveTo = null
                 }
             };
 
