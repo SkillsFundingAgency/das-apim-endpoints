@@ -3,6 +3,7 @@ using AutoFixture;
 using AutoFixture.AutoMoq;
 using AutoFixture.Kernel;
 using Moq;
+using NUnit.Framework;
 using SFA.DAS.Aodp.Application.Constants;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Services;
@@ -21,8 +22,12 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
         private Mock<IDfeUsersService> _dfeUsersServiceMock;
         private GetApplicationsForReviewQueryHandler _handler;
 
-        private readonly string errorMessage = "error text";
         private readonly string qfauUkprn = "12345678";
+
+        private const string ApiHttpRequestFailureMessage = "A dependent service is unavailable.";
+        private const string ApiTimeoutFailureMessage = "An unexpected error occurred.";
+        private const string ReviewerFailureMessage = "Unable to retrieve reviewer users from DfE Sign-in.";
+        private const string UnexpectedReviewerFailureMessage = "An unexpected error occurred.";
 
         private List<User> _users;
 
@@ -35,7 +40,10 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
             _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
             _dfeUsersServiceMock = _fixture.Freeze<Mock<IDfeUsersService>>();
 
-            _fixture.Register(() => new DfeSignInApiConfiguration { QfauUkprn = qfauUkprn });
+            _fixture.Register(() => new DfeSignInApiConfiguration
+            {
+                QfauUkprn = qfauUkprn
+            });
 
             _users = new List<User>
             {
@@ -93,7 +101,6 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
 
                 Assert.That(result.Success, Is.True);
                 Assert.That(result.Value, Is.Not.Null);
-
                 Assert.That(result.Value, Is.EqualTo(responseBody));
 
                 Assert.That(result.Value.AvailableReviewers, Is.Not.Null);
@@ -107,14 +114,14 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
         }
 
         [Test]
-        public async Task Then_When_The_ApiClient_Throws_An_Exception_Failure_Is_Returned()
+        public async Task Then_When_The_ApiClient_Throws_HttpRequestException_Failure_Is_Returned()
         {
             // arrange
             var query = _fixture.Create<GetApplicationsForReviewQuery>();
 
             _apiClientMock
                 .Setup(x => x.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(It.IsAny<IPostApiRequest>(), true))
-                .ThrowsAsync(new Exception(errorMessage));
+                .ThrowsAsync(new HttpRequestException(ApiHttpRequestFailureMessage));
 
             // act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -126,18 +133,46 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
                     x => x.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(It.IsAny<IPostApiRequest>(), true),
                     Times.Once);
 
-                // If the API call fails, we shouldn't try to fetch users
                 _dfeUsersServiceMock.Verify(
                     x => x.GetUsersByRoleAsync(It.IsAny<string>(), It.IsAny<string>(), default),
                     Times.Never);
 
                 Assert.That(result.Success, Is.False);
-                Assert.That(result.ErrorMessage, Is.EqualTo(errorMessage));
+                Assert.That(result.ErrorMessage, Is.EqualTo(ApiHttpRequestFailureMessage));
             });
         }
 
         [Test]
-        public async Task Then_When_The_DfeUsersService_Throws_An_Exception_Failure_Is_Returned()
+        public async Task Then_When_The_ApiClient_Times_Out_Failure_Is_Returned()
+        {
+            // arrange
+            var query = _fixture.Create<GetApplicationsForReviewQuery>();
+
+            _apiClientMock
+                .Setup(x => x.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(It.IsAny<IPostApiRequest>(), true))
+                .ThrowsAsync(new TaskCanceledException(ApiTimeoutFailureMessage));
+
+            // act
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // assert
+            Assert.Multiple(() =>
+            {
+                _apiClientMock.Verify(
+                    x => x.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(It.IsAny<IPostApiRequest>(), true),
+                    Times.Once);
+
+                _dfeUsersServiceMock.Verify(
+                    x => x.GetUsersByRoleAsync(It.IsAny<string>(), It.IsAny<string>(), default),
+                    Times.Never);
+
+                Assert.That(result.Success, Is.False);
+                Assert.That(result.ErrorMessage, Is.EqualTo(ApiTimeoutFailureMessage));
+            });
+        }
+
+        [Test]
+        public async Task Then_When_The_DfeUsersService_Throws_ApplicationException_Failure_Is_Returned()
         {
             // arrange
             var query = _fixture.Create<GetApplicationsForReviewQuery>();
@@ -155,7 +190,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
 
             _dfeUsersServiceMock
                 .Setup(x => x.GetUsersByRoleAsync(qfauUkprn, DfeRoles.Reviewer, default))
-                .ThrowsAsync(new Exception(errorMessage));
+                .ThrowsAsync(new ApplicationException(ReviewerFailureMessage));
 
             // act
             var result = await _handler.Handle(query, CancellationToken.None);
@@ -172,7 +207,47 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
                     Times.Once);
 
                 Assert.That(result.Success, Is.False);
-                Assert.That(result.ErrorMessage, Is.EqualTo(errorMessage));
+                Assert.That(result.ErrorMessage, Is.EqualTo(ReviewerFailureMessage));
+            });
+        }
+
+        [Test]
+        public async Task Then_When_The_DfeUsersService_Throws_Unexpected_Exception_Failure_Is_Returned()
+        {
+            // arrange
+            var query = _fixture.Create<GetApplicationsForReviewQuery>();
+
+            var responseBody = _fixture.Create<GetApplicationsForReviewQueryResponse>();
+
+            var apiResponse = new ApiResponse<GetApplicationsForReviewQueryResponse>(
+                responseBody,
+                HttpStatusCode.OK,
+                string.Empty);
+
+            _apiClientMock
+                .Setup(x => x.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(It.IsAny<IPostApiRequest>(), true))
+                .ReturnsAsync(apiResponse);
+
+            _dfeUsersServiceMock
+                .Setup(x => x.GetUsersByRoleAsync(qfauUkprn, DfeRoles.Reviewer, default))
+                .ThrowsAsync(new Exception(UnexpectedReviewerFailureMessage));
+
+            // act
+            var result = await _handler.Handle(query, CancellationToken.None);
+
+            // assert
+            Assert.Multiple(() =>
+            {
+                _apiClientMock.Verify(
+                    x => x.PostWithResponseCode<GetApplicationsForReviewQueryResponse>(It.IsAny<IPostApiRequest>(), true),
+                    Times.Once);
+
+                _dfeUsersServiceMock.Verify(
+                    x => x.GetUsersByRoleAsync(qfauUkprn, DfeRoles.Reviewer, default),
+                    Times.Once);
+
+                Assert.That(result.Success, Is.False);
+                Assert.That(result.ErrorMessage, Is.EqualTo(UnexpectedReviewerFailureMessage));
             });
         }
 
@@ -193,6 +268,4 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Review
             }
         }
     }
-
-   
 }
