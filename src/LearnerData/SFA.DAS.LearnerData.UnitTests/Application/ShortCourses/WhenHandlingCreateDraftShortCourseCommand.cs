@@ -1,12 +1,13 @@
 ﻿using System.Net;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
-using SFA.DAS.LearnerData.Application.CreateShortCourse;
+using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 
@@ -27,6 +28,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private CreateDraftShortCourseRequest _builtRequest;
     private long _ukprn;
     private Guid _learningKey;
+    private Guid _episodeKey;
     private ShortCourseRequest _shortCourseRequest;
     private CreateUnapprovedShortCourseLearningRequest _builtEarningsRequest;
 
@@ -51,9 +53,10 @@ public class WhenHandlingCreateDraftShortCourseCommand
         // Arrange
         _ukprn = 12345;
         _learningKey = Guid.NewGuid();
-        
+        _episodeKey = Guid.NewGuid();
+
         _builtEarningsRequest = new CreateUnapprovedShortCourseLearningRequest();
-        
+
         _shortCourseRequest = new ShortCourseRequest();
 
         _command = new CreateDraftShortCourseCommand
@@ -86,17 +89,16 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .Setup(x => x.Build(_shortCourseRequest, _ukprn))
             .Returns(_builtRequest);
 
-        _learningApiClient
-            .Setup(x => x.PostWithResponseCode<Guid>(
-                It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
-            .ReturnsAsync(new ApiResponse<Guid>(_learningKey, System.Net.HttpStatusCode.OK, string.Empty));
+        var apiResponse = new ApiResponse<CreateShortCoursePostResponse>(
+            new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey },
+            HttpStatusCode.Created, "");
 
-        var apiResponse = new ApiResponse<Guid>(Guid.NewGuid(), HttpStatusCode.Created, "");
         _learningApiClient
-            .Setup(x => x.PostWithResponseCode<Guid>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
             .ReturnsAsync(apiResponse);
+
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _ukprn))
+            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _episodeKey, _ukprn))
             .Returns(_builtEarningsRequest);
     }
 
@@ -104,14 +106,13 @@ public class WhenHandlingCreateDraftShortCourseCommand
     public async Task Then_Learning_Is_Updated_With_ShortCourse()
     {
         // Act
-        var result = await _handler.Handle(_command, CancellationToken.None);
+        await _handler.Handle(_command, CancellationToken.None);
 
         // Assert
         _learningApiClient.Verify(x =>
-                x.PostWithResponseCode<Guid>(
+                x.PostWithResponseCode<CreateShortCoursePostResponse>(
                     It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == _builtRequest), true),
             Times.Once);
-        result.StatusCode.Should().Be(HttpStatusCode.Created);
     }
 
     //[Test]
@@ -176,5 +177,37 @@ public class WhenHandlingCreateDraftShortCourseCommand
         // Assert
         _earningsApiClient.Verify(x =>
             x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()));
+    }
+
+    [Test]
+    public async Task Then_When_Learning_Returns_NoContent_Earnings_Is_Not_Called()
+    {
+        // Arrange
+        var noContentResponse = new ApiResponse<CreateShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(noContentResponse);
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_When_Learning_Returns_NoContent_A_Result_Is_Returned()
+    {
+        // Arrange
+        var noContentResponse = new ApiResponse<CreateShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(noContentResponse);
+
+        // Act
+        var result = await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        Assert.That(result, Is.Not.Null);
     }
 }

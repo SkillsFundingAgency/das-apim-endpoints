@@ -1,16 +1,19 @@
+﻿using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Events;
-using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.LearnerData.Application.CreateShortCourse;
+namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 
+#pragma warning disable CS8618
 public class CreateDraftShortCourseCommandHandler(
     ILogger<CreateDraftShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
@@ -26,19 +29,22 @@ public class CreateDraftShortCourseCommandHandler(
 
         var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
-        var learningResponse = await learningApiClient.PostWithResponseCode<Guid>(new CreateDraftShortCourseApiPostRequest(requestData));
+        var learningResponse = await learningApiClient.PostWithResponseCode<CreateShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
 
-        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body, command.Ukprn);
+        //Short-circuit where learning ignored the request due to temporary rules around unhandled scenarios
+        if (learningResponse.StatusCode == HttpStatusCode.NoContent)
+        {
+            return new CreateDraftShortCourseResult();
+        }
+
+        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn);
 
         await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
         //removed for now until downstream fixed
         //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
 
-        return new CreateDraftShortCourseResult
-        {
-            StatusCode = learningResponse.StatusCode
-        };
+        return new CreateDraftShortCourseResult();
     }
 
     private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
@@ -62,3 +68,4 @@ public class CreateDraftShortCourseCommandHandler(
         };
     }
 }
+#pragma warning restore CS8618
