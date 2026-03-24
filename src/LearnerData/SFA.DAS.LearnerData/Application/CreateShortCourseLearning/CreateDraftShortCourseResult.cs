@@ -1,8 +1,5 @@
-﻿using System.Net;
-
-namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
+﻿namespace SFA.DAS.LearnerData.Application.CreateShortCourse;
 
 public class CreateDraftShortCourseResult
 {
-    public HttpStatusCode StatusCode { get; set; }
 }
