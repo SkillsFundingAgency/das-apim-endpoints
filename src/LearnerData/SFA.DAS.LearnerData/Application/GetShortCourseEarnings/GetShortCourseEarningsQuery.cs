@@ -3,7 +3,7 @@ using SFA.DAS.LearnerData.Responses;
 
 namespace SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 
-public class GetShortCourseEarningsQuery : PagedQuery, IRequest<GetShortCourseEarningsResult>
+public class GetShortCourseEarningsQuery : PagedQuery, IRequest<GetShortCourseEarningsQueryResult>
 {
     public GetShortCourseEarningsQuery(long ukprn, int collectionYear, byte collectionPeriod, int? page, int? pageSize)
     {
