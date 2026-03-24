@@ -45,6 +45,9 @@ internal class WhenHandlingPatchingEmployerProfilesCommand
             .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.NotFound, string.Empty));
 
         await handler.Handle(command, CancellationToken.None);
+
+        // assert
+        recruitApiClient.Verify(x => x.PatchWithResponseCode(It.IsAny<PatchEmployerProfileApiRequest>()), Times.Once);
     }
 
     [Test, MoqAutoData]
