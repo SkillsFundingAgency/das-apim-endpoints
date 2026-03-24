@@ -1,4 +1,4 @@
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -29,6 +29,9 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Responses;
+using StrawberryShake;
 using GetNextVacancyReferenceResponse = SFA.DAS.Recruit.Api.Models.Vacancies.Responses.GetNextVacancyReferenceResponse;
 using VacancyStatus = SFA.DAS.Recruit.GraphQL.VacancyStatus;
 

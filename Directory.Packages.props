@@ -56,7 +56,7 @@
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="10.0.5" />
     <PackageVersion Include="Microsoft.Extensions.Diagnostics.Testing" Version="10.4.0" />
     <PackageVersion Include="Microsoft.Identity.Client" Version="4.79.2" />
-    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.16.0" />
+    <PackageVersion Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.17.0" />
     <PackageVersion Include="Moq" Version="4.20.72" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageVersion Include="NLog.Web.AspNetCore" Version="5.3.8" />
@@ -71,7 +71,7 @@
     <PackageVersion Include="Scrutor" Version="3.3.0" />
     <PackageVersion Include="SFA.DAS.Api.Common" Version="17.1.165" />
     <PackageVersion Include="SFA.DAS.Apim.Shared" Version="17.1.167-prerelease-8" />
-    <PackageVersion Include="SFA.DAS.Common.Domain" Version="1.4.283" />
+    <PackageVersion Include="SFA.DAS.Common.Domain" Version="1.4.308" />
     <PackageVersion Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165" />
     <PackageVersion Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
     <PackageVersion Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
@@ -103,7 +103,7 @@
     <PackageVersion Include="SFA.DAS.NServiceBus" Version="17.0.49" />
     <PackageVersion Include="System.Text.Encodings.Web" Version="10.0.5" />
     <PackageVersion Include="System.Net.Http.Json" Version="10.0.5" />
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.5" />
     <PackageVersion Include="contentful.csharp" Version="7.5.2" />
     <PackageVersion Include="contentful.aspnetcore" Version="7.5.2" />

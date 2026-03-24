@@ -1,7 +1,6 @@
-using System;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Reservations;
 
 public class GetReservationRequest(Guid id) : IGetApiRequest
 {
