@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
@@ -30,7 +31,7 @@ public sealed class WhenGettingCourses
         LocationItem locationItem,
         GetStandardsListResponse coursesResponse,
         GetCourseTrainingProvidersCountResponse roatpResponse,
-        ApprenticeshipType apprenticeshipType,
+        List<ApprenticeshipType> apprenticeshipTypes,
         CancellationToken cancellationToken
     )
     {
@@ -41,7 +42,7 @@ public sealed class WhenGettingCourses
             Levels = [2],
             Distance = 40,
             Location = "SW1",
-            ApprenticeshipType = apprenticeshipType.ToString()
+            ApprenticeshipTypes = apprenticeshipTypes
         };
 
         coursesApiClient
@@ -51,7 +52,7 @@ public sealed class WhenGettingCourses
                     a.OrderBy.Equals(query.OrderBy) &&
                     a.Levels.SequenceEqual(query.Levels) &&
                     a.RouteIds.SequenceEqual(query.RouteIds) &&
-                    a.ApprenticeshipType.Equals(query.ApprenticeshipType)
+                    a.ApprenticeshipTypes.Equals(query.ApprenticeshipTypes)
                 )
              ))
             .ReturnsAsync(
@@ -84,7 +85,7 @@ public sealed class WhenGettingCourses
                     r.OrderBy == query.OrderBy &&
                     r.RouteIds == query.RouteIds &&
                     r.Levels == query.Levels &&
-                    r.ApprenticeshipType == query.ApprenticeshipType)
+                    r.ApprenticeshipTypes == query.ApprenticeshipTypes)
                 ),
                 Times.Once
         );

@@ -51,9 +51,9 @@ public class WhenBuildingTheGetAllStandardsSearchRequest
     {
         var _sut = new GetActiveStandardsSearchRequest
         {
-            ApprenticeshipType = type.ToString()
+            ApprenticeshipTypes = [type]
         };
 
-        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/search?learningType={type.ToString()}&filter=Active&orderby=Score"));
+        Assert.That(_sut.GetUrl, Is.EqualTo($"api/courses/search?learningTypes={type}&filter=Active&orderby=Score"));
     }
 }
