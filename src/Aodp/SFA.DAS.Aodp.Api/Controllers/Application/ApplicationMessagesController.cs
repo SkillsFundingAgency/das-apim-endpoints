@@ -57,4 +57,6 @@ public class ApplicationMessagesController : BaseController
         return await SendRequestAsync(command);
 
     }
+
+    
 }

@@ -34,6 +34,7 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData.ShortCourse
     public class ShortCourseLearningUpdateDetails : LearningUpdateDetails
     {
         public long Uln { get; set; }
+        public string LearnerRef { get; set; }
     }
 
     /// <summary>

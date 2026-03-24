@@ -3,7 +3,7 @@ using System.Threading;
 using AutoFixture;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SFA.DAS.Recruit.Api.Controllers;
-using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Data.Models;
 using SFA.DAS.Recruit.Domain.Vacancy;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
@@ -24,6 +24,7 @@ public class WhenGettingVacancyByReference
     {
         // arrange
         queryResult.Setup(x => x.Data).Returns((IGetVacancyByReferenceResult)null!);
+        queryResult.Setup(x => x.Errors).Returns([]);
         recruitGqlClient
             .Setup(x => x.GetVacancyByReference.ExecuteAsync(vacancyReference, CancellationToken.None))
             .ReturnsAsync(queryResult.Object);
@@ -53,6 +54,7 @@ public class WhenGettingVacancyByReference
         vacancy.Setup(x => x.TransferInfo).Returns(JsonSerializer.Serialize(fixture.Create<TransferInfo>(), Global.JsonSerializerOptions));
         
         queryResult.Setup(x => x.Data).Returns(new GetVacancyByReferenceResult([vacancy.Object]));
+        queryResult.Setup(x => x.Errors).Returns([]);
         recruitGqlClient
             .Setup(x => x.GetVacancyByReference.ExecuteAsync(vacancy.Object.VacancyReference, CancellationToken.None))
             .ReturnsAsync(queryResult.Object);

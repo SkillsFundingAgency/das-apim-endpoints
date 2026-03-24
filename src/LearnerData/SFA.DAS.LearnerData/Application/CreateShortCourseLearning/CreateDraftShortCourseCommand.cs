@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Requests;
 
 namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;

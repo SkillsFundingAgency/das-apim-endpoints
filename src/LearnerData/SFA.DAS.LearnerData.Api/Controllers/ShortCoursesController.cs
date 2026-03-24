@@ -22,18 +22,13 @@ public class ShortCoursesController(
     {
         try
         {
-            var result = await mediator.Send(new CreateDraftShortCourseCommand
+            await mediator.Send(new CreateDraftShortCourseCommand
             {
                 Ukprn = ukprn,
                 ShortCourseRequest = request
             });
 
-            if (result.StatusCode.IsSuccessStatusCode())
-                return Accepted();
-            else if(result.StatusCode == HttpStatusCode.Conflict)
-                return Conflict();
-            else
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Accepted();
         }
         catch (Exception e)
         {
