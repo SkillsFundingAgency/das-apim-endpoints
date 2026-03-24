@@ -1,3 +1,4 @@
+﻿using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
@@ -11,11 +12,16 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
         CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn);
     }
 
-    public class CreateDraftShortCoursePostRequestBuilder : ICreateDraftShortCoursePostRequestBuilder
+    public class CreateDraftShortCoursePostRequestBuilder(ILogger<CreateDraftShortCoursePostRequestBuilder> logger) : ICreateDraftShortCoursePostRequestBuilder
     {
         public CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn)
         {
-            var firstOnProg = request.Delivery.OnProgramme.First();
+            if (request.Delivery.OnProgramme.Count > 1)
+            {
+                logger.LogWarning("Multiple OnProgramme elements supplied for ShortCourse. Element with earliest StartDate will be processed; subsequent will be ignored");
+            }
+
+            var firstOnProg = request.Delivery.OnProgramme.MinBy(x => x.StartDate);
 
             var milestones = firstOnProg.Milestones
                 .Select(m =>
@@ -36,7 +42,8 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     FirstName = request.Learner.FirstName,
                     LastName = request.Learner.LastName,
                     DateOfBirth = request.Learner.Dob,
-                    EmailAddress = request.Learner.Email
+                    EmailAddress = request.Learner.Email,
+					LearnerRef = request.Learner.LearnerRef
                 },
                 LearningSupport = firstOnProg.LearningSupport
                     .Select(ls => new LearningSupportUpdatedDetails

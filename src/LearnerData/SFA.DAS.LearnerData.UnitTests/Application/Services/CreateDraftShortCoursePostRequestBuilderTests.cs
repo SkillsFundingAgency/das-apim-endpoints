@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
-using FluentAssertions;
-using NUnit.Framework;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 
@@ -16,7 +15,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
     public void SetUp()
     {
         _fixture = new Fixture();
-        _sut = new CreateDraftShortCoursePostRequestBuilder();
+        _sut = new CreateDraftShortCoursePostRequestBuilder(Mock.Of<ILogger<CreateDraftShortCoursePostRequestBuilder>>());
     }
 
     [Test]
@@ -56,6 +55,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         result.LearnerUpdateDetails.LastName.Should().Be(learner.LastName);
         result.LearnerUpdateDetails.DateOfBirth.Should().Be(learner.Dob);
         result.LearnerUpdateDetails.EmailAddress.Should().Be(learner.Email);
+        result.LearnerUpdateDetails.LearnerRef.Should().Be(learner.LearnerRef);
 
         result.LearningSupport.Should().HaveCount(onProgramme.LearningSupport.Count);
         for (int i = 0; i < onProgramme.LearningSupport.Count; i++)
