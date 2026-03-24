@@ -1,6 +1,8 @@
+﻿using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -29,6 +31,12 @@ public class CreateDraftShortCourseCommandHandler(
 
         var learningResponse = await learningApiClient.PostWithResponseCode<CreateShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
 
+        //Short-circuit where learning ignored the request due to temporary rules around unhandled scenarios
+        if (learningResponse.StatusCode == HttpStatusCode.NoContent)
+        {
+            return new CreateDraftShortCourseResult();
+        }
+
         var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn);
 
         await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
@@ -36,10 +44,7 @@ public class CreateDraftShortCourseCommandHandler(
         //removed for now until downstream fixed
         //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
 
-        return new CreateDraftShortCourseResult
-        {
-            StatusCode = learningResponse.StatusCode
-        };
+        return new CreateDraftShortCourseResult();
     }
 
     private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
