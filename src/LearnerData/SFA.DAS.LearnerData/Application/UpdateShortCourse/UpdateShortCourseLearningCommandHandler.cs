@@ -45,7 +45,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("Shortcourse Learning with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningResponse.Body.Changes));
 
-        if (!learningResponse.Body.Changes.Any())
+        if (!EarningsUpdateRequired(learningResponse.Body))
         {
             _logger.LogInformation("No changes requiring earnings update for shortcourse learning {LearningKey}", command.LearningKey);
             return;
@@ -85,7 +85,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 FirstName = command.Request.Learner.FirstName,
                 LastName = command.Request.Learner.LastName,
                 DateOfBirth = command.Request.Learner.Dob,
-                EmailAddress = command.Request.Learner.Email
+                EmailAddress = command.Request.Learner.Email,
+                LearnerRef = command.Request.Learner.LearnerRef
             },
             OnProgramme = new ShortCourseOnProgrammeUpdateDetails
             {
@@ -128,5 +129,14 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         };
 
         return new UpdateShortCourseOnProgrammeEarningPutRequest(command.LearningKey, body);
+    }
+
+    private static bool EarningsUpdateRequired(UpdateShortCourseLearningPutResponse response)
+    {
+        var changes = response.GetChangesEnums();
+
+        return changes.Contains(ShortCourseUpdateChanges.WithdrawalDate) ||
+            changes.Contains(ShortCourseUpdateChanges.Milestone) ||
+            changes.Contains(ShortCourseUpdateChanges.CompletionDate);
     }
 }

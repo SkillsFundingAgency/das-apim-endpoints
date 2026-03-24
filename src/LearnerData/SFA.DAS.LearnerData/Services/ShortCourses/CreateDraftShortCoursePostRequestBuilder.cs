@@ -42,7 +42,8 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     FirstName = request.Learner.FirstName,
                     LastName = request.Learner.LastName,
                     DateOfBirth = request.Learner.Dob,
-                    EmailAddress = request.Learner.Email
+                    EmailAddress = request.Learner.Email,
+					LearnerRef = request.Learner.LearnerRef
                 },
                 LearningSupport = firstOnProg.LearningSupport
                     .Select(ls => new LearningSupportUpdatedDetails
