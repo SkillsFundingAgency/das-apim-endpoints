@@ -25,6 +25,7 @@ public class CreateDraftShortCourseSteps
     private const string UkprnKey = "CreateDraftShortCourseUkprnKey";
     private const string LearningReturnsNoContentKey = "LearningReturnsNoContent";
     private const string FundingBandsKey = "FundingBands";
+    private const string CoursesApiErrorKey = "CoursesApiError";
 
     public CreateDraftShortCourseSteps(TestContext testContext, ScenarioContext scenarioContext)
     {
@@ -49,6 +50,18 @@ public class CreateDraftShortCourseSteps
             Duration = 12
         }).ToList();
         _scenarioContext.Set(bands, FundingBandsKey);
+    }
+
+    [Given(@"the courses api will return an error")]
+    public void GivenTheCoursesApiWillReturnAnError()
+    {
+        _scenarioContext.Set(true, CoursesApiErrorKey);
+    }
+
+    [Given(@"the courses api returns a course with no funding bands")]
+    public void GivenTheCoursesApiReturnsACourseWithNoFundingBands()
+    {
+        _scenarioContext.Set(new List<ApprenticeshipFunding>(), FundingBandsKey);
     }
 
     [Given(@"the learning domain will return no content for the short course creation")]
@@ -103,6 +116,20 @@ public class CreateDraftShortCourseSteps
 
     private void ConfigureCoursesApi(string learningType = "ApprenticeshipUnit")
     {
+        if (_scenarioContext.ContainsKey(CoursesApiErrorKey))
+        {
+            _testContext.CoursesApi.MockServer
+                .Given(
+                    Request.Create()
+                        .WithPath("/api/courses/lookup/*")
+                        .UsingGet())
+                .RespondWith(
+                    Response.Create()
+                        .WithStatusCode(HttpStatusCode.InternalServerError)
+                );
+            return;
+        }
+
         var fundingBands = _scenarioContext.ContainsKey(FundingBandsKey)
             ? _scenarioContext.Get<List<ApprenticeshipFunding>>(FundingBandsKey)
             : new List<ApprenticeshipFunding>
