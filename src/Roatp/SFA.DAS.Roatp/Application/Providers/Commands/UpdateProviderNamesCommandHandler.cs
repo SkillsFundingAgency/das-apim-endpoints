@@ -36,17 +36,11 @@ public class
         CancellationToken cancellationToken)
     {
         _logger.LogInformation("Getting organisations");
-        var organisations = _roatpApiClient.GetOrganisations().Result;
+        var organisations = await _roatpApiClient.GetOrganisations();
 
         List<long> ukprns = organisations.Organisations.Select(x => (long)x.Ukprn).ToList();
 
         _logger.LogInformation("Getting Ukrlp data");
-
-        var ukrlpData = new GetUkrlpDataQueryResponse
-        {
-            Results = new List<ProviderAddress>(),
-            Success = true
-        };
 
         var chunks = ukprns.Chunk(MaximumRecords);
 
@@ -54,14 +48,13 @@ public class
         {
             var ukprnResponse = await GetUkrlpResponse(batch.ToList());
 
-            if (ukprnResponse == null || !ukprnResponse.Success)
+            if (!ukprnResponse.Success)
             {
                 _logger.LogWarning("The response from UKRLP was failure");
                 return;
             }
 
             await ProcessNameUpdates(ukprnResponse.Results, organisations);
-            ukrlpData.Results.AddRange(ukprnResponse.Results);
         }
     }
 
@@ -86,7 +79,7 @@ public class
                 Success = false,
                 Results = new List<ProviderAddress>()
             };
-            return await Task.FromResult(failureResponse);
+            return failureResponse;
         }
 
         var soapXml = await responseMessage.Content.ReadAsStringAsync(CancellationToken.None);
@@ -102,7 +95,7 @@ public class
                 Success = true,
                 Results = result
             };
-            return await Task.FromResult(resultsFound);
+            return resultsFound;
         }
 
         var noResultsFound = new GetUkrlpDataQueryResponse
@@ -110,7 +103,7 @@ public class
             Success = true,
             Results = new List<ProviderAddress>()
         };
-        return await Task.FromResult(noResultsFound);
+        return noResultsFound;
     }
 
     private async Task ProcessNameUpdates(List<ProviderAddress> ukrlpData, GetOrganisationsQueryResult organisations)
