@@ -5,7 +5,5 @@ namespace SFA.DAS.SharedOuterApi.Models
         public string AccountLegalEntityPublicHashedId { get; set; }
         public string Name { get; set; }
         public string AccountHashedId { get ; set ; }
-        public long AccountId { get; set; }
-        public long AccountLegalEntityId { get; set; }
     }
 }

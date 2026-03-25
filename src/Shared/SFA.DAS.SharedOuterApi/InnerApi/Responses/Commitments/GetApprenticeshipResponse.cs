@@ -14,7 +14,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments
         public string ProviderName { get; set; }
         public long EmployerAccountId { get; set; }
         public long AccountId => EmployerAccountId;
-        public long AccountLegalEntityId { get; set; } 
+        public long AccountLegalEntityId { get; set; }
         public string EmployerName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -6,7 +6,6 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses
     {
         public string PublicHashedAccountId { get; set; }
         public string DasAccountName { get; set; }
-        public long AccountId { get; set; }
         public List<Resource> LegalEntities { get; set; }
     }
     public class Resource
