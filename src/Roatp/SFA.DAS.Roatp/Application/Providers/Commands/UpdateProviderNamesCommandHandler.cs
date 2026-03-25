@@ -48,8 +48,6 @@ public class
             Success = true
         };
 
-        var fetched = 0;
-
         var chunks = ukprns.Chunk(MaximumRecords);
 
         foreach (var batch in chunks)
