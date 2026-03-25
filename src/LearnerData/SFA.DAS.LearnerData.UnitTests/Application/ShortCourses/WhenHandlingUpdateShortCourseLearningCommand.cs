@@ -1,8 +1,10 @@
+using AutoFixture;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
@@ -14,6 +16,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 [TestFixture]
 public class WhenHandlingUpdateShortCourseLearningCommand
 {
+    private Fixture _fixture = new Fixture();
     private UpdateShortCourseLearningCommandHandler _handler;
     private Mock<ILogger<UpdateShortCourseLearningCommandHandler>> _logger;
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
@@ -85,12 +88,19 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
 
+        var earningsResponse = _fixture.Create<UpdateShortCourseEarningPutResponse>();
+
+        _earningsApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(earningsResponse, HttpStatusCode.OK, string.Empty));
+
         // Act
         await _handler.Handle(_command, CancellationToken.None);
 
         // Assert
         _earningsApiClient.Verify(x =>
-            x.Put(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
+            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
                 r.Data.CompletionDate == _completionDate)),
             Times.Once);
     }
@@ -134,12 +144,19 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
 
+        var earningsResponse = _fixture.Create<UpdateShortCourseEarningPutResponse>();
+
+        _earningsApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(earningsResponse, HttpStatusCode.OK, string.Empty));
+
         // Act
         await _handler.Handle(_command, CancellationToken.None);
 
         // Assert
         _earningsApiClient.Verify(x =>
-            x.Put(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
+            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
                 r.Data.Milestones.Contains(Milestone.LearningComplete))),
             Times.Once);
     }

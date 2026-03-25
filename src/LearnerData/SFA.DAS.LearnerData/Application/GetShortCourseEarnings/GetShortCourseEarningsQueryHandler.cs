@@ -59,12 +59,12 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         return (paged.Items, paged.TotalItems);
     }
 
-    private async Task<Dictionary<Guid, GetShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Learning> learnings)
+    private async Task<Dictionary<Guid, GetFm99ShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Learning> learnings)
     {
         var tasks = learnings.Select(async learning =>
         {
-            var response = await _earningsApiClient.GetWithResponseCode<GetShortCourseDataResponse>(
-                new GetShortCourseDataRequest(request.Ukprn, learning.LearningKey));
+            var response = await _earningsApiClient.GetWithResponseCode<GetFm99ShortCourseDataResponse>(
+                new GetFm99ShortCourseDataRequest(request.Ukprn, learning.LearningKey));
 
             if (!response.StatusCode.IsSuccessStatusCode())
             {
@@ -83,7 +83,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
     private static GetShortCourseEarningsQueryResult BuildResponse(
         GetShortCourseEarningsQuery query,
         List<Learning> learnings,
-        Dictionary<Guid, GetShortCourseDataResponse> earningsByKey,
+        Dictionary<Guid, GetFm99ShortCourseDataResponse> earningsByKey,
         int totalItems)
     {
         var learnerItems = learnings.Select(learning =>

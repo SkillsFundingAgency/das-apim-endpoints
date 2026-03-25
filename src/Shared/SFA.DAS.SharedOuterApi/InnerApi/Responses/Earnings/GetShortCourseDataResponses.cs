@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 
-public class GetShortCourseDataResponse
+public class GetFm99ShortCourseDataResponse
 {
     public List<ShortCourseEarning> Earnings { get; set; }
 }

@@ -1,13 +1,15 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.NServiceBus;
+using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
 using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
+using LearningDomainMilestones = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
 
 namespace SFA.DAS.LearnerData.Application.UpdateShortCourse;
 
@@ -45,14 +47,21 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("Shortcourse Learning with key {LearningKey} updated successfully. Changes: {@Changes}",
             command.LearningKey, string.Join(", ", learningResponse.Body.Changes));
 
-        if (!EarningsUpdateRequired(learningResponse.Body))
+        ShortCourseEarningsResponse earningsResponse;
+
+        if (EarningsUpdateRequired(learningResponse.Body))
+        {
+            var earningRequest = MapToEarningRequest(command);
+            var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
+            earningsResponse = response.Body;
+        }
+        else
         {
             _logger.LogInformation("No changes requiring earnings update for shortcourse learning {LearningKey}", command.LearningKey);
-            return;
+            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(command.Ukprn, command.LearningKey));
         }
 
-        var earningRequest = MapToEarningRequest(command);
-        await _earningsApiClient.Put(earningRequest);
+        var eventMessage = GenerateEventMessage(earningsResponse);
     }
 
     private UpdateShortCourseLearningPutRequest MapToLearningRequest(UpdateShortCourseLearningCommand command)
@@ -71,11 +80,11 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
 
         var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<Milestone>(sourceMilestone.ToString())
+            Enum.Parse<LearningDomainMilestones>(sourceMilestone.ToString())
         ).ToList();
 
         if (currentOnProgramme.CompletionDate.HasValue && !currentOnProgramme.Milestones.Contains(SourceMilestone.LearningComplete))
-            milestones.Add(Milestone.LearningComplete);
+            milestones.Add(LearningDomainMilestones.LearningComplete);
 
         var body = new UpdateShortCourseLearningRequestBody
         {
@@ -115,11 +124,11 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
 
         var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<Milestone>(sourceMilestone.ToString())
+            Enum.Parse<LearningDomainMilestones>(sourceMilestone.ToString())
         ).ToList();
 
         if (currentOnProgramme.CompletionDate.HasValue && !currentOnProgramme.Milestones.Contains(SourceMilestone.LearningComplete))
-            milestones.Add(Milestone.LearningComplete);
+            milestones.Add(LearningDomainMilestones.LearningComplete);
 
         var body = new UpdateShortCourseOnProgrammeRequestBody
         {
@@ -138,5 +147,13 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         return changes.Contains(ShortCourseUpdateChanges.WithdrawalDate) ||
             changes.Contains(ShortCourseUpdateChanges.Milestone) ||
             changes.Contains(ShortCourseUpdateChanges.CompletionDate);
+    }
+
+    private static CalculateGrowthAndSkillsPayments GenerateEventMessage(ShortCourseEarningsResponse earningsResponse)
+    {
+        return new CalculateGrowthAndSkillsPayments
+        {
+            // Map properties from earningsResponse to the event message as needed
+        };
     }
 }

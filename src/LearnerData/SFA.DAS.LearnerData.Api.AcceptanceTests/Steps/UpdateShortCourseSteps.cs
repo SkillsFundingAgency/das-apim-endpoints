@@ -3,6 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using System.Net;
 using System.Net.Http.Headers;
@@ -97,6 +98,7 @@ public class UpdateShortCourseSteps
 
     private void ConfigureEarningsInnerApiToRespondeOkToEverything()
     {
+        var response = new UpdateShortCourseEarningPutResponse();
         _testContext.EarningsApi.MockServer
             .Given(
                 Request.Create()
@@ -105,7 +107,8 @@ public class UpdateShortCourseSteps
             )
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(200)
+                .WithStatusCode(200)
+                .WithBodyAsJson(response)
             );
     }
 
