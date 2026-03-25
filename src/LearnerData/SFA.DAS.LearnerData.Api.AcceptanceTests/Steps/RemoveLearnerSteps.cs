@@ -1,10 +1,4 @@
-﻿using FluentAssertions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
-using System.Net;
-using TechTalk.SpecFlow;
-using WireMock;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
+﻿using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 

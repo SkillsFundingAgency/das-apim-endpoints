@@ -6,8 +6,10 @@ using NUnit.Framework;
 using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Encoding;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

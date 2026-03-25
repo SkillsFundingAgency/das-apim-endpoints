@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;

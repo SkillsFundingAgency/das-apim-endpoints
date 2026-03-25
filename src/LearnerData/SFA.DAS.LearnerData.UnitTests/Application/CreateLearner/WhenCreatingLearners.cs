@@ -1,10 +1,4 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NServiceBus;
-using NUnit.Framework;
-using SFA.DAS.LearnerData.Application.CreateLearner;
+﻿using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 

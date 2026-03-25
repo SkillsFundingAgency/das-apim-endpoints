@@ -1,0 +1,29 @@
+using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning
+{
+    public class PatchRejectApprenticeshipPriceChangeRequest : IPatchApiRequest<RejectApprenticeshipPriceChangeRequest>
+    {
+        public PatchRejectApprenticeshipPriceChangeRequest(
+            Guid apprenticeshipKey,
+            string reason)
+        {
+            ApprenticeshipKey = apprenticeshipKey;
+            Data = new RejectApprenticeshipPriceChangeRequest
+            {
+                Reason = reason
+            };
+        }
+        
+        public Guid ApprenticeshipKey { get; set; }
+        public string PatchUrl => $"{ApprenticeshipKey}/priceHistory/pending/reject";
+        public RejectApprenticeshipPriceChangeRequest Data { get; set; }
+    }
+
+    public class RejectApprenticeshipPriceChangeRequest
+    {
+        public string Reason { get; set; }
+    }
+}

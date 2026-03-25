@@ -1,9 +1,9 @@
 ﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
@@ -60,9 +60,9 @@ public static class LearnerBuilder
     /// <summary>
     /// Currently only returns one episode as we have no functional code which would create multiple episodes yet.
     /// </summary>
-    private static List<SharedOuterApi.InnerApi.Responses.Learning.Episode> ExtractLearningInnerEpisodes(TestLearner testLearner, UpdateLearningApiPutRequest updateLearningRequest)
+    private static List<SharedOuterApi.Types.InnerApi.Responses.Learning.Episode> ExtractLearningInnerEpisodes(TestLearner testLearner, UpdateLearningApiPutRequest updateLearningRequest)
     {
-        var prices = new List<SharedOuterApi.InnerApi.Responses.Learning.EpisodePrice>();
+        var prices = new List<SharedOuterApi.Types.InnerApi.Responses.Learning.EpisodePrice>();
 
         var lastOnProg = testLearner.UpdateLearnerRequest.Delivery.OnProgramme
             .OrderByDescending(x => x.StartDate)
@@ -75,7 +75,7 @@ public static class LearnerBuilder
         {
             var totalPrice = cost.TrainingPrice + (cost.EpaoPrice ?? 0);
 
-            prices.Add(new SharedOuterApi.InnerApi.Responses.Learning.EpisodePrice
+            prices.Add(new SharedOuterApi.Types.InnerApi.Responses.Learning.EpisodePrice
             {
                 Key = Guid.NewGuid(),
                 StartDate = cost.FromDate,
@@ -90,7 +90,7 @@ public static class LearnerBuilder
         }
 
 
-        var episode = new SharedOuterApi.InnerApi.Responses.Learning.Episode
+        var episode = new SharedOuterApi.Types.InnerApi.Responses.Learning.Episode
         {
             Key = Guid.NewGuid(),
             TrainingCode = testLearner.TrainingCode,
@@ -99,18 +99,18 @@ public static class LearnerBuilder
         };
 
 
-        return new List<SharedOuterApi.InnerApi.Responses.Learning.Episode> { episode };
+        return new List<SharedOuterApi.Types.InnerApi.Responses.Learning.Episode> { episode };
     }
 
     /// <summary>
     /// Currently only returns one episode as we have no functional code which would create multiple episodes yet.
     /// </summary>
-    private static List<SharedOuterApi.InnerApi.Responses.Earnings.Episode> ExtractEarningInnnerEpisodes(TestLearner testLearner, Learning learningInnerRecord)
+    private static List<SharedOuterApi.Types.InnerApi.Responses.Earnings.Episode> ExtractEarningInnnerEpisodes(TestLearner testLearner, Learning learningInnerRecord)
     {
         var learningEpisode = learningInnerRecord.Episodes.First();
         var totalPrice = learningEpisode.Prices.OrderBy(x => x.StartDate).Last().TotalPrice;
 
-        var episode = learningInnerRecord.Episodes.Select(e => new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+        var episode = learningInnerRecord.Episodes.Select(e => new SharedOuterApi.Types.InnerApi.Responses.Earnings.Episode
         {
             Key = e.Key,
             NumberOfInstalments = 0,
@@ -133,7 +133,7 @@ public static class LearnerBuilder
 
         episode.AdditionalPayments = testLearner.AdditionalPayments ?? new List<AdditionalPayment>();
 
-        return new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode> { episode };
+        return new List<SharedOuterApi.Types.InnerApi.Responses.Earnings.Episode> { episode };
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public static class LearnerBuilder
     /// of the earnings service implementation. Its purpose is for general validation. For more complex test scenarios
     /// expected instalments should be provided in the TestLearner.
     /// </summary>
-    private static List<Instalment> GenerateInstalments(TestLearner testLearner, SharedOuterApi.InnerApi.Responses.Learning.Episode learningEpisode)
+    private static List<Instalment> GenerateInstalments(TestLearner testLearner, SharedOuterApi.Types.InnerApi.Responses.Learning.Episode learningEpisode)
     {
         var instalments = new List<Instalment>();
 

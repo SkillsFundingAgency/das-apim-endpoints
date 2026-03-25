@@ -1,7 +1,7 @@
 ﻿using AutoFixture;
 using Moq;
 using SFA.DAS.Apprenticeships.Application.Notifications;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using System;
 using System.Collections.Generic;
 using System.Linq;

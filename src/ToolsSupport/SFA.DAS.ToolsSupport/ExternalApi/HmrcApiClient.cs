@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Headers;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.ToolsSupport.Configuration;
 using SFA.DAS.ToolsSupport.Interfaces;
 

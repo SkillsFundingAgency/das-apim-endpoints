@@ -1,15 +1,9 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.GetGeoPoint;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
-using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.LocationsController
 {

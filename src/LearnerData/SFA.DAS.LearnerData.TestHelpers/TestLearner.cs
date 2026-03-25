@@ -28,12 +28,12 @@ public class TestLearner
     /// These can be left blank. If left blank the test data builder will create default instalments based on the update request.
     /// The auto generated instalments will be crudely calculated and should not be relied upon for precise values.
     /// </summary>
-    public List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.Instalment> Instalments { get; set; }
+    public List<SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings.Instalment> Instalments { get; set; }
 
     /// <summary>
     /// These can be left blank or manually populated, there is no auto generation of additional payments at present.
     /// </summary>
-    public List<SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.AdditionalPayment> AdditionalPayments { get; set; }
+    public List<SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings.AdditionalPayment> AdditionalPayments { get; set; }
 }
 
 public static class TestLearnerExtensions

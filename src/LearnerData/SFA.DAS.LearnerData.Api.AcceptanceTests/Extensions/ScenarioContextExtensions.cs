@@ -1,6 +1,4 @@
-﻿using SFA.DAS.LearnerData.Application.Fm36;
-using System.Net.Http.Json;
-using TechTalk.SpecFlow;
+﻿using System.Net.Http.Json;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 

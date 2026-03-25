@@ -1,11 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Aodp.Application.Commands.Application.Application;
-using SFA.DAS.Aodp.Application.Commands.Application.Review;
+using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.Application.Review;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Services;
 
 namespace SFA.DAS.AODP.Application.Commands.Application.Review
 {

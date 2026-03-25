@@ -1,4 +1,5 @@
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
 {
@@ -6,7 +7,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses
     {
         public string LarsCode { get; set; }
         public string CourseName { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
+        public LearningType ApprenticeshipType { get; set; }
         public int Level { get; set; }
         public bool? IsApprovedByRegulator { get; set; }
         public string ApprovalBody { get; set; }

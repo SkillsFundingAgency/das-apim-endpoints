@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LearnerData;
 
 namespace SFA.DAS.LearnerData.Extensions;
 

@@ -2,8 +2,8 @@
 using System.Text.Json;
 using SFA.DAS.RecruitJobs.Domain.Vacancy;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using GqlApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
 using GqlApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
 using GqlClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;

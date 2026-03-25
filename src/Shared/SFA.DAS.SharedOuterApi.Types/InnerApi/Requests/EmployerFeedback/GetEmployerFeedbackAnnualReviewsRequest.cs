@@ -1,0 +1,15 @@
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFeedback;
+
+public class GetEmployerFeedbackAnnualReviewsRequest : IGetApiRequest
+{
+    public string GetUrl => $"api/EmployerFeedbackResult/reviews?timeperiod={_timePeriod}";
+    private string _timePeriod { get; }
+    public GetEmployerFeedbackAnnualReviewsRequest(string timePeriod)
+    {
+        _timePeriod = timePeriod;
+    }
+}

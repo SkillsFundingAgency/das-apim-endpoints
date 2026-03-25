@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
+﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;

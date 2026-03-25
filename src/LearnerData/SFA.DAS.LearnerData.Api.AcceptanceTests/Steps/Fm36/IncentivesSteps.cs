@@ -1,12 +1,5 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using Newtonsoft.Json;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using System.Net;
-using TechTalk.SpecFlow;
-using TechTalk.SpecFlow.Assist;
-using WireMock.RequestBuilders;
-using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 
