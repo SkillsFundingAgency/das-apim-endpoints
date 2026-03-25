@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
+using SFA.DAS.AODP.Application.Commands.Application.Review;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
 
@@ -194,6 +195,30 @@ public class ApplicationsController : BaseController
     public async Task<IActionResult> UpdateReviewer(SaveReviewerCommand command, Guid applicationId)
     {
         command.ApplicationId = applicationId;
+        return await SendRequestAsync(command);
+    }
+
+    [HttpPut("/api/applications/bulk-reviewer")]
+    [ProducesResponseType(typeof(BulkSaveReviewerCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> BulkUpdateReviewer([FromBody] BulkSaveReviewerCommand command)
+    {
+        _logger.LogInformation(
+        "OUTER API CONTROLLER: BulkUpdateReviewer hit. Count={Count}, Reviewer1Set={Reviewer1Set}, Reviewer1={Reviewer1}, Reviewer2Set={Reviewer2Set}, Reviewer2={Reviewer2}, UserType={UserType}",
+        command?.ApplicationReviewIds?.Count,
+        command?.Reviewer1Set,
+        command?.Reviewer1,
+        command?.Reviewer2Set,
+        command?.Reviewer2,
+        command?.UserType);
+
+        if (command?.ApplicationReviewIds != null && command.ApplicationReviewIds.Any())
+        {
+            _logger.LogInformation(
+                "OUTER API CONTROLLER: FirstApplicationReviewId={FirstApplicationReviewId}",
+                command.ApplicationReviewIds.First());
+        }
+
         return await SendRequestAsync(command);
     }
 
