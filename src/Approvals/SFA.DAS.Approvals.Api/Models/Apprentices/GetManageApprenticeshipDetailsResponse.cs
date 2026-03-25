@@ -3,9 +3,9 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
-using SFA.DAS.SharedOuterApi.Common;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Api.Models.Apprentices
 {
