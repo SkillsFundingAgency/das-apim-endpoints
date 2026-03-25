@@ -59,7 +59,13 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         _builtEarningsRequest = new CreateUnapprovedShortCourseLearningRequest();
 
-        _shortCourseRequest = new ShortCourseRequest();
+        _shortCourseRequest = new ShortCourseRequest
+        {
+            Delivery = new ShortCourseDelivery
+            {
+                OnProgramme = [new ShortCourseOnProgramme { StartDate = new DateTime(2025, 8, 1), AgreementId = "AGR-001" }]
+            }
+        };
 
         _command = new CreateDraftShortCourseCommand
         {
@@ -140,7 +146,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     e.TrainingPrice == (int)_builtRequest.OnProgramme.Price &&
                     e.IsFlexiJob == false &&
                     e.PlannedOTJTrainingHours == 0 &&
-                    e.AgreementId == _builtRequest.OnProgramme.EmployerId.ToString() &&
+                    e.AgreementId == _shortCourseRequest.Delivery.OnProgramme.MinBy(x => x.StartDate)!.AgreementId &&
                     e.StandardCode == 0 &&
                     e.LarsCode == _builtRequest.OnProgramme.CourseCode &&
                     e.CorrelationId != Guid.Empty &&

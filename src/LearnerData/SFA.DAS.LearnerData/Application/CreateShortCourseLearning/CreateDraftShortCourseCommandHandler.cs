@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Events;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
@@ -42,13 +43,15 @@ public class CreateDraftShortCourseCommandHandler(
         await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
         var correlationId = Guid.NewGuid();
-        await messageSession.Publish(MapToEvent(command.Ukprn, requestData, correlationId));
+        await messageSession.Publish(MapToEvent(command.Ukprn, requestData, command.ShortCourseRequest, correlationId));
 
         return new CreateDraftShortCourseResult { CorrelationId = correlationId };
     }
 
-    private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request, Guid correlationId)
+    private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request, ShortCourseRequest shortCourseRequest, Guid correlationId)
     {
+        var firstOnProg = shortCourseRequest.Delivery.OnProgramme.MinBy(x => x.StartDate);
+
         return new LearnerDataEvent
         {
             ULN = request.LearnerUpdateDetails.Uln,
@@ -64,7 +67,7 @@ public class CreateDraftShortCourseCommandHandler(
             TrainingPrice = (int)request.OnProgramme.Price,
             IsFlexiJob = false,
             PlannedOTJTrainingHours = 0,
-            AgreementId = request.OnProgramme.EmployerId.ToString(),
+            AgreementId = firstOnProg?.AgreementId,
             StandardCode = 0,
             LarsCode = request.OnProgramme.CourseCode,
             CorrelationId = correlationId,
