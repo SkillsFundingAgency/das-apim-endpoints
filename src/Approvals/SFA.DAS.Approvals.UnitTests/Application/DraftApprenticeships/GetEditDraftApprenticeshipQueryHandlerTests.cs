@@ -29,6 +29,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
         private GetDraftApprenticeshipResponse _draftApprenticeship;
         private GetEditDraftApprenticeshipQuery _query;
         private GetTrainingProgrammeResponse _trainingProgrammeResponse;
+        private GetTrainingProgrammeResponse _trainingProgrammeResponseForAppUnit;
 
         private List<string> _deliveryModels;
 
@@ -44,6 +45,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             _query = fixture.Create<GetEditDraftApprenticeshipQuery>();
             _deliveryModels = fixture.Create<List<string>>();
             _trainingProgrammeResponse = fixture.Create<GetTrainingProgrammeResponse>();
+            _trainingProgrammeResponseForAppUnit = fixture.Create<GetTrainingProgrammeResponse>();
 
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
 
@@ -59,6 +61,11 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
                     x.Get<GetTrainingProgrammeResponse>(It.Is<GetCalculatedVersionOfTrainingProgrammeRequest>(r =>
                         r.CourseCode == _query.CourseCode && r.StartDate == _draftApprenticeship.StartDate)))
                 .ReturnsAsync(_trainingProgrammeResponse);
+
+            _apiClient.Setup(x =>
+                x.Get<GetTrainingProgrammeResponse>(It.Is<GetTrainingProgrammeRequest>(r =>
+                    r.CourseCode == _query.CourseCode)))
+            .ReturnsAsync(_trainingProgrammeResponseForAppUnit);
 
             _deliveryModelService = new Mock<IDeliveryModelService>();
             _deliveryModelService.Setup(x => x.GetDeliveryModels(
@@ -335,5 +342,30 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             var result = await _handler.Handle(_query, CancellationToken.None);
             result.ProposedMaxFunding.Should().Be(10000);
         }
+
+        [Test]
+        public async Task Handle_ProposedMaxFunding_Should_Be_Mapped_For_AppUnit()
+        {
+            _apiClient.Setup(x =>
+                    x.Get<GetTrainingProgrammeResponse>(It.Is<GetCalculatedVersionOfTrainingProgrammeRequest>(r =>
+                        r.CourseCode == _query.CourseCode && r.StartDate == _draftApprenticeship.StartDate)))
+                .ReturnsAsync((GetTrainingProgrammeResponse)null);
+
+
+            _trainingProgrammeResponseForAppUnit.TrainingProgramme.FundingPeriods =
+            [
+                new TrainingProgrammeFundingPeriod
+                {
+                    EffectiveFrom = DateTime.MinValue,
+                    EffectiveTo = null,
+                    FundingCap = 500
+                }
+            ];
+
+            var result = await _handler.Handle(_query, CancellationToken.None);
+            result.ProposedMaxFunding.Should().Be(500);
+        }
+
+
     }
 }
