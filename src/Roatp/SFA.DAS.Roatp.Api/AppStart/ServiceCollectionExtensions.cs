@@ -43,7 +43,7 @@ public static class ServiceCollectionExtensions
     {
         var apiConfig = GetApiConfiguration(configuration, "RoatpApiConfiguration");
         services.AddRestEaseClient<IRoatpApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddUkrlpClient(IServiceCollection services, IConfiguration configuration)

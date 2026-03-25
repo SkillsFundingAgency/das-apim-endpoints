@@ -50,14 +50,11 @@ public class
 
         var fetched = 0;
 
-        while (true)
+        var chunks = ukprns.Chunk(MaximumRecords);
+
+        foreach (var batch in chunks)
         {
-            var ukprnsToCheck = ukprns.Skip(fetched).Take(MaximumRecords).ToList();
-            if (!ukprnsToCheck.Any()) break;
-            fetched += ukprnsToCheck.Count;
-            var request = _ukrlpSoapSerializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
-                _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
-            var ukprnResponse = await GetUkrlpResponse(request);
+            var ukprnResponse = await GetUkrlpResponse(batch.ToList());
 
             if (ukprnResponse == null || !ukprnResponse.Success)
             {
@@ -71,8 +68,11 @@ public class
     }
 
 
-    private async Task<GetUkrlpDataQueryResponse> GetUkrlpResponse(string request)
+    private async Task<GetUkrlpDataQueryResponse> GetUkrlpResponse(List<long> ukprnsToCheck)
     {
+        var request = _ukrlpSoapSerializer.BuildGetAllUkrlpsFromUkprnsSoapRequest(ukprnsToCheck,
+            _ukrlpConfiguration.StakeholderId, _ukrlpConfiguration.QueryId);
+
         var requestMessage =
             new HttpRequestMessage(HttpMethod.Post, _ukrlpConfiguration.ApiBaseAddress)
             {
@@ -133,8 +133,8 @@ public class
                 {
                     ProviderType = provider.ProviderType,
                     OrganisationTypeId = provider.OrganisationTypeId,
-                    CharityNumber = provider.CharityNumber ?? "",
-                    CompanyNumber = provider.CompanyNumber ?? "",
+                    CharityNumber = provider.CharityNumber,
+                    CompanyNumber = provider.CompanyNumber,
                     LegalName = ukrlp.ProviderName ?? "",
                     TradingName = ukrlp.TradingName ?? "",
                     RequestingUserId = "System"

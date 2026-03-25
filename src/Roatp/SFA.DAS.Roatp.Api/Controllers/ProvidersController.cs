@@ -11,9 +11,9 @@ namespace SFA.DAS.Roatp.Api.Controllers;
 public class ProvidersController : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly ILogger<CharitiesController> _logger;
+    private readonly ILogger<ProvidersController> _logger;
 
-    public ProvidersController(IMediator mediator, ILogger<CharitiesController> logger)
+    public ProvidersController(IMediator mediator, ILogger<ProvidersController> logger)
     {
         _mediator = mediator;
         _logger = logger;
