@@ -20,8 +20,8 @@ public static class LearningUpdateChangesExtensions
 
     public static bool HasEnglishAndMathsUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)
     {
-        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish)
-               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal)
+        return changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsWithdrawal)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated);
     }
 
