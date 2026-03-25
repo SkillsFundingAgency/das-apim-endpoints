@@ -94,6 +94,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetStandardC
         public void Then_All_Relevant_Action_Status_Pairs_Are_Included()
         {
             var submitId = Guid.NewGuid();
+            var printRequestId = Guid.NewGuid();
             var sentToPrinterId = Guid.NewGuid();
             var printedId = Guid.NewGuid();
             var deliveredId = Guid.NewGuid();
@@ -104,22 +105,24 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetStandardC
             {
                 CertificateLogs = new List<CertificateLog>
                 {
-                    new CertificateLog { Id = submitId,        Action = "Submit",  Status = "Submitted",     EventTime = baseTime },
-                    new CertificateLog { Id = sentToPrinterId, Action = "Status",  Status = "SentToPrinter", EventTime = baseTime.AddDays(1) },
-                    new CertificateLog { Id = printedId,       Action = "Printed", Status = "Printed",       EventTime = baseTime.AddDays(2) },
-                    new CertificateLog { Id = deliveredId,     Action = "Status",  Status = "Delivered",     EventTime = baseTime.AddDays(3) },
-                    new CertificateLog { Id = reprintId,       Action = "Reprint", Status = "Reprint",       EventTime = baseTime.AddDays(4) },
+                    new CertificateLog { Id = submitId,        Action = "Submit",       Status = "Submitted",     EventTime = baseTime },
+                    new CertificateLog { Id = printRequestId,  Action = "PrintRequest", Status = "PrintRequested", EventTime = baseTime.AddDays(1) },
+                    new CertificateLog { Id = sentToPrinterId, Action = "Status",       Status = "SentToPrinter", EventTime = baseTime.AddDays(2) },
+                    new CertificateLog { Id = printedId,       Action = "Printed",      Status = "Printed",       EventTime = baseTime.AddDays(3) },
+                    new CertificateLog { Id = deliveredId,     Action = "Status",       Status = "Delivered",     EventTime = baseTime.AddDays(4) },
+                    new CertificateLog { Id = reprintId,       Action = "Reprint",      Status = "Reprint",       EventTime = baseTime.AddDays(5) },
                 }
             };
 
             var result = (GetStandardCertificateQueryResult)response;
 
-            result.DeliveryInformation.Should().HaveCount(5);
-            result.DeliveryInformation.Should().Contain(d => d.Id == submitId        && d.Action == "Submit"  && d.Status == "Submitted");
-            result.DeliveryInformation.Should().Contain(d => d.Id == sentToPrinterId && d.Action == "Status"  && d.Status == "SentToPrinter");
-            result.DeliveryInformation.Should().Contain(d => d.Id == printedId       && d.Action == "Printed" && d.Status == "Printed");
-            result.DeliveryInformation.Should().Contain(d => d.Id == deliveredId     && d.Action == "Status"  && d.Status == "Delivered");
-            result.DeliveryInformation.Should().Contain(d => d.Id == reprintId       && d.Action == "Reprint" && d.Status == "Reprint");
+            result.DeliveryInformation.Should().HaveCount(6);
+            result.DeliveryInformation.Should().Contain(d => d.Id == submitId        && d.Action == "Submit"       && d.Status == "Submitted");
+            result.DeliveryInformation.Should().Contain(d => d.Id == printRequestId  && d.Action == "PrintRequest" && d.Status == "PrintRequested");
+            result.DeliveryInformation.Should().Contain(d => d.Id == sentToPrinterId && d.Action == "Status"       && d.Status == "SentToPrinter");
+            result.DeliveryInformation.Should().Contain(d => d.Id == printedId       && d.Action == "Printed"      && d.Status == "Printed");
+            result.DeliveryInformation.Should().Contain(d => d.Id == deliveredId     && d.Action == "Status"       && d.Status == "Delivered");
+            result.DeliveryInformation.Should().Contain(d => d.Id == reprintId       && d.Action == "Reprint"      && d.Status == "Reprint");
         }
 
         [Test]
