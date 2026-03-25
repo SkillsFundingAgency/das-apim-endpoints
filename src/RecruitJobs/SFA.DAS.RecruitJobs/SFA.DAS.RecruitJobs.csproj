@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="SFA.DAS.RecruitJobs.UnitTests" />
+  </ItemGroup>
+
+  <ItemGroup>
     <GraphQL Remove="GraphQL\RecruitInner\fragments.graphql" />
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetDraftVacanciesCreatedBefore.graphql" />
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetEmployerRejectedVacanciesCreatedBefore.graphql" />
