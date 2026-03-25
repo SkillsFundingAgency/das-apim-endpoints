@@ -1,7 +1,9 @@
 ﻿using System.Net;
+using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -115,58 +117,55 @@ public class WhenHandlingCreateDraftShortCourseCommand
             Times.Once);
     }
 
-    //[Test]
-    //public async Task Then_A_LearnerData_Event_Is_Emitted()
-    //{
-    //    // Arrange
-    //    var ukprn = 12345;
-    //    var shortCourseRequest = new ShortCourseRequest();
-    //    var command = new CreateDraftShortCourseCommand
-    //    {
-    //        Ukprn = ukprn,
-    //        ShortCourseRequest = shortCourseRequest
-    //    };
-    //    var builtRequest = new CreateDraftShortCourseRequest
-    //    {
-    //        LearnerUpdateDetails = new()
-    //        {
-    //            Uln = 99999999,
-    //            FirstName = "John",
-    //            LastName = "Smith",
-    //            EmailAddress = "john@test.com",
-    //            DateOfBirth = new DateTime(2000, 1, 1)
-    //        },
-    //        OnProgramme = new()
-    //        {
-    //            StartDate = new DateTime(2025, 8, 1),
-    //            ExpectedEndDate = new DateTime(2026, 7, 31),
-    //            Price = 1500,
-    //            EmployerId = 123456,
-    //            CourseCode = "91"
-    //        }
-    //    };
-    //    _createDraftShortCoursePostRequestBuilder
-    //        .Setup(x => x.Build(shortCourseRequest, ukprn))
-    //        .Returns(builtRequest);
-    //    // Act
-    //    await _handler.Handle(command, CancellationToken.None);
+    [Test]
+    public async Task Then_A_LearnerDataEvent_Is_Published()
+    {
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
 
-    //    // Assert
-    //    _messageSession.Verify(x =>
-    //            x.Publish(
-    //                It.Is<LearnerDataEvent>(e =>
-    //                    e.ULN == builtRequest.LearnerUpdateDetails.Uln &&
-    //                    e.UKPRN == ukprn &&
-    //                    e.FirstName == builtRequest.LearnerUpdateDetails.FirstName &&
-    //                    e.LastName == builtRequest.LearnerUpdateDetails.LastName &&
-    //                    e.Email == builtRequest.LearnerUpdateDetails.EmailAddress &&
-    //                    e.StartDate == builtRequest.OnProgramme.StartDate &&
-    //                    e.PlannedEndDate == builtRequest.OnProgramme.ExpectedEndDate &&
-    //                    e.StandardCode == Convert.ToInt32(builtRequest.OnProgramme.CourseCode)
-    //                ),
-    //                It.IsAny<PublishOptions>()),
-    //        Times.Once);
-    //}
+        // Assert
+        _messageSession.Verify(x =>
+            x.Publish(
+                It.Is<LearnerDataEvent>(e =>
+                    e.ULN == _builtRequest.LearnerUpdateDetails.Uln &&
+                    e.UKPRN == _ukprn &&
+                    e.FirstName == _builtRequest.LearnerUpdateDetails.FirstName &&
+                    e.LastName == _builtRequest.LearnerUpdateDetails.LastName &&
+                    e.Email == _builtRequest.LearnerUpdateDetails.EmailAddress &&
+                    e.DoB == _builtRequest.LearnerUpdateDetails.DateOfBirth &&
+                    e.StartDate == _builtRequest.OnProgramme.StartDate &&
+                    e.PlannedEndDate == _builtRequest.OnProgramme.ExpectedEndDate &&
+                    e.PercentageLearningToBeDelivered == 100 &&
+                    e.EpaoPrice == 0 &&
+                    e.TrainingPrice == (int)_builtRequest.OnProgramme.Price &&
+                    e.IsFlexiJob == false &&
+                    e.PlannedOTJTrainingHours == 0 &&
+                    e.AgreementId == _builtRequest.OnProgramme.EmployerId.ToString() &&
+                    e.StandardCode == 0 &&
+                    e.LarsCode == _builtRequest.OnProgramme.CourseCode &&
+                    e.CorrelationId != Guid.Empty &&
+                    e.LearningType == (LearningType)_builtRequest.OnProgramme.LearningType
+                ),
+                It.IsAny<PublishOptions>()),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_The_Result_CorrelationId_Matches_The_Published_Event()
+    {
+        // Arrange
+        LearnerDataEvent publishedEvent = null;
+        _messageSession
+            .Setup(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()))
+            .Callback<object, PublishOptions>((e, _) => publishedEvent = e as LearnerDataEvent)
+            .Returns(Task.CompletedTask);
+
+        // Act
+        var result = await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        result.CorrelationId.Should().Be(publishedEvent!.CorrelationId);
+    }
 
     [Test]
     public async Task Then_Earnings_Is_Updated_With_Unapproved_ShortCourse_Learning()

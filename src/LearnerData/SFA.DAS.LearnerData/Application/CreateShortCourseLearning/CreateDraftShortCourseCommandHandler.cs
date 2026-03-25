@@ -41,13 +41,13 @@ public class CreateDraftShortCourseCommandHandler(
 
         await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
-        //removed for now until downstream fixed
-        //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
+        var correlationId = Guid.NewGuid();
+        await messageSession.Publish(MapToEvent(command.Ukprn, requestData, correlationId));
 
-        return new CreateDraftShortCourseResult();
+        return new CreateDraftShortCourseResult { CorrelationId = correlationId };
     }
 
-    private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
+    private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request, Guid correlationId)
     {
         return new LearnerDataEvent
         {
@@ -60,11 +60,16 @@ public class CreateDraftShortCourseCommandHandler(
             StartDate = request.OnProgramme.StartDate,
             PlannedEndDate = request.OnProgramme.ExpectedEndDate,
             PercentageLearningToBeDelivered = 100,
+            EpaoPrice = 0,
             TrainingPrice = (int)request.OnProgramme.Price,
+            IsFlexiJob = false,
+            PlannedOTJTrainingHours = 0,
             AgreementId = request.OnProgramme.EmployerId.ToString(),
-            StandardCode = Convert.ToInt32(request.OnProgramme.CourseCode),
+            StandardCode = 0,
+            LarsCode = request.OnProgramme.CourseCode,
+            CorrelationId = correlationId,
             ReceivedDate = DateTime.UtcNow,
-            LearningType = LearningType.ApprenticeshipUnit
+            LearningType = (LearningType)request.OnProgramme.LearningType
         };
     }
 }
