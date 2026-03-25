@@ -23,4 +23,5 @@ public class Episode
     public string CourseCode { get; set; }
     public decimal Price { get; set; }
     public bool IsApproved { get; set; }
+    public string LearnerRef { get; set; }
 }

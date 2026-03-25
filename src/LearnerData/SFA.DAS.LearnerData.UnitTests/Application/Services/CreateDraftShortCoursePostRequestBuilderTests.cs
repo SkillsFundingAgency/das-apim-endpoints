@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
-using FluentAssertions;
-using NUnit.Framework;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 
@@ -16,7 +15,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
     public void SetUp()
     {
         _fixture = new Fixture();
-        _sut = new CreateDraftShortCoursePostRequestBuilder();
+        _sut = new CreateDraftShortCoursePostRequestBuilder(Mock.Of<ILogger<CreateDraftShortCoursePostRequestBuilder>>());
     }
 
     [Test]
@@ -56,6 +55,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         result.LearnerUpdateDetails.LastName.Should().Be(learner.LastName);
         result.LearnerUpdateDetails.DateOfBirth.Should().Be(learner.Dob);
         result.LearnerUpdateDetails.EmailAddress.Should().Be(learner.Email);
+        result.LearnerUpdateDetails.LearnerRef.Should().Be(learner.LearnerRef);
 
         result.LearningSupport.Should().HaveCount(onProgramme.LearningSupport.Count);
         for (int i = 0; i < onProgramme.LearningSupport.Count; i++)
@@ -73,5 +73,72 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         result.OnProgramme.Price.Should().Be(1000m);
 
         result.OnProgramme.Milestones.Should().BeEquivalentTo(onProgramme.Milestones);
+    }
+
+    [Test]
+    public void Build_Adds_LearningComplete_Milestone_When_CompletionDate_Set_And_Milestone_Absent()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().Contain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+    }
+
+    [Test]
+    public void Build_Does_Not_Duplicate_LearningComplete_When_Already_Present()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().ContainSingle(m =>
+            m == SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+    }
+
+    [Test]
+    public void Build_Does_Not_Add_LearningComplete_When_CompletionDate_Not_Set()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, (DateTime?)null)
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().NotContain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
     }
 }

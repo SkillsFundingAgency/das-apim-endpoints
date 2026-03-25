@@ -21,16 +21,16 @@ public class CachedStandardDetailsService : ICachedStandardDetailsService
         _cacheStorageService = cacheStorageService;
     }
 
-    public async Task<StandardDetailResponse> GetStandardDetails(string larsCode)
+    public async Task<StandardDetailsLookupResponse> GetStandardDetails(string larsCode)
     {
-        var standardDetailsCacheKey = $"{nameof(StandardDetailResponse)}-{larsCode}";
+        var standardDetailsCacheKey = $"{nameof(StandardDetailsLookupResponse)}-{larsCode}";
         var cachedStandardDetails = await _cacheStorageService
-            .RetrieveFromCache<StandardDetailResponse>(standardDetailsCacheKey);
+            .RetrieveFromCache<StandardDetailsLookupResponse>(standardDetailsCacheKey);
 
         if (cachedStandardDetails != null)
             return cachedStandardDetails;
 
-        var apiResponse = await _coursesApiClient.GetWithResponseCode<StandardDetailResponse>(new GetStandardDetailsByIdRequest(larsCode));
+        var apiResponse = await _coursesApiClient.GetWithResponseCode<StandardDetailsLookupResponse>(new GetStandardDetailsLookupRequest(larsCode));
         cachedStandardDetails = apiResponse.Body;
         await _cacheStorageService.SaveToCache(standardDetailsCacheKey, cachedStandardDetails, StandardDetailsCacheDurationInHours);
 
