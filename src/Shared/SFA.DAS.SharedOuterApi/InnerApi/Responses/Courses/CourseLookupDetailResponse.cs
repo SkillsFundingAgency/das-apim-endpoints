@@ -1,13 +1,15 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 {
     [ExcludeFromCodeCoverage]
-    public class CourseLookupDetailResponse 
+    public class CourseLookupDetailResponse
     {
         public string LarsCode { get; set; }
         public string Title { get; set; }
         public string LearningType { get; set; }
         public string CourseType { get; set; }
+        public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
     }
 }
