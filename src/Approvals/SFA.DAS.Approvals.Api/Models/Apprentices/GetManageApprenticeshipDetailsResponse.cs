@@ -1,6 +1,9 @@
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
+using SFA.DAS.SharedOuterApi.Common;
 using System;
 using System.Collections.Generic;
 
@@ -76,8 +79,8 @@ public class GetManageApprenticeshipDetailsResponse
         public int? DurationReducedByHours { get; set; }
         public int? TrainingTotalHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
-        public int? EmployerVerificationStatus { get; set; }
-        public string EmployerVerificationNotes { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
+        public LearningType? LearningType { get; set; }
     }
 
     public class PriceEpisode

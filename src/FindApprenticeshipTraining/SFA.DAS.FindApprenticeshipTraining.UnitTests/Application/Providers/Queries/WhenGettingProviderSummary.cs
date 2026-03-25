@@ -19,6 +19,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Providers.Queries;
+
 public class WhenGettingProviderSummary
 {
     [Test, MoqAutoData]
@@ -85,7 +86,7 @@ public class WhenGettingProviderSummary
                 .Excluding(c => c.LarsCode)
             );
 
-        sut.Courses[0].LarsCode.Should().Be(coursesResponse[0].LarsCode.ToString());
+        sut.Courses[0].LarsCode.Should().Be(coursesResponse[0].LarsCode);
     }
 
     [Test, MoqAutoData]

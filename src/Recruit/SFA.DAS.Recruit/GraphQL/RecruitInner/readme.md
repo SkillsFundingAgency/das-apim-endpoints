@@ -13,7 +13,7 @@ If you need to regenerate the client from an updated version of the GQL schema t
 
 * make sure the Recruit Inner API is running on your local machine
 * from a command prompt go into the `SFA.DAS.Recruit/GraphQL/RecruitInner` directory and run the following command:
-  * ```dotnet graphql init https://localhost:7288/graphql/ -n RecruitGqlClient -p .```
+  * ```dotnet graphql update```
 * build the project
 
 ## Adding new queries
