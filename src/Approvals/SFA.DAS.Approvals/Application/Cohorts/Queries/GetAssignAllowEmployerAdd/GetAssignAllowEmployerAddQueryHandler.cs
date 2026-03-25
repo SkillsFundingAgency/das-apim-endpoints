@@ -6,6 +6,7 @@ using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
 using SFA.DAS.SharedOuterApi.Interfaces;
