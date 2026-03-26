@@ -147,7 +147,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
             controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
 
             var accountIdentifier = Guid.NewGuid();
-            long notificationIdentifier = 12345L;
+            long notificationIdentifier = 12345;
             var expectedResult = new GetLearnerNotificationStatusQueryResult { NotificationStatus = notificationStatus };
 
             mediatorMock
