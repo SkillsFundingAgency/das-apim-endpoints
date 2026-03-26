@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using System.Net;
@@ -58,7 +59,7 @@ public class UpdateShortCourseSteps
         var ukprn = _scenarioContext.Get<long>(UkprnKey);
         var requestBody = _fixture.Create<ShortCourseRequest>();
 
-        ConfigureLearnerInnerApi(learningKey, requestBody);
+        ConfigureLearnerInnerApi(ukprn, learningKey, requestBody);
         ConfigureEarningsInnerApiToRespondeOkToEverything();
         await CallUpdateShortCourseLearningEndpoint(ukprn, learningKey, requestBody);
     }
@@ -74,7 +75,7 @@ public class UpdateShortCourseSteps
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
-    private void ConfigureLearnerInnerApi(Guid learningKey, ShortCourseRequest shortCourseRequest)
+    private void ConfigureLearnerInnerApi(long ukprn, Guid learningKey, ShortCourseRequest shortCourseRequest)
     {
         var changes = _scenarioContext.Get<List<ShortCourseUpdateChanges>>(ShortCourseChangesKey);
         var onProgramme = shortCourseRequest.Delivery.OnProgramme.First();
@@ -83,17 +84,29 @@ public class UpdateShortCourseSteps
         {
             LearningKey = learningKey,
             Changes = changes.Select(x => x.ToString()).ToArray(),
-            Price = 1000m,
-            Uln = shortCourseRequest.Learner.Uln,
-            LearnerRef = "LearnerRef",
-            LearningType = "2",
-            TrainingCode = "ZSC00001",
-            AgeAtStart = 20,
-            StartDate = onProgramme.StartDate,
-            PlannedEndDate = onProgramme.ExpectedEndDate,
-            WithdrawalDate = onProgramme.WithdrawalDate,
             CompletionDate = onProgramme.ActualEndDate,
-            EmployerAccountId = 12
+            Learner = new UpdateShortCourseResultLearner
+            {
+                Uln = shortCourseRequest.Learner.Uln.ToString(),
+                FirstName = shortCourseRequest.Learner.FirstName,
+                LastName = shortCourseRequest.Learner.LastName,
+                DateOfBirth = shortCourseRequest.Learner.Dob,
+            },
+            Episodes = [new UpdateShortCourseResultEpisode
+            {
+                Ukprn = ukprn,
+                EmployerAccountId = 12,
+                CourseCode = "ZSC00001",
+                CourseType = "ShortCourse",
+                LearningType = "ApprenticeshipUnit",
+                StartDate = onProgramme.StartDate,
+                AgeAtStart = 20,
+                PlannedEndDate = onProgramme.ExpectedEndDate,
+                WithdrawalDate = onProgramme.WithdrawalDate,
+                IsApproved = true,
+                Price = 1000m,
+                LearnerRef = "LearnerRef"
+            }]
         };
 
         _testContext.ApprenticeshipsApi.MockServer

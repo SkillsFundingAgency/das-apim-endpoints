@@ -35,7 +35,9 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
     public async Task<CalculateGrowthAndSkillsPayments> Build(
         long ukprn, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
     {
-        var earnings = await BuildEarnings(learningResponse, earningsResponse);
+        var episode = learningResponse.Episodes.Single(); // At time of writing, Short Courses are expected to only have one episode.
+
+        var earnings = await BuildEarnings(learningResponse, earningsResponse, episode);
 
         return new CalculateGrowthAndSkillsPayments
         {
@@ -44,41 +46,41 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
             Learner = new Payments.EarningEvents.Messages.External.Learner
             {
                 LearnerKey = learningResponse.LearningKey, // this will get moved to training and renamed to LearningKey
-                ULN = learningResponse.Uln,
-                Reference = learningResponse.LearnerRef
+                ULN = long.Parse(learningResponse.Learner.Uln),
+                Reference = episode.LearnerRef
             },
             Training = new Payments.EarningEvents.Messages.External.Training
             {
                 CourseType = Payments.EarningEvents.Messages.External.CourseType.ShortCourse,
-                LearningType = Enum.Parse<LearningType>(learningResponse.LearningType),
-                CourseCode = learningResponse.TrainingCode, //this is trainingcode in Learning Domain
-                CourseReference = learningResponse.TrainingCode, //this is also trainingcode in Learning Domain
-                AgeAtStartOfTraining = learningResponse.AgeAtStart,
-                StartDate = learningResponse.StartDate,
-                PlannedEndDate = learningResponse.PlannedEndDate,// expected end date in Learning Domain
-                ActualEndDate = GetActualEndDate(learningResponse),// calculated from withdrawal or completion // Reminder to do Completion Date
-                TrainingStatus = GetTrainingStatus(learningResponse)
+                LearningType = Enum.Parse<LearningType>(episode.LearningType),
+                CourseCode = episode.CourseCode, //this is trainingcode in Learning Domain
+                CourseReference = episode.CourseCode, //this is also trainingcode in Learning Domain
+                AgeAtStartOfTraining = (byte)episode.AgeAtStart,
+                StartDate = episode.StartDate,
+                PlannedEndDate = episode.PlannedEndDate,// expected end date in Learning Domain
+                ActualEndDate = GetActualEndDate(episode.WithdrawalDate, learningResponse.CompletionDate),// calculated from withdrawal or completion // Reminder to do Completion Date
+                TrainingStatus = GetTrainingStatus(episode.WithdrawalDate, learningResponse.CompletionDate)
             },
             EmployerContribution = 0,
             Earnings = earnings
         };
     }
 
-    private DateTime? GetActualEndDate(UpdateShortCourseLearningPutResponse learningResponse)
+    private DateTime? GetActualEndDate(DateTime? withdrawalDate, DateTime? completionDate)
     {
-        if (learningResponse.WithdrawalDate != null)
-            return learningResponse.WithdrawalDate;
-        if (learningResponse.CompletionDate != null)
-            return learningResponse.CompletionDate;
+        if (withdrawalDate != null)
+            return withdrawalDate;
+        if (completionDate != null)
+            return completionDate;
         return null;
     }
 
-    private TrainingStatus GetTrainingStatus(UpdateShortCourseLearningPutResponse learningResponse)
+    private TrainingStatus GetTrainingStatus(DateTime? withdrawalDate, DateTime? completionDate)
     {
-        if (learningResponse.WithdrawalDate != null)
+        if (withdrawalDate != null)
             return TrainingStatus.Withdrawn;
 
-        if(learningResponse.CompletionDate != null)
+        if(completionDate != null)
             return TrainingStatus.Completed;
 
         return TrainingStatus.Continuing;
@@ -86,7 +88,8 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
 
     private async Task<IEnumerable<Earnings>> BuildEarnings(
         UpdateShortCourseLearningPutResponse learningResponse,
-        ShortCourseEarningsResponse earningsResponse)
+        ShortCourseEarningsResponse earningsResponse,
+        UpdateShortCourseResultEpisode episode)
     {
         var earnings = earningsResponse.Instalments
             .GroupBy(i => i.CollectionYear)
@@ -96,9 +99,9 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                 PricePeriods = new List<PricePeriod> {
                     new PricePeriod
                     {
-                        Price = learningResponse.Price,
-                        StartDate = learningResponse.StartDate, // This will be adjusted if there are multiple years
-                        EndDate = learningResponse.PlannedEndDate, // This will be adjusted if there are multiple years
+                        Price = episode.Price,
+                        StartDate = episode.StartDate, // This will be adjusted if there are multiple years
+                        EndDate = episode.PlannedEndDate, // This will be adjusted if there are multiple years
                         Periods = g
                         .Where(x => x.IsPayable).Select(instalment => new EarningPeriod
                         {
@@ -107,8 +110,8 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                             Amount = instalment.Amount,
                             Employer = new Employer
                             {
-                                AccountId = learningResponse.EmployerAccountId,
-                                FundingAccountId = learningResponse.EmployerAccountId,
+                                AccountId = episode.EmployerAccountId,
+                                FundingAccountId = episode.EmployerAccountId,
                                 EmployerType = EmployerType.Levy //TODO: To be set in later story
                             }
                         }).ToList()

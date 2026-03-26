@@ -77,6 +77,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
         var earningsResponse = GetEarningsResponse();
         var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
         
@@ -87,15 +88,15 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         result.EarningsId.Should().Be(earningsResponse.EarningProfileVersion);
         result.UKPRN.Should().Be(ukprn);
         result.Learner.LearnerKey.Should().Be(learningResponse.LearningKey);
-        result.Learner.ULN.Should().Be(learningResponse.Uln);
-        result.Learner.Reference.Should().Be(learningResponse.LearnerRef);
+        result.Learner.ULN.Should().Be(long.Parse(learningResponse.Learner.Uln));
+        result.Learner.Reference.Should().Be(episode.LearnerRef);
         result.Training.CourseType.Should().Be(Payments.EarningEvents.Messages.External.CourseType.ShortCourse);
         result.Training.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
-        result.Training.CourseCode.Should().Be(learningResponse.TrainingCode);
-        result.Training.CourseReference.Should().Be(learningResponse.TrainingCode);
-        result.Training.AgeAtStartOfTraining.Should().Be(learningResponse.AgeAtStart);
-        result.Training.StartDate.Should().Be(learningResponse.StartDate);
-        result.Training.PlannedEndDate.Should().Be(learningResponse.PlannedEndDate);
+        result.Training.CourseCode.Should().Be(episode.CourseCode);
+        result.Training.CourseReference.Should().Be(episode.CourseCode);
+        result.Training.AgeAtStartOfTraining.Should().Be((byte)episode.AgeAtStart);
+        result.Training.StartDate.Should().Be(episode.StartDate);
+        result.Training.PlannedEndDate.Should().Be(episode.PlannedEndDate);
 
     }
 
@@ -107,6 +108,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
 
         DateTime? withdrawalDate = null;
         DateTime? completionDate = null;
@@ -121,7 +123,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         if (expectedEndDateString != null)
             expectedEndDate = DateTime.Parse(expectedEndDateString);
 
-        learningResponse.WithdrawalDate = withdrawalDate;
+        episode.WithdrawalDate = withdrawalDate;
         learningResponse.CompletionDate = completionDate;
 
         var earningsResponse = GetEarningsResponse();
@@ -143,6 +145,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
 
         DateTime? withdrawalDate = null;
         DateTime? completionDate = null;
@@ -153,7 +156,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         if (completionDateString != null)
             completionDate = DateTime.Parse(completionDateString);
 
-        learningResponse.WithdrawalDate = withdrawalDate;
+        episode.WithdrawalDate = withdrawalDate;
         learningResponse.CompletionDate = completionDate;
 
         var earningsResponse = GetEarningsResponse();
@@ -173,7 +176,9 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningResponse = GetLearningPriceResponse();
-        learningResponse.Price = 1000m;
+        var episode = learningResponse.Episodes.Single();
+
+        episode.Price = 1000m;
         var earningsResponse = new ShortCourseEarningsResponse
         {
             EarningProfileVersion = Guid.NewGuid(),
@@ -210,23 +215,23 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
         var pricePeriod = earning.PricePeriods.First();
         pricePeriod.Price.Should().Be(1000m);
-        pricePeriod.StartDate.Should().Be(learningResponse.StartDate);
-        pricePeriod.EndDate.Should().Be(learningResponse.PlannedEndDate);
+        pricePeriod.StartDate.Should().Be(episode.StartDate);
+        pricePeriod.EndDate.Should().Be(episode.PlannedEndDate);
         pricePeriod.Periods.Should().HaveCount(2);
 
         pricePeriod.Periods.Should().ContainSingle(x =>
             x.DeliveryPeriod == 1 &&
             x.EarningType == EarningType.Milestone1 &&
             x.Amount == 700m &&
-            x.Employer.AccountId == learningResponse.EmployerAccountId &&
-            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+            x.Employer.AccountId == episode.EmployerAccountId &&
+            x.Employer.FundingAccountId == episode.EmployerAccountId);
 
         pricePeriod.Periods.Should().ContainSingle(x => 
             x.DeliveryPeriod == 2 && 
             x.EarningType == EarningType.Completion && 
             x.Amount == 300m &&
-            x.Employer.AccountId == learningResponse.EmployerAccountId &&
-            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+            x.Employer.AccountId == episode.EmployerAccountId &&
+            x.Employer.FundingAccountId == episode.EmployerAccountId);
 
     }
 
@@ -236,7 +241,10 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningResponse = GetLearningPriceResponse();
-        learningResponse.Price = 1000m;
+        var episode = learningResponse.Episodes.Single();
+
+        episode.Price = 1000m;
+
         var earningsResponse = new ShortCourseEarningsResponse
         {
             EarningProfileVersion = Guid.NewGuid(),
@@ -273,16 +281,16 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
         var pricePeriod = earning.PricePeriods.First();
         pricePeriod.Price.Should().Be(1000m);
-        pricePeriod.StartDate.Should().Be(learningResponse.StartDate);
-        pricePeriod.EndDate.Should().Be(learningResponse.PlannedEndDate);
+        pricePeriod.StartDate.Should().Be(episode.StartDate);
+        pricePeriod.EndDate.Should().Be(episode.PlannedEndDate);
         pricePeriod.Periods.Should().HaveCount(1);
 
         pricePeriod.Periods.Should().ContainSingle(x =>
             x.DeliveryPeriod == 1 &&
             x.EarningType == EarningType.Milestone1 &&
             x.Amount == 700m &&
-            x.Employer.AccountId == learningResponse.EmployerAccountId &&
-            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+            x.Employer.AccountId == episode.EmployerAccountId &&
+            x.Employer.FundingAccountId == episode.EmployerAccountId);
     }
 
     [Test]
@@ -291,9 +299,12 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningResponse = GetLearningPriceResponse();
-        learningResponse.Price = 1000m;
-        learningResponse.StartDate = new DateTime(2025, 7, 1);
-        learningResponse.PlannedEndDate = new DateTime(2025, 9, 20);
+        var episode = learningResponse.Episodes.Single();
+
+        episode.Price = 1000m;
+        episode.StartDate = new DateTime(2025, 7, 1);
+        episode.PlannedEndDate = new DateTime(2025, 9, 20);
+
         var earningsResponse = new ShortCourseEarningsResponse
         {
             EarningProfileVersion = Guid.NewGuid(),
@@ -331,7 +342,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
         var pricePeriodFirstYear = earningFirstYear.PricePeriods.First();
         pricePeriodFirstYear.Price.Should().Be(1000m);
-        pricePeriodFirstYear.StartDate.Should().Be(learningResponse.StartDate);
+        pricePeriodFirstYear.StartDate.Should().Be(episode.StartDate);
         pricePeriodFirstYear.EndDate.Should().Be(_academicYear2425.EndDate);
         pricePeriodFirstYear.Periods.Should().HaveCount(1);
 
@@ -339,8 +350,8 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
             x.DeliveryPeriod == 12 &&
             x.EarningType == EarningType.Milestone1 &&
             x.Amount == 700m &&
-            x.Employer.AccountId == learningResponse.EmployerAccountId &&
-            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+            x.Employer.AccountId == episode.EmployerAccountId &&
+            x.Employer.FundingAccountId == episode.EmployerAccountId);
 
 
         earningSecondYear.PricePeriods.Should().HaveCount(1);
@@ -348,15 +359,15 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         var pricePeriodSecondYear = earningSecondYear.PricePeriods.First();
         pricePeriodSecondYear.Price.Should().Be(1000m);
         pricePeriodSecondYear.StartDate.Should().Be(_academicYear2526.StartDate);
-        pricePeriodSecondYear.EndDate.Should().Be(learningResponse.PlannedEndDate);
+        pricePeriodSecondYear.EndDate.Should().Be(episode.PlannedEndDate);
         pricePeriodSecondYear.Periods.Should().HaveCount(1);
 
         pricePeriodSecondYear.Periods.Should().ContainSingle(x =>
             x.DeliveryPeriod == 2 &&
             x.EarningType == EarningType.Completion &&
             x.Amount == 300m &&
-            x.Employer.AccountId == learningResponse.EmployerAccountId &&
-            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+            x.Employer.AccountId == episode.EmployerAccountId &&
+            x.Employer.FundingAccountId == episode.EmployerAccountId);
 
     }
 
@@ -365,7 +376,18 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
     {
         var response = _fixture.Create<UpdateShortCourseLearningPutResponse>();
 
-        response.LearningType = "ApprenticeshipUnit";
+        response.Learner.Uln = "1234567890";
+        response.Episodes = new[]
+        {
+            _fixture.Build<UpdateShortCourseResultEpisode>()
+                .With(x => x.LearningType, "ApprenticeshipUnit")
+                .With(x => x.CourseCode, "SC123")
+                .With(x => x.LearnerRef, "LR123")
+                .With(x => x.AgeAtStart, 20)
+                .With(x => x.StartDate, new DateTime(2025, 7, 1))
+                .With(x => x.PlannedEndDate, new DateTime(2025, 9, 20))
+                .Create()
+        };
 
         return response;
     }
