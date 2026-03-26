@@ -37,7 +37,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
                 requestData.Address.ContactPostCode.Should().Be(command.Address.ContactPostCode);
             }
 
-            requestData.PrintRequestedBy.Should().Be("apprentice");
+            requestData.PrintRequestedBy.Should().Be(command.Address.ContactName);
             requestData.PrintRequestedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         }
     }
