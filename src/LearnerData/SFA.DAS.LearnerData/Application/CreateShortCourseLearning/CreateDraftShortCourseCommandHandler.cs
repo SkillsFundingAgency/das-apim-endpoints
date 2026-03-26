@@ -69,7 +69,7 @@ public class CreateDraftShortCourseCommandHandler(
             PlannedOTJTrainingHours = 0,
             AgreementId = firstOnProg?.AgreementId,
             StandardCode = 0,
-            ConsumerReference = string.Empty,
+            ConsumerReference = shortCourseRequest.ConsumerReference,
             LarsCode = request.OnProgramme.CourseCode,
             CorrelationId = correlationId,
             ReceivedDate = DateTime.UtcNow,
