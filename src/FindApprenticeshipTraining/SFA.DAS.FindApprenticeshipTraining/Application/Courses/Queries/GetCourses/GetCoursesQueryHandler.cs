@@ -37,19 +37,19 @@ public sealed class GetCoursesQueryHandler(
 
         var coursesStandardsResponse =
             await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(
-                new GetActiveStandardsListRequest()
+                new GetActiveStandardsSearchRequest()
                 {
                     Keyword = query.Keyword ?? string.Empty,
                     OrderBy = query.OrderBy,
                     RouteIds = query.RouteIds,
                     Levels = query.Levels,
-                    ApprenticeshipType = query.ApprenticeshipType
+                    ApprenticeshipTypes = query.ApprenticeshipTypes
                 }
         );
 
         coursesStandardsResponse.EnsureSuccessStatusCode();
 
-        if (!coursesStandardsResponse.Body.Standards.Any())
+        if (!coursesStandardsResponse.Body.Courses.Any())
         {
             return GetEmptyResponse(query.PageSize);
         }
@@ -61,7 +61,7 @@ public sealed class GetCoursesQueryHandler(
             return GetEmptyResponse(query.PageSize);
         }
 
-        var pagedStandards = coursesStandardsResponse.Body.Standards
+        var pagedStandards = coursesStandardsResponse.Body.Courses
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToArray();
@@ -91,7 +91,7 @@ public sealed class GetCoursesQueryHandler(
         {
             GetStandardsListItem standard = pagedStandards[index];
 
-            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode.ToString());
+            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode);
 
             standardModels.Add(
                 StandardModel.CreateFrom(

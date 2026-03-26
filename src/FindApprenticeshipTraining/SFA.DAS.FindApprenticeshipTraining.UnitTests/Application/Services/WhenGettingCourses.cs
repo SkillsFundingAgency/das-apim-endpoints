@@ -18,7 +18,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services
     public class WhenGettingCourses
     {
         [Test, MoqAutoData]
-        public async Task And_Courses_Cached_Then_Gets_Courses_From_Cache(
+        public async Task GetCourses_CoursesCached_ReturnsCoursesFromCache(
             GetStandardsListResponse coursesFromCache,
             [Frozen] Mock<ICacheStorageService> mockCacheService,
             CachedCoursesService service)
@@ -33,7 +33,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services
         }
 
         [Test, MoqAutoData]
-        public async Task And_Courses_Not_Cached_Then_Gets_From_Api_And_Stores_In_Cache(
+        public async Task GetCourses_CoursesNotCached_GetsFromApiAndStoresInCache(
             GetStandardsListResponse coursesFromApi,
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
             [Frozen] Mock<ICacheStorageService> mockCacheService,
@@ -42,7 +42,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services
             var expectedExpirationInHours = 1;
             mockCoursesApiClient
                 .Setup(client => client.Get<GetStandardsListResponse>(
-                    It.IsAny<GetActiveStandardsListRequest>()))
+                    It.IsAny<GetActiveStandardsSearchRequest>()))
                 .ReturnsAsync(coursesFromApi);
             mockCacheService
                 .Setup(service => service.RetrieveFromCache<GetStandardsListResponse>(nameof(GetStandardsListResponse)))

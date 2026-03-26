@@ -1,6 +1,7 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData.ShortCourses
 {
@@ -86,6 +87,11 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData.ShortCourse
         /// Price of the short course
         /// </summary>
         public decimal Price { get; set; }
+
+        /// <summary>
+        /// Learning type of the short course
+        /// </summary>
+        public LearningType LearningType { get; set; }
     }
 
     public enum Milestone

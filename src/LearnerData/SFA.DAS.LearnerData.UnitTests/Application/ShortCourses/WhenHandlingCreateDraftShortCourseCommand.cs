@@ -89,7 +89,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         _createDraftShortCoursePostRequestBuilder
             .Setup(x => x.Build(_shortCourseRequest, _ukprn))
-            .Returns(_builtRequest);
+            .ReturnsAsync(_builtRequest);
 
         var apiResponse = new ApiResponse<CreateShortCoursePostResponse>(
             new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey },
@@ -100,7 +100,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             .ReturnsAsync(apiResponse);
 
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _episodeKey, _ukprn))
+            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _episodeKey, _ukprn, _builtRequest))
             .Returns(_builtEarningsRequest);
     }
 

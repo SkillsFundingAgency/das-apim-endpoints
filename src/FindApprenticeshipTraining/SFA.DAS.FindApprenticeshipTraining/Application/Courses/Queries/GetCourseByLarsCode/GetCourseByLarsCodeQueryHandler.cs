@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -51,7 +51,7 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         CourseTrainingProviderCountModel trainingCourseCountDetails =
             courseTrainingProvidersCountResponse.Body.Courses.Count > 0 ? courseTrainingProvidersCountResponse.Body.Courses[0] : null;
 
-        StandardDetailResponse cachedStandardDetailResponse = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
+        var cachedStandardDetailResponse = await _cachedStandardDetailsService.GetStandardDetails(query.LarsCode);
 
         ApprenticeshipFunding apprenticeshipFunding = cachedStandardDetailResponse.ApprenticeshipFunding?.Count > 0 ?
             cachedStandardDetailResponse.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() : null;

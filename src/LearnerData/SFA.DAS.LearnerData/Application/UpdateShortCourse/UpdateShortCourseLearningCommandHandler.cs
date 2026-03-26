@@ -1,8 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.NServiceBus;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
@@ -81,22 +79,13 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         {
             LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
             {
-                Uln = command.Request.Learner.Uln,
-                FirstName = command.Request.Learner.FirstName,
-                LastName = command.Request.Learner.LastName,
-                DateOfBirth = command.Request.Learner.Dob,
-                EmailAddress = command.Request.Learner.Email,
                 LearnerRef = command.Request.Learner.LearnerRef
             },
             OnProgramme = new ShortCourseOnProgrammeUpdateDetails
             {
-                Ukprn = command.Ukprn,
-                Price = 1000,
-                StartDate = currentOnProgramme.StartDate,
                 ExpectedEndDate = currentOnProgramme.ExpectedEndDate,
                 CompletionDate = currentOnProgramme.CompletionDate,
                 WithdrawalDate = currentOnProgramme.WithdrawalDate,
-                CourseCode = currentOnProgramme.CourseCode,
                 Milestones = milestones
             }
         };

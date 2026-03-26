@@ -30,6 +30,7 @@ public static class AddApiServicesExtension
         services.AddTransient<IUpdateEarningsEnglishAndMathsRequestBuilder, UpdateEarningsEnglishAndMathsRequestBuilder>();
         services.AddTransient<IUpdateEarningsLearningSupportRequestBuilder, UpdateEarningsLearningSupportRequestBuilder>();
         services.AddTransient<ICostsService, CostsService>();
+        services.AddTransient<IShortCourseLookupService, ShortCourseLookupService>();
         services.AddTransient<ICreateDraftShortCoursePostRequestBuilder, CreateDraftShortCoursePostRequestBuilder>();
         services.AddTransient<ILearnerDataCacheService, LearnerDataCacheService>();
         services.AddTransient<ICreateUnapprovedShortCourseLearningRequestBuilder, CreateUnapprovedShortCourseLearningRequestBuilder>();

@@ -17,6 +17,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
 

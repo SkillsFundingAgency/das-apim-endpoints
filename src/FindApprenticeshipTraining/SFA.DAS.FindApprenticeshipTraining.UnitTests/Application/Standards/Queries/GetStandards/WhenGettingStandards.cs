@@ -22,19 +22,19 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Standards.Que
 public class WhenGettingStandards
 {
     [Test, AutoData]
-    public async Task Then_Gets_Standards_From_Courses_Api(GetStandardsListResponse expectedResponse)
+    public async Task Handle_WhenCalled_ReturnsStandardsFromCoursesApi(GetStandardsListResponse expectedResponse)
     {
         // Arrange
         var query = new GetStandardsQuery();
 
         var mockApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
         mockApiClient
-            .Setup(client => client.GetWithResponseCode<GetStandardsListResponse>(It.IsAny<GetActiveStandardsListRequest>()))
+            .Setup(client => client.GetWithResponseCode<GetStandardsListResponse>(It.IsAny<GetActiveStandardsSearchRequest>()))
             .ReturnsAsync(new ApiResponse<GetStandardsListResponse>(expectedResponse, System.Net.HttpStatusCode.OK, null));
         var handler = new GetStandardsQueryHandler(mockApiClient.Object);
         // Act
         var result = await handler.Handle(query, CancellationToken.None);
         // Assert
-        result.Standards.Count.Should().Be(expectedResponse.Standards.Count());
+        result.Standards.Count.Should().Be(expectedResponse.Courses.Count());
     }
 }

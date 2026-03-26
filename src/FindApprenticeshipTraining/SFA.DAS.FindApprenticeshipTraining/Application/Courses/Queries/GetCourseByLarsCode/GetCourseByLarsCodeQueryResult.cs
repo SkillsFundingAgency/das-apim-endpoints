@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
@@ -23,17 +24,17 @@ public sealed class GetCourseByLarsCodeQueryResult
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
     public List<Ksb> Ksbs { get; set; }
-    public string ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public List<RelatedOccupation> RelatedOccupations { get; set; }
     public int IncentivePayment { get; set; }
 
-    public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailResponse source)
+    public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailsLookupResponse source)
     {
         return new()
         {
             StandardUId = source.StandardUId,
             IFateReferenceNumber = source.IfateReferenceNumber,
-            LarsCode = source.LarsCode.ToString(),
+            LarsCode = source.LarsCode,
             Title = source.Title,
             Level = source.Level,
             Version = source.Version,

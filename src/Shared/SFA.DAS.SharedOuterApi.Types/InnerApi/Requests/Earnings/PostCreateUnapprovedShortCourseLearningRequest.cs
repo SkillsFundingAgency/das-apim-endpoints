@@ -1,6 +1,7 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
 
@@ -49,6 +50,8 @@ public class OnProgramme
     public List<Milestone> Milestones { get; set; } = new();
 
     public decimal TotalPrice { get; set; }
+
+    public LearningType LearningType { get; set; }
 }
 
 public enum Milestone

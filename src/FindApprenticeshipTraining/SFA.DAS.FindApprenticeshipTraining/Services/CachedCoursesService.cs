@@ -32,7 +32,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services
             if (courses != null)
                 return courses;
 
-            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+            courses = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsSearchRequest());
             await _cacheStorageService.SaveToCache(nameof(GetStandardsListResponse), courses, DeliveryAreaCacheDurationInHours);
 
             return courses;

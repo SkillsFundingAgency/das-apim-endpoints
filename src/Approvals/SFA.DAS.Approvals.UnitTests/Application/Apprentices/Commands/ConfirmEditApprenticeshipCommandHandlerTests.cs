@@ -16,6 +16,7 @@ using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands;
 
