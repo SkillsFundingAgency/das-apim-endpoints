@@ -9,7 +9,7 @@ public class GetActiveStandardsSearchRequest : IGetApiRequest
 {
     public List<int> RouteIds { get; set; } = [];
     public List<int> Levels { get; set; } = [];
-    public List<ApprenticeshipType> ApprenticeshipTypes { get; set; } = [];
+    public List<ApprenticeshipType> LearningTypes { get; set; } = [];
     public string Keyword { get; set; } = string.Empty;
     public CoursesOrderBy OrderBy { get; set; } = CoursesOrderBy.Score;
 
@@ -26,28 +26,19 @@ public class GetActiveStandardsSearchRequest : IGetApiRequest
             queryParams.Add($"keyword={Uri.EscapeDataString(Keyword)}");
         }
 
-        if (RouteIds != null && RouteIds.Count > 0)
+        foreach (int routeId in RouteIds)
         {
-            foreach (int routeId in RouteIds)
-            {
-                queryParams.Add($"routeIds={routeId}");
-            }
+            queryParams.Add($"routeIds={routeId}");
         }
 
-        if (Levels != null && Levels.Count > 0)
+        foreach (int level in Levels)
         {
-            foreach (int level in Levels)
-            {
-                queryParams.Add($"levels={level}");
-            }
+            queryParams.Add($"levels={level}");
         }
 
-        if (ApprenticeshipTypes != null && ApprenticeshipTypes.Count > 0)
+        foreach (var learningType in LearningTypes)
         {
-            foreach (var apprenticeshipType in ApprenticeshipTypes)
-            {
-                queryParams.Add($"learningTypes={apprenticeshipType}");
-            }
+            queryParams.Add($"learningTypes={learningType}");
         }
 
         queryParams.Add("filter=Active");
