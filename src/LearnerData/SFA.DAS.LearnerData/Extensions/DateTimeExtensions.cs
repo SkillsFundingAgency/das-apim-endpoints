@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 
 namespace SFA.DAS.LearnerData.Extensions;
 
@@ -140,5 +141,30 @@ public static class DateTimeExtensions
     {
         var firstOfNextMonth = new DateTime(datetime.Year, datetime.Month, 1).AddMonths(1);
         return firstOfNextMonth.AddDays(-1);
+    }
+
+    public static byte GetAgeAtDate(this DateTime dateOfBirth, DateTime atDate)
+    {
+        var age = atDate.Year - dateOfBirth.Year;
+
+        DateTime birthdayThisYear;
+
+        if (dateOfBirth.Month == 2 && dateOfBirth.Day == 29 &&
+            !DateTime.IsLeapYear(atDate.Year))
+        {
+            // Treat birthday as March 1st in non-leap years
+            birthdayThisYear = new DateTime(atDate.Year, 3, 1);
+        }
+        else
+        {
+            birthdayThisYear = dateOfBirth.AddYears(age);
+        }
+
+        if (atDate < birthdayThisYear)
+        {
+            age--;
+        }
+
+        return (byte)age;
     }
 }

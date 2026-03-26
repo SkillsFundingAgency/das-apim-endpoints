@@ -1,6 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
@@ -8,8 +8,8 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 using LearningDomainMilestones = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
+using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.Application.UpdateShortCourse;
 
@@ -18,15 +18,18 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly ILogger<UpdateShortCourseLearningCommandHandler> _logger;
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
+    private readonly ICalculateGrowthAndSkillsPaymentsEventBuilder _calculateGrowthAndSkillsPaymentsEventBuilder;
 
     public UpdateShortCourseLearningCommandHandler(
         ILogger<UpdateShortCourseLearningCommandHandler> logger,
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
-        IEarningsApiClient<EarningsApiConfiguration> earningsApiClient)
+        IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder)
     {
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
+        _calculateGrowthAndSkillsPaymentsEventBuilder = calculateGrowthAndSkillsPaymentsEventBuilder;
     }
 
     public async Task Handle(UpdateShortCourseLearningCommand command, CancellationToken cancellationToken)
@@ -61,7 +64,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(command.Ukprn, command.LearningKey));
         }
 
-        var eventMessage = GenerateEventMessage(earningsResponse);
+        var eventMessage = _calculateGrowthAndSkillsPaymentsEventBuilder.Build(command.Ukprn, learningResponse.Body, earningsResponse);
     }
 
     private UpdateShortCourseLearningPutRequest MapToLearningRequest(UpdateShortCourseLearningCommand command)
@@ -140,11 +143,4 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             changes.Contains(ShortCourseUpdateChanges.CompletionDate);
     }
 
-    private static CalculateGrowthAndSkillsPayments GenerateEventMessage(ShortCourseEarningsResponse earningsResponse)
-    {
-        return new CalculateGrowthAndSkillsPayments
-        {
-            // Map properties from earningsResponse to the event message as needed
-        };
-    }
 }

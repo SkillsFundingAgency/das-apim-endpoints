@@ -2,6 +2,7 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
@@ -21,6 +22,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<ILogger<UpdateShortCourseLearningCommandHandler>> _logger;
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
+    private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
 
     private UpdateShortCourseLearningCommand _command;
     private Guid _learningKey;
@@ -33,11 +35,13 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _logger = new Mock<ILogger<UpdateShortCourseLearningCommandHandler>>();
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+        _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
 
         _handler = new UpdateShortCourseLearningCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
-            _earningsApiClient.Object);
+            _earningsApiClient.Object,
+            _calculateGrowthAndSkillsPaymentsEventBuilder.Object);
 
         _learningKey = Guid.NewGuid();
         _ukprn = 12345678;
