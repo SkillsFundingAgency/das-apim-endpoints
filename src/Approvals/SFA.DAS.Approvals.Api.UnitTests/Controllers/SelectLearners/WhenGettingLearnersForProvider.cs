@@ -28,7 +28,7 @@ public class WhenGettingLearnersForProvider
                 q.ProviderId.Should().Be(providerId);
                 q.StartYear.Should().Be(request.StartYear);
                 q.StartMonth.Should().Be(request.StartMonth);
-                q.CourseCode.Should().Be(int.Parse(request.CourseCode));
+                q.CourseCode.Should().Be(request.CourseCode);
                 q.AccountLegalEntityId.Should().Be(request.AccountLegalEntityId);
                 q.SearchTerm.Should().Be(request.SearchTerm);
                 q.SortField.Should().Be(request.SortColumn);

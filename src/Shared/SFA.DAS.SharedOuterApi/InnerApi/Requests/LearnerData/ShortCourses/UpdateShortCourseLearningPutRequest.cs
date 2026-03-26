@@ -27,11 +27,14 @@ public class UpdateShortCourseLearningRequestBody
 
 public class ShortCourseLearnerUpdateDetails
 {
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
     public string LearnerRef { get; set; }
 }
 
 public class ShortCourseOnProgrammeUpdateDetails
 {
+    public string CourseCode { get; set; } = "";
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
