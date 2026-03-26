@@ -5,5 +5,5 @@ namespace SFA.DAS.FindApprenticeshipTraining.Services;
 
 public interface ICachedStandardDetailsService
 {
-    Task<StandardDetailResponse> GetStandardDetails(string larsCode);
+    Task<StandardDetailsLookupResponse> GetStandardDetails(string larsCode);
 }

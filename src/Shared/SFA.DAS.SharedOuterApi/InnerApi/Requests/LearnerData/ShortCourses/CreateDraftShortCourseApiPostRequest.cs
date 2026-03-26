@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
@@ -34,6 +35,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
     public class ShortCourseLearningUpdateDetails : LearningUpdateDetails
     {
         public long Uln { get; set; }
+        public string LearnerRef { get; set; }
     }
 
     /// <summary>
@@ -85,6 +87,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses
         /// Price of the short course
         /// </summary>
         public decimal Price { get; set; }
+
+        /// <summary>
+        /// Learning type of the short course
+        /// </summary>
+        public LearningType LearningType { get; set; }
     }
 
     public enum Milestone

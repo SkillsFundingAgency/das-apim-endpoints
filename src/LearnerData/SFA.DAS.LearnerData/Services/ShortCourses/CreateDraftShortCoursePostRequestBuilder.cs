@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
@@ -9,12 +9,14 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
 {
     public interface ICreateDraftShortCoursePostRequestBuilder
     {
-        CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn);
+        Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn);
     }
 
-    public class CreateDraftShortCoursePostRequestBuilder(ILogger<CreateDraftShortCoursePostRequestBuilder> logger) : ICreateDraftShortCoursePostRequestBuilder
+    public class CreateDraftShortCoursePostRequestBuilder(
+        ILogger<CreateDraftShortCoursePostRequestBuilder> logger,
+        IShortCourseLookupService shortCourseLookupService) : ICreateDraftShortCoursePostRequestBuilder
     {
-        public CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn)
+        public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn)
         {
             if (request.Delivery.OnProgramme.Count > 1)
             {
@@ -34,6 +36,8 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
             if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(SourceMilestone.LearningComplete))
                 milestones.Add(Milestone.LearningComplete);
 
+            var courseDetails = await shortCourseLookupService.GetCourseDetails(firstOnProg.CourseCode, firstOnProg.StartDate);
+
             return new CreateDraftShortCourseRequest
             {
                 LearnerUpdateDetails = new ShortCourseLearningUpdateDetails
@@ -42,7 +46,8 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     FirstName = request.Learner.FirstName,
                     LastName = request.Learner.LastName,
                     DateOfBirth = request.Learner.Dob,
-                    EmailAddress = request.Learner.Email
+                    EmailAddress = request.Learner.Email,
+                    LearnerRef = request.Learner.LearnerRef
                 },
                 LearningSupport = firstOnProg.LearningSupport
                     .Select(ls => new LearningSupportUpdatedDetails
@@ -60,7 +65,8 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     CompletionDate = firstOnProg.CompletionDate,
                     WithdrawalDate = firstOnProg.WithdrawalDate,
                     Milestones = milestones,
-                    Price = 1000
+                    Price = courseDetails.Price,
+                    LearningType = courseDetails.LearningType
                 }
             };
         }
