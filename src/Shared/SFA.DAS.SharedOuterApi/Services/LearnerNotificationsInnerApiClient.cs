@@ -48,7 +48,12 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public Task Post<TData>(IPostApiRequest<TData> request)
         {
-            return _apiClient.Post<TData>(request);
+            throw new System.NotImplementedException();
+        }
+
+        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
+        {
+            return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
         }
 
         public Task Delete(IDeleteApiRequest request)
@@ -66,6 +71,16 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.Patch(request);
         }
 
+        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+        {
+            return _apiClient.PatchWithResponseCode(request);
+        }
+
+        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+        {
+            return _apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
+        }
+
         public Task Put(IPutApiRequest request)
         {
             return _apiClient.Put(request);
@@ -76,24 +91,9 @@ namespace SFA.DAS.SharedOuterApi.Services
             return _apiClient.Put(request);
         }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
-        {
-            return _apiClient.PostWithResponseCode<TResponse>(request, includeResponse);
-        }
-
-        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
-        {
-            return _apiClient.PatchWithResponseCode(request);
-        }
-
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
         {
             return _apiClient.PutWithResponseCode<TResponse>(request);
-        }
-
-        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
-        {
-            return _apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
         }
 
         public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)

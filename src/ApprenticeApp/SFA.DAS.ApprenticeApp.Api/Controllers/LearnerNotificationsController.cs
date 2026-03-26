@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
     [ApiController]
+    [Route("api/learner/{accountIdentifier}/notifications")]
     public class LearnerNotificationsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -18,7 +19,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("/api/learner/{accountIdentifier}/notifications")]
+        [HttpGet]
         public async Task<IActionResult> GetLearnerNotifications(Guid accountIdentifier)
         {
             var result = await _mediator.Send(new GetLearnerNotificationsQuery 
@@ -32,7 +33,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(result.Notifications);
         }
 
-        [HttpGet("/api/learner/{accountIdentifier}/notifications/{notificationIdentifier}")]
+        [HttpGet("{notificationIdentifier}")]
         public async Task<IActionResult> GetLearnerNotificationById(Guid accountIdentifier, long notificationIdentifier)
         {
             var result = await _mediator.Send(new GetLearnerNotificationByIdQuery 
@@ -47,7 +48,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(result.Notification);
         }
 
-        [HttpGet("/api/learner/{accountIdentifier}/notifications/{notificationIdentifier}/status")]
+        [HttpGet("{notificationIdentifier}/status")]
         public async Task<IActionResult> GetLearnerNotificationStatus(Guid accountIdentifier, long notificationIdentifier)
         {
             var result = await _mediator.Send(new GetLearnerNotificationStatusQuery 
@@ -62,7 +63,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(result.NotificationStatus);
         }
 
-        [HttpPut("/api/learner/{accountIdentifier}/notifications/{notificationIdentifier}/status")]
+        [HttpPut("{notificationIdentifier}/status")]
         public async Task<IActionResult> UpdateLearnerNotificationStatus(
             Guid accountIdentifier, 
             long notificationIdentifier, 
