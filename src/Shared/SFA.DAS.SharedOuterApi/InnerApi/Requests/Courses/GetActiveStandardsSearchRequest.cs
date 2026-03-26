@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests;
 
-public class GetActiveStandardsListRequest : IGetApiRequest
+public class GetActiveStandardsSearchRequest : IGetApiRequest
 {
     public List<int> RouteIds { get; set; } = [];
     public List<int> Levels { get; set; } = [];
-    public string ApprenticeshipType { get; set; }
+    public List<ApprenticeshipType> ApprenticeshipTypes { get; set; } = [];
     public string Keyword { get; set; } = string.Empty;
     public CoursesOrderBy OrderBy { get; set; } = CoursesOrderBy.Score;
 
     public string GetUrl => BuildUrl();
 
-    private const string _BASE_URL = "api/courses/standards";
+    private const string _BASE_URL = "api/courses/search";
 
     private string BuildUrl()
     {
@@ -41,9 +42,12 @@ public class GetActiveStandardsListRequest : IGetApiRequest
             }
         }
 
-        if (!string.IsNullOrWhiteSpace(ApprenticeshipType))
+        if (ApprenticeshipTypes != null && ApprenticeshipTypes.Count > 0)
         {
-            queryParams.Add($"apprenticeshipType={ApprenticeshipType}");
+            foreach (var apprenticeshipType in ApprenticeshipTypes)
+            {
+                queryParams.Add($"learningTypes={apprenticeshipType}");
+            }
         }
 
         queryParams.Add("filter=Active");
