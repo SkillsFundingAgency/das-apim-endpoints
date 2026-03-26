@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands.LearnerNotifications;
 using SFA.DAS.ApprenticeApp.Application.Queries.LearnerNotifications;
+using SFA.DAS.ApprenticeApp.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -76,10 +77,5 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
 
             return Ok();
         }
-    }
-
-    public class UpdateNotificationStatusRequest
-    {
-        public string Status { get; set; }
     }
 }
