@@ -54,9 +54,13 @@ public class UpdateShortCourseSteps
     [When(@"the short course learning is updated")]
     public async Task WhenTheShortCourseLearningIsUpdated()
     {
-        ConfigureLearnerInnerApi();
+        var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
+        var ukprn = _scenarioContext.Get<long>(UkprnKey);
+        var requestBody = _fixture.Create<ShortCourseRequest>();
+
+        ConfigureLearnerInnerApi(learningKey, requestBody);
         ConfigureEarningsInnerApiToRespondeOkToEverything();
-        await CallUpdateShortCourseLearningEndpoint();
+        await CallUpdateShortCourseLearningEndpoint(ukprn, learningKey, requestBody);
     }
 
     [Then(@"a on-programme update request is sent for short courses to the earnings domain")]
@@ -70,17 +74,27 @@ public class UpdateShortCourseSteps
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
-    private void ConfigureLearnerInnerApi()
+    private void ConfigureLearnerInnerApi(Guid learningKey, ShortCourseRequest shortCourseRequest)
     {
         var changes = _scenarioContext.Get<List<ShortCourseUpdateChanges>>(ShortCourseChangesKey);
-        var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
+        var onProgramme = shortCourseRequest.Delivery.OnProgramme.First();
 
-
-        var response = new UpdateShortCourseLearningPutResponse();
-        if (changes.Any())
+        var response = new UpdateShortCourseLearningPutResponse
         {
-            response.Changes = changes.Select(x=>x.ToString()).ToArray();
-        }
+            LearningKey = learningKey,
+            Changes = changes.Select(x => x.ToString()).ToArray(),
+            Price = 1000m,
+            Uln = shortCourseRequest.Learner.Uln,
+            LearnerRef = "LearnerRef",
+            LearningType = "2",
+            TrainingCode = "ZSC00001",
+            AgeAtStart = 20,
+            StartDate = onProgramme.StartDate,
+            PlannedEndDate = onProgramme.ExpectedEndDate,
+            WithdrawalDate = onProgramme.WithdrawalDate,
+            CompletionDate = onProgramme.ActualEndDate,
+            EmployerAccountId = 12
+        };
 
         _testContext.ApprenticeshipsApi.MockServer
         .Given(
@@ -111,11 +125,9 @@ public class UpdateShortCourseSteps
             );
     }
 
-    private async Task CallUpdateShortCourseLearningEndpoint()
+    private async Task CallUpdateShortCourseLearningEndpoint(long ukprn, Guid learningKey, ShortCourseRequest requestBody)
     {
-        var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
-        var ukprn = _scenarioContext.Get<long>(UkprnKey);
-        var requestBody = _fixture.Create<ShortCourseRequest>();
+
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await _testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/shortCourses/{learningKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();

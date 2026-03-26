@@ -12,11 +12,12 @@ public class UpdateShortCourseLearningPutResponse
     public string LearnerRef { get; set; }
     public string LearningType { get; set; }
     public string TrainingCode { get; set; }
-    public DateTime DateOfBirth { get; set; }
+    public byte AgeAtStart { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime PlannedEndDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? CompletionDate { get; set; }
+    public long EmployerAccountId { get; set; }
 }
 
 public static class UpdateShortCourseLearningPutResponseExtensions

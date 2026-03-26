@@ -4,6 +4,8 @@ using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -16,12 +18,34 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
     private Fixture _fixture = new Fixture();
     private Mock<ILogger<CalculateGrowthAndSkillsPaymentsEventBuilder>> _mockLogger;
     private Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> _mockCollectionCalendarApiClient;
+    private GetAcademicYearsResponse _academicYear2425;
+    private GetAcademicYearsResponse _academicYear2526;
+
+    public WhenBuildingCalculateGrowthAndSkillsPaymentsEvent()
+    {
+        _academicYear2425 = new GetAcademicYearsResponse
+        {
+            AcademicYear = "2425",
+            StartDate = new DateTime(2024, 8, 1),
+            EndDate = new DateTime(2025, 7, 31)
+        };
+        _academicYear2526 = new GetAcademicYearsResponse
+        {
+            AcademicYear = "2526",
+            StartDate = new DateTime(2025, 8, 1),
+            EndDate = new DateTime(2026, 7, 31)
+        };
+    }
 
     [SetUp]
     public void Setup()
     {
         _mockLogger = new Mock<ILogger<CalculateGrowthAndSkillsPaymentsEventBuilder>>();
         _mockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
+        _mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/2425")))
+            .ReturnsAsync(_academicYear2425);
+        _mockCollectionCalendarApiClient.Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/2526")))
+            .ReturnsAsync(_academicYear2526);
     }
 
     [Test]
@@ -58,10 +82,10 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         
         // Act
         var result = await builder.Build(ukprn, learningResponse, earningsResponse);
-        
+
         // Assert
-        result.UKPRN.Should().Be(ukprn);
         result.EarningsId.Should().Be(earningsResponse.EarningProfileVersion);
+        result.UKPRN.Should().Be(ukprn);
         result.Learner.LearnerKey.Should().Be(learningResponse.LearningKey);
         result.Learner.ULN.Should().Be(learningResponse.Uln);
         result.Learner.Reference.Should().Be(learningResponse.LearnerRef);
@@ -69,46 +93,15 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         result.Training.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
         result.Training.CourseCode.Should().Be(learningResponse.TrainingCode);
         result.Training.CourseReference.Should().Be(learningResponse.TrainingCode);
+        result.Training.AgeAtStartOfTraining.Should().Be(learningResponse.AgeAtStart);
         result.Training.StartDate.Should().Be(learningResponse.StartDate);
         result.Training.PlannedEndDate.Should().Be(learningResponse.PlannedEndDate);
 
     }
 
-    [TestCase("2000-03-01", "2020-03-01", 20, TestName = "CorrectAge - Exact birthday")]
-    [TestCase("2000-03-02", "2020-03-01", 19, TestName = "CorrectAge - Before birthday")]
-    [TestCase("2000-02-28", "2020-03-01", 20, TestName = "CorrectAge - After birthday")]
-    [TestCase("2004-02-29", "2023-02-28", 18, TestName = "CorrectAge - Leap year - before birthday")]
-    [TestCase("2004-02-29", "2023-03-01", 19, TestName = "CorrectAge - Leap year - after birthday")]
-    [TestCase("2000-03-01", "2020-02-29", 19, TestName = "CorrectAge - Day before birthday (leap year)")]
-    public async Task Then_AgeAtStartOfTrainingCorrectlySet(
-        string dobString,
-        string startDateString,
-        int expectedAge)
-    {
-        // Arrange
-        var ukprn = _fixture.Create<long>();
-
-        var dob = DateTime.Parse(dobString);
-        var startDate = DateTime.Parse(startDateString);
-
-        var learningResponse = GetLearningPriceResponse();
-        learningResponse.StartDate = startDate;
-        learningResponse.DateOfBirth = dob;
-        var earningsResponse = GetEarningsResponse();
-
-        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(
-            _mockLogger.Object,
-            _mockCollectionCalendarApiClient.Object);
-
-        // Act
-        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
-
-        // Assert
-        result.Training.AgeAtStartOfTraining.Should().Be((byte)expectedAge);
-    }
-
     [TestCase(null, null, null, TestName = "ActualEndDate - No Actual End Date")]
     [TestCase("2023-03-01", null, "2023-03-01", TestName = "ActualEndDate - is Withdrawal date")]
+    [TestCase(null, "2023-03-01", "2023-03-01", TestName = "ActualEndDate - is Completion date")]
     public async Task Then_ActualEndDateCorrectlySet(string? withdrawalDateString, string? completionDateString, string? expectedEndDateString)
     {
         // Arrange
@@ -139,6 +132,231 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
         // Assert
         result.Training.ActualEndDate.Should().Be(expectedEndDate);
+
+    }
+
+    [TestCase(null, null, TrainingStatus.Continuing, TestName = "TrainingStatus - Continuing")]
+    [TestCase("2023-03-01", null, TrainingStatus.Withdrawn, TestName = "TrainingStatus - Withdrawn")]
+    [TestCase(null, "2023-03-01", TrainingStatus.Completed, TestName = "TrainingStatus - Completed")]
+    public async Task Then_TrainingStatusCorrectlySet(string? withdrawalDateString, string? completionDateString, TrainingStatus expectedStatus)
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+
+        DateTime? withdrawalDate = null;
+        DateTime? completionDate = null;
+
+        if (withdrawalDateString != null)
+            withdrawalDate = DateTime.Parse(withdrawalDateString);
+
+        if (completionDateString != null)
+            completionDate = DateTime.Parse(completionDateString);
+
+        learningResponse.WithdrawalDate = withdrawalDate;
+        learningResponse.CompletionDate = completionDate;
+
+        var earningsResponse = GetEarningsResponse();
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Training.TrainingStatus.Should().Be(expectedStatus);
+
+    }
+
+    [Test]
+    public async Task When_EarningsOverSingleYear_ThenCorrectlySet()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        learningResponse.Price = 1000m;
+        var earningsResponse = new ShortCourseEarningsResponse
+        {
+            EarningProfileVersion = Guid.NewGuid(),
+            Instalments = new List<ShortCourseInstalment>
+            {
+                new ShortCourseInstalment
+                {
+                    CollectionYear = 2526,
+                    CollectionPeriod = 1,
+                    Amount = 700m,
+                    Type = "ThirtyPercentLearningComplete",
+                    IsPayable = true
+                },
+                new ShortCourseInstalment
+                {
+                    CollectionYear = 2526,
+                    CollectionPeriod = 2,
+                    Amount = 300m,
+                    Type = "LearningComplete",
+                    IsPayable = true
+                }
+            }
+        };
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+        
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+        
+        // Assert
+        result.Earnings.Should().HaveCount(1);
+        var earning = result.Earnings.First();
+        earning.AcademicYear.Should().Be(2526);
+        earning.PricePeriods.Should().HaveCount(1);
+
+        var pricePeriod = earning.PricePeriods.First();
+        pricePeriod.Price.Should().Be(1000m);
+        pricePeriod.StartDate.Should().Be(learningResponse.StartDate);
+        pricePeriod.EndDate.Should().Be(learningResponse.PlannedEndDate);
+        pricePeriod.Periods.Should().HaveCount(2);
+
+        pricePeriod.Periods.Should().ContainSingle(x =>
+            x.DeliveryPeriod == 1 &&
+            x.EarningType == EarningType.Milestone1 &&
+            x.Amount == 700m &&
+            x.Employer.AccountId == learningResponse.EmployerAccountId &&
+            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+
+        pricePeriod.Periods.Should().ContainSingle(x => 
+            x.DeliveryPeriod == 2 && 
+            x.EarningType == EarningType.Completion && 
+            x.Amount == 300m &&
+            x.Employer.AccountId == learningResponse.EmployerAccountId &&
+            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+
+    }
+
+    [Test]
+    public async Task When_EarningsOverSingleYear_And_OnlyOnePaymentPayable_ThenCorrectlySet()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        learningResponse.Price = 1000m;
+        var earningsResponse = new ShortCourseEarningsResponse
+        {
+            EarningProfileVersion = Guid.NewGuid(),
+            Instalments = new List<ShortCourseInstalment>
+            {
+                new ShortCourseInstalment
+                {
+                    CollectionYear = 2526,
+                    CollectionPeriod = 1,
+                    Amount = 700m,
+                    Type = "ThirtyPercentLearningComplete",
+                    IsPayable = true
+                },
+                new ShortCourseInstalment
+                {
+                    CollectionYear = 2526,
+                    CollectionPeriod = 2,
+                    Amount = 300m,
+                    Type = "LearningComplete",
+                    IsPayable = false
+                }
+            }
+        };
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.Should().HaveCount(1);
+        var earning = result.Earnings.First();
+        earning.AcademicYear.Should().Be(2526);
+        earning.PricePeriods.Should().HaveCount(1);
+
+        var pricePeriod = earning.PricePeriods.First();
+        pricePeriod.Price.Should().Be(1000m);
+        pricePeriod.StartDate.Should().Be(learningResponse.StartDate);
+        pricePeriod.EndDate.Should().Be(learningResponse.PlannedEndDate);
+        pricePeriod.Periods.Should().HaveCount(1);
+
+        pricePeriod.Periods.Should().ContainSingle(x =>
+            x.DeliveryPeriod == 1 &&
+            x.EarningType == EarningType.Milestone1 &&
+            x.Amount == 700m &&
+            x.Employer.AccountId == learningResponse.EmployerAccountId &&
+            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+    }
+
+    [Test]
+    public async Task When_EarningsOverMultipleYears_ThenCorrectlySet()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        learningResponse.Price = 1000m;
+        learningResponse.StartDate = new DateTime(2025, 7, 1);
+        learningResponse.PlannedEndDate = new DateTime(2025, 9, 20);
+        var earningsResponse = new ShortCourseEarningsResponse
+        {
+            EarningProfileVersion = Guid.NewGuid(),
+            Instalments = new List<ShortCourseInstalment>
+            {
+                new ShortCourseInstalment
+                {
+                    CollectionYear = 2425,
+                    CollectionPeriod = 12,
+                    Amount = 700m,
+                    Type = "ThirtyPercentLearningComplete",
+                    IsPayable = true
+                },
+                new ShortCourseInstalment
+                {
+                    CollectionYear = 2526,
+                    CollectionPeriod = 2,
+                    Amount = 300m,
+                    Type = "LearningComplete",
+                    IsPayable = true
+                }
+            }
+        };
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.Should().HaveCount(2);
+        var earningFirstYear = result.Earnings.Where(x=>x.AcademicYear == 2425).Single();
+        var earningSecondYear = result.Earnings.Where(x => x.AcademicYear == 2526).Single();
+
+        earningFirstYear.PricePeriods.Should().HaveCount(1);
+
+        var pricePeriodFirstYear = earningFirstYear.PricePeriods.First();
+        pricePeriodFirstYear.Price.Should().Be(1000m);
+        pricePeriodFirstYear.StartDate.Should().Be(learningResponse.StartDate);
+        pricePeriodFirstYear.EndDate.Should().Be(_academicYear2425.EndDate);
+        pricePeriodFirstYear.Periods.Should().HaveCount(1);
+
+        pricePeriodFirstYear.Periods.Should().ContainSingle(x =>
+            x.DeliveryPeriod == 12 &&
+            x.EarningType == EarningType.Milestone1 &&
+            x.Amount == 700m &&
+            x.Employer.AccountId == learningResponse.EmployerAccountId &&
+            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
+
+
+        earningSecondYear.PricePeriods.Should().HaveCount(1);
+
+        var pricePeriodSecondYear = earningSecondYear.PricePeriods.First();
+        pricePeriodSecondYear.Price.Should().Be(1000m);
+        pricePeriodSecondYear.StartDate.Should().Be(_academicYear2526.StartDate);
+        pricePeriodSecondYear.EndDate.Should().Be(learningResponse.PlannedEndDate);
+        pricePeriodSecondYear.Periods.Should().HaveCount(1);
+
+        pricePeriodSecondYear.Periods.Should().ContainSingle(x =>
+            x.DeliveryPeriod == 2 &&
+            x.EarningType == EarningType.Completion &&
+            x.Amount == 300m &&
+            x.Employer.AccountId == learningResponse.EmployerAccountId &&
+            x.Employer.FundingAccountId == learningResponse.EmployerAccountId);
 
     }
 
@@ -180,4 +398,5 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
         return response;
     }
+
 }

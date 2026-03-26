@@ -53,7 +53,7 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                 LearningType = Enum.Parse<LearningType>(learningResponse.LearningType),
                 CourseCode = learningResponse.TrainingCode, //this is trainingcode in Learning Domain
                 CourseReference = learningResponse.TrainingCode, //this is also trainingcode in Learning Domain
-                AgeAtStartOfTraining = learningResponse.DateOfBirth.GetAgeAtDate(learningResponse.StartDate),
+                AgeAtStartOfTraining = learningResponse.AgeAtStart,
                 StartDate = learningResponse.StartDate,
                 PlannedEndDate = learningResponse.PlannedEndDate,// expected end date in Learning Domain
                 ActualEndDate = GetActualEndDate(learningResponse),// calculated from withdrawal or completion // Reminder to do Completion Date
@@ -97,26 +97,26 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                     new PricePeriod
                     {
                         Price = learningResponse.Price,
-                        //StartDate = StartDate in learning or start date of academic year if this is not first period
-                        //EndDate = EndDate or end of academic year if this is not last period
+                        StartDate = learningResponse.StartDate, // This will be adjusted if there are multiple years
+                        EndDate = learningResponse.PlannedEndDate, // This will be adjusted if there are multiple years
                         Periods = g
-                        .Select(instalment => new EarningPeriod
+                        .Where(x => x.IsPayable).Select(instalment => new EarningPeriod
                         {
-                            //EarningType = EarningType.Milestone1 or EarningType.Completion,
+                            EarningType = GetEarningType(instalment),
                             DeliveryPeriod = instalment.CollectionPeriod,
                             Amount = instalment.Amount,
-                            //LearningId = learningResponse.approvalsApprenticeshipId, // TODO: UnResolved
                             Employer = new Employer
                             {
-                                //AccountId = learningResponse.EmployerAccountId,
-                                //FundingAccountId = learningResponse.EmployerAccountId,
-                                //EmployerType = EmployerType.Levy ? is this hardcoded to levy? //TODO: UnResolved
+                                AccountId = learningResponse.EmployerAccountId,
+                                FundingAccountId = learningResponse.EmployerAccountId,
+                                EmployerType = EmployerType.Levy //TODO: To be set in later story
                             }
                         }).ToList()
                     }
                 }
             })
-            .OrderByYearPeriod();
+            .OrderByYearPeriod()
+            .ToList();
 
         if(earnings.Count() > 1)
             await SetStartEndDatesForMultipleYears(earnings);
@@ -129,13 +129,13 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
     /// First year keeps its original start date, last year keeps its original end date;
     /// intermediate years use academic year start and end dates.
     /// </summary>
-    private async Task SetStartEndDatesForMultipleYears(IEnumerable<Earnings> earnings)
+    private async Task SetStartEndDatesForMultipleYears(List<Earnings> earnings)
     {
         var totalEarnings = earnings.Count();
 
         for (var i = 0; i < totalEarnings; i++)
         {
-            var earningYear = earnings.ElementAt(i);
+            var earningYear = earnings[i];
             var academicYear = await GetAcademicYear(earningYear.AcademicYear);
 
             var pricePeriod = earningYear.PricePeriods.Single();
@@ -162,6 +162,17 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
         }
 
         return currentAcademicYear;
+    }
+
+    private static EarningType GetEarningType(ShortCourseInstalment instalment)
+    {
+        if(instalment.Type == "ThirtyPercentLearningComplete")
+            return EarningType.Milestone1;
+
+        if(instalment.Type == "LearningComplete")
+            return EarningType.Completion;
+
+        throw new ArgumentException($"Unknown instalment type: {instalment.Type}");
     }
 }
 
