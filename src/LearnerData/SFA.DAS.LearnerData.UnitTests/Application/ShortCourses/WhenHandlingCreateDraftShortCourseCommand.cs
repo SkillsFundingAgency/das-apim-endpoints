@@ -64,7 +64,8 @@ public class WhenHandlingCreateDraftShortCourseCommand
             Delivery = new ShortCourseDelivery
             {
                 OnProgramme = [new ShortCourseOnProgramme { StartDate = new DateTime(2025, 8, 1), AgreementId = "AGR-001" }]
-            }
+            },
+            ConsumerReference = "consumer-ref-123"
         };
 
         _command = new CreateDraftShortCourseCommand
@@ -147,6 +148,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     e.IsFlexiJob == false &&
                     e.PlannedOTJTrainingHours == 0 &&
                     e.AgreementId == _shortCourseRequest.Delivery.OnProgramme.MinBy(x => x.StartDate)!.AgreementId &&
+                    e.ConsumerReference == _shortCourseRequest.ConsumerReference &&
                     e.StandardCode == 0 &&
                     e.LarsCode == _builtRequest.OnProgramme.CourseCode &&
                     e.CorrelationId != Guid.Empty &&
