@@ -26,7 +26,7 @@ public class StandardDetailsLookupResponse : StandardApiResponseBase
     public string TypicalJobTitles { get; set; }
     public List<string> Skills { get; set; }
     public CourseType CourseType { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public ApprenticeshipType LearningType { get; set; }
     public List<KsbResponse> Ksbs { get; set; }
     public List<RelatedOccupation> RelatedOccupations { get; set; }
     public string StandardPageUrl { get; set; }

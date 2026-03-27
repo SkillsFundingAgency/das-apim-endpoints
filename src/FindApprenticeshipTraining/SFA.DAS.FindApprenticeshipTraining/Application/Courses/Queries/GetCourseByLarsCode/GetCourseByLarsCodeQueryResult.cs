@@ -46,7 +46,7 @@ public sealed class GetCourseByLarsCodeQueryResult
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
             CourseType = source.CourseType,
-            ApprenticeshipType = source.ApprenticeshipType,
+            ApprenticeshipType = source.LearningType,
             RelatedOccupations = source.RelatedOccupations == null ? new List<RelatedOccupation>() : source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }
