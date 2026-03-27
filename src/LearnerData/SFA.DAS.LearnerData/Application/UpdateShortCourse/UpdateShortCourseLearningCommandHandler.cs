@@ -9,7 +9,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Text.Json;
 using LearningDomainMilestones = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
 using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 
