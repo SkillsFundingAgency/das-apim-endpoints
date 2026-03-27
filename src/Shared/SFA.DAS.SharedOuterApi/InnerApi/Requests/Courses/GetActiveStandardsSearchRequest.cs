@@ -26,14 +26,20 @@ public class GetActiveStandardsSearchRequest : IGetApiRequest
             queryParams.Add($"keyword={Uri.EscapeDataString(Keyword)}");
         }
 
-        foreach (int routeId in RouteIds)
+        if (RouteIds != null && RouteIds.Count > 0)
         {
-            queryParams.Add($"routeIds={routeId}");
+            foreach (int routeId in RouteIds)
+            {
+                queryParams.Add($"routeIds={routeId}");
+            }
         }
 
-        foreach (int level in Levels)
+        if (Levels != null && Levels.Count > 0)
         {
-            queryParams.Add($"levels={level}");
+            foreach (int level in Levels)
+            {
+                queryParams.Add($"levels={level}");
+            }
         }
 
         foreach (var learningType in LearningTypes)

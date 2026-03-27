@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Events;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
@@ -27,7 +28,7 @@ public class CreateDraftShortCourseCommandHandler(
     {
         logger.LogInformation("Creating draft short course for provider {ProviderUkprn}", command.Ukprn);
 
-        var requestData = createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
+        var requestData = await createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
         var learningResponse = await learningApiClient.PostWithResponseCode<CreateShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
 
@@ -37,18 +38,20 @@ public class CreateDraftShortCourseCommandHandler(
             return new CreateDraftShortCourseResult();
         }
 
-        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn);
+        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn, requestData);
 
         await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
-        //removed for now until downstream fixed
-        //await messageSession.Publish(MapToEvent(command.Ukprn, requestData));
+        var correlationId = Guid.NewGuid();
+        await messageSession.Publish(MapToEvent(command.Ukprn, requestData, command.ShortCourseRequest, correlationId));
 
-        return new CreateDraftShortCourseResult();
+        return new CreateDraftShortCourseResult { CorrelationId = correlationId };
     }
 
-    private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request)
+    private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request, ShortCourseRequest shortCourseRequest, Guid correlationId)
     {
+        var firstOnProg = shortCourseRequest.Delivery.OnProgramme.MinBy(x => x.StartDate);
+
         return new LearnerDataEvent
         {
             ULN = request.LearnerUpdateDetails.Uln,
@@ -60,11 +63,17 @@ public class CreateDraftShortCourseCommandHandler(
             StartDate = request.OnProgramme.StartDate,
             PlannedEndDate = request.OnProgramme.ExpectedEndDate,
             PercentageLearningToBeDelivered = 100,
+            EpaoPrice = 0,
             TrainingPrice = (int)request.OnProgramme.Price,
-            AgreementId = request.OnProgramme.EmployerId.ToString(),
-            StandardCode = Convert.ToInt32(request.OnProgramme.CourseCode),
+            IsFlexiJob = false,
+            PlannedOTJTrainingHours = 0,
+            AgreementId = firstOnProg?.AgreementId,
+            StandardCode = 0,
+            ConsumerReference = shortCourseRequest.ConsumerReference,
+            LarsCode = request.OnProgramme.CourseCode,
+            CorrelationId = correlationId,
             ReceivedDate = DateTime.UtcNow,
-            LearningType = LearningType.ApprenticeshipUnit
+            LearningType = (LearningType)request.OnProgramme.LearningType
         };
     }
 }

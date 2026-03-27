@@ -18,44 +18,27 @@ public class UpdateShortCourseLearningPutRequest : IPutApiRequest<UpdateShortCou
         Data = data;
     }
 }
-
-
 #pragma warning disable CS8618
 public class UpdateShortCourseLearningRequestBody
 {
     public ShortCourseLearnerUpdateDetails LearnerUpdateDetails { get; set; }
-    public List<ShortCourseLearningSupportDetails> LearningSupport { get; set; } = new();
     public ShortCourseOnProgrammeUpdateDetails OnProgramme { get; set; }
 }
 
 public class ShortCourseLearnerUpdateDetails
 {
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
-    public string? EmailAddress { get; set; }
-    public DateTime DateOfBirth { get; set; }
-    public long Uln { get; set; }
+    public string FirstName { get; set; } = "";
+    public string LastName { get; set; } = "";
     public string LearnerRef { get; set; }
-}
-
-public class ShortCourseLearningSupportDetails
-{
-    public DateTime StartDate { get; set; }
-
-    public DateTime EndDate { get; set; }
 }
 
 public class ShortCourseOnProgrammeUpdateDetails
 {
-    public string CourseCode { get; set; } = null!;
-    public long EmployerId { get; set; }
-    public long Ukprn { get; set; }
-    public DateTime StartDate { get; set; }
+    public string CourseCode { get; set; } = "";
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<Milestone> Milestones { get; set; } = new();
-    public decimal Price { get; set; }
 }
 
 

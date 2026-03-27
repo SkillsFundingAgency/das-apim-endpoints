@@ -6,6 +6,8 @@ public class ShortCourseRequest
     public ShortCourseLearnerRequestDetails Learner { get; set; }
 
     public ShortCourseDelivery Delivery { get; set; }
+
+    public string ConsumerReference { get; set; }
 }
 
 public class ShortCourseLearnerRequestDetails : LearnerRequestDetails
