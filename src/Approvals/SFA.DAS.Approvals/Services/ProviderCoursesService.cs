@@ -33,7 +33,6 @@ public class ProviderStandardsService(
     ILogger<ProviderStandardsService> logger)
     : IProviderStandardsService
 {
-    public const string AllCoursesCacheKey = "ProviderCoursesService.GetAllCoursesResponse";
     public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
     public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
     public const int CacheExpiryHours = 12;
@@ -58,22 +57,7 @@ public class ProviderStandardsService(
         };
     }
 
-    // TODO This is a stub to allow us to test the AppUnits, needs to call the new endpoint once deployed 
     public async Task<ProviderStandardsData> GetCoursesData(long providerId)
-    {
-        var result = await GetStandardsData(providerId);
-
-        var list = result.Standards.ToList();
-        list.Add(new Standard("ZSC00001", "Stubbed Digital Apprenticeship Unit", 0));
-        list.Add(new Standard("ZSC00002", "Stubbed Teacher Assistent - Apprenticeship Unit", 0));
-        list.Add(new Standard("ZSC00004", "Stubbed Nursing Apprenticeship Unit", 0));
-        result.Standards = list;
-
-        return result;
-    }
-
-    // This needs to be completed once the GetCoursesForProvider endpoint is complete.
-    public async Task<ProviderStandardsData> GetCoursesDataRealImplementation(long providerId)
     {
         var providerDetails = await GetTrainingProviderDetails(providerId);
 
@@ -82,7 +66,9 @@ public class ProviderStandardsService(
             return new ProviderStandardsData
             {
                 IsMainProvider = providerDetails.IsMainProvider,
-                Standards = await GetAllCourses()
+                // TODO This is a concern, we are returning AllStandards but I think we need all Courses (as All Standards does not include the AppUnits), but the code works correctly in the FE
+                // I still think this will NOT corectly, but it requires another PR which contains the Get All Courses endpoin, so we will live with this until we can resolve it 
+                Standards = await GetAllStandards()
             };
         }
 
@@ -124,23 +110,6 @@ public class ProviderStandardsService(
         return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
     }
 
-    //DOTO This needs to be reworked to use Witeks endpoint to get all course
-    // one difference to consider is the Level will no longer be an integer, it's a string
-    private async Task<IEnumerable<Standard>> GetAllCourses()
-    {
-        var cacheResult =
-            await cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllCoursesCacheKey);
-
-        if (cacheResult != null)
-        {
-            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
-        }
-
-        var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-        await cacheStorageService.SaveToCache(AllCoursesCacheKey, result, CacheExpiryHours);
-        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
-    }
-
     private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
     {
         try
@@ -165,7 +134,6 @@ public class ProviderStandardsService(
         }
     }
 
-    // The GetCoursesForProvider endpoint is not yet implemented, the implementation will chnage this code
     private async Task<IEnumerable<Standard>> GetCoursesForProvider(long providerId)
     {
         try
