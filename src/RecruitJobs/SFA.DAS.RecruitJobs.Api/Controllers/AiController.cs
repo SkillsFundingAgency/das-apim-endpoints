@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RecruitJobs.Ai;
+using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Domain.Recruit.Ai;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -24,13 +25,21 @@ public class AiController(ILogger<AiController> logger): ControllerBase
         [FromServices] IRecruitAiApiClient<RecruitAiApiConfiguration> recruitAiApiClient,
         [FromRoute] Guid vacancyId,
         [FromRoute] Guid vacancyReviewId,
+        [FromBody] CreateVacancyReviewData data,
         CancellationToken cancellationToken)
     {
+        var reviewRequired = data.ReviewStatus switch
+        {
+            AiReviewStatus.Skipped => true,
+            AiReviewStatus.Failed => true,
+            _ => false
+        };
+        
         var response = await recruitAiApiClient.PutWithResponseCode<PutAiVacancyReviewDto, NullResponse>(new PutAiVacancyReviewRequest(vacancyReviewId, new PutAiVacancyReviewDto()
         {
-            ManualReviewRequired = false,
+            ManualReviewRequired = reviewRequired,
             Output = null,
-            Status = AiReviewStatus.Pending,
+            Status = data.ReviewStatus,
             VacancyId = vacancyId,
         }));
         return response.StatusCode.IsSuccessStatusCode() ? TypedResults.Ok() : TypedResults.Problem();
@@ -45,14 +54,12 @@ public class AiController(ILogger<AiController> logger): ControllerBase
         [FromBody] Guid vacancyReviewId,
         CancellationToken cancellationToken)
     {
-        // fetch the vacancy
         var response = await recruitApiClient.GetWithResponseCode<GetVacancyResponse>(new GetVacancyRequest(vacancyId));
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
             return TypedResults.NotFound("Vacancy not found");
         }
         
-        // send to chat gpt
         var result = await aiService.ReviewVacancyAsync(vacancyReviewId, response.Body, cancellationToken);
         return result ? Results.Ok() : Results.Problem();
     }
