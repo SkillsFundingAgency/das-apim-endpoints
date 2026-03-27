@@ -2,4 +2,5 @@
 
 public class CreateDraftShortCourseResult
 {
+    public Guid CorrelationId { get; set; }
 }
