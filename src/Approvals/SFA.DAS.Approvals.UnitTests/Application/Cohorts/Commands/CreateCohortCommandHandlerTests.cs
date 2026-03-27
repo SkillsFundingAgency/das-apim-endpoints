@@ -92,7 +92,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -202,7 +202,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = new GetLearnerAgeResponse()
             });
 
@@ -237,7 +237,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = getLearnerAgeResponse
             });
 
@@ -274,7 +274,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse(),
+                Standard = new GetStandardsListItem(),
                 LearnerAgeRules = new GetLearnerAgeResponse()
             });
 

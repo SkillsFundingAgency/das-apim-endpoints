@@ -53,19 +53,19 @@ builder.Services.AddSingleton<ITelemetryInitializer, CorrelationTelemetryInitial
 builder.Services.AddSingleton<IMessageSession>(provider =>
 {
     var endpointConfiguration = new EndpointConfiguration("SFA.DAS.LearnerData.OuterApi");
-    endpointConfiguration.EnableInstallers();
     endpointConfiguration.UseMessageConventions();
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();
     var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-    if (!configuration.IsLocalOrDev())
-    {
-        nsbConnection = nsbConnection.Replace("Endpoint=sb://", string.Empty).TrimEnd('/');
-        transport.CustomTokenCredential(new DefaultAzureCredential());
-    }
-    transport.ConnectionString(nsbConnection);
+    var fullyQualifiedNamespace = new Uri(
+        nsbConnection.Split(';')
+            .First(p => p.StartsWith("Endpoint=", StringComparison.OrdinalIgnoreCase))
+            .Substring("Endpoint=".Length)
+    ).Host;
+    transport.ConnectionString(fullyQualifiedNamespace);
+    transport.CustomTokenCredential(new DefaultAzureCredential());
 
     var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
     if (!string.IsNullOrWhiteSpace(decodedLicence)) endpointConfiguration.License(decodedLicence);

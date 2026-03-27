@@ -22,13 +22,13 @@ public class ShortCoursesController(
     {
         try
         {
-            await mediator.Send(new CreateDraftShortCourseCommand
+            var result = await mediator.Send(new CreateDraftShortCourseCommand
             {
                 Ukprn = ukprn,
                 ShortCourseRequest = request
             });
 
-            return Accepted();
+            return Accepted(new { result.CorrelationId });
         }
         catch (Exception e)
         {

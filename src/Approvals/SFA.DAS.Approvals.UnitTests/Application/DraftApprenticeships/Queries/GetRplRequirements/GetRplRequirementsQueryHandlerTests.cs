@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequirements;
 using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Queries.GetRplRequirements;
@@ -16,7 +17,7 @@ public class GetRplRequirementsQueryHandlerTests
     private Mock<ICourseTypeRulesService> _courseTypeRulesService;
     private Mock<ILogger<GetRplRequirementsQueryHandler>> _logger;
     private GetRplRequirementsQuery _query;
-    private GetCourseLookupResponse _courseResponse;
+    private GetStandardsListItem _courseResponse;
     private GetRecognitionOfPriorLearningResponse _rplResponse;
 
     [SetUp]
@@ -25,14 +26,14 @@ public class GetRplRequirementsQueryHandlerTests
         var fixture = new Fixture();
 
         _query = fixture.Create<GetRplRequirementsQuery>();
-        _courseResponse = fixture.Create<GetCourseLookupResponse>();
+        _courseResponse = fixture.Create<GetStandardsListItem>();
         _rplResponse = fixture.Create<GetRecognitionOfPriorLearningResponse>();
 
         _courseTypeRulesService = new Mock<ICourseTypeRulesService>();
         _courseTypeRulesService.Setup(x => x.GetRplRulesAsync(_query.CourseId))
             .ReturnsAsync(new RplRulesResult
             {
-                Course = _courseResponse,
+                Standard = _courseResponse,
                 RplRules = _rplResponse
             });
 
@@ -49,7 +50,7 @@ public class GetRplRequirementsQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.ApprenticeshipType.Should().Be(_courseResponse.LearningType);
+        result.ApprenticeshipType.Should().Be(_courseResponse.ApprenticeshipType);
         result.IsRequired.Should().Be(_rplResponse.IsRequired);
         result.OffTheJobTrainingMinimumHours.Should().Be(_rplResponse.OffTheJobTrainingMinimumHours);
     }
@@ -74,13 +75,13 @@ public class GetRplRequirementsQueryHandlerTests
     {
         // Arrange
         _courseTypeRulesService.Setup(x => x.GetRplRulesAsync(_query.CourseId))
-            .ThrowsAsync(new Exception($"RPL rules not found for apprenticeship type {_courseResponse.LearningType}"));
+            .ThrowsAsync(new Exception($"RPL rules not found for apprenticeship type {_courseResponse.ApprenticeshipType}"));
 
         // Act
         var act = () => _handler.Handle(_query, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<Exception>()
-            .WithMessage($"RPL rules not found for apprenticeship type {_courseResponse.LearningType}");
+            .WithMessage($"RPL rules not found for apprenticeship type {_courseResponse.ApprenticeshipType}");
     }
 }

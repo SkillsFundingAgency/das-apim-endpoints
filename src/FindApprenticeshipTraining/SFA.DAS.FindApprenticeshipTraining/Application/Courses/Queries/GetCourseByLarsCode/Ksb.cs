@@ -16,7 +16,7 @@ public class Ksb
         {
             Type = source.Type,
             Id = source.Id,
-            Detail = source.Description,
+            Detail = source.Detail,
         };
     }
 }

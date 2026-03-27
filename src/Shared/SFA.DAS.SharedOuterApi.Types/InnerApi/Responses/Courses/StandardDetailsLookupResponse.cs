@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
 
@@ -24,7 +24,8 @@ public class StandardDetailsLookupResponse : StandardApiResponseBase
     public string TrailBlazerContact { get; set; }
     public string TypicalJobTitles { get; set; }
     public List<string> Skills { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public CourseType CourseType { get; set; }
+    public LearningType LearningType { get; set; }
     public List<KsbResponse> Ksbs { get; set; }
     public List<RelatedOccupation> RelatedOccupations { get; set; }
     public string StandardPageUrl { get; set; }
