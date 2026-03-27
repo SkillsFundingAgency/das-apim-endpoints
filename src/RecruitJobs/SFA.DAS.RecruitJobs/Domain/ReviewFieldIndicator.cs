@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.RecruitJobs.Domain.Vacancy;
+namespace SFA.DAS.RecruitJobs.Domain;
 
 public class ReviewFieldIndicator
 {
