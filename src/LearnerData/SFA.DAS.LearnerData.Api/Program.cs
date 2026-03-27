@@ -53,7 +53,7 @@ builder.Services.AddSingleton<IMessageSession>(provider =>
 {
     var endpointConfiguration = new EndpointConfiguration("SFA.DAS.LearnerData.OuterApi");
     endpointConfiguration.EnableInstallers();
-    endpointConfiguration.UseMessageConventions();
+    endpointConfiguration.UseExtendedMessageConventions();
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();

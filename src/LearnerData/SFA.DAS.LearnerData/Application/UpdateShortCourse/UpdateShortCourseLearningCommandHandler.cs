@@ -9,6 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Text.Json;
 using LearningDomainMilestones = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
 using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 
@@ -101,6 +102,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             },
             OnProgramme = new ShortCourseOnProgrammeUpdateDetails
             {
+                Ukprn = command.Ukprn,
                 ExpectedEndDate = currentOnProgramme.ExpectedEndDate,
                 CompletionDate = currentOnProgramme.CompletionDate,
                 WithdrawalDate = currentOnProgramme.WithdrawalDate,
@@ -143,7 +145,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("Publishing CalculateGrowthAndSkillsPayments event for LearningKey: {LearningKey}", learningResponse.LearningKey);
         
         var eventMessage = await _calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-        
+
         await _messageSession.Publish(eventMessage);
 
         _logger.LogInformation("CalculateGrowthAndSkillsPayments event published for LearningKey: {LearningKey}", learningResponse.LearningKey);
