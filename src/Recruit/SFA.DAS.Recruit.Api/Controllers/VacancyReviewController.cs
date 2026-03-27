@@ -19,8 +19,7 @@ public class VacancyReviewController(IMediator mediator, ILogger<VacancyReviewCo
     [Route("[controller]s/{id}")]
     public async Task<IActionResult> UpsertVacancyReview(
         [FromRoute] Guid id,
-        [FromBody] VacancyReviewDto vacancyReview,
-        [FromServices] IRecruitArtificialIntelligenceService aiService)
+        [FromBody] VacancyReviewDto vacancyReview)
     {
         try
         {
