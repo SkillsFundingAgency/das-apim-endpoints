@@ -42,7 +42,7 @@ public sealed class WhenGettingCourses
             Levels = [2],
             Distance = 40,
             Location = "SW1",
-            ApprenticeshipTypes = apprenticeshipTypes
+            LearningTypes = apprenticeshipTypes
         };
 
         coursesApiClient
@@ -52,7 +52,7 @@ public sealed class WhenGettingCourses
                     a.OrderBy.Equals(query.OrderBy) &&
                     a.Levels.SequenceEqual(query.Levels) &&
                     a.RouteIds.SequenceEqual(query.RouteIds) &&
-                    a.ApprenticeshipTypes.Equals(query.ApprenticeshipTypes)
+                    a.LearningTypes.Equals(query.LearningTypes)
                 )
              ))
             .ReturnsAsync(
@@ -85,7 +85,7 @@ public sealed class WhenGettingCourses
                     r.OrderBy == query.OrderBy &&
                     r.RouteIds == query.RouteIds &&
                     r.Levels == query.Levels &&
-                    r.ApprenticeshipTypes == query.ApprenticeshipTypes)
+                    r.LearningTypes == query.LearningTypes)
                 ),
                 Times.Once
         );

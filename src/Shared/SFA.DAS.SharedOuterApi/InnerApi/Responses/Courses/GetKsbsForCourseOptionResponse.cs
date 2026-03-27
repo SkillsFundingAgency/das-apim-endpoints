@@ -4,5 +4,5 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 
 public class GetKsbsForCourseOptionResponse
 {
-    public List<KsbResponse> Ksbs { get; set; }
+    public List<KsbResponse> Ksbs { get; set; } = [];
 }

@@ -14,7 +14,7 @@ public sealed class GetCoursesQuery : IRequest<GetCoursesQueryResult>
     public List<int> RouteIds { get; set; } = new List<int>();
 
     public List<int> Levels { get; set; } = new List<int>();
-    public List<ApprenticeshipType> ApprenticeshipTypes { get; set; } = new List<ApprenticeshipType>();
+    public List<ApprenticeshipType> LearningTypes { get; set; } = new List<ApprenticeshipType>();
     public int? Distance { get; set; }
 
     public string? Location { get; set; }
