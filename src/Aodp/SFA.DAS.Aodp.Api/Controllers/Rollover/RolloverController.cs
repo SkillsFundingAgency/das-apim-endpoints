@@ -37,6 +37,15 @@ public class RolloverController : BaseController
         return await SendRequestAsync(new GetRolloverCandidatesQuery());
     }
 
+    [HttpGet("/api/rollover/rolloverworkflowcandidates")]
+    [ProducesResponseType(typeof(GetRolloverWorkflowCandidatesQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetRolloverWorkflowCandidates()
+    {
+        return await SendRequestAsync(new GetRolloverWorkflowCandidatesQuery());
+    }
+
     [HttpPost("/api/rollover/rolloverworkflowruns")]
     [ProducesResponseType(typeof(BaseMediatrResponse<CreateRolloverWorkflowRunCommandResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
