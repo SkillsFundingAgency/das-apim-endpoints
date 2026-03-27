@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
 {
@@ -24,6 +25,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
         public string LatestEPAOutcome { get; set; }
         public string Status { get; set; }
         public CertificateData CertificateData { get; set; }
+        public List<CertificateLog> CertificateLogs { get; set; }
     }
 
     public class CertificateData
