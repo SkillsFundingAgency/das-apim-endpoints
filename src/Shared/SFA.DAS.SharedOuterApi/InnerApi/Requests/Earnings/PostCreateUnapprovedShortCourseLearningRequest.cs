@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System;
 
@@ -49,6 +50,8 @@ public class OnProgramme
     public List<Milestone> Milestones { get; set; } = new();
 
     public decimal TotalPrice { get; set; }
+
+    public LearningType LearningType { get; set; }
 }
 
 public enum Milestone
