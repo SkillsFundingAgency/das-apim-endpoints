@@ -31,7 +31,8 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<SubscriptionService>();
             services.AddTransient<ContentService>();
-            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();            
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+            services.AddTransient<ILearnerNotificationsInnerApiClient<LearnerNotificationsApiConfiguration>, LearnerNotificationsInnerApiClient>();
         }
     }
 }
