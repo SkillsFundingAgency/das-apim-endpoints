@@ -1,10 +1,9 @@
 ﻿using MediatR;
-using SFA.DAS.Aodp.Application.Queries.Rollover;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Rollover;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SSFA.DAS.Aodp.Application.Queries.Rollover
+namespace SFA.DAS.Aodp.Application.Queries.Rollover
 {
     public class GetRolloverWorkflowCandidatesQueryHandler(IAodpApiClient<AodpApiConfiguration> apiClient) : IRequestHandler<GetRolloverWorkflowCandidatesQuery, BaseMediatrResponse<GetRolloverWorkflowCandidatesQueryResponse>>
     {
