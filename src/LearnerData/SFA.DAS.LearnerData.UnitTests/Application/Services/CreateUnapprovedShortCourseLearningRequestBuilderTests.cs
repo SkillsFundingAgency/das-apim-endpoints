@@ -1,8 +1,9 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using NUnit.Framework;
+using AutoFixture;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -12,11 +13,26 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
     private Fixture _fixture;
     private CreateUnapprovedShortCourseLearningRequestBuilder _sut;
 
+    private const int ExpectedPrice = 2500;
+    private const LearningType ExpectedLearningType = LearningType.ApprenticeshipUnit;
+
     [SetUp]
     public void SetUp()
     {
         _fixture = new Fixture();
         _sut = new CreateUnapprovedShortCourseLearningRequestBuilder();
+    }
+
+    private static CreateDraftShortCourseRequest BuildLearningRequest(decimal price = ExpectedPrice, LearningType learningType = ExpectedLearningType)
+    {
+        return new CreateDraftShortCourseRequest
+        {
+            OnProgramme = new OnProgramme
+            {
+                Price = price,
+                LearningType = learningType
+            }
+        };
     }
 
     [Test]
@@ -25,6 +41,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         // Arrange
         var ukprn = _fixture.Create<long>();
         var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
 
         var learner = _fixture.Build<ShortCourseLearnerRequestDetails>()
             .With(x => x.Dob, new DateTime(2000, 1, 1))
@@ -57,10 +74,11 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, ukprn);
+        var result = _sut.Build(request, learningKey, episodeKey, ukprn, BuildLearningRequest());
 
         // Assert
         result.LearningKey.Should().Be(learningKey);
+        result.EpisodeKey.Should().Be(episodeKey);
 
         result.Learner.Uln.Should().Be(learner.Uln.ToString());
         result.Learner.DateOfBirth.Should().Be(learner.Dob);
@@ -73,18 +91,88 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         }
 
         result.OnProgramme.CourseCode.Should().Be(onProgramme.CourseCode);
-        result.OnProgramme.EmployerId.Should().Be(0);
         result.OnProgramme.StartDate.Should().Be(onProgramme.StartDate);
         result.OnProgramme.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
         result.OnProgramme.CompletionDate.Should().Be(onProgramme.CompletionDate);
         result.OnProgramme.WithdrawalDate.Should().Be(onProgramme.WithdrawalDate);
         result.OnProgramme.Ukprn.Should().Be(ukprn);
-        result.OnProgramme.TotalPrice.Should().Be(1000);
+        result.OnProgramme.TotalPrice.Should().Be(ExpectedPrice);
+        result.OnProgramme.LearningType.Should().Be(ExpectedLearningType);
 
         result.OnProgramme.Milestones.Should().BeEquivalentTo(new[]
         {
             SharedOuterApi.InnerApi.Requests.Earnings.Milestone.ThirtyPercentLearningComplete,
             SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete
         });
+    }
+
+    [Test]
+    public void Build_Adds_LearningComplete_Milestone_When_CompletionDate_Set_And_Milestone_Absent()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningKey = Guid.NewGuid();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+
+        // Assert
+        result.OnProgramme.Milestones.Should().Contain(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
+    }
+
+    [Test]
+    public void Build_Does_Not_Duplicate_LearningComplete_When_Already_Present()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningKey = Guid.NewGuid();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+
+        // Assert
+        result.OnProgramme.Milestones.Should().ContainSingle(m =>
+            m == SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
+    }
+
+    [Test]
+    public void Build_Does_Not_Add_LearningComplete_When_CompletionDate_Not_Set()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningKey = Guid.NewGuid();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, (DateTime?)null)
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+
+        // Assert
+        result.OnProgramme.Milestones.Should().NotContain(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
     }
 }

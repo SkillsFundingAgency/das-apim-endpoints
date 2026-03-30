@@ -15,6 +15,7 @@ public class UpdateShortCourseOnProgrammeEarningPutRequest(Guid learningKey, Upd
 public class UpdateShortCourseOnProgrammeRequestBody
 {
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? CompletionDate { get; set; }
     public List<Milestone> Milestones { get; set; }
 }
 

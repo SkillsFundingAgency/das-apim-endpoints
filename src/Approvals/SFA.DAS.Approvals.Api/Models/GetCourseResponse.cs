@@ -1,6 +1,7 @@
 ﻿using System;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Types;
+using SFA.DAS.SharedOuterApi.Common;
 
 namespace SFA.DAS.Approvals.Api.Models;
 
