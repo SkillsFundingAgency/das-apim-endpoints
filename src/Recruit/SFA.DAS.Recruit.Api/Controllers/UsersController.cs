@@ -37,7 +37,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         }
 
         [HttpGet]
-        [Route("by/idams/{idams:alpha}")]
+        [Route("by/idams/{idams}")]
         public async Task<IActionResult> GetByIdams([FromRoute] string idams)
         {
             try
@@ -54,7 +54,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         }
 
         [HttpGet]
-        [Route("by/dfEUserId/{dfEUserId:alpha}")]
+        [Route("by/dfEUserId/{dfEUserId}")]
         public async Task<IActionResult> GetByDfEUserId([FromRoute] string dfEUserId)
         {
             try
