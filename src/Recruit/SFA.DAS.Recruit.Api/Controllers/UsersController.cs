@@ -11,24 +11,15 @@ namespace SFA.DAS.Recruit.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class UsersController : ControllerBase
+    public class UsersController(IMediator mediator, ILogger<UsersController> logger) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<UsersController> _logger;
-
-        public UsersController(IMediator mediator, ILogger<UsersController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
         [HttpGet]
         [Route("{userId}/accounts")]
         public async Task<IActionResult> GetAccountsByUserId(string userId)
         {
             try
             {
-                var queryResult = await _mediator.Send(new GetUserAccountsQuery {UserId = userId});
+                var queryResult = await mediator.Send(new GetUserAccountsQuery {UserId = userId});
 
                 var returnModel = new GetAccountsResponse
                 {
@@ -39,7 +30,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error getting account by id");
+                logger.LogError(e, "Error getting account by id");
                 return BadRequest();
             }
         }
@@ -50,7 +41,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
         {
             try
             {
-                await _mediator.Send(new UpsertUserCommand()
+                await mediator.Send(new UpsertUserCommand()
                 {
                     User = (InnerApi.Recruit.Requests.UserDto)userDto,
                     Id = id
@@ -59,7 +50,7 @@ namespace SFA.DAS.Recruit.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error occured while upserting user");
+                logger.LogError(e, "Error occured while upserting user");
                 return new StatusCodeResult(500);
             }
         }

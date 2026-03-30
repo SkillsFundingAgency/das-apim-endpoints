@@ -395,6 +395,7 @@ enum VacancyStatus {
   LIVE
   CLOSED
   APPROVED
+  ARCHIVED
 }
 
 type VacancyEntity {
