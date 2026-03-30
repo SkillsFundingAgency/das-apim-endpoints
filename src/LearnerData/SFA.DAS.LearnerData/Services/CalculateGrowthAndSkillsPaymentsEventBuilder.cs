@@ -112,7 +112,7 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                             {
                                 AccountId = episode.EmployerAccountId,
                                 FundingAccountId = episode.EmployerAccountId,
-                                EmployerType = EmployerType.Levy //TODO: To be set in later story
+                                EmployerType = EmployerType.Levy //TODO: To be set later as part of FLP-1704
                             }
                         }).ToList()
                     }
