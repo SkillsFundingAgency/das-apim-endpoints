@@ -11,10 +11,10 @@ public sealed class GetCoursesQuery : IRequest<GetCoursesQueryResult>
 {
     public string? Keyword { get; set; }
 
-    public List<int> RouteIds { get; set; } = new List<int>();
+    public List<int> RouteIds { get; set; } = [];
 
-    public List<int> Levels { get; set; } = new List<int>();
-    public List<ApprenticeshipType> LearningTypes { get; set; } = new List<ApprenticeshipType>();
+    public List<int> Levels { get; set; } = [];
+    public List<ApprenticeshipType> LearningTypes { get; set; } = [];
     public int? Distance { get; set; }
 
     public string? Location { get; set; }
