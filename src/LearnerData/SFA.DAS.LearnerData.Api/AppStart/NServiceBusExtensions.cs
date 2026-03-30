@@ -18,7 +18,6 @@ public static class NServiceBusExtensions
                 Regex.IsMatch(t.Name, "Event(V\\d+)?$")
                 || typeof(Event).IsAssignableFrom(t)
                 || t.FullName == "SFA.DAS.Payments.EarningEvents.Messages.External.Commands.CalculateGrowthAndSkillsPayments"
-                || (t.Namespace != null && t.Namespace.Contains(".Commands"))
             );
 
         return config;
