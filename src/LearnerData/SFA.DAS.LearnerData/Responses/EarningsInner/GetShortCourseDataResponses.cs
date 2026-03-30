@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+﻿namespace SFA.DAS.LearnerData.Responses.EarningsInner;
 
 public class GetFm99ShortCourseDataResponse
 {

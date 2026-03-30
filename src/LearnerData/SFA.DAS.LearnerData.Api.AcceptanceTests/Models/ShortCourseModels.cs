@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+﻿using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Models;

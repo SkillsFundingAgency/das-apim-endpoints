@@ -1,7 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
+namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
 public class GetShortCourseEarningsRequest : IGetApiRequest
 {

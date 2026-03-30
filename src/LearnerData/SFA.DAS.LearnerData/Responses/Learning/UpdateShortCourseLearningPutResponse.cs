@@ -1,8 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Common;
-using System;
-using System.Linq;
-
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+﻿namespace SFA.DAS.LearnerData.Responses.Learning;
 
 public class UpdateShortCourseLearningPutResponse
 {
