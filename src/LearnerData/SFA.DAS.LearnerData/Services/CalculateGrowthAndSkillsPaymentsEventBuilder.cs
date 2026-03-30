@@ -57,8 +57,8 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                 CourseReference = episode.CourseCode, //this is also trainingcode in Learning Domain
                 AgeAtStartOfTraining = (byte)episode.AgeAtStart,
                 StartDate = episode.StartDate,
-                PlannedEndDate = episode.PlannedEndDate,// expected end date in Learning Domain
-                ActualEndDate = GetActualEndDate(episode.WithdrawalDate, learningResponse.CompletionDate),// calculated from withdrawal or completion // Reminder to do Completion Date
+                PlannedEndDate = episode.PlannedEndDate,
+                ActualEndDate = GetActualEndDate(episode.WithdrawalDate, learningResponse.CompletionDate),
                 TrainingStatus = GetTrainingStatus(episode.WithdrawalDate, learningResponse.CompletionDate)
             },
             EmployerContribution = 0,
