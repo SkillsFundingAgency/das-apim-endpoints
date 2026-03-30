@@ -1,5 +1,7 @@
 ﻿using NServiceBus;
+using SFA.DAS.NServiceBus;
 using SFA.DAS.NServiceBus.Configuration;
+using System.Text.RegularExpressions;
 
 namespace SFA.DAS.LearnerData.Api.AppStart;
 
@@ -13,8 +15,10 @@ public static class NServiceBusExtensions
         // Then extend
         config.Conventions()
             .DefiningEventsAs(t =>
-                t.FullName == "SFA.DAS.Payments.EarningEvents.Messages.External.Commands.CalculateGrowthAndSkillsPayments"
-                || t.Namespace != null && t.Namespace.Contains(".Commands")
+                Regex.IsMatch(t.Name, "Event(V\\d+)?$")
+                || typeof(Event).IsAssignableFrom(t)
+                || t.FullName == "SFA.DAS.Payments.EarningEvents.Messages.External.Commands.CalculateGrowthAndSkillsPayments"
+                || (t.Namespace != null && t.Namespace.Contains(".Commands"))
             );
 
         return config;

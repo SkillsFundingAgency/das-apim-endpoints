@@ -143,28 +143,4 @@ public static class DateTimeExtensions
         return firstOfNextMonth.AddDays(-1);
     }
 
-    public static byte GetAgeAtDate(this DateTime dateOfBirth, DateTime atDate)
-    {
-        var age = atDate.Year - dateOfBirth.Year;
-
-        DateTime birthdayThisYear;
-
-        if (dateOfBirth.Month == 2 && dateOfBirth.Day == 29 &&
-            !DateTime.IsLeapYear(atDate.Year))
-        {
-            // Treat birthday as March 1st in non-leap years
-            birthdayThisYear = new DateTime(atDate.Year, 3, 1);
-        }
-        else
-        {
-            birthdayThisYear = dateOfBirth.AddYears(age);
-        }
-
-        if (atDate < birthdayThisYear)
-        {
-            age--;
-        }
-
-        return (byte)age;
-    }
 }

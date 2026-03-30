@@ -5,6 +5,7 @@ using SFA.DAS.Payments.EarningEvents.Messages.External;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
@@ -169,10 +170,10 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
 
     private static EarningType GetEarningType(ShortCourseInstalment instalment)
     {
-        if(instalment.Type == "ThirtyPercentLearningComplete")
+        if(instalment.Type == Milestone.ThirtyPercentLearningComplete.ToString())
             return EarningType.Milestone1;
 
-        if(instalment.Type == "LearningComplete")
+        if(instalment.Type == Milestone.LearningComplete.ToString())
             return EarningType.Completion;
 
         throw new ArgumentException($"Unknown instalment type: {instalment.Type}");
