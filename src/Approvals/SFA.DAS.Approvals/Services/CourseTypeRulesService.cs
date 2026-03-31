@@ -1,9 +1,9 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
-using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -19,11 +19,11 @@ namespace SFA.DAS.Approvals.Services
         public async Task<CourseTypeRulesResult> GetCourseTypeRulesAsync(string courseCode)
         {
             var standard = await GetStandardAsync(courseCode);
-            var learnerAge = await GetLearnerAgeRulesAsync(standard.ApprenticeshipType);
+            var learnerAge = await GetLearnerAgeRulesAsync(standard.CourseType);
 
             return new CourseTypeRulesResult
             {
-                Standard = standard,
+                Course = standard,
                 LearnerAgeRules = learnerAge
             };
         }
@@ -31,18 +31,18 @@ namespace SFA.DAS.Approvals.Services
         public async Task<RplRulesResult> GetRplRulesAsync(string courseCode)
         {
             var standard = await GetStandardAsync(courseCode);
-            var rplRules = await GetRplRulesInternalAsync(standard.ApprenticeshipType);
+            var rplRules = await GetRplRulesInternalAsync(standard.CourseType);
 
             return new RplRulesResult
             {
-                Standard = standard,
+                Course = standard,
                 RplRules = rplRules
             };
         }
 
-        private async Task<GetStandardsListItem> GetStandardAsync(string courseCode)
+        private async Task<GetCourseLookupResponse> GetStandardAsync(string courseCode)
         {
-            var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
+            var standard = await coursesApiClient.Get<GetCourseLookupResponse>(new GetStandardDetailsByIdRequest(courseCode));
 
             if (standard == null)
             {

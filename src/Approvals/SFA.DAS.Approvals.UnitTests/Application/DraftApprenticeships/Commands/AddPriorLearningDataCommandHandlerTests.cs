@@ -24,7 +24,7 @@ public class AddPriorLearningDataCommandHandlerTests
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         [Frozen] Mock<ILogger<AddPriorLearningDataCommandHandler>> logger,
         GetDraftApprenticeshipResponse apprenticeship,
-        GetStandardsListItem courseResponse,
+        GetCourseLookupResponse courseResponse,
         GetRecognitionOfPriorLearningResponse priorLearningResponse,
         GetPriorLearningSummaryResponse priorLearningSummary,
         AddPriorLearningDataCommand request,
@@ -48,7 +48,7 @@ public class AddPriorLearningDataCommandHandlerTests
             .Setup(x => x.GetRplRulesAsync(apprenticeship.CourseCode))
             .ReturnsAsync(new RplRulesResult
             {
-                Standard = courseResponse,
+                Course = courseResponse,
                 RplRules = priorLearningResponse
             })
             .Verifiable();

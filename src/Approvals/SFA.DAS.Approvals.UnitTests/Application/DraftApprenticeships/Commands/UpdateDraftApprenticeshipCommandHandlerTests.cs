@@ -22,7 +22,7 @@ public class UpdateDraftApprenticeshipCommandHandlerTests
     public async Task Handle_Update_Draft_Apprenticeship(
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
-        GetStandardsListItem courseResponse,
+        GetCourseLookupResponse courseResponse,
         GetLearnerAgeResponse learnerAgeResponse,
         UpdateDraftApprenticeshipCommand request,
         UpdateDraftApprenticeshipCommandHandler handler)
@@ -34,7 +34,7 @@ public class UpdateDraftApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = courseResponse,
+                Course = courseResponse,
                 LearnerAgeRules = learnerAgeResponse
             });
 

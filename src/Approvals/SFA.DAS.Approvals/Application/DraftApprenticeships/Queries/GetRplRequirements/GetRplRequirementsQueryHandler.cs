@@ -17,7 +17,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetRplRequi
 
             return new GetRplRequirementsResult
             {
-                ApprenticeshipType = rplRules.Standard.ApprenticeshipType,
+                ApprenticeshipType = rplRules.Course.CourseType,
                 IsRequired = rplRules.RplRules.IsRequired,
                 OffTheJobTrainingMinimumHours = rplRules.RplRules.OffTheJobTrainingMinimumHours
             };

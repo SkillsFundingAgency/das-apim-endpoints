@@ -21,7 +21,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
         public async Task Handle_Cohort_Created(
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
-            GetStandardsListItem courseResponse,
+            GetCourseLookupResponse courseResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
             AddDraftApprenticeshipResponse expectedResponse,
@@ -38,7 +38,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
                 .ReturnsAsync(new CourseTypeRulesResult
                 {
-                    Standard = courseResponse,
+                    Course = courseResponse,
                     LearnerAgeRules = learnerAgeResponse
                 });
 
@@ -86,7 +86,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
             [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
-            GetStandardsListItem courseResponse,
+            GetCourseLookupResponse courseResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
             GetCohortResponse cohort,
@@ -107,7 +107,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
                 .ReturnsAsync(new CourseTypeRulesResult
                 {
-                    Standard = courseResponse,
+                    Course = courseResponse,
                     LearnerAgeRules = learnerAgeResponse
                 });
 
@@ -136,7 +136,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
             [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
-            GetStandardsListItem courseResponse,
+            GetCourseLookupResponse courseResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
             GetCohortResponse cohort,
@@ -153,7 +153,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
                 .ReturnsAsync(new CourseTypeRulesResult
                 {
-                    Standard = courseResponse,
+                    Course = courseResponse,
                     LearnerAgeRules = learnerAgeResponse
                 });
 
@@ -171,7 +171,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
             [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
-            GetStandardsListItem courseResponse,
+            GetCourseLookupResponse courseResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
             GetCohortResponse cohort,
@@ -191,7 +191,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
                 .ReturnsAsync(new CourseTypeRulesResult
                 {
-                    Standard = courseResponse,
+                    Course = courseResponse,
                     LearnerAgeRules = learnerAgeResponse
                 });
 
@@ -218,7 +218,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsApiClient,
             [Frozen] Mock<IAutoReservationsService> autoReservationService,
             [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
-            GetStandardsListItem courseResponse,
+            GetCourseLookupResponse courseResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             AddDraftApprenticeshipCommand request,
             GetCohortResponse cohort,
@@ -235,7 +235,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
                 .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
                 .ReturnsAsync(new CourseTypeRulesResult
                 {
-                    Standard = courseResponse,
+                    Course = courseResponse,
                     LearnerAgeRules = learnerAgeResponse
                 });
 

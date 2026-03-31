@@ -23,7 +23,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands;
 [TestFixture]
 public class EditApprenticeshipCommandHandlerTests
 {
-    private const string LearningType = "FoundationApprenticeship";
+    private const string CourseType = "FoundationApprenticeship";
 
     [Test, MoqAutoData]
     public async Task Handle_WhenApprenticeshipNotFound_ShouldThrowException(
@@ -61,7 +61,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
+                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -81,7 +81,7 @@ public class EditApprenticeshipCommandHandlerTests
             });
 
         commitmentsApiClient
-            .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<ValidateApprenticeshipForEditApiRequest>(),  true))
+            .Setup(x => x.PostWithResponseCode<NullResponse>(It.IsAny<ValidateApprenticeshipForEditApiRequest>(), true))
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.OK, string.Empty));
 
         // Act
@@ -133,7 +133,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
+                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -185,7 +185,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
+                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -238,7 +238,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
+                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -276,7 +276,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
+                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 

@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using System;
 
 namespace SFA.DAS.Approvals.Api.AppStart;
 
@@ -67,6 +68,16 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IAutoReservationsService, AutoReservationsService>();
+
+        if(string.Equals(configuration["UseNewCoursesApi"], "true", StringComparison.OrdinalIgnoreCase))
+        {
+            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
+        }
+        else
+        {
+            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
+        }
+
         services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
