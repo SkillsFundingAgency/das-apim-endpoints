@@ -60,4 +60,6 @@ public class GetApprenticeshipResponse : IPartyResource
     public bool? IsDurationReducedByRpl { get; set; }
     [JsonConverter(typeof(StringEnumConverter))]
     public LearningType? LearningType { get; set; }
+    public int? EmployerVerificationStatus { get; set; }
+    public string EmployerVerificationNotes { get; set; }
 }
