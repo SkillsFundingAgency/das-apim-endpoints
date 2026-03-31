@@ -56,7 +56,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrin
 
             response.EnsureSuccessStatusCode();
 
-            await SendConfirmationEmail(command, certificate.Type).ConfigureAwait(false);
+            try
+            {
+                await SendConfirmationEmail(command, certificate.Type).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Print requested for certificate {CertificateId} but failed to send confirmation email. Print request has already been sent.", command.CertificateId);
+            }
 
             return Unit.Value;
         }

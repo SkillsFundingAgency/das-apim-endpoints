@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrintRequest;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
+using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -163,6 +164,75 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCerti
             // Assert
             await act.Should().ThrowAsync<ArgumentException>()
                 .WithMessage("Certificate is not eligible for print request");
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Email_Is_Sent_On_Success(
+            CreateCertificatePrintRequestCommand command,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] Mock<INotificationService> mockNotificationService,
+            CreateCertificatePrintRequestCommandHandler handler)
+        {
+            // Arrange
+            var certificate = new GetStandardCertificateResponse
+            {
+                LatestEPAOutcome = "Pass",
+                Status = "Submitted",
+                PrintRequestedAt = null
+            };
+
+            var getResponse = new ApiResponse<GetStandardCertificateResponse>(certificate, HttpStatusCode.OK, string.Empty);
+            var putResponse = new ApiResponse<NullResponse>(null, HttpStatusCode.NoContent, string.Empty);
+
+            mockAssessorsApiClient
+                .Setup(c => c.GetWithResponseCode<GetStandardCertificateResponse>(
+                    It.IsAny<GetStandardCertificateRequest>()))
+                .ReturnsAsync(getResponse);
+
+            mockAssessorsApiClient
+                .Setup(c => c.PutWithResponseCode<PutCertificatePrintRequestData, NullResponse>(
+                    It.IsAny<PutCertificatePrintRequest>()))
+                .ReturnsAsync(putResponse);
+
+            // Act
+            await handler.Handle(command, CancellationToken.None);
+
+            // Assert
+            mockNotificationService.Verify(n => n.Send(It.IsAny<SendEmailCommand>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Put_And_Email_Are_Not_Called_When_Certificate_Is_Invalid(
+            CreateCertificatePrintRequestCommand command,
+            [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] Mock<INotificationService> mockNotificationService,
+            CreateCertificatePrintRequestCommandHandler handler)
+        {
+            // Arrange
+            var certificate = new GetStandardCertificateResponse
+            {
+                LatestEPAOutcome = "Fail",
+                Status = "Submitted",
+                PrintRequestedAt = DateTime.UtcNow
+            };
+
+            var getResponse = new ApiResponse<GetStandardCertificateResponse>(certificate, HttpStatusCode.OK, string.Empty);
+
+            mockAssessorsApiClient
+                .Setup(c => c.GetWithResponseCode<GetStandardCertificateResponse>(
+                    It.IsAny<GetStandardCertificateRequest>()))
+                .ReturnsAsync(getResponse);
+
+            // Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
+            await act.Should().ThrowAsync<ArgumentException>();
+
+            // Assert
+            mockAssessorsApiClient.Verify(c =>
+                c.PutWithResponseCode<PutCertificatePrintRequestData, NullResponse>(
+                    It.IsAny<PutCertificatePrintRequest>()),
+                Times.Never);
+            mockNotificationService.Verify(n => n.Send(It.IsAny<SendEmailCommand>()), Times.Never);
         }
     }
 }
