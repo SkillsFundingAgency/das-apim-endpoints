@@ -58,6 +58,14 @@ public sealed class GetCourseByLarsCodeQueryHandler(
         result.ProvidersCountWithinDistance = trainingCourseCountDetails?.ProvidersCount ?? 0;
         result.TotalProvidersCount = trainingCourseCountDetails?.TotalProvidersCount ?? 0;
         result.IncentivePayment = CalculateIncentivePayment(apprenticeshipFunding);
+
+        var ksbsResponse = await _cachedStandardDetailsService.GetKsbsForCourseOption(query.LarsCode);
+
+        if (ksbsResponse != null && ksbsResponse.Ksbs != null)
+        {
+            result.Ksbs = ksbsResponse.Ksbs.Select(k => (Ksb)k).ToList();
+        }
+
         return result;
     }
 

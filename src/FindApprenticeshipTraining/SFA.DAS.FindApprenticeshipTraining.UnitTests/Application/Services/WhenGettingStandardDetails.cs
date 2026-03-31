@@ -63,4 +63,48 @@ public class WhenGettingStandardDetails
                 coursesFromApi,
                 expectedExpirationInHours, null));
     }
+
+    [Test, MoqAutoData]
+    public async Task GetKsbsForCourseOption_KsbsFoundInCache_ReturnsCachedKsbs(
+        GetKsbsForCourseOptionResponse ksbsFromCache,
+        [Frozen] Mock<ICacheStorageService> mockCacheService,
+        CachedStandardDetailsService service)
+    {
+        var larsCode = "123";
+
+        mockCacheService
+            .Setup(s => s.RetrieveFromCache<GetKsbsForCourseOptionResponse>($"{nameof(GetKsbsForCourseOptionResponse)}-{larsCode}"))
+            .ReturnsAsync(ksbsFromCache);
+
+        var result = await service.GetKsbsForCourseOption(larsCode);
+
+        result.Should().BeEquivalentTo(ksbsFromCache);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetKsbsForCourseOption_KsbsNotFoundInCache_GetsFromApiAndStoresInCache(
+        GetKsbsForCourseOptionResponse ksbsFromApi,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+        [Frozen] Mock<ICacheStorageService> mockCacheService,
+        CachedStandardDetailsService service)
+    {
+        var expectedExpirationInHours = 4;
+        var larsCode = "123";
+
+        mockCoursesApiClient.Setup(client => client.GetWithResponseCode<GetKsbsForCourseOptionResponse>(It.IsAny<GetKsbsForCourseOptionRequest>()))
+            .ReturnsAsync(new ApiResponse<GetKsbsForCourseOptionResponse>(ksbsFromApi, System.Net.HttpStatusCode.OK, ""));
+
+        mockCacheService
+            .Setup(s => s.RetrieveFromCache<GetKsbsForCourseOptionResponse>($"{nameof(GetKsbsForCourseOptionResponse)}-{larsCode}"))
+            .ReturnsAsync((GetKsbsForCourseOptionResponse)null);
+
+        var result = await service.GetKsbsForCourseOption(larsCode);
+
+        result.Should().BeEquivalentTo(ksbsFromApi);
+        mockCacheService.Verify(s =>
+            s.SaveToCache(
+                $"{nameof(GetKsbsForCourseOptionResponse)}-{larsCode}",
+                ksbsFromApi,
+                expectedExpirationInHours, null));
+    }
 }

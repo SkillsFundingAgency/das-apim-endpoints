@@ -7,8 +7,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 
 public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
 {
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(StandardDetailsLookupResponse response)
     {
         GetCourseByLarsCodeQueryResult sut = response;
