@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Queries.GetActiveStandards;
-using SFA.DAS.ApprenticeApp.Application.Queries.GetRoatpProviders;
+using SFA.DAS.ApprenticeApp.Application.Queries.GetCommitmentsProviders;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
@@ -20,8 +20,8 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         [HttpGet]
         [Route("registeredProviders")]
         public async Task<IActionResult> GetRegisteredProviders()
-        {
-            var result = await _mediator.Send(new GetRoatpProvidersQuery());
+        {            
+            var result = await _mediator.Send(new GetCommitmentsProvidersQuery());
 
             return Ok(result.Providers);
         }
