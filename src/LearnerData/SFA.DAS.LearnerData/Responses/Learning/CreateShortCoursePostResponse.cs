@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+﻿namespace SFA.DAS.LearnerData.Responses.Learning;
 
 public class CreateShortCoursePostResponse
 {
