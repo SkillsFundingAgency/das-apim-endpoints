@@ -25,4 +25,5 @@ public class GetVacanciesQuery: IRequest<GetVacanciesQueryResult>
     public string Sort { get ; set ; }
     public List<int> StandardLarsCode { get ; set ; }
     public int? Ukprn { get; set; }
+    public bool OnlyPrimaryLocations { get; set; }
 }

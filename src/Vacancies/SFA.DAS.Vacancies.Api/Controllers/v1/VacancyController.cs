@@ -77,6 +77,7 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
                 PostedInLastNumberOfDays = request.PostedInLastNumberOfDays,
                 AdditionalDataSources = request.AdditionalDataSources?.Select(x => x.ToString()).ToList(),
                 ExcludeNational = true, // TODO: temp - this ensures we don't get national data that the api doesn't yet support
+                OnlyPrimaryLocations = false //Not supported with v1
             });
 
             return Ok((GetVacanciesListResponse)queryResponse);

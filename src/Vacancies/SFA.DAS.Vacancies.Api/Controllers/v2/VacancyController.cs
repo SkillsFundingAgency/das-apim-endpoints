@@ -77,7 +77,8 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
                 StandardLarsCode = request.StandardLarsCode,
                 PostedInLastNumberOfDays = request.PostedInLastNumberOfDays,
                 AdditionalDataSources = request.AdditionalDataSources?.Select(x => x.ToString()).ToList(),
-                ExcludeNational = request.ExcludeRecruitingNationally
+                ExcludeNational = request.ExcludeRecruitingNationally,
+                OnlyPrimaryLocations = true
             });
 
             return Ok((GetVacanciesListResponseV2)queryResponse);

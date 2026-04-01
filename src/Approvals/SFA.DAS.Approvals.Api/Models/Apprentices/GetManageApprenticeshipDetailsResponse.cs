@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.Apprenticeships.Types;
@@ -81,6 +83,8 @@ public class GetManageApprenticeshipDetailsResponse
         public bool? IsDurationReducedByRpl { get; set; }
         [JsonConverter(typeof(StringEnumConverter))]
         public LearningType? LearningType { get; set; }
+        public int? EmployerVerificationStatus { get; set; }
+        public string EmployerVerificationNotes { get; set; }
     }
 
     public class PriceEpisode

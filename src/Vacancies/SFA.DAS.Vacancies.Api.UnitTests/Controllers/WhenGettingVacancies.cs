@@ -59,6 +59,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                          && c.NationWideOnly.Equals(request.NationWideOnly)
                          && c.StandardLarsCode.Equals(request.StandardLarsCode)
                          && c.PostedInLastNumberOfDays.Equals(request.PostedInLastNumberOfDays)
+                         && c.OnlyPrimaryLocations.Equals(false)
                          ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);

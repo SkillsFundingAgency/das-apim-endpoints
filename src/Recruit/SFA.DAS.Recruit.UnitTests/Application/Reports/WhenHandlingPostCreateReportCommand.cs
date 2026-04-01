@@ -7,7 +7,6 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
-using System.Threading;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Reports;
 [TestFixture]
@@ -21,7 +20,7 @@ internal class WhenHandlingPostCreateReportCommand
         [Greedy] PostCreateReportCommandHandler sut)
     {
         // arrange
-        var expectedPostUrl = new PostReportRequest(new PostReportRequest.PostReportRequestData()
+        var expectedPostUrl = new PostReportRequest(new PostReportRequest.PostReportRequestData
         {
             CreatedBy = command.CreatedBy,
             FromDate = command.FromDate,

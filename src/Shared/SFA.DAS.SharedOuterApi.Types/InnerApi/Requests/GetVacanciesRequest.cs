@@ -22,7 +22,8 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests
         uint? postedInLastNumberOfDays = null,
         List<string> additionalDataSources = null,
         string sort = "",
-        bool? excludeNational = null)
+        bool? excludeNational = null,
+        bool onlyPrimaryLocations = false)
         : IGetApiRequest
     {
         private readonly string _accountLegalEntityPublicHashedId = HttpUtility.UrlEncode(accountLegalEntityPublicHashedId);
@@ -32,7 +33,7 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests
 
         private string BuildGetUrl()
         {
-             var url = $"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}";
+             var url = $"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&onlyPrimaryLocations={onlyPrimaryLocations}";
             
              if (ukprn.HasValue)
              {

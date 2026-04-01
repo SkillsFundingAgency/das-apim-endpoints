@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
@@ -47,7 +47,7 @@ public sealed class GetCourseByLarsCodeQueryResult
             StandardPageUrl = source.StandardPageUrl,
             CourseType = source.CourseType,
             ApprenticeshipType = source.LearningType,
-            RelatedOccupations = source.RelatedOccupations == null ? new List<RelatedOccupation>() : source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
+            RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }
 }

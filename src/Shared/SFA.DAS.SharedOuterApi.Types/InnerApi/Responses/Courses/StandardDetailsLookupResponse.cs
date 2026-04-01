@@ -23,11 +23,11 @@ public class StandardDetailsLookupResponse : StandardApiResponseBase
     public string AssessmentPlanUrl { get; set; }
     public string TrailBlazerContact { get; set; }
     public string TypicalJobTitles { get; set; }
-    public List<string> Skills { get; set; }
+    public List<string> Skills { get; set; } = [];
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
-    public List<KsbResponse> Ksbs { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public List<KsbResponse> Ksbs { get; set; } = [];
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public string StandardPageUrl { get; set; }
     public string IntegratedDegree { get; set; }
     public decimal SectorSubjectAreaTier2 { get; set; }

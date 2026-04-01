@@ -10,6 +10,6 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
         public string Title { get; set; }
         public string LearningType { get; set; }
         public string CourseType { get; set; }
-        public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
+        public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; } = [];
     }
 }

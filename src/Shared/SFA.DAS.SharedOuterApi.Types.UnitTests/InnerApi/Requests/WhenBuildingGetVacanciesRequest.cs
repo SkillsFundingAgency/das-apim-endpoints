@@ -26,9 +26,9 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             accountLegalEntityPublicHashedId = $"{accountLegalEntityPublicHashedId} %£$^ {accountLegalEntityPublicHashedId}";
             
-            var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, employerName, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, routes, postedInLastNumberOfDays, additionalDataSources, sort);
+            var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, employerName, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, routes, postedInLastNumberOfDays, additionalDataSources, sort, null, true);
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={string.Join("&standardLarsCode=",standardLarsCode)}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&categories={string.Join("&categories=",routes)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}&additionalDataSources={string.Join("&additionalDataSources=",additionalDataSources)}&employerName={HttpUtility.UrlEncode(employerName)}");
+            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&onlyPrimaryLocations=True&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={string.Join("&standardLarsCode=",standardLarsCode)}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&categories={string.Join("&categories=",routes)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}&additionalDataSources={string.Join("&additionalDataSources=",additionalDataSources)}&employerName={HttpUtility.UrlEncode(employerName)}");
             actual.Version.Should().Be("2.0");
 		}
 
@@ -38,7 +38,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
         {
             var actual = new GetVacanciesRequest(pageNumber, pageSize);
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}");
+            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&onlyPrimaryLocations=False");
             actual.Version.Should().Be("2.0");
 		}
     }
