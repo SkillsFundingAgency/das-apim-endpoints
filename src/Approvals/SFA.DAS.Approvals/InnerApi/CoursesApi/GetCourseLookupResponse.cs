@@ -18,10 +18,6 @@ public class GetCourseLookupResponse
     public StandardVersionDetail VersionDetail { get; set; }
     public string StandardPageUrl { get; set; }
     public string Route { get; set; }
-    public string LearningType { set { _learningType = value; } }
-    private string _learningType; 
-    public string ApprenticeshipType { set { _apprenticeshipType = value; } }
-    private string _apprenticeshipType;
-    public string CourseType => !string.IsNullOrEmpty(_learningType) ? _learningType : _apprenticeshipType;
+    public string LearningType { get; set; }
 }
 

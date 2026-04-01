@@ -61,7 +61,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -133,7 +133,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -185,7 +185,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -238,7 +238,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -276,7 +276,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { ApprenticeshipType = CourseType },
+                Course = new GetCourseLookupResponse { LearningType = CourseType },
                 LearnerAgeRules = learnerAgeResponse
             });
 

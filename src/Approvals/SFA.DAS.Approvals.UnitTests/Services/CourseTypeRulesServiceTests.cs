@@ -1,8 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
@@ -17,17 +17,14 @@ namespace SFA.DAS.Approvals.UnitTests.Services
         public async Task GetCourseTypeRulesAsync_WhenStandardAndLearnerAgeRulesFound_ReturnsResult(
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-            GetCourseLookupResponse courseResponse,
+            GetStandardsListItem courseResponse,
             GetLearnerAgeResponse learnerAgeResponse,
             string courseCode,
             CourseTypeRulesService service)
         {
             // Arrange
-            courseResponse.LearningType = null;
-            courseResponse.ApprenticeshipType = "Apprenticeship";
-
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(courseResponse);
 
             courseTypesApiClient
@@ -39,11 +36,13 @@ namespace SFA.DAS.Approvals.UnitTests.Services
 
             // Assert
             result.Should().NotBeNull();
-            result.Course.Should().BeEquivalentTo(courseResponse);
+            result.Course.Should().BeEquivalentTo(courseResponse, o => o.ExcludingMissingMembers().Excluding(c=>c.LarsCode));
+            result.Course.LarsCode.Should().Be(courseResponse.LarsCode.ToString());
+            result.Course.LearningType.Should().Be(courseResponse.ApprenticeshipType);
             result.LearnerAgeRules.Should().BeEquivalentTo(learnerAgeResponse);
 
-            coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.ApprenticeshipType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -56,8 +55,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services
 
             // Arrange
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
-                .ReturnsAsync((GetCourseLookupResponse)null);
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .ReturnsAsync((GetStandardsListItem)null);
 
             // Act
             var act = () => service.GetCourseTypeRulesAsync(courseCode);
@@ -73,16 +72,15 @@ namespace SFA.DAS.Approvals.UnitTests.Services
         public async Task GetCourseTypeRulesAsync_WhenLearnerAgeRulesNotFound_ThrowsException(
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-            GetCourseLookupResponse learningResponse,
+            GetStandardsListItem learningResponse,
             string courseCode,
             CourseTypeRulesService service)
         {
             // Arrange
-            learningResponse.LearningType = null;
             learningResponse.ApprenticeshipType = "Apprenticeship";
 
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(learningResponse);
 
             courseTypesApiClient
@@ -96,8 +94,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("Learner age rules not found for apprenticeship type Apprenticeship");
 
-            coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(learningResponse.CourseType))), Times.Once);
+            coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(learningResponse.ApprenticeshipType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -110,7 +108,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             // Arrange
             var expectedException = new Exception("Courses API error");
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ThrowsAsync(expectedException);
 
             // Act
@@ -127,7 +125,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
         public async Task GetCourseTypeRulesAsync_WhenCourseTypesApiThrowsException_PropagatesException(
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-            GetCourseLookupResponse courseResponse,
+            GetStandardsListItem courseResponse,
             string courseCode,
             CourseTypeRulesService service)
         {
@@ -136,7 +134,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             var expectedException = new Exception("Course Types API error");
 
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(courseResponse);
 
             courseTypesApiClient
@@ -150,15 +148,15 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             await act.Should().ThrowAsync<Exception>()
                 .Where(e => e.Message == "Course Types API error");
 
-            coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.ApprenticeshipType))), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task GetRplRulesAsync_WhenStandardAndRplRulesFound_ReturnsResult(
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-            GetCourseLookupResponse courseResponse,
+            GetStandardsListItem courseResponse,
             GetRecognitionOfPriorLearningResponse rplResponse,
             string courseCode,
             CourseTypeRulesService service)
@@ -167,7 +165,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             courseResponse.ApprenticeshipType = "Apprenticeship";
 
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(courseResponse);
 
             courseTypesApiClient
@@ -179,11 +177,13 @@ namespace SFA.DAS.Approvals.UnitTests.Services
 
             // Assert
             result.Should().NotBeNull();
-            result.Course.Should().BeEquivalentTo(courseResponse);
+            result.Course.Should().BeEquivalentTo(courseResponse, o => o.ExcludingMissingMembers().Excluding(c => c.LarsCode));
+            result.Course.LarsCode.Should().Be(courseResponse.LarsCode.ToString());
+            result.Course.LearningType.Should().Be(courseResponse.ApprenticeshipType);
             result.RplRules.Should().BeEquivalentTo(rplResponse);
 
-            coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.ApprenticeshipType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -195,8 +195,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services
         {
             // Arrange
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
-                .ReturnsAsync((GetCourseLookupResponse)null);
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .ReturnsAsync((GetStandardsListItem)null);
 
             // Act
             var act = () => service.GetRplRulesAsync(courseCode);
@@ -212,16 +212,15 @@ namespace SFA.DAS.Approvals.UnitTests.Services
         public async Task GetRplRulesAsync_WhenRplRulesNotFound_ThrowsException(
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-            GetCourseLookupResponse courseResponse,
+            GetStandardsListItem courseResponse,
             string courseCode,
             CourseTypeRulesService service)
         {
             // Arrange
-            courseResponse.LearningType = null;
             courseResponse.ApprenticeshipType = "Apprenticeship";
 
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(courseResponse);
 
             courseTypesApiClient
@@ -235,8 +234,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             await act.Should().ThrowAsync<Exception>()
                 .WithMessage("RPL rules not found for apprenticeship type Apprenticeship");
 
-            coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.ApprenticeshipType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -249,7 +248,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             // Arrange
             var expectedException = new Exception("Courses API error");
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ThrowsAsync(expectedException);
 
             // Act
@@ -266,7 +265,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
         public async Task GetRplRulesAsync_WhenCourseTypesApiThrowsException_PropagatesException(
             [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> coursesApiClient,
             [Frozen] Mock<ICourseTypesApiClient> courseTypesApiClient,
-            GetCourseLookupResponse courseResponse,
+            GetStandardsListItem courseResponse,
             string courseCode,
             CourseTypeRulesService service)
         {
@@ -275,7 +274,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             var expectedException = new Exception("Course Types API error");
 
             coursesApiClient
-                .Setup(x => x.Get<GetCourseLookupResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+                .Setup(x => x.Get<GetStandardsListItem>(It.IsAny<GetStandardDetailsByIdRequest>()))
                 .ReturnsAsync(courseResponse);
 
             courseTypesApiClient
@@ -289,8 +288,8 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             await act.Should().ThrowAsync<Exception>()
                 .Where(e => e.Message == "Course Types API error");
 
-            coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            coursesApiClient.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardDetailsByIdRequest>(r => r.Id == courseCode)), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.ApprenticeshipType))), Times.Once);
         }
     }
 }

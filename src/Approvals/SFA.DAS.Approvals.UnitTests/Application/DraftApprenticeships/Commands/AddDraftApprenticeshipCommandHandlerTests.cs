@@ -29,7 +29,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             AddDraftApprenticeshipCommandHandler handler)
         {
             // Arrange
-            courseResponse.ApprenticeshipType = "FoundationApprenticeship";
+            courseResponse.LearningType = "FoundationApprenticeship";
             commitmentsApiClient
                 .Setup(x => x.Get<GetCohortResponse>(It.Is<GetCohortRequest>(p => p.CohortId == request.CohortId)))
                 .ReturnsAsync(cohort);
@@ -97,7 +97,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             request.ReservationId = null;
             cohort.TransferSenderId = null;
 
-            courseResponse.ApprenticeshipType = "FoundationApprenticeship";
+            courseResponse.LearningType = "FoundationApprenticeship";
             commitmentsApiClient
                 .Setup(x => x.Get<GetCohortResponse>(It.Is<GetCohortRequest>(p => p.CohortId == request.CohortId)))
                 .ReturnsAsync(cohort)
@@ -145,7 +145,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             // Arrange
             request.ReservationId = null;
             cohort.TransferSenderId = 123;
-            courseResponse.ApprenticeshipType = "Standard";
+            courseResponse.LearningType = "Standard";
             commitmentsApiClient.Setup(x => x.Get<GetCohortResponse>(It.IsAny<GetCohortRequest>()))
                 .ReturnsAsync(cohort)
                 .Verifiable();
@@ -181,7 +181,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             var reservationId = Guid.NewGuid();
             request.ReservationId = null;
             cohort.TransferSenderId = null;
-            courseResponse.ApprenticeshipType = "FoundationApprenticeship";
+            courseResponse.LearningType = "FoundationApprenticeship";
 
             commitmentsApiClient
                 .Setup(x => x.Get<GetCohortResponse>(It.Is<GetCohortRequest>(p => p.CohortId == request.CohortId)))
@@ -225,7 +225,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands
             AddDraftApprenticeshipCommandHandler handler)
         {
             // Arrange
-            courseResponse.ApprenticeshipType = "FoundationApprenticeship";
+            courseResponse.LearningType = "FoundationApprenticeship";
 
             commitmentsApiClient
                 .Setup(x => x.Get<GetCohortResponse>(It.Is<GetCohortRequest>(p => p.CohortId == request.CohortId)))

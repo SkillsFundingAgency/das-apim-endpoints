@@ -18,7 +18,7 @@ namespace SFA.DAS.Approvals.Services
         public async Task<CourseTypeRulesResult> GetCourseTypeRulesAsync(string courseCode)
         {
             var course = await GetCourseAsync(courseCode);
-            var learnerAge = await GetLearnerAgeRulesAsync(course.CourseType);
+            var learnerAge = await GetLearnerAgeRulesAsync(course.LearningType);
 
             return new CourseTypeRulesResult
             {
@@ -30,7 +30,7 @@ namespace SFA.DAS.Approvals.Services
         public async Task<RplRulesResult> GetRplRulesAsync(string courseCode)
         {
             var course = await GetCourseAsync(courseCode);
-            var rplRules = await GetRplRulesInternalAsync(course.CourseType);
+            var rplRules = await GetRplRulesInternalAsync(course.LearningType);
 
             return new RplRulesResult
             {

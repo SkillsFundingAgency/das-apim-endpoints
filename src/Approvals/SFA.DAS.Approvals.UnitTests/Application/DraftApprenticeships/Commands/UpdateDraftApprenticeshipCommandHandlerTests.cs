@@ -28,7 +28,7 @@ public class UpdateDraftApprenticeshipCommandHandlerTests
         UpdateDraftApprenticeshipCommandHandler handler)
     {
         // Arrange
-        courseResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "Apprenticeship";
             
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))

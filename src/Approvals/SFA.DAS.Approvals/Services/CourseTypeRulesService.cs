@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
@@ -19,7 +20,7 @@ namespace SFA.DAS.Approvals.Services
         public async Task<CourseTypeRulesResult> GetCourseTypeRulesAsync(string courseCode)
         {
             var standard = await GetStandardAsync(courseCode);
-            var learnerAge = await GetLearnerAgeRulesAsync(standard.CourseType);
+            var learnerAge = await GetLearnerAgeRulesAsync(standard.LearningType);
 
             return new CourseTypeRulesResult
             {
@@ -31,7 +32,7 @@ namespace SFA.DAS.Approvals.Services
         public async Task<RplRulesResult> GetRplRulesAsync(string courseCode)
         {
             var standard = await GetStandardAsync(courseCode);
-            var rplRules = await GetRplRulesInternalAsync(standard.CourseType);
+            var rplRules = await GetRplRulesInternalAsync(standard.LearningType);
 
             return new RplRulesResult
             {
@@ -42,7 +43,7 @@ namespace SFA.DAS.Approvals.Services
 
         private async Task<GetCourseLookupResponse> GetStandardAsync(string courseCode)
         {
-            var standard = await coursesApiClient.Get<GetCourseLookupResponse>(new GetStandardDetailsByIdRequest(courseCode));
+            var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
 
             if (standard == null)
             {
@@ -50,7 +51,28 @@ namespace SFA.DAS.Approvals.Services
                 throw new Exception($"Standard not found for course ID {courseCode}");
             }
 
-            return standard;
+            return MapFromStandardResponseToCourseResponse(standard);
+        }
+
+        private static GetCourseLookupResponse MapFromStandardResponseToCourseResponse(GetStandardsListItem standardResponse)
+        {
+            return new GetCourseLookupResponse
+            {
+                StandardUId = standardResponse.StandardUId,
+                IfateReferenceNumber = standardResponse.IfateReferenceNumber,
+                LarsCode = standardResponse.LarsCode.ToString(),
+                Status = standardResponse.Status,
+                Title = standardResponse.Title,
+                Options = standardResponse.Options,
+                Level = standardResponse.Level,
+                Version = standardResponse.Version,
+                VersionMajor = standardResponse.VersionMajor,
+                VersionMinor = standardResponse.VersionMinor,
+                VersionDetail = standardResponse.VersionDetail,
+                StandardPageUrl = standardResponse.StandardPageUrl,
+                Route = standardResponse.Route,
+                LearningType = standardResponse.ApprenticeshipType
+            };
         }
 
         private async Task<GetLearnerAgeResponse> GetLearnerAgeRulesAsync(string apprenticeshipType)

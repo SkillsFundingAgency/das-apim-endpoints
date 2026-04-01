@@ -32,7 +32,7 @@ public class AddPriorLearningDataCommandHandlerTests
         AddPriorLearningDataCommandHandler handler)
     {
         // Arrange
-        courseResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "Apprenticeship";
         apprenticeship.CourseCode = "123";
         apprenticeship.HasStandardOptions = true;
         priorLearningSummary.RplPriceReductionError = false;

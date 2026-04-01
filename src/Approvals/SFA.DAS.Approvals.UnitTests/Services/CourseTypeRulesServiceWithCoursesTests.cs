@@ -41,7 +41,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             result.LearnerAgeRules.Should().BeEquivalentTo(learnerAgeResponse);
 
             coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetCourseLookupByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.LearningType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -93,7 +93,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
                 .WithMessage("Learner age rules not found for apprenticeship type Apprenticeship");
 
             coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetCourseLookupByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(learningResponse.CourseType))), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(learningResponse.LearningType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -147,7 +147,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
                 .Where(e => e.Message == "Course Types API error");
 
             coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetCourseLookupByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetLearnerAgeResponse>(It.Is<GetLearnerAgeRequest>(r => r.GetUrl.Contains(courseResponse.LearningType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -179,7 +179,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
             result.RplRules.Should().BeEquivalentTo(rplResponse);
 
             coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetCourseLookupByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.LearningType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -231,7 +231,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
                 .WithMessage("RPL rules not found for apprenticeship type Apprenticeship");
 
             coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetCourseLookupByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.LearningType))), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -285,7 +285,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services
                 .Where(e => e.Message == "Course Types API error");
 
             coursesApiClient.Verify(x => x.Get<GetCourseLookupResponse>(It.Is<GetCourseLookupByIdRequest>(r => r.Id == courseCode)), Times.Once);
-            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.CourseType))), Times.Once);
+            courseTypesApiClient.Verify(x => x.Get<GetRecognitionOfPriorLearningResponse>(It.Is<GetRecognitionOfPriorLearningRequest>(r => r.GetUrl.Contains(courseResponse.LearningType))), Times.Once);
         }
     }
 }

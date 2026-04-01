@@ -50,7 +50,7 @@ public class GetRplRequirementsQueryHandlerTests
 
         // Assert
         result.Should().NotBeNull();
-        result.ApprenticeshipType.Should().Be(_courseResponse.CourseType);
+        result.ApprenticeshipType.Should().Be(_courseResponse.LearningType);
         result.IsRequired.Should().Be(_rplResponse.IsRequired);
         result.OffTheJobTrainingMinimumHours.Should().Be(_rplResponse.OffTheJobTrainingMinimumHours);
     }
@@ -75,13 +75,13 @@ public class GetRplRequirementsQueryHandlerTests
     {
         // Arrange
         _courseTypeRulesService.Setup(x => x.GetRplRulesAsync(_query.CourseId))
-            .ThrowsAsync(new Exception($"RPL rules not found for apprenticeship type {_courseResponse.CourseType}"));
+            .ThrowsAsync(new Exception($"RPL rules not found for apprenticeship type {_courseResponse.LearningType}"));
 
         // Act
         var act = () => _handler.Handle(_query, CancellationToken.None);
 
         // Assert
         await act.Should().ThrowAsync<Exception>()
-            .WithMessage($"RPL rules not found for apprenticeship type {_courseResponse.CourseType}");
+            .WithMessage($"RPL rules not found for apprenticeship type {_courseResponse.LearningType}");
     }
 }
