@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
+using SFA.DAS.ApprenticeApp.Application.Queries.GetCommitmentsProviders;
 using SFA.DAS.ApprenticeApp.Application.Queries.GetRoatpProviders;
 using SFA.DAS.ApprenticeApp.Models;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.Api.UnitTests.Controllers
 {
@@ -28,14 +30,14 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.Controllers
         public async Task GetRegisteredProviders_ShouldReturn_ProvidersFromMediator()
         {
             // Arrange
-            var providers = new List<RoatpProvider>
+            var providers = new List<Provider>
             {
-                new RoatpProvider { Ukprn = 12345678, Name = "Test Provider" }
+                new Provider { Ukprn = 12345678, Name = "Test Provider" }
             };
 
             _mediatorMock
-                .Setup(m => m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetRoatpProvidersQueryResult { Providers = providers });
+                .Setup(m => m.Send(It.IsAny<GetCommitmentsProvidersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetCommitmentsProvidersResult { Providers = providers });
 
             // Act
             var result = await _controller.GetRegisteredProviders();
@@ -45,7 +47,7 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.Controllers
             okResult.Value.Should().BeEquivalentTo(providers);
 
             _mediatorMock.Verify(m =>
-                m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()),
+                m.Send(It.IsAny<GetCommitmentsProvidersQuery>(), It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -54,15 +56,18 @@ namespace SFA.DAS.ApprenticeApp.Api.UnitTests.Controllers
         {
             // Arrange
             _mediatorMock
-                .Setup(m => m.Send(It.IsAny<GetRoatpProvidersQuery>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new GetRoatpProvidersQueryResult { });
+                .Setup(m => m.Send(It.IsAny<GetCommitmentsProvidersQuery>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetCommitmentsProvidersResult
+                {
+                    Providers = new List<Provider>()
+                });
 
             // Act
             var result = await _controller.GetRegisteredProviders();
 
             // Assert
             var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
-            okResult.Value.Should().BeEquivalentTo(new List<RoatpProvider>());
+            okResult.Value.Should().BeEquivalentTo(new List<Provider>());
         }
     }
 }
