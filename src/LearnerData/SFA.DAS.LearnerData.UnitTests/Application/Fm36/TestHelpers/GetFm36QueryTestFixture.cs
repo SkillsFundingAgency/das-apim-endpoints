@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -7,6 +7,8 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;

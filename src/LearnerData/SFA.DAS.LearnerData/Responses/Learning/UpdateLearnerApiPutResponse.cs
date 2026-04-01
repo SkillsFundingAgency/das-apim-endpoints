@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:src/Shared/SFA.DAS.SharedOuterApi.Types/InnerApi/Responses/LearnerData/UpdateLearnerApiPutResponse.cs
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LearnerData;
+========
+﻿namespace SFA.DAS.LearnerData.Responses.Learning;
+>>>>>>>> origin/master:src/LearnerData/SFA.DAS.LearnerData/Responses/Learning/UpdateLearnerApiPutResponse.cs
 
 public class UpdateLearnerApiPutResponse
 {

@@ -1,5 +1,6 @@
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
@@ -17,11 +18,11 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
 
         var milestones = firstOnProg.Milestones.Select(x =>
             x == Milestone.LearningComplete
-                ? SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete
-                : SharedOuterApi.InnerApi.Requests.Earnings.Milestone.ThirtyPercentLearningComplete).ToList();
+                ? SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete
+                : SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.ThirtyPercentLearningComplete).ToList();
 
         if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
-            milestones.Add(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
+            milestones.Add(SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
 
         return new CreateUnapprovedShortCourseLearningRequest
         {
@@ -37,7 +38,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
             }).ToList(),
-            OnProgramme = new SharedOuterApi.InnerApi.Requests.Earnings.OnProgramme
+            OnProgramme = new SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme
             {
                 StartDate = firstOnProg.StartDate,
                 CompletionDate = firstOnProg.CompletionDate,

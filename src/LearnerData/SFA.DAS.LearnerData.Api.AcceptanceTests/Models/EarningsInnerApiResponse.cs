@@ -1,4 +1,7 @@
-﻿namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
+namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 
 public class InnerApiResponses
 {

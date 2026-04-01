@@ -141,4 +141,5 @@ public static class DateTimeExtensions
         var firstOfNextMonth = new DateTime(datetime.Year, datetime.Month, 1).AddMonths(1);
         return firstOfNextMonth.AddDays(-1);
     }
+
 }

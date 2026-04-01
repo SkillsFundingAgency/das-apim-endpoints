@@ -1,10 +1,10 @@
-﻿using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using System.Diagnostics;
-using EarningsApprenticeship = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings.Apprenticeship;
-using EarningsEpisode = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings.Episode;
+using EarningsApprenticeship = SFA.DAS.LearnerData.Responses.EarningsInner.Apprenticeship;
+using EarningsEpisode = SFA.DAS.LearnerData.Responses.EarningsInner.Episode;
 using Episode = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning.Episode;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;

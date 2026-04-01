@@ -1,5 +1,8 @@
-﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using Episode = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning.Episode;
+using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 
@@ -35,17 +38,17 @@ public static class ApprenticeshipModelExtensions
             ]
         };
 
-        var earnings = new SharedOuterApi.InnerApi.Responses.Earnings.Apprenticeship
+        var earnings = new SFA.DAS.LearnerData.Responses.EarningsInner.Apprenticeship
         {
             Key = learning.Key,
-            Episodes = new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode>()
+            Episodes = new List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode>()
             {
-                new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+                new SFA.DAS.LearnerData.Responses.EarningsInner.Episode
                 {
                     Key = Guid.NewGuid(),
                     Instalments = GetEarningsInstalments(apprenticeshipModel),
                     AdditionalPayments = apprenticeshipModel.AdditionalPayments.Select(x =>
-                        new SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings.AdditionalPayment
+                        new SFA.DAS.LearnerData.Responses.EarningsInner.AdditionalPayment
                         {
                             AdditionalPaymentType = x.Type,
                             Amount = x.Amount,
@@ -91,7 +94,7 @@ public static class ApprenticeshipModelExtensions
     {
         if(apprenticeshipModel.Instalments.Any())
         {
-            return apprenticeshipModel.Instalments.Select(x => new SharedOuterApi.InnerApi.Responses.Earnings.Instalment
+            return apprenticeshipModel.Instalments.Select(x => new SFA.DAS.LearnerData.Responses.EarningsInner.Instalment
             {
                 EpisodePriceKey = apprenticeshipModel.PriceEpisodes.Single(y => y.PriceEpisodeId == x.PriceEpisodeId).Key,
                 AcademicYear = x.AcademicYear,

@@ -10,7 +10,6 @@ using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
-using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Apim.Shared.Infrastructure;
@@ -53,7 +52,7 @@ builder.Services.AddSingleton<ITelemetryInitializer, CorrelationTelemetryInitial
 builder.Services.AddSingleton<IMessageSession>(provider =>
 {
     var endpointConfiguration = new EndpointConfiguration("SFA.DAS.LearnerData.OuterApi");
-    endpointConfiguration.UseMessageConventions();
+    endpointConfiguration.UseExtendedMessageConventions();
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();

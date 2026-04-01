@@ -1,5 +1,7 @@
-﻿using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using static SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers.GetFm36QueryTestFixture;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;

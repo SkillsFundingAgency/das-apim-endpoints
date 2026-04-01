@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.LearnerData.Responses.Learning;
 using System.Net;
 using SFA.DAS.LearnerData.Services;
 using Microsoft.Extensions.Caching.Distributed;

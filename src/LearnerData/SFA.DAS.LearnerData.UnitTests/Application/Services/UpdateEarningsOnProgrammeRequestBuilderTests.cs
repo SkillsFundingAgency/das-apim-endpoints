@@ -1,10 +1,11 @@
-﻿using AutoFixture;
+using AutoFixture;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.LearnerData.Responses.Learning;
 
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;

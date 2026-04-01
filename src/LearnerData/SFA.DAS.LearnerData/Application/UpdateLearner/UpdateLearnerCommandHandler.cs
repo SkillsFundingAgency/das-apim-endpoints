@@ -1,9 +1,9 @@
-﻿using MediatR;
-using Microsoft.Extensions.Caching.Distributed;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.LearnerData.Responses.Learning;
 
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
