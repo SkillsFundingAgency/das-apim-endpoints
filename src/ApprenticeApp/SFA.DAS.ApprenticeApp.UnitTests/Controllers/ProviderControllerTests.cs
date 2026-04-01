@@ -5,7 +5,6 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
 using SFA.DAS.ApprenticeApp.Application.Queries.GetCommitmentsProviders;
-using SFA.DAS.ApprenticeApp.Application.Queries.GetRoatpProviders;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using System.Collections.Generic;
