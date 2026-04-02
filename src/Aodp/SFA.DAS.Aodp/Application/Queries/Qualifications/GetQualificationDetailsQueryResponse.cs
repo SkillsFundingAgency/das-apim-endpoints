@@ -62,6 +62,8 @@ public class GetQualificationDetailsQueryResponse
     public bool? EighteenPlus { get; set; }
     public bool? NineteenPlus { get; set; }
     public string? ImportStatus { get; set; }
+    public bool? EligibleForFunding { get; set; }
+    public string? FundingEligibilityFailedFields { get; set; }
     public virtual LifecycleStage Stage { get; set; } = null!;
     public virtual AwardingOrganisation Organisation { get; set; } = null!;
     public virtual Qualification Qual { get; set; } = null!;
