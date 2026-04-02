@@ -1,16 +1,7 @@
-<<<<<<<< HEAD:src/Shared/SFA.DAS.SharedOuterApi.Types/InnerApi/Requests/Earnings/PostCreateUnapprovedShortCourseLearningRequest.cs
-using SFA.DAS.Apim.Shared.Interfaces;
+
 
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Constants;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
-========
-﻿using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Interfaces;
-
-namespace SFA.DAS.LearnerData.Requests.EarningsInner;
->>>>>>>> origin/master:src/LearnerData/SFA.DAS.LearnerData/Requests/EarningsInner/PostCreateUnapprovedShortCourseLearningRequest.cs
 
 public class PostCreateUnapprovedShortCourseLearningRequest : IPostApiRequest
 {
