@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+﻿namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
 public class RemoveLearnerResponse
 {

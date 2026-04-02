@@ -1,5 +1,6 @@
 ﻿namespace SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
 
+#pragma warning disable CS8618
 public class Learning
 {
     public Guid LearningKey { get; set; }
@@ -22,3 +23,4 @@ public class Episode
     public bool IsApproved { get; set; }
     public string LearnerRef { get; set; }
 }
+#pragma warning restore CS8618
