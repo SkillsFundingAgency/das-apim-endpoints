@@ -3,17 +3,16 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
-using SFA.DAS.LearnerData.Responses.Learning;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
 using System.Net;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 using InnerEarningRecord = SFA.DAS.LearnerData.Responses.EarningsInner.ShortCourseEarning;
-using LearningEpisode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse.Episode;
+using LearningEpisode = SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Episode;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 

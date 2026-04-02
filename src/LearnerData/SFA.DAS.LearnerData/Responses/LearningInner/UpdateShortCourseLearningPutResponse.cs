@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.LearnerData.Responses.Learning;
+﻿namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
 public class UpdateShortCourseLearningPutResponse
 {
