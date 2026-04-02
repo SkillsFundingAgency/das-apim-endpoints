@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 
 namespace SFA.DAS.LearnerData.Services;
 

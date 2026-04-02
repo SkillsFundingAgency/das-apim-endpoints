@@ -1,9 +1,8 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
+﻿using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Diagnostics;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
 public class UpdateEnglishAndMathsApiPutRequest(Guid learningKey, UpdateEnglishAndMathsRequest data)
     : IPutApiRequest<UpdateEnglishAndMathsRequest>
