@@ -1,7 +1,6 @@
-﻿using System;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
 public class RemoveLearnerApiDeleteRequest : IDeleteApiRequest
 {
