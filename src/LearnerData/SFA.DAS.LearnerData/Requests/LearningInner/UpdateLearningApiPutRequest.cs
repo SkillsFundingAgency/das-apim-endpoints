@@ -1,8 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
 public class UpdateLearningApiPutRequest : IPutApiRequest<UpdateLearningRequestBody>
 {

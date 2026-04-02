@@ -5,93 +5,93 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 
-namespace SFA.DAS.LearnerData.Services
+namespace SFA.DAS.LearnerData.Services;
+
+public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    public interface IUpdateEarningsOnProgrammeRequestBuilder
+    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
+}
+
+public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
+{
+    public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse,
+        UpdateLearningApiPutRequest putRequest)
     {
-        Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
+        var fundingBandMaximum = default(int?);
+        var includesFundingBandMaximumUpdate = false;
+
+        if (learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
+            || learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
+        {
+            fundingBandMaximum = await GetFundingBandMaximum(command);
+            includesFundingBandMaximumUpdate = true;
+        }
+
+        var payload = new UpdateOnProgrammeRequest
+        {
+            CompletionDate = putRequest.Data.Learner.CompletionDate,
+            WithdrawalDate = putRequest.Data.Delivery.WithdrawalDate,
+            PauseDate = putRequest.Data.OnProgramme.PauseDate,
+            ApprenticeshipEpisodeKey = learningApiPutResponse.LearningEpisodeKey,
+            FundingBandMaximum = fundingBandMaximum,
+            IncludesFundingBandMaximumUpdate = includesFundingBandMaximumUpdate,
+            DateOfBirth = putRequest.Data.Learner.DateOfBirth,
+            Prices = learningApiPutResponse.Prices.Select(x => new PriceItem
+            {
+                Key = x.Key,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                TrainingPrice = x.TrainingPrice,
+                EndPointAssessmentPrice = x.EndPointAssessmentPrice,
+                TotalPrice = x.TotalPrice
+            }).ToList(),
+            PeriodsInLearning = GetPeriodsInLearning(command),
+            Care = new Care
+            {
+                HasEHCP = putRequest.Data.Learner.Care.HasEHCP,
+                IsCareLeaver = putRequest.Data.Learner.Care.IsCareLeaver,
+                CareLeaverEmployerConsentGiven = putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven
+            }
+        };
+
+        return new UpdateOnProgrammeApiPutRequest(command.LearningKey, payload);
     }
 
-    public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
+    private async Task<int> GetFundingBandMaximum(UpdateLearnerCommand command)
     {
-        public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse,
-            UpdateLearningApiPutRequest putRequest)
+        var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
+        var standardId = onProgramme.StandardCode.ToString();
+        var startDate = onProgramme.StartDate;
+
+        var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
+
+        return response.MaxFundingOn(startDate);
+    }
+
+    private List<PeriodInLearningItem> GetPeriodsInLearning(UpdateLearnerCommand command)
+    {
+        var periodsInLearning = new List<PeriodInLearningItem>();
+
+        var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
+
+        foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
         {
-            var fundingBandMaximum = default(int?);
-            var includesFundingBandMaximumUpdate = false;
+            //todo:  onProgramme.CompletionDate should be included here in the coalescence. currently left
+            //out of here to avoid re-writing the balancing logic in earnings,
+            //when we come to do qualification period logic for each PIL we will have to re-write that logic anyway
+            //and at that point can include CompletionDate in this calculation
+            var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.ExpectedEndDate;
 
-            if (learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
-                || learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
+            periodsInLearning.Add(new PeriodInLearningItem
             {
-                fundingBandMaximum = await GetFundingBandMaximum(command);
-                includesFundingBandMaximumUpdate = true;
-            }
-
-            var payload = new UpdateOnProgrammeRequest
-            {
-                CompletionDate = putRequest.Data.Learner.CompletionDate,
-                WithdrawalDate = putRequest.Data.Delivery.WithdrawalDate,
-                PauseDate = putRequest.Data.OnProgramme.PauseDate,
-                ApprenticeshipEpisodeKey = learningApiPutResponse.LearningEpisodeKey,
-                FundingBandMaximum = fundingBandMaximum,
-                IncludesFundingBandMaximumUpdate = includesFundingBandMaximumUpdate,
-                DateOfBirth = putRequest.Data.Learner.DateOfBirth,
-                Prices = learningApiPutResponse.Prices.Select(x => new PriceItem
-                {
-                    Key = x.Key,
-                    StartDate = x.StartDate,
-                    EndDate = x.EndDate,
-                    TrainingPrice = x.TrainingPrice,
-                    EndPointAssessmentPrice = x.EndPointAssessmentPrice,
-                    TotalPrice = x.TotalPrice
-                }).ToList(),
-                PeriodsInLearning = GetPeriodsInLearning(command),
-                Care = new Care
-                {
-                    HasEHCP = putRequest.Data.Learner.Care.HasEHCP,
-                    IsCareLeaver = putRequest.Data.Learner.Care.IsCareLeaver,
-                    CareLeaverEmployerConsentGiven = putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven
-                }
-            };
-
-            return new UpdateOnProgrammeApiPutRequest(command.LearningKey, payload);
+                StartDate = onProgramme.StartDate,
+                EndDate = endDate,
+                OriginalExpectedEndDate = onProgramme.ExpectedEndDate
+            });
         }
 
-        private async Task<int> GetFundingBandMaximum(UpdateLearnerCommand command)
-        {
-            var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
-            var standardId = onProgramme.StandardCode.ToString();
-            var startDate = onProgramme.StartDate;
-
-            var response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
-
-            return response.MaxFundingOn(startDate);
-        }
-
-        private List<PeriodInLearningItem> GetPeriodsInLearning(UpdateLearnerCommand command)
-        {
-            var periodsInLearning = new List<PeriodInLearningItem>();
-
-            var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
-
-            foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
-            {
-                //todo:  onProgramme.CompletionDate should be included here in the coalescence. currently left
-                //out of here to avoid re-writing the balancing logic in earnings,
-                //when we come to do qualification period logic for each PIL we will have to re-write that logic anyway
-                //and at that point can include CompletionDate in this calculation
-                var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.ExpectedEndDate;
-
-                periodsInLearning.Add(new PeriodInLearningItem
-                {
-                    StartDate = onProgramme.StartDate,
-                    EndDate = endDate,
-                    OriginalExpectedEndDate = onProgramme.ExpectedEndDate
-                });
-            }
-
-            return periodsInLearning.OrderBy(x=>x.StartDate).ToList();
-        }
+        return periodsInLearning.OrderBy(x=>x.StartDate).ToList();
     }
 }

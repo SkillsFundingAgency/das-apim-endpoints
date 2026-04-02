@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 
 namespace SFA.DAS.LearnerData.UnitTests.Extensions

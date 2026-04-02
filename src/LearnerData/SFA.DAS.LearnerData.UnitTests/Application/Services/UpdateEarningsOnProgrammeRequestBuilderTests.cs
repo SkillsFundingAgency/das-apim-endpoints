@@ -11,6 +11,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
