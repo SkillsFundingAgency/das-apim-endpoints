@@ -57,9 +57,3 @@ public enum Milestone
     ThirtyPercentLearningComplete = 1,
     LearningComplete = 2,
 }
-
-public class LearningSupportItem
-{
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-}

@@ -1,8 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
 public class UpdateLearningSupportApiPutRequest(Guid learningKey, UpdateLearningSupportRequest data) : IPutApiRequest<UpdateLearningSupportRequest>
 {
@@ -14,10 +12,4 @@ public class UpdateLearningSupportApiPutRequest(Guid learningKey, UpdateLearning
 public class UpdateLearningSupportRequest
 {
     public List<LearningSupportItem> LearningSupport { get; set; } = [];
-}
-
-public class LearningSupportItem
-{
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
 }
