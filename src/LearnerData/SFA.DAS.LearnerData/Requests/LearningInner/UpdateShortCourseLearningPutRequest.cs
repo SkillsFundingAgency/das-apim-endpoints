@@ -1,8 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
 /// <summary>
 /// This request will be sent to the Learning Inner Api
