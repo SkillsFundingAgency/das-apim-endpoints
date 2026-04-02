@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
 public class GetLearningsRequest : IGetApiRequest
 {
@@ -10,9 +10,9 @@ public class GetLearningsRequest : IGetApiRequest
     public int? Page { get; set; }
     public int? PageSize { get; set; }
 
-    public string GetUrl 
-    { 
-        get 
+    public string GetUrl
+    {
+        get
         {
             var url = $"{Ukprn}/{CollectionYear}/{CollectionPeriod}";
 
