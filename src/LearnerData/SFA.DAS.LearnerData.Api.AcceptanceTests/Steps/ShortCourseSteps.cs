@@ -4,14 +4,15 @@ using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Responses.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
 using System.Net;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
-using InnerEarningRecord = SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings.ShortCourseEarning;
+using InnerEarningRecord = SFA.DAS.LearnerData.Responses.EarningsInner.ShortCourseEarning;
 using LearningEpisode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse.Episode;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
@@ -36,7 +37,7 @@ public class ShortCourseSteps
         int totalCourses, string ukprn, int academicYear, byte period)
     {
         var learnings = _fixture.CreateMany<Learning>(totalCourses).ToList();
-        var earnings = _fixture.CreateMany<GetShortCourseDataResponse>(totalCourses).ToList();
+        var earnings = _fixture.CreateMany<GetFm99ShortCourseDataResponse>(totalCourses).ToList();
 
         _scenarioContext.Set(new ShortCourseTestData(ukprn, learnings, earnings));
     }
@@ -108,7 +109,7 @@ public class ShortCourseSteps
 
         for(var i = 0; i< expectedEarnings.Count(); i++)
         {
-            var response = new GetShortCourseDataResponse { Earnings = new List<InnerEarningRecord>() };
+            var response = new GetFm99ShortCourseDataResponse { Earnings = new List<InnerEarningRecord>() };
 
             response.Earnings.Add(new InnerEarningRecord
             {
@@ -180,7 +181,7 @@ public class ShortCourseSteps
 
             _testContext.EarningsApi.MockServer
                 .Given(
-                    Request.Create().WithPath($"/{learning.LearningKey}/shortCourses")
+                    Request.Create().WithPath($"/fm99/{learning.LearningKey}/shortCourses")
                         .WithParam("ukprn", testData.Ukprn)
                         .UsingGet())
                 .RespondWith(
