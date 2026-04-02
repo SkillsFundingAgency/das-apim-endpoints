@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
-
+#pragma warning disable CS8618
 public class Learning
 {
     public Guid Key { get; set; }
@@ -33,3 +31,4 @@ public class EpisodePrice
     public decimal TotalPrice { get; set; }
     public int FundingBandMaximum { get; set; }
 }
+#pragma warning restore CS8618

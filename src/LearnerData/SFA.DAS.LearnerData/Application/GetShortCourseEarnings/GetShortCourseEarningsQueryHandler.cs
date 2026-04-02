@@ -4,10 +4,10 @@ using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Fm99ShortCourseLearning = SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Learning;
 
 namespace SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 
@@ -38,7 +38,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         return BuildResponse(request, learnings, earningsByKey, totalLearners);
     }
 
-    private async Task<(List<Learning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
+    private async Task<(List<Fm99ShortCourseLearning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
     {
         var innerRequest = new GetShortCourseLearningsForEarnings
         {
@@ -59,7 +59,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         return (paged.Items, paged.TotalItems);
     }
 
-    private async Task<Dictionary<Guid, GetFm99ShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Learning> learnings)
+    private async Task<Dictionary<Guid, GetFm99ShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Fm99ShortCourseLearning> learnings)
     {
         var tasks = learnings.Select(async learning =>
         {
@@ -82,7 +82,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
     private static GetShortCourseEarningsQueryResult BuildResponse(
         GetShortCourseEarningsQuery query,
-        List<Learning> learnings,
+        List<Fm99ShortCourseLearning> learnings,
         Dictionary<Guid, GetFm99ShortCourseDataResponse> earningsByKey,
         int totalItems)
     {
