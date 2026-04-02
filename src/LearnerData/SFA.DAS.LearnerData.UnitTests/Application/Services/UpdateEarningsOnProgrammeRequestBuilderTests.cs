@@ -1,17 +1,14 @@
 ﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.LearnerData.Requests.LearningInner;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 

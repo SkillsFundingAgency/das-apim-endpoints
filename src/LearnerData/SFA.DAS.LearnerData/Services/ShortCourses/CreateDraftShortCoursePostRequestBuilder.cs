@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using Milestone = SFA.DAS.LearnerData.Requests.LearningInner.Milestone;
 using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 

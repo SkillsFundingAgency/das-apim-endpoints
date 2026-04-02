@@ -1,11 +1,9 @@
 ﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
+namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
-public class UpdateOnProgrammeApiPutRequest(Guid learningKey, UpdateOnProgrammeRequest data): IPutApiRequest<UpdateOnProgrammeRequest>
+public class UpdateOnProgrammeApiPutRequest(Guid learningKey, UpdateOnProgrammeRequest data) : IPutApiRequest<UpdateOnProgrammeRequest>
 {
     public string PutUrl { get; } = $"learning/{learningKey}/on-programme";
     public UpdateOnProgrammeRequest Data { get; set; } = data;
