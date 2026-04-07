@@ -62,7 +62,6 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IDeliveryModelService, DeliveryModelService>();
         services.AddTransient<IFjaaService, FjaaService>();
         services.AddTransient<ITrainingProviderService, TrainingProviderService>();
-        services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
@@ -72,10 +71,12 @@ public static class AddServiceRegistrationExtensions
         if(string.Equals(configuration["UseNewCoursesApi"], "true", StringComparison.OrdinalIgnoreCase))
         {
             services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
+            services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
         }
         else
         {
             services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
+            services.AddTransient<IProviderCoursesOrStandardsService, ProviderStandardsService>();
         }
 
         services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
