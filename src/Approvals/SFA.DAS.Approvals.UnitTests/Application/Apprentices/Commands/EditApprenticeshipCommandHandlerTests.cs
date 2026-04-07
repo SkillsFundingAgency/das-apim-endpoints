@@ -16,6 +16,7 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands;
 
@@ -60,7 +61,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -132,7 +133,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -184,7 +185,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -237,7 +238,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -275,7 +276,7 @@ public class EditApprenticeshipCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Course = new GetCourseLookupResponse { LearningType = LearningType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 

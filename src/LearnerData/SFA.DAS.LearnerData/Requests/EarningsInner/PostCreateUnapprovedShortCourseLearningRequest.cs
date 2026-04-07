@@ -1,8 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
-using System;
+﻿using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
+namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
 public class PostCreateUnapprovedShortCourseLearningRequest : IPostApiRequest
 {
@@ -49,6 +48,8 @@ public class OnProgramme
     public List<Milestone> Milestones { get; set; } = new();
 
     public decimal TotalPrice { get; set; }
+
+    public LearningType LearningType { get; set; }
 }
 
 public enum Milestone

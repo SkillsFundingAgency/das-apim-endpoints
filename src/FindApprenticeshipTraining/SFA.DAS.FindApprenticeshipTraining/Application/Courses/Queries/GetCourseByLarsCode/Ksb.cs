@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using System;
+﻿using System;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -16,7 +16,7 @@ public class Ksb
         {
             Type = source.Type,
             Id = source.Id,
-            Detail = source.Description,
+            Detail = source.Detail,
         };
     }
 }
