@@ -92,6 +92,8 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
         ShortCourseEarningsResponse earningsResponse,
         UpdateShortCourseResultEpisode episode)
     {
+        var employerType = Enum.Parse<EmployerType>(episode.EmployerType);
+
         var earnings = earningsResponse.Instalments
             .GroupBy(i => i.CollectionYear)
             .Select(g => new SFA.DAS.Payments.EarningEvents.Messages.External.Earnings
@@ -113,7 +115,7 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                             {
                                 AccountId = episode.EmployerAccountId,
                                 FundingAccountId = episode.EmployerAccountId,
-                                EmployerType = EmployerType.Levy //TODO: To be set later as part of FLP-1704
+                                EmployerType = employerType
                             }
                         }).ToList()
                     }

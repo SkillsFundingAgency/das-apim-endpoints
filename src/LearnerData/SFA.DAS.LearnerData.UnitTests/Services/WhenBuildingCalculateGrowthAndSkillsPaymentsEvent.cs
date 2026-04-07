@@ -170,6 +170,29 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
     }
 
+    [TestCase("Levy", EmployerType.Levy, TestName = "EmployerType - Levy")]
+    [TestCase("NonLevy", EmployerType.NonLevy, TestName = "EmployerType - NonLevy")]
+    public async Task Then_EmployerTypeCorrectlySet(string valueFromLearning, EmployerType expectedEmployerType)
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
+
+        episode.EmployerType = valueFromLearning;
+
+        var earningsResponse = GetEarningsResponse();
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.SelectMany(x=>x.PricePeriods).SelectMany(x=>x.Periods).Should().OnlyContain(p => p.Employer.EmployerType == expectedEmployerType);
+
+    }
+
+
     [Test]
     public async Task When_EarningsOverSingleYear_ThenCorrectlySet()
     {
@@ -386,6 +409,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
                 .With(x => x.AgeAtStart, 20)
                 .With(x => x.StartDate, new DateTime(2025, 7, 1))
                 .With(x => x.PlannedEndDate, new DateTime(2025, 9, 20))
+                .With(x => x.EmployerType, EmployerType.Levy.ToString())
                 .Create()
         };
 
