@@ -1,7 +1,11 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -13,7 +17,9 @@ namespace SFA.DAS.LearnerData.Application.DeleteShortCourse;
 public class DeleteShortCourseCommandHandler(
     ILogger<DeleteShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
+        IMessageSession messageSession
 ) : IRequestHandler<DeleteShortCourseCommand>
 {
     public async Task Handle(DeleteShortCourseCommand command, CancellationToken cancellationToken)
@@ -22,7 +28,7 @@ public class DeleteShortCourseCommandHandler(
 
         var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearningKey);
 
-        var learningResponse = await learningApiClient.DeleteWithResponseCode<NullResponse>(learningRequest);
+        var learningResponse = await learningApiClient.DeleteWithResponseCode<DeleteShortCourseResponse>(learningRequest);
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
@@ -38,7 +44,7 @@ public class DeleteShortCourseCommandHandler(
 
         var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey);
 
-        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<NullResponse>(earningsRequest);
+        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
         {
@@ -46,6 +52,19 @@ public class DeleteShortCourseCommandHandler(
             throw new Exception($"Failed to delete short course earnings with key {command.LearningKey}. Status code: {earningsResponse.StatusCode}.");
         }
 
+        await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse.Body);
+
         logger.LogInformation("Short course with key {LearningKey} deleted from Learning and Earnings successfully", command.LearningKey);
+    }
+
+    private async Task PublishEvent(long ukprn, DeleteShortCourseResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
+    {
+        logger.LogInformation("Publishing CalculateGrowthAndSkillsPayments event for LearningKey: {LearningKey}", learningResponse.LearningKey);
+
+        var eventMessage = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
+
+        await messageSession.Publish(eventMessage);
+
+        logger.LogInformation("CalculateGrowthAndSkillsPayments event published for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 }

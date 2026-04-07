@@ -379,7 +379,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         response.Learner.Uln = "1234567890";
         response.Episodes = new[]
         {
-            _fixture.Build<UpdateShortCourseResultEpisode>()
+            _fixture.Build<LearningInnerShortCourseEpisode>()
                 .With(x => x.LearningType, "ApprenticeshipUnit")
                 .With(x => x.CourseCode, "SC123")
                 .With(x => x.LearnerRef, "LR123")
