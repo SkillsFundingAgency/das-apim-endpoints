@@ -19,10 +19,13 @@ public record VacancySummary
     public int NoOfSharedApplications { get; set; }
     public int NoOfAllSharedApplications { get; set; }
     public int NoOfEmployerReviewedApplications { get; set; }
+    public bool? HasSubmittedAdditionalQuestions { get; set; }
     public DateTime? ClosingDate { get; set; }
     public ApplicationMethod? ApplicationMethod { get; set; }
+    public string? TransferInfo { get; set; }
     public DateTime? TransferInfoTransferredDate { get; set; }
     public bool IsTaskListCompleted { get; set; }
     public ApprenticeshipTypes? ApprenticeshipType { get; set; }
     public SourceOrigin? SourceOrigin { get; set; }
+    public OwnerType? OwnerType { get; set; }
 }
