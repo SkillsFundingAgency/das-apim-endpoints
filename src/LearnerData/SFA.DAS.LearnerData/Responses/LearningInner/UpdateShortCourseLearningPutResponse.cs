@@ -29,3 +29,4 @@ public enum ShortCourseUpdateChanges
     LearnerRef = 3
 
 }
+#pragma warning restore CS8618
