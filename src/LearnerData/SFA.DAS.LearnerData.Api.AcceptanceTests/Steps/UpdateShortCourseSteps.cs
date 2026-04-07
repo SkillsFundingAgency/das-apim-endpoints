@@ -2,9 +2,10 @@
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.Payments.EarningEvents.Messages.External;
+using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;
@@ -119,7 +120,8 @@ public class UpdateShortCourseSteps
                 WithdrawalDate = onProgramme.WithdrawalDate,
                 IsApproved = true,
                 Price = 1000m,
-                LearnerRef = "LearnerRef"
+                LearnerRef = "LearnerRef",
+                EmployerType = EmployerType.Levy.ToString()
             }]
         };
 
