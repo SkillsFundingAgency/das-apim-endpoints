@@ -21,6 +21,7 @@ public class LearningInnerShortCourseEpisode
 {
     public long Ukprn { get; set; }
     public long EmployerAccountId { get; set; }
+    public string EmployerType { get; set; }
     public string CourseCode { get; set; }
     public string CourseType { get; set; }
     public string LearningType { get; set; }
