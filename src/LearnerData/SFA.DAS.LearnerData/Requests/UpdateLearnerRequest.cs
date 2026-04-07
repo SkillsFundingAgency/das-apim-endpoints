@@ -13,8 +13,10 @@ public class LearnerRequestDetails
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? Email { get; set; }
+    [JsonRequired]
     public DateTime Dob { get; set; }
     public bool HasEhcp { get; set; }
+    [JsonRequired]
     public long Uln { get; set; }
 }
 
