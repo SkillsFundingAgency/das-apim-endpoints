@@ -91,6 +91,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         result.Learner.ULN.Should().Be(long.Parse(learningResponse.Learner.Uln));
         result.Learner.Reference.Should().Be(episode.LearnerRef);
         result.Training.CourseType.Should().Be(Payments.EarningEvents.Messages.External.CourseType.ShortCourse);
+        result.Training.LearningKey.Should().Be(learningResponse.LearningKey);
         result.Training.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
         result.Training.CourseCode.Should().Be(episode.CourseCode);
         result.Training.CourseReference.Should().Be(episode.CourseCode);
