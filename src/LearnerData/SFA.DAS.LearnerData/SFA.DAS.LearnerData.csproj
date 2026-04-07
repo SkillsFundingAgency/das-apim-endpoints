@@ -17,6 +17,7 @@
     <PackageReference Include="FluentValidation" />
     <PackageReference Include="MediatR" />
     <PackageReference Include="SFA.DAS.AcademicYearService" />
+    <PackageReference Include="SFA.DAS.Payments.EarningEvents.Messages.External" />
   </ItemGroup>
 
   <ItemGroup>

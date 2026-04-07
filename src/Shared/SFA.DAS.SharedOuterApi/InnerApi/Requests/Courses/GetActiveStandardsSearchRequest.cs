@@ -9,7 +9,7 @@ public class GetActiveStandardsSearchRequest : IGetApiRequest
 {
     public List<int> RouteIds { get; set; } = [];
     public List<int> Levels { get; set; } = [];
-    public List<ApprenticeshipType> ApprenticeshipTypes { get; set; } = [];
+    public List<ApprenticeshipType> LearningTypes { get; set; } = [];
     public string Keyword { get; set; } = string.Empty;
     public CoursesOrderBy OrderBy { get; set; } = CoursesOrderBy.Score;
 
@@ -42,12 +42,9 @@ public class GetActiveStandardsSearchRequest : IGetApiRequest
             }
         }
 
-        if (ApprenticeshipTypes != null && ApprenticeshipTypes.Count > 0)
+        foreach (var learningType in LearningTypes)
         {
-            foreach (var apprenticeshipType in ApprenticeshipTypes)
-            {
-                queryParams.Add($"learningTypes={apprenticeshipType}");
-            }
+            queryParams.Add($"learningTypes={learningType}");
         }
 
         queryParams.Add("filter=Active");

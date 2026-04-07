@@ -27,7 +27,7 @@ public sealed class GetCourseByLarsCodeQueryResult
     public List<Ksb> Ksbs { get; set; }
     public CourseType CourseType { get; set; }
     public ApprenticeshipType ApprenticeshipType { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public int IncentivePayment { get; set; }
 
     public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailsLookupResponse source)
@@ -47,7 +47,7 @@ public sealed class GetCourseByLarsCodeQueryResult
             StandardPageUrl = source.StandardPageUrl,
             CourseType = source.CourseType,
             ApprenticeshipType = source.LearningType,
-            RelatedOccupations = source.RelatedOccupations == null ? new List<RelatedOccupation>() : source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
+            RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }
 }
