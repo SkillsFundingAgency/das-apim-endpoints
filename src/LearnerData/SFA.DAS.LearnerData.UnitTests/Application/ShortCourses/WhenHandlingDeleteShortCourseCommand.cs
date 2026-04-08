@@ -1,8 +1,6 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
-using Moq;
 using NServiceBus;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.DeleteShortCourse;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
@@ -11,7 +9,6 @@ using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
@@ -54,36 +51,36 @@ public class WhenHandlingDeleteShortCourseCommand
     }
 
     [Test]
-    public async Task Then_Earnings_Not_Called_When_Learning_Returns_200()
+    public async Task Then_Earnings_Not_Called_When_Learning_Returns_204()
     {
         var command = _fixture.Create<DeleteShortCourseCommand>();
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(
-                It.Is<DeleteShortCourseApiDeleteRequest>(r => r.Ukprn == command.Ukprn && r.LearningKey == command.LearningKey), false))
-            .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(_fixture.Create<DeleteShortCourseResponse>(), HttpStatusCode.OK, ""));
+                It.Is<DeleteShortCourseApiDeleteRequest>(r => r.Ukprn == command.Ukprn && r.LearningKey == command.LearningKey), true))
+            .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(_fixture.Create<DeleteShortCourseResponse>(), HttpStatusCode.NoContent, ""));
 
         await _sut.Handle(command, CancellationToken.None);
 
-        _earningsApiClient.Verify(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(It.IsAny<DeleteShortCourseEarningsRequest>(), false), Times.Never);
+        _earningsApiClient.Verify(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(It.IsAny<DeleteShortCourseEarningsRequest>(), true), Times.Never);
     }
 
     [Test]
-    public async Task Then_Earnings_Called_When_Learning_Returns_204()
+    public async Task Then_Earnings_Called_When_Learning_Returns_200()
     {
         var command = _fixture.Create<DeleteShortCourseCommand>();
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(
-                It.Is<DeleteShortCourseApiDeleteRequest>(r => r.Ukprn == command.Ukprn && r.LearningKey == command.LearningKey), false))
-            .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(_fixture.Create<DeleteShortCourseResponse>(), HttpStatusCode.NoContent, ""));
+                It.Is<DeleteShortCourseApiDeleteRequest>(r => r.Ukprn == command.Ukprn && r.LearningKey == command.LearningKey), true))
+            .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(_fixture.Create<DeleteShortCourseResponse>(), HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(
-                It.Is<DeleteShortCourseEarningsRequest>(r => r.LearningKey == command.LearningKey), false))
+                It.Is<DeleteShortCourseEarningsRequest>(r => r.LearningKey == command.LearningKey), true))
             .ReturnsAsync(new ApiResponse<DeleteShortCourseEarningsResponse>(_fixture.Create<DeleteShortCourseEarningsResponse>(), HttpStatusCode.NoContent, ""));
 
         await _sut.Handle(command, CancellationToken.None);
 
         _earningsApiClient.Verify(x => x.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(
-            It.Is<DeleteShortCourseEarningsRequest>(r => r.LearningKey == command.LearningKey), false), Times.Once);
+            It.Is<DeleteShortCourseEarningsRequest>(r => r.LearningKey == command.LearningKey), true), Times.Once);
     }
 
     [Test]
@@ -92,7 +89,7 @@ public class WhenHandlingDeleteShortCourseCommand
         var command = _fixture.Create<DeleteShortCourseCommand>();
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(
-                It.IsAny<DeleteShortCourseApiDeleteRequest>(), false))
+                It.IsAny<DeleteShortCourseApiDeleteRequest>(), true))
             .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(_fixture.Create<DeleteShortCourseResponse>(), HttpStatusCode.InternalServerError, ""));
 
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
@@ -104,11 +101,11 @@ public class WhenHandlingDeleteShortCourseCommand
         var command = _fixture.Create<DeleteShortCourseCommand>();
 
         _learningApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseResponse>(
-                It.IsAny<DeleteShortCourseApiDeleteRequest>(), false))
-            .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(_fixture.Create<DeleteShortCourseResponse>(), HttpStatusCode.NoContent, ""));
+                It.IsAny<DeleteShortCourseApiDeleteRequest>(), true))
+            .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(_fixture.Create<DeleteShortCourseResponse>(), HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(
-                It.IsAny<DeleteShortCourseEarningsRequest>(), false))
+                It.IsAny<DeleteShortCourseEarningsRequest>(), true))
             .ReturnsAsync(new ApiResponse<DeleteShortCourseEarningsResponse>(_fixture.Create<DeleteShortCourseEarningsResponse>(), HttpStatusCode.InternalServerError, ""));
 
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
