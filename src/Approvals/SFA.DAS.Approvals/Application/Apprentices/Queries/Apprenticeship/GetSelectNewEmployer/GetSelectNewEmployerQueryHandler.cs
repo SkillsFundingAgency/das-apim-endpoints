@@ -27,7 +27,7 @@ public class GetSelectNewEmployerQueryHandler(
 {
     public async Task<GetSelectNewEmployerQueryResult> Handle(GetSelectNewEmployerQuery selectEmployerRequest, CancellationToken cancellationToken)
     {
-        var providerRelationshipsRequest = new GetProviderAccountLegalEntitiesRequest(selectEmployerRequest.ProviderId, [Operation.Recruitment]);
+        var providerRelationshipsRequest = new GetProviderAccountLegalEntitiesRequest(selectEmployerRequest.ProviderId, [Operation.CreateCohort]);
 
         var providerRelationshipsResponse = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(providerRelationshipsRequest);
 
