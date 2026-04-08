@@ -2,7 +2,7 @@
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
@@ -105,12 +105,12 @@ public static class LearnerBuilder
     /// <summary>
     /// Currently only returns one episode as we have no functional code which would create multiple episodes yet.
     /// </summary>
-    private static List<SharedOuterApi.InnerApi.Responses.Earnings.Episode> ExtractEarningInnnerEpisodes(TestLearner testLearner, Learning learningInnerRecord)
+    private static List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode> ExtractEarningInnnerEpisodes(TestLearner testLearner, Learning learningInnerRecord)
     {
         var learningEpisode = learningInnerRecord.Episodes.First();
         var totalPrice = learningEpisode.Prices.OrderBy(x => x.StartDate).Last().TotalPrice;
 
-        var episode = learningInnerRecord.Episodes.Select(e => new SharedOuterApi.InnerApi.Responses.Earnings.Episode
+        var episode = learningInnerRecord.Episodes.Select(e => new SFA.DAS.LearnerData.Responses.EarningsInner.Episode
         {
             Key = e.Key,
             NumberOfInstalments = 0,
@@ -133,7 +133,7 @@ public static class LearnerBuilder
 
         episode.AdditionalPayments = testLearner.AdditionalPayments ?? new List<AdditionalPayment>();
 
-        return new List<SharedOuterApi.InnerApi.Responses.Earnings.Episode> { episode };
+        return new List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode> { episode };
     }
 
     /// <summary>

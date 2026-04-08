@@ -1,6 +1,6 @@
-﻿﻿using SFA.DAS.SharedOuterApi.Domain;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 {
@@ -23,10 +23,10 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
         public string AssessmentPlanUrl { get; set; }
         public string TrailBlazerContact { get; set; }
         public string TypicalJobTitles { get; set; }
-        public List<string> Skills { get; set; }
+        public List<string> Skills { get; set; } = [];
         public string ApprenticeshipType { get; set; }
-        public List<KsbResponse> Ksbs { get; set; }
-        public List<RelatedOccupation> RelatedOccupations { get; set; }
+        public List<KsbResponse> Ksbs { get; set; } = [];
+        public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
         public string StandardPageUrl { get; set; }
         public string IntegratedDegree { get; set; }
         public decimal SectorSubjectAreaTier2 { get; set; }
@@ -40,11 +40,11 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses
 
         public bool OtherBodyApprovalRequired { get; set; }
         public string ApprovalBody { get; set; }
-        public List<string> Duties { get; set; }
+        public List<string> Duties { get; set; } = [];
         public bool CoreAndOptions { get; set; }
-        public List<string> CoreDuties { get; set; }
+        public List<string> CoreDuties { get; set; } = [];
         public bool IntegratedApprenticeship { get; set; }
-        public List<string> Options { get; set; }
+        public List<string> Options { get; set; } = [];
         public int SectorCode { get; set; }
         public bool EPAChanged { get; set; }
         public int VersionMajor { get; set; }
