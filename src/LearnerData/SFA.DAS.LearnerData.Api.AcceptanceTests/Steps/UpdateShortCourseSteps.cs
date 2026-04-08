@@ -1,9 +1,11 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
+using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.Payments.EarningEvents.Messages.External;
+using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;
@@ -54,9 +56,13 @@ public class UpdateShortCourseSteps
     [When(@"the short course learning is updated")]
     public async Task WhenTheShortCourseLearningIsUpdated()
     {
-        ConfigureLearnerInnerApi();
+        var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
+        var ukprn = _scenarioContext.Get<long>(UkprnKey);
+        var requestBody = _fixture.Create<ShortCourseRequest>();
+
+        ConfigureLearnerInnerApi(ukprn, learningKey, requestBody);
         ConfigureEarningsInnerApiToRespondeOkToEverything();
-        await CallUpdateShortCourseLearningEndpoint();
+        await CallUpdateShortCourseLearningEndpoint(ukprn, learningKey, requestBody);
     }
 
     [Then(@"a on-programme update request is sent for short courses to the earnings domain")]
@@ -70,17 +76,54 @@ public class UpdateShortCourseSteps
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
     }
 
-    private void ConfigureLearnerInnerApi()
+    [Then(@"a short course earnings updated event is published for payments")]
+    public void ThenAShortCourseEarningsUpdatedEventIsPublishedForPayments()
+    {
+        var learnerKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
+        var calculateGrowthAndSkillsPayments = StubMessageSession.PublishedMessages
+            .OfType<CalculateGrowthAndSkillsPayments>()
+            .Where(e => e.Learner.LearnerKey == learnerKey)
+            .ToList();
+
+        calculateGrowthAndSkillsPayments.Should().NotBeEmpty("Expected a CalculateGrowthAndSkillsPayments event to be published but none were found.");
+        calculateGrowthAndSkillsPayments.Should().ContainSingle(e => e.Training.CourseType == Payments.EarningEvents.Messages.External.CourseType.ShortCourse,
+            "Expected a CalculateGrowthAndSkillsPayments event for a ShortCourse to be published but it was not found.");
+    }
+
+    private void ConfigureLearnerInnerApi(long ukprn, Guid learningKey, ShortCourseRequest shortCourseRequest)
     {
         var changes = _scenarioContext.Get<List<ShortCourseUpdateChanges>>(ShortCourseChangesKey);
-        var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
+        var onProgramme = shortCourseRequest.Delivery.OnProgramme.First();
 
-
-        var response = new UpdateShortCourseLearningPutResponse();
-        if (changes.Any())
+        var response = new UpdateShortCourseLearningPutResponse
         {
-            response.Changes = changes.Select(x=>x.ToString()).ToArray();
-        }
+            LearningKey = learningKey,
+            Changes = changes.Select(x => x.ToString()).ToArray(),
+            CompletionDate = onProgramme.ActualEndDate,
+            Learner = new UpdateShortCourseResultLearner
+            {
+                Uln = shortCourseRequest.Learner.Uln.ToString(),
+                FirstName = shortCourseRequest.Learner.FirstName,
+                LastName = shortCourseRequest.Learner.LastName,
+                DateOfBirth = shortCourseRequest.Learner.Dob,
+            },
+            Episodes = [new UpdateShortCourseResultEpisode
+            {
+                Ukprn = ukprn,
+                EmployerAccountId = 12,
+                CourseCode = "ZSC00001",
+                CourseType = "ShortCourse",
+                LearningType = "ApprenticeshipUnit",
+                StartDate = onProgramme.StartDate,
+                AgeAtStart = 20,
+                PlannedEndDate = onProgramme.ExpectedEndDate,
+                WithdrawalDate = onProgramme.WithdrawalDate,
+                IsApproved = true,
+                Price = 1000m,
+                LearnerRef = "LearnerRef",
+                EmployerType = EmployerType.Levy.ToString()
+            }]
+        };
 
         _testContext.ApprenticeshipsApi.MockServer
         .Given(
@@ -97,6 +140,28 @@ public class UpdateShortCourseSteps
 
     private void ConfigureEarningsInnerApiToRespondeOkToEverything()
     {
+
+        var response = new UpdateShortCourseEarningPutResponse
+        {
+            EarningProfileVersion = Guid.NewGuid(),
+            Instalments = [new ShortCourseInstalment
+            {
+                Amount = 100m,
+                CollectionPeriod = 1,
+                CollectionYear = 2023,
+                Type = "ThirtyPercentLearningComplete",
+                IsPayable = true
+            },
+            new ShortCourseInstalment
+            {
+                Amount = 100m,
+                CollectionPeriod = 1,
+                CollectionYear = 2023,
+                Type = "LearningComplete",
+                IsPayable = true
+            }]
+        };
+
         _testContext.EarningsApi.MockServer
             .Given(
                 Request.Create()
@@ -105,15 +170,14 @@ public class UpdateShortCourseSteps
             )
             .RespondWith(
                 Response.Create()
-                    .WithStatusCode(200)
+                .WithStatusCode(200)
+                .WithBodyAsJson(response)
             );
     }
 
-    private async Task CallUpdateShortCourseLearningEndpoint()
+    private async Task CallUpdateShortCourseLearningEndpoint(long ukprn, Guid learningKey, ShortCourseRequest requestBody)
     {
-        var learningKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
-        var ukprn = _scenarioContext.Get<long>(UkprnKey);
-        var requestBody = _fixture.Create<ShortCourseRequest>();
+
         var httpContent = new StringContent(JsonConvert.SerializeObject(requestBody), new MediaTypeHeaderValue("application/json"));
         var response = await _testContext.OuterApiClient.PutAsync($"/providers/{ukprn}/shortCourses/{learningKey}", httpContent);
         var contentString = await response.Content.ReadAsStringAsync();

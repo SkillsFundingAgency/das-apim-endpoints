@@ -9,10 +9,10 @@ using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 

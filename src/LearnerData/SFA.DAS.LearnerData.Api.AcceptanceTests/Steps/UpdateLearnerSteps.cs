@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.Learning;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;

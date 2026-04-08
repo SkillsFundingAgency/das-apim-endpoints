@@ -1,13 +1,13 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using LearningResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using LearningResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -67,7 +67,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
 
         result.Learners.Should().BeEmpty();
         result.Total.Should().Be(0);
-        _earningsApiClient.Verify(x => x.GetWithResponseCode<GetShortCourseDataResponse>(It.IsAny<GetShortCourseDataRequest>()), Times.Never);
+        _earningsApiClient.Verify(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()), Times.Never);
     }
 
     [Test]
@@ -90,8 +90,8 @@ public class WhenHandlingGetShortCourseEarningsQuery
         SetupLearningApi([learning]);
 
         _earningsApiClient
-            .Setup(x => x.GetWithResponseCode<GetShortCourseDataResponse>(It.IsAny<GetShortCourseDataRequest>()))
-            .ReturnsAsync(new ApiResponse<GetShortCourseDataResponse>(null, System.Net.HttpStatusCode.NotFound, ""));
+            .Setup(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()))
+            .ReturnsAsync(new ApiResponse<GetFm99ShortCourseDataResponse>(null, System.Net.HttpStatusCode.NotFound, ""));
 
         var act = () => _handler.Handle(BuildQuery(), CancellationToken.None);
 
@@ -182,9 +182,9 @@ public class WhenHandlingGetShortCourseEarningsQuery
     private void SetupEarningsApi(Guid learningKey, List<ShortCourseEarning> earnings)
     {
         _earningsApiClient
-            .Setup(x => x.GetWithResponseCode<GetShortCourseDataResponse>(It.IsAny<GetShortCourseDataRequest>()))
-            .ReturnsAsync(new ApiResponse<GetShortCourseDataResponse>(
-                new GetShortCourseDataResponse { Earnings = earnings },
+            .Setup(x => x.GetWithResponseCode<GetFm99ShortCourseDataResponse>(It.IsAny<GetFm99ShortCourseDataRequest>()))
+            .ReturnsAsync(new ApiResponse<GetFm99ShortCourseDataResponse>(
+                new GetFm99ShortCourseDataResponse { Earnings = earnings },
                 System.Net.HttpStatusCode.OK, ""));
     }
 
