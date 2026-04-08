@@ -20,11 +20,6 @@ jobs:
   steps:
   - template: azure-pipelines-templates/build/step/gitversion.yml@das-platform-building-blocks
 
-  - task: CmdLine@2
-    displayName: 'Clear NuGet Cache'
-    inputs:
-      script: dotnet nuget locals all --clear
-
   - template: azure-pipelines-templates/build/step/app-build.yml@das-platform-building-blocks
     parameters:
       SonarCloud: true
