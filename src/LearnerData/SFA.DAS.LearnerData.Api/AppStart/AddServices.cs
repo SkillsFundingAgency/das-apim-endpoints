@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -27,6 +28,7 @@ public static class AddApiServicesExtension
         services.AddTransient<IUpdateEarningsEnglishAndMathsRequestBuilder, UpdateEarningsEnglishAndMathsRequestBuilder>();
         services.AddTransient<IUpdateEarningsLearningSupportRequestBuilder, UpdateEarningsLearningSupportRequestBuilder>();
         services.AddTransient<ICalculateGrowthAndSkillsPaymentsEventBuilder, CalculateGrowthAndSkillsPaymentsEventBuilder>();
+        services.AddTransient<GrowthAndSkillsPaymentsRecalculatedEventHandler>();
         services.AddTransient<ICostsService, CostsService>();
         services.AddTransient<IShortCourseLookupService, ShortCourseLookupService>();
         services.AddTransient<ICreateDraftShortCoursePostRequestBuilder, CreateDraftShortCoursePostRequestBuilder>();

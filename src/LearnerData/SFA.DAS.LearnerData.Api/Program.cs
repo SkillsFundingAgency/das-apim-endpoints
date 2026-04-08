@@ -1,20 +1,16 @@
-using Azure.Identity;
 using FluentValidation;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using Microsoft.OpenApi.Models;
-using NServiceBus;
 using SFA.DAS.LearnerData.Api.AppStart;
 using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
-using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using System.Net;
 using System.Text.Json.Serialization;
 
 
@@ -48,28 +44,7 @@ builder.Services
 builder.AddDistributedCache(configuration);
 
 builder.Services.AddSingleton<ITelemetryInitializer, CorrelationTelemetryInitializer>();
-builder.Services.AddSingleton<IMessageSession>(provider =>
-{
-    var endpointConfiguration = new EndpointConfiguration("SFA.DAS.LearnerData.OuterApi");
-    endpointConfiguration.UseExtendedMessageConventions();
-    endpointConfiguration.UseNewtonsoftJsonSerializer();
-
-    endpointConfiguration.SendOnly();
-    var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
-    var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-    var fullyQualifiedNamespace = new Uri(
-        nsbConnection.Split(';')
-            .First(p => p.StartsWith("Endpoint=", StringComparison.OrdinalIgnoreCase))
-            .Substring("Endpoint=".Length)
-    ).Host;
-    transport.ConnectionString(fullyQualifiedNamespace);
-    transport.CustomTokenCredential(new DefaultAzureCredential());
-
-    var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
-    if (!string.IsNullOrWhiteSpace(decodedLicence)) endpointConfiguration.License(decodedLicence);
-
-    return NServiceBus.Endpoint.Start(endpointConfiguration).GetAwaiter().GetResult();
-});
+builder.Host.AddNServiceBus(configuration);
 
 builder.Logging.AddApplicationInsights();
 builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>("SFA.DAS", LogLevel.Information);

@@ -2,7 +2,7 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
-using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
@@ -47,8 +47,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _learningApiClient.Object,
             _earningsApiClient.Object,
             _calculateGrowthAndSkillsPaymentsEventBuilder.Object,
-            _messageSession.Object,
-            new PaymentsConfiguration { PaymentsEndpoint = "test-payments-endpoint" });
+            _messageSession.Object);
 
         _learningKey = Guid.NewGuid();
         _ukprn = 12345678;
@@ -142,6 +141,37 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _earningsApiClient.Verify(x =>
             x.Put(It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()),
             Times.Never);
+    }
+
+    [Test]
+    public async Task Then_GrowthAndSkillsPaymentsRecalculatedEvent_Is_Published_With_Built_Command()
+    {
+        // Arrange
+        var builtCommand = _fixture.Create<CalculateGrowthAndSkillsPayments>();
+
+        _calculateGrowthAndSkillsPaymentsEventBuilder
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<ShortCourseEarningsResponse>()))
+            .ReturnsAsync(builtCommand);
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learningKey,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningPutResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(
+            It.Is<GrowthAndSkillsPaymentsRecalculatedEvent>(e => e.Command == builtCommand),
+            It.IsAny<PublishOptions>()),
+            Times.Once);
     }
 
     [Test]
