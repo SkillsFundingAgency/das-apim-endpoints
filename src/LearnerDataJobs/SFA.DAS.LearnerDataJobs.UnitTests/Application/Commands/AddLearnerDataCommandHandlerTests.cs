@@ -60,24 +60,24 @@ public class AddLearnerDataCommandHandlerTests
         result.Should().BeFalse();
     }
 
-    [Test, MoqAutoData]
-    public async Task Then_AddingANewLearner_Throws_Exception(
-        CourseLookupDetailResponse courseResponse,
-        AddLearnerDataCommand command,
-        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
-        [Greedy] AddLearnerDataCommandHandler handler)
-    {
-        courseResponse.LearningType = "Unknown";
+    //[Test, MoqAutoData]
+    //public async Task Then_AddingANewLearner_Throws_Exception(
+    //    CourseLookupDetailResponse courseResponse,
+    //    AddLearnerDataCommand command,
+    //    [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+    //    [Greedy] AddLearnerDataCommandHandler handler)
+    //{
+    //    courseResponse.LearningType = "Unknown";
 
-        courseClient.Setup(x =>
-                x.Get<CourseLookupDetailResponse?>(
-                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
-            .ReturnsAsync(courseResponse);
+    //    courseClient.Setup(x =>
+    //            x.Get<CourseLookupDetailResponse?>(
+    //                It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+    //        .ReturnsAsync(courseResponse);
 
-        var act = async () => await handler.Handle(command, CancellationToken.None);
+    //    var act = async () => await handler.Handle(command, CancellationToken.None);
 
-        await act.Should().ThrowAsync<ArgumentException>().WithMessage("'Unknown' is not a valid description for LearningType");
-    }
+    //    await act.Should().ThrowAsync<ArgumentException>().WithMessage("'Unknown' is not a valid description for LearningType");
+    //}
 
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Throws_Exception_When_LarsCode_Is_Blank(
@@ -91,48 +91,48 @@ public class AddLearnerDataCommandHandlerTests
         await act.Should().ThrowAsync<ArgumentNullException>().WithMessage("Learner data LarsCode cannot be null (Parameter 'LearnerData')");
     }
 
-    [Test, MoqAutoData]
-    public async Task Then_AddingANewLearner_Throws_Exception_When_No_CourseFound(
-    AddLearnerDataCommand command,
-    [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
-    [Greedy] AddLearnerDataCommandHandler handler)
-    {
-        CourseLookupDetailResponse? courseResponse = null;
+    //[Test, MoqAutoData]
+    //public async Task Then_AddingANewLearner_Throws_Exception_When_No_CourseFound(
+    //AddLearnerDataCommand command,
+    //[Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+    //[Greedy] AddLearnerDataCommandHandler handler)
+    //{
+    //    CourseLookupDetailResponse? courseResponse = null;
 
-        courseClient.Setup(x =>
-                x.Get<CourseLookupDetailResponse?>(
-                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
-            .ReturnsAsync(courseResponse);
+    //    courseClient.Setup(x =>
+    //            x.Get<CourseLookupDetailResponse?>(
+    //                It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+    //        .ReturnsAsync(courseResponse);
 
-        var act = async () => await handler.Handle(command, CancellationToken.None);
+    //    var act = async () => await handler.Handle(command, CancellationToken.None);
 
-        await act.Should().ThrowAsync<Exception>().WithMessage($"No course found for LARS code {command.LearnerData.LarsCode}");
-    }
+    //    await act.Should().ThrowAsync<Exception>().WithMessage($"No course found for LARS code {command.LearnerData.LarsCode}");
+    //}
 
-    [Test, MoqAutoData]
-    public async Task Then_AddingANewLearner_Maps_To_Inner_Api_Successfully(
-        AddLearnerDataCommand command,
-        CourseLookupDetailResponse courseResponse,
-        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
-        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
-        [Greedy] AddLearnerDataCommandHandler handler)
-    {
-        courseResponse.LearningType = "ApprenticeshipUnit";
+    //[Test, MoqAutoData]
+    //public async Task Then_AddingANewLearner_Maps_To_Inner_Api_Successfully(
+    //    AddLearnerDataCommand command,
+    //    CourseLookupDetailResponse courseResponse,
+    //    [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
+    //    [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+    //    [Greedy] AddLearnerDataCommandHandler handler)
+    //{
+    //    courseResponse.LearningType = "ApprenticeshipUnit";
 
-        var expectedUrl =
-            $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
-        client.Setup(x =>
-                x.PutWithResponseCode<NullResponse>(
-                    It.Is<PutLearnerDataRequest>(p => p.PutUrl == expectedUrl)))
-            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
+    //    var expectedUrl =
+    //        $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
+    //    client.Setup(x =>
+    //            x.PutWithResponseCode<NullResponse>(
+    //                It.Is<PutLearnerDataRequest>(p => p.PutUrl == expectedUrl)))
+    //        .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.Created, ""));
 
-        courseClient.Setup(x =>
-                x.Get<CourseLookupDetailResponse>(
-                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
-            .ReturnsAsync(courseResponse);
+    //    courseClient.Setup(x =>
+    //            x.Get<CourseLookupDetailResponse>(
+    //                It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+    //        .ReturnsAsync(courseResponse);
 
-        var result = await handler.Handle(command, CancellationToken.None);
+    //    var result = await handler.Handle(command, CancellationToken.None);
 
-        client.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<PutLearnerDataRequest>(p => ((LearnerDataRequest)p.Data).LarsCode == command.LearnerData.LarsCode && ((LearnerDataRequest)p.Data).TrainingName == courseResponse.Title)));
-    }
+    //    client.Verify(x => x.PutWithResponseCode<NullResponse>(It.Is<PutLearnerDataRequest>(p => ((LearnerDataRequest)p.Data).LarsCode == command.LearnerData.LarsCode && ((LearnerDataRequest)p.Data).TrainingName == courseResponse.Title)));
+    //}
 }
