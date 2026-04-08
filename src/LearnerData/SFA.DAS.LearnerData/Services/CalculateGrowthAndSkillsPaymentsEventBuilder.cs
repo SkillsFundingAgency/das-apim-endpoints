@@ -61,10 +61,10 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                 StartDate = episode.StartDate,
                 PlannedEndDate = episode.PlannedEndDate,
                 ActualEndDate = GetActualEndDate(episode.WithdrawalDate, learningResponse.CompletionDate),
-                TrainingStatus = GetTrainingStatus(episode.WithdrawalDate, learningResponse.CompletionDate)
+                TrainingStatus = GetTrainingStatus(episode.WithdrawalDate, learningResponse.CompletionDate),
             },
             EmployerContribution = 0,
-            Earnings = earnings
+            Earnings = earnings,
         };
     }
 
@@ -111,6 +111,7 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                         {
                             EarningType = GetEarningType(instalment),
                             DeliveryPeriod = instalment.CollectionPeriod,
+                            LearningId = episode.ApprovalsApprenticeshipId,
                             Amount = instalment.Amount,
                             Employer = new Employer
                             {
