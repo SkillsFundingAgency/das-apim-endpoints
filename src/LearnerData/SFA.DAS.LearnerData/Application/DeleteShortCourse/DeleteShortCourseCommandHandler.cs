@@ -28,7 +28,7 @@ public class DeleteShortCourseCommandHandler(
 
         var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearningKey);
 
-        var learningResponse = await learningApiClient.DeleteWithResponseCode<DeleteShortCourseResponse>(learningRequest);
+        var learningResponse = await learningApiClient.DeleteWithResponseCode<DeleteShortCourseResponse>(learningRequest, true);
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
@@ -36,7 +36,7 @@ public class DeleteShortCourseCommandHandler(
             throw new Exception($"Failed to delete short course with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        if (learningResponse.StatusCode != HttpStatusCode.NoContent)
+        if (learningResponse.StatusCode == HttpStatusCode.NoContent)
         {
             logger.LogInformation("Short course with key {LearningKey} was a no-op in Learning, skipping Earnings delete", command.LearningKey);
             return;
@@ -44,7 +44,7 @@ public class DeleteShortCourseCommandHandler(
 
         var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey);
 
-        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest);
+        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
         {
