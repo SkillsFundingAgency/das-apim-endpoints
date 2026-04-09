@@ -20,7 +20,7 @@ namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
             {
                 Ukprn = source.UnitedKingdomProviderReferenceNumber,
                 ProviderName = source.ProviderName,
-                TradingName = source.ProviderAliases?.OrderByDescending(x => x.LastUpdated).Select(x => x.Alias).FirstOrDefault(),
+                TradingName = source.ProviderAliases?.ProviderAlias,
                 Address1 = source.ProviderContacts.FirstOrDefault(x => x.ContactType == LegalIdentifier)?.ContactAddress?.Address1,
                 Address2 = source.ProviderContacts.FirstOrDefault(x => x.ContactType == LegalIdentifier)?.ContactAddress?.Address2,
                 Address3 = source.ProviderContacts.FirstOrDefault(x => x.ContactType == LegalIdentifier)?.ContactAddress?.Address3,

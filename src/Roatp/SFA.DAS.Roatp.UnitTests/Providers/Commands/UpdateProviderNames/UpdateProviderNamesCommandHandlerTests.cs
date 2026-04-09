@@ -113,11 +113,7 @@ public class UpdateProviderNamesCommandHandlerTests
                 ProviderName = ukrlpLegalName,
                 UnitedKingdomProviderReferenceNumber = ukrlpUkprn,
                 ProviderContacts = providerContacts,
-                ProviderAliases = new List<ProviderAlias>{new ProviderAlias
-                {
-                    Alias = ukrlpTradingName,
-                    LastUpdated = DateTime.UtcNow.AddDays(-2)
-                }}
+                ProviderAliases = new ProviderAliases{ProviderAlias = ukrlpTradingName}
             }
         };
 
