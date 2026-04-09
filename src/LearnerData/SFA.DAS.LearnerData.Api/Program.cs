@@ -10,7 +10,6 @@ using SFA.DAS.LearnerData.Api.Middleware;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
-using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Infrastructure;
@@ -46,23 +45,25 @@ builder.Services
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
+builder.AddDistributedCache(configuration);
+
 builder.Services.AddSingleton<ITelemetryInitializer, CorrelationTelemetryInitializer>();
 builder.Services.AddSingleton<IMessageSession>(provider =>
 {
     var endpointConfiguration = new EndpointConfiguration("SFA.DAS.LearnerData.OuterApi");
-    endpointConfiguration.EnableInstallers();
-    endpointConfiguration.UseMessageConventions();
+    endpointConfiguration.UseExtendedMessageConventions();
     endpointConfiguration.UseNewtonsoftJsonSerializer();
 
     endpointConfiguration.SendOnly();
     var nsbConnection = configuration["NServiceBusConfiguration:NServiceBusConnectionString"];
     var transport = endpointConfiguration.UseTransport<AzureServiceBusTransport>();
-    if (!configuration.IsLocalOrDev())
-    {
-        nsbConnection = nsbConnection.Replace("Endpoint=sb://", string.Empty).TrimEnd('/');
-        transport.CustomTokenCredential(new DefaultAzureCredential());
-    }
-    transport.ConnectionString(nsbConnection);
+    var fullyQualifiedNamespace = new Uri(
+        nsbConnection.Split(';')
+            .First(p => p.StartsWith("Endpoint=", StringComparison.OrdinalIgnoreCase))
+            .Substring("Endpoint=".Length)
+    ).Host;
+    transport.ConnectionString(fullyQualifiedNamespace);
+    transport.CustomTokenCredential(new DefaultAzureCredential());
 
     var decodedLicence = WebUtility.HtmlDecode(configuration["NServiceBusConfiguration:NServiceBusLicense"]);
     if (!string.IsNullOrWhiteSpace(decodedLicence)) endpointConfiguration.License(decodedLicence);
@@ -107,6 +108,7 @@ app.UseSwagger()
     .UseAuthentication();
 
 app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateLearnerRequest>>();
+app.UseMiddleware<StrictJsonValidationMiddleware<StubUpdateShortCourseRequest>>();
 app.UseMiddleware<ConcurrencyTrackingMiddleware>();
 
 app.MapControllers();

@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.LearnerData.Extensions;
 
 namespace SFA.DAS.LearnerData.UnitTests.Extensions
@@ -29,14 +29,14 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
         {
             var changes = new List<UpdateLearnerApiPutResponse.LearningUpdateChanges>
             {
-                UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish
+                UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths
             };
 
             changes.HasOnProgrammeUpdate().Should().BeFalse();
         }
 
-        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish)]
-        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglishWithdrawal)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsWithdrawal)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMathsBreaksInLearningUpdated)]
         public void HasEnglishAndMathsUpdate_ReturnsTrue_ForEnglishAndMathsChanges(UpdateLearnerApiPutResponse.LearningUpdateChanges change)
         {

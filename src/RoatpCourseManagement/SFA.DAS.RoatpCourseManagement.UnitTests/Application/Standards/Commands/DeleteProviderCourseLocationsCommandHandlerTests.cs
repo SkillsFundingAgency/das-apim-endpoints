@@ -23,7 +23,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Commands
             DeleteProviderCourseLocationRequest expectedRequest = command;
             await sut.Handle(command, new CancellationToken());
 
-            apiClientMock.Verify(c => c.Delete(It.Is<DeleteProviderCourseLocationRequest>(r => r.Id == command.Id && r.Ukprn == command.Ukprn && r.LarsCode == command.LarsCode)));
+            apiClientMock.Verify(c => c.Delete(It.Is<DeleteProviderCourseLocationRequest>(r => r.ProviderCourseLocationId == command.Id && r.Ukprn == command.Ukprn && r.LarsCode == command.LarsCode)));
         }
 
     }

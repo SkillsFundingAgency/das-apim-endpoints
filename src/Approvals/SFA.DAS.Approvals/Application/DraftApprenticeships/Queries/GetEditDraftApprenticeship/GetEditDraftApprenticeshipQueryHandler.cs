@@ -61,7 +61,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 courseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
             var course = (await _apiClient.Get<GetTrainingProgrammeResponse>(new GetCalculatedVersionOfTrainingProgrammeRequest(courseCode, apprenticeship.StartDate)))?.TrainingProgramme;
-
+            if (course == null)
+            {
+                course = (await _apiClient.Get<GetTrainingProgrammeResponse>(new GetTrainingProgrammeRequest(courseCode)))?.TrainingProgramme;
+            }
             return new GetEditDraftApprenticeshipQueryResult
             {
                 FirstName = apprenticeship.FirstName,
@@ -108,7 +111,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(apprenticeship.StartDate),
                 LearnerDataId = apprenticeship.LearnerDataId,
                 HasLearnerDataChanges = apprenticeship.HasLearnerDataChanges,
-                LastLearnerDataSync = apprenticeship.LastLearnerDataSync
+                LastLearnerDataSync = apprenticeship.LastLearnerDataSync,
+                TrainingCourseVersion = apprenticeship.TrainingCourseVersion
             };
         }
     }

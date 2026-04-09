@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.Learning;
 
 namespace SFA.DAS.LearnerData.Services;
 
@@ -16,7 +16,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
     {
         var body = new UpdateEnglishAndMathsRequest
         {
-            EnglishAndMaths = putRequest.Data.MathsAndEnglishCourses.Select(x => new EnglishAndMathsItem
+            EnglishAndMaths = putRequest.Data.EnglishAndMathsCourses.Select(x => new EnglishAndMathsItem
             {
                 StartDate = x.StartDate,
                 EndDate = x.PlannedEndDate,

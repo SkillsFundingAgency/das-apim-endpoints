@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -16,7 +17,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands;
 [TestFixture]
 public class CreateCohortCommandHandlerTests
 {
-    private const string ApprenticeshipType = "Foundation";
+    private const string LearningType = "Foundation";
     private const int MaximumAge = 25;
 
     [Test, MoqAutoData]
@@ -88,7 +89,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -168,17 +169,17 @@ public class CreateCohortCommandHandlerTests
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        standardResponse.ApprenticeshipType = LearningType;
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
-            .ThrowsAsync(new Exception($"Learner age rules not found for apprenticeship type {ApprenticeshipType}"));
+            .ThrowsAsync(new Exception($"Learner age rules not found for apprenticeship type {LearningType}"));
 
         // Act
         var act = () => handler.Handle(request, CancellationToken.None);
 
         // Assert
         act.Should().ThrowAsync<Exception>()
-            .WithMessage($"Learner age rules not found for apprenticeship type {ApprenticeshipType}");
+            .WithMessage($"Learner age rules not found for apprenticeship type {LearningType}");
         courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         commitmentsApiClient.VerifyNoOtherCalls();
     }
@@ -193,12 +194,12 @@ public class CreateCohortCommandHandlerTests
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        standardResponse.ApprenticeshipType = LearningType;
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = standardResponse,
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = new GetLearnerAgeResponse()
             });
 
@@ -228,12 +229,12 @@ public class CreateCohortCommandHandlerTests
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        standardResponse.ApprenticeshipType = LearningType;
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = standardResponse,
+                Standard = new GetStandardsListItem { ApprenticeshipType = LearningType },
                 LearnerAgeRules = getLearnerAgeResponse
             });
 

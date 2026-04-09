@@ -22,6 +22,9 @@ namespace SFA.DAS.Aodp.Api.AppStart
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
 
+            services.Configure<DfeSignInApiConfiguration>(configuration.GetSection(nameof(DfeSignInApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<DfeSignInApiConfiguration>>().Value);
+
 
         }
     }

@@ -43,7 +43,7 @@ namespace SFA.DAS.Approvals.Services
         private async Task<GetStandardsListItem> GetStandardAsync(string courseCode)
         {
             var standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardDetailsByIdRequest(courseCode));
-            
+
             if (standard == null)
             {
                 logger.LogError("Standard not found for course ID {CourseId}", courseCode);
@@ -81,4 +81,4 @@ namespace SFA.DAS.Approvals.Services
             return response;
         }
     }
-} 
+}

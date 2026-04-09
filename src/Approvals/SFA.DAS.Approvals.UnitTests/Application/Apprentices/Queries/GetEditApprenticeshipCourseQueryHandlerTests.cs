@@ -6,6 +6,7 @@ using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
+using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;

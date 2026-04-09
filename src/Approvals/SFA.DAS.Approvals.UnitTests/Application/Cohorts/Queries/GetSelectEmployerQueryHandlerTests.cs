@@ -67,12 +67,49 @@ public class GetSelectEmployerQueryHandlerTests
             .Setup(x => x.Get<GetAccountResponse>(It.Is<GetAccountRequest>(r => r.HashedAccountId == "HASH2")))
             .ReturnsAsync(new GetAccountResponse { ApprenticeshipEmployerType = "NonLevy" });
 
+        // Act
         var actual = await handler.Handle(query, CancellationToken.None);
 
+        // Assert
         actual.AccountProviderLegalEntities.Should().HaveCount(2);
+        actual.TotalCount.Should().Be(2);
         actual.Employers.Should().NotBeNull();
         actual.Employers.Should().Contain("Legal Entity 1");
         actual.Employers.Should().Contain("Legal Entity 2");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Returns_Paged_Results_And_TotalCount(
+        [Frozen] Mock<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>> providerRelationshipsApiClient,
+        [Frozen] Mock<IAccountsApiClient<AccountsConfiguration>> accountsApiClient,
+        [Frozen] Mock<ILogger<GetSelectEmployerQueryHandler>> logger,
+        [Greedy] GetSelectEmployerQueryHandler handler)
+    {
+        // Arrange
+        var providerRelationshipsResponse = new GetProviderAccountLegalEntitiesResponse
+        {
+            AccountProviderLegalEntities =
+            [
+                new() { AccountId = 1, AccountHashedId = "H1", AccountName = "A1", AccountLegalEntityName = "E1", AccountLegalEntityPublicHashedId = "P1", AccountPublicHashedId = "P1", AccountLegalEntityId = 1, AccountProviderId = 1 },
+                new() { AccountId = 2, AccountHashedId = "H2", AccountName = "A2", AccountLegalEntityName = "E2", AccountLegalEntityPublicHashedId = "P2", AccountPublicHashedId = "P2", AccountLegalEntityId = 2, AccountProviderId = 2 },
+                new() { AccountId = 3, AccountHashedId = "H3", AccountName = "A3", AccountLegalEntityName = "E3", AccountLegalEntityPublicHashedId = "P3", AccountPublicHashedId = "P3", AccountLegalEntityId = 3, AccountProviderId = 3 },
+                new() { AccountId = 4, AccountHashedId = "H4", AccountName = "A4", AccountLegalEntityName = "E4", AccountLegalEntityPublicHashedId = "P4", AccountPublicHashedId = "P4", AccountLegalEntityId = 4, AccountProviderId = 4 },
+                new() { AccountId = 5, AccountHashedId = "H5", AccountName = "A5", AccountLegalEntityName = "E5", AccountLegalEntityPublicHashedId = "P5", AccountPublicHashedId = "P5", AccountLegalEntityId = 5, AccountProviderId = 5 }
+            ]
+        };
+        providerRelationshipsApiClient.Setup(x => x.Get<GetProviderAccountLegalEntitiesResponse>(It.IsAny<GetProviderAccountLegalEntitiesRequest>())).ReturnsAsync(providerRelationshipsResponse);
+        accountsApiClient.Setup(x => x.Get<GetAccountResponse>(It.IsAny<GetAccountRequest>())).ReturnsAsync(new GetAccountResponse { ApprenticeshipEmployerType = "NonLevy" });
+
+        var query = new GetSelectEmployerQuery { ProviderId = 1, PageNumber = 2, PageSize = 2 };
+
+        // Act
+        var actual = await handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        actual.TotalCount.Should().Be(5);
+        actual.AccountProviderLegalEntities.Should().HaveCount(2);
+        actual.AccountProviderLegalEntities[0].AccountLegalEntityName.Should().Be("E3");
+        actual.AccountProviderLegalEntities[1].AccountLegalEntityName.Should().Be("E4");
     }
 
     [Test, MoqAutoData]
