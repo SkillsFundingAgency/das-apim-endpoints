@@ -19,6 +19,7 @@ namespace SFA.DAS.Approvals.Services
     {
         public async Task<CourseTypeRulesResult> GetCourseTypeRulesAsync(string courseCode)
         {
+            logger.LogInformation("Getting old course type rules for course code {CourseCode}", courseCode);
             var standard = await GetStandardAsync(courseCode);
             var learnerAge = await GetLearnerAgeRulesAsync(standard.LearningType);
 
