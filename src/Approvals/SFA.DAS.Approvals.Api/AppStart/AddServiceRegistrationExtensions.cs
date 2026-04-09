@@ -68,7 +68,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IAutoReservationsService, AutoReservationsService>();
 
-        if(string.Equals(configuration["UseNewCoursesApi"], "true", StringComparison.OrdinalIgnoreCase))
+        if (configuration.GetValue<bool>("UseNewCoursesApi") == true)
         {
             services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
             services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
