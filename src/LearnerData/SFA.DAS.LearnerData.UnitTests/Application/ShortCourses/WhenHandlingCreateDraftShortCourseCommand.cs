@@ -7,9 +7,9 @@ using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 

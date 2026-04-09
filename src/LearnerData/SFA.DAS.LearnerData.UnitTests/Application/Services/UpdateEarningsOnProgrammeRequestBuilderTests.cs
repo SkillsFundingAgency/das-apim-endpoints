@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
