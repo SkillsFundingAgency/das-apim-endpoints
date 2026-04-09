@@ -1,50 +1,49 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
-using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.GetUserAccounts;
+using SFA.DAS.Recruit.Application.User.Queries.GetUsersByEmployerAccountId;
 using System;
 using System.Net;
 using System.Threading;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Users
 {
-    public class WhenGettingAccountsForUser
+    public class WhenGettingUsersByEmployerAccountId
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Accounts_By_User_From_Mediator(
-            string userId,
-            GetUserAccountsQueryResult mediatorResult,
+            long employerAccountId,
+            GetUsersByEmployerAccountIdQueryResult mediatorResult,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] UsersController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.Is<GetUserAccountsQuery>(c=>c.UserId.Equals(userId)),
+                    It.Is<GetUsersByEmployerAccountIdQuery>(c => c.EmployerAccountId.Equals(employerAccountId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetAccountsByUserId(userId) as ObjectResult;
+            var controllerResult = await controller.GetByEmployerAccountId(employerAccountId) as ObjectResult;
 
             Assert.That(controllerResult, Is.Not.Null);
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetAccountsResponse;
+            var model = controllerResult.Value as GetUsersByEmployerAccountIdQueryResult;
             Assert.That(model, Is.Not.Null);
-            model.Should().BeEquivalentTo(mediatorResult);
+            model.Users.Should().BeEquivalentTo(mediatorResult.Users);
         }
 
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
-            string userId,
+            long employerAccountId,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] UsersController controller)
         {
             mockMediator
                 .Setup(mediator => mediator.Send(
-                    It.IsAny<GetUserAccountsQuery>(),
+                    It.Is<GetUsersByEmployerAccountIdQuery>(c => c.EmployerAccountId.Equals(employerAccountId)),
                     It.IsAny<CancellationToken>()))
-                .Throws<InvalidOperationException>();
+              .Throws<InvalidOperationException>();
 
-            var controllerResult = await controller.GetAccountsByUserId(userId) as BadRequestResult;
+            var controllerResult = await controller.GetByEmployerAccountId(employerAccountId) as BadRequestResult;
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
