@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.RecruitJobs.Api.Models;
+using SFA.DAS.RecruitJobs.Domain.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.Notifications;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Notifications;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -40,6 +41,29 @@ public class NotificationsController: ControllerBase
     {
         var response = await recruitApiClient.PostWithResponseCode<PostCreateVacancyNotificationsResponse>(
             new PostCreateVacancyNotificationsRequest(vacancyId));
+
+        if (response.StatusCode is HttpStatusCode.NotFound)
+        {
+            return TypedResults.NotFound();
+        }
+
+        return response.StatusCode.IsSuccessStatusCode()
+            ? TypedResults.Ok(new DataResponse<List<NotificationEmail>>(response.Body))
+            : TypedResults.Problem();
+    }
+    
+    [HttpPost, Route("{status}/create/vacancies/{vacancyId:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IResult> CreateVacancyNotificationsByStatus(
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] VacancyStatus status,
+        [FromRoute] Guid vacancyId,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitApiClient.PostWithResponseCode<PostCreateVacancyNotificationsResponse>(
+            new PostCreateVacancyNotificationsByStatusRequest(vacancyId, status));
 
         if (response.StatusCode is HttpStatusCode.NotFound)
         {
