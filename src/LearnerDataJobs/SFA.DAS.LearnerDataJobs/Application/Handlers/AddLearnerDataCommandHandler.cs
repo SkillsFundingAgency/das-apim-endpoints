@@ -49,6 +49,8 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
     {
         CourseDetails? course = null;
 
+        logger.LogInformation("UseNewCourses API is '{0}'", config["UseNewCoursesApi"]);
+
         if (string.Equals(config["UseNewCoursesApi"], "true", StringComparison.OrdinalIgnoreCase))
         {
             logger.LogInformation("Getting course details for course {0}", larsCode);
