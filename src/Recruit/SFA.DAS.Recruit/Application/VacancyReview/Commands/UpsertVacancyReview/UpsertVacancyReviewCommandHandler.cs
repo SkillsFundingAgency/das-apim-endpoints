@@ -1,16 +1,16 @@
 using MediatR;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
 
@@ -23,7 +23,7 @@ public class UpsertVacancyReviewCommandHandler(
     {
         await apiClient.PutWithResponseCode<NullResponse>(new PutCreateVacancyReviewRequest(request.Id, request.VacancyReview));
 
-        if (request.VacancyReview.Status.Equals("New", StringComparison.CurrentCultureIgnoreCase))
+        if (request.VacancyReview.Status == ReviewStatus.New)
         {
             var response = await apiClient.PostWithResponseCode<PostCreateVacancyNotificationsResponse>(
                 new PostCreateVacancyNotificationsRequest(request.VacancyReview.VacancyId));
