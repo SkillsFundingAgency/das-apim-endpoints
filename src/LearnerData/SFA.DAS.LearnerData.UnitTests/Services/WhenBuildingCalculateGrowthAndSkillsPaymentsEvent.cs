@@ -91,13 +91,13 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         result.Learner.ULN.Should().Be(long.Parse(learningResponse.Learner.Uln));
         result.Learner.Reference.Should().Be(episode.LearnerRef);
         result.Training.CourseType.Should().Be(Payments.EarningEvents.Messages.External.CourseType.ShortCourse);
+        result.Training.LearningKey.Should().Be(learningResponse.LearningKey);
         result.Training.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
         result.Training.CourseCode.Should().Be(episode.CourseCode);
         result.Training.CourseReference.Should().Be(episode.CourseCode);
         result.Training.AgeAtStartOfTraining.Should().Be((byte)episode.AgeAtStart);
         result.Training.StartDate.Should().Be(episode.StartDate);
         result.Training.PlannedEndDate.Should().Be(episode.PlannedEndDate);
-
     }
 
     [TestCase(null, null, null, TestName = "ActualEndDate - No Actual End Date")]
@@ -246,13 +246,15 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
             x.DeliveryPeriod == 1 &&
             x.EarningType == EarningType.Milestone1 &&
             x.Amount == 700m &&
+            x.LearningId == episode.ApprovalsApprenticeshipId &&
             x.Employer.AccountId == episode.EmployerAccountId &&
             x.Employer.FundingAccountId == episode.EmployerAccountId);
 
-        pricePeriod.Periods.Should().ContainSingle(x => 
-            x.DeliveryPeriod == 2 && 
-            x.EarningType == EarningType.Completion && 
+        pricePeriod.Periods.Should().ContainSingle(x =>
+            x.DeliveryPeriod == 2 &&
+            x.EarningType == EarningType.Completion &&
             x.Amount == 300m &&
+            x.LearningId == episode.ApprovalsApprenticeshipId &&
             x.Employer.AccountId == episode.EmployerAccountId &&
             x.Employer.FundingAccountId == episode.EmployerAccountId);
 
