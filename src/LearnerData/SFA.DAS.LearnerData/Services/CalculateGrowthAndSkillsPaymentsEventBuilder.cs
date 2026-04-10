@@ -46,12 +46,13 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
             UKPRN = ukprn,
             Learner = new Payments.EarningEvents.Messages.External.Learner
             {
-                LearnerKey = learningResponse.LearningKey, // this will get moved to training and renamed to LearningKey
+                LearnerKey = learningResponse.LearningKey, // potentially not required
                 ULN = long.Parse(learningResponse.Learner.Uln),
                 Reference = episode.LearnerRef
             },
-            Training = new Payments.EarningEvents.Messages.External.Training
+            Training = new Training
             {
+                LearningKey = learningResponse.LearningKey,
                 CourseType = Payments.EarningEvents.Messages.External.CourseType.ShortCourse,
                 LearningType = Enum.Parse<LearningType>(episode.LearningType),
                 CourseCode = episode.CourseCode, //this is trainingcode in Learning Domain
@@ -60,10 +61,10 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                 StartDate = episode.StartDate,
                 PlannedEndDate = episode.PlannedEndDate,
                 ActualEndDate = GetActualEndDate(episode.WithdrawalDate, learningResponse.CompletionDate),
-                TrainingStatus = GetTrainingStatus(episode.WithdrawalDate, learningResponse.CompletionDate)
+                TrainingStatus = GetTrainingStatus(episode.WithdrawalDate, learningResponse.CompletionDate),
             },
             EmployerContribution = 0,
-            Earnings = earnings
+            Earnings = earnings,
         };
     }
 
@@ -92,6 +93,8 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
         ShortCourseEarningsResponse earningsResponse,
         UpdateShortCourseResultEpisode episode)
     {
+        var employerType = Enum.Parse<EmployerType>(episode.EmployerType);
+
         var earnings = earningsResponse.Instalments
             .GroupBy(i => i.CollectionYear)
             .Select(g => new SFA.DAS.Payments.EarningEvents.Messages.External.Earnings
@@ -108,12 +111,13 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                         {
                             EarningType = GetEarningType(instalment),
                             DeliveryPeriod = instalment.CollectionPeriod,
+                            LearningId = episode.ApprovalsApprenticeshipId,
                             Amount = instalment.Amount,
                             Employer = new Employer
                             {
                                 AccountId = episode.EmployerAccountId,
                                 FundingAccountId = episode.EmployerAccountId,
-                                EmployerType = EmployerType.Levy //TODO: To be set later as part of FLP-1704
+                                EmployerType = employerType
                             }
                         }).ToList()
                     }
