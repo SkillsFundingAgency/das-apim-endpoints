@@ -2,6 +2,7 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
@@ -46,7 +47,8 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _learningApiClient.Object,
             _earningsApiClient.Object,
             _calculateGrowthAndSkillsPaymentsEventBuilder.Object,
-            _messageSession.Object);
+            _messageSession.Object,
+            new PaymentsConfiguration { PaymentsEndpoint = "test-payments-endpoint" });
 
         _learningKey = Guid.NewGuid();
         _ukprn = 12345678;

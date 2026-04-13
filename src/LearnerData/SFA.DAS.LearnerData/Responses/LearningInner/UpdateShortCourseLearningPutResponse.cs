@@ -34,6 +34,7 @@ public class UpdateShortCourseResultEpisode
     public bool IsApproved { get; set; }
     public decimal Price { get; set; }
     public string LearnerRef { get; set; } = null!;
+    public long ApprovalsApprenticeshipId { get; set; }
 }
 public static class UpdateShortCourseLearningPutResponseExtensions
 {

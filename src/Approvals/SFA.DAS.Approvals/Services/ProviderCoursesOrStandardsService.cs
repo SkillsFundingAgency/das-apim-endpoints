@@ -18,9 +18,8 @@ using SFA.DAS.SharedOuterApi.Models.Roatp;
 
 namespace SFA.DAS.Approvals.Services;
 
-public interface IProviderStandardsService
+public interface IProviderCoursesOrStandardsService
 {
-    Task<ProviderStandardsData> GetStandardsData(long providerId);
     Task<ProviderStandardsData> GetCoursesData(long providerId);
 }
 
@@ -31,14 +30,14 @@ public class ProviderStandardsService(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
     ICacheStorageService cacheStorageService,
     ILogger<ProviderStandardsService> logger)
-    : IProviderStandardsService
+    : IProviderCoursesOrStandardsService
 {
     public const string AllCoursesCacheKey = "ProviderCoursesService.GetAllCoursesResponse";
     public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
     public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
     public const int CacheExpiryHours = 12;
 
-    public async Task<ProviderStandardsData> GetStandardsData(long providerId)
+    public async Task<ProviderStandardsData> GetCoursesData(long providerId)
     {
         var providerDetails = await GetTrainingProviderDetails(providerId);
 
@@ -58,22 +57,78 @@ public class ProviderStandardsService(
         };
     }
 
-    // TODO This is a stub to allow us to test the AppUnits, needs to call the new endpoint once deployed 
-    public async Task<ProviderStandardsData> GetCoursesData(long providerId)
+    private async Task<ProviderDetailsModel> GetTrainingProviderDetails(long providerId)
     {
-        var result = await GetStandardsData(providerId);
+        var cacheKey = $"{ProviderDetailsCacheKey}-{providerId}";
 
-        var list = result.Standards.ToList();
-        list.Add(new Standard("ZSC00001", "Stubbed Digital Apprenticeship Unit", 0));
-        list.Add(new Standard("ZSC00002", "Stubbed Teacher Assistent - Apprenticeship Unit", 0));
-        list.Add(new Standard("ZSC00004", "Stubbed Nursing Apprenticeship Unit", 0));
-        result.Standards = list;
+        var cacheResult = await cacheStorageService.RetrieveFromCache<ProviderDetailsModel>(cacheKey);
 
+        if (cacheResult != null)
+        {
+            return cacheResult;
+        }
+
+        var result = await trainingProviderService.GetProviderDetails((int)providerId);
+        await cacheStorageService.SaveToCache(cacheKey, result, CacheExpiryHours);
         return result;
     }
 
-    // This needs to be completed once the GetCoursesForProvider endpoint is complete.
-    public async Task<ProviderStandardsData> GetCoursesDataRealImplementation(long providerId)
+    private async Task<IEnumerable<Standard>> GetAllStandards()
+    {
+        var cacheResult =
+            await cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllStandardsCacheKey);
+
+        if (cacheResult != null)
+        {
+            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
+        }
+        
+        var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
+        await cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
+        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
+    }
+
+    private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
+    {
+        try
+        {
+            var providerStandards =
+                await providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
+                    new GetProviderStandardsRequest(providerId));
+
+            if (providerStandards?.Any() != true)
+            {
+                logger.LogWarning($"No Standards Declared For Provider {providerId}");
+                return [];
+            }
+
+            return providerStandards.Select(
+                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel, x.Level)).OrderBy(x => x.Name).ToList();
+        }
+        catch (Exception e)
+        {
+            logger.LogError($"No Standards Declared For Provider {providerId}", e);
+            return [];
+        }
+    }
+
+}
+
+public class ProviderCoursesService(
+    ServiceParameters serviceParameters,
+    ITrainingProviderService trainingProviderService,
+    IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
+    ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
+    ICacheStorageService cacheStorageService,
+    ILogger<ProviderStandardsService> logger)
+    : IProviderCoursesOrStandardsService
+{
+    public const string AllCoursesCacheKey = "ProviderCoursesService.GetAllCoursesResponse";
+    public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
+    public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
+    public const int CacheExpiryHours = 12;
+
+    public async Task<ProviderStandardsData> GetCoursesData(long providerId)
     {
         var providerDetails = await GetTrainingProviderDetails(providerId);
 
@@ -109,21 +164,6 @@ public class ProviderStandardsService(
         return result;
     }
 
-    private async Task<IEnumerable<Standard>> GetAllStandards()
-    {
-        var cacheResult =
-            await cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllStandardsCacheKey);
-
-        if (cacheResult != null)
-        {
-            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
-        }
-        
-        var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
-        await cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
-        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
-    }
-
     //DOTO This needs to be reworked to use Witeks endpoint to get all course
     // one difference to consider is the Level will no longer be an integer, it's a string
     private async Task<IEnumerable<Standard>> GetAllCourses()
@@ -141,31 +181,6 @@ public class ProviderStandardsService(
         return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
     }
 
-    private async Task<IEnumerable<Standard>> GetStandardsForProvider(long providerId)
-    {
-        try
-        {
-            var providerStandards =
-                await providerCoursesApiClient.Get<IEnumerable<GetProviderStandardsResponse>>(
-                    new GetProviderStandardsRequest(providerId));
-
-            if (providerStandards?.Any() != true)
-            {
-                logger.LogWarning($"No Standards Declared For Provider {providerId}");
-                return [];
-            }
-
-            return providerStandards.Select(
-                x => new Standard(x.LarsCode.ToString(), x.CourseNameWithLevel, x.Level)).OrderBy(x => x.Name).ToList();
-        }
-        catch (Exception e)
-        {
-            logger.LogError($"No Standards Declared For Provider {providerId}", e);
-            return [];
-        }
-    }
-
-    // The GetCoursesForProvider endpoint is not yet implemented, the implementation will chnage this code
     private async Task<IEnumerable<Standard>> GetCoursesForProvider(long providerId)
     {
         try
@@ -189,8 +204,6 @@ public class ProviderStandardsService(
         }
         catch (Exception e)
         {
-            // TODO Discuss this, this is a catch all to stop the service from breaking if there is an issue with the provider courses endpoint,
-            // but there should be a better way to handle this. It leads to unpredicatable behaviour in the system. Anmd should be considered an auti-pattern
             logger.LogError($"No Courses Declared For Provider {providerId}, due to exception", e);
             return [];
         }
