@@ -50,6 +50,7 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
         CourseDetails? course = null;
 
         logger.LogInformation("UseNewCourses API is '{0}'", config["UseNewCoursesApi"]);
+        logger.LogInformation("LearnerDataInnerApi:tenant '{0}'", config["LearnerDataInnerApi:tenant"]);
 
         if (string.Equals(config["UseNewCoursesApi"], "true", StringComparison.OrdinalIgnoreCase))
         {
