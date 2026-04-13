@@ -11,7 +11,17 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="StrawberryShake.Blazor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Application\VacancyReviews\Queries\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
   </ItemGroup>
 
 </Project>
