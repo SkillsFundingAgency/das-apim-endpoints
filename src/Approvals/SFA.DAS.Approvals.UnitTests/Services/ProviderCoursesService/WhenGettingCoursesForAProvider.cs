@@ -190,7 +190,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 
             public async Task GetStandardsData()
             {
-                _result = await _providerStandardsService.GetStandardsData(_trainingProviderId);
+                _result = await _providerStandardsService.GetCoursesData(_trainingProviderId);
             }
 
             public void AssertResultIsAllStandards()
