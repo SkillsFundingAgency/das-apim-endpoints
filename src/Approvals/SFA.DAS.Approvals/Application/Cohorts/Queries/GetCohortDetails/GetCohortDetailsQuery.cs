@@ -60,7 +60,7 @@ public class GetCohortDetailsQueryHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     ServiceParameters serviceParameters,
     IFjaaService fjaaService,
-    IProviderStandardsService providerStandardsService,
+    IProviderCoursesOrStandardsService providerStandardsService,
     ICoursesApiClient<CoursesApiConfiguration> coursesApiClient)
     : IRequestHandler<GetCohortDetailsQuery, GetCohortDetailsQueryResult>
 {

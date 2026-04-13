@@ -15,7 +15,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands;
 public class ValidateBulkUploadRecordsCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
-    IProviderStandardsService providerStandardsService,
+    IProviderCoursesOrStandardsService providerStandardsService,
     IBulkCourseMetadataService bulkCourseMetadataService,
     IAddCourseTypeDataToCsvService courseTypesToCsvService)
     : IRequestHandler<ValidateBulkUploadRecordsCommand, Unit>
@@ -41,7 +41,7 @@ public class ValidateBulkUploadRecordsCommandHandler(
             await reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
                 new PostValidateReservationRequest(command.ProviderId, reservationRequests));
 
-        var providerStandardResults = await providerStandardsService.GetStandardsData(command.ProviderId);
+        var providerStandardResults = await providerStandardsService.GetCoursesData(command.ProviderId);
 
         var uniqueCourseCodes = command.CsvRecords.Select(r => r.CourseCode).Distinct();
         var otjTrainingHours = await bulkCourseMetadataService.GetOtjTrainingHoursForBulkUploadAsync(uniqueCourseCodes);

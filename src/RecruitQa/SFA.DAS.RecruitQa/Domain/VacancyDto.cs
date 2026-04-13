@@ -15,4 +15,5 @@ public class VacancyDto
     public int? NumberOfPositions { get; init; }
     public string? ProgrammeId { get; set; }
     public Wage? Wage { get; set; }
+    public required VacancyStatus Status { get; init; }
 }
