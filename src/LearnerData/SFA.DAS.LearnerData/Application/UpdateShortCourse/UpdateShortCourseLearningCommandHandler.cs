@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -155,6 +156,10 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         await _messageSession.Send(command, options);
 
         _logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
+
+        await _messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
+
+        _logger.LogInformation("GrowthAndSkillsPaymentsRecalculatedEvent published for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 
     private static bool EarningsUpdateRequired(UpdateShortCourseLearningPutResponse response)

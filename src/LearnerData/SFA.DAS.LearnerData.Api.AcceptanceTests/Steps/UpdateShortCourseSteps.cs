@@ -98,6 +98,7 @@ public class UpdateShortCourseSteps
         var response = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
+            LearnerKey = learningKey,
             Changes = changes.Select(x => x.ToString()).ToArray(),
             CompletionDate = onProgramme.ActualEndDate,
             Learner = new UpdateShortCourseResultLearner
