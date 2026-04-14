@@ -34,6 +34,7 @@ public class GetQualificationDetailsQueryResponse
     public bool OfferedInEngland { get; set; }
     public bool OfferedInNi { get; set; }
     public bool? OfferedInternationally { get; set; }
+    public bool? IntentionToSeekFundingInEngland { get; set; }
     public string? Specialism { get; set; }
     public string? Pathways { get; set; }
     public string? AssessmentMethods { get; set; }
