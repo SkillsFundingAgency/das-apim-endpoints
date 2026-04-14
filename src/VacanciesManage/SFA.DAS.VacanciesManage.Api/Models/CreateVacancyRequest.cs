@@ -1,4 +1,3 @@
-using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Domain;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
@@ -134,6 +133,7 @@ namespace SFA.DAS.VacanciesManage.Api.Models
                     Ukprn = source.ContractingParties.Ukprn,
                 },
                 Wage = source.Wage,
+                AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
             };
         }
         /// <summary>

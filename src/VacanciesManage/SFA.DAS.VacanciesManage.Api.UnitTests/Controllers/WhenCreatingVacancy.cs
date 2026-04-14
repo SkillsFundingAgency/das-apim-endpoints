@@ -1,8 +1,3 @@
-using System;
-using System.Net;
-using System.Security;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
@@ -16,7 +11,11 @@ using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Api.Controllers;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using System;
+using System.Net;
+using System.Security;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
 {
@@ -44,8 +43,6 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
             mockMediator.Setup(x => 
                     x.Send(It.Is<CreateVacancyCommand>(c => 
                         c.Id.Equals(id)
-                        && c.PostVacancyRequestData.Title.Equals(request.Title)
-                        && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
                         && c.IsSandbox.Equals(isSandbox)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);
@@ -71,12 +68,6 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
                         && c.AccountIdentifier.AccountType == AccountType.Employer
                         && c.AccountIdentifier.Ukprn == null
                         && c.AccountIdentifier.AccountHashedId == accountId
-                        && c.PostVacancyRequestData.Title.Equals(request.Title)
-                        && c.PostVacancyRequestData.EmployerAccountId.Equals(accountId.ToUpper())
-                        && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Employer)
-                        && c.PostVacancyRequestData.EmployerContact.Name.Equals(request.SubmitterContactDetails.Name)
-                        && c.PostVacancyRequestData.EmployerContact.Phone.Equals(request.SubmitterContactDetails.Phone)
-                        && c.PostVacancyRequestData.EmployerContact.Email.Equals(request.SubmitterContactDetails.Email)
                         && c.PostVacancyV2RequestData.Contact.Name.Equals(request.SubmitterContactDetails.Name)
                         && c.PostVacancyV2RequestData.Contact.Phone.Equals(request.SubmitterContactDetails.Phone)
                         && c.PostVacancyV2RequestData.Contact.Email.Equals(request.SubmitterContactDetails.Email)
@@ -106,12 +97,6 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
                         && c.AccountIdentifier.AccountType == AccountType.Provider
                         && c.AccountIdentifier.Ukprn == ukprn
                         && c.AccountIdentifier.AccountHashedId == null
-                        && c.PostVacancyRequestData.Title.Equals(request.Title)
-                        && c.PostVacancyRequestData.User.Ukprn.Equals(ukprn)
-                        && c.PostVacancyRequestData.OwnerType.Equals(OwnerType.Provider)
-                        && c.PostVacancyRequestData.ProviderContact.Name.Equals(request.SubmitterContactDetails.Name)
-                        && c.PostVacancyRequestData.ProviderContact.Phone.Equals(request.SubmitterContactDetails.Phone)
-                        && c.PostVacancyRequestData.ProviderContact.Email.Equals(request.SubmitterContactDetails.Email)
                         && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);

@@ -9,7 +9,7 @@ public class WhenBuildingPostVacancyV2Request
     {
         var actual = new PostVacancyV2Request(requestData);
             
-        actual.PostUrl.Should().Be("api/vacancies?validateOnly=true&ruleset=All");
+        actual.PostUrl.Should().Be("api/vacancies?ruleset=All");
         actual.Data.Should().BeEquivalentTo(requestData);
     }
 }

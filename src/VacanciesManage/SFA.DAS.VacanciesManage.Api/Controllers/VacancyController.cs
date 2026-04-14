@@ -15,22 +15,16 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
 {
     [ApiController]
     [Route("[controller]/")]
-    public class VacancyController : ControllerBase
+    public class VacancyController(IMediator mediator, ILogger<VacancyController> logger) : ControllerBase
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<VacancyController> _logger;
-
-        public VacancyController (IMediator mediator, ILogger<VacancyController> logger)
-        {
-            _mediator = mediator;
-            _logger = logger;
-        }
-
         /// <summary>
         /// POST apprenticeship vacancy
         /// </summary>
         /// <remarks>Creates an apprenticeship vacancy using the specified values</remarks>
+        /// <param name="accountIdentifier"></param>
         /// <param name="id">The unique ID of the Apprenticeship advert.</param>
+        /// <param name="request"></param>
+        /// <param name="isSandbox"></param>
         /// <returns></returns>
         [HttpPost]
         [Route("{id}")]
@@ -38,7 +32,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
         [ProducesResponseType(typeof(CreateVacancyExampleForbiddenResponse), (int)HttpStatusCode.Forbidden)]
         [ProducesResponseType(typeof(CreateVacancyExampleBadRequestResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateVacancy(
-            [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier, 
+            [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier,
             [FromRoute]Guid id, 
             [FromBody]CreateVacancyRequest request, 
             [FromHeader(Name = "x-request-context-subscription-is-sandbox")] bool? isSandbox = false)
@@ -63,29 +57,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                         return new BadRequestObjectResult("Account Identifier is not in the correct format.");
                 }
 
-                var postVacancyRequestData = (PostVacancyRequestData)request;
                 var postVacancyV2RequestData = (PostVacancyV2RequestData)request;
-                postVacancyRequestData.OwnerType = (OwnerType)account.AccountType;
-                postVacancyRequestData.AccountType = account.AccountType;
-                var contactDetails = new ContactDetails
-                {
-                    Email = request.SubmitterContactDetails.Email,
-                    Name = request.SubmitterContactDetails.Name,
-                    Phone = request.SubmitterContactDetails.Phone,
-                };
-                
-                switch (account.AccountType)
-                {
-                    case AccountType.Provider:
-                        postVacancyRequestData.User.Ukprn = account.Ukprn.Value;
-                        postVacancyRequestData.ProviderContact = contactDetails;
-                        break;
-                    case AccountType.Employer:
-                        postVacancyRequestData.EmployerAccountId = account.AccountHashedId;
-                        postVacancyRequestData.EmployerContact = contactDetails;
-                        break;
-                }
-                
                 postVacancyV2RequestData.Contact = new PostVacancyV2Contact
                 {
                     Email = request.SubmitterContactDetails.Email,
@@ -93,11 +65,10 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                     Phone = request.SubmitterContactDetails.Phone,
                 };
 
-                var response = await _mediator.Send(new CreateVacancyCommand
+                var response = await mediator.Send(new CreateVacancyCommand
                 {
                     Id = id,
                     AccountIdentifier = account,
-                    PostVacancyRequestData = postVacancyRequestData,
                     PostVacancyV2RequestData = postVacancyV2RequestData,
                     IsSandbox = isSandbox ?? false
                 });
@@ -115,7 +86,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "Error creating vacancy");
+                logger.LogError(e, "Error creating vacancy");
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
