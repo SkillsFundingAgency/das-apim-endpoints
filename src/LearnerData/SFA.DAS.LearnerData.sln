@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11605.240 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.LearnerData.Api", "SFA.DAS.LearnerData.Api\SFA.DAS.LearnerData.Api.csproj", "{B3E294E2-9DB2-4062-92FF-50FE064058B3}"
 EndProject
