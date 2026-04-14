@@ -87,7 +87,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Assert
         result.EarningsId.Should().Be(earningsResponse.EarningProfileVersion);
         result.UKPRN.Should().Be(ukprn);
-        result.Learner.LearnerKey.Should().Be(learningResponse.LearningKey);
+        result.Learner.LearnerKey.Should().Be(learningResponse.LearnerKey);
         result.Learner.ULN.Should().Be(long.Parse(learningResponse.Learner.Uln));
         result.Learner.Reference.Should().Be(episode.LearnerRef);
         result.Training.CourseType.Should().Be(Payments.EarningEvents.Messages.External.CourseType.ShortCourse);
