@@ -16,7 +16,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Security;
 using System.Threading;
-using OwnerType = SFA.DAS.VacanciesManage.InnerApi.Requests.OwnerType;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 {

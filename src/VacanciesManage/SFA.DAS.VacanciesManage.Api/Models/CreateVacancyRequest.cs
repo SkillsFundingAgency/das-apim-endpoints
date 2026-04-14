@@ -10,69 +10,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
 {
     public class CreateVacancyRequest
     {
-        public static implicit operator PostVacancyRequestData(CreateVacancyRequest source)
-        {
-            Enum.TryParse(typeof(InnerApi.Requests.EmployerNameOption), source.EmployerNameOption.ToString(), true,
-                out var employerNameOption);
-            Enum.TryParse(typeof(InnerApi.Requests.CreateVacancyApplicationMethod), source.ApplicationMethod.ToString(), true,
-                out var applicationMethod);
-            Enum.TryParse(typeof(InnerApi.Requests.CreateVacancyDisabilityConfident), source.DisabilityConfident.ToString(), true,
-                out var disabilityConfident);
-
-            var locationOption = source.RecruitingNationally
-                ? AvailableWhere.AcrossEngland
-                : source.MultipleAddresses is { Count: > 0 }
-                    ? AvailableWhere.MultipleLocations
-                    : AvailableWhere.OneLocation;
-
-            List<PostVacancyAddressData> addresses = null;
-            switch (locationOption)
-            {
-                case AvailableWhere.OneLocation:
-                    addresses = source.Address is null
-                        ? null
-                        : [(PostVacancyAddressData)source.Address];
-                    break;
-                case AvailableWhere.MultipleLocations:
-                    addresses = source.MultipleAddresses.Select(x => (PostVacancyAddressData)x).ToList();
-                    break;
-            }
-            
-            return new PostVacancyRequestData
-            {
-                AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
-                AdditionalQuestion1 = source.AdditionalQuestion1,
-                AdditionalQuestion2 = source.AdditionalQuestion2,
-                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
-                Addresses = addresses,
-                AnonymousReason = source.AnonymousReason,
-                ApplicationInstructions = source.ApplicationInstructions,
-                ApplicationMethod = (InnerApi.Requests.CreateVacancyApplicationMethod)applicationMethod,
-                ApplicationUrl = source.ApplicationUrl,
-                ClosingDate = source.ClosingDate,
-                Description = source.Description,
-                DisabilityConfident = (InnerApi.Requests.CreateVacancyDisabilityConfident)disabilityConfident,
-                EmployerDescription = source.EmployerDescription,
-                EmployerLocationInformation = source.RecruitingNationallyDetails,
-                EmployerLocationOption = locationOption,
-                EmployerName = source.EmployerName,
-                EmployerNameOption = (InnerApi.Requests.EmployerNameOption)employerNameOption,
-                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-                NumberOfPositions = source.NumberOfPositions,
-                OutcomeDescription = source.OutcomeDescription,
-                ProgrammeId = source.ProgrammeId,
-                Qualifications = source.Qualifications != null ? source.Qualifications.Select(c => (PostCreateVacancyQualificationData)c).ToList() : [],
-                ShortDescription = source.ShortDescription,
-                Skills = source.Skills != null ? source.Skills.ToList() : [],
-                StartDate = source.StartDate,
-                ThingsToConsider = source.ThingsToConsider,
-                Title = source.Title,
-                TrainingDescription = source.TrainingDescription,
-                User = Map(source.SubmitterContactDetails, source.ContractingParties),
-                Wage = source.Wage
-            };
-        }
-
         public static implicit operator PostVacancyV2RequestData(CreateVacancyRequest source)
         {
             var locationOption = source.RecruitingNationally
@@ -347,17 +284,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
         [MaxLength(250)]
         [RegularExpression(@"^\w(.*)\w\?(\s\w(.*)\w[\.\?])*$", ErrorMessage = "Must include '?'")]
         public string AdditionalQuestion2 { get; set; }
-
-
-        public static PostVacancyUserData Map(SubmitterContactDetails submitterContactDetails, ContractingParties contractingParties)
-        {
-            return new PostVacancyUserData
-            {
-                Email = submitterContactDetails.Email,
-                Name = submitterContactDetails.Name,
-                Ukprn = contractingParties.Ukprn
-            };
-        }
     }
     
     
@@ -366,20 +292,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
     /// </summary>
     public class CreateVacancyAddress
     {
-        public static implicit operator PostVacancyAddressData(CreateVacancyAddress source)
-        {
-            return source is null
-                ? null
-                : new PostVacancyAddressData
-                {
-                    AddressLine1 = source.AddressLine1,
-                    AddressLine2 = source.AddressLine2,
-                    AddressLine3 = source.AddressLine3,
-                    AddressLine4 = source.AddressLine4,
-                    Postcode = source.Postcode
-                };
-        }
-
         public static implicit operator PostVacancyV2EmployerLocation(CreateVacancyAddress source)
         {
             return source is null
@@ -424,25 +336,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
 
     public class CreateVacancyWage
     {
-        public static implicit operator PostCreateVacancyWageData(CreateVacancyWage source)
-        {
-            Enum.TryParse(typeof(InnerApi.Requests.WageType), source.WageType.ToString(), true,
-                out var wageType);
-            Enum.TryParse(typeof(InnerApi.Requests.DurationUnit), source.DurationUnit.ToString(), true,
-                out var durationUnit);
-            return new PostCreateVacancyWageData
-            {
-                WageAdditionalInformation = source.WageAdditionalInformation,
-                WeeklyHours = source.WeeklyHours,
-                Duration = source.Duration,
-                WorkingWeekDescription = source.WorkingWeekDescription,
-                FixedWageYearlyAmount = source.WageType == WageType.FixedWage ?  source.FixedWageYearlyAmount : null,
-                DurationUnit = (InnerApi.Requests.DurationUnit)durationUnit,
-                WageType = (InnerApi.Requests.WageType)wageType,
-                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-            };
-        }
-
         public static implicit operator PostVacancyV2Wage(CreateVacancyWage source)
         {
             return new PostVacancyV2Wage
@@ -511,20 +404,6 @@ namespace SFA.DAS.VacanciesManage.Api.Models
 
     public class CreateVacancyQualification
     {
-        public static implicit operator PostCreateVacancyQualificationData(CreateVacancyQualification source)
-        {
-            Enum.TryParse(typeof(InnerApi.Requests.QualificationWeighting), source.Weighting.ToString(), true,
-                out var weighting);
-            return new PostCreateVacancyQualificationData
-            {
-                QualificationType = source.QualificationType,
-                Grade = source.Grade,
-                Subject = source.Subject,
-                Weighting = (InnerApi.Requests.QualificationWeighting)weighting,
-                Level = source.Level,
-            };
-        }
-
         public static implicit operator PostVacancyV2Qualification(CreateVacancyQualification source)
         {
             return new PostVacancyV2Qualification

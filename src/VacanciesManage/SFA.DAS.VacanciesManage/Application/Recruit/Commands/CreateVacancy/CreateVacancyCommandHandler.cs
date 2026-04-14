@@ -14,7 +14,6 @@ using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
-using OwnerType = SFA.DAS.VacanciesManage.InnerApi.Requests.OwnerType;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
 {
@@ -29,11 +28,13 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
             var accountLegalEntity = await accountLegalEntityPermissionService.GetAccountLegalEntity(
                 request.AccountIdentifier, request.PostVacancyV2RequestData.AccountLegalEntityPublicHashedId);
 
+            // if the account legal entity cannot be found or the account legal entity is not associated with the given Training Provider UKPRN, throw a security exception as the user should not have access to create a vacancy.
             if (accountLegalEntity == null)
             {
                 throw new SecurityException();
             }
 
+            // additional check to validate the given Training Provider UKPRN is valid.
             var trainingProvider = await trainingProviderService.GetProviderDetails((int)request.PostVacancyV2RequestData.TrainingProvider.Ukprn);
             if (trainingProvider == null)
             {
@@ -68,8 +69,8 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
                 request.PostVacancyV2RequestData.ApprenticeshipType = "Foundation";
             }
 
-            if (course != null && ((course.LastDateStarts != null && course.LastDateStarts < request.PostVacancyV2RequestData.StartDate) ||
-                                   (course.EffectiveTo !=null && course.EffectiveTo < request.PostVacancyV2RequestData.StartDate)))
+            if (course != null && ((course.LastDateStarts != null && course.LastDateStarts < request.PostVacancyV2RequestData.StartDate)
+                                   || (course.EffectiveTo !=null && course.EffectiveTo < request.PostVacancyV2RequestData.StartDate)))
             {
                 var dateToDisplay = course.LastDateStarts ?? course.EffectiveTo.Value;
                     
@@ -94,12 +95,7 @@ namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy
                 
             HandleHttpResponseError(result);
                 
-            var vacancyReference = result.Body.VacancyReference.ToString();
-
-            return new CreateVacancyCommandResponse
-            {
-                VacancyReference = vacancyReference
-            };
+            return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
         }
 
         private static void HandleHttpResponseError<T>(ApiResponse<T> result)

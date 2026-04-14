@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Domain.Recruit;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Requests;
 
