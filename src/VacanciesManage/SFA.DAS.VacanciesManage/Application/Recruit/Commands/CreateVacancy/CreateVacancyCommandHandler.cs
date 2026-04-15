@@ -1,5 +1,4 @@
 using MediatR;
-using Newtonsoft.Json;
 using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Domain.Recruit;
@@ -14,6 +13,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Security;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -112,7 +112,11 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
                 VacancyTitle = request.PostVacancyV2RequestData.Title,
                 CreatedDate = dateTimeNow,
                 Status = ReviewStatus.New,
-                VacancySnapshot = JsonConvert.SerializeObject(request.PostVacancyV2RequestData),
+                VacancySnapshot = JsonSerializer.Serialize(request.PostVacancyV2RequestData, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true
+                }),
                 SubmittedByUserEmail = request.PostVacancyV2RequestData?.Contact?.Email,
                 SubmissionCount = 1,
                 SlaDeadLine = slaDeadline,
