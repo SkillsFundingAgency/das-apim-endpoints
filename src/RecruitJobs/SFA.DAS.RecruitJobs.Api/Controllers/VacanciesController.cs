@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RecruitJobs.Api.Models;
@@ -18,11 +22,7 @@ using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using StrawberryShake;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
-using VacancyStatus = SFA.DAS.RecruitJobs.Domain.Vacancy.VacancyStatus;
+using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 

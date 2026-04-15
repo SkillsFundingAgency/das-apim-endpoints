@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.RecruitJobs.Domain.Vacancy;
+namespace SFA.DAS.RecruitJobs.Domain;
 
 public class Qualification
 {
@@ -7,5 +7,5 @@ public class Qualification
     public string Grade { get; set; }
     public int? Level { get; set; }
     public QualificationWeighting? Weighting { get; set; }
-    public string OtherQualificationName { get; set; }
+    public string? OtherQualificationName { get; set; }
 }

@@ -1,6 +1,6 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
-namespace SFA.DAS.RecruitJobs.Domain.Vacancy;
+namespace SFA.DAS.RecruitJobs.Domain;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
 public enum ApplicationMethod
@@ -8,5 +8,5 @@ public enum ApplicationMethod
     ThroughFindAnApprenticeship,
     ThroughExternalApplicationSite,
     ThroughFindATraineeship,
-    Unspecified,
+    Unspecified
 }
