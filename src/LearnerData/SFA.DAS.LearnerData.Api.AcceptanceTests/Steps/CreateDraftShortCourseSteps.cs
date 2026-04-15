@@ -6,7 +6,7 @@ using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;

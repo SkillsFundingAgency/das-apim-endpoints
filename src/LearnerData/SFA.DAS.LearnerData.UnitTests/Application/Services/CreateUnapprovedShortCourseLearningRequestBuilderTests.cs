@@ -2,7 +2,7 @@ using AutoFixture;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;

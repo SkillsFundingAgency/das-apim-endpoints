@@ -57,7 +57,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, request.EmployerName,
                 request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
                 request.Lat, request.Lon, request.DistanceInMiles, request.Routes, request.PostedInLastNumberOfDays, request.AdditionalDataSources, request.Sort,
-                request.ExcludeNational, request.OnlyPrimaryLocations));
+                request.ExcludeNational, request.OnlyPrimaryLocations, request.IncludeDetails));
             var standardsTask = courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
             await Task.WhenAll(vacanciesTask, standardsTask);
