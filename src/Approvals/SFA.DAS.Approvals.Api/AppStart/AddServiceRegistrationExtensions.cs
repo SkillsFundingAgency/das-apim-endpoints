@@ -72,6 +72,7 @@ public static class AddServiceRegistrationExtensions
         {
             services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
             services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
+            services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         }
         else
         {
