@@ -59,7 +59,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(getStandardsResponse);
 
-            var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.OK, "");
+            var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                 x.PostWithResponseCode<PostVacancyResponse>(
                     It.IsAny<PostVacancyV2Request>(), true))
@@ -76,6 +76,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             result.VacancyReference.Should().Be(apiResponse.Body.VacancyReference.ToString());
             mockRecruitApiClient.Verify(client => client.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), true),
                 Times.Once);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -116,7 +117,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(getStandardsResponse);
 
-            var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.OK, "");
+            var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient.Setup(x =>
                     x.PostWithResponseCode<PostVacancyResponse>(
                         It.IsAny<PostVacancyV2Request>(), true))
@@ -127,11 +128,12 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 .ReturnsAsync(accountLegalEntityItem);
 
             //Act
-            Assert.ThrowsAsync<Exception>(() => handler.Handle(command, CancellationToken.None));
+            Assert.ThrowsAsync<HttpRequestContentException>(() => handler.Handle(command, CancellationToken.None));
 
             mockRecruitApiClient.Verify(x =>
                 x.PostWithResponseCode<PostVacancyResponse>(
                     It.IsAny<PostVacancyV2Request>(), true), Times.Never);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()), Times.Never);
             return Task.CompletedTask;
         }
 
@@ -147,7 +149,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 // Arrange
                 accountLegalEntityPermissionService
                     .Setup(x => x.GetAccountLegalEntity(It.IsAny<AccountIdentifier>(), It.IsAny<string>()))
-                    .ReturnsAsync((AccountLegalEntityItem)null);
+                    .ReturnsAsync((AccountLegalEntityItem)null!);
 
                 // Act
                 Func<Task> act = () => handler.Handle(command, CancellationToken.None);
@@ -155,6 +157,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 // Assert
                 await act.Should().ThrowAsync<SecurityException>();
                 mockRecruitApiClient.Verify(x => x.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), It.IsAny<bool>()), Times.Never);
+                mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()), Times.Never);
             }
 
             [Test, MoqAutoData]
@@ -181,6 +184,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 // Assert
                 await act.Should().ThrowAsync<Exception>().WithMessage("Training Provider UKPRN not valid");
                 mockRecruitApiClient.Verify(x => x.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), It.IsAny<bool>()), Times.Never);
+                mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()), Times.Never);
             }
 
             [Test, MoqAutoData]
@@ -211,6 +215,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 await act.Should().ThrowAsync<Exception>()
                     .WithMessage("UKPRN of a training provider must be registered to deliver apprenticeship training");
                 mockRecruitApiClient.Verify(x => x.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), It.IsAny<bool>()), Times.Never);
+                mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()), Times.Never);
             }
 
             [Test, MoqAutoData]
@@ -255,6 +260,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 // Assert
                 await act.Should().ThrowAsync<HttpRequestContentException>();
                 mockRecruitApiClient.Verify(x => x.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), It.IsAny<bool>()), Times.Never);
+                mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()), Times.Never);
             }
 
             [Test, MoqAutoData]
@@ -263,6 +269,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                 CreateVacancyCommand command,
                 AccountLegalEntityItem accountLegalEntityItem,
                 ProviderDetailsModel trainingProviderDetails,
+                PutVacancyReviewResponse putVacancyReviewResponse,
                 [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
                 [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
                 [Frozen] Mock<ICourseService> courseServiceMock,
@@ -300,16 +307,20 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                     .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                     .ReturnsAsync(new GetStandardsListResponse { Standards = [matchingStandard] });
 
-                var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.OK, "");
                 mockRecruitApiClient
                     .Setup(x => x.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), true))
-                    .ReturnsAsync(apiResponse);
+                    .ReturnsAsync(new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.Created, ""));
+
+                mockRecruitApiClient
+                    .Setup(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()))
+                    .ReturnsAsync(new ApiResponse<PutVacancyReviewResponse>(putVacancyReviewResponse, HttpStatusCode.OK, ""));
 
                 // Act
                 await handler.Handle(command, CancellationToken.None);
 
                 // Assert
                 command.PostVacancyV2RequestData.Status.Should().Be(nameof(VacancyStatus.Review));
+                mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewResponse>(It.IsAny<PutVacancyReviewRequest>()), Times.Once);
             }
 
             [Test, MoqAutoData]
@@ -348,7 +359,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                     .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                     .ReturnsAsync(new GetStandardsListResponse { Standards = [matchingStandard] });
 
-                var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.OK, "");
+                var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.Created, "");
                 mockRecruitApiClient
                     .Setup(x => x.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), true))
                     .ReturnsAsync(apiResponse);
@@ -396,7 +407,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
                     .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                     .ReturnsAsync(new GetStandardsListResponse { Standards = [matchingStandard] });
 
-                var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.OK, "");
+                var apiResponse = new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.Created, "");
                 mockRecruitApiClient
                     .Setup(x => x.PostWithResponseCode<PostVacancyResponse>(It.IsAny<PostVacancyV2Request>(), true))
                     .ReturnsAsync(apiResponse);
