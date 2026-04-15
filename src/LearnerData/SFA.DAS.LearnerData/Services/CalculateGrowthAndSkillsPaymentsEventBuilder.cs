@@ -46,14 +46,14 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
             UKPRN = ukprn,
             Learner = new Payments.EarningEvents.Messages.External.Learner
             {
-                LearnerKey = learningResponse.LearningKey, // potentially not required
+                LearnerKey = learningResponse.LearnerKey,
                 ULN = long.Parse(learningResponse.Learner.Uln),
                 Reference = episode.LearnerRef
             },
             Training = new Training
             {
                 LearningKey = learningResponse.LearningKey,
-                CourseType = Payments.EarningEvents.Messages.External.CourseType.ShortCourse,
+                CourseType = CourseType.ShortCourse,
                 LearningType = Enum.Parse<LearningType>(episode.LearningType),
                 CourseCode = episode.CourseCode, //this is trainingcode in Learning Domain
                 CourseReference = episode.CourseCode, //this is also trainingcode in Learning Domain
