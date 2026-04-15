@@ -10,6 +10,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using System;
 
 namespace SFA.DAS.Approvals.Api.AppStart;
 
@@ -61,13 +62,23 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IDeliveryModelService, DeliveryModelService>();
         services.AddTransient<IFjaaService, FjaaService>();
         services.AddTransient<ITrainingProviderService, TrainingProviderService>();
-        services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IAutoReservationsService, AutoReservationsService>();
-        services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
+
+        if (configuration.GetValue<bool>("UseNewCoursesApi") == true)
+        {
+            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
+            services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
+        }
+        else
+        {
+            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
+            services.AddTransient<IProviderCoursesOrStandardsService, ProviderStandardsService>();
+        }
+
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
         services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();

@@ -26,7 +26,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             GetAccountLegalEntityResponse accountLegalEntity,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, provider.ProviderId);
 
@@ -39,7 +39,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetAccountLegalEntityResponse>(accountLegalEntity, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(provider.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(provider.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var standardsData = providerStandardsData.Standards.Select(x =>
@@ -58,7 +58,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             GetAccountLegalEntityResponse accountLegalEntity,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, provider.ProviderId);
 
@@ -71,7 +71,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetAccountLegalEntityResponse>(accountLegalEntity, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(provider.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(provider.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var result = await handler.Handle(query, CancellationToken.None);
