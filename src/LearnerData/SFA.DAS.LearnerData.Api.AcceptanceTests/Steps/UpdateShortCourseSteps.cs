@@ -3,7 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.Payments.EarningEvents.Messages.External;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using System.Net;
@@ -98,6 +98,7 @@ public class UpdateShortCourseSteps
         var response = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
+            LearnerKey = learningKey,
             Changes = changes.Select(x => x.ToString()).ToArray(),
             CompletionDate = onProgramme.ActualEndDate,
             Learner = new UpdateShortCourseResultLearner
