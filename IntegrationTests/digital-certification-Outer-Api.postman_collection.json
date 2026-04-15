@@ -1,0 +1,680 @@
+{
+  "info": {
+    "_postman_id": "40038b6c-5b8b-4fe4-a6a2-027a5df43edd",
+    "name": "digital-certification-Outer-Api",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "21174429"
+  },
+  "item": [
+    {
+      "name": "GetStandardCertificate",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/certificates/35f6050f-3348-4f5a-749b-08d710f63b16",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "certificates",
+            "35f6050f-3348-4f5a-749b-08d710f63b16"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetFrameworkCertificate",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/certificates/f6971ffe-85fc-413e-b365-017706d71ae3/framework",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "certificates",
+            "f6971ffe-85fc-413e-b365-017706d71ae3",
+            "framework"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateSharing",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteSharing",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/bc7d6fda-8c22-4451-997a-08de9a0c6cd6",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "bc7d6fda-8c22-4451-997a-08de9a0c6cd6"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateSharingEmail",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sharingId\": \"5b644dd1-ef80-4997-db8f-08de964ecd42\",\r\n  \"emailAddress\": \"ratheesh@abc.com\",\r\n  \"userName\": \"abc\",\r\n  \"linkDomain\": \"aaa.com\",\r\n  \"messageText\": \"abc\",\r\n  \"templateId\": \"5b644dd1-ef80-4997-db8f-08de964ecd42\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/5b644dd1-ef80-4997-db8f-08de964ecd42/email",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "5b644dd1-ef80-4997-db8f-08de964ecd42",
+            "email"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateSharingAccess",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sharingId\": \"43af8257-c279-4c07-15f7-08de8417fba7\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/sharingaccess",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "sharingaccess"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateSharingEmailAccess",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"sharingEmailId\": \"21582ad3-7caa-4850-8b4b-08de8418acd4\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/sharingemailaccess",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "sharingemailaccess"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateOrUpdateUser",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"govUkIdentifier\": \"80ED73EB-DB10-4938-9ADF-4F0FDDAA4543\",\r\n  \"emailAddress\": \"abc@education.gov.uk\",\r\n  \"phoneNumber\": \"o7880360143\",\r\n  \"names\": [\r\n    {\r\n      \"validSince\": \"2026-04-14T10:16:40.331Z\",\r\n      \"validUntil\": \"2026-04-14T10:16:40.331Z\",\r\n      \"familyName\": \"John\",\r\n      \"givenNames\": \"smith\"\r\n    }\r\n  ],\r\n  \"dateOfBirth\": \"2026-04-14T10:16:40.331Z\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/users/identity",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "identity"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetSharingById",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/bc7d6fda-8c22-4451-997a-08de9a0c6cd6",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "bc7d6fda-8c22-4451-997a-08de9a0c6cd6"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetSharingByCode",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/code/c5d864b4-43e5-4632-8eae-55da4fa08c54",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "code",
+            "c5d864b4-43e5-4632-8eae-55da4fa08c54"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetSharedStandardCertificate",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/certificates/35f6050f-3348-4f5a-749b-08d710f63b16",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "certificates",
+            "35f6050f-3348-4f5a-749b-08d710f63b16"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetSharedFrameworkCertificate",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/sharing/certificates/framework/c59dda29-367b-47cb-9107-2f1057d5c311",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "sharing",
+            "certificates",
+            "framework",
+            "c59dda29-367b-47cb-9107-2f1057d5c311"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetUser",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/users/80ED73EB-DB10-4938-9ADF-4F0FDDAA4543",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "80ED73EB-DB10-4938-9ADF-4F0FDDAA4543"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetCertificates",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/users/80ED73EB-DB10-4938-9ADF-4F0FDDAA4543/certificates",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "80ED73EB-DB10-4938-9ADF-4F0FDDAA4543",
+            "certificates"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetSharings",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"07f9368e-f72e-4669-4e78-08de325d0465\",\r\n  \"certificateId\": \"35f6050f-3348-4f5a-749b-08d710f63b16\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Motor vehicle service and maintenance technician (light vehicle)\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://test-apim-digc-api.apprenticeships.education.gov.uk/users/1f6b8349-8963-4722-6be5-08de1d450f39/sharings?certificateId=0ea19995-89af-4591-a89e-04e0c8984e73",
+          "protocol": "https",
+          "host": [
+            "test-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "1f6b8349-8963-4722-6be5-08de1d450f39",
+            "sharings"
+          ],
+          "query": [
+            {
+              "key": "certificateId",
+              "value": "0ea19995-89af-4591-a89e-04e0c8984e73"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
