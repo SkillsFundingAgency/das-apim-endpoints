@@ -1,11 +1,10 @@
-using System;
-using System.Net;
-using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Application.Queries.GetBankHolidays;
-using SFA.DAS.Recruit.Application.Queries.GetTrainingProgrammes;
-using SFA.DAS.Recruit.Application.Services;
+using SFA.DAS.SharedOuterApi.Services;
+using System;
+using System.Net;
+using System.Threading;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.BankHolidays;
 

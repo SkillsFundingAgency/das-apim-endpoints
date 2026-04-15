@@ -1,4 +1,4 @@
-using SFA.DAS.Recruit.Application.Services;
+using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetBankHolidays;
 
