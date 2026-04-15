@@ -22,7 +22,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         [MaxLength(250)]
         public string WorkingWeekDescription { get; set; }
 
-        public static implicit operator GetVacancyWageItem(GetVacanciesListItem source)
+        public static implicit operator GetVacancyWageItem(GetVacancyApiResponse source)
         {
             return new GetVacancyWageItem
             {
