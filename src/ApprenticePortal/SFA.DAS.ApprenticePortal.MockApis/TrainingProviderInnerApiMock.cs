@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
 
@@ -8,7 +8,7 @@ namespace SFA.DAS.ApprenticePortal.MockApis
 {
     public class TrainingProviderInnerApiMock : ApiMock
     {
-        public TrainingProviderInnerApiMock() : this(0) {}
+        public TrainingProviderInnerApiMock() : this(0) { }
 
         public TrainingProviderInnerApiMock(int port, bool ssl = false) : base(port, ssl)
         {
@@ -31,15 +31,12 @@ namespace SFA.DAS.ApprenticePortal.MockApis
             return this;
         }
 
-        public TrainingProviderInnerApiMock WithValidSearch(long trainingProviderId, TrainingProviderResponse trainingProviderResponse)
+        public TrainingProviderInnerApiMock WithValidSearch(long trainingProviderId, OrganisationResponse response)
         {
-            var response = new SearchResponse { SearchResults = new [] { trainingProviderResponse } };
-
             MockServer
                 .Given(
                     Request.Create()
-                        .WithPath($"/api/v1/search")
-                        .WithParam("searchterm", trainingProviderId.ToString())
+                        .WithPath($"/organisations/{trainingProviderId}")
                         .UsingGet()
                 )
                 .RespondWith(

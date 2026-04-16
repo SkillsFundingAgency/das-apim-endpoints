@@ -40,7 +40,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         }
 
         apprenticeshipResponse.EnsureSuccessStatusCode();
-        
+
         var apprenticeship = apprenticeshipResponse.Body;
 
         if (apprenticeship == null)
@@ -86,7 +86,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
 
         var result = new GetManageApprenticeshipDetailsQueryResult();
-        
+
         result.Apprenticeship = apprenticeship;
         result.PriceEpisodes = priceEpisodesResponse.Body?.PriceEpisodes;
         result.ApprenticeshipUpdates = apprenticeshipUpdatesResponse.Body?.ApprenticeshipUpdates;
@@ -101,7 +101,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.PendingStartDateChange = null;
         result.PaymentsStatus = new PaymentsStatus { PaymentsFrozen = false };
         result.LearnerStatusDetails = new LearnerStatusDetails { LearnerStatus = LearnerStatus.None };
-
         return result;
     }
 
@@ -131,7 +130,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             throw new AcademicYearDataIncompleteException(PreviousOrCurrentAcademicYear.Previous);
         }
 
-        var isStartDateInPreviousAcademicYear = previousAcademicYear.StartDate <= actualStartDate; 
+        var isStartDateInPreviousAcademicYear = previousAcademicYear.StartDate <= actualStartDate;
         var isItR13R14PeriodOfPreviousAcademicYear = previousAcademicYear.HardCloseDate > DateTime.Now;
         if (isStartDateInPreviousAcademicYear && isItR13R14PeriodOfPreviousAcademicYear)
         {

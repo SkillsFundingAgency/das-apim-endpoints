@@ -8,6 +8,6 @@ public class CreateShortlistForUserCommand : IRequest<PostShortListResponse>
 {
     public int Ukprn { get; set; }
     public string LocationName { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public Guid ShortlistUserId { get; set; }
 }

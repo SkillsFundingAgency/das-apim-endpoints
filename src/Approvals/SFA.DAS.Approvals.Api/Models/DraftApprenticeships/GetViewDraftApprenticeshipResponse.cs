@@ -19,6 +19,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public string TrainingCourseOption { get; set; }
         public bool TrainingCourseVersionConfirmed { get; set; }
         public string StandardUId { get; set; }
+        public int? TrainingPrice { get; set; }
+        public int? EndPointAssessmentPrice { get; set; }
         public int? Cost { get; set; }
         public DateTime? StartDate { get; set; }
         public DateTime? ActualStartDate { get; set; }
@@ -44,6 +46,9 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
         public int? DurationReducedByHours { get; set; }
         public bool? IsDurationReducedByRpl { get; set; }
         public int? TrainingTotalHours { get; set; }
+        public long? LearnerDataId { get; set; }
+        public bool HasLearnerDataChanges { get; set; }
+        public DateTime? LastLearnerDataSync { get; set; }
 
         public static implicit operator GetViewDraftApprenticeshipResponse(GetViewDraftApprenticeshipQueryResult source)
         {
@@ -61,6 +66,8 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 TrainingCourseOption = source.TrainingCourseOption,
                 TrainingCourseVersionConfirmed = source.TrainingCourseVersionConfirmed,
                 StandardUId = source.StandardUId,
+                TrainingPrice = source.TrainingPrice,
+                EndPointAssessmentPrice = source.EndPointAssessmentPrice,
                 Cost = source.Cost,
                 StartDate = source.StartDate,
                 ActualStartDate = source.ActualStartDate,
@@ -85,7 +92,7 @@ namespace SFA.DAS.Approvals.Api.Models.DraftApprenticeships
                 EmailAddressConfirmed = source.EmailAddressConfirmed,
                 DurationReducedByHours = source.DurationReducedByHours,
                 IsDurationReducedByRpl = source.IsDurationReducedByRpl,
-                TrainingTotalHours = source.TrainingTotalHours,
+                TrainingTotalHours = source.TrainingTotalHours
             };
         }
     }

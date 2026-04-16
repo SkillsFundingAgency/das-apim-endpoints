@@ -1,10 +1,10 @@
+using System.Threading;
+using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services;
 
@@ -31,6 +31,15 @@ public class RoatpV2TrainingProviderService : IRoatpV2TrainingProviderService
         var actual =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetProvidersResponse>(
                 new GetRoatpProvidersRequest());
+
+        return ApiResponseErrorChecking.IsSuccessStatusCode(actual.StatusCode) ? actual.Body : null;
+    }
+
+    public async Task<GetProvidersResponse> GetProviders(bool live)
+    {
+        var actual =
+            await _roatpCourseManagementApiClient.GetWithResponseCode<GetProvidersResponse>(
+                new GetRoatpProvidersRequest { Live = live});
 
         return ApiResponseErrorChecking.IsSuccessStatusCode(actual.StatusCode) ? actual.Body : null;
     }

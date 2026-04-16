@@ -33,7 +33,7 @@ namespace SFA.DAS.Approvals.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_env);       
+            services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
 
@@ -94,7 +94,7 @@ namespace SFA.DAS.Approvals.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseMiddleware<SecurityHeadersMiddleware>();
 
             app.Use(async (context, next) =>

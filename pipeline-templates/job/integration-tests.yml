@@ -1,0 +1,46 @@
+parameters:
+  OuterApiName:
+  ServiceConnection:
+  
+jobs:
+- job: tests
+  displayName: Integration Tests
+  workspace:
+    clean:
+  pool:
+    name: DAS - APIM Continuous Deployment Agents
+  steps:
+    - task: DownloadPipelineArtifact@2
+    - checkout: self
+    - task: AzurePowerShell@5
+      displayName: Find APIM Subscription ID
+      inputs:
+        azurePowerShellVersion: LatestVersion
+        azureSubscription: ${{ parameters.ServiceConnection }}
+        scriptType: InlineScript
+        inline: |
+          $Product = ("${{ parameters.OuterApiName }}" + "OuterApi")
+          $Context = New-AzApiManagementContext -ResourceGroupName das-at-apim-rg -ServiceName das-at-shared-apim
+          $Subscriptions = Get-AzApiManagementSubscription -Context $Context -Scope /products/$Product | Where-Object { $_.UserId -eq 1 }
+          $ApimSubscriptionId = $Subscriptions.SubscriptionId
+          Write-Output "Setting value of Subscription ID to pipeline variable ApimSubscriptionId"
+          Write-Output "##vso[task.setvariable variable=ApimSubscriptionId;]$ApimSubscriptionId"
+    - template: azure-pipelines-templates/deploy/step/get-apim-subscription-key.yml@das-platform-building-blocks
+      parameters:
+        ServiceConnection: ${{ parameters.ServiceConnection }}
+        ApimResourceGroup: $(SharedApimResourceGroup)
+        ApimName: $(SharedApimName)
+        SubscriptionId: $(ApimSubscriptionId)
+        PipelineVariableName: ApimSubscriptionKey
+        IsMultiRepoCheckout: true
+    - task: PowerShell@2
+      displayName: Run Tests
+      continueOnError: true
+      inputs:
+        targetType: inline
+        script: |
+          (Get-Content ./HttpScripts/http-client.env.json) -replace '<subscriptionKey>', $env:ApimSubscriptionKey | Set-Content ./HttpScripts/http-client.env.json
+          node ./HttpScripts/http-to-curl.js ./HttpScripts/CreateCandidateAndSubmitApplication.http --env=AT --out ./HttpScripts/generated.sh --exec
+        workingDirectory: $(Pipeline.Workspace)/ApimEndpointsArtifacts/src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.UnitTests/
+      env: 
+        ApimSubscriptionKey: $(ApimSubscriptionKey)

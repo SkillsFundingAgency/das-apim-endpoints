@@ -8,7 +8,7 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         private const string Replace = "replace";
         private readonly int _ukprn;
-        private readonly int _larsCode;
+        private readonly string _larsCode;
         private readonly string _userId;
         private readonly string _userDisplayName;
 
@@ -40,6 +40,9 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 
             if (model.IsApprovedByRegulator != null)
                 data.Add(new PatchOperation { Path = "IsApprovedByRegulator", Value = model.IsApprovedByRegulator, Op = Replace });
+
+            if (model.HasOnlineDeliveryOption != null)
+                data.Add(new PatchOperation { Path = "HasOnlineDeliveryOption", Value = model.HasOnlineDeliveryOption, Op = Replace });
 
             return data;
         }

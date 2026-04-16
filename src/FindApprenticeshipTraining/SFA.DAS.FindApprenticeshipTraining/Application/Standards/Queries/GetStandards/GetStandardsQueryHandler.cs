@@ -14,11 +14,11 @@ public class GetStandardsQueryHandler(ICoursesApiClient<CoursesApiConfiguration>
 {
     public async Task<GetStandardsQueryResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
     {
-        var standardsResponse = await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+        var standardsResponse = await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetActiveStandardsSearchRequest());
 
         standardsResponse.EnsureSuccessStatusCode();
 
-        var standards = standardsResponse.Body.Standards.Select(s => (Standard)s).ToList();
+        var standards = standardsResponse.Body.Courses.Select(s => (Standard)s).ToList();
 
         return new GetStandardsQueryResult(standards);
     }

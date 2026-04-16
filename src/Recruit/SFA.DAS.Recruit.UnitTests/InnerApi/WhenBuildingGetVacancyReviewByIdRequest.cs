@@ -1,6 +1,5 @@
 using System;
-using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyReviews;
 
 namespace SFA.DAS.Recruit.UnitTests.InnerApi;
 

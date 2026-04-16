@@ -52,6 +52,20 @@ public class HealthCheckSteps(TestContext context)
             );
     }
 
+
+    [Given(@"the Courses Api status is (.*)")]
+    public void GivenTheCoursesApiIs(HttpStatusCode status)
+    {
+        context.CoursesApi.MockServer
+            .Given(
+                Request.Create().WithPath($"/ping")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(status)
+            );
+    }
+
     [When(@"I request the service status")]
     public async Task WhenIRequestServiceStatus()
     {

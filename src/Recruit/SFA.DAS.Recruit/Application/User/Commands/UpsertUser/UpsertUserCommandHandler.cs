@@ -2,8 +2,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
@@ -13,7 +13,7 @@ public class UpsertUserCommandHandler(IRecruitApiClient<RecruitApiConfiguration>
 {
     public async Task Handle(UpsertUserCommand request, CancellationToken cancellationToken)
     {
-        await apiClient.PutWithResponseCode<NullResponse>(
-            new PutUserRequest(request.Id, request.User));
+        var response = await apiClient.PutWithResponseCode<NullResponse>(new PutUserRequest(request.Id, request.User));
+        response.EnsureSuccessStatusCode();
     }
 }

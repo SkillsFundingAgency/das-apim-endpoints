@@ -1,14 +1,16 @@
-using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
+using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 public class GetProvidersByCourseIdRequest : IGetApiRequest
 {
-    public required int CourseId { get; init; }
+    public string Version => ApiVersionNumber.Two;
+    public required string CourseId { get; init; }
     public ProviderOrderBy? OrderBy { get; set; }
     public decimal? Distance { get; set; }
     public decimal? Latitude { get; set; }

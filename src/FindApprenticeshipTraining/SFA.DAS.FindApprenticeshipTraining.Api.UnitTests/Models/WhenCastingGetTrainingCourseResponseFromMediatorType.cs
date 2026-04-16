@@ -1,16 +1,16 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Collections.Generic;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Models;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using System.Collections.Generic;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 {
     public class WhenCastingGetTrainingCourseResponseFromMediatorType
     {
         [Test, AutoData]
-        public void Then_Maps_Fields_Appropriately(
+        public void Cast_FromGetStandardsListItem_MapsCommonFields(
             GetStandardsListItem source)
         {
             var response = (GetTrainingCourseListItem)source;
@@ -29,14 +29,14 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(tc => tc.IfateReferenceNumber)
                 .Excluding(tc => tc.SearchScore)
                 .Excluding(tc => tc.RouteCode)
-                .Excluding(tc => tc.ApprenticeshipType)
+                .Excluding(tc => tc.LearningType)
             );
 
-            response.Id.Should().Be(source.LarsCode);
+            response.Id.Should().Be(source.LarsCode.ToString());
         }
 
         [Test, AutoData]
-        public void And_If_More_Than_One_Typical_Job_Title_Then_Titles_Are_Ordered_Alphabetically(
+        public void Cast_FromGetStandardsListItemWithMultipleTypicalJobTitles_OrdersTitlesAlphabetically(
             GetStandardsListItem source)
         {
             source.TypicalJobTitles = "B|Z|A|V";
@@ -49,7 +49,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_CoreSkillCount_Is_Set_When_CoreAndOptions_Is_True(
+        public void Cast_FromGetStandardsListItemWhenCoreAndOptionsTrue_MapsCoreSkillsFromCoreDuties(
             GetStandardsListItem source)
         {
             source.CoreAndOptions = true;
@@ -58,8 +58,9 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
 
             response.CoreSkills.Should().BeEquivalentTo(source.CoreDuties);
         }
+
         [Test, AutoData]
-        public void Then_CoreSkillCount_Is_Set_When_CoreAndOptions_Is_False(
+        public void Cast_FromGetStandardsListItemWhenCoreAndOptionsFalse_MapsCoreSkillsFromSkills(
             GetStandardsListItem source)
         {
             source.CoreAndOptions = false;

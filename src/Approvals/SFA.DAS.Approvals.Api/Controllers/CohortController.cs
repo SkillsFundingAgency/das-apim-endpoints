@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
@@ -15,6 +15,8 @@ using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectLegalEntity;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAssignAllowEmployerAdd;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectEmployer;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
 
@@ -94,6 +96,24 @@ public class CohortController(
         catch (Exception e)
         {
             logger.LogError(e, $"Error in Post Cohort Details - cohort id {cohortId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("employer/{accountHashedId}/unapproved/add/assign/allow-employer-add")]
+    public async Task<IActionResult> GetAssignAllowEmployerAdd([FromRoute] string accountHashedId, [FromQuery] Guid reservationId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetAssignAllowEmployerAddQuery { ReservationId = reservationId });
+            if (result == null)
+                return NotFound();
+            return Ok((GetAssignAllowEmployerAddResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in GetAssignAllowEmployerAdd for reservation {ReservationId}", reservationId);
             return BadRequest();
         }
     }
@@ -249,6 +269,48 @@ public class CohortController(
         catch (Exception e)
         {
             logger.LogError(e, "Error getting legal entities for account {AccountId}", accountId);
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("provider/{providerId}/unapproved/add/select-employer")]
+    public async Task<IActionResult> GetSelectEmployer(
+        [FromRoute] int providerId,
+        [FromQuery] string searchTerm,
+        [FromQuery] string sortField,
+        [FromQuery] bool reverseSort,
+        [FromQuery] bool useLearnerData,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 50)
+    {
+        if (pageNumber < 1 || pageSize < 1 || pageSize > 100)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var result = await mediator.Send(new GetSelectEmployerQuery
+            {
+                ProviderId = providerId,
+                SearchTerm = searchTerm,
+                SortField = sortField,
+                ReverseSort = reverseSort,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok((GetSelectEmployerResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in GetSelectEmployer for provider {ProviderId}", providerId);
             return BadRequest();
         }
     }

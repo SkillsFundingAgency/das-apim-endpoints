@@ -22,7 +22,7 @@ public sealed class WhenCallingGetCourseProvider
         [Greedy] CoursesController sut
     )
     {
-        int larsCode = 123;
+        string larsCode = "123";
         long ukprn = 10000002;
 
         mockMediator
@@ -63,7 +63,7 @@ public sealed class WhenCallingGetCourseProvider
         mockMediator.Setup(x => x.Send(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseProviderQueryResult)null);
 
-        var result = await sut.GetCourseProvider(1, 1, new GetCourseProviderRequest(), CancellationToken.None);
+        var result = await sut.GetCourseProvider("1", 1, new GetCourseProviderRequest(), CancellationToken.None);
 
         result.Should().BeOfType<NotFoundResult>();
         var notFoundResult = result as NotFoundResult;

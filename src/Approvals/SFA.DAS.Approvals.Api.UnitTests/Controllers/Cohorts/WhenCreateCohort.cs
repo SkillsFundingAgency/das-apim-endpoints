@@ -1,13 +1,7 @@
 ﻿using System.Threading;
-using AutoFixture;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
 using System.Threading.Tasks;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
 

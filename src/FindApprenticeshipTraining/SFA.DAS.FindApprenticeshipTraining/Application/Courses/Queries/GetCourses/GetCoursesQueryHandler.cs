@@ -1,4 +1,9 @@
-﻿using MediatR;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
@@ -7,11 +12,6 @@ using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 
@@ -32,19 +32,19 @@ public sealed class GetCoursesQueryHandler(
 
         var coursesStandardsResponse =
             await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(
-                new GetActiveStandardsListRequest()
+                new GetActiveStandardsSearchRequest()
                 {
                     Keyword = query.Keyword ?? string.Empty,
                     OrderBy = query.OrderBy,
                     RouteIds = query.RouteIds,
                     Levels = query.Levels,
-                    ApprenticeshipType = query.ApprenticeshipType
+                    LearningTypes = query.LearningTypes
                 }
         );
 
         coursesStandardsResponse.EnsureSuccessStatusCode();
 
-        if (!coursesStandardsResponse.Body.Standards.Any())
+        if (!coursesStandardsResponse.Body.Courses.Any())
         {
             return GetEmptyResponse(query.PageSize);
         }
@@ -56,7 +56,7 @@ public sealed class GetCoursesQueryHandler(
             return GetEmptyResponse(query.PageSize);
         }
 
-        var pagedStandards = coursesStandardsResponse.Body.Standards
+        var pagedStandards = coursesStandardsResponse.Body.Courses
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToArray();
@@ -69,7 +69,7 @@ public sealed class GetCoursesQueryHandler(
         var courseTrainingProvidersCountResponse =
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
                 new GetCourseTrainingProvidersCountRequest(
-                    pagedStandards.Select(a => a.LarsCode).ToArray(),
+                    pagedStandards.Select(a => a.LarsCode.ToString()).ToArray(),
                     query.Distance,
                     locationItem?.Latitude,
                     locationItem?.Longitude

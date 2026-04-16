@@ -7,42 +7,45 @@ using SFA.DAS.ApprenticeApp.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.ApprenticeApp.Extensions;
+using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeCommitments.Requests;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 {
     public class GetApprenticeDetailsQueryHandler : IRequestHandler<GetApprenticeDetailsQuery, GetApprenticeDetailsQueryResult>
     {
         private readonly IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> _accountsApiClient;
+        private readonly IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> _commitmentsApiClient;
         private readonly CoursesService _coursesService;
 
         public GetApprenticeDetailsQueryHandler(
             IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration> accountsApiClient,
+            IApprenticeCommitmentsApiClient<ApprenticeCommitmentsApiConfiguration> apprenticeCommitmentsApiClient,
             CoursesService coursesService
             )
         {
-            _coursesService = coursesService;
             _accountsApiClient = accountsApiClient;
+            _commitmentsApiClient = apprenticeCommitmentsApiClient;
+            _coursesService = coursesService;            
         }
 
         public async Task<GetApprenticeDetailsQueryResult> Handle(GetApprenticeDetailsQuery request, CancellationToken cancellationToken)
         {
-            var apprenticeTask = _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
-            var myApprenticeshipTask = _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));
+            var apprenticeTask = await _accountsApiClient.Get<Apprentice>(new GetApprenticeRequest(request.ApprenticeId));
+            var apprenticeship = await _commitmentsApiClient.Get<ApprenticeshipsList>(new GetApprenticeApprenticeshipsRequest(request.ApprenticeId));
+            var myApprenticeshipTask = await _accountsApiClient.Get<MyApprenticeship>(new GetMyApprenticeshipRequest(request.ApprenticeId));            
 
-            await Task.WhenAll(apprenticeTask, myApprenticeshipTask);
-
-            var myApprenticeship = await myApprenticeshipTask;
-            if (myApprenticeship != null)
+            if (myApprenticeshipTask != null)
             {
-               await PopulateMyApprenticeshipWithCourseTitle(myApprenticeship);
+               await PopulateMyApprenticeshipWithCourseTitle(myApprenticeshipTask);
             }
 
             return new GetApprenticeDetailsQueryResult
             {
                 ApprenticeDetails = new ApprenticeDetails
                 {
-                    Apprentice = await apprenticeTask,
-                    MyApprenticeship = myApprenticeship,
+                    Apprentice = apprenticeTask,
+                    Apprenticeship = apprenticeship,
+                    MyApprenticeship = myApprenticeshipTask,
                 }
             };
         }

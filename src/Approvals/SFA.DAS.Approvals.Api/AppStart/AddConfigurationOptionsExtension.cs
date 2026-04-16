@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
@@ -62,5 +62,7 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerDataInnerApiConfiguration>>().Value);
         services.Configure<CourseTypesApiConfiguration>(configuration.GetSection("CourseTypesApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CourseTypesApiConfiguration>>().Value);
+        services.Configure<EmploymentCheckConfiguration>(configuration.GetSection("EmploymentCheckInnerApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<EmploymentCheckConfiguration>>().Value);
     }
 }

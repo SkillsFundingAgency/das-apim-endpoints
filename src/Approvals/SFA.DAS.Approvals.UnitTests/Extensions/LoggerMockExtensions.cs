@@ -1,6 +1,5 @@
 using System;
 using Microsoft.Extensions.Logging;
-using Moq;
 
 namespace SFA.DAS.Approvals.UnitTests.Extensions;
 

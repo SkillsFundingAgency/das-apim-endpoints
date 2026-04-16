@@ -1,29 +1,34 @@
+using SFA.DAS.SharedOuterApi.Domain.Recruit;
 using System;
 using System.Collections.Generic;
+using OwnerType = SFA.DAS.Recruit.Domain.Vacancy.OwnerType;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 
 public class GetVacancyReviewResponse
 {
     public Guid Id { get; init; }
-    public long VacancyReference { get; init; }
+    public required string VacancyReference { get; set; }
     public required string VacancyTitle { get; init; }
     public required DateTime CreatedDate { get; init; }
     public required DateTime SlaDeadLine { get; init; }
     public DateTime? ReviewedDate { get; init; }
-    public required string Status { get; init; }
+    public required ReviewStatus Status { get; init; }
     public byte SubmissionCount { get; init; }
-    public string ReviewedByUserEmail { get; init; }
-    public required string SubmittedByUserEmail { get; init; }
+    public string? ReviewedByUserEmail { get; init; }
+    public string? SubmittedByUserEmail { get; init; }
+    public Guid SubmittedByUserId { get; init; }
     public DateTime? ClosedDate { get; init; }
-    public string ManualOutcome { get; set; }
-    public string ManualQaComment { get; init; }
+    public string? ManualOutcome { get; init; }
+    public string? ManualQaComment { get; init; }
     public required List<string> ManualQaFieldIndicators { get; init; }
-    public string AutomatedQaOutcome { get; set; }
-    public string AutomatedQaOutcomeIndicators { get; init; }
+    public string? AutomatedQaOutcome { get; init; }
+    public string? AutomatedQaOutcomeIndicators { get; init; }
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
-    public required string VacancySnapshot { get; set; }
-    public string OwnerType { get; set; }
-    public Guid VacancyId { get; set; }
+    public required string VacancySnapshot { get; init; }
+    public long AccountId { get; set; }
+    public long AccountLegalEntityId { get; set; }
+    public long Ukprn { get; set; }
+    public OwnerType OwnerType { get; set; }
 }

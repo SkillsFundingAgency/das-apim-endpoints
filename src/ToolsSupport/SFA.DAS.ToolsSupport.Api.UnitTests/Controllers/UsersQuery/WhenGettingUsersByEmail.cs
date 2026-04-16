@@ -1,12 +1,6 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
+using System.Net;
 using FluentAssertions.Execution;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
 using SFA.DAS.ToolsSupport.Application.Queries;
 
@@ -20,7 +14,7 @@ public class WhenGettingUsersByEmail
         string email,
         GetUsersByEmailQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] UsersQueryController sut)
+        [Greedy] UsersController sut)
     {
         mockMediator.Setup(x => x.Send(It.Is<GetUsersByEmailQuery>(p => p.Email == email), It.IsAny<CancellationToken>())).ReturnsAsync(mockQueryResult);
 
@@ -39,7 +33,7 @@ public class WhenGettingUsersByEmail
         string email,
         GetUsersByEmailQueryResult mockQueryResult,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] UsersQueryController sut)
+        [Greedy] UsersController sut)
     {
         mockMediator.Setup(x => x.Send(It.IsAny<GetUsersByEmailQuery>(), It.IsAny<CancellationToken>())).ThrowsAsync(new InvalidOperationException());
 

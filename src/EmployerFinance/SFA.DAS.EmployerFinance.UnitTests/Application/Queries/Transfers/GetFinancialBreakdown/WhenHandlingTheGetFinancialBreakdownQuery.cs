@@ -1,28 +1,20 @@
-﻿using AutoFixture;
-using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AutoFixture;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown;
 using SFA.DAS.EmployerFinance.Models.Constants;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFinancialBreakdown
+namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFinancialBreakdown;
+
+public class WhenHandlingTheGetFinancialBreakdownQuery
 {
-    public class WhenHandlingTheGetFinancialBreakdownQuery
-    {
         [Test, MoqAutoData]
         public async Task And_AccountId_Specified_Then_Projection_Returned(
            long accountId,
-           [Frozen] Mock<IForecastingApiClient<ForecastingApiConfiguration>> forecastingApiConfiguration,
            [Frozen] Mock<ILevyTransferMatchingApiClient<LevyTransferMatchingApiConfiguration>> levyTransferMatchingApiConfiguration,
            GetFinancialBreakdownHandler getFinancialBreakdownHandler)
         {
@@ -53,17 +45,7 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFin
           
             var getPledgesResponse = new Fixture().Create<GetPledgesResponse>();
 
-            var getTransferFinancialBreakdownResponse = new GetTransferFinancialBreakdownResponse()
-            {
-                Breakdown = breakDownList,
-                AccountId = accountId,                
-                AmountPledged = 20,
-                ProjectionStartDate = DateTime.Now
-            };
-
-            forecastingApiConfiguration
-                .Setup(x => x.Get<GetTransferFinancialBreakdownResponse>(It.IsAny<GetTransferFinancialBreakdownRequest>()))
-                .ReturnsAsync(getTransferFinancialBreakdownResponse);
+            // Forecasting service is decommissioned; handler no longer calls it
 
             levyTransferMatchingApiConfiguration
                 .Setup(x => x.Get<GetPledgesResponse>(It.IsAny<GetPledgesRequest>()))
@@ -71,17 +53,11 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFin
 
             var results = await getFinancialBreakdownHandler.Handle(getFinancialBreakdownQuery, CancellationToken.None);
 
-            Assert.That(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount), Is.EqualTo(results.AmountPledged));
-            Assert.That(getTransferFinancialBreakdownResponse.ProjectionStartDate, Is.EqualTo(results.ProjectionStartDate));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections), Is.EqualTo(results.TransferConnections));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications), Is.EqualTo(results.AcceptedPledgeApplications));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications), Is.EqualTo(results.ApprovedPledgeApplications));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments), Is.EqualTo(results.PledgeOriginatedCommitments));
-            Assert.That(getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.Commitments), Is.EqualTo(results.Commitments));            
-            Assert.That((getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.ApprovedPledgeApplications) +
-                getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.AcceptedPledgeApplications) 
-                + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.PledgeOriginatedCommitments)
-                + getTransferFinancialBreakdownResponse.Breakdown.Sum(x => x.FundsOut.TransferConnections)), Is.EqualTo(results.CurrentYearEstimatedCommittedSpend));
+            results.AmountPledged.Should().Be(getPledgesResponse.Pledges.Where(p => p.Status != PledgeStatus.Closed).Sum(x => x.Amount));
+            results.TransferConnections.Should().Be(0);
+            results.AcceptedPledgeApplications.Should().Be(0);
+            results.ApprovedPledgeApplications.Should().Be(0);
+            results.PledgeOriginatedCommitments.Should().Be(0);
+            results.Commitments.Should().Be(0);
         }
-    }
 }

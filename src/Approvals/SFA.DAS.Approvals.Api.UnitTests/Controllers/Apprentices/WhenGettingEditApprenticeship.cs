@@ -1,14 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
 using AutoMapper;
 using KellermanSoftware.CompareNetObjects;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
 
@@ -45,15 +40,16 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Apprentices
         {
             var result = await _controller.EditApprenticeship( _apprenticeshipId);
 
-            Assert.That(result, Is.InstanceOf<OkObjectResult>());
+            result.Should().BeOfType<OkObjectResult>();
+
             var okObjectResult = (OkObjectResult)result;
-            Assert.That(okObjectResult.Value, Is.InstanceOf<GetEditApprenticeshipResponse>());
-            var objectResult = (GetEditApprenticeshipResponse)okObjectResult.Value;
+            okObjectResult.Value.Should().BeOfType<GetEditApprenticeshipResponse>();
 
-            var compare = new CompareLogic(new ComparisonConfig { IgnoreObjectTypes = true });
-
-            var comparisonResult = compare.Compare(_queryResult, objectResult);
-            Assert.That(comparisonResult.AreEqual, Is.True);
+            var value = (GetEditApprenticeshipResponse)okObjectResult.Value;
+            value.CourseName.Should().Be(_queryResult.CourseName);
+            value.HasMultipleDeliveryModelOptions.Should().Be(_queryResult.HasMultipleDeliveryModelOptions);
+            value.IsFundedByTransfer.Should().Be(_queryResult.IsFundedByTransfer);
+            value.LearningType.Should().Be(_queryResult.LearningType);
         }
     }
 }

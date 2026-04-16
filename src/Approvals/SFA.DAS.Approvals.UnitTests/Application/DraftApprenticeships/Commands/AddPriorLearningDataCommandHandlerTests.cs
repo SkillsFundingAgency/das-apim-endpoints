@@ -2,12 +2,9 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddPriorLearningData;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -15,7 +12,6 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships.Commands;
 
@@ -28,7 +24,7 @@ public class AddPriorLearningDataCommandHandlerTests
         [Frozen] Mock<ICourseTypeRulesService> courseTypeRulesService,
         [Frozen] Mock<ILogger<AddPriorLearningDataCommandHandler>> logger,
         GetDraftApprenticeshipResponse apprenticeship,
-        GetStandardsListItem standardResponse,
+        GetCourseLookupResponse courseResponse,
         GetRecognitionOfPriorLearningResponse priorLearningResponse,
         GetPriorLearningSummaryResponse priorLearningSummary,
         AddPriorLearningDataCommand request,
@@ -36,7 +32,7 @@ public class AddPriorLearningDataCommandHandlerTests
         AddPriorLearningDataCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = "Apprenticeship";
+        courseResponse.LearningType = "Apprenticeship";
         apprenticeship.CourseCode = "123";
         apprenticeship.HasStandardOptions = true;
         priorLearningSummary.RplPriceReductionError = false;
@@ -52,7 +48,7 @@ public class AddPriorLearningDataCommandHandlerTests
             .Setup(x => x.GetRplRulesAsync(apprenticeship.CourseCode))
             .ReturnsAsync(new RplRulesResult
             {
-                Standard = standardResponse,
+                Course = courseResponse,
                 RplRules = priorLearningResponse
             })
             .Verifiable();
