@@ -26,12 +26,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
         public string PrintRequestedBy { get; set; }
         // TODO: This 'DeliveryInformation field is not required for P2-2550. We need to discuss with Alan what data is actually required for this field.
         public List<object> DeliveryInformation { get; set; }
+        public bool CoronationEmblem { get; set; }
 
         public static implicit operator GetStandardCertificateQueryResult(GetStandardCertificateResponse source)
         {
             if (source == null) return null;
 
             var employerName = source.CertificateData?.EmployerName ?? "";
+            var coronationEmblem = source.CertificateData?.CoronationEmblem ?? false;
 
             return new GetStandardCertificateQueryResult
             {
@@ -54,6 +56,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
                 DeliveryInformation = null,
                 PrintRequestedAt = source.PrintRequestedAt,
                 PrintRequestedBy = source.PrintRequestedBy,
+                CoronationEmblem = coronationEmblem
             };
         }
     }
