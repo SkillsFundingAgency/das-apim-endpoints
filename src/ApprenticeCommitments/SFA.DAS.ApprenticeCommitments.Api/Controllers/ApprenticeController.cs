@@ -4,6 +4,9 @@ using System;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Controllers;
+using Azure;
+using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -25,5 +28,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         [HttpGet("/apprentices/{id}")]
         public Task<IActionResult> GetApprentice(Guid id)
             => _client.Get($"apprentices/{id}");
+
+        [HttpPatch("/apprentices/{id}")]
+        public Task<IActionResult> UpdateApprentice(Guid id, JsonPatchDocument<Apprentice> patch)
+            => _client.Patch($"apprentices/{id}", patch);
     }
 }

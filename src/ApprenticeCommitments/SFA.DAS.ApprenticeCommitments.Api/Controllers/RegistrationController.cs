@@ -20,6 +20,21 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             => _client.Get($"registrations/{registrationId}");
 
         [HttpGet]
+        [Route("/registration/{registrationId}")]
+        public Task<IActionResult> GetRegistrationById(Guid registrationId)
+            => _client.Get($"registration/{registrationId}");
+
+        [HttpGet]
+        [Route("/registrations")]
+        public Task<IActionResult> GetRegistrationByAccountDetails([FromQuery] string firstName, [FromQuery] string lastName, [FromQuery] string dateOfBirth)
+            => _client.Get($"registrations?firstName={firstName}&lastName={lastName}&dateOfBirth={dateOfBirth}");
+
+        [HttpGet]
+        [Route("/registrations/email")]
+        public Task<IActionResult> GetRegistrationByEmail([FromQuery] string email) 
+            => _client.Get($"registrations/email?email={email}");
+
+        [HttpGet]
         [Route("/registrations/reminders")]
         public Task<IActionResult> GetRemindersToSend([FromQuery] DateTime invitationCutOffTime)
             => _client.Get($"registrations/reminders?invitationCutOffTime={invitationCutOffTime}");
