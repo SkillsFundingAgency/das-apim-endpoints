@@ -98,8 +98,7 @@ public class VacancyReviewController(
     [Route("[controller]s/{id:guid}")]
     public async Task<IActionResult> UpsertVacancyReview(
         [FromRoute] Guid id,
-        [FromBody] VacancyReviewDto vacancyReview,
-        [FromServices] IRecruitArtificialIntelligenceService aiService)
+        [FromBody] VacancyReviewDto vacancyReview)
     {
         try
         {
