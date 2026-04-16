@@ -72,14 +72,13 @@ public static class AddServiceRegistrationExtensions
         {
             services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
             services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
-            services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         }
         else
         {
             services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
             services.AddTransient<IProviderCoursesOrStandardsService, ProviderStandardsService>();
         }
-
+        services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
         services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();
