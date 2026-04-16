@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
+namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
 {
     [Serializable]
     [XmlRoot(ElementName = "MatchingProviderRecords")]
@@ -16,6 +16,9 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 
         [XmlArray(ElementName = "ProviderContact")]
         public List<ProviderContact> ProviderContacts { get; set; }
+
+        [XmlElement]
+        public ProviderAliases ProviderAliases { get; set; }
     }
 
     [Serializable]
@@ -49,5 +52,12 @@ namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 
         [XmlElement]
         public string PostCode { get; set; }
+    }
+
+    [Serializable]
+    public class ProviderAliases
+    {
+        [XmlElement]
+        public string ProviderAlias { get; set; }
     }
 }
