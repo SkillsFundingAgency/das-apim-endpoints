@@ -54,6 +54,19 @@ namespace SFA.DAS.ApprenticeApp.Models
 
     public class CourseDetails
     {
+        public CourseDetails(
+            string name, int level, string? option,
+            DateTime plannedStartDate, DateTime plannedEndDate,
+            int courseDuration, DateTime? employmentEndDate)
+        {
+            Name = name;
+            Level = level;
+            Option = option;
+            PlannedStartDate = plannedStartDate;
+            PlannedEndDate = plannedEndDate;
+            CourseDuration = courseDuration;
+            EmploymentEndDate = employmentEndDate;
+        }
         public string Name { get; }
         public int Level { get; set; }
         public string? Option { get; set; }

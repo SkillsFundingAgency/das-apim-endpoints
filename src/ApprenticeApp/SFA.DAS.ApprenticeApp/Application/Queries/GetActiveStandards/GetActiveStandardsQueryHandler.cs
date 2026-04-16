@@ -2,10 +2,7 @@
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
