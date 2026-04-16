@@ -103,29 +103,29 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
             
         HandleHttpResponseError(result);
 
-        if (result is { StatusCode: HttpStatusCode.Created } && requiresEmployerApproval)
+        if (result is not {StatusCode: HttpStatusCode.Created} || !requiresEmployerApproval)
+            return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
+
+        var slaDeadline = await slaService.GetSlaDeadlineAsync(dateTimeNow);
+        var vacancyReview = new PutVacancyReviewRequest.PutVacancyReviewRequestData
         {
-            var slaDeadline = await slaService.GetSlaDeadlineAsync(dateTimeNow);
-            var vacancyReview = new PutVacancyReviewRequest.PutVacancyReviewRequestData
+            VacancyReference = result.Body.VacancyReference,
+            VacancyTitle = request.PostVacancyV2RequestData.Title,
+            CreatedDate = dateTimeNow,
+            Status = ReviewStatus.New,
+            VacancySnapshot = JsonSerializer.Serialize(request.PostVacancyV2RequestData, new JsonSerializerOptions
             {
-                VacancyReference = result.Body.VacancyReference,
-                VacancyTitle = request.PostVacancyV2RequestData.Title,
-                CreatedDate = dateTimeNow,
-                Status = ReviewStatus.New,
-                VacancySnapshot = JsonSerializer.Serialize(request.PostVacancyV2RequestData, new JsonSerializerOptions
-                {
-                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                    PropertyNameCaseInsensitive = true
-                }),
-                SubmittedByUserEmail = request.PostVacancyV2RequestData?.Contact?.Email,
-                SubmissionCount = 1,
-                SlaDeadLine = slaDeadline,
-                UpdatedFieldIdentifiers = [],
-                DismissedAutomatedQaOutcomeIndicators = [],
-            };
-            var response = await recruitApiV2Client.PutWithResponseCode<PutVacancyReviewResponse>(new PutVacancyReviewRequest(Guid.NewGuid(), vacancyReview));
-            response.EnsureSuccessStatusCode();
-        }
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            }),
+            SubmittedByUserEmail = request.PostVacancyV2RequestData?.Contact?.Email,
+            SubmissionCount = 1,
+            SlaDeadLine = slaDeadline,
+            UpdatedFieldIdentifiers = [],
+            DismissedAutomatedQaOutcomeIndicators = [],
+        };
+        var response = await recruitApiV2Client.PutWithResponseCode<PutVacancyReviewResponse>(new PutVacancyReviewRequest(Guid.NewGuid(), vacancyReview));
+        response.EnsureSuccessStatusCode();
 
         return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
     }
