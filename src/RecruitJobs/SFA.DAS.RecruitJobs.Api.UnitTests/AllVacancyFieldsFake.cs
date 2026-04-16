@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
 using AutoFixture;
-using SFA.DAS.RecruitJobs.Domain.Vacancy;
+using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.SharedOuterApi.Models;
+using Address = SFA.DAS.RecruitJobs.Domain.Address;
 using ApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
 using ClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
 using DurationUnit = SFA.DAS.RecruitJobs.GraphQL.DurationUnit;

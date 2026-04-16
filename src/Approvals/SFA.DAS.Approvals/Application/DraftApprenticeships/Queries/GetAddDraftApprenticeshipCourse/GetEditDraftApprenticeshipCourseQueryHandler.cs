@@ -16,12 +16,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
     public class GetAddDraftApprenticeshipCourseQueryHandler : IRequestHandler<GetAddDraftApprenticeshipCourseQuery, GetAddDraftApprenticeshipCourseQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IProviderStandardsService _providerStandardsService;
+        private readonly IProviderCoursesOrStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
         public GetAddDraftApprenticeshipCourseQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IProviderStandardsService providerStandardsService,
+            IProviderCoursesOrStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;
@@ -47,7 +47,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraft
                 return null;
             }
 
-            var providerStandardsData = await _providerStandardsService.GetStandardsData(cohort.ProviderId);
+            var providerStandardsData = await _providerStandardsService.GetCoursesData(cohort.ProviderId);
 
             return new GetAddDraftApprenticeshipCourseQueryResult
             {

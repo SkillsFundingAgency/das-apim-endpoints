@@ -3,7 +3,7 @@ using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.Payments.EarningEvents.Messages.External;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using System.Net;
@@ -80,14 +80,14 @@ public class UpdateShortCourseSteps
     public void ThenAShortCourseEarningsUpdatedEventIsPublishedForPayments()
     {
         var learnerKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
-        var calculateGrowthAndSkillsPayments = StubMessageSession.PublishedMessages
+        var calculateGrowthAndSkillsPayments = StubMessageSession.SentMessages
             .OfType<CalculateGrowthAndSkillsPayments>()
             .Where(e => e.Learner.LearnerKey == learnerKey)
             .ToList();
 
-        calculateGrowthAndSkillsPayments.Should().NotBeEmpty("Expected a CalculateGrowthAndSkillsPayments event to be published but none were found.");
+        calculateGrowthAndSkillsPayments.Should().NotBeEmpty("Expected a CalculateGrowthAndSkillsPayments command to be sent but none were found.");
         calculateGrowthAndSkillsPayments.Should().ContainSingle(e => e.Training.CourseType == Payments.EarningEvents.Messages.External.CourseType.ShortCourse,
-            "Expected a CalculateGrowthAndSkillsPayments event for a ShortCourse to be published but it was not found.");
+            "Expected a CalculateGrowthAndSkillsPayments command for a ShortCourse to be sent but it was not found.");
     }
 
     private void ConfigureLearnerInnerApi(long ukprn, Guid learningKey, ShortCourseRequest shortCourseRequest)
@@ -98,6 +98,7 @@ public class UpdateShortCourseSteps
         var response = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = learningKey,
+            LearnerKey = learningKey,
             Changes = changes.Select(x => x.ToString()).ToArray(),
             CompletionDate = onProgramme.ActualEndDate,
             Learner = new UpdateShortCourseResultLearner

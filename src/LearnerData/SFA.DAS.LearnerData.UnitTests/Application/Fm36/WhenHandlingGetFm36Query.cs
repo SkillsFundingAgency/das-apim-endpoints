@@ -1,12 +1,9 @@
-﻿using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.LearnerData.Application.Fm36;
-using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
+﻿using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using static SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers.GetFm36QueryTestFixture;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;

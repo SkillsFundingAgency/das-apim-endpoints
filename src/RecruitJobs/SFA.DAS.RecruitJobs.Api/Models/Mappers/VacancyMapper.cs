@@ -1,10 +1,11 @@
-﻿using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
+﻿using SFA.DAS.RecruitJobs.Domain;
+using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
 
 namespace SFA.DAS.RecruitJobs.Api.Models.Mappers;
 
 public class VacancyMapper
 {
-    public static PutVacancyRequestData ToInnerDto(Domain.Vacancy.Vacancy vacancy)
+    public static PutVacancyRequestData ToInnerDto(Vacancy vacancy)
     {
         return new PutVacancyRequestData
         {
