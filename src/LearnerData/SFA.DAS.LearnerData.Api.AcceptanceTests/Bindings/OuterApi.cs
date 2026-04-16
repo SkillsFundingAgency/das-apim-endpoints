@@ -40,7 +40,8 @@ public class OuterApi
                 {"CollectionCalendarApiConfiguration:url", _context?.CollectionCalendarApi?.BaseAddress + "/"},
                 {"CoursesApiConfiguration:url", _context?.CoursesApi?.BaseAddress + "/"},
                 {"AzureAD:tenant", ""},
-                {"AzureAD:identifier", ""}
+                {"AzureAD:identifier", ""},
+                {"PaymentsConfiguration:PaymentsEndpoint", "stub"}
             };
 
 

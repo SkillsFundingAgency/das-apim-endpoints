@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using SFA.DAS.Vacancies.InnerApi.Responses;
 
 namespace SFA.DAS.Vacancies.Api.Models
 {
@@ -33,65 +34,65 @@ namespace SFA.DAS.Vacancies.Api.Models
         public string ThingsToConsider { get; set; }
         public string CompanyBenefitsInformation { get; set; }
 
-        public static implicit operator GetVacancyResponseV2(GetVacancyQueryResult source)
+        public static implicit operator GetVacancyResponseV2(GetVacancyApiResponse source)
         {
-            if (source.Vacancy == null)
+            if (source == null)
             {
                 return null;
             }
 
             var isRecruitNationally = string.Equals(
-                source.Vacancy.VacancyLocationType,
+                source.VacancyLocationType,
                 "National",
                 StringComparison.CurrentCultureIgnoreCase);
 
             var addresses = new List<GetVacancyAddressItem>();
-            if (source.Vacancy.Address != null)
+            if (source.Address != null)
             {
-                addresses.Add(GetVacancyAddressItem.From(source.Vacancy.Address));
+                addresses.Add(GetVacancyAddressItem.From(source.Address));
             }
-            if (source.Vacancy.OtherAddresses != null && source.Vacancy.OtherAddresses.Any())
+            if (source.OtherAddresses != null && source.OtherAddresses.Any())
             {
-                addresses.AddRange(source.Vacancy.OtherAddresses.Select(GetVacancyAddressItem.From));
+                addresses.AddRange(source.OtherAddresses.Select(GetVacancyAddressItem.From));
             }
 
             return new GetVacancyResponseV2
             {
-                AdditionalTrainingDescription = source.Vacancy.AdditionalTrainingDescription,
+                AdditionalTrainingDescription = source.AdditionalTrainingDescription,
                 Addresses = addresses,
-                ApprenticeshipLevel = source.Vacancy.ApprenticeshipLevel,
-                ApplicationUrl = source.Vacancy.ApplicationUrl,
-                ClosingDate = source.Vacancy.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
-                CompanyBenefitsInformation = source.Vacancy.CompanyBenefitsInformation,
-                Course = source.Vacancy,
-                Description = source.Vacancy.Description,
-                Distance = source.Vacancy.Distance,
-                EmployerContactEmail = source.Vacancy.EmployerContactEmail,
-                EmployerContactName = source.Vacancy.EmployerContactName,
-                EmployerContactPhone = source.Vacancy.EmployerContactPhone,
-                EmployerDescription = source.Vacancy.EmployerDescription,
-                EmployerName = source.Vacancy.IsEmployerAnonymous ? source.Vacancy.AnonymousEmployerName : source.Vacancy.EmployerName,
-                EmployerWebsiteUrl = source.Vacancy.EmployerWebsiteUrl,
-                ExpectedDuration = source.Vacancy.ExpectedDuration,
-                FullDescription = source.Vacancy.LongDescription,
-                HoursPerWeek = source.Vacancy.HoursPerWeek,
-                IsDisabilityConfident = source.Vacancy.IsDisabilityConfident,
+                ApprenticeshipLevel = source.ApprenticeshipLevel,
+                ApplicationUrl = source.ApplicationUrl,
+                ClosingDate = source.ClosingDate.AddDays(1).Subtract(TimeSpan.FromSeconds(1)),
+                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
+                Course = source,
+                Description = source.Description,
+                Distance = source.Distance,
+                EmployerContactEmail = source.EmployerContactEmail,
+                EmployerContactName = source.EmployerContactName,
+                EmployerContactPhone = source.EmployerContactPhone,
+                EmployerDescription = source.EmployerDescription,
+                EmployerName = source.IsEmployerAnonymous ? source.AnonymousEmployerName : source.EmployerName,
+                EmployerWebsiteUrl = source.EmployerWebsiteUrl,
+                ExpectedDuration = source.ExpectedDuration,
+                FullDescription = source.LongDescription,
+                HoursPerWeek = source.HoursPerWeek,
+                IsDisabilityConfident = source.IsDisabilityConfident,
                 IsNationalVacancy = isRecruitNationally,
-                IsNationalVacancyDetails = isRecruitNationally ? source.Vacancy.EmploymentLocationInformation : string.Empty,
-                NumberOfPositions = source.Vacancy.NumberOfPositions,
-                OutcomeDescription = source.Vacancy.OutcomeDescription,
-                PostedDate = source.Vacancy.PostedDate,
-                ProviderName = source.Vacancy.ProviderName,
-                Qualifications = source.Vacancy.Qualifications.Select(c=>(GetVacancyQualification)c).ToList(),
-                Skills = source.Vacancy.Skills,
-                StartDate = source.Vacancy.StartDate,
-                ThingsToConsider = source.Vacancy.ThingsToConsider,
-                Title = source.Vacancy.Title,
-                TrainingDescription = source.Vacancy.TrainingDescription,
-                Ukprn = int.Parse(source.Vacancy.Ukprn),
-                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Raa) ? source.Vacancy.VacancyReference.TrimVacancyReference() : source.Vacancy.VacancyReference,
-                VacancyUrl = source.Vacancy.VacancyUrl,
-                Wage = source.Vacancy,
+                IsNationalVacancyDetails = isRecruitNationally ? source.EmploymentLocationInformation : string.Empty,
+                NumberOfPositions = source.NumberOfPositions,
+                OutcomeDescription = source.OutcomeDescription,
+                PostedDate = source.PostedDate,
+                ProviderName = source.ProviderName,
+                Qualifications = source.Qualifications.Select(c=>(GetVacancyQualification)c).ToList(),
+                Skills = source.Skills,
+                StartDate = source.StartDate,
+                ThingsToConsider = source.ThingsToConsider,
+                Title = source.Title,
+                TrainingDescription = source.TrainingDescription,
+                Ukprn = int.Parse(source.Ukprn),
+                VacancyReference = source.VacancySource.Equals(DataSource.Raa) ? source.VacancyReference.TrimVacancyReference() : source.VacancyReference,
+                VacancyUrl = source.VacancyUrl,
+                Wage = source,
             };
         }
     }

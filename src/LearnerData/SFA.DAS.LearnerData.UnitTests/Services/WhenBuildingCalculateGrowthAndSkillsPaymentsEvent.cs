@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Services;
@@ -87,17 +87,17 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Assert
         result.EarningsId.Should().Be(earningsResponse.EarningProfileVersion);
         result.UKPRN.Should().Be(ukprn);
-        result.Learner.LearnerKey.Should().Be(learningResponse.LearningKey);
+        result.Learner.LearnerKey.Should().Be(learningResponse.LearnerKey);
         result.Learner.ULN.Should().Be(long.Parse(learningResponse.Learner.Uln));
         result.Learner.Reference.Should().Be(episode.LearnerRef);
         result.Training.CourseType.Should().Be(Payments.EarningEvents.Messages.External.CourseType.ShortCourse);
+        result.Training.LearningKey.Should().Be(learningResponse.LearningKey);
         result.Training.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
         result.Training.CourseCode.Should().Be(episode.CourseCode);
         result.Training.CourseReference.Should().Be(episode.CourseCode);
         result.Training.AgeAtStartOfTraining.Should().Be((byte)episode.AgeAtStart);
         result.Training.StartDate.Should().Be(episode.StartDate);
         result.Training.PlannedEndDate.Should().Be(episode.PlannedEndDate);
-
     }
 
     [TestCase(null, null, null, TestName = "ActualEndDate - No Actual End Date")]
@@ -170,6 +170,29 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
     }
 
+    [TestCase("Levy", EmployerType.Levy, TestName = "EmployerType - Levy")]
+    [TestCase("NonLevy", EmployerType.NonLevy, TestName = "EmployerType - NonLevy")]
+    public async Task Then_EmployerTypeCorrectlySet(string valueFromLearning, EmployerType expectedEmployerType)
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
+
+        episode.EmployerType = valueFromLearning;
+
+        var earningsResponse = GetEarningsResponse();
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.SelectMany(x=>x.PricePeriods).SelectMany(x=>x.Periods).Should().OnlyContain(p => p.Employer.EmployerType == expectedEmployerType);
+
+    }
+
+
     [Test]
     public async Task When_EarningsOverSingleYear_ThenCorrectlySet()
     {
@@ -223,13 +246,15 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
             x.DeliveryPeriod == 1 &&
             x.EarningType == EarningType.Milestone1 &&
             x.Amount == 700m &&
+            x.LearningId == episode.ApprovalsApprenticeshipId &&
             x.Employer.AccountId == episode.EmployerAccountId &&
             x.Employer.FundingAccountId == episode.EmployerAccountId);
 
-        pricePeriod.Periods.Should().ContainSingle(x => 
-            x.DeliveryPeriod == 2 && 
-            x.EarningType == EarningType.Completion && 
+        pricePeriod.Periods.Should().ContainSingle(x =>
+            x.DeliveryPeriod == 2 &&
+            x.EarningType == EarningType.Completion &&
             x.Amount == 300m &&
+            x.LearningId == episode.ApprovalsApprenticeshipId &&
             x.Employer.AccountId == episode.EmployerAccountId &&
             x.Employer.FundingAccountId == episode.EmployerAccountId);
 
@@ -386,6 +411,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
                 .With(x => x.AgeAtStart, 20)
                 .With(x => x.StartDate, new DateTime(2025, 7, 1))
                 .With(x => x.PlannedEndDate, new DateTime(2025, 9, 20))
+                .With(x => x.EmployerType, EmployerType.Levy.ToString())
                 .Create()
         };
 
