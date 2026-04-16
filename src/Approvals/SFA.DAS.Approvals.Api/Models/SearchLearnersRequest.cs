@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using SFA.DAS.Approvals.Types;
+using SFA.DAS.SharedOuterApi.Common;
 
 namespace SFA.DAS.Approvals.Api.Models;
 

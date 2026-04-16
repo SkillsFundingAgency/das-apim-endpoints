@@ -117,7 +117,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
         private readonly GetPriceEpisodesResponse _priceEpisodesResponse;
         private readonly ProviderStandardsData _providerStandardsData;
         private readonly Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> _apiClient;
-        private readonly Mock<IProviderStandardsService> _providerStandardsService;
+        private readonly Mock<IProviderCoursesOrStandardsService> _providerStandardsService;
         private GetReviewApprenticeshipUpdatesQueryHandler _handler;
         private readonly Fixture _fixture;
         private GetReviewApprenticeshipUpdatesQueryResult _result;
@@ -128,7 +128,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
             _fixture = new Fixture();
 
             _apiClient = new Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>>();
-            _providerStandardsService = new Mock<IProviderStandardsService>();
+            _providerStandardsService = new Mock<IProviderCoursesOrStandardsService>();
             _query = new Mock<GetReviewApprenticeshipUpdatesQuery>();
 
             _providerStandardsData = _fixture.Build<ProviderStandardsData>()
@@ -166,7 +166,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Queries
                 .ReturnsAsync(new ApiResponse<GetPriceEpisodesResponse>(_priceEpisodesResponse,
                     HttpStatusCode.OK, string.Empty));
 
-            _providerStandardsService.Setup(x => x.GetStandardsData(_apprenticeship.ProviderId))
+            _providerStandardsService.Setup(x => x.GetCoursesData(_apprenticeship.ProviderId))
                 .ReturnsAsync(_providerStandardsData);
 
         }

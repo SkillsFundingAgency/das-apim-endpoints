@@ -1,13 +1,13 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Earnings;
-using SFA.DAS.LearnerData.Responses.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using Fm99ShortCourseLearning = SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Learning;
 
 namespace SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 
@@ -38,7 +38,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         return BuildResponse(request, learnings, earningsByKey, totalLearners);
     }
 
-    private async Task<(List<Learning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
+    private async Task<(List<Fm99ShortCourseLearning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
     {
         var innerRequest = new GetShortCourseLearningsForEarnings
         {
@@ -59,12 +59,12 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         return (paged.Items, paged.TotalItems);
     }
 
-    private async Task<Dictionary<Guid, GetShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Learning> learnings)
+    private async Task<Dictionary<Guid, GetFm99ShortCourseDataResponse>> GetEarningsByKey(GetShortCourseEarningsQuery request, List<Fm99ShortCourseLearning> learnings)
     {
         var tasks = learnings.Select(async learning =>
         {
-            var response = await _earningsApiClient.GetWithResponseCode<GetShortCourseDataResponse>(
-                new GetShortCourseDataRequest(request.Ukprn, learning.LearningKey));
+            var response = await _earningsApiClient.GetWithResponseCode<GetFm99ShortCourseDataResponse>(
+                new GetFm99ShortCourseDataRequest(request.Ukprn, learning.LearningKey));
 
             if (!response.StatusCode.IsSuccessStatusCode())
             {
@@ -82,8 +82,8 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
     private static GetShortCourseEarningsQueryResult BuildResponse(
         GetShortCourseEarningsQuery query,
-        List<Learning> learnings,
-        Dictionary<Guid, GetShortCourseDataResponse> earningsByKey,
+        List<Fm99ShortCourseLearning> learnings,
+        Dictionary<Guid, GetFm99ShortCourseDataResponse> earningsByKey,
         int totalItems)
     {
         var learnerItems = learnings.Select(learning =>
@@ -93,7 +93,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
             return new ShortCourseEarningsLearner
             {
                 LearningKey = learning.LearningKey.ToString(),
-                LearnerRef = "",
+                LearnerRef = learning.Episodes.FirstOrDefault()?.LearnerRef ?? "",
                 Courses = learning.Episodes.Select(episode => new ShortCourseEarningsCourse
                 {
                     AimSequenceNumber = 1,
