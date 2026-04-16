@@ -2,7 +2,7 @@ using AutoFixture;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
@@ -101,8 +101,8 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
 
         result.OnProgramme.Milestones.Should().BeEquivalentTo(new[]
         {
-            SharedOuterApi.InnerApi.Requests.Earnings.Milestone.ThirtyPercentLearningComplete,
-            SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete
+            SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.ThirtyPercentLearningComplete,
+            SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete
         });
     }
 
@@ -126,7 +126,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
 
         // Assert
-        result.OnProgramme.Milestones.Should().Contain(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().Contain(SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
     }
 
     [Test]
@@ -150,7 +150,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
 
         // Assert
         result.OnProgramme.Milestones.Should().ContainSingle(m =>
-            m == SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
+            m == SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
     }
 
     [Test]
@@ -173,6 +173,6 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
 
         // Assert
-        result.OnProgramme.Milestones.Should().NotContain(SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().NotContain(SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
     }
 }

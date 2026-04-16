@@ -202,6 +202,68 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
             model.Should().BeEquivalentTo((GetVacanciesListResponseV2)mediatorResult);
         }
         [Test, MoqAutoData]
+        public async Task Then_Returns_Details_Response_When_IncludeDetails_Is_True_And_PageSize_Is_100_Or_Less(
+            string accountId,
+            SearchVacancyRequestV2 request,
+            int ukprn,
+            GetVacanciesQueryResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] VacancyController controller)
+        {
+            request.IncludeDetails = true;
+            request.PageSize = 25;
+            var accountIdentifier = $"Employer-{accountId}-product";
+            foreach (var vacancy in mediatorResult.Vacancies)
+            {
+                vacancy.Ukprn = ukprn.ToString();
+            }
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetVacanciesQuery>(c => c.IncludeDetails == true && c.PageSize == 25),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetVacancies(accountIdentifier, request) as ObjectResult;
+
+            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetVacanciesDetailsListResponseV2;
+            Assert.That(model, Is.Not.Null);
+            model.Should().BeEquivalentTo((GetVacanciesDetailsListResponseV2)mediatorResult);
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_Returns_List_Response_When_IncludeDetails_Is_False(
+            string accountId,
+            SearchVacancyRequestV2 request,
+            int ukprn,
+            GetVacanciesQueryResult mediatorResult,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Greedy] VacancyController controller)
+        {
+            request.IncludeDetails = false;
+            request.PageSize = 25;
+            var accountIdentifier = $"Employer-{accountId}-product";
+            foreach (var vacancy in mediatorResult.Vacancies)
+            {
+                vacancy.Ukprn = ukprn.ToString();
+            }
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetVacanciesQuery>(c => c.IncludeDetails == false && c.PageSize == 25),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mediatorResult);
+
+            var controllerResult = await controller.GetVacancies(accountIdentifier, request) as ObjectResult;
+
+            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            var model = controllerResult.Value as GetVacanciesListResponseV2;
+            Assert.That(model, Is.Not.Null);
+            model.Should().BeEquivalentTo((GetVacanciesListResponseV2)mediatorResult);
+        }
+
+        [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             string accountId,
             SearchVacancyRequestV2 request,
