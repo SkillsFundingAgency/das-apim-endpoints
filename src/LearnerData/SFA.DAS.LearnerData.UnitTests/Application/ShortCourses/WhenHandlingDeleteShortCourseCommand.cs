@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.LearnerData.Configuration;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -26,6 +27,7 @@ public class WhenHandlingDeleteShortCourseCommand
     private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
     private Mock<IMessageSession> _messageSession;
     private DeleteShortCourseCommandHandler _sut;
+    private PaymentsConfiguration _configuration;
 #pragma warning restore CS8618
 
     public WhenHandlingDeleteShortCourseCommand()
@@ -39,6 +41,7 @@ public class WhenHandlingDeleteShortCourseCommand
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _logger = new Mock<ILogger<DeleteShortCourseCommandHandler>>();
+        _configuration = new PaymentsConfiguration { PaymentsEndpoint = "destination" };
 
         _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
         _messageSession = new Mock<IMessageSession>();
@@ -47,7 +50,7 @@ public class WhenHandlingDeleteShortCourseCommand
             .ReturnsAsync(_fixture.Create<CalculateGrowthAndSkillsPayments>());
 
         _sut = new DeleteShortCourseCommandHandler(
-            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object, _calculateGrowthAndSkillsPaymentsEventBuilder.Object, _messageSession.Object);
+            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object, _calculateGrowthAndSkillsPaymentsEventBuilder.Object, _messageSession.Object, _configuration);
     }
 
     [Test]

@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
+using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Net;
 
@@ -18,8 +19,10 @@ public class DeleteShortCourseCommandHandler(
     ILogger<DeleteShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
-        IMessageSession messageSession
+    ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
+    IMessageSession messageSession,
+    PaymentsConfiguration paymentsConfiguration
+
 ) : IRequestHandler<DeleteShortCourseCommand>
 {
     public async Task Handle(DeleteShortCourseCommand command, CancellationToken cancellationToken)
@@ -59,12 +62,19 @@ public class DeleteShortCourseCommandHandler(
 
     private async Task PublishEvent(long ukprn, DeleteShortCourseResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
     {
-        logger.LogInformation("Publishing CalculateGrowthAndSkillsPayments event for LearningKey: {LearningKey}", learningResponse.LearningKey);
+        logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
 
-        var eventMessage = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
+        var command = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
 
-        await messageSession.Publish(eventMessage);
+        var options = new SendOptions();
+        options.DoNotEnforceBestPractices();
+        options.SetDestination(paymentsConfiguration.PaymentsEndpoint);
+        await messageSession.Send(command, options);
 
-        logger.LogInformation("CalculateGrowthAndSkillsPayments event published for LearningKey: {LearningKey}", learningResponse.LearningKey);
+        logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
+
+        await messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
+
+        logger.LogInformation("GrowthAndSkillsPaymentsRecalculatedEvent published for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 }
