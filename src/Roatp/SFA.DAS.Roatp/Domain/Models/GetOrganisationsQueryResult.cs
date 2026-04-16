@@ -4,5 +4,5 @@ namespace SFA.DAS.Roatp.Domain.Models;
 
 public class GetOrganisationsQueryResult
 {
-    public List<OrganisationModel> Organisations { get; set; }
+    public List<OrganisationModel> Organisations { get; set; } = [];
 }
