@@ -125,7 +125,8 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
                 request.StartYear,
                 request.MaxStartDate,
                 string.Join(",", request.ExcludeUlns),
-                request.CourseCode
+                request.CourseCode,
+                request.LearningType
             ));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))
