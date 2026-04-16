@@ -7,13 +7,13 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
+using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
-public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient, ICachedLocationLookupService _cachedLocationLookupService, ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IRequestHandler<GetCourseProvidersQuery, GetCourseProvidersResponse>
+public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient, ICachedLocationLookupService _cachedLocationLookupService, ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient) : IRequestHandler<GetCourseProvidersQuery, GetCourseProvidersResponse>
 {
     public async Task<GetCourseProvidersResponse> Handle(GetCourseProvidersQuery request, CancellationToken cancellationToken)
     {
@@ -25,7 +25,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.Id));
+                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.LarsCode));
 
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 
@@ -33,7 +33,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
                 {
                     PageSize = 10,
                     Page = 1,
-                    LarsCode = request.Id,
+                    LarsCode = request.LarsCode,
                     Providers = [],
                     QarPeriod = string.Empty,
                     ReviewPeriod = string.Empty,
@@ -48,7 +48,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
             await _roatpCourseManagementApiClient.GetWithResponseCode<GetCourseProvidersResponse>(
                 new GetProvidersByCourseIdRequest()
                 {
-                    CourseId = request.Id,
+                    CourseId = request.LarsCode,
                     OrderBy = request.OrderBy,
                     Distance = request.Distance,
                     Latitude = locationItem?.Latitude,
@@ -68,7 +68,6 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
             return null;
 
         return response.StatusCode.IsSuccessStatusCode()
-                ? response.Body
-                : new GetCourseProvidersResponse();
+            ? response.Body : new GetCourseProvidersResponse();
     }
 }

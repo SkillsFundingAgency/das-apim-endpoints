@@ -30,6 +30,6 @@ public class WhenDeletingShortlistItem
         //Assert
         roatpApi.Verify(x =>
             x.DeleteWithResponseCode<DeleteShortlistItemCommandResult>(It.Is<DeleteShortlistItemRequest>(c =>
-                c.DeleteUrl.Equals($"api/shortlists/{command.ShortlistId}")), true), Times.Once);
+                c.DeleteUrl.Equals($"shortlists/{command.ShortlistId}")), true), Times.Once);
     }
 }

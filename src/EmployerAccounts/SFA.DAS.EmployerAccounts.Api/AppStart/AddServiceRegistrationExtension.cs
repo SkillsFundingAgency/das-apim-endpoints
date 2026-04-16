@@ -25,6 +25,7 @@ namespace SFA.DAS.EmployerAccounts.Api.AppStart
             services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
             services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
             services.AddTransient<IReservationApiClient<ReservationApiConfiguration>, ReservationApiClient>();
+            services.AddTransient<IRecruitApiClient<RecruitApiV2Configuration>, RecruitApiV2Client>();
             services.AddTransient<IOrganisationApiStrategyFactory, OrganisationApiStrategyFactory>();
             services
                 .AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>,

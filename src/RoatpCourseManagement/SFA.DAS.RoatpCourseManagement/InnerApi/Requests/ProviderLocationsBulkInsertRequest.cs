@@ -5,7 +5,7 @@ namespace SFA.DAS.Roatp.CourseManagement.InnerApi.Requests
     public class ProviderLocationsBulkInsertRequest : IPostApiRequest
     {
         public int Ukprn { get; }
-        public int LarsCode { get; }
+        public string LarsCode { get; }
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
         public string PostUrl => $"providers/{Ukprn}/locations/bulk-insert-regions";

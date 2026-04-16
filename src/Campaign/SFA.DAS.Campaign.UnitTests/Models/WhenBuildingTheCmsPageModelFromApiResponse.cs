@@ -607,6 +607,49 @@ namespace SFA.DAS.Campaign.UnitTests.Models
         }
 
         [Test, RecursiveMoqAutoData]
+        public void Then_Top_Level_Embedded_Entry_Inline_Table_Is_Added_To_Content_Items(CmsContent source, string linkedContentId, List<List<string>> tableData, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items.FirstOrDefault().Fields.Content.Content = new List<SubContentItems>
+            {
+                new SubContentItems
+                {
+                    NodeType = "embedded-entry-inline",
+                    Content = new List<ContentDefinition>(),
+                    Data = new PurpleData
+                    {
+                        Target = new LandingPage
+                        {
+                            Sys = new LandingPageSys
+                            {
+                                Id = linkedContentId
+                            }
+                        }
+                    }
+                }
+            };
+            source.Includes.Entry = new List<Entry>
+            {
+                new Entry
+                {
+                    Sys = new AssetSys { Id = linkedContentId },
+                    Fields = new EntryFields
+                    {
+                        Table = new Table { TableData = tableData }
+                    }
+                }
+            };
+
+            //Act
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Items.Count.Should().Be(1);
+            actual.MainContent.Items[0].Type.Should().Be("embedded-entry-inline");
+            actual.MainContent.Items[0].TableValue.Should().BeEquivalentTo(tableData);
+        }
+
+        [Test, RecursiveMoqAutoData]
         public void Then_Any_Tabbed_Content_Is_Added_To_The_Content_Items(CmsContent source, EntryFields linkedPage, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
             source.Items.FirstOrDefault().Fields.TabbedContents[0].Sys.Id = "321EDF";

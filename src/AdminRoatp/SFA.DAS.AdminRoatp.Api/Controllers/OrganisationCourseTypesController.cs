@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.AdminRoatp.Application.Commands.UpdateOrganisationCourseTypes;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
-using System.Net;
 
 namespace SFA.DAS.AdminRoatp.Api.Controllers;
+
 [Route("organisations")]
 [ApiController]
 public class OrganisationCourseTypesController(IMediator mediator, ILogger<OrganisationCourseTypesController> _logger) : ControllerBase

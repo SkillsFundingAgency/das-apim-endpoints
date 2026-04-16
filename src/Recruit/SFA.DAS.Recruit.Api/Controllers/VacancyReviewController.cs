@@ -2,16 +2,49 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
-using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
+using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReviewsByVacancyReference;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using SFA.DAS.Recruit.Api.Models.VacancyReviews;
+using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReview;
+using SFA.DAS.Recruit.Application.VacancyReview.Queries.GetVacancyReviewsByFilter;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 
 [ApiController]
-public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccountsController> logger) : ControllerBase
+public class VacancyReviewController(
+    IMediator mediator,
+    ILogger<VacancyReviewController> logger) : ControllerBase
 {
+
+    [HttpGet]
+    [Route("[controller]s")]
+    public async Task<IActionResult> Get(
+        [FromQuery] List<string>? reviewStatus,
+        [FromQuery] DateTime? expiredAssignationDateTime)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetVacancyReviewsByFilterQuery
+            {
+                Status = reviewStatus,
+                ExpiredAssignationDateTime = expiredAssignationDateTime
+            });
+
+            var dtoList = result.VacancyReviews.Select(x => (VacancyReviewDto)x).ToList();
+            return Ok(new GetVacancyReviewsApiResponse { VacancyReviews = dtoList });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while getting vacancy reviews by filter");
+            return new StatusCodeResult(500);
+        }
+    }
+
     [HttpGet]
     [Route("[controller]s/{id}")]
     public async Task<IActionResult> GetById([FromRoute] Guid id)
@@ -33,9 +66,40 @@ public class VacancyReviewController(IMediator mediator, ILogger<EmployerAccount
         }
     }
 
+    [HttpGet]
+    [Route("vacancies/{vacancyReference:long}/vacancyReviews")]
+    public async Task<IActionResult> GetByVacancyReference(
+        [FromRoute] long vacancyReference,
+        [FromQuery] string? status,
+        [FromQuery] List<string>? manualOutcome,
+        [FromQuery] bool includeNoStatus)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetVacancyReviewsByVacancyReferenceQuery
+            {
+                VacancyReference = vacancyReference,
+                Status = status,
+                ManualOutcome = manualOutcome,
+                IncludeNoStatus = includeNoStatus
+            });
+
+            var dtoList = result.VacancyReviews.Select(x => (VacancyReviewDto)x).ToList();
+            return Ok(new GetVacancyReviewsApiResponse { VacancyReviews = dtoList });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error occured while getting vacancy reviews by vacancy reference");
+            return new StatusCodeResult(500);
+        }
+    }
+
     [HttpPost]
-    [Route("[controller]s/{id}")]
-    public async Task<IActionResult> UpsertVacancyReview([FromRoute] Guid id, [FromBody] VacancyReviewDto vacancyReview)
+    [Route("[controller]s/{id:guid}")]
+    public async Task<IActionResult> UpsertVacancyReview(
+        [FromRoute] Guid id,
+        [FromBody] VacancyReviewDto vacancyReview,
+        [FromServices] IRecruitArtificialIntelligenceService aiService)
     {
         try
         {

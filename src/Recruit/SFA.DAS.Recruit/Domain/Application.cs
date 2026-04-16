@@ -1,7 +1,10 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using SFA.DAS.Recruit.Enums;
+using SFA.DAS.SharedOuterApi.Models;
+using JsonException = System.Text.Json.JsonException;
 
 namespace SFA.DAS.Recruit.Domain
 {
@@ -40,6 +43,21 @@ namespace SFA.DAS.Recruit.Domain
         public bool IsSelected { get; init; }
         public short AddressOrder { get; init; }
         public string? FullAddress { get; init; }
+
+        public Address? Address
+        {
+            get
+            {
+                try
+                {
+                    return FullAddress != null ? JsonConvert.DeserializeObject<Address>(FullAddress) : null;
+                }
+                catch (JsonException)
+                {
+                    return null;
+                }
+            }
+        }
     }
 
     public record AdditionalQuestion

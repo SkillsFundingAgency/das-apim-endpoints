@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.LearnerData.Requests;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+[ExcludeFromCodeCoverage]
 public class StubUpdateLearnerRequest
 {
     [Required]
@@ -11,35 +13,33 @@ public class StubUpdateLearnerRequest
     public StubLearner Learner { get; set; }
     [Required]
     public StubDelivery Delivery { get; set; }
-
 }
 
+[ExcludeFromCodeCoverage]
 public class StubLearner
 {
     [Required]
-    public string Uln { get; set; }
+    public long Uln { get; set; }
     [Required]
     public string LearnerRef { get; set; }
-    [Required]
-    public string Firstname { get; set; }
-    [Required]
-    public string Lastname { get; set; }
-    [Required]
-    public DateTime? Dob { get; set; }
-    [Required]
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public DateTime Dob { get; set; }
     public string Email { get; set; }
     [Required]
     public bool? HasEhcp { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubDelivery
 {
     [Required]
-    public StubOnProgramme OnProgramme { get; set; }
+    public List<StubOnProgramme> OnProgramme { get; set; }
     [Required]
     public List<StubEnglishAndMaths> EnglishAndMaths { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubOnProgramme
 {
     [Required]
@@ -51,10 +51,7 @@ public class StubOnProgramme
     public DateTime? StartDate { get; set; }
     [Required]
     public DateTime? ExpectedEndDate { get; set; }
-    [Required]
     public int? OffTheJobHours { get; set; }
-    [Required]
-    public int? PercentageOfTrainingLeft { get; set; }
     [Required]
     public List<StubCost> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
@@ -63,8 +60,16 @@ public class StubOnProgramme
     public List<StubLearningSupport> LearningSupport { get; set; }
     [Required]
     public bool? IsFlexiJob { get; set; }
+    public DateTime? PauseDate { get; set; }
+    [Required]
+    public int? AimSequenceNumber { get; set; }
+    [Required]
+    public string LearnAimRef { get; set; }
+    public DateTime? ActualEndDate { get; set; }
+    public DateTime? AchievementDate { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubCare
 {
     [Required]
@@ -73,14 +78,15 @@ public class StubCare
     public bool? EmployerConsent { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubCost
 {
-    public int TrainingPrice { get; set; }
-    public int EpaoPrice { get; set; }
-    [Required]
+    public int? TrainingPrice { get; set; }
+    public int? EpaoPrice { get; set; }
     public DateTime? FromDate { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubLearningSupport
 {
     [Required]
@@ -89,6 +95,7 @@ public class StubLearningSupport
     public DateTime? EndDate { get; set; }
 }
 
+[ExcludeFromCodeCoverage]
 public class StubEnglishAndMaths
 {
     [Required]
@@ -97,12 +104,19 @@ public class StubEnglishAndMaths
     public DateTime? EndDate { get; set; }
     [Required]
     public int? CourseCode { get; set; }
-    [Required]
-    public int? PriorLearningPercentage { get; set; }
+    public int? PriorLearningAdjustment { get; set; }
+    public int? OtherFundingAdjustment { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
 
     public List<StubLearningSupport> LearningSupport { get; set; }
+    public DateTime? PauseDate { get; set; }
+    [Required]
+    public int? AimSequenceNumber { get; set; }
+    [Required]
+    public string LearnAimRef { get; set; }
+    public DateTime? ActualEndDate { get; set; }
+    public DateTime? AchievementDate { get; set; }
 }
 
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

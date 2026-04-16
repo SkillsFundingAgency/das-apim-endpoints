@@ -1,14 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.ProviderUsers.Commands;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.ProviderUsers.Commands
 {

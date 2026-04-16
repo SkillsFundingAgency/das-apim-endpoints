@@ -1,12 +1,11 @@
-﻿using MediatR;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using System.Threading;
-using System.Threading.Tasks;
-
 using User = SFA.DAS.DigitalCertificates.InnerApi.Responses.User;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUser
@@ -24,7 +23,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUser
         {
             ApiResponse<User> userRequest = await _digitalCertificatesApiClient.
                 GetWithResponseCode<User>(new GetUserRequest(request.GovUkIdentifier));
-            
+
             if (userRequest?.StatusCode != System.Net.HttpStatusCode.NotFound)
             {
                 userRequest.EnsureSuccessStatusCode();

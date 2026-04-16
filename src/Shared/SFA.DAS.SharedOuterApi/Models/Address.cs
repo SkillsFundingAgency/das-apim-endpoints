@@ -14,8 +14,9 @@ namespace SFA.DAS.SharedOuterApi.Models
         public string AddressLine4 { get; set; }
         [JsonPropertyName("postcode")]
         public string Postcode { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
+
+        public double? Latitude { get; set; } = 0.00;
+        public double? Longitude { get; set; } = 0.00;
         public string? Country { get; set; }
     }
 }

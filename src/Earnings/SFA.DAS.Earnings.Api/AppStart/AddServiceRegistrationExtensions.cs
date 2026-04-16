@@ -1,12 +1,10 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;
+﻿using SFA.DAS.Api.Common.Infrastructure;
+using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using System.Diagnostics.CodeAnalysis;
-using MediatR;
-using SFA.DAS.Api.Common.Infrastructure;
-using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.Earnings.Application.Earnings;
 
 namespace SFA.DAS.Earnings.Api.AppStart;
 
@@ -21,6 +19,6 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<IEarningsApiClient<EarningsApiConfiguration>, EarningsApiClient>();
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
-        services.AddTransient<IRequestHandler<GetAllEarningsQuery, GetAllEarningsQueryResult>, GetAllEarningsQueryHandler>();
+        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
     }
 }

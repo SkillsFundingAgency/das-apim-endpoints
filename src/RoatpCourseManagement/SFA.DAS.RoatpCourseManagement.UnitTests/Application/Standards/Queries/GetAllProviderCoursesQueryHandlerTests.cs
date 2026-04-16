@@ -26,7 +26,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
             GetAllProviderCoursesQuery query,
             GetAllProviderCoursesQueryHandler sut)
         {
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(courses);
+            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(courses);
             var result = await sut.Handle(query, new CancellationToken());
 
             result.Should().BeEquivalentTo(courses, options =>
@@ -48,7 +48,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
             GetAllProviderCoursesQueryHandler sut)
         {
             var courses = new List<GetAllProviderCoursesResponse>();
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync(courses);
+            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(courses);
             var result = await sut.Handle(query, new CancellationToken());
 
             result.Should().BeEmpty();
@@ -60,7 +60,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
             GetAllProviderCoursesQuery query,
             GetAllProviderCoursesQueryHandler sut)
         {
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ReturnsAsync((List<GetAllProviderCoursesResponse>)null);
+            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync((List<GetAllProviderCoursesResponse>)null);
             var result = await sut.Handle(query, new CancellationToken());
 
             result.Should().BeNull();
@@ -72,7 +72,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
             GetAllProviderCoursesQuery query,
             GetAllProviderCoursesQueryHandler sut)
         {
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllCoursesRequest>())).ThrowsAsync(new Exception());
+            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ThrowsAsync(new Exception());
             Assert.ThrowsAsync<Exception>(() => sut.Handle(query, new CancellationToken()));
         }
     }

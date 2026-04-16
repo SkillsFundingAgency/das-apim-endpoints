@@ -11,7 +11,7 @@ public class WhenConvertingFromGetStandardsListItem
     public void Then_Converts_StandardsListItem_To_Standard(GetStandardsListItem source)
     {
         var result = (Standard)source;
-        result.LarsCode.Should().Be(source.LarsCode);
+        result.LarsCode.Should().Be(source.LarsCode.ToString());
         result.Title.Should().Be(source.Title);
     }
 }

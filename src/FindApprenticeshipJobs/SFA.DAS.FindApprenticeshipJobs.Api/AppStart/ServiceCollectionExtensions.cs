@@ -1,6 +1,5 @@
 ﻿using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Services;
@@ -20,6 +19,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
+        services.AddTransient<IRecruitApiClient<RecruitApiV2Configuration>, RecruitApiV2Client>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
         services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         services.AddTransient<ICandidateApiClient<CandidateApiConfiguration>, CandidateApiClient>();
@@ -29,7 +29,8 @@ public static class ServiceCollectionExtensions
         services.AddTransient<ILiveVacancyMapper, LiveVacancyMapper>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>, FindApprenticeshipApiClient>();
-        services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+        services.AddTransient<ICivilServiceJobsApiClient<CivilServiceJobsApiConfiguration>, CivilServiceJobsApiClient>();
+        services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]!));
         return services;
     }
 }

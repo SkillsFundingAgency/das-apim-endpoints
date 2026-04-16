@@ -1,10 +1,5 @@
 ﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.DeliveryModels.Queries;
-using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Approvals.Services;

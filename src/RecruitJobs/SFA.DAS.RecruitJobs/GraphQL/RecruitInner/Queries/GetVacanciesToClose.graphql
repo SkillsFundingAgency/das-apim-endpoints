@@ -1,0 +1,15 @@
+query GetVacanciesToClose($pointInTime: DateTime) {
+    vacancies(
+        where: {
+            deletedDate: { eq: null }
+            status: { eq: LIVE },
+            closingDate: { lt: $pointInTime },
+            closedDate: { eq: null }
+        }
+    )
+    {
+        id
+        vacancyReference
+        closingDate
+    }
+}

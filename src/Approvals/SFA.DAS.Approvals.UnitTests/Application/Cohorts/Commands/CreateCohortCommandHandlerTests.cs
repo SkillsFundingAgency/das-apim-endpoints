@@ -2,11 +2,8 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Cohorts.Commands.CreateCohort;
+using SFA.DAS.Approvals.InnerApi.CoursesApi;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -14,14 +11,13 @@ using SFA.DAS.Approvals.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts.Commands;
 
 [TestFixture]
 public class CreateCohortCommandHandlerTests
 {
-    private const string ApprenticeshipType = "Foundation";
+    private const string LearningType = "Foundation";
     private const int MaximumAge = 25;
 
     [Test, MoqAutoData]
@@ -93,7 +89,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem { ApprenticeshipType = ApprenticeshipType },
+                Course = new GetCourseLookupResponse { LearningType = LearningType },
                 LearnerAgeRules = learnerAgeResponse
             });
 
@@ -173,17 +169,17 @@ public class CreateCohortCommandHandlerTests
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        standardResponse.ApprenticeshipType = LearningType;
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
-            .ThrowsAsync(new Exception($"Learner age rules not found for apprenticeship type {ApprenticeshipType}"));
+            .ThrowsAsync(new Exception($"Learner age rules not found for apprenticeship type {LearningType}"));
 
         // Act
         var act = () => handler.Handle(request, CancellationToken.None);
 
         // Assert
         act.Should().ThrowAsync<Exception>()
-            .WithMessage($"Learner age rules not found for apprenticeship type {ApprenticeshipType}");
+            .WithMessage($"Learner age rules not found for apprenticeship type {LearningType}");
         courseTypeRulesService.Verify(x => x.GetCourseTypeRulesAsync(request.CourseCode), Times.Once);
         commitmentsApiClient.VerifyNoOtherCalls();
     }
@@ -198,12 +194,12 @@ public class CreateCohortCommandHandlerTests
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        standardResponse.ApprenticeshipType = LearningType;
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = standardResponse,
+                Course = new GetCourseLookupResponse { LearningType = LearningType },
                 LearnerAgeRules = new GetLearnerAgeResponse()
             });
 
@@ -233,12 +229,12 @@ public class CreateCohortCommandHandlerTests
         CreateCohortCommandHandler handler)
     {
         // Arrange
-        standardResponse.ApprenticeshipType = ApprenticeshipType;
+        standardResponse.ApprenticeshipType = LearningType;
         courseTypeRulesService
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = standardResponse,
+                Course = new GetCourseLookupResponse { LearningType = LearningType },
                 LearnerAgeRules = getLearnerAgeResponse
             });
 
@@ -275,7 +271,7 @@ public class CreateCohortCommandHandlerTests
             .Setup(x => x.GetCourseTypeRulesAsync(request.CourseCode))
             .ReturnsAsync(new CourseTypeRulesResult
             {
-                Standard = new GetStandardsListItem(),
+                Course = new GetCourseLookupResponse(),
                 LearnerAgeRules = new GetLearnerAgeResponse()
             });
 

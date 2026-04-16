@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.SelectDirectTransferConnection.Queries;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
@@ -12,7 +8,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFinance;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFinance;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.SelectDirectFundingConnection;
 

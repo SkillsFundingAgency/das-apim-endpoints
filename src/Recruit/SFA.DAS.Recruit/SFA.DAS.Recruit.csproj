@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -12,10 +12,13 @@
   <ItemGroup>
     <PackageReference Include="MediatR" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
+    <PackageReference Include="StrawberryShake.Blazor" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\VacancyReview\Queries\" />
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
   </ItemGroup>
 
 </Project>

@@ -51,7 +51,7 @@ public class EarningsApiClient : IEarningsApiClient<EarningsApiConfiguration>
 
     public Task Post<TData>(IPostApiRequest<TData> request)
     {
-        throw new NotImplementedException();
+        return _apiClient.Post<TData>(request);
     }
 
     public async Task Delete(IDeleteApiRequest request)
@@ -94,12 +94,12 @@ public class EarningsApiClient : IEarningsApiClient<EarningsApiConfiguration>
         return await _apiClient.PutWithResponseCode<TResponse>(request);
     }
 
-    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
     {
-        throw new NotImplementedException();
+        return _apiClient.PutWithResponseCode<TData, TResponse>(request);
     }
 
-    public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
     {
         throw new NotImplementedException();
     }

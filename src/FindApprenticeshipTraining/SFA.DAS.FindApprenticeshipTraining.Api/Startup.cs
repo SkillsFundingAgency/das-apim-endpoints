@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -64,7 +65,12 @@ public class Startup
                 {
                     o.Filters.Add(new AuthorizeFilter("default"));
                 }
-            });
+            })
+        .AddJsonOptions(opt =>
+         {
+             opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+         });
+
 
         var configuration = _configuration
             .GetSection("FindApprenticeshipTrainingConfiguration")

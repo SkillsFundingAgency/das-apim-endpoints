@@ -4,17 +4,16 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.SharedOuterApi.Configuration;
 
-namespace SFA.DAS.AparRegister.Api.AppStart
+namespace SFA.DAS.AparRegister.Api.AppStart;
+
+internal static class AddConfigurationOptionsExtension
 {
-    public static class AddConfigurationOptionsExtension
+    public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddOptions();
-            services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-            services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
-        }
+        services.AddOptions();
+        services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
+        services.Configure<RoatpConfiguration>(configuration.GetSection(nameof(RoatpConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpConfiguration>>().Value);
     }
 }

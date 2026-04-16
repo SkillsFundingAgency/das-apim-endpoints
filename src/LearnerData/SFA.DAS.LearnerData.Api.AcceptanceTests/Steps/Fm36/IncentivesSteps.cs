@@ -50,18 +50,26 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(apiResponses.LearningsInnerApiResponse)
+                    .WithBodyAsJson(apiResponses.UnPagedLearningsInnerApiResponse)
             );
+
 
         testContext.EarningsApi.MockServer
             .Given(
                 Request.Create().WithPath($"/{10005077}/fm36/{academicYear}/{deliveryPeriod}")
-                    .UsingGet())
+                    .UsingPost())
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithBodyAsJson(apiResponses.EarningsInnerApiResponse)
             );
+
+        var cancellationToken = new CancellationToken();
+        foreach (var sldData in apiResponses.SldLearnerData)
+        {
+            await testContext.Cache.StoreLearner(sldData, 10005077,  cancellationToken);
+        }
+
 
         var response = await testContext.OuterApiClient.GetAsync($"/learners/providers/10005077/collectionPeriod/{academicYear}/{deliveryPeriod}/fm36Data");
         var contentString = await response.Content.ReadAsStringAsync();

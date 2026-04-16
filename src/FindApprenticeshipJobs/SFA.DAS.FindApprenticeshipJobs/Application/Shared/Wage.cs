@@ -1,14 +1,14 @@
-﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
+﻿using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 
 public class Wage
 {
     public int Duration { get; set; }
-    public string? DurationUnit { get; set; }
+    public DurationUnit? DurationUnit { get; set; }
     public decimal? FixedWageYearlyAmount { get; set; }
     public string? WageAdditionalInformation { get; set; }
-    public string? WageType { get; set; }
+    public WageType? WageType { get; set; }
     public decimal WeeklyHours { get; set; }
     public string? WorkingWeekDescription { get; set; }
     public decimal? ApprenticeMinimumWage { get; set; }

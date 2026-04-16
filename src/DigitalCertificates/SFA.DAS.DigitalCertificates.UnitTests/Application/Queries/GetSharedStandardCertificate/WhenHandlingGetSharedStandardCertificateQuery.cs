@@ -43,7 +43,15 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedSta
             actual.Should().NotBeNull();
             actual.FamilyName.Should().Be(responseBody.LearnerFamilyName);
             actual.GivenNames.Should().Be(responseBody.LearnerGivenNames);
-            // basic mappings
+            actual.CertificateType.Should().Be(responseBody.Type);
+            actual.CertificateReference.Should().Be(responseBody.CertificateReference);
+            actual.CourseName.Should().Be(responseBody.StandardName);
+            actual.CourseOption.Should().Be(responseBody.CourseOption);
+            actual.CourseLevel.Should().Be(responseBody.StandardLevel);
+            actual.DateAwarded.Should().Be(responseBody.AchievementDate);
+            actual.OverallGrade.Should().Be(responseBody.OverallGrade);
+            actual.ProviderName.Should().Be(responseBody.ProviderName);
+            actual.StartDate.Should().Be(responseBody.LearningStartDate);
         }
 
         [Test, MoqAutoData]

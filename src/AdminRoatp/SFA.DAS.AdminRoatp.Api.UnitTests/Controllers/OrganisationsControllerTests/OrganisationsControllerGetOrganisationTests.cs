@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using SFA.DAS.AdminRoatp.Api.Controllers;
 using SFA.DAS.AdminRoatp.Application.Queries.GetOrganisation;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AdminRoatp.Api.UnitTests.Controllers.OrganisationsControllerTests;
@@ -16,7 +15,7 @@ public class OrganisationsControllerGetOrganisationTests
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] OrganisationsController sut,
         GetOrganisationQuery request,
-        GetOrganisationResponse expectedResponse)
+        GetOrganisationQueryResult expectedResponse)
     {
         mediatorMock.Setup(m => m.Send(It.IsAny<GetOrganisationQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
@@ -33,7 +32,7 @@ public class OrganisationsControllerGetOrganisationTests
         [Greedy] OrganisationsController sut,
         GetOrganisationQuery request)
     {
-        GetOrganisationResponse? expectedResponse = null;
+        GetOrganisationQueryResult? expectedResponse = null;
         mediatorMock.Setup(m => m.Send(It.IsAny<GetOrganisationQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(expectedResponse);
 
         var result = await sut.GetOrganisation(request.ukprn, It.IsAny<CancellationToken>());
