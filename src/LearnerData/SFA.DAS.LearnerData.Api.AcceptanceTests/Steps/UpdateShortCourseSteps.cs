@@ -101,14 +101,14 @@ public class UpdateShortCourseSteps
             LearnerKey = learningKey,
             Changes = changes.Select(x => x.ToString()).ToArray(),
             CompletionDate = onProgramme.ActualEndDate,
-            Learner = new UpdateShortCourseResultLearner
+            Learner = new LearningInnerShortCourseLearner
             {
                 Uln = shortCourseRequest.Learner.Uln.ToString(),
                 FirstName = shortCourseRequest.Learner.FirstName,
                 LastName = shortCourseRequest.Learner.LastName,
                 DateOfBirth = shortCourseRequest.Learner.Dob,
             },
-            Episodes = [new UpdateShortCourseResultEpisode
+            Episodes = [new LearningInnerShortCourseEpisode
             {
                 Ukprn = ukprn,
                 EmployerAccountId = 12,

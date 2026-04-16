@@ -16,7 +16,7 @@ namespace SFA.DAS.LearnerData.Services;
 public interface ICalculateGrowthAndSkillsPaymentsEventBuilder
 {
     public Task<CalculateGrowthAndSkillsPayments> Build(long ukprn,
-        UpdateShortCourseLearningPutResponse learningResponse,
+        IShortCourseLearningPaymentEventBuildContext learningResponse,
         ShortCourseEarningsResponse earningsResponse);
 }
 
@@ -34,7 +34,7 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
     }
 
     public async Task<CalculateGrowthAndSkillsPayments> Build(
-        long ukprn, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
+        long ukprn, IShortCourseLearningPaymentEventBuildContext learningResponse, ShortCourseEarningsResponse earningsResponse)
     {
         var episode = learningResponse.Episodes.Single(); // At time of writing, Short Courses are expected to only have one episode.
 
@@ -89,9 +89,9 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
     }
 
     private async Task<IEnumerable<Earnings>> BuildEarnings(
-        UpdateShortCourseLearningPutResponse learningResponse,
+        IShortCourseLearningPaymentEventBuildContext learningResponse,
         ShortCourseEarningsResponse earningsResponse,
-        UpdateShortCourseResultEpisode episode)
+        LearningInnerShortCourseEpisode episode)
     {
         var employerType = Enum.Parse<EmployerType>(episode.EmployerType);
 
