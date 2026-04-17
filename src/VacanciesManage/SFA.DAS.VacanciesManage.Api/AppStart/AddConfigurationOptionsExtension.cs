@@ -25,6 +25,8 @@ namespace SFA.DAS.VacanciesManage.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
             services.Configure<RecruitApiV2Configuration>(configuration.GetSection("RecruitAltApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiV2Configuration>>().Value);
+            services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
         }
     }
 }

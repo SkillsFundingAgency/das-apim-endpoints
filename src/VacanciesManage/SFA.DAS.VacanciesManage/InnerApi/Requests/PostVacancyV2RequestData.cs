@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using SFA.DAS.SharedOuterApi.Domain.Recruit;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Requests;
 
@@ -19,7 +20,7 @@ public class PostVacancyV2RequestData
     public string Title { get; set; }
 
     [JsonPropertyName("ownerType")]
-    public string OwnerType { get; set; }
+    public OwnerType OwnerType { get; set; }
 
     [JsonPropertyName("sourceOrigin")]
     public string SourceOrigin { get; set; }
@@ -28,7 +29,7 @@ public class PostVacancyV2RequestData
     public string SourceType { get; set; }
 
     [JsonPropertyName("submittedDate")]
-    public DateTime SubmittedDate { get; set; }
+    public DateTime? SubmittedDate { get; set; }
 
     [JsonPropertyName("startDate")]
     public DateTime StartDate { get; set; }
@@ -92,6 +93,8 @@ public class PostVacancyV2RequestData
 
     [JsonPropertyName("accountLegalEntityId")]
     public long AccountLegalEntityId { get; set; }
+    [JsonPropertyName("accountLegalEntityPublicHashedId")]
+    public string AccountLegalEntityPublicHashedId { get; set; }
 
     [JsonPropertyName("numberOfPositions")]
     public long NumberOfPositions { get; set; }

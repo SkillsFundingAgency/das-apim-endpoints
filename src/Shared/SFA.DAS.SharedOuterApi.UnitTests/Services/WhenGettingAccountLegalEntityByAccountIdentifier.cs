@@ -1,10 +1,3 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
@@ -13,7 +6,8 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
 using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Services;
-using SFA.DAS.Testing.AutoFixture;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services
 {

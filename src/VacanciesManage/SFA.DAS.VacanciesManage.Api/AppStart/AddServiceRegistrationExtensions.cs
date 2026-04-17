@@ -6,6 +6,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.VacanciesManage.Services;
 
 namespace SFA.DAS.VacanciesManage.Api.AppStart
 {
@@ -17,6 +18,11 @@ namespace SFA.DAS.VacanciesManage.Api.AppStart
             services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
             services.AddTransient<ICacheStorageService, CacheStorageService>();
             services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
+            services.AddTransient<ITrainingProviderService, TrainingProviderService>();
+            
+            services.AddTransient<IBankHolidaysService, BankHolidaysService>();
+            services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
+            services.AddTransient<ISlaService, SlaService>();
 
             services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();

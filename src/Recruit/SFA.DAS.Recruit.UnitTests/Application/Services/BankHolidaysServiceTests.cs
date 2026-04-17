@@ -1,8 +1,8 @@
+using Moq.Protected;
+using SFA.DAS.SharedOuterApi.Services;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
-using Moq.Protected;
-using SFA.DAS.Recruit.Application.Services;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Services;
 

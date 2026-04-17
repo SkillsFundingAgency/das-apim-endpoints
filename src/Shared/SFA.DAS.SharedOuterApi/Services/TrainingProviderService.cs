@@ -11,16 +11,13 @@ using SFA.DAS.SharedOuterApi.Models.Roatp;
 
 namespace SFA.DAS.SharedOuterApi.Services;
 
-public class TrainingProviderService : ITrainingProviderService
+public class TrainingProviderService(IInternalApiClient<TrainingProviderConfiguration> client)
+    : ITrainingProviderService
 {
-    private readonly IInternalApiClient<TrainingProviderConfiguration> _client;
-
-    public TrainingProviderService(IInternalApiClient<TrainingProviderConfiguration> client) => _client = client;
-
     [Obsolete("Use GetProviderDetails(int ukprn) instead")]
     public async Task<TrainingProviderResponse> GetTrainingProviderDetails(long ukprn)
     {
-        var organisationResponse = await _client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest((int)ukprn));
+        var organisationResponse = await client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest((int)ukprn));
 
         if (organisationResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
@@ -39,7 +36,7 @@ public class TrainingProviderService : ITrainingProviderService
 
     public async Task<ProviderDetailsModel> GetProviderDetails(int ukprn)
     {
-        var organisationResponse = await _client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest(ukprn));
+        var organisationResponse = await client.GetWithResponseCode<OrganisationResponse>(new GetOrganisationRequest(ukprn));
 
         if (organisationResponse.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
 

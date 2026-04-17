@@ -37,6 +37,7 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<VacancyMapper>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+
             services.AddTransient<IBankHolidaysService, BankHolidaysService>();
         }
     }

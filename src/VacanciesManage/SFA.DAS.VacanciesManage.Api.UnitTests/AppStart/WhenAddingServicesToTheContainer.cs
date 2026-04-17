@@ -18,6 +18,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.AppStart
         [TestCase(typeof(IAzureClientCredentialHelper))]
         [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
         [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
+        [TestCase(typeof(ITrainingProviderService))]
         [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
         [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
         [TestCase(typeof(ICacheStorageService))]
@@ -49,8 +50,9 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.AppStart
                     new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1"),
                     new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1")
-                }
+                    new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
+                    new KeyValuePair<string, string>("TrainingProviderApi:url", "http://localhost:1")
+                }!
             };
 
             var provider = new MemoryConfigurationProvider(configSource);
