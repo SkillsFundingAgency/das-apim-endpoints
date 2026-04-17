@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Common;
+using LearningMilestone = SFA.DAS.LearnerData.Requests.LearningInner.Milestone;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -132,7 +133,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().Contain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().Contain(LearningMilestone.LearningComplete);
     }
 
     [Test]
@@ -154,8 +155,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().ContainSingle(m =>
-            m == SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().ContainSingle(m => m == LearningMilestone.LearningComplete);
     }
 
     [Test]
@@ -177,6 +177,6 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().NotContain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().NotContain(LearningMilestone.LearningComplete);
     }
 }
