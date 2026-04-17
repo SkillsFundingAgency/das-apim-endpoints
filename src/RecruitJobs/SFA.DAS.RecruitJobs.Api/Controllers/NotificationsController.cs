@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.RecruitJobs.Api.Models;
-using SFA.DAS.RecruitJobs.Domain.Vacancy;
+using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.Notifications;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Notifications;
 using SFA.DAS.SharedOuterApi.Configuration;
