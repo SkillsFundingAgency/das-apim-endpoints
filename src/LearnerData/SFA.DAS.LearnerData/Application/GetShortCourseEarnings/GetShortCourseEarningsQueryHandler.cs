@@ -1,5 +1,6 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
@@ -13,6 +14,9 @@ namespace SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 
 public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourseEarningsQuery, GetShortCourseEarningsQueryResult>
 {
+    private const string LevyFundingLineType = "GSO Short Courses (Apprenticeship Units) Levy";
+    private const string NonLevyFundingLineType = "GSO Short Courses (Apprenticeship Units) Non-Levy";
+
     private readonly ILogger<GetShortCourseEarningsQueryHandler> _logger;
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
@@ -97,7 +101,9 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
                 Courses = learning.Episodes.Select(episode => new ShortCourseEarningsCourse
                 {
                     AimSequenceNumber = 1,
-                    FundingLineType = "GSO Short Courses - Apprenticeship Units - Levy",
+                    FundingLineType = episode.EmployerType == EmployerType.Levy
+                        ? LevyFundingLineType
+                        : NonLevyFundingLineType,
                     CoursePrice = episode.Price,
                     Approved = episode.IsApproved,
                     Earnings = earnings.Earnings.Select(e => new ShortCourseEarningsEarning
