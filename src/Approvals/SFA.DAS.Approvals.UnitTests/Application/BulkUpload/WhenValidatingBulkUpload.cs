@@ -63,7 +63,7 @@ public class WhenValidatingBulkUpload
         ValidateBulkUploadRecordsCommand query,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
         [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
-        [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService,
+        [Frozen] Mock<IProviderStandardsService> providerStandardsService,
         [Frozen] Mock<IBulkCourseMetadataService> bulkCourseMetadataService,
         [Frozen] Mock<IAddCourseTypeDataToCsvService> addCourseTypeDataToCsvService,
         List<BulkUploadAddDraftApprenticeshipExtendedRequest> csvRecordsExtendedRequests,

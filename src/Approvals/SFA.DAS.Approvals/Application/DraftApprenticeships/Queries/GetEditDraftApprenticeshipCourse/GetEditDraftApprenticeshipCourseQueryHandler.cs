@@ -16,12 +16,12 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
     public class GetEditDraftApprenticeshipCourseQueryHandler : IRequestHandler<GetEditDraftApprenticeshipCourseQuery, GetEditDraftApprenticeshipCourseQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IProviderCoursesOrStandardsService _providerStandardsService;
+        private readonly IProviderStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
         public GetEditDraftApprenticeshipCourseQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IProviderCoursesOrStandardsService providerStandardsService,
+            IProviderStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;

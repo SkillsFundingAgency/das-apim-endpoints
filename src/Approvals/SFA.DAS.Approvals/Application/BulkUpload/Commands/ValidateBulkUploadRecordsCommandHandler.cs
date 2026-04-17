@@ -15,7 +15,7 @@ namespace SFA.DAS.Approvals.Application.BulkUpload.Commands;
 public class ValidateBulkUploadRecordsCommandHandler(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
     IReservationApiClient<ReservationApiConfiguration> reservationApiClient,
-    IProviderCoursesOrStandardsService providerStandardsService,
+    IProviderStandardsService providerStandardsService,
     IBulkCourseMetadataService bulkCourseMetadataService,
     IAddCourseTypeDataToCsvService courseTypesToCsvService)
     : IRequestHandler<ValidateBulkUploadRecordsCommand, Unit>
