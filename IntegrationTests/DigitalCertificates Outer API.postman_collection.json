@@ -123,7 +123,7 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{SharingId}}",
+          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{DeletedSharingId}}",
           "protocol": "https",
           "host": [
             "{{Envionment}}-apim-digc-api",
@@ -134,7 +134,7 @@
           ],
           "path": [
             "sharing",
-            "{{SharingId}}"
+            "{{DeletedSharingId}}"
           ]
         }
       },
@@ -532,7 +532,7 @@
     "bearer": [
       {
         "key": "token",
-        "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlUxc1g4WUZIUzdaNlZsN1ZITEl6VGVqYnZqMCIsImtpZCI6IlUxc1g4WUZIUzdaNlZsN1ZITEl6VGVqYnZqMCJ9.eyJhdWQiOiJodHRwczovL2Zjc2F6dXJlc2ZhYmlzZ292Lm9ubWljcm9zb2Z0LmNvbS9kYXMtcHAtYXBpbWVuZHAtZGlnY2FwaS1hcy1hciIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzNhYWNjODM1LTRiODMtNDgzZC04NDFkLWNkNzg3ZjZmMTQ4Ni8iLCJpYXQiOjE3NzY0MjAxNDgsIm5iZiI6MTc3NjQyMDE0OCwiZXhwIjoxNzc2NDI1ODAyLCJhY3IiOiIxIiwiYWlvIjoiQVhRQWkvOGJBQUFBMDdOTmgyTXBXY05rU3ZIeG53VXhlMVcvOUhua2RMQWVmcVQ3b291OTdybTQvQXJDeE81Qy9BV3RxV2RvNjFXTzE1SUREdjBtYjlQTVF0SjQ4UCt6cWhYak9RMUxBSHB4WElHd00rcUcrd3RJUUdya3Z6YldDS3RwYldwSHFZOURYV0dpMzRxajF3SGlraDNzR2NNK013PT0iLCJhbXIiOlsicHdkIiwicnNhIiwibWZhIl0sImFwcGlkIjoiMDRiMDc3OTUtOGRkYi00NjFhLWJiZWUtMDJmOWUxYmY3YjQ2IiwiYXBwaWRhY3IiOiIwIiwiZGV2aWNlaWQiOiJiNWNjYjVmNS03YzZhLTRhMDktODQ0Yi1kNzZlZDZhZmIyNWYiLCJpcGFkZHIiOiIyMTIuMjI5Ljg3LjE3IiwibmFtZSI6IkNocmlzIFdvb2Rjb2NrIiwib2lkIjoiN2Q0ZTZlNWUtMjkxOS00NTM3LTk4NGItOTlkYjgwZjM5MmM2IiwicHdkX2V4cCI6IjQ0MjMyMzQiLCJwd2RfdXJsIjoiaHR0cHM6Ly9nby5taWNyb3NvZnQuY29tL2Z3bGluay8_bGlua2lkPTIyMjQxOTgiLCJyaCI6IjEuQVY0QU5jaXNPb05MUFVpRUhjMTRmMjhVaHBnbk9sdjFLU3hFdmdKQXl4RnJjUU1NQWNsZUFBLiIsInJvbGVzIjpbIkFQSU0iXSwic2NwIjoidXNlcl9pbXBlcnNvbmF0aW9uIiwic2lkIjoiMDAzZmE4ZmEtNTQ3Ny04MzlmLTQ0ZjYtZmQzNWJkMjM2ZWU1Iiwic3ViIjoiOUlvZmY1YXVqUXlncmFYSEZCYkxBNXV4OU5uN2UtcDBPUWstVF9oQW1PVSIsInRpZCI6IjNhYWNjODM1LTRiODMtNDgzZC04NDFkLWNkNzg3ZjZmMTQ4NiIsInVuaXF1ZV9uYW1lIjoiY2hyaXMud29vZGNvY2tAZmNzYXp1cmVzZmFiaXNnb3Yub25taWNyb3NvZnQuY29tIiwidXBuIjoiY2hyaXMud29vZGNvY2tAZmNzYXp1cmVzZmFiaXNnb3Yub25taWNyb3NvZnQuY29tIiwidXRpIjoiMDktZ2xKQnl2RXktXzlzWDFYZ0dBQSIsInZlciI6IjEuMCIsInhtc19mdGQiOiJ2VnhtZHRiT2FDeVQ5WHp6OHl3VFVYUVNVcF8ycEkxRVl2bHRVR29vTk9zQlpYVnliM0JsYm05eWRHZ3RaSE50Y3cifQ.ZJNKs7ZTF6XcR696k3trGL7E0h-fMtBJYuqFj2kLLo-QciiumvDdLLFN7pMcWkQ-Jrsp6LyggQfg2fXl_9UGWSPvhUeutMERE9lJaqtD1QHn9ql7t9Q5GMQK8qjdRP2062YUVEBGh4Mth_kJBHO1cGiBzK8zwlJyDvQJ4YP1yLS09Bh6rrAW1Lh4XXd6QTbhULmJH4JHt-EjdHcyyDVbF_Bi4xdFic0wCOvGpjutKacB4YyLOi3yZr3NVcmqf_MyA650YZmCkCyNK3qi20np29mU_yCQGjKrVyzS7TWtbH4CnnaQwR03qF_c8clBAtgHp_jVGdzvQYwHDWfCvKMdMA",
+        "value": "",
         "type": "string"
       }
     ]
@@ -567,6 +567,14 @@
       "value": "pp"
     },
     {
+      "key": "UserId",
+      "value": "7501D794-8A92-4082-8638-08DE9C5E1CAE"
+    },
+    {
+      "key": "GovUkIdentifier",
+      "value": "2EE4AB72-11B3-4B6F-BBC7-A5BE968652FB"
+    },
+    {
       "key": "StandardCertificateId",
       "value": "127FED64-57D9-4279-AE59-69532DA4B1AF"
     },
@@ -575,13 +583,14 @@
       "value": "F6971FFE-85FC-413E-B365-017706D71AE3"
     },
     {
-      "key": "UserId",
-      "value": "7501D794-8A92-4082-8638-08DE9C5E1CAE"
-    },
-    {
       "key": "SharingId",
       "value": "de70ce4c-0306-42a4-c9a5-08de9c6eee18",
       "description": "Obtained from CreateSharing sharingId"
+    },
+    {
+      "key": "SharingLinkCode",
+      "value": "d8097c71-3823-4878-9955-6e59f2fdca8d",
+      "description": "Obtained from GetSharingById linkCode"
     },
     {
       "key": "SharingEmailId",
@@ -589,13 +598,8 @@
       "description": "Obtained from CreateSharingEmail id"
     },
     {
-      "key": "GovUkIdentifier",
-      "value": "2EE4AB72-11B3-4B6F-BBC7-A5BE968652FB"
-    },
-    {
-      "key": "SharingLinkCode",
-      "value": "d8097c71-3823-4878-9955-6e59f2fdca8d",
-      "description": "Obtained from GetSharingById linkCode"
+      "key": "DeletedSharingId",
+      "value": "7766BE5D-260A-4A5A-CF67-08DE9C6D078D"
     }
   ]
 }
