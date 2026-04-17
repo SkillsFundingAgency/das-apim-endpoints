@@ -3,8 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
 using SFA.DAS.RecruitJobs.Api.Models;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
@@ -21,10 +23,10 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
-
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -299,5 +301,71 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             logger.LogError(ex, "Error while closing vacancy: {id}", request.VacancyId);
             return TypedResults.Problem(title: ex.Message, detail: ex.Error);
         }
+    }
+    
+    [HttpPost, Route("{vacancId:guid}/approve")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IResult> ApproveVacancy(
+        [FromServices] IMessageSession messageSession,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] Guid vacancyId,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyById.ExecuteAsync(vacancyId, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var vacancy = response.Data!.Vacancies.FirstOrDefault();
+        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Submitted })
+        {
+            // it's been transferred so ignore
+            return TypedResults.NoContent();
+        }
+        
+        // Patch the Vacancy
+        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
+        patchDocument.Replace(x => x.Status, SharedOuterApi.Domain.Recruit.VacancyStatus.Approved);
+        patchDocument.Replace(x => x.ApprovedDate, DateTime.UtcNow);
+        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
+        patchResponse.EnsureSuccessStatusCode();
+        return TypedResults.NoContent();
+    }
+    
+    [HttpPost, Route("{vacancId:guid}/publish")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IResult> PublishVacancy(
+        [FromServices] IMessageSession messageSession,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] Guid vacancyId,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyById.ExecuteAsync(vacancyId, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var vacancy = response.Data!.Vacancies.FirstOrDefault();
+        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Approved })
+        {
+            // it's been transferred so ignore
+            return TypedResults.NoContent();
+        }
+        
+        // Patch the Vacancy
+        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
+        patchDocument.Replace(x => x.Status, SharedOuterApi.Domain.Recruit.VacancyStatus.Live);
+        patchDocument.Replace(x => x.LiveDate, DateTime.UtcNow);
+        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
+        patchResponse.EnsureSuccessStatusCode();
+        return TypedResults.NoContent();
     }
 }

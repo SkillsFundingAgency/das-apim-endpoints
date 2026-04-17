@@ -2,12 +2,14 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using NServiceBus;
+using SFA.DAS.Recruit.Jobs.NServiceBus.Commands;
 using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Domain.Recruit.Ai;
+using SFA.DAS.SharedOuterApi.Domain.Recruit.VacancyReviews;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
@@ -19,7 +21,7 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/vacancies/{vacancyId:guid}")]
-public class AiController(ILogger<AiController> logger): ControllerBase
+public class AiController: ControllerBase
 {
     [HttpPost]
     [Route("review/{vacancyReviewId:guid}")]
@@ -74,34 +76,36 @@ public class AiController(ILogger<AiController> logger): ControllerBase
         [FromBody] Guid vacancyReviewId,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request to send vacancy for manual review. Id={VacancyId}, ReviewId={VacancyReviewId}", vacancyId, vacancyReviewId);
-        
         var patchDocument = new JsonPatchDocument<PatchableVacancyReviewDto>();
         patchDocument.Replace(x => x.Status, ReviewStatus.PendingReview);
+        
         var request = new PatchVacancyReviewRequest(vacancyReviewId, patchDocument);
         var response = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyReviewDto>, NullResponse>(request, false);
-        return response.StatusCode.IsSuccessStatusCode()
-            ? TypedResults.Ok()
-            : TypedResults.Problem();
+        response.EnsureSuccessStatusCode();
+
+        return TypedResults.NoContent();
     }
     
     [HttpPost]
     [Route("approve")]
     public async Task<IResult> AutoApproveVacancyAsync(
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] IMessageSession messageSession,
         [FromRoute] Guid vacancyId,
         [FromBody] Guid vacancyReviewId,
         CancellationToken cancellationToken)
     {
-        logger.LogInformation("Request to auto approve vacancy. Id={VacancyId}, ReviewId={VacancyReviewId}", vacancyId, vacancyReviewId);
+        // Patch the VacancyReview
+        var vacancyReviewPatchDocument = new JsonPatchDocument<PatchableVacancyReviewDto>();
+        vacancyReviewPatchDocument.Replace(x => x.ManualOutcome, ManualQaOutcome.Approved);
+        vacancyReviewPatchDocument.Replace(x => x.Status, ReviewStatus.Closed);
+        vacancyReviewPatchDocument.Replace(x => x.ClosedDate, DateTime.UtcNow);
         
-        // TODO: change this to approve when we are ready
-        var patchDocument = new JsonPatchDocument<PatchableVacancyReviewDto>();
-        patchDocument.Replace(x => x.Status, ReviewStatus.PendingReview);
-        var request = new PatchVacancyReviewRequest(vacancyReviewId, patchDocument);
-        var response = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyReviewDto>, NullResponse>(request, false);
-        return response.StatusCode.IsSuccessStatusCode()
-            ? TypedResults.Ok()
-            : TypedResults.Problem();
+        var request = new PatchVacancyReviewRequest(vacancyReviewId, vacancyReviewPatchDocument);
+        var patchVacancyReviewResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyReviewDto>, NullResponse>(request, false);
+        patchVacancyReviewResponse.EnsureSuccessStatusCode();
+        
+        await messageSession.Publish(new PublishVacancyCommand(vacancyId));
+        return TypedResults.NoContent();
     }
 }
