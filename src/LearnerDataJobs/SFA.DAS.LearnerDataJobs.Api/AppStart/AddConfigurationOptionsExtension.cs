@@ -19,5 +19,6 @@ public static class AddConfigurationOptionsExtension
 
         services.Configure<CoursesApiConfiguration>(configuration.GetSection("CoursesApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+        services.AddSingleton(s => configuration);
     }
 }
