@@ -21,6 +21,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Application.GetLearners;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 

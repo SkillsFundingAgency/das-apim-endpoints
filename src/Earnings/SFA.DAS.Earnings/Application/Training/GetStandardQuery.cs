@@ -1,4 +1,5 @@
-﻿using SFA.DAS.Earnings.InnerApi;
+﻿using MediatR;
+using SFA.DAS.Earnings.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;

@@ -3,6 +3,7 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Diagnostics;
+using SFA.DAS.LearnerData.Application.GetLearners;
 using EarningsApprenticeship = SFA.DAS.LearnerData.Responses.EarningsInner.Apprenticeship;
 using EarningsEpisode = SFA.DAS.LearnerData.Responses.EarningsInner.Episode;
 using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
@@ -146,7 +147,7 @@ public class JoinedPriceEpisode
     /// <param name="apprenticeshipEpisodePrice"></param>
     /// <param name="earningsEpisode"></param>
     /// <param name="academicYear"></param>
-    public JoinedPriceEpisode(Episode apprenticeshipEpisode, EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
+    public JoinedPriceEpisode(Episode apprenticeshipEpisode, UpdateLearnerApiPutResponse.EpisodePrice apprenticeshipEpisodePrice, EarningsEpisode? earningsEpisode)
     {
         EpisodePriceKey = apprenticeshipEpisodePrice.Key;
         TrainingCode = apprenticeshipEpisode.TrainingCode;
@@ -185,7 +186,7 @@ public class JoinedPriceEpisode
         ActualEndDate = existingEpisode.ActualEndDate;
     }
 
-    private List<JoinedInstalment> GetInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
+    private List<JoinedInstalment> GetInstalments(UpdateLearnerApiPutResponse.EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
     {
         var matchingInstalments = instalments
             .Where(x => x.EpisodePriceKey == apprenticeshipEpisodePrice.Key)
@@ -209,7 +210,7 @@ public class JoinedPriceEpisode
     }
 
     // This beautiful method can be deleted once all Instalment records in the earnings database have the EpisodePriceKey populated
-    private static List<JoinedInstalment> ResolveLegacyInstalments(EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
+    private static List<JoinedInstalment> ResolveLegacyInstalments(UpdateLearnerApiPutResponse.EpisodePrice apprenticeshipEpisodePrice, List<Instalment> instalments)
     {
         return instalments.Where(y =>
                 y.AcademicYear.GetDateTime(y.DeliveryPeriod) >= apprenticeshipEpisodePrice.StartDate &&
@@ -222,7 +223,7 @@ public class JoinedPriceEpisode
             }).ToList();
     }
 
-    private List<JoinedAdditionalPayment> GetAdditionalPayments(EpisodePrice apprenticeshipEpisodePrice, List<AdditionalPayment> additionalPayments)
+    private List<JoinedAdditionalPayment> GetAdditionalPayments(UpdateLearnerApiPutResponse.EpisodePrice apprenticeshipEpisodePrice, List<AdditionalPayment> additionalPayments)
     {
         var allAdditionalPayments = additionalPayments.Select(x => new JoinedAdditionalPayment
         {

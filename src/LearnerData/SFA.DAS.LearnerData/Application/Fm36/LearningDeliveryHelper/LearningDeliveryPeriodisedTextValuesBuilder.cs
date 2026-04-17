@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+
+namespace SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 
 public static class LearningDeliveryPeriodisedTextValuesBuilder
 {
