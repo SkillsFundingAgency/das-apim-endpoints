@@ -1,6 +1,4 @@
-﻿using Microsoft.ApplicationInsights;
-
-namespace SFA.DAS.LearnerData.Api.Middleware
+﻿namespace SFA.DAS.LearnerData.Api.Middleware
 {
     public class ConcurrencyTrackingMiddleware
     {

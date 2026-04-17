@@ -2,11 +2,11 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Equivalency;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Domain;
+
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
-using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using CreateVacancyDisabilityConfident = SFA.DAS.VacanciesManage.Api.Models.CreateVacancyDisabilityConfident;
 using WageType = SFA.DAS.VacanciesManage.Api.Models.WageType;
 

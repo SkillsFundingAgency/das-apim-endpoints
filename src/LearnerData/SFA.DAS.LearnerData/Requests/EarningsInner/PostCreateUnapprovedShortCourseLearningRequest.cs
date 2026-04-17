@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 

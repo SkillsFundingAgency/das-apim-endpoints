@@ -1,10 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using SFA.DAS.LearnerData.Services;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text;
-using TechTalk.SpecFlow;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 

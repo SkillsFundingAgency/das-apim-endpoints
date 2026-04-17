@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;

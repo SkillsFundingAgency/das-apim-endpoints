@@ -4,8 +4,8 @@ using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Common;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 

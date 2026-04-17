@@ -1,4 +1,4 @@
-﻿using AutoFixture;
+using AutoFixture;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Services;

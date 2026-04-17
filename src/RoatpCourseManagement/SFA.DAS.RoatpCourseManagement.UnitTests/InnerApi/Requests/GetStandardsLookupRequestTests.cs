@@ -1,7 +1,7 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests;
 

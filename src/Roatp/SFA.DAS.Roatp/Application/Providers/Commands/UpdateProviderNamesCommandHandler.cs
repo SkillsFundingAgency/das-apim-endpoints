@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.Domain.Models;
 using SFA.DAS.Roatp.Infrastructure;
 using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 
 namespace SFA.DAS.Roatp.Application.Providers.Commands;
 

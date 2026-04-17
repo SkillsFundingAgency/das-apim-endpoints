@@ -1,4 +1,4 @@
-﻿using SFA.DAS.LearnerData.Application.Fm36;
+using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
