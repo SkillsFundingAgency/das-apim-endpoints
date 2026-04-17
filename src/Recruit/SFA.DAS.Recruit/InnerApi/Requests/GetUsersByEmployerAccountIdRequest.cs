@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Recruit.InnerApi.Requests;
 

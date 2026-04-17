@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Recruit.Application.User.Queries.GetUserByIdamsId;
+using SFA.DAS.Recruit.Application.User.Queries.GetUserByIdamsId;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using System.Net;

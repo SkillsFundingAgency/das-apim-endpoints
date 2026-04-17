@@ -1,4 +1,5 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
+
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
 {
     public class GetUkrlpDataQueryResponse
     {

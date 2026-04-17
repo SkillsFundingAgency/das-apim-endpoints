@@ -1,17 +1,14 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
-using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.RemoveLearner;
 

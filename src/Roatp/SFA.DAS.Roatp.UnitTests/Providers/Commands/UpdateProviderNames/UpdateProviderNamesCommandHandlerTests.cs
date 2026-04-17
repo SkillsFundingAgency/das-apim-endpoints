@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -11,6 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.Roatp.Application.Providers.Commands;
 using SFA.DAS.Roatp.Domain.Models;
 using SFA.DAS.Roatp.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 

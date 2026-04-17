@@ -8,6 +8,7 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Infrastructure;
+using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 
 namespace SFA.DAS.Roatp.Api.AppStart;

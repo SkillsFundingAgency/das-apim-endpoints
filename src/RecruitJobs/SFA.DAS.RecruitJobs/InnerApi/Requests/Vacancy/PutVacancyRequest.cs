@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.RecruitJobs.Domain;

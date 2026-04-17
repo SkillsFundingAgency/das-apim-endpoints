@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Threading;
 using Microsoft.AspNetCore.Http.HttpResults;
 using SFA.DAS.Apim.Shared.Infrastructure;

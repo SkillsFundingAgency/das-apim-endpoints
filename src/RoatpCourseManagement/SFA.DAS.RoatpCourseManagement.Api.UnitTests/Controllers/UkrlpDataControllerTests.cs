@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
-using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 using SFA.DAS.Testing.AutoFixture;
 

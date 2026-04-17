@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyReviews;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
 using System.Collections.Generic;

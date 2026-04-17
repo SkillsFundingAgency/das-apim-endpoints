@@ -6,11 +6,11 @@ public class Vacancy
 {
     public Guid Id { get; init; }
     public long? VacancyReference { get; init; }
-    public long? AccountId { get; set; }
+    public long? AccountId { get; init; }
     public required VacancyStatus Status { get; set; }
     public ApprenticeshipTypes? ApprenticeshipType { get; init; }
     public string? Title { get; init; }
-    public OwnerType? OwnerType { get; set; }
+    public OwnerType? OwnerType { get; init; }
     public SourceOrigin? SourceOrigin { get; init; }
     public SourceType? SourceType { get; init; }
     public long? SourceVacancyReference { get; init; }
@@ -63,6 +63,6 @@ public class Vacancy
     public bool? HasOptedToAddQualifications { get; init; }
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
-    public Guid? SubmittedByUserId { get; set; }
-    public Guid? ReviewRequestedByUserId { get; set; }
+    public Guid? SubmittedByUserId { get; init; }
+    public Guid? ReviewRequestedByUserId { get; init; }
 }

@@ -1,4 +1,4 @@
-﻿using MediatR;
+using MediatR;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using System.Net;
