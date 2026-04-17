@@ -3,11 +3,7 @@ using System.Xml.Serialization;
 using System.Xml.XPath;
 using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
 
-<<<<<<<< HEAD:src/Shared/SFA.DAS.SharedOuterApi.Types/Infrastructure/Ukrlp/UkrlpSoapSerializer.cs
 namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
-========
-namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
->>>>>>>> master:src/Shared/SFA.DAS.SharedOuterApi/Infrastructure/Ukrlp/UkrlpSoapSerializer.cs
 {
     public class UkrlpSoapSerializer : IUkrlpSoapSerializer
     {

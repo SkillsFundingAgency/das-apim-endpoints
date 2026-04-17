@@ -1,10 +1,5 @@
-<<<<<<<< HEAD:src/Shared/SFA.DAS.SharedOuterApi.Types/Infrastructure/Ukrlp/ProviderAddress.cs
-﻿namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
-========
-﻿using System.Linq;
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
 
-namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
->>>>>>>> master:src/Shared/SFA.DAS.SharedOuterApi/Infrastructure/Ukrlp/ProviderAddress.cs
 {
     public class ProviderAddress
     {
