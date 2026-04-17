@@ -1,6 +1,13 @@
+<<<<<<<< HEAD:src/Shared/SFA.DAS.SharedOuterApi.Types/Domain/Recruit/Vacancy.cs
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+========
+using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Domain;
+
+namespace SFA.DAS.RecruitJobs.Domain;
+>>>>>>>> master:src/RecruitJobs/SFA.DAS.RecruitJobs/Domain/Vacancy.cs
 
 public class Vacancy
 {
@@ -35,7 +42,11 @@ public class Vacancy
     public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; init; }
     public List<Address>? EmployerLocations { get; set; }
+<<<<<<<< HEAD:src/Shared/SFA.DAS.SharedOuterApi.Types/Domain/Recruit/Vacancy.cs
     public AvailableWhere? EmployerLocationOption { get; set; }
+========
+    public AvailableWhere? EmployerLocationOption { get; init; }
+>>>>>>>> master:src/RecruitJobs/SFA.DAS.RecruitJobs/Domain/Vacancy.cs
     public string? EmployerLocationInformation { get; init; }
     public string? EmployerName { get; init; }
     public EmployerNameOption? EmployerNameOption { get; init; }
@@ -46,7 +57,7 @@ public class Vacancy
     public long? AccountLegalEntityId { get; init; }
     public int? NumberOfPositions { get; init; }
     public string? OutcomeDescription { get; init; }
-    public string? ProgrammeId { get; set; }
+    public string? ProgrammeId { get; init; }
     public List<string>? Skills { get; init; }
     public List<Qualification>? Qualifications { get; set; }
     public string? ThingsToConsider { get; init; }
