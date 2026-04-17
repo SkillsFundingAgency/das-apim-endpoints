@@ -9,18 +9,11 @@ using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Earnings;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 
