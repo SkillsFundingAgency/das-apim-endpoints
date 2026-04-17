@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
+using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 

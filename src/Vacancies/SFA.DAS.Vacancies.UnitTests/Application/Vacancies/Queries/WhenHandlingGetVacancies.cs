@@ -116,7 +116,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(new GetVacanciesResponse
                     {
                         Total = 0,
-                        ApprenticeshipVacancies = new List<GetVacanciesListItem>(),
+                        ApprenticeshipVacancies = new List<GetVacancyApiResponse>(),
                         TotalFound = 0
                     });
 
@@ -216,9 +216,9 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             int standardLarsCode,
             string findAnApprenticeshipBaseUrl,
             GetVacanciesQuery query,
-            GetVacanciesListItem vacancyRaa,
-            GetVacanciesListItem vacancyNhs,
-            GetVacanciesListItem vacancyCsJ,
+            GetVacancyApiResponse vacancyRaa,
+            GetVacancyApiResponse vacancyNhs,
+            GetVacancyApiResponse vacancyCsJ,
             GetStandardsListItem courseResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<ICourseService> courseService,
@@ -232,7 +232,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             vacancyCsJ.VacancySource = DataSource.Csj;
             var apiResponse = new GetVacanciesResponse
             {
-                ApprenticeshipVacancies = new List<GetVacanciesListItem> { vacancyRaa, vacancyNhs, vacancyCsJ },
+                ApprenticeshipVacancies = new List<GetVacancyApiResponse> { vacancyRaa, vacancyNhs, vacancyCsJ },
                 TotalFound = 3,
                 Total = 3
             };

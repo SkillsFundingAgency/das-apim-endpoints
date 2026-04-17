@@ -2,16 +2,17 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using LearningDomainMilestones = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
+using LearningDomainMilestones = SFA.DAS.LearnerData.Requests.LearningInner.Milestone;
 using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 
 namespace SFA.DAS.LearnerData.Application.UpdateShortCourse;
 
@@ -155,6 +156,10 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         await _messageSession.Send(command, options);
 
         _logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
+
+        await _messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
+
+        _logger.LogInformation("GrowthAndSkillsPaymentsRecalculatedEvent published for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 
     private static bool EarningsUpdateRequired(UpdateShortCourseLearningPutResponse response)

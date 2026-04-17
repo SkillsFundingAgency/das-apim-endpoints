@@ -37,7 +37,8 @@ public class MapLearnerRecords(ILogger<IMapLearnerRecords> logger) : IMapLearner
                     LastName = learner.LastName,
                     Uln = learner.Uln,
                     Course = courseName,
-                    StartDate = learner.StartDate
+                    StartDate = learner.StartDate,
+                    LearningType = learner.LearningType
                 };
             });
     }
