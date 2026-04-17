@@ -1,10 +1,11 @@
-using System.Net;
-using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.LearnerData.Requests.EarningsInner;

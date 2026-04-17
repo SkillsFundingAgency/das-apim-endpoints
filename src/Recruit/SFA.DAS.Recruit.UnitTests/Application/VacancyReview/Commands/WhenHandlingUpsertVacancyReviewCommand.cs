@@ -1,26 +1,18 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.Recruit.Application.Vacancies.Queries.GetVacancyById;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
-using SFA.DAS.Recruit.Domain;
-using SFA.DAS.Recruit.Enums;
-using SFA.DAS.Recruit.Extensions;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
-using Microsoft.Extensions.Logging;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.VacancyReview.Commands;
 
@@ -35,7 +27,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [Greedy] UpsertVacancyReviewCommandHandler sut)
     {
         // arrange
-        command.VacancyReview.Status = "New";
+        command.VacancyReview.Status = ReviewStatus.New;
         List<SendEmailCommand> sentEmails = [];
         var expectedEmails = response.Select(x => new SendEmailCommand(x.TemplateId.ToString(), x.RecipientAddress, x.Tokens));
 
@@ -75,7 +67,7 @@ public class WhenHandlingUpsertVacancyReviewCommand
         [Greedy] UpsertVacancyReviewCommandHandler sut)
     {
         // arrange
-        command.VacancyReview.Status = "New";
+        command.VacancyReview.Status = ReviewStatus.New;
 
         apiClient
             .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<PutCreateVacancyReviewRequest>()))

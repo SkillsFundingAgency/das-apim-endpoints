@@ -26,7 +26,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             GetProviderResponse providerResponse,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, providerResponse.ProviderId);
 
@@ -36,7 +36,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetProviderResponse>(providerResponse, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(providerResponse.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(providerResponse.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             GetProviderResponse providerResponse,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, providerResponse.ProviderId);
 
@@ -62,7 +62,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
 
             providerStandardsData.Standards = null;
 
-            providerStandardsService.Setup(x => x.GetStandardsData(providerResponse.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(providerResponse.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var result = await handler.Handle(query, CancellationToken.None);
@@ -77,7 +77,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             GetProviderResponse providerResponse,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, providerResponse.ProviderId);
 
@@ -87,7 +87,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetProviderResponse>(It.IsAny<GetProviderRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetProviderResponse>(null, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(providerResponse.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(providerResponse.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var result = await handler.Handle(query, CancellationToken.None);

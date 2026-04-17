@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using System;
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData
 {

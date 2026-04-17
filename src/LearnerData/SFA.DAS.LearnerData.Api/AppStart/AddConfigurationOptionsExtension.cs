@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Options;
+using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 
@@ -17,6 +19,7 @@ public static class AddConfigurationOptionsExtension
         services.AddConfigurationOptions<AccountsConfiguration>(configuration);
         services.AddConfigurationOptions<FjaaApiConfiguration>(configuration);
         services.AddConfigurationOptions<RoatpV2ApiConfiguration>(configuration);
+        services.AddConfigurationOptions<PaymentsConfiguration>(configuration);
     }
 
     private static void AddConfigurationOptions<T>(this IServiceCollection services, IConfiguration configuration, string? name = null) where T : class

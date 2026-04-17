@@ -10,7 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Models.Ukrlp;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers

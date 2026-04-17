@@ -25,7 +25,9 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
             }
             logger.LogInformation("Getting course details for course {0}", command.LearnerData.LarsCode);
 
-            var course = await coursesClient.Get<CourseLookupDetailResponse?>(new GetCourseLookupDetailsByIdRequest(command.LearnerData.LarsCode));
+        
+            var course = await coursesClient.Get<StandardDetailResponse?>(new GetStandardDetailsByIdRequest(command.LearnerData.LarsCode));
+            //var course = await coursesClient.Get<CourseLookupDetailResponse?>(new GetCourseLookupDetailsByIdRequest(command.LearnerData.LarsCode));
             if (course == null)
             {
                 throw new Exception($"No course found for LARS code {command.LearnerData.LarsCode}");
@@ -50,9 +52,9 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
         }
     }
 
-    private LearnerDataRequest CreateLearnerDataRequest(LearnerDataIncomingRequest request, CourseLookupDetailResponse course)
+    private LearnerDataRequest CreateLearnerDataRequest(LearnerDataIncomingRequest request, StandardDetailResponse course)
     {
-        logger.LogInformation("Creating LearnerDataRequest to add new learner data for LarsCode {0}, apprenticeship type {1}, course {2}", course.LarsCode, course.LearningType, course.Title);
+        logger.LogInformation("Creating LearnerDataRequest to add new learner data for LarsCode {0}, apprenticeship type {1}, course {2}", course.LarsCode, course.ApprenticeshipType, course.Title);
 
         var learnerDataRequest = new LearnerDataRequest
         {
@@ -73,7 +75,7 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
             StandardCode = request.StandardCode,
             LarsCode = request.LarsCode,
             TrainingName = course.Title,
-            LearningType = course.LearningType == null ? null : EnumExtensions.FromDescription<LearningType>(course.LearningType),
+            LearningType = course.ApprenticeshipType == null ? null : EnumExtensions.FromDescription<LearningType>(course.ApprenticeshipType),
             CorrelationId = request.CorrelationId,
             ReceivedDate = request.ReceivedDate,
             AcademicYear = request.AcademicYear,
@@ -82,4 +84,37 @@ public class AddLearnerDataCommandHandler(IInternalApiClient<LearnerDataInnerApi
 
         return learnerDataRequest;
     }
+
+    //private LearnerDataRequest CreateLearnerDataRequest(LearnerDataIncomingRequest request, CourseLookupDetailResponse course)
+    //{
+    //    logger.LogInformation("Creating LearnerDataRequest to add new learner data for LarsCode {0}, apprenticeship type {1}, course {2}", course.LarsCode, course.LearningType, course.Title);
+
+    //    var learnerDataRequest = new LearnerDataRequest
+    //    {
+    //        ULN = request.ULN,
+    //        UKPRN = request.UKPRN,
+    //        Firstname = request.Firstname,
+    //        Lastname = request.Lastname,
+    //        Email = request.Email,
+    //        DoB = request.DoB,
+    //        StartDate = request.StartDate,
+    //        PlannedEndDate = request.PlannedEndDate,
+    //        PercentageLearningToBeDelivered = request.PercentageLearningToBeDelivered,
+    //        EpaoPrice = request.EpaoPrice,
+    //        TrainingPrice = request.TrainingPrice,
+    //        AgreementId = request.AgreementId,
+    //        IsFlexiJob = request.IsFlexiJob,
+    //        PlannedOTJTrainingHours = request.PlannedOTJTrainingHours,
+    //        StandardCode = request.StandardCode,
+    //        LarsCode = request.LarsCode,
+    //        TrainingName = course.Title,
+    //        LearningType = course.LearningType == null ? null : EnumExtensions.FromDescription<LearningType>(course.LearningType),
+    //        CorrelationId = request.CorrelationId,
+    //        ReceivedDate = request.ReceivedDate,
+    //        AcademicYear = request.AcademicYear,
+    //        ConsumerReference = request.ConsumerReference
+    //    };
+
+    //    return learnerDataRequest;
+    //}
 }

@@ -1,20 +1,17 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
-using SFA.DAS.LearnerData.Responses.Learning;
 using System.Net;
-using SFA.DAS.LearnerData.Services;
-using Microsoft.Extensions.Caching.Distributed;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 

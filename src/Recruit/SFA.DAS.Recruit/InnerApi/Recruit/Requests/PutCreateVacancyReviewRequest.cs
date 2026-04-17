@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using OwnerType = SFA.DAS.Recruit.Domain.Vacancy.OwnerType;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 
@@ -14,12 +16,12 @@ public class PutCreateVacancyReviewRequest(Guid id, VacancyReviewDto data) : IPu
 
 public class VacancyReviewDto
 {
-    public required long VacancyReference { get; init; }
+    public required string VacancyReference { get; init; }
     public required string VacancyTitle { get; init; }
     public required DateTime? CreatedDate { get; init; }
     public required DateTime? SlaDeadLine { get; init; }
     public DateTime? ReviewedDate { get; init; }
-    public required string Status { get; set; }
+    public required ReviewStatus Status { get; set; }
     public required byte? SubmissionCount { get; init; }
     public string? ReviewedByUserEmail { get; init; }
     public string? SubmittedByUserEmail { get; init; }
@@ -35,7 +37,7 @@ public class VacancyReviewDto
     public int Ukprn { get; set; }
     public long AccountId { get; set; }
     public long AccountLegalEntityId { get; set; }
-    public string OwnerType { get; set; }
+    public OwnerType OwnerType { get; set; }
     public string HashedAccountId { get; set; }
     public string EmployerName { get; set; }
     public AvailableWhere EmployerLocationOption { get; set; }

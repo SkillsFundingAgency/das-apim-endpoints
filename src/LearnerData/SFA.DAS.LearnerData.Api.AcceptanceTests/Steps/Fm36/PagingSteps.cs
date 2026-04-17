@@ -1,6 +1,7 @@
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;

@@ -1,4 +1,5 @@
-﻿using MediatR;
+using MediatR;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 

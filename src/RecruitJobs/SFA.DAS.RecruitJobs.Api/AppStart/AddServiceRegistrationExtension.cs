@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.RecruitJobs.Handlers;
 using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -32,5 +33,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<IRecruitAiService, RecruitAiService>();
         services.AddTransient<VacancyMapper>();
+        services.AddTransient<ITransferProviderVacancyToLegalEntityHandler, TransferProviderVacancyToLegalEntityHandler>();
     }
 }

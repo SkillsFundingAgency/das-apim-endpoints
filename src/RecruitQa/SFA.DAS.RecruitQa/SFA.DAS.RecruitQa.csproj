@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -11,11 +11,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="StrawberryShake.Blazor" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Application\VacancyReviews\Queries\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
   </ItemGroup>
 
 </Project>

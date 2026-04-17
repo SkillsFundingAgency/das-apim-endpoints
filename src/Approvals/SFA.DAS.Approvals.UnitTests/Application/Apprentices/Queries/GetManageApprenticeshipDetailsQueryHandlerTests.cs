@@ -124,7 +124,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         var fixture = new Fixture();
         _deliveryModels.Clear();
         _deliveryModels.AddRange(fixture.CreateMany<string>(optionCount));
-        
+
         _deliveryModelService.Setup(x => x.GetDeliveryModels(
                 It.Is<long>(p => p == _apprenticeship.ProviderId),
                 It.Is<string>(s => s == _apprenticeship.CourseCode),
@@ -140,7 +140,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     public async Task Handle_Returns_objects_From_Commitments_Api()
     {
         var result = await _handler.Handle(_query, CancellationToken.None);
-        
+
         result.Apprenticeship.Should().Be(_apprenticeship);
         result.PriceEpisodes.Should().BeEquivalentTo(_priceEpisodesResponse.PriceEpisodes);
         result.ApprenticeshipUpdates.Should().BeEquivalentTo(_apprenticeshipUpdatesResponse.ApprenticeshipUpdates);
@@ -196,7 +196,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _collectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(currentAcademicYearResponse);
-       
+
         _collectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
             .ReturnsAsync(previousAcademicYearResponse);
@@ -234,7 +234,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _collectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(currentAcademicYearResponse);
-      
+
         _collectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.AddYears(-1).ToString("yyyy-MM-dd"))))
             .ReturnsAsync(previousAcademicYearResponse);
@@ -246,8 +246,8 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         result.CanActualStartDateBeChanged.Should().BeFalse();
     }
 
-    [TestCase(41, true)] 
-    [TestCase(42, true)] 
+    [TestCase(41, true)]
+    [TestCase(42, true)]
     [TestCase(43, false)]
     public async Task Handle_Returns_Correct_CanActualStartDateBeChanged_QualifyingPeriodPassed(int daysSinceApprenticeshipStartDate, bool expectedValue)
     {
@@ -265,7 +265,7 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
         _collectionCalendarApiClient
             .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByDateRequest>(r => r._dateTime == DateTime.Now.ToString("yyyy-MM-dd"))))
             .ReturnsAsync(currentAcademicYearResponse);
-      
+
         // Act
         var result = await _handler.Handle(_query, CancellationToken.None);
 
@@ -286,16 +286,25 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     }
 
     [Test]
+    public async Task Handle_Returns_objects_From_Courses_Api()
+    {
+        var result = await _handler.Handle(_query, CancellationToken.None);
+
+        result.Apprenticeship.Should().Be(_apprenticeship);
+        result.Apprenticeship.LearningType.Should().Be(_apprenticeship.LearningType);
+    }
+
+    [Test]
     public async Task When_Apprenticeship_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _apprenticeship = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetApprenticeshipResponse>(It.Is<GetApprenticeshipRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetApprenticeshipResponse>(_apprenticeship, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().ThrowAsync<ResourceNotFoundException>();
     }
 
@@ -303,129 +312,129 @@ public class GetManageApprenticeshipDetailsQueryHandlerTests
     public async Task When_PriceEpisodeResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _priceEpisodesResponse = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetPriceEpisodesResponse>(It.Is<GetPriceEpisodesRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetPriceEpisodesResponse>(_priceEpisodesResponse, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-        
+
     [Test]
     public async Task When_ApprenticeshipUpdatesResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _apprenticeshipUpdatesResponse = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetApprenticeshipUpdatesResponse>(It.Is<GetApprenticeshipUpdatesRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetApprenticeshipUpdatesResponse>(_apprenticeshipUpdatesResponse, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-        
+
     [Test]
     public async Task When_DataLocksResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _dataLockStatusResponse = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetDataLocksResponse>(It.Is<GetDataLocksRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetDataLocksResponse>(_dataLockStatusResponse, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-        
+
     [Test]
     public async Task When_ChangeOfPartyResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _changeOfPartyRequestsResponse = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetChangeOfPartyRequestsResponse>(It.Is<GetChangeOfPartyRequestsRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetChangeOfPartyRequestsResponse>(_changeOfPartyRequestsResponse, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-        
+
     [Test]
     public async Task When_ChangeOfProviderChainResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _changeOfProviderChainResponse = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetChangeOfProviderChainResponse>(It.Is<GetChangeOfProviderChainRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetChangeOfProviderChainResponse>(_changeOfProviderChainResponse, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-        
+
     [Test]
     public async Task When_ChangeOfEmployerChainResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _changeOfEmployerChainResponse = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetChangeOfEmployerChainResponse>(It.Is<GetChangeOfEmployerChainRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetChangeOfEmployerChainResponse>(_changeOfEmployerChainResponse, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-    
+
     [Test]
     public async Task When_OverlappingTrainingDatesResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _overlappingTrainingDateResponse = null;
-        
+
         _apiClient.Setup(x =>
                 x.GetWithResponseCode<GetOverlappingTrainingDateResponse>(It.Is<GetOverlappingTrainingDateRequest>(r => r.ApprenticeshipId == _query.ApprenticeshipId)))
             .ReturnsAsync(new ApiResponse<GetOverlappingTrainingDateResponse>(_overlappingTrainingDateResponse, HttpStatusCode.OK, string.Empty));
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-    
+
     [Test]
     public async Task When_DeliveryModelResponse_Is_Null_Then_No_Exception_Is_Thrown()
     {
         _deliveryModels = null;
-        
+
         _deliveryModelService.Setup(x => x.GetDeliveryModels(
                 It.Is<long>(p => p == _apprenticeship.ProviderId),
                 It.Is<string>(s => s == _apprenticeship.CourseCode),
                 It.Is<long>(ale => ale == _apprenticeship.AccountLegalEntityId),
                 It.Is<long?>(a => a == _apprenticeship.ContinuationOfId)))
             .ReturnsAsync(_deliveryModels);
-        
+
         var result = async () => await _handler.Handle(_query, CancellationToken.None);
-        
+
         await result.Should().NotThrowAsync();
     }
-    
+
     [Test]
     public async Task When_DeliveryModelResponse_Is_Null_Then_HasMultipleDeliveryModelOptions_IsFalse()
     {
         _deliveryModels = null;
-        
+
         _deliveryModelService.Setup(x => x.GetDeliveryModels(
                 It.Is<long>(p => p == _apprenticeship.ProviderId),
                 It.Is<string>(s => s == _apprenticeship.CourseCode),
                 It.Is<long>(ale => ale == _apprenticeship.AccountLegalEntityId),
                 It.Is<long?>(a => a == _apprenticeship.ContinuationOfId)))
             .ReturnsAsync(_deliveryModels);
-        
+
         var result = await _handler.Handle(_query, CancellationToken.None);
 
         result.HasMultipleDeliveryModelOptions.Should().BeFalse();

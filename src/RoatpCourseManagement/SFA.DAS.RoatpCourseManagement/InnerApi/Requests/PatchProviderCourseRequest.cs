@@ -42,6 +42,9 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
             if (model.IsApprovedByRegulator != null)
                 data.Add(new PatchOperation { Path = "IsApprovedByRegulator", Value = model.IsApprovedByRegulator, Op = Replace });
 
+            if (model.HasOnlineDeliveryOption != null)
+                data.Add(new PatchOperation { Path = "HasOnlineDeliveryOption", Value = model.HasOnlineDeliveryOption, Op = Replace });
+
             return data;
         }
     }

@@ -34,17 +34,17 @@ public class RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiCli
 
     public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Task<TResponse> Post<TResponse>(IPostApiRequest request)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Task Post<TData>(IPostApiRequest<TData> request)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public async Task Delete(IDeleteApiRequest request)
@@ -59,7 +59,7 @@ public class RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiCli
 
     public Task Patch<TData>(IPatchApiRequest<TData> request)
     {
-        throw new System.NotImplementedException();
+        throw new NotImplementedException();
     }
 
     public Task Put(IPutApiRequest request)
@@ -88,7 +88,7 @@ public class RecruitApiClient(IInternalApiClient<RecruitApiConfiguration> apiCli
 
     public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
     {
-        throw new NotImplementedException();
+        return apiClient.PatchWithResponseCode<TData, TResponse>(request, includeResponse);
     }
 
     public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)

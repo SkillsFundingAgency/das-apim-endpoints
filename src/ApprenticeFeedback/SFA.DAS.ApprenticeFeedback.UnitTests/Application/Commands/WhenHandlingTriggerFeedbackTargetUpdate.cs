@@ -48,7 +48,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 
             _mockApprenticeshipDetailsService
                 .Setup(a => a.Get(It.IsAny<Guid>(), It.IsAny<long>()))
-                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new LearnerData(), MyApprenticeshipData = null });
+                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new InnerApi.Requests.LearnerData(), MyApprenticeshipData = null });
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -67,7 +67,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 
             _mockApprenticeshipDetailsService
                 .Setup(a => a.Get(It.IsAny<Guid>(), It.IsAny<long>()))
-                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new LearnerData(), MyApprenticeshipData = null });
+                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new InnerApi.Requests.LearnerData(), MyApprenticeshipData = null });
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -124,7 +124,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 
             _mockApprenticeshipDetailsService
                 .Setup(a => a.Get(It.IsAny<Guid>(), It.IsAny<long>()))
-                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new LearnerData(), MyApprenticeshipData = new MyApprenticeshipData() });
+                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new InnerApi.Requests.LearnerData(), MyApprenticeshipData = new MyApprenticeshipData() });
 
             // Act
             await _handler.Handle(command, CancellationToken.None);
@@ -143,7 +143,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 
             _mockApprenticeshipDetailsService
                 .Setup(a => a.Get(It.IsAny<Guid>(), It.IsAny<long>()))
-                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new LearnerData(), MyApprenticeshipData = new MyApprenticeshipData() });
+                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new InnerApi.Requests.LearnerData(), MyApprenticeshipData = new MyApprenticeshipData() });
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
@@ -162,7 +162,7 @@ namespace SFA.DAS.ApprenticeFeedback.UnitTests.Application.Commands
 
             _mockApprenticeshipDetailsService
                 .Setup(a => a.Get(It.IsAny<Guid>(), It.IsAny<long>()))
-                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new LearnerData(), MyApprenticeshipData = new MyApprenticeshipData() });
+                .ReturnsAsync(new ApprenticeshipDetails { LearnerData = new InnerApi.Requests.LearnerData(), MyApprenticeshipData = new MyApprenticeshipData() });
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);

@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.ComponentModel;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;

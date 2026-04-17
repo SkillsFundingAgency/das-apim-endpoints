@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData.ShortCourses;
-using Milestone = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using Milestone = SFA.DAS.LearnerData.Requests.LearningInner.Milestone;
 using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses

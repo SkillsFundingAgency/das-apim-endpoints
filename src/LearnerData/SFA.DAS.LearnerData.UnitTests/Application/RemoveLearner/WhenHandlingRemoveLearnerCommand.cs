@@ -1,11 +1,6 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -13,6 +8,8 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using SFA.DAS.Apim.Shared.Infrastructure;
 

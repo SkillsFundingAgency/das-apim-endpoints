@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Recruit.Application.Queries.GetVacanciesByUkprn;
+using SFA.DAS.Recruit.Application.Queries.GetVacanciesByUkprn;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;

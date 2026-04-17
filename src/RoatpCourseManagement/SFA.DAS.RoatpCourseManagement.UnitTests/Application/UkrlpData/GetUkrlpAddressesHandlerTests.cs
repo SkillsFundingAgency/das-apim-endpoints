@@ -12,7 +12,8 @@ using Moq;
 using Moq.Protected;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.UkrlpData;
-using SFA.DAS.RoatpCourseManagement.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
+using UkrlpDataQuery = SFA.DAS.RoatpCourseManagement.Application.UkrlpData.UkrlpDataQuery;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.UkrlpData
 {

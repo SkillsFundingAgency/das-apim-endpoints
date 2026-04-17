@@ -48,7 +48,7 @@ public class GetCohortDetailsQueryHandlerTests
     private List<string> _deliveryModels;
     private Mock<IDeliveryModelService> _deliveryModelService;
     private Mock<IFjaaService> _fjaaService;
-    private Mock<IProviderStandardsService> _providerCoursesService;
+    private Mock<IProviderCoursesOrStandardsService> _providerCoursesService;
 
     [SetUp]
     public void Setup()
@@ -102,7 +102,7 @@ public class GetCohortDetailsQueryHandlerTests
         _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)_cohort.WithParty, _cohort.AccountId);
 
         _providerStandards = fixture.Create<List<Standard>>();
-        _providerCoursesService = new Mock<IProviderStandardsService>();
+        _providerCoursesService = new Mock<IProviderCoursesOrStandardsService>();
         _providerCoursesService.Setup(x => x.GetCoursesData(It.Is<long>(id => id == _cohort.ProviderId)))
             .ReturnsAsync(() => new ProviderStandardsData { Standards = _providerStandards });
 

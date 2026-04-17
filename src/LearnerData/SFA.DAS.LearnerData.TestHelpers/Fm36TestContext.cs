@@ -1,6 +1,6 @@
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 

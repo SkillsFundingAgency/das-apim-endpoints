@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
+using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;

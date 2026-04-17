@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.Requests;
+using System.Text.Json.Serialization;
+
+namespace SFA.DAS.LearnerData.Requests;
 
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
@@ -13,8 +15,10 @@ public class LearnerRequestDetails
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string? Email { get; set; }
+    [JsonRequired]
     public DateTime Dob { get; set; }
     public bool HasEhcp { get; set; }
+    [JsonRequired]
     public long Uln { get; set; }
 }
 

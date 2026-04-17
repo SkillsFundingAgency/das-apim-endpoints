@@ -1,4 +1,5 @@
-﻿using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 

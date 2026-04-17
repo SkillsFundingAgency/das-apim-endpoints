@@ -1,5 +1,5 @@
-﻿using SFA.DAS.LearnerData.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.Application.Fm36;
 

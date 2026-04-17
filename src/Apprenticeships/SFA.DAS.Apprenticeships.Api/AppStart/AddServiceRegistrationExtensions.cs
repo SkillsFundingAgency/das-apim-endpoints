@@ -4,7 +4,6 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Apim.Shared.Configuration;
-using SFA.DAS.Apprenticeships.Application.Notifications;
 using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -34,7 +33,6 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
-        services.AddTransient<IExtendedNotificationService, ExtendedNotificationService>();
 
 
         services.AddSingleton(new UrlBuilder(configuration["ResourceEnvironmentName"]));

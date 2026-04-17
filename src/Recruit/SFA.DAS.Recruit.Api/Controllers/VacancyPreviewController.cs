@@ -1,11 +1,11 @@
-using System;
-using System.Net;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetVacancyPreview;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.Controllers;
 

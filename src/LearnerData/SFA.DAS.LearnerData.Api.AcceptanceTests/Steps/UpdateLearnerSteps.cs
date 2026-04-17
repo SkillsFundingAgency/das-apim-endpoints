@@ -2,7 +2,7 @@ using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using System.Net.Http.Headers;
 

@@ -19,12 +19,12 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEd
     public class GetEditApprenticeshipCourseQueryHandler : IRequestHandler<GetEditApprenticeshipCourseQuery, GetEditApprenticeshipCourseQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IProviderStandardsService _providerStandardsService;
+        private readonly IProviderCoursesOrStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
         public GetEditApprenticeshipCourseQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IProviderStandardsService providerStandardsService,
+            IProviderCoursesOrStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;
@@ -50,7 +50,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEd
                 return null;
             }
 
-            var providerStandardsData = await _providerStandardsService.GetStandardsData(apprenticeship.ProviderId);
+            var providerStandardsData = await _providerStandardsService.GetCoursesData(apprenticeship.ProviderId);
 
             return new GetEditApprenticeshipCourseQueryResult
             {
