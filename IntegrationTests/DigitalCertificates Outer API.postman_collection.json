@@ -24,10 +24,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/certificates/{{StandardCertificateId}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/certificates/{{StandardCertificateId}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -59,10 +59,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/certificates/{{FrameworkLearnerId}}/framework",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/certificates/{{FrameworkLearnerId}}/framework",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -92,10 +92,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -123,10 +123,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{DeletedSharingId}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{DeletedSharingId}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -155,10 +155,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{SharingId}}/email",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{SharingId}}/email",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -188,10 +188,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/sharingaccess",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/sharingaccess",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -220,10 +220,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/sharingemailaccess",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/sharingemailaccess",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -252,10 +252,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/users/identity",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/identity",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -287,10 +287,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{SharingId}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/{{SharingId}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -322,10 +322,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/code/{{SharingLinkCode}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/code/{{SharingLinkCode}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -358,10 +358,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/certificates/{{StandardCertificateId}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/certificates/{{StandardCertificateId}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -394,10 +394,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/certificates/framework/{{FrameworkLearnerId}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/sharing/certificates/framework/{{FrameworkLearnerId}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -431,10 +431,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -466,10 +466,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/certificates",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/certificates",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -502,10 +502,10 @@
           }
         },
         "url": {
-          "raw": "https://{{Envionment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/sharings?certificateId={{StandardCertificateId}}",
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/sharings?certificateId={{StandardCertificateId}}",
           "protocol": "https",
           "host": [
-            "{{Envionment}}-apim-digc-api",
+            "{{Environment}}-apim-digc-api",
             "apprenticeships",
             "education",
             "gov",
@@ -563,7 +563,7 @@
   ],
   "variable": [
     {
-      "key": "Envionment",
+      "key": "Environment",
       "value": "pp"
     },
     {
