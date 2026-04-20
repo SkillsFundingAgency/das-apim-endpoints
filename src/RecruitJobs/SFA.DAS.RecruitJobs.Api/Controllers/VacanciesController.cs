@@ -320,9 +320,9 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data!.Vacancies.FirstOrDefault();
-        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Submitted })
+        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Submitted } or { DeletedDate: not null })
         {
-            // it's been transferred so ignore
+            // it's been transferred/deleted so ignore
             return TypedResults.NoContent();
         }
         
@@ -353,9 +353,9 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data!.Vacancies.FirstOrDefault();
-        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Approved })
+        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Approved } or { DeletedDate: not null })
         {
-            // it's been transferred so ignore
+            // it's been transferred/deleted so ignore
             return TypedResults.NoContent();
         }
         

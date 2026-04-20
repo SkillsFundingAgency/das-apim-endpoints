@@ -46,6 +46,6 @@ public class WhenAutoApprovingVacancy
         var datetime = Convert.ToDateTime(capturedRequest.Data.Operations.Find(x => x.path == "/ClosedDate").value);
         datetime.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
         
-        messageSession.Verify(x => x.Publish(It.Is<PublishVacancyCommand>(p => p.VacancyId == vacancyId), It.IsAny<PublishOptions>()), Times.Once);
+        messageSession.Verify(x => x.Send(It.Is<PublishVacancyCommand>(p => p.VacancyId == vacancyId), It.IsAny<SendOptions>()), Times.Once);
     }
 }

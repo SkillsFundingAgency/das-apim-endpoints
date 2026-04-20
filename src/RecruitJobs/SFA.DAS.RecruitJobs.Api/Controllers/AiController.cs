@@ -105,7 +105,7 @@ public class AiController: ControllerBase
         var patchVacancyReviewResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyReviewDto>, NullResponse>(request, false);
         patchVacancyReviewResponse.EnsureSuccessStatusCode();
         
-        await messageSession.Publish(new PublishVacancyCommand(vacancyId));
+        await messageSession.Send(new PublishVacancyCommand(vacancyId));
         return TypedResults.NoContent();
     }
 }
