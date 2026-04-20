@@ -1,5 +1,6 @@
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Shared;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -20,7 +21,7 @@ public class CreateUnapprovedShortCourseLearningRequest
     public Guid LearningKey { get; set; }
     public Guid EpisodeKey { get; set; }
     public Learner Learner { get; set; }
-    public List<LearningSupportItem> LearningSupport { get; set; }
+    public List<LearningSupport> LearningSupport { get; set; }
     public OnProgramme OnProgramme { get; set; }
 }
 
