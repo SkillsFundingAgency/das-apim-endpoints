@@ -12,8 +12,8 @@ public class PatchableVacancyDto
     public DateTime LiveDate { get; init; }
 }
 
-public sealed class PatchVacancyRequest(Guid vacancyReviewId, JsonPatchDocument<PatchableVacancyDto> data): IPatchApiRequest<JsonPatchDocument<PatchableVacancyDto>>
+public sealed class PatchVacancyRequest(Guid vacancyId, JsonPatchDocument<PatchableVacancyDto> data): IPatchApiRequest<JsonPatchDocument<PatchableVacancyDto>>
 {
-    public string PatchUrl { get; } = $"api/vacancies/{vacancyReviewId}";
+    public string PatchUrl { get; } = $"api/vacancies/{vacancyId}";
     public JsonPatchDocument<PatchableVacancyDto> Data { get; set; } = data;
 }

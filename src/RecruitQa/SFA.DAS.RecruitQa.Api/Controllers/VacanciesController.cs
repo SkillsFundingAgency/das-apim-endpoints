@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NServiceBus;
 using SFA.DAS.Recruit.GraphQL;
+using SFA.DAS.Recruit.Jobs.NServiceBus.Commands;
 using SFA.DAS.RecruitQa.Data.Models;
 using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.RecruitQa.GraphQL.RecruitInner.Mappers;
@@ -48,5 +50,13 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return response is { Data.Vacancies.Count: 1 }
             ? TypedResults.Ok(new DataResponse<Vacancy>(GqlVacancyMapper.From(response.Data.Vacancies[0])))
             : TypedResults.NotFound();
+    }
+    
+    [HttpPost, Route("{vacancyId:guid}/publish")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IResult> PublishVacancy([FromServices] IMessageSession messageSession, [FromRoute] Guid vacancyId)
+    {
+        await messageSession.Send(new PublishVacancyCommand(vacancyId));
+        return TypedResults.NoContent();
     }
 }
