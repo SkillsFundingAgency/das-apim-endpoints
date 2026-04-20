@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
+﻿using TechTalk.SpecFlow;
+
+namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 
 [Binding]
 

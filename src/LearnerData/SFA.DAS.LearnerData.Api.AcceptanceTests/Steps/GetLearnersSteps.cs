@@ -1,5 +1,13 @@
 ﻿using System.Net;
 using System.Net.Http.Headers;
+using AutoFixture;
+using FluentAssertions;
+using Newtonsoft.Json;
+using SFA.DAS.LearnerData.Application.GetLearners;
+using TechTalk.SpecFlow;
+using TechTalk.SpecFlow.Assist;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps;
 
