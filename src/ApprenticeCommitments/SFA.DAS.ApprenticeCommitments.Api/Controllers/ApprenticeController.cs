@@ -29,7 +29,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public Task<IActionResult> GetApprentice(Guid id)
             => _client.Get($"apprentices/{id}");
 
-        [HttpPatch("/apprentices/{id}")]
+
+        [HttpPatch("/apprentices/{id}"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]        
         public Task<IActionResult> UpdateApprentice(Guid id, JsonPatchDocument<Apprentice> patch)
             => _client.Patch($"apprentices/{id}", patch);
     }
