@@ -12,7 +12,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
         {
             var request = new GetFrameworkCertificateMasksRequest(new List<long> { 1000000001 });
 
-            request.GetUrl.Should().Be("api/v1/certificates/framework/search/masks?exclude=1000000001");
+            request.GetUrl.Should().Be("api/v1/certificates/framework/masks?exclude=1000000001");
         }
 
         [Test]
@@ -20,7 +20,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
         {
             var request = new GetFrameworkCertificateMasksRequest(new List<long> { 1000000001, 1000000002 });
 
-            request.GetUrl.Should().Be("api/v1/certificates/framework/search/masks?exclude=1000000001&exclude=1000000002");
+            request.GetUrl.Should().Be("api/v1/certificates/framework/masks?exclude=1000000001&exclude=1000000002");
         }
     }
 }

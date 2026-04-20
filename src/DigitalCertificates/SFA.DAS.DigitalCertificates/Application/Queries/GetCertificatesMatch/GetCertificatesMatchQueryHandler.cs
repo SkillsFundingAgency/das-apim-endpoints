@@ -8,9 +8,11 @@ using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
+using SFA.DAS.DigitalCertificates.Enums;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 {
@@ -18,13 +20,16 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
     {
         private readonly IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> _digitalCertificatesApiClient;
         private readonly IAssessorsApiClient<AssessorsApiConfiguration> _assessorsApiClient;
+        private readonly Configuration.DigitalCertificatesConfiguration _configuration;
 
         public GetCertificatesMatchQueryHandler(
             IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration> digitalCertificatesApiClient,
-            IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient)
+            IAssessorsApiClient<AssessorsApiConfiguration> assessorsApiClient,
+            Configuration.DigitalCertificatesConfiguration configuration)
         {
             _digitalCertificatesApiClient = digitalCertificatesApiClient;
             _assessorsApiClient = assessorsApiClient;
+            _configuration = configuration;
         }
 
         public async Task<GetCertificatesMatchResult> Handle(GetCertificatesMatchQuery request, CancellationToken cancellationToken)
@@ -88,21 +93,22 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
             // Step 3: Collect all ULNs (new matches plus previously excluded) for mask retrieval
 
             var standardUlns = allMatches
-                .Where(m => m.CertificateType == "Standard")
+                .Where(m => IsCertificateType(m.CertificateType, CertificateType.Standard))
                 .Select(m => m.Uln)
                 .Union(excludedUlns)
                 .Distinct()
                 .ToList();
 
             var frameworkUlns = allMatches
-                .Where(m => m.CertificateType == "Framework")
+                .Where(m => IsCertificateType(m.CertificateType, CertificateType.Framework))
                 .Select(m => m.Uln)
                 .Union(excludedUlns)
                 .Distinct()
                 .ToList();
 
             // Step 4: Retrieve masking data for standard and/or framework certificates
-            var allMasks = new List<CertificateMaskResult>();
+            var standardMasksList = new List<CertificateMaskResult>();
+            var frameworkMasksList = new List<CertificateMaskResult>();
 
             if (standardUlns.Count > 0)
             {
@@ -114,7 +120,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
                     masksResponse.EnsureSuccessStatusCode();
                     if (masksResponse.Body?.Masks != null)
                     {
-                        allMasks.AddRange(masksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
+                        standardMasksList.AddRange(masksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
                     }
                 }
             }
@@ -129,16 +135,51 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
                     frameworkMasksResponse.EnsureSuccessStatusCode();
                     if (frameworkMasksResponse.Body?.Masks != null)
                     {
-                        allMasks.AddRange(frameworkMasksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
+                        frameworkMasksList.AddRange(frameworkMasksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
                     }
                 }
             }
 
+            var maxMasks = _configuration?.MaxMasks ?? 5;
+            var standardCount = _configuration?.StandardMaskCount ?? 3;
+
+            // Select masks using explicit selection logic: take up to `standardCount` from standard, remaining from framework, total `maxMasks`
+            var selectedMasks = SelectMasks(standardMasksList, frameworkMasksList, maxMasks, standardCount);
+
             return new GetCertificatesMatchResult
             {
                 Matches = allMatches,
-                Masks = allMasks.Take(5).ToList()
+                Masks = selectedMasks
             };
+        }
+
+        private static bool IsCertificateType(string value, CertificateType expected)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return false;
+            return System.Enum.TryParse<CertificateType>(value, true, out var parsed) && parsed == expected;
+        }
+
+        private static List<CertificateMaskResult> SelectMasks(
+            List<CertificateMaskResult> standardMasks,
+            List<CertificateMaskResult> frameworkMasks,
+            int maxMasks,
+            int standardCount)
+        {
+            var result = new List<CertificateMaskResult>();
+
+            // Take up to `standardCount` from standard first 
+            var takeStandard = Math.Min(standardCount, maxMasks);
+            result.AddRange(standardMasks.Take(takeStandard));
+
+            // Fill remaining slots from framework
+            if (result.Count < maxMasks)
+                result.AddRange(frameworkMasks.Take(maxMasks - result.Count));
+
+            // If still slots remaining, backfill from remaining standard
+            if (result.Count < maxMasks)
+                result.AddRange(standardMasks.Skip(takeStandard).Take(maxMasks - result.Count));
+
+            return result.Take(maxMasks).ToList();
         }
     }
 }

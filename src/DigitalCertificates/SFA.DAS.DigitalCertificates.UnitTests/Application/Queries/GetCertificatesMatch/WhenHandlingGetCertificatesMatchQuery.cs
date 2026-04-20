@@ -9,6 +9,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
+using SFA.DAS.DigitalCertificates.Configuration;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
@@ -29,6 +30,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             GetUserIdentityResponse identityBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] DigitalCertificatesConfiguration configuration,
             GetCertificatesMatchQueryHandler handler)
         {
             // Arrange
@@ -41,6 +43,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(
                     It.Is<GetUserIdentityRequest>(r => r.UserId == userId)))
                 .ReturnsAsync(identityResponse);
+
+            configuration.MaxMasks = 5;
+            configuration.StandardMaskCount = 3;
 
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -58,6 +63,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             GetCertificatesMatchQuery query,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] DigitalCertificatesConfiguration configuration,
             GetCertificatesMatchQueryHandler handler)
         {
             // Arrange
@@ -68,6 +74,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             mockDigitalCertificatesApiClient
                 .Setup(c => c.GetWithResponseCode<GetUserIdentityResponse>(It.IsAny<GetUserIdentityRequest>()))
                 .ReturnsAsync(identityResponse);
+
+            configuration.MaxMasks = 5;
+            configuration.StandardMaskCount = 3;
 
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
@@ -88,6 +97,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             GetUserIdentityResponse identityBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] DigitalCertificatesConfiguration configuration,
             GetCertificatesMatchQueryHandler handler)
         {
             // Arrange
@@ -110,6 +120,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
                 .Setup(c => c.GetWithResponseCode<GetCertificateSearchResponse>(It.IsAny<GetCertificateSearchRequest>()))
                 .ReturnsAsync(searchResponse);
 
+            configuration.MaxMasks = 5;
+            configuration.StandardMaskCount = 3;
+
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -126,6 +139,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             GetCertificateMasksResponse masksBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] DigitalCertificatesConfiguration configuration,
             GetCertificatesMatchQueryHandler handler)
         {
             // Arrange
@@ -150,7 +164,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             {
                 Matches =
                 [
-                    new CertificateSearchMatch { Uln = 1000000001, CertificateType = "Standard", CourseName = "Course A", CourseCode = "ABC", CourseLevel = "3", ProviderName = "Provider X", Ukprn = 10000001 }
+                    new CertificateSearchMatch { Uln = 1000000001, CertificateType = "Standard", CourseName = "Course A", CourseCode = "ABC", CourseLevel = "3", ProviderName = "Provider X", Ukprn = "10000001" }
                 ]
             };
 
@@ -169,6 +183,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
                 .Setup(c => c.GetWithResponseCode<GetCertificateMasksResponse>(It.IsAny<GetStandardCertificateMasksRequest>()))
                 .ReturnsAsync(masksResponse);
 
+            configuration.MaxMasks = 5;
+            configuration.StandardMaskCount = 3;
+
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -185,6 +202,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             GetCertificateMasksResponse masksBody,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] DigitalCertificatesConfiguration configuration,
             GetCertificatesMatchQueryHandler handler)
         {
             // Arrange
@@ -209,7 +227,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             {
                 Matches =
                 [
-                    new CertificateSearchMatch { Uln = 1000000002, CertificateType = "Framework", CourseName = "Framework B", CourseCode = "FWK", CourseLevel = "2", ProviderName = "Provider Y", Ukprn = 10000002 }
+                    new CertificateSearchMatch { Uln = 1000000002, CertificateType = "Framework", CourseName = "Framework B", CourseCode = "FWK", CourseLevel = "2", ProviderName = "Provider Y", Ukprn = "10000002" }
                 ]
             };
 
@@ -228,6 +246,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
                 .Setup(c => c.GetWithResponseCode<GetCertificateMasksResponse>(It.IsAny<GetFrameworkCertificateMasksRequest>()))
                 .ReturnsAsync(frameworkMasksResponse);
 
+            configuration.MaxMasks = 5;
+            configuration.StandardMaskCount = 3;
+
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -243,6 +264,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             GetCertificatesMatchQuery query,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
             [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> mockAssessorsApiClient,
+            [Frozen] DigitalCertificatesConfiguration configuration,
             GetCertificatesMatchQueryHandler handler)
         {
             // Arrange
@@ -297,6 +319,9 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             mockAssessorsApiClient
                 .Setup(c => c.GetWithResponseCode<GetCertificateMasksResponse>(It.IsAny<GetFrameworkCertificateMasksRequest>()))
                 .ReturnsAsync(frameworkMasksResponse);
+
+            configuration.MaxMasks = 5;
+            configuration.StandardMaskCount = 3;
 
             // Act
             var actual = await handler.Handle(query, CancellationToken.None);
