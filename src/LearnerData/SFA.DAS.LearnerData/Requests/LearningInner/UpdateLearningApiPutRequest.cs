@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner
 {
@@ -20,7 +21,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public Delivery Delivery { get; set; }
         public LearningUpdateDetails Learner { get; set; }
         public List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; }
-        public List<LearningSupportUpdatedDetails> LearningSupport { get; set; }
+        public List<LearningSupport> LearningSupport { get; set; }
         public OnProgrammeDetails OnProgramme { get; set; }
     }
 
@@ -61,12 +62,6 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public int? PriorLearningPercentage { get; set; }
         public decimal Amount { get; set; }
         public List<BreakInLearning> BreaksInLearning { get; set; }
-    }
-
-    public class LearningSupportUpdatedDetails
-    {
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
     }
 
     public class Delivery

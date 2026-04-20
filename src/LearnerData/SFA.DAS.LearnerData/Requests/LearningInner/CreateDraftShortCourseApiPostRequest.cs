@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Shared;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
@@ -23,7 +24,7 @@ public class CreateDraftShortCourseRequest
     /// <summary>
     /// Learning support details
     /// </summary>
-    public List<LearningSupportItem> LearningSupport { get; set; } = new();
+    public List<LearningSupport> LearningSupport { get; set; } = new();
 
     /// <summary>
     /// On programme details

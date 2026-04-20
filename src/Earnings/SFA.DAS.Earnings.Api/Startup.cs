@@ -7,6 +7,7 @@ using SFA.DAS.Earnings.Application.Training;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.Earnings.Api;
 
