@@ -49,9 +49,10 @@ public class GetStandardResponse
 
     private static bool IsActiveStandard(CourseDates courseDates)
     {
-        return courseDates?.LastDateStarts is DateTime lastDateStarts
-               && lastDateStarts < DateTime.UtcNow
-               && lastDateStarts != courseDates.EffectiveFrom;
+        var isActive = (courseDates?.LastDateStarts == null) || (courseDates?.LastDateStarts is DateTime lastDateStarts
+                       && lastDateStarts < DateTime.UtcNow
+                       && lastDateStarts != courseDates.EffectiveFrom);
+        return isActive;
     }
 
     public static implicit operator GetStandardResponse(GetStandardResponseFromCourseManagementApi source) =>
