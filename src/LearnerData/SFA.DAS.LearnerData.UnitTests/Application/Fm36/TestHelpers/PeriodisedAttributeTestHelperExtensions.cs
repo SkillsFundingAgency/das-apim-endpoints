@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Abstract;
+
+namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
 internal static class PeriodisedAttributeTestHelperExtensions
 {

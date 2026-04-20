@@ -3,6 +3,15 @@ using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
+using AutoFixture;
+using FluentAssertions;
+using Newtonsoft.Json;
+using TechTalk.SpecFlow;
+using WireMock;
+using WireMock.RequestBuilders;
+using WireMock.ResponseBuilders;
+using WireMock.Types;
+using WireMock.Util;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Steps.Fm36;
 

@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using TechTalk.SpecFlow;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
 

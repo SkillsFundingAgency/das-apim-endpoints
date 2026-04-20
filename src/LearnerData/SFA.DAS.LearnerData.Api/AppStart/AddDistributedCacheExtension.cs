@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.LearnerData.Api.AppStart;
 

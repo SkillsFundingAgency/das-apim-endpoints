@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests;
 

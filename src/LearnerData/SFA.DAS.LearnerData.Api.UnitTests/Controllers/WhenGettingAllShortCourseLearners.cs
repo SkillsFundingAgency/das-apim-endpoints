@@ -1,5 +1,15 @@
 ﻿using SFA.DAS.LearnerData.Api.Controllers;
 using System.Net;
+using AutoFixture.NUnit3;
+using FluentAssertions;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Moq;
+using NUnit.Framework;
+using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 

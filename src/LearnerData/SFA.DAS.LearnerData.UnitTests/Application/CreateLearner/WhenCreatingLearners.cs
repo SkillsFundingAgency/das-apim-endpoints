@@ -1,4 +1,7 @@
-﻿using SFA.DAS.LearnerData.Application.CreateLearner;
+﻿using AutoFixture;
+using Microsoft.Extensions.Logging;
+using NServiceBus;
+using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 
