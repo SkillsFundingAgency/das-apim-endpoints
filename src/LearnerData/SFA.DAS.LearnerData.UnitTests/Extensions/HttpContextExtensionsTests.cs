@@ -1,4 +1,6 @@
-﻿using SFA.DAS.LearnerData.Responses;
+﻿using Microsoft.AspNetCore.Http;
+using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Responses;
 
 namespace SFA.DAS.LearnerData.UnitTests.Extensions;
 

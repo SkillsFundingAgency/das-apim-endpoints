@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
@@ -8,15 +9,10 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.LearnerData.Responses.Learning;
-
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using CreateUnapprovedShortCourseLearningRequest = SFA.DAS.LearnerData.Requests.CreateUnapprovedShortCourseLearningRequest;
+using PostCreateUnapprovedShortCourseLearningRequest = SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 

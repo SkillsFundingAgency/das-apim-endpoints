@@ -12,6 +12,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Rofjaa;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;

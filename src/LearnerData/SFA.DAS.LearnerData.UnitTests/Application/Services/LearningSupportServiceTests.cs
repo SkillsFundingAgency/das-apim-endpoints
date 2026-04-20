@@ -2,6 +2,7 @@ using AutoFixture;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -14,13 +15,13 @@ public class LearningSupportServiceTests
         // Arrange
         var testData = new TestData(hasOnProgrammeBreaks: true);
 
-        var lsf1 = new LearningSupportRequestDetails
+        var lsf1 = new LearningSupport
         {
             StartDate = testData.FirstOnProgramme.StartDate,
             EndDate = testData.FirstOnProgramme.PauseDate!.Value
         };
 
-        var lsf2 = new LearningSupportRequestDetails
+        var lsf2 = new LearningSupport
         {
             StartDate = testData.LatestOnProgramme.StartDate,
             EndDate = testData.LatestOnProgramme.ExpectedEndDate
@@ -50,7 +51,7 @@ public class LearningSupportServiceTests
         // Arrange
         var testData = new TestData(hasOnProgrammeBreaks: true);
 
-        var lsf1 = new LearningSupportRequestDetails
+        var lsf1 = new LearningSupport
         {
             StartDate = testData.FirstOnProgramme.StartDate,
             EndDate = testData.FirstOnProgramme.PauseDate!.Value.AddMonths(1)
@@ -68,7 +69,7 @@ public class LearningSupportServiceTests
             testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
 
         // Assert
-        var expected = new LearningSupportUpdatedDetails
+        var expected = new LearningSupport
         {
             StartDate = testData.FirstOnProgramme.StartDate,
             EndDate = testData.FirstOnProgramme.PauseDate.Value
@@ -83,7 +84,7 @@ public class LearningSupportServiceTests
         // Arrange
         var testData = new TestData(hasOnProgrammeBreaks: true);
 
-        var lsf1 = new LearningSupportRequestDetails
+        var lsf1 = new LearningSupport
         {
             StartDate = testData.LatestOnProgramme.StartDate.AddMonths(-1),
             EndDate = testData.LatestOnProgramme.ExpectedEndDate
@@ -101,7 +102,7 @@ public class LearningSupportServiceTests
             testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
 
         // Assert
-        var expected = new LearningSupportUpdatedDetails
+        var expected = new LearningSupport
         {
             StartDate = testData.LatestOnProgramme.StartDate,
             EndDate = testData.LatestOnProgramme.ExpectedEndDate
@@ -116,7 +117,7 @@ public class LearningSupportServiceTests
         // Arrange
         var testData = new TestData(hasOnProgrammeBreaks: true);
 
-        var lsf1 = new LearningSupportRequestDetails
+        var lsf1 = new LearningSupport
         {
             StartDate = testData.FirstOnProgramme.StartDate,
             EndDate = testData.LatestOnProgramme.ExpectedEndDate
@@ -136,8 +137,8 @@ public class LearningSupportServiceTests
         // Assert
         var expected = new[]
         {
-            new LearningSupportUpdatedDetails { StartDate = testData.FirstOnProgramme.StartDate, EndDate = testData.FirstOnProgramme.PauseDate.Value },
-            new LearningSupportUpdatedDetails { StartDate = testData.LatestOnProgramme.StartDate, EndDate = testData.LatestOnProgramme.ExpectedEndDate }
+            new LearningSupport { StartDate = testData.FirstOnProgramme.StartDate, EndDate = testData.FirstOnProgramme.PauseDate.Value },
+            new LearningSupport { StartDate = testData.LatestOnProgramme.StartDate, EndDate = testData.LatestOnProgramme.ExpectedEndDate }
         };
 
         actual.Should().BeEquivalentTo(expected, opts => opts.WithoutStrictOrdering());
@@ -151,7 +152,7 @@ public class LearningSupportServiceTests
         var pauseDate = testData.FirstMathsAndEnglishDetails.StartDate.AddMonths(6);
         testData.FirstMathsAndEnglishDetails.PauseDate = pauseDate;
 
-        var lsf1 = new LearningSupportRequestDetails
+        var lsf1 = new LearningSupport
         {
             StartDate = testData.FirstMathsAndEnglishDetails.StartDate,
             EndDate = pauseDate
@@ -170,7 +171,7 @@ public class LearningSupportServiceTests
             testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
 
         // Assert
-        var expected = new LearningSupportUpdatedDetails
+        var expected = new LearningSupport
         {
             StartDate = lsf1.StartDate,
             EndDate = pauseDate
@@ -183,7 +184,7 @@ public class LearningSupportServiceTests
     public void With_EnglishAndMaths_LearningSupport_With_Breaks_Then_LSF_Is_Split()
     {
         var testData = new TestData(hasEnglishAndMathsBreaks: true);
-        var lsf1 = new LearningSupportRequestDetails
+        var lsf1 = new LearningSupport
         {
             StartDate = testData.FirstMathsAndEnglishDetails.StartDate,
             EndDate = testData.LatestMathsAndEnglishDetails.PlannedEndDate
@@ -202,13 +203,13 @@ public class LearningSupportServiceTests
             testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
         
         // Assert
-        var expected = new List<LearningSupportUpdatedDetails>
+        var expected = new List<LearningSupport>
         {
-            new LearningSupportUpdatedDetails{
+            new LearningSupport{
                 StartDate = lsf1.StartDate,
                 EndDate = testData.EnglishAndMathsPauseDate!.Value
             },
-            new LearningSupportUpdatedDetails{
+            new LearningSupport{
                 StartDate = testData.EnglishAndMathsResumeDate!.Value,
                 EndDate = lsf1.EndDate
             }
@@ -232,8 +233,8 @@ public class LearningSupportServiceTests
         internal DateTime? EnglishAndMathsResumeDate { get; set; }
 
         internal List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; } = new List<MathsAndEnglishDetails>();
-        private List<KeyValuePair<string, List<LearningSupportRequestDetails>>> _englishAndMathsRequestedLearningSupport = new List<KeyValuePair<string, List<LearningSupportRequestDetails>>>();
-        internal IEnumerable<KeyValuePair<string, List<LearningSupportRequestDetails>>> EnglishAndMathsRequestedLearningSupportByLearnAimRef => _englishAndMathsRequestedLearningSupport;
+        private List<KeyValuePair<string, List<LearningSupport>>> _englishAndMathsRequestedLearningSupport = new List<KeyValuePair<string, List<LearningSupport>>>();
+        internal IEnumerable<KeyValuePair<string, List<LearningSupport>>> EnglishAndMathsRequestedLearningSupportByLearnAimRef => _englishAndMathsRequestedLearningSupport;
 
         internal TestData(bool hasOnProgrammeBreaks = false, bool hasEnglishAndMathsBreaks = false)
         {
@@ -289,9 +290,9 @@ public class LearningSupportServiceTests
             LatestMathsAndEnglishDetails = EnglishAndMathsCourses.OrderBy(x => x.StartDate).Last();
         }
 
-        internal void AddEnglishAndMathsLearningSupport(string learnAimRef, LearningSupportRequestDetails lsf)
+        internal void AddEnglishAndMathsLearningSupport(string learnAimRef, LearningSupport lsf)
         {
-            _englishAndMathsRequestedLearningSupport.Add(new KeyValuePair<string, List<LearningSupportRequestDetails>>(learnAimRef, new List<LearningSupportRequestDetails> { lsf }));
+            _englishAndMathsRequestedLearningSupport.Add(new KeyValuePair<string, List<LearningSupport>>(learnAimRef, new List<LearningSupport> { lsf }));
         }
 
         private void EnglishAndMathsSetupWithBreaks(DateTime startDate, string learnAimRef)
