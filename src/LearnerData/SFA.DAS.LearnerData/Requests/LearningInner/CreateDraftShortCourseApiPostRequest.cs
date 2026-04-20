@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
@@ -90,10 +91,4 @@ public class OnProgramme
     /// Learning type of the short course
     /// </summary>
     public LearningType LearningType { get; set; }
-}
-
-public enum Milestone
-{
-    ThirtyPercentLearningComplete = 1,
-    LearningComplete = 2
 }

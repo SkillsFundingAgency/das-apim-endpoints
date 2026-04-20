@@ -1,7 +1,8 @@
-
-
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Constants;
+
+namespace SFA.DAS.LearnerData.Requests;
 
 public class PostCreateUnapprovedShortCourseLearningRequest : IPostApiRequest
 {
@@ -50,12 +51,6 @@ public class OnProgramme
     public decimal TotalPrice { get; set; }
 
     public LearningType LearningType { get; set; }
-}
-
-public enum Milestone
-{
-    ThirtyPercentLearningComplete = 1,
-    LearningComplete = 2,
 }
 
 public class LearningSupportItem

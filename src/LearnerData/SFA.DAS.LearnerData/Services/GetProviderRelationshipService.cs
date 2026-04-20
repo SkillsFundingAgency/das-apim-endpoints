@@ -7,6 +7,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Rofjaa;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Rofjaa;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;

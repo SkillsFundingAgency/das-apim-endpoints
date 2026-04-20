@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Enums;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
 

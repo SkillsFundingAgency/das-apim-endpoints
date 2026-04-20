@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.LearnerData.Requests;
+﻿using SFA.DAS.LearnerData.Enums;
+
+namespace SFA.DAS.LearnerData.Requests;
 
 #pragma warning disable CS8618
 public class ShortCourseRequest
@@ -35,9 +37,5 @@ public class ShortCourseOnProgramme
     public Milestone[] Milestones { get; set; }
 }
 
-public enum Milestone
-{
-    ThirtyPercentLearningComplete = 1,
-    LearningComplete = 2
-}
+
 #pragma warning restore CS8618
