@@ -112,4 +112,132 @@ public class GetStandardResponseTests
         // Assert
         act.Should().Throw<NullReferenceException>();
     }
+
+    [Test]
+    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsNull_IsActiveAvailableReturnsTrue()
+    {
+        // Arrange
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = null,
+                EffectiveFrom = null,
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
+    }
+
+    [Test]
+    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsFutureDateAndNotSameAsEffectiveFrom_IsActiveAvailableReturnsTrue()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(1),
+                EffectiveFrom = dateTimeNow
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
+    }
+
+    [Test]
+    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsFutureDateAndEffectiveFromIsNull_IsActiveAvailableReturnsTrue()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(1),
+                EffectiveFrom = null
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
+    }
+
+    [Test]
+    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsFutureDateAndIsSameAsEffectiveFrom_IsActiveAvailableReturnsFalse()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(1),
+                EffectiveFrom = dateTimeNow.AddDays(1),
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeFalse();
+    }
+
+    [Test]
+    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsPastDate_IsActiveAvailableReturnsFalse()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(-1),
+                EffectiveFrom = dateTimeNow
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeFalse();
+    }
+
+    [Test]
+    public void ImplicitConversion_FromCourseManagementApi_CourseDatesIsNull_IsActiveAvailableReturnsTrue()
+    {
+        // Arrange
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = null
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
+    }
 }
