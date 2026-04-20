@@ -1,4 +1,7 @@
-﻿namespace SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
+﻿using System.Text.Json.Serialization;
+using SFA.DAS.LearnerData.Enums;
+
+namespace SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
 
 #pragma warning disable CS8618
 public class Learning
@@ -22,5 +25,7 @@ public class Episode
     public decimal Price { get; set; }
     public bool IsApproved { get; set; }
     public string LearnerRef { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public EmployerType EmployerType { get; set; }
 }
 #pragma warning restore CS8618

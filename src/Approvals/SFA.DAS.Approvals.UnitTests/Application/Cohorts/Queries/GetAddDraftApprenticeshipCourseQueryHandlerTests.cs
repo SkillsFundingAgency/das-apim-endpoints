@@ -26,7 +26,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             GetAccountLegalEntityResponse accountLegalEntity,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, provider.ProviderId);
 
@@ -58,7 +58,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             GetAccountLegalEntityResponse accountLegalEntity,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, provider.ProviderId);
 

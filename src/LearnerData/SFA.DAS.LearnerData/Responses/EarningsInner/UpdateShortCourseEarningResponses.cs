@@ -23,3 +23,7 @@ public class UpdateShortCourseEarningPutResponse : ShortCourseEarningsResponse
 public class ShortCourseEarningGetResponse : ShortCourseEarningsResponse
 {
 }
+
+public class DeleteShortCourseEarningsResponse : ShortCourseEarningsResponse
+{
+}
