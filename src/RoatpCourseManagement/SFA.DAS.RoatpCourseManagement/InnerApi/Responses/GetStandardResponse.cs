@@ -20,7 +20,7 @@ public class GetStandardResponse
     public int Duration { get; set; }
     public DurationUnits DurationUnits { get; set; }
     public CourseType CourseType { get; set; }
-    public bool IsActive { get; set; }
+    public bool IsActiveAvailable { get; set; }
 
     public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source)
     {
@@ -43,16 +43,16 @@ public class GetStandardResponse
             Duration = apprenticeshipFunding?.Duration ?? 0,
             DurationUnits = apprenticeshipFunding?.DurationUnits ?? default(DurationUnits),
             CourseType = source.CourseType,
-            IsActive = IsActiveStandard(source.CourseDates)
+            IsActiveAvailable = IsActiveAvailableStandard(source.CourseDates)
         };
     }
 
-    private static bool IsActiveStandard(CourseDates courseDates)
+    private static bool IsActiveAvailableStandard(CourseDates courseDates)
     {
-        var isActive = (courseDates?.LastDateStarts == null) || (courseDates?.LastDateStarts is DateTime lastDateStarts
-                       && lastDateStarts < DateTime.UtcNow
-                       && lastDateStarts != courseDates.EffectiveFrom);
-        return isActive;
+        var isActiveAvailable = (courseDates?.LastDateStarts == null) ||
+                       (courseDates.LastDateStarts > DateTime.UtcNow
+                       && courseDates.LastDateStarts != courseDates.EffectiveFrom);
+        return isActiveAvailable;
     }
 
     public static implicit operator GetStandardResponse(GetStandardResponseFromCourseManagementApi source) =>
