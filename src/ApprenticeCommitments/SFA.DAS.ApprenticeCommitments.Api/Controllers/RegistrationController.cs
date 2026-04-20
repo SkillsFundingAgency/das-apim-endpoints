@@ -20,7 +20,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
             => _client.Get($"registrations/{registrationId}");
 
         [HttpGet]
-        [Route("/registration/{registrationId}")]
+        [Route("registration/registration-details/{registrationId}")]
         public Task<IActionResult> GetRegistrationById(Guid registrationId)
             => _client.Get($"registration/{registrationId}");
 
