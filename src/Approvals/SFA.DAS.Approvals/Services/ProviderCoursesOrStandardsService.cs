@@ -23,6 +23,11 @@ public interface IProviderCoursesOrStandardsService
     Task<ProviderStandardsData> GetCoursesData(long providerId);
 }
 
+public interface IProviderStandardsService
+{
+    Task<ProviderStandardsData> GetCoursesData(long providerId);
+}
+
 public class ProviderStandardsService(
     ServiceParameters serviceParameters,
     ITrainingProviderService trainingProviderService,
@@ -30,7 +35,7 @@ public class ProviderStandardsService(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
     ICacheStorageService cacheStorageService,
     ILogger<ProviderStandardsService> logger)
-    : IProviderCoursesOrStandardsService
+    : IProviderCoursesOrStandardsService, IProviderStandardsService
 {
     public const string AllCoursesCacheKey = "ProviderCoursesService.GetAllCoursesResponse";
     public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";

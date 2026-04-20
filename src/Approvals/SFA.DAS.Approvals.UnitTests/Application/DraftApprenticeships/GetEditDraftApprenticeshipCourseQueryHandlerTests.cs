@@ -25,7 +25,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             GetCohortResponse cohort,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, cohort.ProviderId);
 
@@ -53,7 +53,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             GetCohortResponse cohort,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, cohort.ProviderId);
 
@@ -77,7 +77,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             GetCohortResponse cohort,
             ProviderStandardsData providerStandardsData,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, cohort.ProviderId + 1);
 
@@ -101,7 +101,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships
             ProviderStandardsData providerStandardsData,
             long providerId,
             [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
-            [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService)
+            [Frozen] Mock<IProviderStandardsService> providerStandardsService)
         {
             var serviceParameters = new ServiceParameters(Party.Provider, providerId);
 
