@@ -5,11 +5,7 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.LearnerData.Responses.Learning;
-
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LearnerData;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 
