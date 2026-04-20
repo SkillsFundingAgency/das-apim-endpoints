@@ -303,7 +303,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
     }
     
-    [HttpPost, Route("{vacancId:guid}/approve")]
+    [HttpPost, Route("{vacancyId:guid}/approve")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IResult> ApproveVacancy(
@@ -336,7 +336,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         return TypedResults.NoContent();
     }
     
-    [HttpPost, Route("{vacancId:guid}/publish")]
+    [HttpPost, Route("{vacancyId:guid}/publish")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IResult> PublishVacancy(
