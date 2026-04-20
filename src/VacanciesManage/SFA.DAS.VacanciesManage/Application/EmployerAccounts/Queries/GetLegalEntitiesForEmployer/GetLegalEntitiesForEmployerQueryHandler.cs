@@ -10,18 +10,12 @@ using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer
 {
-    public class GetLegalEntitiesForEmployerQueryHandler : IRequestHandler<GetLegalEntitiesForEmployerQuery, GetLegalEntitiesForEmployerResult>
+    public class GetLegalEntitiesForEmployerQueryHandler(IAccountsApiClient<AccountsConfiguration> accountsApiClient)
+        : IRequestHandler<GetLegalEntitiesForEmployerQuery, GetLegalEntitiesForEmployerResult>
     {
-        private readonly IAccountsApiClient<AccountsConfiguration> _accountsApiClient;
-
-        public GetLegalEntitiesForEmployerQueryHandler(IAccountsApiClient<AccountsConfiguration> accountsApiClient)
-        {
-            _accountsApiClient = accountsApiClient;
-        }
-        
         public async Task<GetLegalEntitiesForEmployerResult> Handle(GetLegalEntitiesForEmployerQuery request, CancellationToken cancellationToken)
         {
-            var resourceListResponse = await _accountsApiClient.Get<AccountDetail>(
+            var resourceListResponse = await accountsApiClient.Get<AccountDetail>(
                 new GetAllEmployerAccountLegalEntitiesRequest(request.EncodedAccountId));
 
             var legalEntities = new List<GetEmployerAccountLegalEntityItem>();
@@ -36,7 +30,7 @@ namespace SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalE
 
             foreach (var resource in resourceListResponse.LegalEntities)
             {
-                var accountLegalEntityItem = await _accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(
+                var accountLegalEntityItem = await accountsApiClient.Get<GetEmployerAccountLegalEntityItem>(
                     new GetEmployerAccountLegalEntityRequest(resource.Href));
 
                 if (accountLegalEntityItem.Agreements.Any(c => c.Status == EmployerAgreementStatus.Signed))

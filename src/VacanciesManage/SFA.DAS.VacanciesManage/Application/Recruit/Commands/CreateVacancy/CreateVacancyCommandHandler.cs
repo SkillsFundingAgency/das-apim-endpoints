@@ -1,12 +1,10 @@
 using MediatR;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Services;
 using System;
@@ -16,11 +14,18 @@ using System.Security;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Extensions;
+using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
+using Operation = SFA.DAS.SharedOuterApi.Models.ProviderRelationships.Operation;
+using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
+using PostVacancyRequest = SFA.DAS.Recruit.Contracts.ApiResponses.PostVacancyRequest;
+using PutVacancyReviewRequest = SFA.DAS.Recruit.Contracts.ApiResponses.PutVacancyReviewRequest;
+using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
+using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 
-public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configuration> recruitApiV2Client,
+public class CreateVacancyCommandHandler(
+    DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
     IAccountLegalEntityPermissionService accountLegalEntityPermissionService,
     ICourseService courseService,
     ITrainingProviderService trainingProviderService,
@@ -30,7 +35,7 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
     {
         var dateTimeNow = DateTime.UtcNow;
         var accountLegalEntity = await accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
-            request.PostVacancyV2RequestData.AccountLegalEntityPublicHashedId);
+            request.PostVacancyRequest.AccountLegalEntityPublicHashedId);
 
         // if the account legal entity cannot be found or the account legal entity is not associated with the given Training Provider UKPRN, throw a security exception as the user should not have access to create a vacancy.
         if (accountLegalEntity == null)
@@ -39,7 +44,7 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
         }
 
         // additional check to validate the given Training Provider UKPRN is valid.
-        var trainingProvider = await trainingProviderService.GetProviderDetails((int)request.PostVacancyV2RequestData.TrainingProvider.Ukprn);
+        var trainingProvider = await trainingProviderService.GetProviderDetails((int)request.PostVacancyRequest.TrainingProvider.Ukprn);
         if (trainingProvider == null)
         {
             throw new HttpRequestContentException("Training Provider UKPRN not valid", HttpStatusCode.NotFound);
@@ -51,31 +56,31 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
             throw new HttpRequestContentException("UKPRN of a training provider must be registered to deliver apprenticeship training", HttpStatusCode.Forbidden);
         }
 
-        request.PostVacancyV2RequestData.LegalEntityName = accountLegalEntity.Name;
+        request.PostVacancyRequest.LegalEntityName = accountLegalEntity.Name;
 
-        request.PostVacancyV2RequestData.OwnerType = request.AccountIdentifier.AccountType == AccountType.Provider 
+        request.PostVacancyRequest.OwnerType = request.AccountIdentifier.AccountType == AccountType.Provider
             ? OwnerType.Provider 
             : OwnerType.Employer;
             
-        request.PostVacancyV2RequestData.AccountId = accountLegalEntity.AccountId;
-        request.PostVacancyV2RequestData.AccountLegalEntityId = accountLegalEntity.AccountLegalEntityId;
+        request.PostVacancyRequest.AccountId = accountLegalEntity.AccountId;
+        request.PostVacancyRequest.AccountLegalEntityId = accountLegalEntity.AccountLegalEntityId;
 
         var standards = await courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
         var course = standards.Standards.FirstOrDefault(c =>
-            c.LarsCode.ToString() == request.PostVacancyV2RequestData.ProgrammeId);
+            c.LarsCode.ToString() == request.PostVacancyRequest.ProgrammeId);
         
-        request.PostVacancyV2RequestData.ApprenticeshipType = "Standard";
+        request.PostVacancyRequest.ApprenticeshipType = "Standard";
             
         if (course is { ApprenticeshipType: ApprenticeshipType.FoundationApprenticeship })
         {
-            request.PostVacancyV2RequestData.Qualifications = [];
-            request.PostVacancyV2RequestData.Skills = [];
-            request.PostVacancyV2RequestData.ApprenticeshipType = "Foundation";
+            request.PostVacancyRequest.Qualifications = [];
+            request.PostVacancyRequest.Skills = [];
+            request.PostVacancyRequest.ApprenticeshipType = "Foundation";
         }
 
-        if (course != null && ((course.LastDateStarts != null && course.LastDateStarts < request.PostVacancyV2RequestData.StartDate)
-                               || (course.EffectiveTo !=null && course.EffectiveTo < request.PostVacancyV2RequestData.StartDate)))
+        if (course != null && ((course.LastDateStarts != null && course.LastDateStarts < request.PostVacancyRequest.StartDate)
+                               || (course.EffectiveTo !=null && course.EffectiveTo < request.PostVacancyRequest.StartDate)))
         {
             var dateToDisplay = course.LastDateStarts ?? course.EffectiveTo.Value;
                     
@@ -85,21 +90,28 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
                 HttpStatusCode.BadRequest,
                 message);
         }
-        var postValidateVacancyRequest = new PostVacancyV2Request(request.PostVacancyV2RequestData);
+        var postValidateVacancyRequest = new PostVacanciesApiRequest
+        {
+            RuleSet = VacancyRuleSet.All,
+            Data = new PostVacancyRequest
+            {
+
+            }
+        };
 
         var requiresEmployerApproval = await CheckEmployerApprovalNeeded(request);
 
         if (requiresEmployerApproval)
         {
-            request.PostVacancyV2RequestData.Status = nameof(VacancyStatus.Review);
+            request.PostVacancyRequest.Status = nameof(VacancyStatus.Review);
         }
         else
         {
-            request.PostVacancyV2RequestData.Status = nameof(VacancyStatus.Submitted);
-            request.PostVacancyV2RequestData.SubmittedDate = dateTimeNow;
+            request.PostVacancyRequest.Status = nameof(VacancyStatus.Submitted);
+            request.PostVacancyRequest.SubmittedDate = dateTimeNow;
         }
 
-        var result = await recruitApiV2Client.PostWithResponseCode<PostVacancyResponse>(postValidateVacancyRequest);
+        var result = await recruitApiClient.PostWithResponseCode<PostVacancyRequest, Vacancy>(postValidateVacancyRequest);
             
         HandleHttpResponseError(result);
 
@@ -107,30 +119,35 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
             return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
 
         var slaDeadline = await slaService.GetSlaDeadlineAsync(dateTimeNow);
-        var vacancyReview = new PutVacancyReviewRequest.PutVacancyReviewRequestData
+        var vacancyReview = new PutVacancyreviewsByIdApiRequest
         {
-            VacancyReference = result.Body.VacancyReference,
-            VacancyTitle = request.PostVacancyV2RequestData.Title,
-            CreatedDate = dateTimeNow,
-            Status = ReviewStatus.New,
-            VacancySnapshot = JsonSerializer.Serialize(request.PostVacancyV2RequestData, new JsonSerializerOptions
+            Id = Guid.NewGuid(),
+            Data = new PutVacancyReviewRequest
             {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                PropertyNameCaseInsensitive = true
-            }),
-            SubmittedByUserEmail = request.PostVacancyV2RequestData?.Contact?.Email,
-            SubmissionCount = 1,
-            SlaDeadLine = slaDeadline,
-            UpdatedFieldIdentifiers = [],
-            DismissedAutomatedQaOutcomeIndicators = [],
+                VacancyReference = result.Body.VacancyReference.ToString(),
+                VacancyTitle = request.PostVacancyRequest.Title,
+                CreatedDate = dateTimeNow,
+                Status = ReviewStatus.New,
+                VacancySnapshot = JsonSerializer.Serialize(request.PostVacancyRequest, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                    PropertyNameCaseInsensitive = true
+                }),
+                SubmittedByUserEmail = request.PostVacancyRequest?.Contact?.Email,
+                SubmissionCount = 1,
+                SlaDeadLine = slaDeadline,
+                UpdatedFieldIdentifiers = [],
+                DismissedAutomatedQaOutcomeIndicators = [],
+            }
         };
-        var response = await recruitApiV2Client.PutWithResponseCode<PutVacancyReviewResponse>(new PutVacancyReviewRequest(Guid.NewGuid(), vacancyReview));
-        response.EnsureSuccessStatusCode();
+
+        var reviewResponse = await recruitApiClient.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(vacancyReview);
+        reviewResponse.EnsureSuccessStatusCode();
 
         return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
     }
 
-    private static void HandleHttpResponseError<T>(ApiResponse<T> result)
+    private static void HandleHttpResponseError<T>(Apim.Shared.Models.ApiResponse<T> result)
     {
         if ((int) result.StatusCode >= 200 && (int) result.StatusCode <= 299) return;
         if (result.StatusCode.Equals(HttpStatusCode.BadRequest))
@@ -144,12 +161,12 @@ public class CreateVacancyCommandHandler(IRecruitApiClient<RecruitApiV2Configura
 
     private async Task<bool> CheckEmployerApprovalNeeded(CreateVacancyCommand request)
     {
-        if (request.PostVacancyV2RequestData.OwnerType != OwnerType.Provider)
+        if (request.PostVacancyRequest.OwnerType != OwnerType.Provider)
             return false;
 
         bool hasPermission = await accountLegalEntityPermissionService.HasProviderGotEmployersPermissionAsync(
-            request.PostVacancyV2RequestData.TrainingProvider.Ukprn,
-            request.PostVacancyV2RequestData.AccountId,
+            request.PostVacancyRequest.TrainingProvider.Ukprn,
+            request.PostVacancyRequest.AccountId,
             [Operation.RecruitmentRequiresReview]); 
             
         return !hasPermission;

@@ -13,45 +13,44 @@ using SFA.DAS.VacanciesManage.Api.Controllers;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
 
-namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
+namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers;
+
+public class WhenGettingCandidateSkills
 {
-    public class WhenGettingCandidateSkills
+    [Test, MoqAutoData]
+    public async Task Then_Gets_Skills_From_Mediator(
+        GetCandidateSkillsQueryResponse mediatorResult,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] ReferenceDataController controller)
     {
-        [Test, MoqAutoData]
-        public async Task Then_Gets_Skills_From_Mediator(
-            GetCandidateSkillsQueryResponse mediatorResult,
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ReferenceDataController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCandidateSkillsQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(mediatorResult);
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetCandidateSkillsQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
 
-            var controllerResult = await controller.GetSkills() as ObjectResult;
+        var controllerResult = await controller.GetSkills() as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            var model = controllerResult.Value as GetCandidateSkillsListResponse;
-            Assert.That(model, Is.Not.Null);
-            model.CandidateSkills.Should().BeEquivalentTo(mediatorResult.CandidateSkills);
-        }
+        Assert.That(controllerResult, Is.Not.Null);
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
+        var model = controllerResult.Value as GetCandidateSkillsListResponse;
+        Assert.That(model, Is.Not.Null);
+        model.CandidateSkills.Should().BeEquivalentTo(mediatorResult.CandidateSkills);
+    }
 
-        [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
-            [Frozen] Mock<IMediator> mockMediator,
-            [Greedy] ReferenceDataController controller)
-        {
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.IsAny<GetCandidateSkillsQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new InvalidOperationException());
+    [Test, MoqAutoData]
+    public async Task And_Exception_Then_Returns_Bad_Request(
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] ReferenceDataController controller)
+    {
+        mockMediator
+            .Setup(mediator => mediator.Send(
+                It.IsAny<GetCandidateSkillsQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ThrowsAsync(new InvalidOperationException());
 
-            var controllerResult = await controller.GetSkills() as StatusCodeResult;
+        var controllerResult = await controller.GetSkills() as StatusCodeResult;
 
-            controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
-        }
+        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 }

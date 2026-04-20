@@ -4,73 +4,72 @@ using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.VacanciesManage.Application.Providers.Queries.GetProviderAccountLegalEntities;
 
-namespace SFA.DAS.VacanciesManage.Api.Models
-{
-    public class GetAccountLegalEntitiesListResponse
-    {
-        public IReadOnlyList<GetAccountLegalEntitiesItem> AccountLegalEntities { get; set; }
-        public static implicit operator GetAccountLegalEntitiesListResponse(
-            GetLegalEntitiesForEmployerResult source)
-        {
-            if (source.LegalEntities == null)
-            {
-                return new GetAccountLegalEntitiesListResponse
-                {
-                    AccountLegalEntities = new List<GetAccountLegalEntitiesItem>()
-                };
-            }
-            
-            return new GetAccountLegalEntitiesListResponse
-            {
-                AccountLegalEntities = source.LegalEntities.Select(item => (GetAccountLegalEntitiesItem)item).ToList()
-            };
-        }
+namespace SFA.DAS.VacanciesManage.Api.Models;
 
-        public static implicit operator GetAccountLegalEntitiesListResponse(
-            GetProviderAccountLegalEntitiesQueryResponse source)
+public class GetAccountLegalEntitiesListResponse
+{
+    public IReadOnlyList<GetAccountLegalEntitiesItem> AccountLegalEntities { get; set; }
+    public static implicit operator GetAccountLegalEntitiesListResponse(
+        GetLegalEntitiesForEmployerResult source)
+    {
+        if (source.LegalEntities == null)
         {
-            if (source.ProviderAccountLegalEntities == null)
-            {
-                return new GetAccountLegalEntitiesListResponse
-                {
-                    AccountLegalEntities = new List<GetAccountLegalEntitiesItem>()
-                };
-            }
-            
             return new GetAccountLegalEntitiesListResponse
             {
-                AccountLegalEntities = source.ProviderAccountLegalEntities.Select(item => (GetAccountLegalEntitiesItem)item).ToList()
+                AccountLegalEntities = new List<GetAccountLegalEntitiesItem>()
             };
         }
+            
+        return new GetAccountLegalEntitiesListResponse
+        {
+            AccountLegalEntities = source.LegalEntities.Select(item => (GetAccountLegalEntitiesItem)item).ToList()
+        };
     }
 
-    public class GetAccountLegalEntitiesItem
+    public static implicit operator GetAccountLegalEntitiesListResponse(
+        GetProviderAccountLegalEntitiesQueryResponse source)
     {
-        public string AccountLegalEntityName { get; set; }
-        public string AccountLegalEntityPublicHashedId { get; set; }
-        public string AccountPublicHashedId { get ; set ; }
-        public string AccountName { get ; set ; }
-
-        public static implicit operator GetAccountLegalEntitiesItem(GetEmployerAccountLegalEntityItem source)
+        if (source.ProviderAccountLegalEntities == null)
         {
-            return new GetAccountLegalEntitiesItem
+            return new GetAccountLegalEntitiesListResponse
             {
-                AccountLegalEntityName = source.AccountLegalEntityName,
-                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
-                AccountPublicHashedId = source.AccountPublicHashedId,
-                AccountName = source.AccountName
+                AccountLegalEntities = new List<GetAccountLegalEntitiesItem>()
             };
         }
-
-        public static implicit operator GetAccountLegalEntitiesItem(GetProviderAccountLegalEntityItem source)
+            
+        return new GetAccountLegalEntitiesListResponse
         {
-            return new GetAccountLegalEntitiesItem
-            {
-                AccountLegalEntityName = source.AccountLegalEntityName,
-                AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
-                AccountPublicHashedId = source.AccountPublicHashedId,
-                AccountName = source.AccountName
-            };
-        }
+            AccountLegalEntities = source.ProviderAccountLegalEntities.Select(item => (GetAccountLegalEntitiesItem)item).ToList()
+        };
+    }
+}
+
+public class GetAccountLegalEntitiesItem
+{
+    public string AccountLegalEntityName { get; set; }
+    public string AccountLegalEntityPublicHashedId { get; set; }
+    public string AccountPublicHashedId { get ; set ; }
+    public string AccountName { get ; set ; }
+
+    public static implicit operator GetAccountLegalEntitiesItem(GetEmployerAccountLegalEntityItem source)
+    {
+        return new GetAccountLegalEntitiesItem
+        {
+            AccountLegalEntityName = source.AccountLegalEntityName,
+            AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+            AccountPublicHashedId = source.AccountPublicHashedId,
+            AccountName = source.AccountName
+        };
+    }
+
+    public static implicit operator GetAccountLegalEntitiesItem(GetProviderAccountLegalEntityItem source)
+    {
+        return new GetAccountLegalEntitiesItem
+        {
+            AccountLegalEntityName = source.AccountLegalEntityName,
+            AccountLegalEntityPublicHashedId = source.AccountLegalEntityPublicHashedId,
+            AccountPublicHashedId = source.AccountPublicHashedId,
+            AccountName = source.AccountName
+        };
     }
 }

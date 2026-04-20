@@ -1,36 +1,25 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.SharedOuterApi.Services
 {
-    public class CourseService : ICourseService
+    public class CourseService(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
+        ICacheStorageService cacheStorageService)
+        : ICourseService
     {
         private const int CourseCacheExpiryInHours = 4;
-        private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
-        private readonly ICacheStorageService _cacheStorageService;
 
-        public CourseService (ICoursesApiClient<CoursesApiConfiguration> coursesApiClient, ICacheStorageService cacheStorageService)
-        {
-            _coursesApiClient = coursesApiClient;
-            _cacheStorageService = cacheStorageService;
-        }
-        
         public async Task<GetRoutesListResponse> GetRoutes()
         {
-            var response = await _cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));
+            var response = await cacheStorageService.RetrieveFromCache<GetRoutesListResponse>(nameof(GetRoutesListResponse));
             if (response == null)
             {
-                response = await _coursesApiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
+                response = await coursesApiClient.Get<GetRoutesListResponse>(new GetRoutesListRequest());
 
-                await _cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), response, 23);
+                await cacheStorageService.SaveToCache(nameof(GetRoutesListResponse), response, 23);
             }
 
             return response;
@@ -38,12 +27,12 @@ namespace SFA.DAS.SharedOuterApi.Services
 
         public async Task<GetCourseLevelsListResponse> GetLevels()
         {
-            var response = await _cacheStorageService.RetrieveFromCache<GetCourseLevelsListResponse>(nameof(GetCourseLevelsListResponse));
+            var response = await cacheStorageService.RetrieveFromCache<GetCourseLevelsListResponse>(nameof(GetCourseLevelsListResponse));
             if (response == null)
             {
-                response = await _coursesApiClient.Get<GetCourseLevelsListResponse>(new GetCourseLevelsListRequest());
+                response = await coursesApiClient.Get<GetCourseLevelsListResponse>(new GetCourseLevelsListRequest());
 
-                await _cacheStorageService.SaveToCache(nameof(GetCourseLevelsListResponse), response, 23);
+                await cacheStorageService.SaveToCache(nameof(GetCourseLevelsListResponse), response, 23);
             }
             return response;
         }
@@ -51,7 +40,7 @@ namespace SFA.DAS.SharedOuterApi.Services
         public async Task<T> GetActiveStandards<T>(string cacheItemName)
         {
             var cachedCourses =
-                await _cacheStorageService.RetrieveFromCache<T>(
+                await cacheStorageService.RetrieveFromCache<T>(
                     cacheItemName);
 
             if (cachedCourses != null)
@@ -59,9 +48,9 @@ namespace SFA.DAS.SharedOuterApi.Services
                 return cachedCourses;
             }
 
-            var apiCourses = await _coursesApiClient.Get<T>(new GetActiveStandardsListRequest());
+            var apiCourses = await coursesApiClient.Get<T>(new GetActiveStandardsListRequest());
 
-            await _cacheStorageService.SaveToCache(cacheItemName, apiCourses, CourseCacheExpiryInHours);
+            await cacheStorageService.SaveToCache(cacheItemName, apiCourses, CourseCacheExpiryInHours);
 
             return apiCourses;
         }

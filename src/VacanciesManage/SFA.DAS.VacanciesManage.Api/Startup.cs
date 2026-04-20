@@ -16,109 +16,110 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
+using SFA.DAS.VacanciesManage.Api.Filters;
 
-namespace SFA.DAS.VacanciesManage.Api
+namespace SFA.DAS.VacanciesManage.Api;
+
+public static class Startup
 {
-    public static class Startup
+    public static void ConfigureServices(
+        IServiceCollection services, 
+        IWebHostEnvironment environment, 
+        IConfigurationRoot configuration)
     {
-        public static void ConfigureServices(
-            IServiceCollection services, 
-            IWebHostEnvironment environment, 
-            IConfigurationRoot configuration)
+        services.AddSingleton(environment);
+
+        services.AddConfigurationOptions(configuration);
+
+        if (!configuration.IsLocalOrDev())
         {
-            services.AddSingleton(environment);
-
-            services.AddConfigurationOptions(configuration);
-
-            if (!configuration.IsLocalOrDev())
+            var azureAdConfiguration = configuration
+                .GetSection("AzureAd")
+                .Get<AzureActiveDirectoryConfiguration>();
+            var policies = new Dictionary<string, string>
             {
-                var azureAdConfiguration = configuration
-                    .GetSection("AzureAd")
-                    .Get<AzureActiveDirectoryConfiguration>();
-                var policies = new Dictionary<string, string>
-                {
-                    {"default", "APIM"}
-                };
+                {"default", "APIM"}
+            };
 
-                services.AddAuthentication(azureAdConfiguration, policies);
-            }
+            services.AddAuthentication(azureAdConfiguration, policies);
+        }
 
-            services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetQualificationsQuery).Assembly));
-            services.AddServiceRegistration();
+        services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetQualificationsQuery).Assembly));
+        services.AddServiceRegistration();
             
-            services.Configure<RouteOptions>(options =>
-                {
-                    options.LowercaseUrls = true;
-                    options.LowercaseQueryStrings = true;
-                }).AddMvc(o =>
-                {
-                    if (!configuration.IsLocalOrDev())
-                    {
-                        o.Filters.Add(new AuthorizeFilter("default"));
-                    }
-                })
-                .AddJsonOptions(options =>
-                {
-                    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-                    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                });
-
-            if (configuration["Environment"] != "DEV")
+        services.Configure<RouteOptions>(options =>
             {
-                services.AddHealthChecks()
-                    .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
-            }
+                options.LowercaseUrls = true;
+                options.LowercaseQueryStrings = true;
+            }).AddMvc(o =>
+            {
+                if (!configuration.IsLocalOrDev())
+                {
+                    o.Filters.Add(new AuthorizeFilter("default"));
+                }
+            })
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+            });
+
+        if (configuration["Environment"] != "DEV")
+        {
+            services.AddHealthChecks()
+                .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
+        }
             
-            if (configuration.IsLocalOrDev())
-            {
-                services.AddDistributedMemoryCache();
-            }
-            else
-            {
-                var vacanciesManageConfiguration = configuration
-                    .GetSection("VacanciesManageConfiguration")
-                    .Get<VacanciesManageConfiguration>();
+        if (configuration.IsLocalOrDev())
+        {
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            var vacanciesManageConfiguration = configuration
+                .GetSection("VacanciesManageConfiguration")
+                .Get<VacanciesManageConfiguration>();
 
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = vacanciesManageConfiguration.ApimEndpointsRedisConnectionString;
-                });
-            }
-            
-            services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
-
-            services.AddSwaggerGen(c =>
+            services.AddStackExchangeRedisCache(options =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create adverts for Find an apprenticeship using your own system." });
-                var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
-                c.IncludeXmlComments(filePath);
+                options.Configuration = vacanciesManageConfiguration.ApimEndpointsRedisConnectionString;
             });
         }
-        
-        public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)
-        {
-            app.UseAuthentication();
-
-            if (!configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
-            {
-                app.UseHealthChecks();
-            }
             
-            app.UseRouting();
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "api/{controller=vacancy}/{action=index}/{id?}");
-            });
+        services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
+
+        services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create adverts for Find an apprenticeship using your own system." });
+            var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
+            c.IncludeXmlComments(filePath);
+            c.SchemaFilter<FlagsEnumSchemaFilter>();
+        });
+    }
         
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "recruitment-api-live-name");
-                c.DocumentTitle = "";
-                c.RoutePrefix = string.Empty;
-            });
+    public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)
+    {
+        app.UseAuthentication();
+
+        if (!configuration["Environment"].Equals("DEV", StringComparison.CurrentCultureIgnoreCase))
+        {
+            app.UseHealthChecks();
         }
+            
+        app.UseRouting();
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllerRoute(
+                name: "default",
+                pattern: "api/{controller=vacancy}/{action=index}/{id?}");
+        });
+        
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "recruitment-api-live-name");
+            c.DocumentTitle = "";
+            c.RoutePrefix = string.Empty;
+        });
     }
 }

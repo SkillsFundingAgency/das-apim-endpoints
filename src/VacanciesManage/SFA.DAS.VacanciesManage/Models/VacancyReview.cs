@@ -1,6 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.Domain.Recruit;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 
 namespace SFA.DAS.VacanciesManage.Models;
 
