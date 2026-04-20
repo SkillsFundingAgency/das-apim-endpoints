@@ -23,7 +23,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetLocations
 
         public async Task<GetLocationsResult> Handle(GetLocationsQuery request, CancellationToken cancellationToken)
         {
-            var minMatch = _configuration?.MinMatch ?? 0.4;
+            var minMatch = _configuration?.LocationsApiMinMatch ?? 0.4;
 
             var response = await _locationApiClient.GetWithResponseCode<GetAddressesListResponse>(new GetAddressesQueryRequest(request.Query, minMatch));
 
