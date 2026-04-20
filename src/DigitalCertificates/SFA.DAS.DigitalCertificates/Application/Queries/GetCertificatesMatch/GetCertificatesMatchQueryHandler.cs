@@ -12,6 +12,7 @@ using SFA.DAS.DigitalCertificates.Enums;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Models;
 using System;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
@@ -110,33 +111,34 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
             var standardMasksList = new List<CertificateMaskResult>();
             var frameworkMasksList = new List<CertificateMaskResult>();
 
-            if (standardUlns.Count > 0)
-            {
-                var masksResponse = await _assessorsApiClient
-                    .GetWithResponseCode<GetCertificateMasksResponse>(new GetStandardCertificateMasksRequest(standardUlns));
+            // Retrieve masks in parallel where applicable
+            var standardTask = standardUlns.Count > 0
+                ? _assessorsApiClient.GetWithResponseCode<GetCertificateMasksResponse>(new GetStandardCertificateMasksRequest(standardUlns))
+                : Task.FromResult<ApiResponse<GetCertificateMasksResponse>>(null);
 
-                if (masksResponse != null && masksResponse.StatusCode != HttpStatusCode.NotFound)
+            var frameworkTask = frameworkUlns.Count > 0
+                ? _assessorsApiClient.GetWithResponseCode<GetCertificateMasksResponse>(new GetFrameworkCertificateMasksRequest(frameworkUlns))
+                : Task.FromResult<ApiResponse<GetCertificateMasksResponse>>(null);
+
+            await Task.WhenAll(standardTask, frameworkTask);
+
+            var masksResponse = standardTask.Result;
+            if (masksResponse != null && masksResponse.StatusCode != HttpStatusCode.NotFound)
+            {
+                masksResponse.EnsureSuccessStatusCode();
+                if (masksResponse.Body?.Masks != null)
                 {
-                    masksResponse.EnsureSuccessStatusCode();
-                    if (masksResponse.Body?.Masks != null)
-                    {
-                        standardMasksList.AddRange(masksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
-                    }
+                    standardMasksList.AddRange(masksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
                 }
             }
 
-            if (frameworkUlns.Count > 0)
+            var frameworkMasksResponse = frameworkTask.Result;
+            if (frameworkMasksResponse != null && frameworkMasksResponse.StatusCode != HttpStatusCode.NotFound)
             {
-                var frameworkMasksResponse = await _assessorsApiClient
-                    .GetWithResponseCode<GetCertificateMasksResponse>(new GetFrameworkCertificateMasksRequest(frameworkUlns));
-
-                if (frameworkMasksResponse != null && frameworkMasksResponse.StatusCode != HttpStatusCode.NotFound)
+                frameworkMasksResponse.EnsureSuccessStatusCode();
+                if (frameworkMasksResponse.Body?.Masks != null)
                 {
-                    frameworkMasksResponse.EnsureSuccessStatusCode();
-                    if (frameworkMasksResponse.Body?.Masks != null)
-                    {
-                        frameworkMasksList.AddRange(frameworkMasksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
-                    }
+                    frameworkMasksList.AddRange(frameworkMasksResponse.Body.Masks.Select(m => (CertificateMaskResult)m));
                 }
             }
 
