@@ -20,6 +20,7 @@ public class GetStandardResponse
     public int Duration { get; set; }
     public DurationUnits DurationUnits { get; set; }
     public CourseType CourseType { get; set; }
+    public bool IsActive { get; set; }
 
     public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source)
     {
@@ -41,8 +42,16 @@ public class GetStandardResponse
             IsRegulatedForProvider = source.IsRegulatedForProvider,
             Duration = apprenticeshipFunding?.Duration ?? 0,
             DurationUnits = apprenticeshipFunding?.DurationUnits ?? default(DurationUnits),
-            CourseType = source.CourseType
+            CourseType = source.CourseType,
+            IsActive = IsActiveStandard(source.CourseDates)
         };
+    }
+
+    private static bool IsActiveStandard(CourseDates courseDates)
+    {
+        return courseDates?.LastDateStarts is DateTime lastDateStarts
+               && lastDateStarts < DateTime.UtcNow
+               && lastDateStarts != courseDates.EffectiveFrom;
     }
 
     public static implicit operator GetStandardResponse(GetStandardResponseFromCourseManagementApi source) =>
@@ -75,12 +84,20 @@ public class GetStandardResponseFromCoursesApi
     public string Route { get; set; }
     public bool IsRegulatedForProvider { get; set; }
     public CourseType CourseType { get; set; }
+    public CourseDates CourseDates { get; set; }
 }
 public class ApprenticeshipFunding
 {
     public DateTime EffectiveFrom { get; set; }
     public DurationUnits DurationUnits { get; set; }
     public int Duration { get; set; }
+}
+
+public class CourseDates
+{
+    public DateTime? LastDateStarts { get; set; }
+    public DateTime? EffectiveTo { get; set; }
+    public DateTime? EffectiveFrom { get; set; }
 }
 
 public class GetStandardResponseFromCourseManagementApi
