@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Interfaces;

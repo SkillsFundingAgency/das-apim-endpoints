@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.LearnerData.Responses.LearningInner
+namespace SFA.DAS.LearnerData.Requests.LearningInner
 {
     public class GetLearningsRequest : IGetApiRequest
     {

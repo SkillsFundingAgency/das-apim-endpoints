@@ -1,16 +1,12 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.LearnerData.Responses.LearningInner;
-
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Earnings;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Learning;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 namespace SFA.DAS.LearnerData.Application.RemoveLearner;
 
