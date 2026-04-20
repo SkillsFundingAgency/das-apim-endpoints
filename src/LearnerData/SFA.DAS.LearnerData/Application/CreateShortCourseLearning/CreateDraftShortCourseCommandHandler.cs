@@ -39,7 +39,7 @@ public class CreateDraftShortCourseCommandHandler(
 
         var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn, requestData);
 
-        await earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
+        await earningsApiClient.Post(new SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
         var correlationId = Guid.NewGuid();
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData, command.ShortCourseRequest, correlationId));

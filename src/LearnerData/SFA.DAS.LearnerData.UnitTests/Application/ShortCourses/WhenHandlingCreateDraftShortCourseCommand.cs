@@ -11,8 +11,6 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using CreateUnapprovedShortCourseLearningRequest = SFA.DAS.LearnerData.Requests.CreateUnapprovedShortCourseLearningRequest;
-using PostCreateUnapprovedShortCourseLearningRequest = SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 

@@ -1,5 +1,6 @@
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Shared;
 
@@ -38,7 +39,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
             }).ToList(),
-            OnProgramme = new SFA.DAS.LearnerData.Requests.OnProgramme
+            OnProgramme = new Requests.EarningsInner.OnProgramme
             {
                 StartDate = firstOnProg.StartDate,
                 CompletionDate = firstOnProg.CompletionDate,
