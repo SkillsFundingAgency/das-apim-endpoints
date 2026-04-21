@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Requests;
 

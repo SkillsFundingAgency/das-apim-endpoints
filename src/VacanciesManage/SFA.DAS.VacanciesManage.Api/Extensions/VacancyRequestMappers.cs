@@ -1,8 +1,8 @@
-﻿using System;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
+﻿using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.VacanciesManage.Api.Models;
-using EmployerNameOption = SFA.DAS.VacanciesManage.Api.Models.EmployerNameOption;
+using System;
 using DurationUnit = SFA.DAS.VacanciesManage.Api.Models.DurationUnit;
+using EmployerNameOption = SFA.DAS.VacanciesManage.Api.Models.EmployerNameOption;
 using QualificationWeighting = SFA.DAS.VacanciesManage.Api.Models.QualificationWeighting;
 using WageType = SFA.DAS.VacanciesManage.Api.Models.WageType;
 

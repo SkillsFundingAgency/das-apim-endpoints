@@ -1,6 +1,6 @@
-﻿using System;
+﻿using SFA.DAS.Recruit.Contracts.ApiResponses;
+using System;
 using System.Collections.Generic;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
 
 namespace SFA.DAS.VacanciesManage.Models;
 

@@ -1,16 +1,16 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.EmployerAccounts.Queries;
 
@@ -47,8 +47,8 @@ public class WhenHandlingGetLegalEntitiesForEmployerQuery
 
         //assert
         result.LegalEntities.Should()
-            .BeEquivalentTo(legalEntities.Where(c=>
-                c.Agreements.Any(x=>x.Status == EmployerAgreementStatus.Signed)).ToList(), options=>options.Excluding(c=>c.AccountPublicHashedId));
+            .BeEquivalentTo(legalEntities.Where(c =>
+                c.Agreements.Any(x => x.Status == EmployerAgreementStatus.Signed)).ToList(), options => options.Excluding(c => c.AccountPublicHashedId));
         result.LegalEntities.ToList().TrueForAll(c => c.AccountPublicHashedId.Equals(query.EncodedAccountId))
             .Should().BeTrue();
         result.LegalEntities.ToList().TrueForAll(c => c.AccountName.Equals(apiResponse.DasAccountName))
@@ -69,10 +69,10 @@ public class WhenHandlingGetLegalEntitiesForEmployerQuery
                 It.Is<GetAllEmployerAccountLegalEntitiesRequest>(request =>
                     request.EncodedAccountId.Equals(query.EncodedAccountId))))
             .ReturnsAsync((AccountDetail)null);
-            
+
         //act
         var result = await handler.Handle(query, CancellationToken.None);
-            
+
         //Assert
         result.LegalEntities.Should().BeEmpty();
     }

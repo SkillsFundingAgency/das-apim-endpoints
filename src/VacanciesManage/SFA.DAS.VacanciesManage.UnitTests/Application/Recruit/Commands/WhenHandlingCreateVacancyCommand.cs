@@ -4,12 +4,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Models.Roatp;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models.Roatp;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
@@ -34,7 +34,7 @@ public class WhenHandlingCreateVacancyCommand
         AccountLegalEntityItem accountLegalEntityItem,
         ProviderDetailsModel trainingProviderDetails,
         [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
-        [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
         [Frozen] Mock<ICourseService> courseServiceMock,
         [Frozen] Mock<ITrainingProviderService> trainingProviderService,
         CreateVacancyCommandHandler handler)
@@ -48,7 +48,7 @@ public class WhenHandlingCreateVacancyCommand
         var matchingStandard = new GetStandardsListItem
         {
             LarsCode = ExpectedLarsCode,
-            ApprenticeshipType = ApprenticeshipType.Apprenticeship
+            ApprenticeshipType = LearningType.Apprenticeship
         };
 
         var getStandardsResponse = new GetStandardsListResponse
@@ -90,7 +90,7 @@ public class WhenHandlingCreateVacancyCommand
         AccountLegalEntityItem accountLegalEntityItem,
         ProviderDetailsModel trainingProviderDetails,
         [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
-        [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
         [Frozen] Mock<ICourseService> courseServiceMock,
         [Frozen] Mock<ITrainingProviderService> trainingProviderService,
         CreateVacancyCommandHandler handler)
@@ -104,7 +104,7 @@ public class WhenHandlingCreateVacancyCommand
         var matchingStandard = new GetStandardsListItem
         {
             LarsCode = ExpectedLarsCode,
-            ApprenticeshipType = ApprenticeshipType.Apprenticeship
+            ApprenticeshipType = LearningType.Apprenticeship
         };
 
         var getStandardsResponse = new GetStandardsListResponse
@@ -144,7 +144,7 @@ public class WhenHandlingCreateVacancyCommand
         public async Task Then_Throws_SecurityException_When_AccountLegalEntity_Is_Null(
             CreateVacancyCommand command,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
-            [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             CreateVacancyCommandHandler handler)
         {
             // Arrange
@@ -167,7 +167,7 @@ public class WhenHandlingCreateVacancyCommand
             AccountLegalEntityItem accountLegalEntityItem,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
-            [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             CreateVacancyCommandHandler handler)
         {
             // Arrange
@@ -195,7 +195,7 @@ public class WhenHandlingCreateVacancyCommand
             ProviderDetailsModel trainingProviderDetails,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
-            [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             CreateVacancyCommandHandler handler)
         {
             // Arrange
@@ -227,7 +227,7 @@ public class WhenHandlingCreateVacancyCommand
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             [Frozen] Mock<ICourseService> courseServiceMock,
-            [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             CreateVacancyCommandHandler handler)
         {
             // Arrange
@@ -238,7 +238,7 @@ public class WhenHandlingCreateVacancyCommand
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = ExpectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship,
+                ApprenticeshipType = LearningType.Apprenticeship,
                 LastDateStarts = DateTime.UtcNow.AddMonths(3)
             };
 
@@ -271,7 +271,7 @@ public class WhenHandlingCreateVacancyCommand
             ProviderDetailsModel trainingProviderDetails,
             VacancyReview putVacancyReviewResponse,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
-            [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             [Frozen] Mock<ICourseService> courseServiceMock,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             CreateVacancyCommandHandler handler)
@@ -284,7 +284,7 @@ public class WhenHandlingCreateVacancyCommand
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = ExpectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             accountLegalEntityPermissionService
@@ -295,7 +295,7 @@ public class WhenHandlingCreateVacancyCommand
                 .Setup(x => x.HasProviderGotEmployersPermissionAsync(
                     It.IsAny<int>(),
                     It.IsAny<long>(),
-                    It.IsAny<List<SFA.DAS.SharedOuterApi.Models.ProviderRelationships.Operation>>()))
+                    It.IsAny<List<SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Operation>>()))
                 .ReturnsAsync(false);
 
             trainingProviderService
@@ -330,7 +330,7 @@ public class WhenHandlingCreateVacancyCommand
             AccountLegalEntityItem accountLegalEntityItem,
             ProviderDetailsModel trainingProviderDetails,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
-            [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             [Frozen] Mock<ICourseService> courseServiceMock,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             CreateVacancyCommandHandler handler)
@@ -344,7 +344,7 @@ public class WhenHandlingCreateVacancyCommand
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = ExpectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             accountLegalEntityPermissionService
@@ -379,7 +379,7 @@ public class WhenHandlingCreateVacancyCommand
             AccountLegalEntityItem accountLegalEntityItem,
             ProviderDetailsModel trainingProviderDetails,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
-            [Frozen] Mock<DAS.Recruit.Contracts.Client.IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
             [Frozen] Mock<ICourseService> courseServiceMock,
             [Frozen] Mock<ITrainingProviderService> trainingProviderService,
             CreateVacancyCommandHandler handler)
@@ -391,7 +391,7 @@ public class WhenHandlingCreateVacancyCommand
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = ExpectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship
+                ApprenticeshipType = LearningType.FoundationApprenticeship
             };
 
             accountLegalEntityPermissionService
@@ -408,7 +408,7 @@ public class WhenHandlingCreateVacancyCommand
 
             var apiResponse = new Apim.Shared.Models.ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient
-                .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
+                .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()))
                 .ReturnsAsync(apiResponse);
 
             // Act

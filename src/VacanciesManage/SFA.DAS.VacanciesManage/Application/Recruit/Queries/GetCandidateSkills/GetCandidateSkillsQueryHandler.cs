@@ -1,14 +1,15 @@
 ﻿using MediatR;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
 
-public class GetCandidateSkillsQueryHandler(
-    DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+public class GetCandidateSkillsQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
     ICacheStorageService cacheStorageService)
     : IRequestHandler<GetCandidateSkillsQuery, GetCandidateSkillsQueryResponse>
 {
@@ -25,7 +26,7 @@ public class GetCandidateSkillsQueryHandler(
                 CandidateSkills = cachedSkills
             };
         }
-            
+
         var response = await recruitApiClient.Get<List<string>>(new GetReferencedataCandidateSkillsApiRequest());
         await cacheStorageService.SaveToCache(CacheKey, response, CacheDurationInHours);
         return new GetCandidateSkillsQueryResponse()

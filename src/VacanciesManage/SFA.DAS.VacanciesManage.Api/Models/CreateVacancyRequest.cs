@@ -1,11 +1,12 @@
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.VacanciesManage.Api.Extensions;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.VacanciesManage.Api.Extensions;
+using AvailableWhere = SFA.DAS.Recruit.Contracts.ApiResponses.AvailableWhere;
 
 namespace SFA.DAS.VacanciesManage.Api.Models;
 
@@ -18,7 +19,7 @@ public class CreateVacancyRequest
             : source.MultipleAddresses is { Count: > 0 }
                 ? AvailableWhere.MultipleLocations
                 : AvailableWhere.OneLocation;
-        
+
         var addresses = locationOption switch
         {
             AvailableWhere.OneLocation => source.Address is null ? null : [source.Address.ToDomainAddress()],
@@ -75,7 +76,7 @@ public class CreateVacancyRequest
     [JsonPropertyName("title")]
     [Required]
     [MaxLength(100)]
-    public string Title { get ; set ; }
+    public string Title { get; set; }
 
     /// <summary>
     /// The number of apprentices being recruited for the apprenticeship.
@@ -105,18 +106,18 @@ public class CreateVacancyRequest
     /// </summary>
     [JsonPropertyName("contractingParties")]
     [Required]
-    public ContractingParties ContractingParties { get ; set ; }
+    public ContractingParties ContractingParties { get; set; }
 
     [JsonPropertyName("wage")]
     [Required]
     public CreateVacancyWage Wage { get; set; }
-        
+
     /// <summary>
     /// Where the apprenticeship will be based, this could be a different location to the organisation address. Use the place the apprentice will spend most of their time. Must be within England.
     /// </summary>
     [JsonPropertyName("address")]
     public CreateVacancyAddress Address { get; set; }
-        
+
     /// <summary>
     /// If the apprenticeship is available at more than one location, use this to submit multiple addresses for the vacancy. You can submit up to and including 10 addresses. Each location must contain address line 1 and a valid postcode. Each location must be within England.
     /// </summary>
@@ -130,7 +131,7 @@ public class CreateVacancyRequest
     /// </summary>
     [JsonPropertyName("recruitingNationally")]
     public bool RecruitingNationally { get; set; }
-        
+
     /// <summary>
     /// Explain why recruitingNationally is true by giving more information to applicants about where they will work. Required if recruitingNationally is true.
     /// </summary>
@@ -144,7 +145,7 @@ public class CreateVacancyRequest
     [JsonPropertyName("shortDescription")]
     [MaxLength(350)]
     [Required]
-    public string ShortDescription { get ; set ; }
+    public string ShortDescription { get; set; }
     /// <summary>
     /// What the apprentice will do at work. We suggest including day-to-day duties. Use bullet points (written in HTML).
     /// </summary>
@@ -152,14 +153,14 @@ public class CreateVacancyRequest
     [JsonPropertyName("description")]
     [MaxLength(4000)]
     [Required]
-    public string Description { get ; set ; }
+    public string Description { get; set; }
     /// <summary>
     /// What progression or outcome the apprentice can expect at the end of the apprenticeship.
     /// </summary>
     [JsonPropertyName("outcomeDescription")]
     [MaxLength(4000)]
     [Required]
-    public string OutcomeDescription { get ; set ; }
+    public string OutcomeDescription { get; set; }
     /// <summary>
     /// Where and when an apprentice’s training will take place. Don’t include any other information about the training here.
     /// If you submit an advert without providing this field, we’ll display a message on Find an apprenticeship saying that the training schedule hasn’t been agreed yet.
@@ -168,7 +169,7 @@ public class CreateVacancyRequest
     [JsonPropertyName("trainingDescription")]
     [MaxLength(4000)]
     [Required]
-    public string TrainingDescription { get ; set ; }
+    public string TrainingDescription { get; set; }
     /// <summary>
     /// Further information about an apprentice’s training, such as details about the training provider or how the course will be structured.
     /// </summary>
@@ -184,31 +185,31 @@ public class CreateVacancyRequest
     /// <example>119</example>
     [JsonPropertyName("standardLarsCode")]
     [Required]
-    public string ProgrammeId { get ; set ; }
+    public string ProgrammeId { get; set; }
     /// <summary>
     /// Select if you do not wish your company name to be listed on the advert. This could mean fewer people view your advert.
     /// </summary>
     [JsonPropertyName("employerNameOption")]
-    public EmployerNameOption EmployerNameOption { get ; set ; }
+    public EmployerNameOption EmployerNameOption { get; set; }
     /// <summary>
     /// When `employerNameOption` is set to `tradingName`, use this field to set the company’s name yourself with the correct formatting.
     /// </summary>
     [JsonPropertyName("alternativeEmployerName")]
     [MaxLength(100)]
-    public string EmployerName { get ; set ; }
+    public string EmployerName { get; set; }
     /// <summary>
     /// When `employerNameOption` is set to `anonymousName`, give a brief description of the company to help people understand what they do.
     /// </summary>
     /// <example>Car manufacturer or clothes retailer</example>
     [JsonPropertyName("employerDescription")]
     [Required]
-    public string EmployerDescription { get ; set ; }
+    public string EmployerDescription { get; set; }
     /// <summary>
     /// When `employerNameOption` is set to `anonymousName`, tell us why you need to hide the company's name.
     /// This will not appear on Find an apprenticeship but is needed for our quality assurance team to approve your vacancy.
     /// </summary>
     [JsonPropertyName("anonymousReason")]
-    public string AnonymousReason { get ; set ; }
+    public string AnonymousReason { get; set; }
     /// <summary>
     /// The web address for the employer’s website.
     /// </summary>
@@ -219,11 +220,11 @@ public class CreateVacancyRequest
     /// </summary>
     [JsonPropertyName("disabilityConfident")]
     [Required]
-    public CreateVacancyDisabilityConfident DisabilityConfident { get ; set ; }
+    public CreateVacancyDisabilityConfident DisabilityConfident { get; set; }
 
     [JsonPropertyName("submitterContactDetails")]
     [Required]
-    public SubmitterContactDetails SubmitterContactDetails { get ; set ; }
+    public SubmitterContactDetails SubmitterContactDetails { get; set; }
 
     /// <summary>
     /// Skills and qualities an apprentice should have for this apprenticeship. We’ll show this on the vacancy.
@@ -232,7 +233,7 @@ public class CreateVacancyRequest
     /// If `standardsLarsCode` is for a foundation apprenticeship, you cannot submit any data for this field. This is because foundations cannot have application requirements.
     /// </summary>
     [JsonPropertyName("skills")]
-    public List<string> Skills { get ; set ; }
+    public List<string> Skills { get; set; }
     /// <summary>
     /// Qualifications obtained from `GET referendata/qualifications`. 
     /// If standardsLarsCode is for a foundation apprenticeship, you cannot submit any data for this field. 
@@ -245,23 +246,23 @@ public class CreateVacancyRequest
     /// </summary>
     [JsonPropertyName("thingsToConsider")]
     [MaxLength(4000)]
-    public string ThingsToConsider { get ; set ; }
+    public string ThingsToConsider { get; set; }
     /// <summary>
     /// Select how the applications will be managed. This is either through Find an apprenticeship or an external site. If external `ApplicationUrl` must be set 
     /// </summary>
     [JsonPropertyName("applicationMethod")]
     [Required]
-    public CreateVacancyApplicationMethod ApplicationMethod { get ; set ; }
+    public CreateVacancyApplicationMethod ApplicationMethod { get; set; }
     /// <summary>
     /// If `applicationMethod` is `throughExternalSite`, you can give some information about the application process.
     /// </summary>
     [JsonPropertyName("applicationInstructions")]
-    public string ApplicationInstructions { get ; set ; }
+    public string ApplicationInstructions { get; set; }
     /// <summary>
     /// If `applicationMethod` is `throughExternalSite`, provide the web address for your application website.
     /// </summary>
     [JsonPropertyName("applicationUrl")]
-    public string ApplicationUrl { get ; set ; }
+    public string ApplicationUrl { get; set; }
     /// <summary>
     /// If `applicationMethod` is `throughFindAnApprenticeship`, you can add questions for us to add to the application form.
     /// Note that we automatically ask all applicants ‘What are your skills and strengths?’ and ‘What interests you about this apprenticeship?’
@@ -280,8 +281,8 @@ public class CreateVacancyRequest
     [RegularExpression(@"^\w(.*)\w\?(\s\w(.*)\w[\.\?])*$", ErrorMessage = "Must include '?'")]
     public string AdditionalQuestion2 { get; set; }
 }
-    
-    
+
+
 /// <summary>
 /// Address for the apprenticeship advert. Must contain address line 1 and a valid postcode. Must be within England.
 /// </summary>
@@ -327,13 +328,13 @@ public class CreateVacancyWage
     /// </summary>
     /// <example>25000</example>
     [JsonPropertyName("fixedWageYearlyAmount")]
-    public decimal? FixedWageYearlyAmount { get ; set ; }
+    public decimal? FixedWageYearlyAmount { get; set; }
     /// <summary>
     /// Additional information about pay, such as when the apprentice might get a pay rise.
     /// </summary>
     [JsonPropertyName("wageAdditionalInformation")]
     [MaxLength(250)]
-    public string WageAdditionalInformation { get ; set ; }
+    public string WageAdditionalInformation { get; set; }
     /// <summary>
     /// Describe benefits the company offers.
     /// </summary>
@@ -345,21 +346,21 @@ public class CreateVacancyWage
     /// </summary>
     [JsonPropertyName("weeklyHours")]
     [Required]
-    public decimal WeeklyHours { get ; set ; }
+    public decimal WeeklyHours { get; set; }
     /// <summary>
     /// Information about the working schedule, such as daily working hours.
     /// </summary>
     [JsonPropertyName("workingWeekDescription")]
     [MaxLength(250)]
     [Required]
-    public string WorkingWeekDescription { get ; set ; }
+    public string WorkingWeekDescription { get; set; }
     /// <summary>
     /// How long the apprenticeship will be. Use duration to set a number, and then `durationUnit` to say whether it’s months or years. Apprenticeships must be longer than a year.
     /// </summary>
     /// <example>18</example>
     [JsonPropertyName("duration")]
     [Required]
-    public int Duration { get ; set ; }
+    public int Duration { get; set; }
 
     /// <summary>
     /// Used with <see cref="Duration"/> for duration in months or years
@@ -381,7 +382,7 @@ public class CreateVacancyQualification
     /// </summary>
     /// <example>7</example>
     [JsonPropertyName("level")]
-    [AllowedValues(null,1,2,3,4,5,6,7)]
+    [AllowedValues(null, 1, 2, 3, 4, 5, 6, 7)]
     public int? Level { get; set; }
     /// <summary>
     /// The name of the subject for the qualification.
@@ -472,7 +473,7 @@ public enum WageType
     NationalMinimumWage,
     CompetitiveSalary
 }
-    
+
 /// <summary>
 /// Set the unit of time for `duration`. 
 /// </summary>

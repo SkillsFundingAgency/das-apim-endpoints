@@ -7,24 +7,24 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using SFA.DAS.VacanciesManage.Api.AppStart;
+using SFA.DAS.VacanciesManage.Api.Filters;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 using SFA.DAS.VacanciesManage.Configuration;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json.Serialization;
-using SFA.DAS.VacanciesManage.Api.Filters;
 
 namespace SFA.DAS.VacanciesManage.Api;
 
 public static class Startup
 {
     public static void ConfigureServices(
-        IServiceCollection services, 
-        IWebHostEnvironment environment, 
+        IServiceCollection services,
+        IWebHostEnvironment environment,
         IConfigurationRoot configuration)
     {
         services.AddSingleton(environment);
@@ -46,7 +46,7 @@ public static class Startup
 
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetQualificationsQuery).Assembly));
         services.AddServiceRegistration();
-            
+
         services.Configure<RouteOptions>(options =>
             {
                 options.LowercaseUrls = true;
@@ -69,7 +69,7 @@ public static class Startup
             services.AddHealthChecks()
                 .AddCheck<CoursesApiHealthCheck>(CoursesApiHealthCheck.HealthCheckResultDescription);
         }
-            
+
         if (configuration.IsLocalOrDev())
         {
             services.AddDistributedMemoryCache();
@@ -85,18 +85,18 @@ public static class Startup
                 options.Configuration = vacanciesManageConfiguration.ApimEndpointsRedisConnectionString;
             });
         }
-            
+
         services.AddOpenTelemetryRegistration(configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
         services.AddSwaggerGen(c =>
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "Recruitment API", Version = "v1", Description = "Create adverts for Find an apprenticeship using your own system." });
-            var filePath = Path.Combine(AppContext.BaseDirectory,  $"{typeof(Startup).Namespace}.xml");
+            var filePath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Startup).Namespace}.xml");
             c.IncludeXmlComments(filePath);
             c.SchemaFilter<FlagsEnumSchemaFilter>();
         });
     }
-        
+
     public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)
     {
         app.UseAuthentication();
@@ -105,7 +105,7 @@ public static class Startup
         {
             app.UseHealthChecks();
         }
-            
+
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
@@ -113,7 +113,7 @@ public static class Startup
                 name: "default",
                 pattern: "api/{controller=vacancy}/{action=index}/{id?}");
         });
-        
+
         app.UseSwagger();
         app.UseSwaggerUI(c =>
         {

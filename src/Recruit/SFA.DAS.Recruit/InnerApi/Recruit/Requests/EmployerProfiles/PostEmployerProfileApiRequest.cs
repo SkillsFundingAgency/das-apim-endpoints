@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using static SFA.DAS.Recruit.InnerApi.Recruit.Requests.EmployerProfiles.PostEmployerProfileApiRequest;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests.EmployerProfiles;

@@ -8,8 +8,9 @@ using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.AppStart;
 public class WhenAddingServicesToTheContainer

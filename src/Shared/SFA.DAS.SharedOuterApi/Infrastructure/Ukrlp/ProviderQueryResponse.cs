@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
+<<<<<<<< HEAD:src/Shared/SFA.DAS.SharedOuterApi.Types/Infrastructure/Ukrlp/ProviderQueryResponse.cs
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
+========
 namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp
+>>>>>>>> master:src/Shared/SFA.DAS.SharedOuterApi/Infrastructure/Ukrlp/ProviderQueryResponse.cs
 {
     [Serializable]
     [XmlRoot(ElementName = "MatchingProviderRecords")]

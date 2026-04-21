@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.TrainingCourses.Queries;
 
@@ -30,7 +31,7 @@ public class WhenHandlingGetTrainingCourses
 
         result.TrainingCourses.Should().BeEquivalentTo(coursesFromCache.Standards);
     }
-    
+
     [Test, MoqAutoData]
     public async Task Courses_Are_Filtered_To_The_Training_Provider(
         int ukprn,
@@ -48,15 +49,15 @@ public class WhenHandlingGetTrainingCourses
         roatpCourseManagementApiClient
             .Setup(x => x.Get<List<GetRoatpProviderAdditionalStandardsItem>>(It.IsAny<GetProviderAdditionalStandardsRequest>()))
             .Callback<IGetApiRequest>(x => capturedRequest = x as GetProviderAdditionalStandardsRequest)
-            .ReturnsAsync([new GetRoatpProviderAdditionalStandardsItem() { LarsCode = coursesFromCache.Standards.First().LarsCode}]);
-        
+            .ReturnsAsync([new GetRoatpProviderAdditionalStandardsItem() { LarsCode = coursesFromCache.Standards.First().LarsCode }]);
+
         // act
         var result = await handler.Handle(new GetTrainingCoursesQuery(ukprn), CancellationToken.None);
 
         // assert
         capturedRequest.Should().NotBeNull();
         capturedRequest!.GetUrl.Should().Be($"api/providers/{ukprn}/courses");
-        
+
         result.TrainingCourses.Should().BeEquivalentTo([coursesFromCache.Standards.First()]);
     }
 }

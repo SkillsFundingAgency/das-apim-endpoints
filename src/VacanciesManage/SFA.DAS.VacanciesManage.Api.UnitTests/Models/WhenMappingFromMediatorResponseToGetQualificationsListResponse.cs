@@ -4,26 +4,25 @@ using NUnit.Framework;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 
-namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
+namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models;
+
+public class WhenMappingFromMediatorResponseToGetQualificationsListResponse
 {
-    public class WhenMappingFromMediatorResponseToGetQualificationsListResponse
+    [Test, AutoData]
+    public void Then_The_Fields_Are_Correctly_Mapped(GetQualificationsQueryResponse source)
     {
-        [Test, AutoData]
-        public void Then_The_Fields_Are_Correctly_Mapped(GetQualificationsQueryResponse source)
-        {
-            var actual = (GetQualificationsResponse) source;
+        var actual = (GetQualificationsResponse)source;
 
-            actual.Qualifications.Should().BeEquivalentTo(source.Qualifications);
-        }
+        actual.Qualifications.Should().BeEquivalentTo(source.Qualifications);
+    }
 
-        [Test, AutoData]
-        public void Then_If_Null_Empty_List_Returned(GetQualificationsQueryResponse source)
-        {
-            source.Qualifications = null;
-            
-            var actual = (GetQualificationsResponse) source;
+    [Test, AutoData]
+    public void Then_If_Null_Empty_List_Returned(GetQualificationsQueryResponse source)
+    {
+        source.Qualifications = null;
 
-            actual.Qualifications.Should().BeEmpty();
-        }
+        var actual = (GetQualificationsResponse)source;
+
+        actual.Qualifications.Should().BeEmpty();
     }
 }

@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.DelayedNotificationControllerTests;
 

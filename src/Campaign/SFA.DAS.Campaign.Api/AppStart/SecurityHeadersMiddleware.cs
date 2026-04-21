@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.Campaign.Api.AppStart;
 

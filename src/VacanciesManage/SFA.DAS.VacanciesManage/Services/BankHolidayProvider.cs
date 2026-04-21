@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SFA.DAS.SharedOuterApi.Types.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Services;
 
 namespace SFA.DAS.VacanciesManage.Services;
 

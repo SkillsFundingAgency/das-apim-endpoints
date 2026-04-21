@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
+﻿using SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.VacanciesManage.Api.Models;
 
@@ -14,7 +13,7 @@ public class GetTrainingCoursesListResponse
     {
         return new GetTrainingCoursesListResponse
         {
-            TrainingCourses = source.TrainingCourses.Select(c=>(GetTrainingCoursesListResponseItem)c).ToList()
+            TrainingCourses = source.TrainingCourses.Select(c => (GetTrainingCoursesListResponseItem)c).ToList()
         };
     }
 }
@@ -23,7 +22,7 @@ public class GetTrainingCoursesListResponseItem
 {
     public int LarsCode { get; set; }
     public string Title { get; set; }
-    public string Route { get ; set ; }
+    public string Route { get; set; }
     public string Type { get; set; }
 
     public static implicit operator GetTrainingCoursesListResponseItem(GetStandardsListItem source)

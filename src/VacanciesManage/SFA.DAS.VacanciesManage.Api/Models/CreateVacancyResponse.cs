@@ -7,5 +7,5 @@ public class CreateVacancyResponse
     /// 
     /// </summary>
     /// <example>1000000001</example>
-    public string VacancyReference {get;set;}
+    public string VacancyReference { get; set; }
 }

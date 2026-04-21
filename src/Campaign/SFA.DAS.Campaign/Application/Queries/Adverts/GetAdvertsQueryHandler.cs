@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -8,8 +7,9 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Campaign.Configuration;
 using SFA.DAS.Campaign.InnerApi.Requests;
 using SFA.DAS.Campaign.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Campaign.Application.Queries.Adverts
 {

@@ -33,8 +33,8 @@ public class CreateVacancyExampleForbiddenResponse
     [JsonPropertyName("traceId")]
     public string TraceId { get; set; }
 }
-    
-public class CreateVacancyExampleBadRequestResponse 
+
+public class CreateVacancyExampleBadRequestResponse
 {
     /// <summary>
     /// List of errors returned from the response
@@ -70,7 +70,7 @@ public class CreateVacancyExampleBadRequestResponse
     [JsonPropertyName("traceId")]
     public string TraceId { get; set; }
 }
-    
+
 public class Errors
 {
     /// <summary>

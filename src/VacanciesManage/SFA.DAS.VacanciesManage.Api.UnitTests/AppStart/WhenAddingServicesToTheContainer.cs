@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Memory;
@@ -7,57 +5,60 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.VacanciesManage.Api.AppStart;
+using System;
+using System.Collections.Generic;
 
-namespace SFA.DAS.VacanciesManage.Api.UnitTests.AppStart
+namespace SFA.DAS.VacanciesManage.Api.UnitTests.AppStart;
+
+public class WhenAddingServicesToTheContainer
 {
-    public class WhenAddingServicesToTheContainer
+    [TestCase(typeof(IAzureClientCredentialHelper))]
+    [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
+    [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
+    [TestCase(typeof(ITrainingProviderService))]
+    [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
+    [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
+    [TestCase(typeof(ICacheStorageService))]
+    [TestCase(typeof(IAccountLegalEntityPermissionService))]
+    public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
     {
-        [TestCase(typeof(IAzureClientCredentialHelper))]
-        [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
-        [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
-        [TestCase(typeof(ITrainingProviderService))]
-        [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
-        [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
-        [TestCase(typeof(ICacheStorageService))]
-        [TestCase(typeof(IAccountLegalEntityPermissionService))]
-        public void Then_The_Dependencies_Are_Correctly_Resolved(Type toResolve)
-        {
-            var hostEnvironment = new Mock<IWebHostEnvironment>();
-            var serviceCollection = new ServiceCollection();
-            
-            var configuration = GenerateConfiguration();
-            serviceCollection.AddSingleton(hostEnvironment.Object);
-            serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
-            serviceCollection.AddConfigurationOptions(configuration);
-            serviceCollection.AddDistributedMemoryCache();
-            serviceCollection.AddServiceRegistration();
-            
-            var provider = serviceCollection.BuildServiceProvider();
+        var hostEnvironment = new Mock<IWebHostEnvironment>();
+        var serviceCollection = new ServiceCollection();
 
-            var type = provider.GetService(toResolve);
-            Assert.That(type, Is.Not.Null);
-        }
-        
-        private static IConfigurationRoot GenerateConfiguration()
+        var configuration = GenerateConfiguration();
+        serviceCollection.AddSingleton(hostEnvironment.Object);
+        serviceCollection.AddSingleton(Mock.Of<IConfiguration>());
+        serviceCollection.AddConfigurationOptions(configuration);
+        serviceCollection.AddDistributedMemoryCache();
+        serviceCollection.AddServiceRegistration();
+
+        var provider = serviceCollection.BuildServiceProvider();
+
+        var type = provider.GetService(toResolve);
+        Assert.That(type, Is.Not.Null);
+    }
+
+    private static IConfigurationRoot GenerateConfiguration()
+    {
+        var configSource = new MemoryConfigurationSource
         {
-            var configSource = new MemoryConfigurationSource
+            InitialData = new List<KeyValuePair<string, string>>
             {
-                InitialData = new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1"),
-                    new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1"),
-                    new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:2"),
-                    new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
-                    new KeyValuePair<string, string>("TrainingProviderApi:url", "http://localhost:1")
-                }!
-            };
+                new KeyValuePair<string, string>("RecruitApiConfiguration:url", "http://localhost:1"),
+                new KeyValuePair<string, string>("ProviderRelationshipsApi:url", "http://localhost:1"),
+                new KeyValuePair<string, string>("CoursesApiConfiguration:url", "http://localhost:2"),
+                new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
+                new KeyValuePair<string, string>("TrainingProviderApi:url", "http://localhost:1"),
+                new KeyValuePair<string, string>("RecruitAltApiConfiguration:url", "http://localhost:1"),
+            }!
+        };
 
-            var provider = new MemoryConfigurationProvider(configSource);
+        var provider = new MemoryConfigurationProvider(configSource);
 
-            return new ConfigurationRoot(new List<IConfigurationProvider> { provider });
-        }
+        return new ConfigurationRoot(new List<IConfigurationProvider> { provider });
     }
 }

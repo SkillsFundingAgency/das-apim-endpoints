@@ -1,11 +1,11 @@
-using System.Collections.Generic;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
+using System.Collections.Generic;
 
 namespace SFA.DAS.VacanciesManage.Api.Models;
 
 public class GetQualificationsResponse
 {
-    public List<string> Qualifications { get ; set ; }
+    public List<string> Qualifications { get; set; }
 
     public static implicit operator GetQualificationsResponse(
         GetQualificationsQueryResponse source)
@@ -17,7 +17,7 @@ public class GetQualificationsResponse
                 Qualifications = new List<string>()
             };
         }
-            
+
         return new GetQualificationsResponse
         {
             Qualifications = source.Qualifications

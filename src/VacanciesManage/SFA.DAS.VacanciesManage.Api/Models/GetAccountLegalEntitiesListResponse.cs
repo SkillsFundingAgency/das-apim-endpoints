@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 using SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.VacanciesManage.Application.Providers.Queries.GetProviderAccountLegalEntities;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.VacanciesManage.Api.Models;
 
@@ -19,7 +20,7 @@ public class GetAccountLegalEntitiesListResponse
                 AccountLegalEntities = new List<GetAccountLegalEntitiesItem>()
             };
         }
-            
+
         return new GetAccountLegalEntitiesListResponse
         {
             AccountLegalEntities = source.LegalEntities.Select(item => (GetAccountLegalEntitiesItem)item).ToList()
@@ -36,7 +37,7 @@ public class GetAccountLegalEntitiesListResponse
                 AccountLegalEntities = new List<GetAccountLegalEntitiesItem>()
             };
         }
-            
+
         return new GetAccountLegalEntitiesListResponse
         {
             AccountLegalEntities = source.ProviderAccountLegalEntities.Select(item => (GetAccountLegalEntitiesItem)item).ToList()
@@ -48,8 +49,8 @@ public class GetAccountLegalEntitiesItem
 {
     public string AccountLegalEntityName { get; set; }
     public string AccountLegalEntityPublicHashedId { get; set; }
-    public string AccountPublicHashedId { get ; set ; }
-    public string AccountName { get ; set ; }
+    public string AccountPublicHashedId { get; set; }
+    public string AccountName { get; set; }
 
     public static implicit operator GetAccountLegalEntitiesItem(GetEmployerAccountLegalEntityItem source)
     {

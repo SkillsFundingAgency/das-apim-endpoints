@@ -3,7 +3,7 @@ using SFA.DAS.LevyTransferMatching.Interfaces;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Pledges.GetRejectApplications
 {

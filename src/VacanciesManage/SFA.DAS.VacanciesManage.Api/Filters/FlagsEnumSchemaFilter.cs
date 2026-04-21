@@ -1,9 +1,9 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 
 namespace SFA.DAS.VacanciesManage.Api.Filters;
 

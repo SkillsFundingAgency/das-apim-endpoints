@@ -1,7 +1,8 @@
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
@@ -18,11 +19,11 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
 
         var milestones = firstOnProg.Milestones.Select(x =>
             x == Milestone.LearningComplete
-                ? SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete
-                : SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.ThirtyPercentLearningComplete).ToList();
+                ? Milestone.LearningComplete
+                : Milestone.ThirtyPercentLearningComplete).ToList();
 
         if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
-            milestones.Add(SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
+            milestones.Add(Milestone.LearningComplete);
 
         return new CreateUnapprovedShortCourseLearningRequest
         {
@@ -33,12 +34,12 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
                 DateOfBirth = request.Learner.Dob,
                 Uln = request.Learner.Uln.ToString()
             },
-            LearningSupport = firstOnProg.LearningSupport.Select(x => new LearningSupportItem
+            LearningSupport = firstOnProg.LearningSupport.Select(x => new LearningSupport
             {
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
             }).ToList(),
-            OnProgramme = new SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme
+            OnProgramme = new Requests.EarningsInner.OnProgramme
             {
                 StartDate = firstOnProg.StartDate,
                 CompletionDate = firstOnProg.CompletionDate,

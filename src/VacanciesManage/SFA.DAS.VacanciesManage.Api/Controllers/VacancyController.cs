@@ -1,16 +1,16 @@
-using System;
-using System.Net;
-using System.Security;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using System;
+using System.Net;
+using System.Security;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.VacanciesManage.Api.Controllers;
 
@@ -100,14 +100,14 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
             .Replace(".Country", ".postcode", StringComparison.CurrentCultureIgnoreCase)
             .Replace("Country must be England", "Postcode must be in England", StringComparison.CurrentCultureIgnoreCase)
             .Replace("EmployerLocationInformation", "recruitingNationallyDetails", StringComparison.CurrentCultureIgnoreCase);
-            
+
         if (request.Address is not null)
         {
             return result
                 .Replace("Addresses[0]", "address", StringComparison.CurrentCultureIgnoreCase)
                 .Replace("Address", "address", StringComparison.CurrentCultureIgnoreCase);
         }
-            
+
         return result
             .Replace("Addresses", "multipleAddresses", StringComparison.CurrentCultureIgnoreCase);
     }

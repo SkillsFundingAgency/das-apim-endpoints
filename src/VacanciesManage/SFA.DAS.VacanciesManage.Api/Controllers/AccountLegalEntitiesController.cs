@@ -1,13 +1,13 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.VacanciesManage.Application.Providers.Queries.GetProviderAccountLegalEntities;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.VacanciesManage.Api.Controllers;
 
@@ -28,36 +28,36 @@ public class AccountLegalEntitiesController(IMediator mediator,
     /// <returns></returns>
     [HttpGet]
     [Route("")]
-    [ProducesResponseType(typeof(GetAccountLegalEntitiesListResponse), (int) HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(GetAccountLegalEntitiesListResponse), (int)HttpStatusCode.OK)]
     public async Task<IActionResult> GetList([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier)
     {
         try
         {
             var account = new AccountIdentifier(accountIdentifier);
-                
+
             if (account.AccountType == AccountType.Provider && account.Ukprn == null)
             {
                 return new BadRequestObjectResult("Account Identifier is not in the correct format.");
             }
-                
+
             switch (account.AccountType)
             {
                 case AccountType.Employer:
                     var employerQueryResponse = await mediator.Send(new GetLegalEntitiesForEmployerQuery
-                        {EncodedAccountId = account.AccountHashedId});
-                    return Ok((GetAccountLegalEntitiesListResponse) employerQueryResponse);
+                    { EncodedAccountId = account.AccountHashedId });
+                    return Ok((GetAccountLegalEntitiesListResponse)employerQueryResponse);
                 case AccountType.Provider:
                     var providerQueryResponse = await mediator.Send(new GetProviderAccountLegalEntitiesQuery
-                        {Ukprn = account.Ukprn.Value});
-                    return Ok((GetAccountLegalEntitiesListResponse) providerQueryResponse);    
+                    { Ukprn = account.Ukprn.Value });
+                    return Ok((GetAccountLegalEntitiesListResponse)providerQueryResponse);
                 default:
-                    return new StatusCodeResult((int) HttpStatusCode.Forbidden);
+                    return new StatusCodeResult((int)HttpStatusCode.Forbidden);
             }
         }
         catch (Exception e)
         {
             logger.LogError($"Unable to get account legal entities for {accountIdentifier}", e);
-            return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }

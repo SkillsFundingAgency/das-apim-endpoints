@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.5.0" />
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.97-prerelease-25" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.97-prerelease-29" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 </Project>

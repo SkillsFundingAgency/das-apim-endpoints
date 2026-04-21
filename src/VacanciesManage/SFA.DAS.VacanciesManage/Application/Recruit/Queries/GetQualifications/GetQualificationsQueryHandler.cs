@@ -4,11 +4,13 @@ using SFA.DAS.Recruit.Contracts.ApiRequests;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetQualifications;
 
 public class GetQualificationsQueryHandler(
-    DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
     ICacheStorageService cacheStorageService)
     : IRequestHandler<GetQualificationsQuery, GetQualificationsQueryResponse>
 {
@@ -25,7 +27,7 @@ public class GetQualificationsQueryHandler(
                 Qualifications = cacheResponse
             };
         }
-            
+
         var response = await recruitApiClient.Get<List<string>>(new GetReferencedataCandidateQualificationsApiRequest());
         await cacheStorageService.SaveToCache(CacheKey, response, CacheDurationInHours);
         return new GetQualificationsQueryResponse

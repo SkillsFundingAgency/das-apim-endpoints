@@ -1,8 +1,4 @@
-﻿using System;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +9,10 @@ using SFA.DAS.VacanciesManage.Api.Controllers;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.VacanciesManage.Application.Providers.Queries.GetProviderAccountLegalEntities;
+using System;
+using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers;
 
@@ -28,17 +28,17 @@ public class WhenGettingAccountLegalEntities
         var accountIdentifier = $"Employer-{encodedAccountId}-product";
         mockMediator
             .Setup(mediator => mediator.Send(
-                It.Is<GetLegalEntitiesForEmployerQuery>(c=>c.EncodedAccountId.Equals(encodedAccountId.ToUpper())),
+                It.Is<GetLegalEntitiesForEmployerQuery>(c => c.EncodedAccountId.Equals(encodedAccountId.ToUpper())),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(mediatorResult);
 
         var controllerResult = await controller.GetList(accountIdentifier) as ObjectResult;
-            
+
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var model = controllerResult.Value as GetAccountLegalEntitiesListResponse;
         model!.Should().BeEquivalentTo((GetAccountLegalEntitiesListResponse)mediatorResult);
     }
-        
+
     [Test, MoqAutoData]
     public async Task Then_If_Provider_Account_Identifier_Then_Get_Account_Legal_Entities_Called(
         int ukprn,
@@ -49,12 +49,12 @@ public class WhenGettingAccountLegalEntities
         var accountIdentifier = $"Provider-{ukprn}-product";
         mockMediator
             .Setup(mediator => mediator.Send(
-                It.Is<GetProviderAccountLegalEntitiesQuery>(c=>c.Ukprn.Equals(ukprn)),
+                It.Is<GetProviderAccountLegalEntitiesQuery>(c => c.Ukprn.Equals(ukprn)),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(mediatorResult);
 
         var controllerResult = await controller.GetList(accountIdentifier) as ObjectResult;
-            
+
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.OK);
         var model = controllerResult.Value as GetAccountLegalEntitiesListResponse;
         model!.Should().BeEquivalentTo((GetAccountLegalEntitiesListResponse)mediatorResult);
@@ -67,20 +67,20 @@ public class WhenGettingAccountLegalEntities
         [Greedy] AccountLegalEntitiesController controller)
     {
         var accountIdentifier = $"{accountType}-{identifier}-product";
-            
+
         var controllerResult = await controller.GetList(accountIdentifier) as StatusCodeResult;
 
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
     }
-        
-        
+
+
     [Test, MoqAutoData]
     public async Task Then_If_Not_Recognised_AccountIdentifier_Format_Then_Forbidden_Returned(
         string identifier,
         [Greedy] AccountLegalEntitiesController controller)
     {
         var accountIdentifier = $"{identifier}";
-            
+
         var controllerResult = await controller.GetList(accountIdentifier) as StatusCodeResult;
 
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
@@ -88,18 +88,18 @@ public class WhenGettingAccountLegalEntities
 
     [Test, MoqAutoData]
     public async Task Then_If_Provider_And_Not_Numeric_Then_BadRequest_Returned(
-            
+
         [Greedy] AccountLegalEntitiesController controller)
     {
         var identifier = "Abc123";
         var accountIdentifier = $"Provider-{identifier}-product";
-            
+
         var controllerResult = await controller.GetList(accountIdentifier) as BadRequestObjectResult;
 
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         controllerResult.Value.Should().BeEquivalentTo("Account Identifier is not in the correct format.");
     }
-        
+
     [Test, MoqAutoData]
     public async Task And_Exception_Then_Returns_InternalServerError(
         [Frozen] Mock<IMediator> mockMediator,

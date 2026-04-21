@@ -2,7 +2,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.VacanciesManage.Api.AppStart;
 
@@ -24,7 +25,7 @@ public static class AddConfigurationOptionsExtension
         services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
         services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<TrainingProviderConfiguration>>().Value);
 
-        services.Configure<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>(configuration.GetSection("RecruitAltApiConfiguration"));
-        services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>>().Value);
+        services.Configure<RecruitApiConfiguration>(configuration.GetSection("RecruitAltApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<RecruitApiConfiguration>>().Value);
     }
 }

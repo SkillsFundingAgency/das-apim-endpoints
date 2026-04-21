@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Api.Controllers;
 using SFA.DAS.VacanciesManage.Api.Models;
@@ -39,9 +39,9 @@ public class WhenCreatingVacancy
         var id = Guid.Parse(guid);
         var accountId = "ABC123";
         var accountIdentifier = $"Employer-{accountId}-Product";
-            
-        mockMediator.Setup(x => 
-                x.Send(It.Is<CreateVacancyCommand>(c => 
+
+        mockMediator.Setup(x =>
+                x.Send(It.Is<CreateVacancyCommand>(c =>
                     c.Id.Equals(id)
                     && c.IsSandbox.Equals(isSandbox)
                 ), CancellationToken.None))
@@ -49,7 +49,7 @@ public class WhenCreatingVacancy
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request, isSandbox) as IStatusCodeActionResult;
 
-        controllerResult.StatusCode.Should().Be((int) expectedStatusCode);
+        controllerResult.StatusCode.Should().Be((int)expectedStatusCode);
     }
 
     [Test, MoqAutoData]
@@ -62,8 +62,8 @@ public class WhenCreatingVacancy
     {
         var accountId = "ABC123";
         var accountIdentifier = $"Employer-{accountId}-product";
-        mockMediator.Setup(x => 
-                x.Send(It.Is<CreateVacancyCommand>(c => 
+        mockMediator.Setup(x =>
+                x.Send(It.Is<CreateVacancyCommand>(c =>
                     c.Id.Equals(id)
                     && c.AccountIdentifier.AccountType == AccountType.Employer
                     && c.AccountIdentifier.Ukprn == null
@@ -77,10 +77,10 @@ public class WhenCreatingVacancy
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
-        controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Created);
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Created);
         controllerResult.Value.Should().BeEquivalentTo(new { mediatorResponse.VacancyReference });
     }
-        
+
     [Test, MoqAutoData]
     public async Task Then_The_Request_Is_Handled_And_Response_Returned_And_Type_Set_For_Provider(
         int ukprn,
@@ -91,8 +91,8 @@ public class WhenCreatingVacancy
         [Greedy] VacancyController controller)
     {
         var accountIdentifier = $"Provider-{ukprn}-product";
-        mockMediator.Setup(x => 
-                x.Send(It.Is<CreateVacancyCommand>(c => 
+        mockMediator.Setup(x =>
+                x.Send(It.Is<CreateVacancyCommand>(c =>
                     c.Id.Equals(id)
                     && c.AccountIdentifier.AccountType == AccountType.Provider
                     && c.AccountIdentifier.Ukprn == ukprn
@@ -103,7 +103,7 @@ public class WhenCreatingVacancy
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as CreatedResult;
 
-        controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Created);
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Created);
         controllerResult.Value.Should().BeEquivalentTo(new { mediatorResponse.VacancyReference });
     }
 
@@ -114,12 +114,12 @@ public class WhenCreatingVacancy
         CreateVacancyRequest request,
         [Greedy] VacancyController controller)
     {
-            
+
         var controllerResult = await controller.CreateVacancy(accountIdentifier.ToString(), id, request) as StatusCodeResult;
-            
-        controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
+
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
     }
-        
+
     [Test, MoqAutoData]
     public async Task Then_If_The_Ukprn_Is_Not_Correct_For_The_AccountIdentifier_Then_Forbidden_Returned(
         Guid id,
@@ -128,13 +128,13 @@ public class WhenCreatingVacancy
     {
         var ukprn = "ABC123";
         var accountIdentifier = $"Provider-{ukprn}-product";
-            
+
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as BadRequestObjectResult;
-            
+
         controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         controllerResult.Value.Should().BeEquivalentTo("Account Identifier is not in the correct format.");
     }
-        
+
     [Test]
     [MoqInlineAutoData("ProgrammeId", "standardLarsCode")]
     [MoqInlineAutoData("employerName", "alternativeEmployerName")]
@@ -159,16 +159,16 @@ public class WhenCreatingVacancy
             .Setup(mediator => mediator.Send(
                 It.IsAny<CreateVacancyCommand>(),
                 It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,$"{{\"errors\":[{{\"field\":\"{fieldName}\",\"message\":\"An error message\"}}]}}"));
-            
+            .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest, $"{{\"errors\":[{{\"field\":\"{fieldName}\",\"message\":\"An error message\"}}]}}"));
+
         // act
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as ObjectResult;
 
         // assert
-        controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         controllerResult.Value.Should().Be($"{{\"errors\":[{{\"field\":\"{expectedFieldName}\",\"message\":\"An error message\"}}]}}");
     }
-        
+
     [Test]
     [MoqInlineAutoData("ProgrammeId", "standardLarsCode")]
     [MoqInlineAutoData("employerName", "alternativeEmployerName")]
@@ -193,16 +193,16 @@ public class WhenCreatingVacancy
             .Setup(mediator => mediator.Send(
                 It.IsAny<CreateVacancyCommand>(),
                 It.IsAny<CancellationToken>()))
-            .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest,$"{{\"errors\":[{{\"field\":\"{fieldName}\",\"message\":\"An error message\"}}]}}"));
-            
+            .ThrowsAsync(new HttpRequestContentException("Error", HttpStatusCode.BadRequest, $"{{\"errors\":[{{\"field\":\"{fieldName}\",\"message\":\"An error message\"}}]}}"));
+
         // act
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as ObjectResult;
 
         // assert
-        controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.BadRequest);
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         controllerResult.Value.Should().Be($"{{\"errors\":[{{\"field\":\"{expectedFieldName}\",\"message\":\"An error message\"}}]}}");
     }
-        
+
     [Test, MoqAutoData]
     public async Task Then_If_SecurityException_Bad_Request_Is_Returned(
         Guid id,
@@ -218,12 +218,12 @@ public class WhenCreatingVacancy
                 It.IsAny<CreateVacancyCommand>(),
                 It.IsAny<CancellationToken>()))
             .ThrowsAsync(new SecurityException("Error"));
-            
+
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
 
-        controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.Forbidden);
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.Forbidden);
     }
-        
+
     [Test, MoqAutoData]
     public async Task Then_If_Exception_Internal_Server_Error_Is_Returned(
         Guid id,
@@ -241,7 +241,7 @@ public class WhenCreatingVacancy
             .ThrowsAsync(new Exception());
 
         var controllerResult = await controller.CreateVacancy(accountIdentifier, id, request) as StatusCodeResult;
-            
-        controllerResult!.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
+
+        controllerResult!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
     }
 }
