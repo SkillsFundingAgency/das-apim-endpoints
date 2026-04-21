@@ -1,7 +1,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using SFA.DAS.Campaign.Interfaces;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.Campaign.ExternalApi
 {

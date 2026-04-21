@@ -63,7 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         public DateTime EffectiveFrom { get; set; }
 
-        public static implicit operator StandardDate(SharedOuterApi.InnerApi.Responses.StandardDate source)
+        public static implicit operator StandardDate(SharedOuterApi.Types.InnerApi.Responses.Courses.StandardDate source)
         {
             return new StandardDate
             {

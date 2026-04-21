@@ -1,8 +1,8 @@
-﻿using SFA.DAS.SharedOuterApi.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.WebUtilities;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyReviews;
 

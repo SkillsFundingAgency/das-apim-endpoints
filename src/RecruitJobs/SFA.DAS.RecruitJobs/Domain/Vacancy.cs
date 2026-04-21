@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Domain;
 
 namespace SFA.DAS.RecruitJobs.Domain;
 
@@ -9,7 +8,7 @@ public class Vacancy
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
     public required VacancyStatus Status { get; set; }
-    public ApprenticeshipTypes? ApprenticeshipType { get; init; }
+    public SharedOuterApi.Types.Domain.ApprenticeshipTypes? ApprenticeshipType { get; init; }
     public string? Title { get; init; }
     public OwnerType? OwnerType { get; init; }
     public SourceOrigin? SourceOrigin { get; init; }
@@ -36,7 +35,7 @@ public class Vacancy
     public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; init; }
     public List<Address>? EmployerLocations { get; set; }
-    public AvailableWhere? EmployerLocationOption { get; init; }
+    public SharedOuterApi.Types.Domain.AvailableWhere? EmployerLocationOption { get; init; }
     public string? EmployerLocationInformation { get; init; }
     public string? EmployerName { get; init; }
     public EmployerNameOption? EmployerNameOption { get; init; }

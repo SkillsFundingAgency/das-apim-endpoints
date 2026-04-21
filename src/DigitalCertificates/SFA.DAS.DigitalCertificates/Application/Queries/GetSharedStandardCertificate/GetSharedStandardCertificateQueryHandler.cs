@@ -1,12 +1,14 @@
 ﻿using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertificate
 {

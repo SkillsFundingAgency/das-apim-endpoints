@@ -1,13 +1,13 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmployerRequestsForResponseNotification
 {
@@ -30,7 +30,7 @@ namespace SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetEmplo
             return new GetEmployerRequestsForResponseNotificationResult
             {
                 EmployerRequests = employerRequests.Body
-                .Select(c => (SharedOuterApi.Models.RequestApprenticeTraining.EmployerRequestForResponseNotification)c).ToList(),
+                .Select(c => (SharedOuterApi.Types.Models.RequestApprenticeTraining.EmployerRequestForResponseNotification)c).ToList(),
             };
         }
     }

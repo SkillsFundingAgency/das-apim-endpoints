@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.EmployerAccounts.Api.Models;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetCreateAccountTaskList;
-using SFA.DAS.EmployerAccounts.Application.Queries.GetEmployerAccountTaskList;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionCurrent;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetEnglishFractionHistory;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetTasks;

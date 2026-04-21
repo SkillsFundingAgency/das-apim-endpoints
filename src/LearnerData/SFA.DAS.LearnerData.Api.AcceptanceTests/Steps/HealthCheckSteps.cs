@@ -1,5 +1,5 @@
-﻿using FluentAssertions;
-using System.Net;
+﻿using System.Net;
+using FluentAssertions;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
