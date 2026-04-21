@@ -1,7 +1,7 @@
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.VacanciesManage.Api.Extensions;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using System;
@@ -42,9 +42,9 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             );
             actual.StartDate.Should().BeCloseTo(source.StartDate, TimeSpan.FromSeconds(5));
             actual.ClosingDate.Should().BeCloseTo(source.ClosingDate, TimeSpan.FromSeconds(5));
-            actual.Wage.WageType.Should().Be(source.Wage.WageType.ToString());
-            actual.Wage.DurationUnit.Should().Be(source.Wage.DurationUnit.ToString());
-            actual.ApplicationMethod.Should().Be(source.ApplicationMethod.ToString());
+            actual.Wage.WageType.Should().Be(source.Wage.WageType.ToDomainWageType());
+            actual.Wage.DurationUnit.Should().Be(source.Wage.DurationUnit.ToDomainDurationUnit());
+            actual.ApplicationMethod.Should().Be(source.ApplicationMethod.ToDomainApplicationMethod());
             actual.DisabilityConfident.Should().Be(source.DisabilityConfident == CreateVacancyDisabilityConfident.Yes);
             actual.Qualifications.Should().BeEquivalentTo(source.Qualifications, options => options
                 .Excluding(c => c.Weighting)
@@ -76,7 +76,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             
             // assert
             actual.EmployerLocations.Should().BeEquivalentTo([source.Address]);
-            actual.EmployerLocationOption.Should().Be(nameof(AvailableWhere.OneLocation));
+            actual.EmployerLocationOption.Should().Be(Recruit.Contracts.ApiResponses.AvailableWhere.OneLocation);
             actual.EmployerLocationInformation.Should().BeNull();
         }
         
@@ -93,7 +93,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             
             // assert
             actual.EmployerLocations.Should().BeEquivalentTo(source.MultipleAddresses);
-            actual.EmployerLocationOption.Should().Be(nameof(AvailableWhere.MultipleLocations));
+            actual.EmployerLocationOption.Should().Be(Recruit.Contracts.ApiResponses.AvailableWhere.MultipleLocations);
             actual.EmployerLocationInformation.Should().BeNull();
         }
         
@@ -109,7 +109,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Models
             
             // assert
             actual.EmployerLocations.Should().BeNull();
-            actual.EmployerLocationOption.Should().Be(nameof(AvailableWhere.AcrossEngland));
+            actual.EmployerLocationOption.Should().Be(Recruit.Contracts.ApiResponses.AvailableWhere.AcrossEngland);
         }
     }
 }

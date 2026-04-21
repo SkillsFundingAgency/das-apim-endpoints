@@ -5,8 +5,6 @@ using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Services;
 using SFA.DAS.VacanciesManage.Services;
-using CacheStorageService = SFA.DAS.Apim.Shared.Infrastructure.Services.CacheStorageService;
-using ICacheStorageService = SFA.DAS.Apim.Shared.Interfaces.ICacheStorageService;
 using RecruitApiConfiguration = SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration;
 
 namespace SFA.DAS.VacanciesManage.Api.AppStart;
@@ -17,7 +15,11 @@ public static class AddServiceRegistrationExtensions
     {
         services.AddHttpClient();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-        services.AddTransient<ICacheStorageService, CacheStorageService>();
+
+        services.AddTransient<Apim.Shared.Interfaces.ICacheStorageService, SFA.DAS.Apim.Shared.Infrastructure.Services.CacheStorageService>();
+        services.AddTransient<SFA.DAS.SharedOuterApi.Interfaces.ICacheStorageService, SFA.DAS.SharedOuterApi.Infrastructure.Services.CacheStorageService>();
+
+
         services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
         services.AddTransient<ITrainingProviderService, TrainingProviderService>();
             
@@ -25,9 +27,11 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
         services.AddTransient<ISlaService, SlaService>();
 
-        services.AddTransient(typeof(IInternalApiClient<>), typeof(SharedOuterApi.Infrastructure.InternalApiClient<>));
+        services.AddTransient(typeof(SharedOuterApi.Interfaces.IInternalApiClient<>), typeof(SharedOuterApi.Infrastructure.InternalApiClient<>));
         services.AddTransient(typeof(Apim.Shared.Interfaces.IInternalApiClient<>), typeof(Apim.Shared.Infrastructure.InternalApiClient<>));
+        
         services.AddTransient<Recruit.Contracts.Client.IRecruitApiClient<RecruitApiConfiguration>, Recruit.Contracts.Client.RecruitApiClient>();
+        
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();

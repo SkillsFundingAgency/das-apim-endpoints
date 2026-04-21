@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.VacanciesManage.Api.Extensions;
 
 namespace SFA.DAS.VacanciesManage.Api.Models;
 
@@ -12,24 +13,19 @@ public class CreateVacancyRequest
 {
     public static implicit operator PostVacancyV2RequestData(CreateVacancyRequest source)
     {
-        var locationOption = source.RecruitingNationally
+        AvailableWhere locationOption = source.RecruitingNationally
             ? AvailableWhere.AcrossEngland
             : source.MultipleAddresses is { Count: > 0 }
                 ? AvailableWhere.MultipleLocations
                 : AvailableWhere.OneLocation;
-        List<Address> addresses = null;
-        switch (locationOption)
+        
+        var addresses = locationOption switch
         {
-            case AvailableWhere.OneLocation:
-                addresses = source.Address is null
-                    ? null
-                    : new List<Address> { source.Address };
-                break;
-            case AvailableWhere.MultipleLocations:
-                addresses = source.MultipleAddresses.Select(x => (SFA.DAS.Recruit.Contracts.ApiResponses.Address)x).ToList();
-                break;
-        }
-            
+            AvailableWhere.OneLocation => source.Address is null ? null : [source.Address.ToDomainAddress()],
+            AvailableWhere.MultipleLocations => source.MultipleAddresses.Select(x => x.ToDomainAddress()).ToList(),
+            _ => null
+        };
+
         return new PostVacancyV2RequestData
         {
             AdditionalQuestion1 = source.AdditionalQuestion1,
@@ -38,22 +34,22 @@ public class CreateVacancyRequest
             EmployerLocations = addresses,
             AnonymousReason = source.AnonymousReason,
             ApplicationInstructions = source.ApplicationInstructions,
-            ApplicationMethod = source.ApplicationMethod.ToString(),
+            ApplicationMethod = source.ApplicationMethod.ToDomainApplicationMethod(),
             ApplicationUrl = source.ApplicationUrl,
             ClosingDate = source.ClosingDate,
             Description = source.Description,
             DisabilityConfident = source.DisabilityConfident == CreateVacancyDisabilityConfident.Yes,
             EmployerDescription = source.EmployerDescription,
             EmployerLocationInformation = source.RecruitingNationallyDetails,
-            EmployerLocationOption = locationOption.ToString(),
+            EmployerLocationOption = locationOption,
             EmployerName = source.EmployerName,
-            EmployerNameOption = source.EmployerNameOption.ToString(),
+            EmployerNameOption = source.EmployerNameOption.ToDomainEmployerNameOption(),
             EmployerWebsiteUrl = source.EmployerWebsiteUrl,
             NumberOfPositions = source.NumberOfPositions,
             OutcomeDescription = source.OutcomeDescription,
             ProgrammeId = source.ProgrammeId,
             Qualifications = source.Qualifications != null
-                ? source.Qualifications.Select(c => (PostVacancyV2Qualification)c).ToList()
+                ? source.Qualifications.Select(q => q.ToDomainQualifications()).ToList()
                 : [],
             ShortDescription = source.ShortDescription,
             Skills = source.Skills != null ? source.Skills.ToList() : [],
@@ -68,18 +64,7 @@ public class CreateVacancyRequest
             {
                 Ukprn = source.ContractingParties.Ukprn,
             },
-            Wage = new Wage
-            {
-                ApprenticeMinimumWage = source.Wage.apprenticeMinimumWage,
-                Duration = source.Wage.Duration,
-                DurationUnit = source.Wage.DurationUnit,
-                WageType = source.Wage.WageType.ToString(),
-                WeeklyHours = source.Wage.WeeklyHours,
-                WorkingWeekDescription = source.Wage.WorkingWeekDescription,
-                FixedWageYearlyAmount = source.Wage.WageType == WageType.FixedWage ? source.Wage.FixedWageYearlyAmount : null,
-                WageAdditionalInformation = source.WageAdditionalInformation,
-                CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-            },
+            Wage = source.Wage.ToDomainWage(),
             AccountLegalEntityPublicHashedId = source.ContractingParties.AccountLegalEntityPublicHashedId,
         };
     }
@@ -302,19 +287,6 @@ public class CreateVacancyRequest
 /// </summary>
 public class CreateVacancyAddress
 {
-    public static implicit operator PostVacancyV2EmployerLocation(CreateVacancyAddress source)
-    {
-        return source is null
-            ? null
-            : new PostVacancyV2EmployerLocation
-            {
-                AddressLine1 = source.AddressLine1,
-                AddressLine2 = source.AddressLine2,
-                AddressLine3 = source.AddressLine3,
-                AddressLine4 = source.AddressLine4,
-                Postcode = source.Postcode
-            };
-    }
     /// <summary>
     /// First line of the address where the apprentice will work.
     /// </summary>
@@ -346,21 +318,6 @@ public class CreateVacancyAddress
 
 public class CreateVacancyWage
 {
-    public static implicit operator PostVacancyV2Wage(CreateVacancyWage source)
-    {
-        return new PostVacancyV2Wage
-        {
-            Duration = source.Duration,
-            DurationUnit = source.DurationUnit.ToString(),
-            WageType = source.WageType.ToString(),
-            WeeklyHours = source.WeeklyHours,
-            WorkingWeekDescription = source.WorkingWeekDescription,
-            FixedWageYearlyAmount = source.WageType == WageType.FixedWage ?  source.FixedWageYearlyAmount : null,
-            WageAdditionalInformation = source.WageAdditionalInformation,
-            CompanyBenefitsInformation = source.CompanyBenefitsInformation,
-        };
-    }
-
     [JsonPropertyName("wageType")]
     [Required]
     public WageType WageType { get; set; }
@@ -414,18 +371,6 @@ public class CreateVacancyWage
 
 public class CreateVacancyQualification
 {
-    public static implicit operator PostVacancyV2Qualification(CreateVacancyQualification source)
-    {
-        return new PostVacancyV2Qualification
-        {
-            Grade = source.Grade,
-            Level = source.Level,
-            Subject = source.Subject,
-            Weighting = source.Weighting.ToString(),
-            QualificationType = source.QualificationType,
-            //OtherQualificationName = source.
-        };
-    }
     /// <summary>
     /// The type of qualification you want. Use `GET referencedata/qualifications` to see what qualification types you can use.
     /// </summary>

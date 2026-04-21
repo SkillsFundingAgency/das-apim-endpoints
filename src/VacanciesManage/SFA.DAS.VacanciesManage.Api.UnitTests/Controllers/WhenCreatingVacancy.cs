@@ -68,9 +68,9 @@ public class WhenCreatingVacancy
                     && c.AccountIdentifier.AccountType == AccountType.Employer
                     && c.AccountIdentifier.Ukprn == null
                     && c.AccountIdentifier.AccountHashedId == accountId
-                    && c.PostVacancyV2RequestData.Contact.Name.Equals(request.SubmitterContactDetails.Name)
-                    && c.PostVacancyV2RequestData.Contact.Phone.Equals(request.SubmitterContactDetails.Phone)
-                    && c.PostVacancyV2RequestData.Contact.Email.Equals(request.SubmitterContactDetails.Email)
+                    && c.PostVacancyRequest.Contact.Name.Equals(request.SubmitterContactDetails.Name)
+                    && c.PostVacancyRequest.Contact.Phone.Equals(request.SubmitterContactDetails.Phone)
+                    && c.PostVacancyRequest.Contact.Email.Equals(request.SubmitterContactDetails.Email)
                     && c.IsSandbox.Equals(false)
                 ), CancellationToken.None))
             .ReturnsAsync(mediatorResponse);
