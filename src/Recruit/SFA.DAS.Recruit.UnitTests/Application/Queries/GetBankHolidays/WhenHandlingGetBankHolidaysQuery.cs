@@ -1,5 +1,5 @@
 using SFA.DAS.Recruit.Application.Queries.GetBankHolidays;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.Queries.GetBankHolidays;
 
