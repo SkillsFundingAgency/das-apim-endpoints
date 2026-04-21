@@ -50,7 +50,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
                 SectorSubjectAreaTier2 = source.SectorSubjectAreaTier2,
                 OtherBodyApprovalRequired = source.OtherBodyApprovalRequired,
                 ApprovalBody = source.ApprovalBody,
-                StandardDates = source.StandardDates
+                StandardDates = source.CourseDates
             };
         }
     }
@@ -63,7 +63,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.Models
 
         public DateTime EffectiveFrom { get; set; }
 
-        public static implicit operator StandardDate(SharedOuterApi.InnerApi.Responses.StandardDate source)
+        public static implicit operator StandardDate(SharedOuterApi.InnerApi.Responses.CourseDate source)
         {
             return new StandardDate
             {

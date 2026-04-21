@@ -14,6 +14,7 @@ public sealed class GetCourseProviderDetailsResponse
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
     public ApprenticeshipType ApprenticeshipType { get; set; }
+    public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
