@@ -1,8 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.Aodp.Application.Commands.Qualifications;
+using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.AODP.Domain.Qualifications.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Services;
 
 namespace SFA.DAS.AODP.Application.Commands.Qualifications;
 

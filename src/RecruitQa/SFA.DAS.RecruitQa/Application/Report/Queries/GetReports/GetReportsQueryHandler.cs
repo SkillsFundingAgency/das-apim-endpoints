@@ -1,8 +1,8 @@
 using MediatR;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 using ReportModel = SFA.DAS.RecruitQa.Domain.Reports.Report;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RecruitQa.Application.Report.Queries.GetReports;
 

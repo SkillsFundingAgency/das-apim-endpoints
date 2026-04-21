@@ -4,7 +4,7 @@ using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.Recruit.InnerApi.Responses;
 using SourceOrigin = SFA.DAS.Recruit.Domain.Vacancy.SourceOrigin;
 using VacancyStatus = SFA.DAS.Recruit.Domain.Vacancy.VacancyStatus;
-using ApprenticeshipTypes = SFA.DAS.SharedOuterApi.Domain.ApprenticeshipTypes;
+using ApprenticeshipTypes = SFA.DAS.SharedOuterApi.Types.Domain.ApprenticeshipTypes;
 using OwnerType = SFA.DAS.Recruit.Domain.Vacancy.OwnerType;
 using ApplicationMethod = SFA.DAS.Recruit.Domain.Vacancy.ApplicationMethod;
 

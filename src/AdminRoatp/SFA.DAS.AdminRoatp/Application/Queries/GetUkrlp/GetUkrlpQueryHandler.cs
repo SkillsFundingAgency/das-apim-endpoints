@@ -1,10 +1,12 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetUkrlp;
 public class GetUkrlpQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _apiClient, ILogger<GetUkrlpQueryHandler> _logger) : IRequestHandler<GetUkrlpQuery, GetUkrlpQueryResult?>

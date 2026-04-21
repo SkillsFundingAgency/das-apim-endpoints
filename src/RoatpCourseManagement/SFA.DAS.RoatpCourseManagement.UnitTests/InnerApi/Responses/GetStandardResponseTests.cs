@@ -4,7 +4,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Responses;
 

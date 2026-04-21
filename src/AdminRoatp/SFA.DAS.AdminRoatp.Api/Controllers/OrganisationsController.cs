@@ -60,7 +60,7 @@ public class OrganisationsController(IMediator _mediator, ILogger<OrganisationsC
         return new StatusCodeResult((int)response);
     }
 
-    [HttpPatch]
+    [HttpPatch, Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
     [Route("{ukprn:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> PatchOrganisation([FromRoute] int ukprn, [FromBody] JsonPatchDocument<PatchOrganisationModel> patchDoc, [FromHeader(Name = Constants.RequestingUserIdHeader)] string userId, [FromHeader(Name = Constants.RequestingUserNameHeader)] string userName, CancellationToken cancellationToken)

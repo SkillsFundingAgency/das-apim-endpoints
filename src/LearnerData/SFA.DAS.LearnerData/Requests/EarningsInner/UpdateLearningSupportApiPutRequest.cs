@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Requests.EarningsInner;
 
@@ -11,5 +12,5 @@ public class UpdateLearningSupportApiPutRequest(Guid learningKey, UpdateLearning
 
 public class UpdateLearningSupportRequest
 {
-    public List<LearningSupportItem> LearningSupport { get; set; } = [];
+    public List<LearningSupport> LearningSupport { get; set; } = [];
 }

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace SFA.DAS.RecruitQa.Api.Models;
 
 public class GetVacancyReviewsApiResponse

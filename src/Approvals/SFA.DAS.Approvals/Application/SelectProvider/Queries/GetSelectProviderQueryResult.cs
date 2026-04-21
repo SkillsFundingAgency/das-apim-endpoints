@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Approvals.Application.SelectProvider.Queries;
 

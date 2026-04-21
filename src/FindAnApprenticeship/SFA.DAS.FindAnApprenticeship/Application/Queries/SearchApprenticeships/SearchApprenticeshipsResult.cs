@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchApprenticeships

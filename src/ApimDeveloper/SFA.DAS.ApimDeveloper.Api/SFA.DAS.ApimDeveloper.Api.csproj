@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
@@ -34,7 +34,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.ApimDeveloper\SFA.DAS.ApimDeveloper.csproj" />
-      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj" />
     </ItemGroup>
 </Project>
