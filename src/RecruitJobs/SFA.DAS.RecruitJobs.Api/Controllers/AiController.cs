@@ -94,7 +94,7 @@ public class AiController: ControllerBase
     {
         // Patch the VacancyReview
         var vacancyReviewPatchDocument = new JsonPatchDocument<PatchableVacancyReviewDto>();
-        vacancyReviewPatchDocument.Replace(x => x.ManualOutcome, ManualQaOutcome.Approved);
+        vacancyReviewPatchDocument.Replace(x => x.ManualOutcome, nameof(ManualQaOutcome.Approved));
         vacancyReviewPatchDocument.Replace(x => x.Status, ReviewStatus.Closed);
         vacancyReviewPatchDocument.Replace(x => x.ClosedDate, DateTime.UtcNow);
         

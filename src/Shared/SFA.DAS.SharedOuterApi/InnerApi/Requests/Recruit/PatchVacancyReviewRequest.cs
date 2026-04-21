@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.SharedOuterApi.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Domain.Recruit.VacancyReviews;
 using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
@@ -9,7 +8,7 @@ namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
 public class PatchableVacancyReviewDto
 {
     public ReviewStatus Status { get; init; } 
-    public ManualQaOutcome ManualOutcome { get; init; }
+    public string ManualOutcome { get; init; }
     public DateTime ClosedDate { get; init; }
 }
 

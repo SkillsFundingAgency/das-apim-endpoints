@@ -38,7 +38,7 @@ public class WhenAutoApprovingVacancy
         response.Should().BeOfType<NoContent>();
         capturedRequest.Should().NotBeNull();
         capturedRequest.PatchUrl.Should().Be($"api/vacancyreviews/{vacancyReviewId}");
-        capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyReviewDto>("replace", "/ManualOutcome", null, ManualQaOutcome.Approved));
+        capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyReviewDto>("replace", "/ManualOutcome", null, nameof(ManualQaOutcome.Approved)));
         capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyReviewDto>("replace", "/Status", null, ReviewStatus.Closed));
         var datetime = Convert.ToDateTime(capturedRequest.Data.Operations.Find(x => x.path == "/ClosedDate").value);
         datetime.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
