@@ -3,8 +3,6 @@ using System.Threading;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
-using NServiceBus;
-using SFA.DAS.Recruit.Jobs.NServiceBus.Commands;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -19,11 +17,10 @@ namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.AiControllerTests;
 public class WhenAutoApprovingVacancy
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Vacancy_Review_Is_Updated_And_The_Publish_Command_Sent(
+    public async Task Then_The_Vacancy_Review_Is_Updated(
         Guid vacancyId,
         Guid vacancyReviewId,
         Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
-        Mock<IMessageSession> messageSession,
         [Greedy] AiController sut)
     {
         // arrange
@@ -35,7 +32,7 @@ public class WhenAutoApprovingVacancy
             .ReturnsAsync(new ApiResponse<NullResponse>(null!, HttpStatusCode.OK, null));
 
         // act
-        var response = await sut.AutoApproveVacancyAsync(recruitApiClient.Object, messageSession.Object, vacancyId, vacancyReviewId, CancellationToken.None);
+        var response = await sut.AutoApproveVacancyAsync(recruitApiClient.Object, vacancyId, vacancyReviewId, CancellationToken.None);
 
         // assert
         response.Should().BeOfType<NoContent>();
@@ -45,7 +42,5 @@ public class WhenAutoApprovingVacancy
         capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyReviewDto>("replace", "/Status", null, ReviewStatus.Closed));
         var datetime = Convert.ToDateTime(capturedRequest.Data.Operations.Find(x => x.path == "/ClosedDate").value);
         datetime.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
-        
-        messageSession.Verify(x => x.Send(It.Is<PublishVacancyCommand>(p => p.VacancyId == vacancyId), It.IsAny<SendOptions>()), Times.Once);
     }
 }

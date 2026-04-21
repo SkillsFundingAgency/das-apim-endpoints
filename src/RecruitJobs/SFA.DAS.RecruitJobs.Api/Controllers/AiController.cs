@@ -2,8 +2,6 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using NServiceBus;
-using SFA.DAS.Recruit.Jobs.NServiceBus.Commands;
 using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
@@ -90,7 +88,6 @@ public class AiController: ControllerBase
     [Route("approve")]
     public async Task<IResult> AutoApproveVacancyAsync(
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
-        [FromServices] IMessageSession messageSession,
         [FromRoute] Guid vacancyId,
         [FromBody] Guid vacancyReviewId,
         CancellationToken cancellationToken)
@@ -105,7 +102,6 @@ public class AiController: ControllerBase
         var patchVacancyReviewResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyReviewDto>, NullResponse>(request, false);
         patchVacancyReviewResponse.EnsureSuccessStatusCode();
         
-        await messageSession.Send(new PublishVacancyCommand(vacancyId));
         return TypedResults.NoContent();
     }
 }
