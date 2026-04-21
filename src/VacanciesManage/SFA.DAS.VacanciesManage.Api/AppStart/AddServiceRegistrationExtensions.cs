@@ -8,7 +8,6 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.VacanciesManage.Services;
-//using RecruitApiConfiguration = SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration;
 
 namespace SFA.DAS.VacanciesManage.Api.AppStart;
 
@@ -21,8 +20,7 @@ public static class AddServiceRegistrationExtensions
 
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
-        //services.AddTransient<ITrainingProviderService, TrainingProviderService>();
-
+        
         services.AddTransient<IBankHolidaysService, BankHolidaysService>();
         services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
         services.AddTransient<ISlaService, SlaService>();
