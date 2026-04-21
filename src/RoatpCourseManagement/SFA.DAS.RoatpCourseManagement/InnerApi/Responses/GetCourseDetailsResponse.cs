@@ -16,4 +16,5 @@ public class GetCourseDetailsResponse
     public string Route { get; set; }
     public ApprenticeshipType ApprenticeshipType { get; set; }
     public CourseType CourseType { get; set; }
+    public bool IsActiveAvailable { get; set; }
 }
