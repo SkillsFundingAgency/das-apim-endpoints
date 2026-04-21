@@ -1,5 +1,6 @@
 using AutoFixture;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -65,5 +66,37 @@ public class UpdateEarningsEnglishAndMathsRequestBuilderTests
 
         result.PutUrl.Should().Be($"learning/{command.LearningKey}/english-and-maths");
         result.Data.EnglishAndMaths.Should().BeEquivalentTo(expectedItems);
+    }
+
+    [Test]
+    public void Build_Should_Deduplicate_EnglishAndMaths_With_Same_StartDate()
+    {
+        // Arrange
+        var learnAimRef = _fixture.Create<string>();
+        var sharedStartDate = new DateTime(2026, 4, 1);
+        var endDate = new DateTime(2028, 3, 31);
+
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths = new List<MathsAndEnglish>
+        {
+            new() { LearnAimRef = learnAimRef, StartDate = sharedStartDate, EndDate = endDate, CompletionDate = null, WithdrawalDate = null, PauseDate = null },
+            new() { LearnAimRef = learnAimRef, StartDate = sharedStartDate, EndDate = endDate, CompletionDate = null, WithdrawalDate = null, PauseDate = null }
+        };
+
+        var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+        putRequest.Data.EnglishAndMathsCourses = new List<MathsAndEnglishDetails>
+        {
+            new() { LearnAimRef = learnAimRef, StartDate = sharedStartDate, PlannedEndDate = endDate }
+        };
+
+        var response = _fixture.Create<UpdateLearnerApiPutResponse>();
+
+        // Act
+        var result = _sut.Build(command, response, putRequest);
+
+        // Assert
+        var periods = result.Data.EnglishAndMaths.Single().PeriodsInLearning;
+        periods.Should().HaveCount(1);
+        periods.Single().StartDate.Should().Be(sharedStartDate);
     }
 }
