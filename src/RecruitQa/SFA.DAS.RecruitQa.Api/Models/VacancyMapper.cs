@@ -1,9 +1,8 @@
-﻿using SFA.DAS.Recruit.Api.Models.Vacancies.Requests;
-using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
-using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
+using SFA.DAS.RecruitQa.Api.Models.Responses;
+using SFA.DAS.RecruitQa.InnerApi.Requests;
+using SFA.DAS.RecruitQa.InnerApi.Responses;
 
-namespace SFA.DAS.Recruit.Api.Models.Vacancies;
+namespace SFA.DAS.RecruitQa.Api.Models;
 
 public class VacancyMapper()
 {
