@@ -52,12 +52,12 @@ public static class GqlTypeExtensions
         };
     }
     
-    public static SharedOuterApi.Domain.ApprenticeshipTypes? FromQueryType(this ApprenticeshipTypes? sourceOrigin)
+    public static SharedOuterApi.Types.Domain.ApprenticeshipTypes? FromQueryType(this ApprenticeshipTypes? sourceOrigin)
     {
         return sourceOrigin switch
         {
-            ApprenticeshipTypes.Standard => SharedOuterApi.Domain.ApprenticeshipTypes.Standard,
-            ApprenticeshipTypes.Foundation => SharedOuterApi.Domain.ApprenticeshipTypes.Foundation,
+            ApprenticeshipTypes.Standard => SharedOuterApi.Types.Domain.ApprenticeshipTypes.Standard,
+            ApprenticeshipTypes.Foundation => SharedOuterApi.Types.Domain.ApprenticeshipTypes.Foundation,
             null => null,
             _ => throw new ArgumentOutOfRangeException(nameof(sourceOrigin), sourceOrigin, null)
         };

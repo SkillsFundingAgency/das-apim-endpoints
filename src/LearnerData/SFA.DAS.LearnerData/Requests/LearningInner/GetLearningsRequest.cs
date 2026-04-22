@@ -1,25 +1,26 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.LearnerData.Requests.LearningInner;
-
-public class GetLearningsRequest : IGetApiRequest
+namespace SFA.DAS.LearnerData.Requests.LearningInner
 {
-    public long Ukprn { get; set; }
-    public int CollectionYear { get; set; }
-    public byte CollectionPeriod { get; set; }
-    public int? Page { get; set; }
-    public int? PageSize { get; set; }
-
-    public string GetUrl
+    public class GetLearningsRequest : IGetApiRequest
     {
-        get
+        public long Ukprn { get; set; }
+        public int CollectionYear { get; set; }
+        public byte CollectionPeriod { get; set; }
+        public int? Page { get; set; }
+        public int? PageSize { get; set; }
+
+        public string GetUrl
         {
-            var url = $"{Ukprn}/{CollectionYear}/{CollectionPeriod}";
+            get
+            {
+                var url = $"{Ukprn}/{CollectionYear}/{CollectionPeriod}";
 
-            if (Page.HasValue && PageSize.HasValue)
-                url += $"?page={Page}&pageSize={PageSize}";
+                if (Page.HasValue && PageSize.HasValue)
+                    url += $"?page={Page}&pageSize={PageSize}";
 
-            return url;
+                return url;
+            }
         }
     }
 }

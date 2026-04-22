@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 namespace SFA.DAS.LearnerDataJobs.InnerApi;
 public class GetLearnerByIdRequest(long providerId, long learnerDataId) : IGetApiRequest
 {

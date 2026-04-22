@@ -6,9 +6,11 @@ using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse
@@ -16,12 +18,12 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
     public class GetAddDraftApprenticeshipCourseQueryHandler : IRequestHandler<GetAddDraftApprenticeshipCourseQuery, GetAddDraftApprenticeshipCourseQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IProviderCoursesOrStandardsService _providerStandardsService;
+        private readonly IProviderStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
         public GetAddDraftApprenticeshipCourseQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IProviderCoursesOrStandardsService providerStandardsService,
+            IProviderStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;

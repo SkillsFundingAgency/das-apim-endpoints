@@ -1,14 +1,15 @@
-﻿using System.Net;
+using System.Net;
 using System.Threading;
 using Microsoft.AspNetCore.Http.HttpResults;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain.Recruit.Ai;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RecruitAi;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Ai;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.AiControllerTests;
 

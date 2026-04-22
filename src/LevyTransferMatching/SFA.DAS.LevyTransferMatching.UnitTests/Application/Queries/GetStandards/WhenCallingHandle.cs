@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.LevyTransferMatching.Application.Queries.Standards;
 using SFA.DAS.LevyTransferMatching.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Queries.GetStandards
 {
