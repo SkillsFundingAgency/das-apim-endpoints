@@ -36,11 +36,9 @@ public class WhenMappingLearnerRecords
     )
     {
         inputDataRecords[0].TrainingName = null;
-        inputDataRecords[0].TrainingCode = null;
         inputDataRecords[1].TrainingName = string.Empty;
-        inputDataRecords[1].TrainingCode = null;
-        courses[0].CourseCode = inputDataRecords[0].StandardCode.ToString();
-        courses[1].CourseCode = inputDataRecords[1].StandardCode.ToString();
+        courses[0].CourseCode = inputDataRecords[0].TrainingCode;
+        courses[1].CourseCode = inputDataRecords[1].TrainingCode;
 
         var result = await sut.Map(inputDataRecords, courses);
 

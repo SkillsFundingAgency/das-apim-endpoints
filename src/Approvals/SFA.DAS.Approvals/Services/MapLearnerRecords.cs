@@ -25,7 +25,7 @@ public class MapLearnerRecords(ILogger<IMapLearnerRecords> logger) : IMapLearner
 
                 if (string.IsNullOrEmpty(courseName))
                 {
-                    var matchingProgramme = trainingProgrammes.FirstOrDefault(p => p.CourseCode == learner.StandardCode.ToString());
+                    var matchingProgramme = trainingProgrammes.FirstOrDefault(p => p.CourseCode == learner.TrainingCode);
 
                     courseName = matchingProgramme?.Name;
                 }
