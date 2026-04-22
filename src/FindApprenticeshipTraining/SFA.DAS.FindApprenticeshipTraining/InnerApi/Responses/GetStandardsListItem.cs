@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
@@ -9,7 +10,7 @@ public class GetStandardsListItem : StandardApiResponseBase
     public string StandardUId { get; set; }
     public string IfateReferenceNumber { get; set; }
     public float? SearchScore { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string Title { get; set; }
     public int Level { get; set; }
     public string LevelEquivalent { get; set; }
@@ -24,13 +25,13 @@ public class GetStandardsListItem : StandardApiResponseBase
     public string IntegratedDegree { get; set; }
     public string SectorSubjectAreaTier2Description { get; set; }
     public decimal SectorSubjectAreaTier2 { get; set; }
-    public int SectorSubjectAreaTier1 { get; set; }
+    public int? SectorSubjectAreaTier1 { get; set; }
     public bool OtherBodyApprovalRequired { get; set; }
     public string ApprovalBody { get; set; }
     public List<string> Skills { get; set; }
     public bool CoreAndOptions { get; set; }
     public List<string> CoreDuties { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
 
     private List<string> GetCoreSkillsCount()
     {

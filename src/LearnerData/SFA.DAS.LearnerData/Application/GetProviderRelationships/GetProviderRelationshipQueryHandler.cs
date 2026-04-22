@@ -1,0 +1,52 @@
+﻿using MediatR;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Responses;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+
+namespace SFA.DAS.LearnerData.Application.GetProviderRelationships;
+
+public class GetProviderRelationshipQueryHandler(
+    IGetProviderRelationshipService getProviderRelationshipService,
+    IRoatpV2TrainingProviderService roatpService)
+    : IRequestHandler<GetProviderRelationshipQuery, GetProviderRelationshipQueryResponse?>
+{
+    public async Task<GetProviderRelationshipQueryResponse?> Handle(GetProviderRelationshipQuery request, CancellationToken cancellationToken)
+    {
+        var providerDetails = await getProviderRelationshipService.GetAllProviderRelationShipDetails(request.Ukprn);
+
+        if (providerDetails is null)
+        {
+            return null;
+        }
+        var provider = await GetRegisteredProviderDetails(request.Ukprn);
+
+        if (provider is null)
+        {
+            return null;
+        }
+
+        var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(request.Ukprn);
+
+        var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails);
+
+        await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
+
+        return new GetProviderRelationshipQueryResponse()
+        {
+            Ukprn = request.Ukprn,
+            Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
+            Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
+            Employers = employerDetailsTask.Result ?? [],
+            SupportedCourses = coursesForProviderTask.Result?.CourseTypes ?? []
+        };
+    }
+
+    private async Task<GetProviderSummaryResponse> GetRegisteredProviderDetails(int ukprn)
+    {
+        var providerDetails = await roatpService.GetProviderSummary(ukprn);
+        return providerDetails;
+    }
+}

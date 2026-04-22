@@ -1,16 +1,17 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.ApprenticeCommitments.Api.Controllers;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
 using SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin;
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.SharedOuterApi.Types.Services;
 using System.Net.Http;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
@@ -33,9 +34,7 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
             services.AddTransient<TrainingProviderService>();
             services.AddTransient<CoursesService>();
             services.AddTransient<ApimClient>();
-            services.AddTransient<ResponseReturningApiClient>();            
-            services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
-            services.AddSingleton<ApprenticeAccountsApiConfiguration>(sp => sp.GetRequiredService<IOptions<ApprenticeAccountsApiConfiguration>>().Value);
+            services.AddTransient<ResponseReturningApiClient>();
             services.AddTransient(s =>
                 new TemporaryAccountsResponseReturningApiClient(
                     new ApimClient(
@@ -43,6 +42,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AppStart
                         s.GetRequiredService<ApprenticeAccountsConfiguration>(),
                         s.GetRequiredService<IWebHostEnvironment>(),
                         s.GetRequiredService<IAzureClientCredentialHelper>())));
+            
+            services.AddTransient<IApprenticeAccountsApiClient<ApprenticeAccountsApiConfiguration>, ApprenticeAccountsApiClient>();
         }
     }
 }

@@ -1,22 +1,21 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseByLarsCode;
 
 public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
 {
-    [Test]
-    [MoqAutoData]
-    public void Then_StandardDetailResponse_Should_Convert_Correctly(StandardDetailResponse response)
+    [Test, MoqAutoData]
+    public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(StandardDetailsLookupResponse response)
     {
         GetCourseByLarsCodeQueryResult sut = response;
         Assert.Multiple(() =>
         {
             Assert.That(sut.StandardUId, Is.EqualTo(response.StandardUId));
             Assert.That(sut.IFateReferenceNumber, Is.EqualTo(response.IfateReferenceNumber));
-            Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode.ToString()));
+            Assert.That(sut.LarsCode, Is.EqualTo(response.LarsCode));
             Assert.That(sut.Title, Is.EqualTo(response.Title));
             Assert.That(sut.Level, Is.EqualTo(response.Level));
             Assert.That(sut.Version, Is.EqualTo(response.Version));

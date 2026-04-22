@@ -2,11 +2,15 @@
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 using Qualification = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.Qualification;
 
@@ -49,6 +53,54 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
 
             // assert
             result.VacancyLocationType.Should().Be(expectedLocationType);
+        }
+
+        [Test]
+        [MoqInlineAutoData(null)]
+        [MoqInlineAutoData(OwnerType.Provider)]
+        [MoqInlineAutoData(OwnerType.Employer)]
+        [MoqInlineAutoData(OwnerType.External)]
+        [MoqInlineAutoData(OwnerType.Unknown)]
+        public void Then_The_Mapped_Vacancy_Has_The_Correct_ContactDetails(
+            OwnerType? ownerType,
+            ContactDetail expectedContactDetails,
+            LiveVacancy source,
+            [Frozen] Mock<ICourseService> courseService,
+            LiveVacancyMapper sut)
+        {
+            // arrange
+            source.OwnerType = ownerType;
+            var mockStandardsListResponse = SetupCoursesApiResponse(source);
+
+            // act
+            var result = sut.Map(source, mockStandardsListResponse);
+
+            // assert
+            switch (ownerType)
+            {
+                case OwnerType.Employer:
+                    result.EmployerContactEmail.Should().Be(source.Contact?.Email);
+                    result.EmployerContactPhone.Should().Be(source.Contact?.Phone);
+                    result.EmployerContactName.Should().Be(source.Contact?.Name);
+                    break;
+                case OwnerType.Provider:
+                    result.ProviderContactEmail.Should().Be(source.Contact?.Email);
+                    result.ProviderContactPhone.Should().Be(source.Contact?.Phone);
+                    result.ProviderContactName.Should().Be(source.Contact?.Name);
+                    break;
+                case OwnerType.External:
+                case OwnerType.Unknown:
+                case null:
+                    result.EmployerContactEmail.Should().BeNull();
+                    result.EmployerContactPhone.Should().BeNull();
+                    result.EmployerContactName.Should().BeNull();
+                    result.EmployerContactEmail.Should().BeNull();
+                    result.EmployerContactPhone.Should().BeNull();
+                    result.EmployerContactName.Should().BeNull();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(ownerType), ownerType, null);
+            }
         }
 
         [Test, MoqAutoData]
@@ -130,9 +182,6 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 ProviderName = source.TrainingProvider.Name,
                 source.TrainingProvider.Ukprn,
                 IsPositiveAboutDisability = false,
-                source.EmployerContactName,
-                source.EmployerContactEmail,
-                source.EmployerContactPhone,
                 IsEmployerAnonymous = source.IsAnonymous,
                 VacancyLocationType = "NonNational",
                 ApprenticeshipLevel = "Higher",
@@ -189,6 +238,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Services
                 .WithMapping("EmployerLocations", "EmploymentLocations")
                 .WithMapping("EmployerLocationOption", "EmploymentLocationOption")
                 .WithMapping("EmployerLocationInformation", "EmploymentLocationInformation")
+                .WithMapping("Contact", "Contact")
             );
         }
 

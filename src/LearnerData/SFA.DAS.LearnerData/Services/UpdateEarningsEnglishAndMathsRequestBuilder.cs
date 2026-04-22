@@ -1,6 +1,7 @@
-﻿using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
+using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.Services;
 
@@ -16,7 +17,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
     {
         var body = new UpdateEnglishAndMathsRequest
         {
-            EnglishAndMaths = putRequest.Data.MathsAndEnglishCourses.Select(x => new EnglishAndMathsItem
+            EnglishAndMaths = putRequest.Data.EnglishAndMathsCourses.Select(x => new EnglishAndMathsItem
             {
                 StartDate = x.StartDate,
                 EndDate = x.PlannedEndDate,
@@ -39,7 +40,9 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
         var periodsInLearning = new List<PeriodInLearningItem>();
 
         var matchingEnglishAndMaths =
-            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(x => x.LearnAimRef == learnAimRef);
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths
+                .Where(x => x.LearnAimRef == learnAimRef)
+                .DistinctBy(x => x.StartDate);
 
         foreach (var mathsAndEnglish in matchingEnglishAndMaths)
         {

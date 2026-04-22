@@ -3,8 +3,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands
 
             var apprentice = apprenticeResponse.Body;
 
-            _logger.LogInformation("CreateApprenticeshipFromRegistration found apprentice {ApprenticeId}", apprentice.Id);
+            _logger.LogInformation("CreateApprenticeshipFromRegistration found apprentice {ApprenticeId}", apprentice.ApprenticeId);
 
             var response = await _cmad.PostWithResponseCode<object>(new CreateApprenticeshipRequest(
                 request.RegistrationId, request.ApprenticeId, apprentice.LastName, apprentice.DateOfBirth), false);

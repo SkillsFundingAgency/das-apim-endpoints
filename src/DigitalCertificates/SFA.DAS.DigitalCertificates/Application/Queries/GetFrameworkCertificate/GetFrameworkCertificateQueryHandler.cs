@@ -1,9 +1,11 @@
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +23,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
 
         public async Task<GetFrameworkCertificateQueryResult> Handle(GetFrameworkCertificateQuery request, CancellationToken cancellationToken)
         {
-            var response = await _assessorsApiClient.GetWithResponseCode<GetFrameworkCertificateResponse>(new GetFrameworkCertificateRequest(request.Id));
+            var response = await _assessorsApiClient.GetWithResponseCode<GetFrameworkCertificateResponse>(new GetFrameworkCertificateRequest(request.Id,false));
 
             if (response == null || response.StatusCode == HttpStatusCode.NotFound)
             {

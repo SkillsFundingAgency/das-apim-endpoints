@@ -10,10 +10,12 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models.Roatp;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models.Roatp;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
@@ -190,7 +192,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
 
             public async Task GetStandardsData()
             {
-                _result = await _providerStandardsService.GetStandardsData(_trainingProviderId);
+                _result = await _providerStandardsService.GetCoursesData(_trainingProviderId);
             }
 
             public void AssertResultIsAllStandards()

@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Text.Json.Serialization;
+using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Extensions;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
@@ -30,12 +31,8 @@ public class LiveVacancy
     public DateTime ClosingDate { get; set; }
     public string? Description { get; set; }
     public bool DisabilityConfident { get; set; }
-    public string? EmployerContactEmail { get; set; }
-    public string? EmployerContactName { get; set; }
-    public string? EmployerContactPhone { get; set; }
-    public string? ProviderContactEmail { get; set; }
-    public string? ProviderContactName { get; set; }
-    public string? ProviderContactPhone { get; set; }
+    public OwnerType? OwnerType { get; set; }
+    public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; set; }
     public Address? EmployerLocation { get; set; }
     public List<Address>? EmployerLocations { get; set; } = [];
@@ -128,4 +125,11 @@ public class Qualification
     public string Subject { get; set; } = null!;
     public string Grade { get; set; } = null!;
     public QualificationWeighting? Weighting { get; set; }
+}
+
+public record ContactDetail
+{
+    public string? Name { get; set; }
+    public string? Email { get; set; }
+    public string? Phone { get; set; }
 }

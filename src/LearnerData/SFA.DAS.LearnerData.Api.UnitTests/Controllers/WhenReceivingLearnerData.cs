@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -12,6 +11,7 @@ using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 

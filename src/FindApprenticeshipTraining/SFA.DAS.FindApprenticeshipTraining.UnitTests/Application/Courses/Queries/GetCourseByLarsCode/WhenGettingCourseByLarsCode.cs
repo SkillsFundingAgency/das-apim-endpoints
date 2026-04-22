@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,22 +9,28 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseByLarsCode;
 
 public sealed class WhenGettingCourseByLarsCode
 {
-    private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClientMock;
+    private Mock<ICachedStandardDetailsService> _cachedStandardDetailsService;
     private Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> _roatpCourseManagementApiClientMock;
     private Mock<ICachedLocationLookupService> _cachedLocationLookupService;
     private GetCourseByLarsCodeQueryHandler _handler;
@@ -33,31 +39,28 @@ public sealed class WhenGettingCourseByLarsCode
     [SetUp]
     public void Setup()
     {
-        _coursesApiClientMock = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
+        _cachedStandardDetailsService = new Mock<ICachedStandardDetailsService>();
         _roatpCourseManagementApiClientMock = new Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>>();
         _cachedLocationLookupService = new Mock<ICachedLocationLookupService>();
 
         _handler = new GetCourseByLarsCodeQueryHandler(
-            _coursesApiClientMock.Object,
+            _cachedStandardDetailsService.Object,
             _roatpCourseManagementApiClientMock.Object,
             _cachedLocationLookupService.Object
         );
     }
 
-    [Test]
-    [MoqAutoData]
-    public async Task Handle_Returns_Correct_CourseDetails(GetCourseByLarsCodeQuery query)
+    [Test, MoqAutoData]
+    public async Task Handle_ValidResponses_ReturnsCorrectCourseDetails(GetCourseByLarsCodeQuery query)
     {
-        string apprenticeshipType = "FoundationApprenticeship";
-
-        var standardDetailResponse = new StandardDetailResponse
+        var standardDetailsLookupResponse = new StandardDetailsLookupResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding>
             {
                 new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, Duration = 12 },
                 new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, Duration = 18 }
             },
-            ApprenticeshipType = apprenticeshipType
+            LearningType = LearningType.FoundationApprenticeship
         };
 
         var courseProvidersResponse = new GetCourseTrainingProvidersCountResponse
@@ -72,15 +75,15 @@ public sealed class WhenGettingCourseByLarsCode
             }
         };
 
-        _coursesApiClientMock
+        _cachedStandardDetailsService
             .Setup(x =>
-                x.GetWithResponseCode<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode.ToString())
+                x.GetStandardDetails(
+                    It.Is<string>(a =>
+                        a.Equals(query.LarsCode.ToString())
                     )
                 )
             )
-            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(standardDetailsLookupResponse);
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -100,15 +103,15 @@ public sealed class WhenGettingCourseByLarsCode
         Assert.Multiple(() =>
         {
             Assert.That(sut, Is.Not.Null);
-            Assert.That(sut.ApprenticeshipType, Is.EqualTo(apprenticeshipType));
+            Assert.That(sut.ApprenticeshipType, Is.EqualTo(LearningType.FoundationApprenticeship));
             Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(10));
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(20));
         });
 
-        _coursesApiClientMock.Verify(x =>
-            x.GetWithResponseCode<StandardDetailResponse>(
-                It.Is<GetStandardDetailsByIdRequest>(r =>
-                    r.Id == query.LarsCode.ToString()
+        _cachedStandardDetailsService.Verify(x =>
+            x.GetStandardDetails(
+                It.Is<string>(r =>
+                    r == query.LarsCode.ToString()
                 )
             ), Times.Once);
 
@@ -119,11 +122,11 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test]
-    public async Task Handle_Returns_Default_When_No_Providers()
+    public async Task Handle_NoProvidersReturned_ReturnsDefaultValues()
     {
         var query = new GetCourseByLarsCodeQuery { LarsCode = "456" };
 
-        var standardDetailResponse = new StandardDetailResponse
+        var standardDetailsLookupResponse = new StandardDetailsLookupResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding>
             {
@@ -136,19 +139,15 @@ public sealed class WhenGettingCourseByLarsCode
             Courses = new List<CourseTrainingProviderCountModel>()
         };
 
-        _coursesApiClientMock
-            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
-                It.Is<GetStandardDetailsByIdRequest>(a =>
-                    a.Id.Equals(query.LarsCode.ToString())
+        _cachedStandardDetailsService
+            .Setup(x =>
+                x.GetStandardDetails(
+                    It.Is<string>(a =>
+                        a.Equals(query.LarsCode.ToString())
+                    )
                 )
-            ))
-            .ReturnsAsync(
-                new ApiResponse<StandardDetailResponse>(
-                    standardDetailResponse,
-                    HttpStatusCode.OK,
-                    string.Empty
-                )
-            );
+            )
+            .ReturnsAsync(standardDetailsLookupResponse);
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -179,14 +178,13 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
-    public async Task Handler_Returns_Ksbs(GetCourseByLarsCodeQuery query)
+    [Test, MoqAutoData]
+    public async Task Handle_StandardDetailsContainsKsbs_ReturnsKsbs(GetCourseByLarsCodeQuery query)
     {
         var ksbType = "Knowledge";
         var ksbId = Guid.NewGuid();
         var ksbDescription = "Skill A";
-        var standardDetailResponse = new StandardDetailResponse
+        var standardDetailsLookupResponse = new StandardDetailsLookupResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding>
             {
@@ -198,24 +196,29 @@ public sealed class WhenGettingCourseByLarsCode
                 {
                     Type = ksbType,
                     Id = ksbId,
-                    Description = ksbDescription
+                    Detail = ksbDescription
                 }
             }
         };
 
-        _coursesApiClientMock
-            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
-                It.Is<GetStandardDetailsByIdRequest>(a =>
-                    a.Id.Equals(query.LarsCode.ToString())
+        _cachedStandardDetailsService
+            .Setup(x => x.GetStandardDetails(
+                It.Is<string>(r =>
+                    r == query.LarsCode.ToString()
                 )
             ))
-            .ReturnsAsync(
-                new ApiResponse<StandardDetailResponse>(
-                    standardDetailResponse,
-                    HttpStatusCode.OK,
-                    string.Empty
+            .ReturnsAsync(standardDetailsLookupResponse);
+
+        _cachedStandardDetailsService
+            .Setup(x => x.GetKsbsForCourseOption(
+                It.Is<string>(r =>
+                    r == query.LarsCode.ToString()
                 )
-            );
+            ))
+            .ReturnsAsync(new GetKsbsForCourseOptionResponse
+            {
+                Ksbs = standardDetailsLookupResponse.Ksbs
+            });
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -225,7 +228,10 @@ public sealed class WhenGettingCourseByLarsCode
             )
             .ReturnsAsync(
                 new ApiResponse<GetCourseTrainingProvidersCountResponse>(
-                    new GetCourseTrainingProvidersCountResponse(),
+                    new GetCourseTrainingProvidersCountResponse
+                    {
+                        Courses = new List<CourseTrainingProviderCountModel>()
+                    },
                     HttpStatusCode.OK,
                     string.Empty
                 )
@@ -233,9 +239,10 @@ public sealed class WhenGettingCourseByLarsCode
 
         var sut = await _handler.Handle(query, CancellationToken.None);
 
-
         Assert.Multiple(() =>
         {
+            Assert.That(sut, Is.Not.Null);
+            Assert.That(sut.Ksbs, Is.Not.Null);
             Assert.That(sut.Ksbs.Count, Is.EqualTo(1));
             Assert.That(sut.Ksbs[0].Detail, Is.EqualTo(ksbDescription));
             Assert.That(sut.Ksbs[0].Id, Is.EqualTo(ksbId));
@@ -244,16 +251,15 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
 
-    [Test]
-    [MoqAutoData]
-    public async Task Handler_Returns_RelatedOccupations(GetCourseByLarsCodeQuery query)
+    [Test, MoqAutoData]
+    public async Task Handle_StandardDetailsContainsRelatedOccupations_ReturnsRelatedOccupations(GetCourseByLarsCodeQuery query)
     {
         var relatedOccupationsTitle1 = "Plumbing and heating technician";
         var relatedOccupationsLevel1 = 2;
         var relatedOccupationsTitle2 = "Refrigeration technician";
         var relatedOccupationsLevel2 = 2;
 
-        var standardDetailResponse = new StandardDetailResponse
+        var standardDetailsLookupResponse = new StandardDetailsLookupResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding>
             {
@@ -266,19 +272,13 @@ public sealed class WhenGettingCourseByLarsCode
            }
         };
 
-        _coursesApiClientMock
-            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
-                It.Is<GetStandardDetailsByIdRequest>(a =>
-                    a.Id.Equals(query.LarsCode.ToString())
+        _cachedStandardDetailsService
+            .Setup(x => x.GetStandardDetails(
+                It.Is<string>(r =>
+                    r == query.LarsCode.ToString()
                 )
             ))
-            .ReturnsAsync(
-                new ApiResponse<StandardDetailResponse>(
-                    standardDetailResponse,
-                    HttpStatusCode.OK,
-                    string.Empty
-                )
-            );
+            .ReturnsAsync(standardDetailsLookupResponse);
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -306,22 +306,16 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
-    public async Task Handle_Returns_Default_Funding_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
+    [Test, MoqAutoData]
+    public async Task Handle_TrainingProviderCountIsMissing_ReturnsDefaultFunding(GetCourseByLarsCodeQuery query)
     {
-        _coursesApiClientMock
-            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
-                It.Is<GetStandardDetailsByIdRequest>(a =>
-                    a.Id.Equals(query.LarsCode.ToString())
+        _cachedStandardDetailsService
+            .Setup(x => x.GetStandardDetails(
+                It.Is<string>(r =>
+                    r == query.LarsCode.ToString()
                 )
             ))
-            .ReturnsAsync(
-                new ApiResponse<StandardDetailResponse>(
-                    new StandardDetailResponse() { Ksbs = [] },
-                    HttpStatusCode.OK,
-                    string.Empty
-                )
+            .ReturnsAsync(new StandardDetailsLookupResponse() { Ksbs = [] }
             );
 
         _roatpCourseManagementApiClientMock
@@ -347,23 +341,17 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
-    public async Task Handle_Returns_Default_Provider_Counts_When_TrainingProviderCount_Is_Null(GetCourseByLarsCodeQuery query)
+    [Test, MoqAutoData]
+    public async Task Handle_TrainingProviderCountIsMissing_ReturnsDefaultProviderCounts(GetCourseByLarsCodeQuery query)
     {
-        _coursesApiClientMock
-            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
-                It.Is<GetStandardDetailsByIdRequest>(a =>
-                    a.Id.Equals(query.LarsCode.ToString())
-                )
-            ))
-            .ReturnsAsync(
-                new ApiResponse<StandardDetailResponse>(
-                    new StandardDetailResponse() { Ksbs = [] },
-                    HttpStatusCode.OK,
-                    string.Empty
-                )
-            );
+        _cachedStandardDetailsService
+             .Setup(x => x.GetStandardDetails(
+                 It.Is<string>(r =>
+                     r == query.LarsCode.ToString()
+                 )
+             ))
+             .ReturnsAsync(new StandardDetailsLookupResponse() { Ksbs = [] }
+             );
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -388,11 +376,10 @@ public sealed class WhenGettingCourseByLarsCode
         });
     }
 
-    [Test]
-    [MoqAutoData]
-    public async Task Handle_Gets_Location_Information_And_Queries_Provider_Count_By_Longitude_And_Latitude(
+    [Test, MoqAutoData]
+    public async Task Handle_LocationIsProvided_QueriesProviderCountUsingLatitudeAndLongitude(
         LocationItem locationItem,
-        StandardDetailResponse standardDetailsResponse,
+        StandardDetailsLookupResponse standardDetailsLookupResponse,
         GetCourseTrainingProvidersCountResponse courseTrainingProvidersCountResponse
     )
     {
@@ -402,16 +389,14 @@ public sealed class WhenGettingCourseByLarsCode
             x.GetCachedLocationInformation(query.Location, false)
         ).ReturnsAsync(locationItem);
 
-        _coursesApiClientMock
+        _cachedStandardDetailsService
             .Setup(x =>
-                x.GetWithResponseCode<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode.ToString())
-                    )
+                x.GetStandardDetails(
+                    It.Is<string>(r =>
+                        r == query.LarsCode.ToString())
                 )
             )
-            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailsResponse, HttpStatusCode.OK, string.Empty));
-
+            .ReturnsAsync(standardDetailsLookupResponse);
         _roatpCourseManagementApiClientMock
                 .Setup(x =>
                     x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
@@ -441,7 +426,10 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Gets_Funding_Data_From_Latest_Record(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_MultipleFundingRecordsExist_ReturnsFundingFromLatestRecord(
+        GetCourseByLarsCodeQuery query,
+        StandardDetailsLookupResponse standardDetailsLookupResponse,
+        GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding futureFundingRecord = new()
         {
@@ -473,18 +461,15 @@ public sealed class WhenGettingCourseByLarsCode
             EffectiveFrom = DateTime.Today.AddMonths(-10),
             EffectiveTo = activeFundingRecord.EffectiveFrom.AddDays(-1)
         };
-        standardDetailResponse.ApprenticeshipFunding = [activeFundingRecord, futureFundingRecord, oldFundingRecord];
+        standardDetailsLookupResponse.ApprenticeshipFunding = [activeFundingRecord, futureFundingRecord, oldFundingRecord];
 
-        _coursesApiClientMock
-            .Setup(x =>
-                x.GetWithResponseCode<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode.ToString())
-                    )
+        _cachedStandardDetailsService
+            .Setup(x => x.GetStandardDetails(
+                It.Is<string>(r =>
+                    r == query.LarsCode.ToString()
                 )
-            )
-            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
-
+            ))
+            .ReturnsAsync(standardDetailsLookupResponse);
         _roatpCourseManagementApiClientMock
             .Setup(x =>
                 x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
@@ -509,7 +494,10 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_No_End_Date(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_ActiveFundingRecordHasNoEndDate_ReturnsCalculatedIncentivePayment(
+        GetCourseByLarsCodeQuery query,
+        StandardDetailsLookupResponse standardDetailsLookupResponse,
+        GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
         {
@@ -526,17 +514,15 @@ public sealed class WhenGettingCourseByLarsCode
             EffectiveFrom = DateTime.Today.AddMonths(-10),
             EffectiveTo = activeFundingRecordWithNoEndDate.EffectiveFrom.AddDays(-1)
         };
-        standardDetailResponse.ApprenticeshipFunding = [activeFundingRecordWithNoEndDate, oldFundingRecord];
+        standardDetailsLookupResponse.ApprenticeshipFunding = [activeFundingRecordWithNoEndDate, oldFundingRecord];
 
-        _coursesApiClientMock
-            .Setup(x =>
-                x.GetWithResponseCode<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode.ToString())
+        _cachedStandardDetailsService
+                .Setup(x => x.GetStandardDetails(
+                    It.Is<string>(r =>
+                        r == query.LarsCode.ToString()
                     )
-                )
-            )
-            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+                ))
+                .ReturnsAsync(standardDetailsLookupResponse);
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -561,7 +547,10 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test, AutoData]
-    public async Task Handle_Calculates_IncentivePayment_Using_The_Current_Active_Funding_Record_With_End_Date_In_Future(GetCourseByLarsCodeQuery query, StandardDetailResponse standardDetailResponse, GetCourseTrainingProvidersCountResponse courseProvidersResponse)
+    public async Task Handle_ActiveFundingRecordHasFutureEndDate_ReturnsCalculatedIncentivePayment(
+        GetCourseByLarsCodeQuery query,
+        StandardDetailsLookupResponse standardDetailsLookupResponse,
+        GetCourseTrainingProvidersCountResponse courseProvidersResponse)
     {
         ApprenticeshipFunding activeFundingRecordWithNoEndDate = new()
         {
@@ -586,17 +575,15 @@ public sealed class WhenGettingCourseByLarsCode
             FoundationAppThirdEmpPayment = 3,
             EffectiveFrom = oldFundingRecord.EffectiveTo.GetValueOrDefault().AddDays(1)
         };
-        standardDetailResponse.ApprenticeshipFunding = [oldFundingRecord, activeFundingRecordWithNoEndDate, futureFundingRecord];
+        standardDetailsLookupResponse.ApprenticeshipFunding = [oldFundingRecord, activeFundingRecordWithNoEndDate, futureFundingRecord];
 
-        _coursesApiClientMock
-            .Setup(x =>
-                x.GetWithResponseCode<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode)
+        _cachedStandardDetailsService
+                .Setup(x => x.GetStandardDetails(
+                    It.Is<string>(r =>
+                        r == query.LarsCode.ToString()
                     )
-                )
-            )
-            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+                ))
+                .ReturnsAsync(standardDetailsLookupResponse);
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -621,13 +608,13 @@ public sealed class WhenGettingCourseByLarsCode
     }
 
     [Test]
-    public async Task Handle_Returns_Zero_IncentivePayment_When_No_Apprenticeship_Funding()
+    public async Task Handle_NoApprenticeshipFundingExists_ReturnsZeroIncentivePayment()
     {
         var larsCode = "123";
 
         GetCourseByLarsCodeQuery query = new GetCourseByLarsCodeQuery { LarsCode = larsCode };
 
-        var standardDetailResponse = new StandardDetailResponse
+        var standardDetailsLookupResponse = new StandardDetailsLookupResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding> { }
         };
@@ -644,15 +631,13 @@ public sealed class WhenGettingCourseByLarsCode
             }
         };
 
-        _coursesApiClientMock
-            .Setup(x =>
-                x.GetWithResponseCode<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode.ToString())
+        _cachedStandardDetailsService
+                .Setup(x => x.GetStandardDetails(
+                    It.Is<string>(r =>
+                        r == query.LarsCode.ToString()
                     )
-                )
-            )
-            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+                ))
+                .ReturnsAsync(standardDetailsLookupResponse);
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -685,13 +670,13 @@ public sealed class WhenGettingCourseByLarsCode
     [TestCase(1, null, null, 1)]
     [TestCase(1, 2, 3, 6)]
 
-    public async Task Handle_Returns_Expected_IncentivePayment_When_3_Payments_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
+    public async Task Handle_ThreeFoundationPaymentsAreProvided_ReturnsExpectedIncentivePayment_When_3_Payments_Set_Up(int? firstPayment, int? secondPayment, int? thirdPayment, int expectedIncentivePayment)
     {
         var larsCode = "123";
 
         GetCourseByLarsCodeQuery query = new GetCourseByLarsCodeQuery { LarsCode = larsCode };
 
-        var standardDetailResponse = new StandardDetailResponse
+        var standardDetailsLookupResponse = new StandardDetailsLookupResponse
         {
             ApprenticeshipFunding = new List<ApprenticeshipFunding>
             {
@@ -716,16 +701,13 @@ public sealed class WhenGettingCourseByLarsCode
                 }
             }
         };
-
-        _coursesApiClientMock
-            .Setup(x =>
-                x.GetWithResponseCode<StandardDetailResponse>(
-                    It.Is<GetStandardDetailsByIdRequest>(a =>
-                        a.Id.Equals(query.LarsCode.ToString())
+        _cachedStandardDetailsService
+                .Setup(x => x.GetStandardDetails(
+                    It.Is<string>(r =>
+                        r == query.LarsCode.ToString()
                     )
-                )
-            )
-            .ReturnsAsync(new ApiResponse<StandardDetailResponse>(standardDetailResponse, HttpStatusCode.OK, string.Empty));
+                ))
+                .ReturnsAsync(standardDetailsLookupResponse);
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>
@@ -751,20 +733,11 @@ public sealed class WhenGettingCourseByLarsCode
 
     [TestCase(HttpStatusCode.NotFound)]
     [TestCase(HttpStatusCode.BadRequest)]
-    public async Task Handle_Returns_Null_When_Training_Providers_Returns_404_Or_400(HttpStatusCode statusCode)
+    public async Task Handle_TrainingProvidersApiReturnsNotFoundOrBadRequest_ReturnsNull(HttpStatusCode statusCode)
     {
-        _coursesApiClientMock
-            .Setup(x => x.GetWithResponseCode<StandardDetailResponse>(
-                It.IsAny<GetStandardDetailsByIdRequest>()
-                )
-            )
-            .ReturnsAsync(
-                new ApiResponse<StandardDetailResponse>(
-                    new StandardDetailResponse(),
-                    HttpStatusCode.OK,
-                    string.Empty
-                )
-            );
+        _cachedStandardDetailsService
+            .Setup(x => x.GetStandardDetails(It.IsAny<string>()))
+            .ReturnsAsync(new StandardDetailsLookupResponse());
 
         _roatpCourseManagementApiClientMock
             .Setup(x =>

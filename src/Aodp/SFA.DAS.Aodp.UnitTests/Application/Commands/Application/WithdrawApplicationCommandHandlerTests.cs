@@ -6,15 +6,20 @@ using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.Models;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
 
 namespace SFA.DAS.Aodp.Application.Tests.Commands.Application.Application
 {
     [TestFixture]
-    public class WithdrawApplicationCommandHandlerOuterTests
+    public class WithdrawApplicationCommandHandlerTests
     {
         private static readonly Guid ApplicationId = Guid.NewGuid();
         private const string WithdrawnBy = "Test User";

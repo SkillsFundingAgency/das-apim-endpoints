@@ -1,5 +1,6 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using static SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics.PutOneVacancyAnalyticsApiRequest;
 
 namespace SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
@@ -11,6 +12,6 @@ public record PutOneVacancyAnalyticsApiRequest(long VacancyReference, VacancyAna
 
     public record VacancyAnalyticsRequestData
     {
-        public required List<Core.Domain.Models.VacancyAnalytics> AnalyticsData { get; set; }
+        public required List<Domain.Models.VacancyAnalytics> AnalyticsData { get; set; }
     }
 }

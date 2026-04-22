@@ -9,7 +9,8 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Api.ApiRequests;
 using SFA.DAS.Vacancies.Api.ApiRequests.Base;
@@ -58,6 +59,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Controllers
                          && c.NationWideOnly.Equals(request.NationWideOnly)
                          && c.StandardLarsCode.Equals(request.StandardLarsCode)
                          && c.PostedInLastNumberOfDays.Equals(request.PostedInLastNumberOfDays)
+                         && c.OnlyPrimaryLocations.Equals(false)
                          ),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mediatorResult);
