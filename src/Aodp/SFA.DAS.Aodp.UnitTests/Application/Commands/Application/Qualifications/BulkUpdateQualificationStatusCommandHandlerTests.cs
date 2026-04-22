@@ -3,10 +3,10 @@ using AutoFixture.AutoMoq;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.Qualifications;
 using SFA.DAS.AODP.Application.Commands.Qualifications;
+using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.AODP.Domain.Qualifications.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.Apim.Shared.Models;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Qualifications
 {

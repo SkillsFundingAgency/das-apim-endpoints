@@ -1,4 +1,3 @@
-using AutoFixture;
 using FluentAssertions.Execution;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.InnerApi.Responses;

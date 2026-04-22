@@ -2,12 +2,16 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
@@ -19,7 +23,9 @@ using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 {
@@ -45,7 +51,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -101,7 +107,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship
+                ApprenticeshipType = LearningType.FoundationApprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -161,7 +167,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -218,7 +224,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -269,7 +275,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -315,7 +321,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship,
+                ApprenticeshipType = LearningType.Apprenticeship,
                 LastDateStarts = command.PostVacancyV2RequestData.StartDate.AddDays(-1)
             };
 
@@ -385,7 +391,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse

@@ -1,5 +1,7 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Common;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Shared;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
@@ -22,7 +24,7 @@ public class CreateDraftShortCourseRequest
     /// <summary>
     /// Learning support details
     /// </summary>
-    public List<LearningSupportUpdatedDetails> LearningSupport { get; set; } = new();
+    public List<LearningSupport> LearningSupport { get; set; } = new();
 
     /// <summary>
     /// On programme details
@@ -90,10 +92,4 @@ public class OnProgramme
     /// Learning type of the short course
     /// </summary>
     public LearningType LearningType { get; set; }
-}
-
-public enum Milestone
-{
-    ThirtyPercentLearningComplete = 1,
-    LearningComplete = 2
 }
