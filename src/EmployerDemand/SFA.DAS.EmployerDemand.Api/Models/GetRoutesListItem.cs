@@ -5,7 +5,7 @@
         public int Id { get; set; }
         public string Name { get; set; }
 
-        public static implicit operator GetRoutesListItem(SharedOuterApi.InnerApi.Responses.GetRoutesListItem source)
+        public static implicit operator GetRoutesListItem(SharedOuterApi.Types.InnerApi.Responses.GetRoutesListItem source)
         {
             return new GetRoutesListItem
             {

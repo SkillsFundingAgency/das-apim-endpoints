@@ -11,7 +11,6 @@ using SFA.DAS.ApprenticeApp.Application.Queries.Details;
 using SFA.DAS.ApprenticeApp.Application.Queries.KsbProgress;
 using SFA.DAS.ApprenticeApp.Application.Queries.Tasks;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Threading.Tasks;

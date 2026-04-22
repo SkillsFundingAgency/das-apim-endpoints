@@ -1,6 +1,6 @@
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetAccountLegalEntities;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using System.Linq;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Models

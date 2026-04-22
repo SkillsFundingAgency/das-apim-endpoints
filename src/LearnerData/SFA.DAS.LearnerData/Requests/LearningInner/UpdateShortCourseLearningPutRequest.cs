@@ -1,6 +1,8 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.LearnerData.Enums;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
+
 
 /// <summary>
 /// This request will be sent to the Learning Inner Api
@@ -39,6 +41,5 @@ public class ShortCourseOnProgrammeUpdateDetails
     public DateTime ExpectedEndDate { get; set; }
     public List<Milestone> Milestones { get; set; } = new();
 }
-
 
 #pragma warning restore CS8618

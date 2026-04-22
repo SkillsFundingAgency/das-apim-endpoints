@@ -1,0 +1,16 @@
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Charities
+{
+    public class GetCharityByRegistrationNumberRequest : IGetApiRequest
+    {
+        public int RegistrationNumber { get; }
+
+        public GetCharityByRegistrationNumberRequest(int registrationNumber)
+        {
+            RegistrationNumber = registrationNumber;
+        }
+
+        public string GetUrl => $"/api/Charities/{RegistrationNumber}";
+    }
+}

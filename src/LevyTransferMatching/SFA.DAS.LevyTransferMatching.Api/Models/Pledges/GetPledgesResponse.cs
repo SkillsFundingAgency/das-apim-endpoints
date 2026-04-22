@@ -28,7 +28,7 @@ namespace SFA.DAS.LevyTransferMatching.Api.Models.Pledges
             public IEnumerable<string> Sectors { get; set; }
             public string Status { get; set; }
 
-            public static implicit operator Pledge(SharedOuterApi.InnerApi.Responses.GetPledgesResponse.Pledge pledge)
+            public static implicit operator Pledge(SharedOuterApi.Types.InnerApi.Responses.GetPledgesResponse.Pledge pledge)
             {
                 return new Pledge()
                 {

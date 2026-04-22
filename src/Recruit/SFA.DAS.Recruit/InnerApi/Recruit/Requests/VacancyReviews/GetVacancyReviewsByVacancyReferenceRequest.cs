@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyReviews;
 

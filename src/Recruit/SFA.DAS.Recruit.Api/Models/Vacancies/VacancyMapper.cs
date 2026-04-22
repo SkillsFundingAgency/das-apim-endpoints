@@ -2,7 +2,6 @@
 using SFA.DAS.Recruit.Api.Models.Vacancies.Responses;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.Recruit.InnerApi.Responses;
 
 namespace SFA.DAS.Recruit.Api.Models.Vacancies;
 
