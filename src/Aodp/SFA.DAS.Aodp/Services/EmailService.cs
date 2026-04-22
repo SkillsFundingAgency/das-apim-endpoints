@@ -4,7 +4,8 @@ using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.Models;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Aodp.Services;
 public class EmailService : IEmailService

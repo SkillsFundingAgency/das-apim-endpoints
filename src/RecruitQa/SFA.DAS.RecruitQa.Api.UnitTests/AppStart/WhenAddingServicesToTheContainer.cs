@@ -5,8 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitQa.Api.AppStart;
 using SFA.DAS.RecruitQa.Domain;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RecruitQa.Api.UnitTests.AppStart
 {
