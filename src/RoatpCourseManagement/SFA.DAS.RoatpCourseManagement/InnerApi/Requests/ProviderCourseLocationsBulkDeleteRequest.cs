@@ -1,6 +1,7 @@
 ﻿using System.Web;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models.DeleteProviderCourseLocations;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {

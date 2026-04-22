@@ -1,7 +1,7 @@
 using SFA.DAS.RecruitQa.Application.Report.Queries.GetReports;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using ReportModel = SFA.DAS.RecruitQa.Domain.Reports.Report;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.Queries.Report;
