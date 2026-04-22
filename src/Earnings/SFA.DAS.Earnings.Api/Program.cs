@@ -1,5 +1,4 @@
 using System.Diagnostics.CodeAnalysis;
-using NLog.Web;
 
 namespace SFA.DAS.Earnings.Api;
 
@@ -17,6 +16,5 @@ public class Program
             {
                 webBuilder.UseStartup<Startup>();
                 webBuilder.ConfigureKestrel(o => o.AddServerHeader = false);
-            })
-            .UseNLog();
+            });
 }
