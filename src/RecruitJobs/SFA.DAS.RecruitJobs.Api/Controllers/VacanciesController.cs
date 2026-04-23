@@ -26,6 +26,7 @@ using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Interfaces;
 using StrawberryShake;
+using Address = SFA.DAS.SharedOuterApi.Models.Address;
 using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
@@ -363,6 +364,24 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
         patchDocument.Replace(x => x.Status, SharedOuterApi.Domain.Recruit.VacancyStatus.Live);
         patchDocument.Replace(x => x.LiveDate, DateTime.UtcNow);
+        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
+        patchResponse.EnsureSuccessStatusCode();
+        return TypedResults.NoContent();
+    }
+    
+    [HttpPost, Route("{vacancyId:guid}/locations")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IResult> UpdateVacancyLocations(
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] Guid vacancyId,
+        [FromBody] List<Address> employerLocations,
+        CancellationToken cancellationToken)
+    {
+        // Patch the Vacancy
+        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
+        patchDocument.Replace(x => x.EmployerLocations, employerLocations);
         var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
         var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
         patchResponse.EnsureSuccessStatusCode();
