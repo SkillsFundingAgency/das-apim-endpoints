@@ -4,7 +4,6 @@ using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.VacancyReview;
