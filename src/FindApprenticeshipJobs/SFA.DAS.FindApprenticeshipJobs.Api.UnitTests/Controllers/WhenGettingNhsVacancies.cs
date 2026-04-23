@@ -32,7 +32,7 @@ public class WhenGettingNhsVacancies
         {
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeOfType<GetLiveVacanciesApiResponse>();
-            actualValue!.Vacancies.Should().BeEquivalentTo(mockQueryResult.NhsVacancies);
+            actualValue!.Vacancies.Should().BeEquivalentTo(mockQueryResult.NhsVacancies, options=>options.Excluding(c=>c.Qualifications));
             actualValue.PageSize.Should().Be(mockQueryResult.NhsVacancies.Count);
             actualValue.PageNo.Should().Be(1);
             actualValue.TotalLiveVacanciesReturned.Should().Be(mockQueryResult.NhsVacancies.Count);

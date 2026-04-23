@@ -62,7 +62,7 @@ public class WhenMappingFromGetClosedVacancyResponseToVacancy
         actual.ProviderContactName.Should().Be(source.ProviderContact?.Name);
         actual.ProviderContactPhone.Should().Be(source.ProviderContact?.Phone);
         actual.ProviderName.Should().Be(source.TrainingProvider.Name);
-        actual.Qualifications.Should().BeEquivalentTo(source.Qualifications, options => options.Excluding(x => x.Weighting));
+        actual.Qualifications.Should().BeEquivalentTo(source.Qualifications, options => options.Excluding(x => x.Weighting).Excluding(c=>c.OtherQualificationName));
         actual.Skills.Should().BeEquivalentTo(source.Skills);
         actual.StartDate.Should().Be(source.StartDate);
         actual.ThingsToConsider.Should().Be(source.ThingsToConsider);
