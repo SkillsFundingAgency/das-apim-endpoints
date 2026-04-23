@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAllProviderLocations;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
@@ -14,12 +13,10 @@ namespace SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAvailab
 
 public class GetAvailableProviderLocationsQueryHandler : IRequestHandler<GetAvailableProviderLocationsQuery, GetAvailableProviderLocationsQueryResult>
 {
-    private readonly ILogger<GetAvailableProviderLocationsQueryHandler> _logger;
     private readonly IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient;
 
-    public GetAvailableProviderLocationsQueryHandler(ILogger<GetAvailableProviderLocationsQueryHandler> logger, IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient)
+    public GetAvailableProviderLocationsQueryHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> courseManagementApiClient)
     {
-        _logger = logger;
         _courseManagementApiClient = courseManagementApiClient;
     }
 
