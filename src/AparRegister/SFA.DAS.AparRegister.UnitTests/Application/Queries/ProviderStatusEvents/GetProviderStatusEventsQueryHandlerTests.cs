@@ -8,10 +8,13 @@ using NUnit.Framework;
 using SFA.DAS.AparRegister.Application.Queries.ProviderStatusEvents;
 using SFA.DAS.AparRegister.InnerApi.Requests;
 using SFA.DAS.AparRegister.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.AparRegister.UnitTests.Application.Queries.ProviderStatusEvents;

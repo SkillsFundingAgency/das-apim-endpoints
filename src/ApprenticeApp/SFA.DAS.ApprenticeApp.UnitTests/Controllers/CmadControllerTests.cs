@@ -12,14 +12,16 @@ using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByAccountDe
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByEmail;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
 {

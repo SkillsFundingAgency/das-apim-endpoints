@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Domain;
 
 namespace SFA.DAS.Recruit.UnitTests.Domain

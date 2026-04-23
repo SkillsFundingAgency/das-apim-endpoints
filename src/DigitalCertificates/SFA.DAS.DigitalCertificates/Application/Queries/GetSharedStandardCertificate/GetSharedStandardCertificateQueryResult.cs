@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertificate

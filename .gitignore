@@ -283,3 +283,4 @@ src/**/generated.sh
 #nservicebus
 *.learningtransport*
 src/ApprenticeApp/SFA.DAS.ApprenticeApp.Api/appsettings.json
+/src/FindApprenticeshipTraining/.github/copilot-instructions.md

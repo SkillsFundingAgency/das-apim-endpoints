@@ -1,7 +1,8 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RequestApprenticeTraining;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

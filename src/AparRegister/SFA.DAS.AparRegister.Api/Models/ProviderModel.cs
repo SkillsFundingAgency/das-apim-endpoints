@@ -1,5 +1,5 @@
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 
 namespace SFA.DAS.AparRegister.Api.Models;
 
