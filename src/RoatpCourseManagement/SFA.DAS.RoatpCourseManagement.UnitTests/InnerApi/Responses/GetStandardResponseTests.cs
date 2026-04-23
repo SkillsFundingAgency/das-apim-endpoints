@@ -66,27 +66,6 @@ public class GetStandardResponseTests
         result.DurationUnits.Should().Be(newer.DurationUnits);
     }
 
-    [Test, AutoData]
-    public void ImplicitConversion_FromCourseManagementApi_MapsAllProperties(GetStandardResponseFromCourseManagementApi source)
-    {
-        // Act
-        GetStandardResponse result = source;
-
-        // Assert
-        result.StandardUId.Should().BeNull();
-        result.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
-        result.LarsCode.Should().Be(source.LarsCode);
-        result.Title.Should().Be(source.Title);
-        result.Level.Should().Be(source.Level);
-        result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
-        result.ApprovalBody.Should().Be(source.ApprovalBody);
-        result.Route.Should().Be(source.Route);
-        result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
-        result.Duration.Should().Be(source.Duration);
-        result.DurationUnits.Should().Be(source.DurationUnits);
-        result.CourseType.Should().Be(source.CourseType);
-    }
-
     [Test]
     public void ImplicitConversion_FromCoursesApi_NullSource_ReturnsNull()
     {
@@ -101,20 +80,7 @@ public class GetStandardResponseTests
     }
 
     [Test]
-    public void ImplicitConversion_FromCourseManagementApi_NullSource_ThrowsNullReferenceException()
-    {
-        // Arrange
-        GetStandardResponseFromCourseManagementApi source = null;
-
-        // Act
-        Action act = () => { var _ = (GetStandardResponse)source; };
-
-        // Assert
-        act.Should().Throw<NullReferenceException>();
-    }
-
-    [Test]
-    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsNull_IsActiveAvailableReturnsTrue()
+    public void ImplicitConversion_FromCoursesApi_LastDateStartsIsNull_IsActiveAvailableReturnsTrue()
     {
         // Arrange
         var source = new GetStandardResponseFromCoursesApi()
@@ -134,7 +100,7 @@ public class GetStandardResponseTests
     }
 
     [Test]
-    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsFutureDateAndNotSameAsEffectiveFrom_IsActiveAvailableReturnsTrue()
+    public void ImplicitConversion_FromCoursesApi_LastDateStartsIsFutureDateAndNotSameAsEffectiveFrom_IsActiveAvailableReturnsTrue()
     {
         // Arrange
 
@@ -157,7 +123,7 @@ public class GetStandardResponseTests
     }
 
     [Test]
-    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsFutureDateAndEffectiveFromIsNull_IsActiveAvailableReturnsTrue()
+    public void ImplicitConversion_FromCoursesApi_LastDateStartsIsFutureDateAndEffectiveFromIsNull_IsActiveAvailableReturnsTrue()
     {
         // Arrange
 
@@ -180,7 +146,7 @@ public class GetStandardResponseTests
     }
 
     [Test]
-    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsFutureDateAndIsSameAsEffectiveFrom_IsActiveAvailableReturnsFalse()
+    public void ImplicitConversion_FromCoursesApi_LastDateStartsIsFutureDateAndIsSameAsEffectiveFrom_IsActiveAvailableReturnsFalse()
     {
         // Arrange
 
@@ -203,7 +169,7 @@ public class GetStandardResponseTests
     }
 
     [Test]
-    public void ImplicitConversion_FromCourseManagementApi_LastDateStartsIsPastDate_IsActiveAvailableReturnsFalse()
+    public void ImplicitConversion_FromCoursesApi_LastDateStartsIsPastDate_IsActiveAvailableReturnsFalse()
     {
         // Arrange
 
@@ -226,7 +192,7 @@ public class GetStandardResponseTests
     }
 
     [Test]
-    public void ImplicitConversion_FromCourseManagementApi_CourseDatesIsNull_IsActiveAvailableReturnsTrue()
+    public void ImplicitConversion_FromCoursesApi_CourseDatesIsNull_IsActiveAvailableReturnsTrue()
     {
         // Arrange
         var source = new GetStandardResponseFromCoursesApi()
