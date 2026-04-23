@@ -40,7 +40,9 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
         var periodsInLearning = new List<PeriodInLearningItem>();
 
         var matchingEnglishAndMaths =
-            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(x => x.LearnAimRef == learnAimRef);
+            command.UpdateLearnerRequest.Delivery.EnglishAndMaths
+                .Where(x => x.LearnAimRef == learnAimRef)
+                .DistinctBy(x => x.StartDate);
 
         foreach (var mathsAndEnglish in matchingEnglishAndMaths)
         {
