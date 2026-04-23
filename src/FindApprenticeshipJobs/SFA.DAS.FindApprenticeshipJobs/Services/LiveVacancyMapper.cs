@@ -75,7 +75,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Skills = source.Skills ?? [],
                 Qualifications = source.Qualifications?.Select(q => new Application.Shared.Qualification
                 {
-                    QualificationType = q.QualificationType,
+                    QualificationType = q.QualificationType.Equals("Other", StringComparison.CurrentCultureIgnoreCase) ? q.OtherQualificationName! : q.QualificationType,
                     Subject = q.Subject,
                     Grade = q.Grade,
                     Weighting = q.Weighting
