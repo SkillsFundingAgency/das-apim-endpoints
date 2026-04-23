@@ -17,9 +17,9 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.AppStart;
 public class WhenAddingServicesToTheContainer
 {
     [TestCase(typeof(IAzureClientCredentialHelper))]
-    [TestCase(typeof(IRecruitApiClient<RecruitApiConfiguration>))]
+    [TestCase(typeof(SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>))]
     [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
-    [TestCase(typeof(ITrainingProviderService))]
+    [TestCase(typeof(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>))]
     [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]
     [TestCase(typeof(ICoursesApiClient<CoursesApiConfiguration>))]
     [TestCase(typeof(ICacheStorageService))]
@@ -54,6 +54,7 @@ public class WhenAddingServicesToTheContainer
                 new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
                 new KeyValuePair<string, string>("TrainingProviderApi:url", "http://localhost:1"),
                 new KeyValuePair<string, string>("RecruitAltApiConfiguration:url", "http://localhost:1"),
+                new KeyValuePair<string, string>("RoatpV2ApiConfiguration:url", "http://localhost:1")
             }!
         };
 

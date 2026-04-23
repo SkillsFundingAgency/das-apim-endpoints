@@ -22,10 +22,8 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<CoursesApiConfiguration>>().Value);
         services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection(nameof(RoatpV2ApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<RoatpV2ApiConfiguration>>().Value);
-        services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
-        services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<TrainingProviderConfiguration>>().Value);
 
-        services.Configure<RecruitApiConfiguration>(configuration.GetSection("RecruitAltApiConfiguration"));
-        services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<RecruitApiConfiguration>>().Value);
+        services.Configure<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>(configuration.GetSection("RecruitAltApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetRequiredService<IOptions<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>>().Value);
     }
 }

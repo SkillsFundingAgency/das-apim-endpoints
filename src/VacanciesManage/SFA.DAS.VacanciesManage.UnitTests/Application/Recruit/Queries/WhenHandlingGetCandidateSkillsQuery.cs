@@ -20,7 +20,7 @@ public class WhenHandlingGetCandidateSkillsQuery
     public async Task Then_If_Cached_Then_Cached_Response_Returned_And_Api_Not_Called(
         List<string> cacheQueryResponse,
         GetCandidateSkillsQuery query,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> apiClient,
+        [Frozen] Mock<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>> apiClient,
         [Frozen] Mock<ICacheStorageService> cacheStorageService,
         GetCandidateSkillsQueryHandler handler)
     {
@@ -40,7 +40,7 @@ public class WhenHandlingGetCandidateSkillsQuery
         List<string> apiQueryResponse,
         GetCandidateSkillsQuery query,
         [Frozen] Mock<ICacheStorageService> cacheStorageService,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> apiClient,
+        [Frozen] Mock<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>> apiClient,
         GetCandidateSkillsQueryHandler handler)
     {
         cacheStorageService

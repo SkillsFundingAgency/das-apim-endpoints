@@ -1,5 +1,5 @@
 using Moq.Protected;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;

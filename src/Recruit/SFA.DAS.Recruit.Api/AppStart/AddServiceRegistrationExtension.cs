@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
-using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 

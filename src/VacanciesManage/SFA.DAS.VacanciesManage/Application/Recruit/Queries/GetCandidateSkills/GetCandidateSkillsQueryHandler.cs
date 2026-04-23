@@ -9,7 +9,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
 
-public class GetCandidateSkillsQueryHandler(IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+public class GetCandidateSkillsQueryHandler(SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
     ICacheStorageService cacheStorageService)
     : IRequestHandler<GetCandidateSkillsQuery, GetCandidateSkillsQueryResponse>
 {
