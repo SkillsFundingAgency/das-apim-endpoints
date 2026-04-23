@@ -3,14 +3,17 @@ using System.Threading;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.Domain;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using ReviewStatus = SFA.DAS.SharedOuterApi.Domain.Recruit.ReviewStatus;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using ReviewStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ReviewStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.AiControllerTests;
 

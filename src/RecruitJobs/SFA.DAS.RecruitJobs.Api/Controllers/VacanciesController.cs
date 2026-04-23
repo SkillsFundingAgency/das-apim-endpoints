@@ -26,6 +26,7 @@ using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
 
@@ -329,7 +330,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         
         // Patch the Vacancy
         var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
-        patchDocument.Replace(x => x.Status, SharedOuterApi.Domain.Recruit.VacancyStatus.Approved);
+        patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Approved);
         patchDocument.Replace(x => x.ApprovedDate, DateTime.UtcNow);
         var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
         var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
@@ -362,7 +363,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         
         // Patch the Vacancy
         var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
-        patchDocument.Replace(x => x.Status, SharedOuterApi.Domain.Recruit.VacancyStatus.Live);
+        patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Live);
         patchDocument.Replace(x => x.LiveDate, DateTime.UtcNow);
         var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
         var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);

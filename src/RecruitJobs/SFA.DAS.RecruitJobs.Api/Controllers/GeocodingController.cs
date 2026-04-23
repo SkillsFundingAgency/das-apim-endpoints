@@ -3,14 +3,14 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Location;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using GeoCodeMethod = SFA.DAS.SharedOuterApi.Domain.Recruit.GeoCodeMethod;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
+using GeoCodeMethod = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -49,7 +49,7 @@ public class GeocodingController(ILocationLookupService locationLookupService) :
     {
         // Patch the Vacancy
 
-        var mappedAddresses = employerLocations.Select(x => new SharedOuterApi.Models.Address
+        var mappedAddresses = employerLocations.Select(x => new SharedOuterApi.Types.Models.Address
         {
             AddressLine1 = x.AddressLine1,
             AddressLine2 = x.AddressLine2,

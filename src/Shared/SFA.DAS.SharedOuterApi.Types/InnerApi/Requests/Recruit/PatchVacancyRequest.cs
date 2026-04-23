@@ -1,11 +1,9 @@
-using System;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch;
-using SFA.DAS.SharedOuterApi.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
 
 public class PatchableVacancyDto
 {

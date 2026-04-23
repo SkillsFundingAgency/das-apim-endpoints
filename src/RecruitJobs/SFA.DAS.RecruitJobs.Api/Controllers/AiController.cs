@@ -11,8 +11,9 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Ai;
+using ReviewStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ReviewStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 

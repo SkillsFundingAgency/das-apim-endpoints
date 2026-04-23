@@ -3,13 +3,14 @@ using System.Threading;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
 
@@ -129,7 +130,7 @@ public class WhenApprovingVacancy
         response.Should().NotBeNull();
         capturedRequest.Should().NotBeNull();
         capturedRequest!.PatchUrl.Should().Be($"api/vacancies/{vacancyId}");
-        capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyDto>("replace", "/Status", null, SharedOuterApi.Domain.Recruit.VacancyStatus.Approved));
+        capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyDto>("replace", "/Status", null, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Approved));
         var datetime = Convert.ToDateTime(capturedRequest.Data.Operations.Find(x => x.path == "/ApprovedDate")!.value);
         datetime.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
