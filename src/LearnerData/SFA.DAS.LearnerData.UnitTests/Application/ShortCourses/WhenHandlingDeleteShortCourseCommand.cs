@@ -8,11 +8,11 @@ using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 

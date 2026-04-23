@@ -3,17 +3,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.RecruitJobs.Ai;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RecruitAi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Domain.Recruit.Ai;
-using SFA.DAS.SharedOuterApi.Domain.Recruit.VacancyReviews;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RecruitAi;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit.Ai;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 

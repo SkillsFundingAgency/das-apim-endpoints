@@ -3,10 +3,11 @@ using System.Linq;
 using AutoFixture;
 using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown;
 using SFA.DAS.EmployerFinance.Models.Constants;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.Transfers.GetFinancialBreakdown;
 

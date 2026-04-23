@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.Candidates;
-using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetInactiveCandidates;
 

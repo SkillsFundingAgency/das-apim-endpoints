@@ -5,11 +5,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NServiceBus;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
+using SFA.DAS.Apim.Shared.Configuration;
 using SFA.DAS.NServiceBus.Configuration;
 using SFA.DAS.NServiceBus.Configuration.NewtonsoftJsonSerializer;
 using SFA.DAS.NServiceBus.Hosting;
 using SFA.DAS.PushNotifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
+
 
 namespace SFA.DAS.ApprenticeApp.Api.AppStart
 {

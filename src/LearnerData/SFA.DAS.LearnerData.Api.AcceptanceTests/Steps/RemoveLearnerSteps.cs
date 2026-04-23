@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using TechTalk.SpecFlow;
