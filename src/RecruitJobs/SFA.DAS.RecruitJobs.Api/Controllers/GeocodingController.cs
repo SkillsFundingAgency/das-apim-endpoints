@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Location;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using GeoCodeMethod = SFA.DAS.SharedOuterApi.Domain.Recruit.GeoCodeMethod;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -47,8 +48,20 @@ public class GeocodingController(ILocationLookupService locationLookupService) :
         CancellationToken cancellationToken)
     {
         // Patch the Vacancy
+
+        var mappedAddresses = employerLocations.Select(x => new SharedOuterApi.Models.Address
+        {
+            AddressLine1 = x.AddressLine1,
+            AddressLine2 = x.AddressLine2,
+            AddressLine3 = x.AddressLine3,
+            AddressLine4 = x.AddressLine4,
+            Latitude = x.Latitude,
+            Longitude = x.Longitude,
+            Postcode = x.Postcode,
+        });
+        
         var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
-        patchDocument.Replace(x => x.EmployerLocations, employerLocations);
+        patchDocument.Replace(x => x.EmployerLocations, mappedAddresses);
         patchDocument.Replace(x => x.GeoCodeMethod, GeoCodeMethod.OuterApi);
         var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
         var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
