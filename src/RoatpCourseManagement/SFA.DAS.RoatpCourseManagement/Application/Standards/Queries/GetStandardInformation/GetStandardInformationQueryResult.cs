@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Apim.Shared.Common;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using DurationUnits = SFA.DAS.SharedOuterApi.Types.Constants.DurationUnits;
