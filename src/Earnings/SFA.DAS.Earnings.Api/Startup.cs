@@ -25,7 +25,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddNLog();
         services.AddOptions();
         services.AddSingleton(_env);
 

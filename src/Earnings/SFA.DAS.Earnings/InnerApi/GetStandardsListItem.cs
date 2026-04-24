@@ -1,6 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using SFA.DAS.Apim.Shared.Models;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Earnings.InnerApi;
