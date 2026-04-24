@@ -28,7 +28,7 @@ public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
             Assert.That(sut.StandardPageUrl, Is.EqualTo(response.StandardPageUrl));
             Assert.That(sut.CourseType, Is.EqualTo(response.CourseType));
             Assert.That(sut.ApprenticeshipType, Is.EqualTo(response.LearningType));
-            Assert.That(sut.IsActiveAvailable, Is.EqualTo(response.IsActive));
+            Assert.That(sut.IsActiveAvailable, Is.EqualTo(response.IsActiveAvailable));
         });
     }
 
