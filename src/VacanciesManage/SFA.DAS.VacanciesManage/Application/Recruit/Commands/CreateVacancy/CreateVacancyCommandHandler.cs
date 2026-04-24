@@ -115,6 +115,8 @@ public class CreateVacancyCommandHandler(
             request.PostVacancyRequest.SubmittedDate = dateTimeNow;
         }
 
+        request.PostVacancyRequest.Id = request.Id;
+
         var result = await recruitApiClient.PostWithResponseCode<Vacancy>(new PostVacanciesApiRequest(request.PostVacancyRequest)
         {
             RuleSet = VacancyRuleSet.All,
