@@ -9,10 +9,8 @@ using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Api.Controllers;
 using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using ReviewStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ReviewStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.AiControllerTests;
@@ -41,7 +39,7 @@ public class WhenAutoApprovingVacancy
         response.Should().BeOfType<NoContent>();
         capturedRequest.Should().NotBeNull();
         capturedRequest.PatchUrl.Should().Be($"api/vacancyreviews/{vacancyReviewId}");
-        capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyReviewDto>("replace", "/ManualOutcome", null, nameof(ManualQaOutcome.Approved)));
+        capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyReviewDto>("replace", "/ManualOutcome", null, nameof(ManualQaOutcome.Bypassed)));
         capturedRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<PatchableVacancyReviewDto>("replace", "/Status", null, ReviewStatus.Closed));
         var datetime = Convert.ToDateTime(capturedRequest.Data.Operations.Find(x => x.path == "/ClosedDate").value);
         datetime.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
