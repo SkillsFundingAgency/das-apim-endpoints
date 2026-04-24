@@ -2,6 +2,7 @@ using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 
 namespace SFA.DAS.LearnerData.Services;
 
@@ -122,7 +123,7 @@ public class UpdateLearningPutRequestBuilder(
                     LearnAimRef = course.LearnAimRef,
                     Course = course.Course,
                     PlannedEndDate = course.EndDate,
-                    PriorLearningPercentage = course.PriorLearningPercentage,
+                    CombinedFundingAdjustmentPercentage = course.PriorLearningAdjustment + course.OtherFundingAdjustment,
                     StartDate = course.StartDate,
                     WithdrawalDate = course.WithdrawalDate,
                     PauseDate = course.PauseDate,
@@ -143,7 +144,7 @@ public class UpdateLearningPutRequestBuilder(
                     LearnAimRef = latestCourse.LearnAimRef,
                     Course = latestCourse.Course,
                     PlannedEndDate = latestCourse.EndDate,
-                    PriorLearningPercentage = latestCourse.PriorLearningPercentage,
+                    CombinedFundingAdjustmentPercentage = latestCourse.PriorLearningAdjustment + latestCourse.OtherFundingAdjustment,
                     StartDate = firstCourse.StartDate,
                     WithdrawalDate = latestCourse.WithdrawalDate,
                     PauseDate = latestCourse.PauseDate,
