@@ -1,5 +1,4 @@
 using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.ToolsSupport.InnerApi.Requests;
 
 namespace SFA.DAS.ToolsSupport.UnitTests.InnerApi.Requests;

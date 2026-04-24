@@ -1,13 +1,14 @@
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using GetShortCourseLearningsForEarnings = SFA.DAS.LearnerData.Requests.LearningInner.GetShortCourseLearningsForEarnings;
 using LearningResponse = SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;

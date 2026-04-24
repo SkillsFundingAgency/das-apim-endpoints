@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
+
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.WithdrawApplication;
 

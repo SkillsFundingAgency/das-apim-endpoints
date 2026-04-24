@@ -2,8 +2,8 @@
 using SFA.DAS.Aodp.Application.Queries.Jobs;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Jobs;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
 
 namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {

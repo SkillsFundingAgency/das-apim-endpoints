@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using RestEase;
 using SFA.DAS.AdminRoatp.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 
 namespace SFA.DAS.AdminRoatp.Infrastructure;
 

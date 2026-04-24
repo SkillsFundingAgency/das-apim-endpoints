@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc.Authorization;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.RecruitQa.Api.AppStart;
 using SFA.DAS.RecruitQa.Application.Dashboard.Queries.GetQaDashboard;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 namespace SFA.DAS.RecruitQa.Api;
 

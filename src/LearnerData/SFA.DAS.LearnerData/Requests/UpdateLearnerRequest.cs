@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+using SFA.DAS.LearnerData.Shared;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.LearnerData.Requests;
 
@@ -40,7 +41,7 @@ public class OnProgrammeRequestDetails
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
-    public List<LearningSupportRequestDetails> LearningSupport { get; set; }
+    public List<LearningSupport> LearningSupport { get; set; }
     public Care Care { get; set; }
     public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
@@ -67,13 +68,7 @@ public class MathsAndEnglish
     public DateTime? PauseDate { get; set; }
     public int? PriorLearningPercentage { get; set; }
     public int? AimSequenceNumber { get; set; }
-    public List<LearningSupportRequestDetails> LearningSupport { get; set; }
-}
-
-public class LearningSupportRequestDetails
-{
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public List<LearningSupport> LearningSupport { get; set; }
 }
 
 public class Care

@@ -1,9 +1,10 @@
 ﻿using SFA.DAS.Recruit.Application.EmployerProfile.Queries.GetEmployerProfilesByAccountId;
 using SFA.DAS.Recruit.InnerApi.Models;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.EmployerProfiles;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Collections.Generic;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.EmployerProfiles;
 

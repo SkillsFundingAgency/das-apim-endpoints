@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Domain.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using OwnerType = SFA.DAS.Recruit.Domain.Vacancy.OwnerType;
 
 namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;

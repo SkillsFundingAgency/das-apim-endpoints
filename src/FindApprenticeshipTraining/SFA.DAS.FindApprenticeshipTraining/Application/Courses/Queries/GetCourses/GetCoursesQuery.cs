@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 
@@ -13,8 +14,8 @@ public sealed class GetCoursesQuery : IRequest<GetCoursesQueryResult>
 
     public List<int> RouteIds { get; set; } = [];
 
-    public List<int> Levels { get; set; } = [];
-    public List<ApprenticeshipType> LearningTypes { get; set; } = [];
+    public List<int> Levels { get; set; } = new List<int>();
+    public List<LearningType> LearningTypes { get; set; } = new List<LearningType>();
     public int? Distance { get; set; }
 
     public string? Location { get; set; }

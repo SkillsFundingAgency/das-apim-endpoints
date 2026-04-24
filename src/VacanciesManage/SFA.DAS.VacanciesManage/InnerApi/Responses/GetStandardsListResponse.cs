@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.VacanciesManage.InnerApi.Responses
 {
@@ -15,7 +16,7 @@ namespace SFA.DAS.VacanciesManage.InnerApi.Responses
         public string Title { get; set; }
         public int Level { get; set; }
         public string Route { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
+        public LearningType ApprenticeshipType { get; set; }
         public DateTime? LastDateStarts { get; set; }
         public DateTime? EffectiveTo { get; set; }
     }
