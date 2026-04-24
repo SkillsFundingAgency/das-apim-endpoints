@@ -13,6 +13,16 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
         public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
         [JsonIgnore]
         public bool IsActive => IsStandardActive();
+        public bool IsActiveAvailable => IsStandardActiveAvailable();
+
+        private bool IsStandardActiveAvailable()
+        {
+            if (CourseDates == null) return false;
+
+            return (CourseDates.LastDateStarts == null || CourseDates.LastDateStarts >= DateTime.UtcNow.Date)
+                    && CourseDates.LastDateStarts != CourseDates.EffectiveFrom
+                    && CourseDates.EffectiveFrom <= DateTime.UtcNow.Date;
+        }
 
         public int MaxFundingOn(DateTime effectiveDate)
         {
