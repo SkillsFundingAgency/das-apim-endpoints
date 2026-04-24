@@ -29,7 +29,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Models
                 .Excluding(tc => tc.IfateReferenceNumber)
                 .Excluding(tc => tc.SearchScore)
                 .Excluding(tc => tc.RouteCode)
-                .Excluding(tc => tc.LearningType)
+                .Excluding(tc => tc.ApprenticeshipType)
             );
 
             response.Id.Should().Be(source.LarsCode.ToString());

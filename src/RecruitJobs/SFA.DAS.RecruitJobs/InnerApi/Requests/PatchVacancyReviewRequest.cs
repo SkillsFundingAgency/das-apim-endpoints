@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.JsonPatch;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.RecruitJobs.Domain;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.RecruitJobs.InnerApi.Requests;
 

@@ -1,7 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
+﻿using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.InnerApi;
 

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.ComponentModel;
 

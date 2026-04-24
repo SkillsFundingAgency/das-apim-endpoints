@@ -1,9 +1,10 @@
 using AutoFixture;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
+using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.LearnerData.Shared;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -27,7 +28,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
     {
         return new CreateDraftShortCourseRequest
         {
-            OnProgramme = new OnProgramme
+            OnProgramme = new Requests.LearningInner.OnProgramme
             {
                 Price = price,
                 LearningType = learningType
@@ -47,7 +48,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .With(x => x.Dob, new DateTime(2000, 1, 1))
             .Create();
 
-        var learningSupport = _fixture.CreateMany<LearningSupportRequestDetails>(2).ToList();
+        var learningSupport = _fixture.CreateMany<LearningSupport>(2).ToList();
 
         var startDate = DateTime.UtcNow;
         var expectedEndDate = startDate.AddMonths(6);
@@ -101,8 +102,8 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
 
         result.OnProgramme.Milestones.Should().BeEquivalentTo(new[]
         {
-            SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.ThirtyPercentLearningComplete,
-            SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete
+            Milestone.ThirtyPercentLearningComplete,
+            Milestone.LearningComplete
         });
     }
 
@@ -115,7 +116,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
-            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
             .Create();
 
         var request = _fixture.Build<ShortCourseRequest>()
@@ -126,7 +127,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
 
         // Assert
-        result.OnProgramme.Milestones.Should().Contain(SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().Contain(Milestone.LearningComplete);
     }
 
     [Test]
@@ -138,7 +139,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
-            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
             .Create();
 
         var request = _fixture.Build<ShortCourseRequest>()
@@ -150,7 +151,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
 
         // Assert
         result.OnProgramme.Milestones.Should().ContainSingle(m =>
-            m == SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
+            m == Milestone.LearningComplete);
     }
 
     [Test]
@@ -162,7 +163,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
             .With(x => x.CompletionDate, (DateTime?)null)
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
-            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
             .Create();
 
         var request = _fixture.Build<ShortCourseRequest>()
@@ -173,6 +174,6 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
 
         // Assert
-        result.OnProgramme.Milestones.Should().NotContain(SFA.DAS.LearnerData.Requests.EarningsInner.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().NotContain(Milestone.LearningComplete);
     }
 }

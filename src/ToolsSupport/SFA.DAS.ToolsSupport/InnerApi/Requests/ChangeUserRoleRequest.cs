@@ -1,5 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
 
 namespace SFA.DAS.ToolsSupport.InnerApi.Requests;
 

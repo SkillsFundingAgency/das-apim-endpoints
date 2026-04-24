@@ -1,10 +1,10 @@
-﻿using SFA.DAS.Recruit.Application.User.Queries.GetUserByIdamsId;
+using SFA.DAS.Recruit.Application.User.Queries.GetUserByIdamsId;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
 using System.Net;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.User.Queries;
 

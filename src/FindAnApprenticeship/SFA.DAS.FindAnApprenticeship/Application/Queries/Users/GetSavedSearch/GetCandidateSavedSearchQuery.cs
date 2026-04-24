@@ -1,6 +1,5 @@
 ﻿using System;
 using MediatR;
-using SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearches;
 
 namespace SFA.DAS.FindAnApprenticeship.Application.Queries.Users.GetSavedSearch;
 

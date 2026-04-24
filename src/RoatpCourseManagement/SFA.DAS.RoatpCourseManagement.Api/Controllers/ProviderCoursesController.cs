@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAvailableCoursesForProvider;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
-using SFA.DAS.SharedOuterApi.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 

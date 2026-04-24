@@ -1,5 +1,4 @@
-﻿using System;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.Application.Commands

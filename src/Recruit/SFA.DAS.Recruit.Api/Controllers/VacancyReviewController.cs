@@ -1,3 +1,5 @@
+using System;
+using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -98,8 +100,7 @@ public class VacancyReviewController(
     [Route("[controller]s/{id:guid}")]
     public async Task<IActionResult> UpsertVacancyReview(
         [FromRoute] Guid id,
-        [FromBody] VacancyReviewDto vacancyReview,
-        [FromServices] IRecruitArtificialIntelligenceService aiService)
+        [FromBody] VacancyReviewDto vacancyReview)
     {
         try
         {

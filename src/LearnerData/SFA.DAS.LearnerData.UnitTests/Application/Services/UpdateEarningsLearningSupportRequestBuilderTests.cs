@@ -1,9 +1,10 @@
-﻿using AutoFixture;
+using AutoFixture;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -32,7 +33,7 @@ public class UpdateEarningsLearningSupportRequestBuilderTests
 
         // Assert
         var expected = putRequest.Data.LearningSupport.Select(x => new
-            LearningSupportItem
+            LearningSupport
             {
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
