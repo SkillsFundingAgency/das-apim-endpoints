@@ -34,5 +34,6 @@ public class LearningInnerShortCourseEpisode
     public decimal Price { get; set; }
     public string LearnerRef { get; set; }
     public long ApprovalsApprenticeshipId { get; set; }
+    public long? TransferSenderId { get; set; }
 }
 #pragma warning restore CS8618
