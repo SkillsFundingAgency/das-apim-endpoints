@@ -203,6 +203,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         public PurpleContent TabContent { get; set; }
         [JsonPropertyName("findTraineeship")]
         public bool FindTraineeship { get; set; }
+
+        [JsonPropertyName("cardImage")]
+        public LandingPage CardImage { get; set; }
     }
 
     public class PurpleContent

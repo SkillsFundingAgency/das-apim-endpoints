@@ -154,16 +154,16 @@ Entry parentPage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         private static List<TabbedContentModel> ProcessTabbedContent(CmsContent article, Item item)
         {
             var tabbedContent = article.Includes.Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
-                                                        && c.Sys.ContentType.Sys.Type.Equals("link",
-                                                            StringComparison.CurrentCultureIgnoreCase)
-                                                        && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
-                                                            StringComparison.CurrentCultureIgnoreCase)
-                                                        && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true,
-                                                            out var type) &&
-                                                        type == PageType.Tab &&
-                                                        article.Items[0].Fields.TabbedContents
-                                                            .FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null);
-            if (!tabbedContent.Any())
+                                                                  && c.Sys.ContentType.Sys.Type.Equals("link",
+                                                                      StringComparison.CurrentCultureIgnoreCase)
+                                                                  && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
+                                                                      StringComparison.CurrentCultureIgnoreCase)
+                                                                  && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true,
+                                                                      out var type) &&
+                                                                  type == PageType.Tab &&
+                                                                  article.Items[0].Fields.TabbedContents?
+                                                                      .FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null).ToList();
+            if (tabbedContent.Count == 0)
             {
                 return null;
             }
