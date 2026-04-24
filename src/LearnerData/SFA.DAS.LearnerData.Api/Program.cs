@@ -21,6 +21,8 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.ConfigureKestrel(o => o.AddServerHeader = false);
+
 var configuration = builder.Configuration.BuildSharedConfiguration();
 
 builder.Services
@@ -95,6 +97,7 @@ builder.Services.AddServices();
 var app = builder.Build();
 
 app.UseMiddleware<CorrelationIdMiddleware>();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 if (app.Environment.IsDevelopment()) app.UseDeveloperExceptionPage();
 
