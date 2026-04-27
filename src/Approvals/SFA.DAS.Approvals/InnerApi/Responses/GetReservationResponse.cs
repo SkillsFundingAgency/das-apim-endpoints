@@ -1,7 +1,6 @@
 using System;
 using System.Text.Json.Serialization;
-using SFA.DAS.Approvals.Types;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.InnerApi.Responses;
 

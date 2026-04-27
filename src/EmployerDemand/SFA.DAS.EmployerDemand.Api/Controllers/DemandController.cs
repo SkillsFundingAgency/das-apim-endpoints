@@ -24,7 +24,7 @@ using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetRestartEmployerDemand
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetStartCourseDemand;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetCourseDemands;
 using SFA.DAS.EmployerDemand.Application.Demand.Queries.GetUnmetDemandsWithStoppedCourse;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.EmployerDemand.Api.Controllers
 {

@@ -5,12 +5,14 @@ using SFA.DAS.RecruitQa.Domain.EmailTemplates;
 using SFA.DAS.RecruitQa.InnerApi;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models.Messages;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Models.Messages;
 
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Commands.UpsertVacancyReview;
 

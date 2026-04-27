@@ -1,10 +1,8 @@
-﻿using System.Net;
+using System.Net;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.ExternalApi.DfeSignIn;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models.DfeSignIn;
-
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.Models.DfeSignIn;
 namespace SFA.DAS.Aodp.Services;
 
 public sealed class DfeUsersService : IDfeUsersService

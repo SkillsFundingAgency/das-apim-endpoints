@@ -6,14 +6,22 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.EmployerFeedback.Application.Commands.UpsertFeedbackTransaction;
 using SFA.DAS.EmployerFeedback.Configuration;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.UpsertFeedbackTransaction
 {
@@ -153,7 +161,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Commands.UpsertFeedback
                 .Setup(x => x.GetWithResponseCode<GetAccountProvidersCourseStatusResponse>(It.IsAny<GetAccountProvidersCourseStatusRequest>()))
                 .ReturnsAsync(commitmentsApiResponse);
 
-            Assert.ThrowsAsync<SharedOuterApi.Exceptions.ApiResponseException>(async () =>
+            Assert.ThrowsAsync<ApiResponseException>(async () =>
                 await _handler.Handle(command, CancellationToken.None));
 
             _commitmentsApiClientMock.Verify(x => x.GetWithResponseCode<GetAccountProvidersCourseStatusResponse>(It.IsAny<GetAccountProvidersCourseStatusRequest>()), Times.Once);

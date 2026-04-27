@@ -1,13 +1,12 @@
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Extensions.Logging.ApplicationInsights;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 
 [assembly: ApiController]

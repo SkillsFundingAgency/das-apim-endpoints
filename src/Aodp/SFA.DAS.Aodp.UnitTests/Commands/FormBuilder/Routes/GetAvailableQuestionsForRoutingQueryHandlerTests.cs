@@ -2,9 +2,9 @@
 using AutoFixture.AutoMoq;
 using Moq;
 using SFA.DAS.Aodp.Application.Commands.FormBuilder.Routes;
+using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Routes;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Services;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.FormBuilder.Tests
 {

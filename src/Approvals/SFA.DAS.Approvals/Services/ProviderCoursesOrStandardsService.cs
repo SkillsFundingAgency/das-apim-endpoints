@@ -3,22 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Approvals.Application;
-using SFA.DAS.Approvals.Application.Shared.Enums;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Requests;
 using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Types;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models.Roatp;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models.Roatp;
+using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.Services;
 
 public interface IProviderCoursesOrStandardsService
+{
+    Task<ProviderStandardsData> GetCoursesData(long providerId);
+}
+
+public interface IProviderStandardsService
 {
     Task<ProviderStandardsData> GetCoursesData(long providerId);
 }
@@ -30,11 +37,10 @@ public class ProviderStandardsService(
     ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
     ICacheStorageService cacheStorageService,
     ILogger<ProviderStandardsService> logger)
-    : IProviderCoursesOrStandardsService
+    : IProviderCoursesOrStandardsService, IProviderStandardsService
 {
-    public const string AllCoursesCacheKey = "ProviderCoursesService.GetAllCoursesResponse";
-    public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
-    public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
+    public const string AllStandardsCacheKey = "ProviderStandardsService.GetAllStandardsResponse";
+    public const string ProviderDetailsCacheKey = "ProviderStandardsService.TrainingProviderResponse";
     public const int CacheExpiryHours = 12;
 
     public async Task<ProviderStandardsData> GetCoursesData(long providerId)
@@ -82,8 +88,8 @@ public class ProviderStandardsService(
         {
             return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
         }
-        
-        var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
+
+        var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest());
         await cacheStorageService.SaveToCache(AllStandardsCacheKey, result, CacheExpiryHours);
         return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
     }
@@ -111,20 +117,18 @@ public class ProviderStandardsService(
             return [];
         }
     }
-
 }
 
 public class ProviderCoursesService(
     ServiceParameters serviceParameters,
     ITrainingProviderService trainingProviderService,
     IProviderCoursesApiClient<ProviderCoursesApiConfiguration> providerCoursesApiClient,
-    ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> commitmentsV2ApiClient,
+    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
     ICacheStorageService cacheStorageService,
     ILogger<ProviderStandardsService> logger)
     : IProviderCoursesOrStandardsService
 {
     public const string AllCoursesCacheKey = "ProviderCoursesService.GetAllCoursesResponse";
-    public const string AllStandardsCacheKey = "ProviderCoursesService.GetAllStandardsResponse";
     public const string ProviderDetailsCacheKey = "ProviderCoursesService.TrainingProviderResponse";
     public const int CacheExpiryHours = 12;
 
@@ -164,21 +168,19 @@ public class ProviderCoursesService(
         return result;
     }
 
-    //DOTO This needs to be reworked to use Witeks endpoint to get all course
-    // one difference to consider is the Level will no longer be an integer, it's a string
     private async Task<IEnumerable<Standard>> GetAllCourses()
     {
         var cacheResult =
-            await cacheStorageService.RetrieveFromCache<GetAllStandardsResponse>(AllCoursesCacheKey);
+            await cacheStorageService.RetrieveFromCache<GetCoursesListResponse>(AllCoursesCacheKey);
 
         if (cacheResult != null)
         {
-            return cacheResult.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
+            return cacheResult.Courses.Select(x => new Standard(x.LarsCode, x.Title, x.Level)).OrderBy(x => x.Name);
         }
 
-        var result = await commitmentsV2ApiClient.Get<GetAllStandardsResponse>(new GetAllStandardsRequest());
+        var result = await coursesApiClient.Get<GetCoursesListResponse>(new GetCoursesExportRequest());
         await cacheStorageService.SaveToCache(AllCoursesCacheKey, result, CacheExpiryHours);
-        return result.TrainingProgrammes.Select(x => new Standard(x.CourseCode, x.Name, x.Level)).OrderBy(x => x.Name);
+        return result.Courses.Select(x => new Standard(x.LarsCode, x.Title, x.Level)).OrderBy(x => x.Name);
     }
 
     private async Task<IEnumerable<Standard>> GetCoursesForProvider(long providerId)
@@ -188,7 +190,6 @@ public class ProviderCoursesService(
             var providerCourseResponse =
                 await providerCoursesApiClient.Get<GetCoursesForProviderResponse>(
                     new GetCoursesForProviderRequest(providerId));
-
 
             var allCourses = providerCourseResponse.CourseTypes
                 .SelectMany(ct => ct.Courses)

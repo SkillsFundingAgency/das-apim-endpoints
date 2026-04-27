@@ -1,0 +1,20 @@
+﻿using System.Web;
+
+using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations
+{
+    public class GetLatestDetailsForPublicSectorOrganisationRequest : IGetApiRequest
+    {
+        public string Identifier { get; }
+
+        public GetLatestDetailsForPublicSectorOrganisationRequest(string identifier)
+        {
+            Identifier = identifier;
+        }
+
+        public string GetUrl => $"/PublicSectorOrganisations/{HttpUtility.UrlEncode(Identifier)}";
+    }
+}
