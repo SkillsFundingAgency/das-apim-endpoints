@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.RecruitJobs.Domain.Vacancy;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.RecruitJobs.Domain;
 
 namespace SFA.DAS.RecruitJobs.InnerApi.Requests.Notifications;
 
