@@ -73,6 +73,28 @@ public class UpdateLearningPutRequestBuilderTests
     }
 
     [Test]
+    public void Build_Sets_AchievementDate_From_LatestOnProgramme()
+    {
+        var fixture = new Fixture();
+
+        // Arrange
+        var command = BreaksInLearningTestHelper.CreateLearnerWithBreaksInLearning(false);
+        var achievementDate = fixture.Create<DateTime>();
+        command.UpdateLearnerRequest.Delivery.OnProgramme.Last().AchievementDate = achievementDate;
+
+        var sut = new UpdateLearningPutRequestBuilder(
+            Mock.Of<ILearningSupportService>(),
+            Mock.Of<IBreaksInLearningService>(),
+            Mock.Of<ICostsService>());
+
+        // Act
+        var actualRequest = sut.Build(command);
+
+        // Assert
+        actualRequest.Data.OnProgramme.AchievementDate.Should().Be(achievementDate);
+    }
+
+    [Test]
     public void Build_Sets_PauseDate_From_LatestOnProgramme()
     {
         var fixture = new Fixture();

@@ -34,6 +34,7 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
             CompletionDate = putRequest.Data.Learner.CompletionDate,
             WithdrawalDate = putRequest.Data.Delivery.WithdrawalDate,
             PauseDate = putRequest.Data.OnProgramme.PauseDate,
+            AchievementDate = putRequest.Data.OnProgramme.AchievementDate,
             ApprenticeshipEpisodeKey = learningApiPutResponse.LearningEpisodeKey,
             FundingBandMaximum = fundingBandMaximum,
             IncludesFundingBandMaximumUpdate = includesFundingBandMaximumUpdate,
