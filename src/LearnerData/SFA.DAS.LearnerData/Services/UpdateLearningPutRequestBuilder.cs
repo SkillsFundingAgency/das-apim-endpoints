@@ -123,7 +123,7 @@ public class UpdateLearningPutRequestBuilder(
                     LearnAimRef = course.LearnAimRef,
                     Course = course.Course,
                     PlannedEndDate = course.EndDate,
-                    CombinedFundingAdjustmentPercentage = course.PriorLearningAdjustment + course.OtherFundingAdjustment,
+                    CombinedFundingAdjustmentPercentage = ResolveCombinedFundingAdjustmentPercentage(course.PriorLearningAdjustment,course.OtherFundingAdjustment),
                     StartDate = course.StartDate,
                     WithdrawalDate = course.WithdrawalDate,
                     PauseDate = course.PauseDate,
@@ -144,7 +144,7 @@ public class UpdateLearningPutRequestBuilder(
                     LearnAimRef = latestCourse.LearnAimRef,
                     Course = latestCourse.Course,
                     PlannedEndDate = latestCourse.EndDate,
-                    CombinedFundingAdjustmentPercentage = latestCourse.PriorLearningAdjustment + latestCourse.OtherFundingAdjustment,
+                    CombinedFundingAdjustmentPercentage = ResolveCombinedFundingAdjustmentPercentage(latestCourse.PriorLearningAdjustment,latestCourse.OtherFundingAdjustment),
                     StartDate = firstCourse.StartDate,
                     WithdrawalDate = latestCourse.WithdrawalDate,
                     PauseDate = latestCourse.PauseDate,
@@ -152,5 +152,15 @@ public class UpdateLearningPutRequestBuilder(
                 };
             }
         }).ToList();
+    }
+
+    private static int? ResolveCombinedFundingAdjustmentPercentage(int? priorLearningAdjustment, int? otherFundingAdjustment)
+    {
+        if (!priorLearningAdjustment.HasValue && !otherFundingAdjustment.HasValue)
+        {
+            return null;
+        }
+
+        return priorLearningAdjustment.GetValueOrDefault(0) * otherFundingAdjustment.GetValueOrDefault(0);
     }
 }
