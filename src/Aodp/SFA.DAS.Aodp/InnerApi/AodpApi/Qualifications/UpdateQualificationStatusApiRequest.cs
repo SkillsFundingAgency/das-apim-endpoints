@@ -1,6 +1,4 @@
-﻿using SFA.DAS.Aodp.Application.Commands.Qualification;
-using SFA.DAS.AODP.Application.Commands.Qualification;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+﻿using SFA.DAS.AODP.Application.Commands.Qualification;
 using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AODP.Domain.Qualifications.Requests
