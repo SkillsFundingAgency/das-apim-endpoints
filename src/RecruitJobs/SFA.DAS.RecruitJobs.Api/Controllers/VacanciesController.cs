@@ -9,7 +9,6 @@ using SFA.DAS.RecruitJobs.Api.Models;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
-using SFA.DAS.RecruitJobs.Domain.Vacancy;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.DeleteVacancy;
@@ -23,7 +22,7 @@ using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.RecruitJobs.Domain;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
 

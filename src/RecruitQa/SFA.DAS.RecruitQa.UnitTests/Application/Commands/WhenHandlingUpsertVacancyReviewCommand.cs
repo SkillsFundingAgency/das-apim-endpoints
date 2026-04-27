@@ -1,4 +1,5 @@
 using System.Net;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.RecruitQa.Application.VacancyReviews.Commands.UpsertVacancyReview;
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
