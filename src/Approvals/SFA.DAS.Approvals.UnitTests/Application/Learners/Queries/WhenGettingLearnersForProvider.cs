@@ -35,7 +35,6 @@ public class WhenGettingLearnersForProvider
         GetAllStandardsRequest coursesRequest,
         GetAllStandardsResponse coursesResponse,
         GetCourseCodesResponse courseCodesResponse,
-        GetCourseCodesByUkprnResponse courseCodesByUkprnResponse,
         List<LearnerSummary> learners,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
@@ -60,10 +59,7 @@ public class WhenGettingLearnersForProvider
           x.GetWithResponseCode<GetCourseCodesResponse>(It.IsAny<GetAllTrainingProgrammesRequest>()))
        .ReturnsAsync(new ApiResponse<GetCourseCodesResponse>(courseCodesResponse, HttpStatusCode.OK, null));
 
-        learnerDataClient.Setup(x => x.GetWithResponseCode<GetCourseCodesByUkprnResponse>(It.Is<GetCourseCodesByUkprnRequest>(t => t.Ukprn == query.ProviderId)))
-            .ReturnsAsync(new ApiResponse<GetCourseCodesByUkprnResponse>(courseCodesByUkprnResponse, HttpStatusCode.OK, null));
-
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -88,6 +84,7 @@ public class WhenGettingLearnersForProvider
         GetAllStandardsRequest coursesRequest,
         GetAllStandardsResponse coursesResponse,
         List<LearnerSummary> learners,
+        List<Course> courses,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
         [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationsClient,
@@ -118,11 +115,6 @@ public class WhenGettingLearnersForProvider
              ]
         };
 
-        GetCourseCodesByUkprnResponse courseCodesByUkprnResponse = new GetCourseCodesByUkprnResponse()
-        {
-            CourseCodes = [4, 5, 6]
-        };
-
         learnerDataClient.Setup(x =>
                 x.GetWithResponseCode<GetLearnersForProviderResponse>(It.IsAny<GetLearnersForProviderRequest>()))
             .ReturnsAsync(new ApiResponse<GetLearnersForProviderResponse>(learnersResponse, HttpStatusCode.OK, null));
@@ -138,13 +130,11 @@ public class WhenGettingLearnersForProvider
              x.GetWithResponseCode<GetCourseCodesResponse>(It.IsAny<GetAllTrainingProgrammesRequest>()))
             .ReturnsAsync(new ApiResponse<GetCourseCodesResponse>(courseCodesResponse, HttpStatusCode.OK, null));
 
-        learnerDataClient.Setup(x => x.GetWithResponseCode<GetCourseCodesByUkprnResponse>(It.Is<GetCourseCodesByUkprnRequest>(t => t.Ukprn == query.ProviderId)))
-            .ReturnsAsync(new ApiResponse<GetCourseCodesByUkprnResponse>(courseCodesByUkprnResponse, HttpStatusCode.OK, null));
-
         reservationsClient.Setup(x => x.Get<GetAvailableDatesResponse>(It.IsAny<GetAvailableDatesRequest>()))
             .ReturnsAsync(availableDatesResponse);
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
+        mapper.Setup(x => x.PopulateMissingTrainingNames(learnersResponse.Courses, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(courses);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -158,8 +148,8 @@ public class WhenGettingLearnersForProvider
         actual.TotalPages.Should().Be(learnersResponse.TotalPages);
         actual.Learners.Should().BeEquivalentTo(learners);
         actual.FutureMonths.Should().Be(3);
-        actual.TrainingCourses.Count().Should().Be(courseCodesByUkprnResponse.CourseCodes.Count);
-        actual.TrainingCourses.Select(t => t.Name).Should().BeEquivalentTo(courseCodesResponse.TrainingProgrammes.Select(t => t.Name));
+        actual.TrainingCourses.Count().Should().Be(courses.Count);
+        actual.TrainingCourses.Should().BeEquivalentTo(courses);
     }
 
     [Test, MoqAutoData]
@@ -172,7 +162,6 @@ public class WhenGettingLearnersForProvider
        GetAllStandardsRequest coursesRequest,
        GetAllStandardsResponse coursesResponse,
        GetCourseCodesResponse courseCodesResponse,
-       GetCourseCodesByUkprnResponse courseCodesByUkprnResponse,
        List<LearnerSummary> learners,
        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
@@ -200,10 +189,7 @@ public class WhenGettingLearnersForProvider
             x.GetWithResponseCode<GetCourseCodesResponse>(It.IsAny<GetAllTrainingProgrammesRequest>()))
            .ReturnsAsync(new ApiResponse<GetCourseCodesResponse>(courseCodesResponse, HttpStatusCode.OK, null));
 
-        learnerDataClient.Setup(x => x.GetWithResponseCode<GetCourseCodesByUkprnResponse>(It.Is<GetCourseCodesByUkprnRequest>(t => t.Ukprn == query.ProviderId)))
-            .ReturnsAsync(new ApiResponse<GetCourseCodesByUkprnResponse>(courseCodesByUkprnResponse, HttpStatusCode.OK, null));
-
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -221,22 +207,22 @@ public class WhenGettingLearnersForProvider
 
     [Test, MoqAutoData]
     public async Task Then_The_Api_Is_Called_With_CohortId_And_Clients_Return_Responses_The_result_Is_Returned(
-    GetLearnersForProviderQuery query,
-    GetLearnersForProviderRequest learnersRequest,
-    GetLearnersForProviderResponse learnersResponse,
-    GetCohortRequest cohortRequest,
-    GetCohortResponse cohortResponse,
-    GetAllStandardsRequest coursesRequest,
-    GetAllStandardsResponse coursesResponse,
-    GetCourseCodesResponse courseCodesResponse,
-    GetCourseCodesByUkprnResponse getCourseCodesByUkprnResponse,
-    GetDraftApprenticeshipsResponse apprenticeshipsResponse,
-    List<LearnerSummary> learners,
-    [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
-    [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
-    [Frozen] Mock<IMapLearnerRecords> mapper,
-    [Greedy] GetLearnersForProviderQueryHandler handler
-)
+        GetLearnersForProviderQuery query,
+        GetLearnersForProviderRequest learnersRequest,
+        GetLearnersForProviderResponse learnersResponse,
+        GetCohortRequest cohortRequest,
+        GetCohortResponse cohortResponse,
+        GetAllStandardsRequest coursesRequest,
+        GetAllStandardsResponse coursesResponse,
+        GetCourseCodesResponse courseCodesResponse,
+        GetDraftApprenticeshipsResponse apprenticeshipsResponse,
+        List<LearnerSummary> learners,
+        List<Course> courses,
+        [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> learnerDataClient,
+        [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> commitmentsClient,
+        [Frozen] Mock<IMapLearnerRecords> mapper,
+        [Greedy] GetLearnersForProviderQueryHandler handler
+    )
     {
         var trainingProgrammes = new List<TrainingProgramme>()
         {
@@ -245,8 +231,7 @@ public class WhenGettingLearnersForProvider
              new TrainingProgramme() { CourseCode = "3" , Name = "course3" }
         };
 
-        var courseCodes = new List<int>() { 1, 2 };
-        getCourseCodesByUkprnResponse.CourseCodes = courseCodes;
+        var courseCodes = new List<string>() { "1", "2" };
 
         courseCodesResponse.TrainingProgrammes = trainingProgrammes;
 
@@ -270,10 +255,8 @@ public class WhenGettingLearnersForProvider
           x.GetWithResponseCode<GetCourseCodesResponse>(It.IsAny<GetAllTrainingProgrammesRequest>()))
        .ReturnsAsync(new ApiResponse<GetCourseCodesResponse>(courseCodesResponse, HttpStatusCode.OK, null));
 
-        learnerDataClient.Setup(x => x.GetWithResponseCode<GetCourseCodesByUkprnResponse>(It.Is<GetCourseCodesByUkprnRequest>(t => t.Ukprn == query.ProviderId)))
-            .ReturnsAsync(new ApiResponse<GetCourseCodesByUkprnResponse>(getCourseCodesByUkprnResponse, HttpStatusCode.OK, null));
-
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
+        mapper.Setup(x => x.PopulateMissingTrainingNames(learnersResponse.Courses, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(courses);
 
         var actual = await handler.Handle(query, CancellationToken.None);
 
@@ -286,7 +269,7 @@ public class WhenGettingLearnersForProvider
         actual.Total.Should().Be(learnersResponse.TotalItems);
         actual.TotalPages.Should().Be(learnersResponse.TotalPages);
         actual.Learners.Should().BeEquivalentTo(learners);
-        actual.TrainingCourses.Count.Should().Be(getCourseCodesByUkprnResponse.CourseCodes.Count);
+        actual.TrainingCourses.Count.Should().Be(courses.Count);
     }
 
     [Test, MoqAutoData]
@@ -320,7 +303,7 @@ public class WhenGettingLearnersForProvider
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
             .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
 
         var result = async () => await handler.Handle(query, CancellationToken.None);
 
@@ -356,7 +339,7 @@ public class WhenGettingLearnersForProvider
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
             .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
 
         var result = async () => await handler.Handle(query, CancellationToken.None);
 
@@ -392,7 +375,7 @@ public class WhenGettingLearnersForProvider
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
             .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, null));
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
 
         var result = async () => await handler.Handle(query, CancellationToken.None);
 
@@ -428,7 +411,7 @@ public class WhenGettingLearnersForProvider
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetAllStandardsResponse>(It.IsAny<GetAllStandardsRequest>()))
             .ReturnsAsync(new ApiResponse<GetAllStandardsResponse>(coursesResponse, HttpStatusCode.OK, "Courses failed"));
 
-        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).ReturnsAsync(learners);
+        mapper.Setup(x => x.Map(learnersResponse.Data, It.IsAny<List<GetAllStandardsResponse.TrainingProgramme>>())).Returns(learners);
 
         var result = async () => await handler.Handle(query, CancellationToken.None);
 
@@ -462,7 +445,6 @@ public class WhenGettingLearnersForProvider
     public async Task Then_The_Api_Is_Called_And_Draft_Apprenticeships_Returs_Then_Data_Is_Included_In_LearnerApi_Call(
         GetLearnersForProviderQuery query,
         GetLearnersForProviderResponse learnersResponse,
-        GetCourseCodesByUkprnResponse courseCodesByUkprnResponse,
         GetCohortResponse cohortResponse,
         GetCourseCodesResponse getCourseCodesResponse,
         GetDraftApprenticeshipsResponse draftApprenticeshipsResponse,
@@ -488,9 +470,6 @@ public class WhenGettingLearnersForProvider
         commitmentsClient.Setup(x =>
            x.GetWithResponseCode<GetCourseCodesResponse>(It.IsAny<GetAllTrainingProgrammesRequest>()))
         .ReturnsAsync(new ApiResponse<GetCourseCodesResponse>(getCourseCodesResponse, HttpStatusCode.OK, null));
-
-        learnerDataClient.Setup(x => x.GetWithResponseCode<GetCourseCodesByUkprnResponse>(It.Is<GetCourseCodesByUkprnRequest>(t => t.Ukprn == query.ProviderId)))
-            .ReturnsAsync(new ApiResponse<GetCourseCodesByUkprnResponse>(courseCodesByUkprnResponse, HttpStatusCode.OK, null));
 
         commitmentsClient.Setup(x => x.GetWithResponseCode<GetDraftApprenticeshipsResponse>(It.IsAny<GetDraftApprenticeshipsRequest>()))
             .ReturnsAsync(new ApiResponse<GetDraftApprenticeshipsResponse>(draftApprenticeshipsResponse, HttpStatusCode.OK, null));
