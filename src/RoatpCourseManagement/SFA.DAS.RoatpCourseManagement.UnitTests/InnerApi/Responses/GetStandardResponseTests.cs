@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -12,7 +12,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Responses;
 public class GetStandardResponseTests
 {
     [Test, AutoData]
-    public void ImplicitConversion_FromCoursesApiNoFunding_MapsPropertiesAndSetsDefaults(GetStandardResponseFromCoursesApi source)
+    public void ImplicitConversion_WhenCoursesApiHasNoFunding_MapsPropertiesAndSetsDefaults(GetStandardResponseFromCoursesApi source)
     {
         // Arrange
         source.ApprenticeshipFunding = new List<ApprenticeshipFunding>();
@@ -37,7 +37,7 @@ public class GetStandardResponseTests
     }
 
     [Test, AutoData]
-    public void ImplicitConversion_FromCoursesApiWithFunding_MapsPropertiesAndUsesMostRecentFunding(GetStandardResponseFromCoursesApi source)
+    public void ImplicitConversion_WhenCoursesApiHasFunding_MapsPropertiesAndUsesMostRecentFunding(GetStandardResponseFromCoursesApi source)
     {
         // Arrange
         var older = new ApprenticeshipFunding { EffectiveFrom = new DateTime(2020, 1, 1), Duration = 74, DurationUnits = DurationUnits.Months };
@@ -131,5 +131,133 @@ public class GetStandardResponseTests
 
         // Assert
         result.IsActiveAvailable.Should().BeFalse();
+    }
+
+    [Test]
+    public void ImplicitConversion_WhenLastDateStartsIsNull_ReturnsIsActiveAvailableTrue()
+    {
+        // Arrange
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = null,
+                EffectiveFrom = null,
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
+    }
+
+    [Test]
+    public void ImplicitConversion_WhenLastDateStartsIsFutureAndDifferentFromEffectiveFrom_ReturnsIsActiveAvailableTrue()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(1),
+                EffectiveFrom = dateTimeNow
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
+    }
+
+    [Test]
+    public void ImplicitConversion_WhenLastDateStartsIsFutureAndEffectiveFromIsNull_ReturnsIsActiveAvailableTrue()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(1),
+                EffectiveFrom = null
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
+    }
+
+    [Test]
+    public void ImplicitConversion_WhenLastDateStartsIsFutureAndSameAsEffectiveFrom_ReturnsIsActiveAvailableFalse()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(1),
+                EffectiveFrom = dateTimeNow.AddDays(1),
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeFalse();
+    }
+
+    [Test]
+    public void ImplicitConversion_WhenLastDateStartsIsPast_ReturnsIsActiveAvailableFalse()
+    {
+        // Arrange
+
+        DateTime dateTimeNow = DateTime.UtcNow;
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = dateTimeNow.AddDays(-1),
+                EffectiveFrom = dateTimeNow
+            }
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeFalse();
+    }
+
+    [Test]
+    public void ImplicitConversion_WhenCourseDatesIsNull_ReturnsIsActiveAvailableTrue()
+    {
+        // Arrange
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = null
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeTrue();
     }
 }
