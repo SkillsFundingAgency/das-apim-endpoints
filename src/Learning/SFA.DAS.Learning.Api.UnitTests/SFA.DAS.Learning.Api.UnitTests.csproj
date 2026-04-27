@@ -8,6 +8,7 @@
 
   <ItemGroup>
 	  <PackageReference Include="Azure.Identity" Version="1.17.1" />
+	  <PackageReference Include="SFA.DAS.CollectionCalendar.Contracts" Version="0.1.24-prerelease-5" />
 	  <PackageReference Include="FluentAssertions" Version="7.2.0" />
 	  <PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.17.0" />
 	  <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
