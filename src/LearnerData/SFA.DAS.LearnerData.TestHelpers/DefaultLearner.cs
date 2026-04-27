@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
@@ -35,7 +36,7 @@ public class DefaultLearner
                 FromDate = new DateTime(2022, 9, 1)
             }
         },
-        LearningSupport = new List<LearningSupportRequestDetails>(),
+        LearningSupport = new List<LearningSupport>(),
         Care = new Care(),
         AimSequenceNumber = 1,
         LearnAimRef = "ZPROG001"

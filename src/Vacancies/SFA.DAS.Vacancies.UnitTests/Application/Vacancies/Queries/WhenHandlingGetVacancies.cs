@@ -3,12 +3,17 @@ using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
 using SFA.DAS.Vacancies.Configuration;
@@ -21,6 +26,7 @@ using System.Linq;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
 {
@@ -116,7 +122,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
                     c.GetUrl.Equals(expectedGetRequest.GetUrl)))).ReturnsAsync(new GetVacanciesResponse
                     {
                         Total = 0,
-                        ApprenticeshipVacancies = new List<GetVacanciesListItem>(),
+                        ApprenticeshipVacancies = new List<GetVacancyApiResponse>(),
                         TotalFound = 0
                     });
 
@@ -216,9 +222,9 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             int standardLarsCode,
             string findAnApprenticeshipBaseUrl,
             GetVacanciesQuery query,
-            GetVacanciesListItem vacancyRaa,
-            GetVacanciesListItem vacancyNhs,
-            GetVacanciesListItem vacancyCsJ,
+            GetVacancyApiResponse vacancyRaa,
+            GetVacancyApiResponse vacancyNhs,
+            GetVacancyApiResponse vacancyCsJ,
             GetStandardsListItem courseResponse,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> apiClient,
             [Frozen] Mock<ICourseService> courseService,
@@ -232,7 +238,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             vacancyCsJ.VacancySource = DataSource.Csj;
             var apiResponse = new GetVacanciesResponse
             {
-                ApprenticeshipVacancies = new List<GetVacanciesListItem> { vacancyRaa, vacancyNhs, vacancyCsJ },
+                ApprenticeshipVacancies = new List<GetVacancyApiResponse> { vacancyRaa, vacancyNhs, vacancyCsJ },
                 TotalFound = 3,
                 Total = 3
             };

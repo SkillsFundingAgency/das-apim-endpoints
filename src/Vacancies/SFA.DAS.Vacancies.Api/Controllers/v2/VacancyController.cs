@@ -2,8 +2,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Vacancies.Api.Models;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
@@ -51,6 +52,7 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
     [HttpGet]
     [Route("/vacancy")]
     [ProducesResponseType(typeof(GetVacanciesListResponseV2), (int)HttpStatusCode.OK)]
+    [ProducesResponseType(typeof(GetVacanciesDetailsListResponseV2), (int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
     public async Task<IActionResult> GetVacancies(
         [FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier,
@@ -77,9 +79,15 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
                 PostedInLastNumberOfDays = request.PostedInLastNumberOfDays,
                 AdditionalDataSources = request.AdditionalDataSources?.Select(x => x.ToString()).ToList(),
                 ExcludeNational = request.ExcludeRecruitingNationally,
-                OnlyPrimaryLocations = true
+                OnlyPrimaryLocations = true,
+                IncludeDetails = request.IncludeDetails
             });
 
+            if (request.PageSize <= 100 & request.IncludeDetails)
+            {
+                return Ok((GetVacanciesDetailsListResponseV2)queryResponse);
+            }
+            
             return Ok((GetVacanciesListResponseV2)queryResponse);
 
         }
@@ -115,7 +123,7 @@ public class VacancyController(IMediator mediator, ILogger<VacancyController> lo
                 VacancyReference = vacancyReference
             });
 
-            var response = (GetVacancyResponseV2)result;
+            var response = (GetVacancyResponseV2)result.Vacancy;
             if (response == null)
             {
                 return NotFound();

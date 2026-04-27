@@ -11,7 +11,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Assessors.Api.Controllers;
 using SFA.DAS.Assessors.Application.Queries.GetAddresses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Assessors.Api.UnitTests.Controllers

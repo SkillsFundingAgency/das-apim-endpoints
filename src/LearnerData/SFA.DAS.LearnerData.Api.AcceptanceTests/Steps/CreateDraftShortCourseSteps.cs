@@ -2,13 +2,12 @@ using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
 using System.Net.Http.Headers;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using TechTalk.SpecFlow;
 using WireMock.Matchers;
 using WireMock.RequestBuilders;
@@ -108,7 +107,7 @@ public class CreateDraftShortCourseSteps
         var entry = _testContext.EarningsApi.MockServer.LogEntries
             .Single(r => r.RequestMessage.Url.Contains("shortCourses"));
 
-        var body = JsonConvert.DeserializeObject<CreateUnapprovedShortCourseLearningRequest>(entry.RequestMessage.Body);
+        var body = JsonConvert.DeserializeObject<Requests.EarningsInner.CreateUnapprovedShortCourseLearningRequest>(entry.RequestMessage.Body);
         body.OnProgramme.TotalPrice.Should().Be(expectedPrice);
         body.OnProgramme.LearningType.Should().Be(expectedLearningType);
     }
@@ -237,7 +236,7 @@ public class CreateDraftShortCourseSteps
                         .With(x => x.ExpectedEndDate, startDate.AddMonths(12))
                         .With(x => x.CompletionDate, (DateTime?)null)
                         .With(x => x.WithdrawalDate, (DateTime?)null)
-                        .With(x => x.Milestones, Array.Empty<Requests.Milestone>())
+                        .With(x => x.Milestones, Array.Empty<Milestone>())
                         .Create()
                 ]
             })

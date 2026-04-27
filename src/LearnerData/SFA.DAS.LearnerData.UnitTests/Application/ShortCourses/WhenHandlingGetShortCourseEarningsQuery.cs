@@ -1,13 +1,15 @@
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.LearnerData.Responses.Learning;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using LearningResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.GetShortCourseLearnersForEarningsResponse;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using GetShortCourseLearningsForEarnings = SFA.DAS.LearnerData.Requests.LearningInner.GetShortCourseLearningsForEarnings;
+using LearningResponse = SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -123,8 +125,21 @@ public class WhenHandlingGetShortCourseEarningsQuery
         var course = result.Learners[0].Courses[0];
         course.CoursePrice.Should().Be(1500m);
         course.Approved.Should().BeTrue();
-        course.FundingLineType.Should().Be("GSO Short Courses - Apprenticeship Units - Levy");
         course.AimSequenceNumber.Should().Be(1);
+    }
+
+    [TestCase(EmployerType.Levy, "GSO Short Courses (Apprenticeship Units) Levy")]
+    [TestCase(EmployerType.NonLevy, "GSO Short Courses (Apprenticeship Units) Non-Levy")]
+    public async Task Then_FundingLineType_Is_Derived_From_EmployerType(EmployerType employerType, string expectedFundingLineType)
+    {
+        var episode = new LearningResponse.Episode { CourseCode = "91", Price = 1000m, IsApproved = true, LearnerRef = "X1", EmployerType = employerType };
+        var learning = BuildLearning(episodes: [episode]);
+        SetupLearningApi([learning]);
+        SetupEarningsApi(learning.LearningKey, []);
+
+        var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
+
+        result.Learners[0].Courses[0].FundingLineType.Should().Be(expectedFundingLineType);
     }
 
     [Test]

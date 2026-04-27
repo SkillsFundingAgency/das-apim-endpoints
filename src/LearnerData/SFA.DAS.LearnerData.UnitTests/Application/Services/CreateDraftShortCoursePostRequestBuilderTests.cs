@@ -1,8 +1,10 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.LearnerData.Shared;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -50,7 +52,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .With(x => x.ExpectedEndDate, DateTime.UtcNow.AddMonths(6))
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.WithdrawalDate, (DateTime?)null)
-            .With(x => x.LearningSupport, _fixture.CreateMany<LearningSupportRequestDetails>(2).ToList())
+            .With(x => x.LearningSupport, _fixture.CreateMany<LearningSupport>(2).ToList())
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
             .Create();
 
@@ -98,7 +100,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .With(x => x.CourseCode, "ZSC00001")
             .With(x => x.StartDate, new DateTime(2026, 8, 1))
             .With(x => x.Milestones, Array.Empty<Milestone>())
-            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
             .With(x => x.CompletionDate, (DateTime?)null)
             .Create();
 
@@ -121,7 +123,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
-            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
             .Create();
 
         var request = _fixture.Build<ShortCourseRequest>()
@@ -132,7 +134,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().Contain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().Contain(Milestone.LearningComplete);
     }
 
     [Test]
@@ -143,7 +145,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
-            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
             .Create();
 
         var request = _fixture.Build<ShortCourseRequest>()
@@ -154,8 +156,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().ContainSingle(m =>
-            m == SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().ContainSingle(m => m == Milestone.LearningComplete);
     }
 
     [Test]
@@ -166,7 +167,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
             .With(x => x.CompletionDate, (DateTime?)null)
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
-            .With(x => x.LearningSupport, new List<LearningSupportRequestDetails>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
             .Create();
 
         var request = _fixture.Build<ShortCourseRequest>()
@@ -177,6 +178,6 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().NotContain(SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone.LearningComplete);
+        result.OnProgramme.Milestones.Should().NotContain(Milestone.LearningComplete);
     }
 }

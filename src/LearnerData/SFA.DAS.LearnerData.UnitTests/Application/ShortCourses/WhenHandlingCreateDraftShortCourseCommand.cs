@@ -1,17 +1,16 @@
-﻿using System.Net;
-using FluentAssertions;
+using System.Net;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
-using SFA.DAS.LearnerData.Responses.Learning;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 

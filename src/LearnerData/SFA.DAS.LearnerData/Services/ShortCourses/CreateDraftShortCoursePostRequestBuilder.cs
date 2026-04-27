@@ -1,9 +1,9 @@
 using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
-using Milestone = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
-using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Shared;
+using OnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses
 {
@@ -33,7 +33,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                 })
                 .ToList();
 
-            if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(SourceMilestone.LearningComplete))
+            if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
                 milestones.Add(Milestone.LearningComplete);
 
             var courseDetails = await shortCourseLookupService.GetCourseDetails(firstOnProg.CourseCode, firstOnProg.StartDate);
@@ -49,14 +49,8 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     EmailAddress = request.Learner.Email,
                     LearnerRef = request.Learner.LearnerRef
                 },
-                LearningSupport = firstOnProg.LearningSupport
-                    .Select(ls => new LearningSupportUpdatedDetails
-                    {
-                        StartDate = ls.StartDate,
-                        EndDate = ls.EndDate
-                    })
-                    .ToList(),
-                OnProgramme = new OnProgramme
+                LearningSupport = firstOnProg.LearningSupport,
+                OnProgramme = new SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme
                 {
                     CourseCode = firstOnProg.CourseCode,
                     Ukprn = ukprn,

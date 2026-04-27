@@ -1,21 +1,19 @@
-﻿using AutoFixture;
-using Microsoft.Extensions.Caching.Distributed;
+using AutoFixture;
 using Microsoft.Extensions.Logging;
-using Moq;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.TestHelpers;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.LearnerData.Requests.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
-using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using Episode = SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning.Episode;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 

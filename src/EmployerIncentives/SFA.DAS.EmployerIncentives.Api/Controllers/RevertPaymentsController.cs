@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmployerIncentives.Application.Commands.RevertPayments;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {

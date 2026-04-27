@@ -2,7 +2,7 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.EmployerAccounts.Strategies;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerAccounts.UnitTests.Strategies

@@ -1,12 +1,10 @@
-﻿using AutoFixture;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using FluentAssertions;
-using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
+using AutoFixture;
+using FluentAssertions;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;

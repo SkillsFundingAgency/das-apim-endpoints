@@ -2,10 +2,10 @@
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Aodp.Application.Constants;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Configuration;
+
 using static SFA.DAS.Aodp.Application.Queries.Application.Review.GetApplicationForReviewByIdQueryResponse;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.Aodp.Application.Queries.Application.Review
 {

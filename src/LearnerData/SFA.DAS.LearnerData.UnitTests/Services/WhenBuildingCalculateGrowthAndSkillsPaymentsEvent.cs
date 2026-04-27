@@ -3,12 +3,12 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
-using SFA.DAS.LearnerData.Responses.Learning;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Services;
 
@@ -87,7 +87,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         // Assert
         result.EarningsId.Should().Be(earningsResponse.EarningProfileVersion);
         result.UKPRN.Should().Be(ukprn);
-        result.Learner.LearnerKey.Should().Be(learningResponse.LearningKey);
+        result.Learner.LearnerKey.Should().Be(learningResponse.LearnerKey);
         result.Learner.ULN.Should().Be(long.Parse(learningResponse.Learner.Uln));
         result.Learner.Reference.Should().Be(episode.LearnerRef);
         result.Training.CourseType.Should().Be(Payments.EarningEvents.Messages.External.CourseType.ShortCourse);
@@ -192,6 +192,46 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
     }
 
+
+    [Test]
+    public async Task When_TransferSenderIdSet_Then_FundingAccountIdIsTransferSenderId()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
+        episode.TransferSenderId = 999L;
+
+        var earningsResponse = GetEarningsResponse();
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.SelectMany(x => x.PricePeriods).SelectMany(x => x.Periods)
+            .Should().OnlyContain(p => p.Employer.FundingAccountId == 999L);
+    }
+
+    [Test]
+    public async Task When_TransferSenderIdNotSet_Then_FundingAccountIdIsEmployerAccountId()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
+        episode.TransferSenderId = null;
+
+        var earningsResponse = GetEarningsResponse();
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.SelectMany(x => x.PricePeriods).SelectMany(x => x.Periods)
+            .Should().OnlyContain(p => p.Employer.FundingAccountId == episode.EmployerAccountId);
+    }
 
     [Test]
     public async Task When_EarningsOverSingleYear_ThenCorrectlySet()
@@ -404,7 +444,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
         response.Learner.Uln = "1234567890";
         response.Episodes = new[]
         {
-            _fixture.Build<UpdateShortCourseResultEpisode>()
+            _fixture.Build<LearningInnerShortCourseEpisode>()
                 .With(x => x.LearningType, "ApprenticeshipUnit")
                 .With(x => x.CourseCode, "SC123")
                 .With(x => x.LearnerRef, "LR123")
@@ -412,6 +452,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
                 .With(x => x.StartDate, new DateTime(2025, 7, 1))
                 .With(x => x.PlannedEndDate, new DateTime(2025, 9, 20))
                 .With(x => x.EmployerType, EmployerType.Levy.ToString())
+                .With(x => x.TransferSenderId, (long?)null)
                 .Create()
         };
 

@@ -1,4 +1,4 @@
-﻿using SFA.DAS.LearnerData.Responses.Learning;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 
 namespace SFA.DAS.LearnerData.Extensions;
 

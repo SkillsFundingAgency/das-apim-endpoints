@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies;
 
@@ -24,4 +26,5 @@ public class GetVacanciesQuery: IRequest<GetVacanciesQueryResult>
     public List<int> StandardLarsCode { get ; set ; }
     public int? Ukprn { get; set; }
     public bool OnlyPrimaryLocations { get; set; }
+    public bool IncludeDetails { get; set; }
 }
