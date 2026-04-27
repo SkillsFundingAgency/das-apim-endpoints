@@ -48,9 +48,10 @@ public class GetStandardResponse
 
     private static bool IsActiveAvailableStandard(CourseDates courseDates)
     {
-        var isActiveAvailable = (courseDates?.LastDateStarts == null) ||
-                       (courseDates.LastDateStarts > DateTime.UtcNow
-                       && courseDates.LastDateStarts != courseDates.EffectiveFrom);
-        return isActiveAvailable;
+        if (courseDates == null) return false;
+
+        return (courseDates.LastDateStarts == null || courseDates.LastDateStarts >= DateTime.UtcNow.Date)
+        && courseDates.LastDateStarts != courseDates.EffectiveFrom
+        && courseDates.EffectiveFrom <= DateTime.UtcNow.Date;
     }
 }
