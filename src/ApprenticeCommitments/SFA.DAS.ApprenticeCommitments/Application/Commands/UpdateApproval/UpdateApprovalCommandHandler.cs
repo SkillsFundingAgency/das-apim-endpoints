@@ -43,6 +43,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
         {
             var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;
 
+            if (course.ApprenticeshipType == "ApprenticeshipUnit") return default;
+
             if (apprenticeship == null) return default;
 
             await _apprenticeCommitmentsService.ChangeApproval(new ChangeApprovalRequestData

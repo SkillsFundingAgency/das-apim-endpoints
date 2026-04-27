@@ -46,6 +46,8 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
         {
             var (apprentice, trainingProvider, course) = await GetExternalData(command);
 
+            if (course.ApprenticeshipType == "ApprenticeshipUnit") return default;
+
             if (apprentice == null) return default;
 
             var id = Guid.NewGuid();
