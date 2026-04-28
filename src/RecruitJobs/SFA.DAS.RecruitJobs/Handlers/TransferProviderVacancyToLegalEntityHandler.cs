@@ -1,18 +1,17 @@
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.RecruitJobs.Domain;
-using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
-using ClosureReason = SFA.DAS.RecruitJobs.Domain.ClosureReason;
-using OwnerType = SFA.DAS.RecruitJobs.Domain.OwnerType;
-using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
+using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
 
 namespace SFA.DAS.RecruitJobs.Handlers;
 
@@ -43,32 +42,32 @@ public class TransferProviderVacancyToLegalEntityHandler(
         VacancyReview? vacancyReview = null;
         switch (vacancyDetails.Status)
         {
-            case GraphQL.VacancyStatus.Draft:
-            case GraphQL.VacancyStatus.Referred:
-            case GraphQL.VacancyStatus.Closed:
+            case VacancyStatus.Draft:
+            case VacancyStatus.Referred:
+            case VacancyStatus.Closed:
                 break;
-            case GraphQL.VacancyStatus.Submitted:
+            case VacancyStatus.Submitted:
                 var vacancyReviews = (await recruitApiClient.GetAll<VacancyReview>(new GetVacancyReviewsByVacancyReferenceRequest(vacancyDetails.VacancyReference!.Value)))?.ToList() ?? [];
                 vacancyReview = vacancyReviews.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
                 if (vacancyReview is not null && vacancyReview.Status is not ReviewStatus.UnderReview)
                 {
-                    patchDocument.Replace(x => x.Status, VacancyStatus.Draft);
+                    patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Draft);
                 }
                 break;
-            case GraphQL.VacancyStatus.Live:
-                patchDocument.Replace(x => x.Status, VacancyStatus.Closed);
+            case VacancyStatus.Live:
+                patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Closed);
                 patchDocument.Replace(x => x.ClosedDate, now);
-                patchDocument.Replace(x => x.ClosureReason, ClosureReason.TransferredByEmployer);
+                patchDocument.Replace(x => x.ClosureReason, SharedOuterApi.Types.Domain.Recruit.ClosureReason.TransferredByEmployer);
                 break;
-            case GraphQL.VacancyStatus.Approved:
+            case VacancyStatus.Approved:
                 patchDocument.Replace(x => x.ApprovedDate, null);
-                patchDocument.Replace(x => x.Status, VacancyStatus.Closed);
+                patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Closed);
                 patchDocument.Replace(x => x.ClosedDate, now);
-                patchDocument.Replace(x => x.ClosureReason, ClosureReason.TransferredByEmployer);
+                patchDocument.Replace(x => x.ClosureReason, SharedOuterApi.Types.Domain.Recruit.ClosureReason.TransferredByEmployer);
                 break;
-            case GraphQL.VacancyStatus.Rejected:
-            case GraphQL.VacancyStatus.Review:
-                patchDocument.Replace(x => x.Status, VacancyStatus.Draft);
+            case VacancyStatus.Rejected:
+            case VacancyStatus.Review:
+                patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Draft);
                 break;
             default:
                  throw new ArgumentException($"{vacancyDetails.Status} is not a recognised '{nameof(VacancyStatus)}' the vacancy '{vacancyId}' can be transferred from.");
@@ -83,7 +82,7 @@ public class TransferProviderVacancyToLegalEntityHandler(
             Reason = transferReason,
         });
 
-        patchDocument.Replace(x => x.OwnerType, OwnerType.Employer);
+        patchDocument.Replace(x => x.OwnerType, SharedOuterApi.Types.Domain.Recruit.OwnerType.Employer);
         patchDocument.Replace(x => x.Contact, null);
         patchDocument.Replace(x => x.SubmittedByUserId, null);
         patchDocument.Replace(x => x.ReviewRequestedByUserId, null);
@@ -92,7 +91,7 @@ public class TransferProviderVacancyToLegalEntityHandler(
         var patchResponse = await recruitApiClient.PatchWithResponseCode(patchRequest);
         patchResponse.EnsureSuccessStatusCode();
         
-        if (vacancyDetails.Status is GraphQL.VacancyStatus.Submitted)
+        if (vacancyDetails.Status is VacancyStatus.Submitted)
         {
             switch (vacancyReview)
             {

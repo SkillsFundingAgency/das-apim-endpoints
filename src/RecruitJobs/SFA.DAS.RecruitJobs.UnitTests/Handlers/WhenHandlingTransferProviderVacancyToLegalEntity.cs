@@ -1,21 +1,20 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Domain;
-using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
-using ClosureReason = SFA.DAS.RecruitJobs.Domain.ClosureReason;
-using OwnerType = SFA.DAS.RecruitJobs.Domain.OwnerType;
-using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
+using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
 
 namespace SFA.DAS.RecruitJobs.UnitTests.Handlers;
 
@@ -25,7 +24,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Guid Id,
         long? VacancyReference,
         string? Title,
-        GraphQL.VacancyStatus Status,
+        VacancyStatus Status,
         string? TrainingProvider_Name,
         string? LegalEntityName,
         int? Ukprn) : IGetProviderTransferableVacancyDetails_Vacancies;
@@ -79,7 +78,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [MoqInlineAutoData(VacancyStatus.Closed)]
     [MoqInlineAutoData(VacancyStatus.Referred)]
     public async Task Then_The_Vacancy_Is_Transferred(
-        GraphQL.VacancyStatus status,
+        VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -124,7 +123,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [MoqInlineAutoData(VacancyStatus.Rejected)]
     [MoqInlineAutoData(VacancyStatus.Review)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Made_Draft_Again(
-        GraphQL.VacancyStatus status,
+        VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -169,7 +168,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [Test]
     [MoqInlineAutoData(VacancyStatus.Live)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed(
-        GraphQL.VacancyStatus status,
+        VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -217,7 +216,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [Test]
     [MoqInlineAutoData(VacancyStatus.Approved)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Unapproved(
-        GraphQL.VacancyStatus status,
+        VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -285,7 +284,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             LegalEntityName = vacancyDetails.LegalEntityName,
             Reason = TransferReason.EmployerRevokedPermission,
         };
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -334,7 +333,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -385,7 +384,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);

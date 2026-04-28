@@ -1,3 +1,5 @@
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+
 namespace SFA.DAS.RecruitJobs.Domain;
 
 public record TransferInfo

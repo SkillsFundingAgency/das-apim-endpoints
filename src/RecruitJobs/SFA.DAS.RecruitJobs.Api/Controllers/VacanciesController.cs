@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.RecruitJobs.Api.Models;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
-using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.DeleteVacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
@@ -17,14 +15,15 @@ using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using StrawberryShake;
-using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
+using SFA.DAS.RecruitJobs.GraphQL;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -261,7 +260,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
             var domainVacancy = GqlVacancyMapper.From(vacancy);
             domainVacancy.ClosureReason = request.ClosureReason;
-            domainVacancy.Status = VacancyStatus.Closed;
+            domainVacancy.Status = SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Closed;
             domainVacancy.ClosedDate = DateTime.UtcNow;
 
             var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));
@@ -272,6 +271,78 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         catch (ApiResponseException ex)
         {
             logger.LogError(ex, "Error while closing vacancy: {id}", request.VacancyId);
+            return TypedResults.Problem(title: ex.Message, detail: ex.Error);
+        }
+    }
+
+    [HttpGet, Route("stale/archive")]
+    [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetClosedVacanciesToArchive(
+        [FromQuery, Required] DateTime pointInTime,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient
+            .GetVacanciesToArchive
+            .ExecuteAsync(pointInTime, cancellationToken);
+
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("An error occured at GetQaRejectedVacanciesToClose: {Errors}", response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var data = response
+            .Data!
+            .Vacancies
+            .Select(x =>
+                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Closed, x.ClosingDate!.Value.UtcDateTime));
+        return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
+    }
+
+    [HttpPost, Route("{vacancyReference:long}/archive")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    public async Task<IResult> ArchiveVacancy(
+        [FromRoute] long vacancyReference,
+        [FromBody] ArchiveVacancyRequest request,
+        [FromServices] VacancyMapper vacancyMapper,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var response = await recruitGqlClient
+                .GetVacancyById
+                .ExecuteAsync(request.VacancyId, cancellationToken);
+
+            if (!response.IsSuccessResult())
+            {
+                logger.LogError("An error occured at ArchiveVacancy: {Errors}", response.FormatErrors());
+                return TypedResults.Problem(response.ToProblemDetails());
+            }
+
+            var vacancy = response.Data!.Vacancies.FirstOrDefault();
+            if (vacancy is null 
+                || vacancy.VacancyReference != vacancyReference
+                || vacancy.Status != VacancyStatus.Closed)
+            {
+                logger.LogWarning("Vacancy with id {VacancyId} not found at ArchiveVacancy", request.VacancyId);
+                return TypedResults.NotFound();
+            }
+
+            var domainVacancy = GqlVacancyMapper.From(vacancy);
+            domainVacancy.Status = SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Archived;
+            domainVacancy.LastUpdatedDate = DateTime.UtcNow;
+
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));
+
+            putResponse.EnsureSuccessStatusCode();
+            return TypedResults.NoContent();
+        }
+        catch (ApiResponseException ex)
+        {
+            logger.LogError(ex, "Error while archiving vacancy: {id}", request.VacancyId);
             return TypedResults.Problem(title: ex.Message, detail: ex.Error);
         }
     }
