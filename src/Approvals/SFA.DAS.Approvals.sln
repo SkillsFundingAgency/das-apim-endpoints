@@ -13,8 +13,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.FakeApis"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Approvals.UnitTests", "SFA.DAS.Approvals.UnitTests\SFA.DAS.Approvals.UnitTests.csproj", "{5C1D836C-8A00-4098-931C-C458C9F2181F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Employer.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj", "{9EE87D27-3BBC-4201-98FE-D75E9EB0078B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Types.UnitTests\SFA.DAS.SharedOuterApi.Types.UnitTests.csproj", "{0C2923A8-A4BF-0481-0A98-3EE75752A64C}"
@@ -45,10 +43,6 @@ Global
 		{5C1D836C-8A00-4098-931C-C458C9F2181F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C1D836C-8A00-4098-931C-C458C9F2181F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C1D836C-8A00-4098-931C-C458C9F2181F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9EE87D27-3BBC-4201-98FE-D75E9EB0078B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9EE87D27-3BBC-4201-98FE-D75E9EB0078B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9EE87D27-3BBC-4201-98FE-D75E9EB0078B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9EE87D27-3BBC-4201-98FE-D75E9EB0078B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
