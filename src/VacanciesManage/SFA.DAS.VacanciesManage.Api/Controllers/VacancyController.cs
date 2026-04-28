@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
@@ -64,6 +65,7 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                 }
 
                 var postVacancyRequestData = (PostVacancyRequestData)request;
+                var postVacancyV2RequestData = (PostVacancyV2RequestData)request;
                 postVacancyRequestData.OwnerType = (OwnerType)account.AccountType;
                 postVacancyRequestData.AccountType = account.AccountType;
                 var contactDetails = new ContactDetails
@@ -84,12 +86,20 @@ namespace SFA.DAS.VacanciesManage.Api.Controllers
                         postVacancyRequestData.EmployerContact = contactDetails;
                         break;
                 }
+                
+                postVacancyV2RequestData.Contact = new PostVacancyV2Contact
+                {
+                    Email = request.SubmitterContactDetails.Email,
+                    Name = request.SubmitterContactDetails.Name,
+                    Phone = request.SubmitterContactDetails.Phone,
+                };
 
                 var response = await _mediator.Send(new CreateVacancyCommand
                 {
                     Id = id,
                     AccountIdentifier = account,
                     PostVacancyRequestData = postVacancyRequestData,
+                    PostVacancyV2RequestData = postVacancyV2RequestData,
                     IsSandbox = isSandbox ?? false
                 });
 

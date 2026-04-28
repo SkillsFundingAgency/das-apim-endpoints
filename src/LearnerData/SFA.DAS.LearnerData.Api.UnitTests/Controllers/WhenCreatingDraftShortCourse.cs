@@ -1,4 +1,3 @@
-using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
@@ -7,9 +6,11 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.LearnerData.Api.Controllers;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Application.CreateShortCourse;
+using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
@@ -28,7 +29,7 @@ public class WhenCreatingDraftShortCourse
         [Greedy] ShortCoursesController sut)
     {
         // Arrange
-        var response = new CreateDraftShortCourseResult { StatusCode = statusCode };
+        var response = new CreateDraftShortCourseResult();
         mockMediator
             .Setup(x => x.Send(It.Is<CreateDraftShortCourseCommand>(c =>
                 c.Ukprn == ukprn &&
@@ -43,50 +44,24 @@ public class WhenCreatingDraftShortCourse
     }
 
     [Test, MoqAutoData]
-    public async Task Then_If_Conflict_Returned_From_Handler_Then_Conflict_Returned(
+    public async Task Then_CorrelationId_Is_Returned_In_Response_Body(
         long ukprn,
         ShortCourseRequest request,
+        CreateDraftShortCourseResult handlerResult,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] Mock<ILogger<ShortCoursesController>> mockLogger,
         [Greedy] ShortCoursesController sut)
     {
         // Arrange
-        var response = new CreateDraftShortCourseResult { StatusCode = HttpStatusCode.Conflict };
         mockMediator
             .Setup(x => x.Send(It.IsAny<CreateDraftShortCourseCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
+            .ReturnsAsync(handlerResult);
 
         // Act
-        var result = await sut.CreateShortCourse(request, ukprn) as ConflictResult;
+        var result = await sut.CreateShortCourse(request, ukprn) as AcceptedResult;
 
         // Assert
-        result.Should().NotBeNull();
-    }
-
-    [Test]
-    [MoqInlineAutoData(HttpStatusCode.BadRequest)]
-    [MoqInlineAutoData(HttpStatusCode.NotFound)]
-    [MoqInlineAutoData(HttpStatusCode.InternalServerError)]
-    public async Task Then_If_Error_Returned_From_Handler_Then_500_Returned(
-        HttpStatusCode statusCode,
-        long ukprn,
-        ShortCourseRequest request,
-        [Frozen] Mock<IMediator> mockMediator,
-        [Frozen] Mock<ILogger<ShortCoursesController>> mockLogger,
-        [Greedy] ShortCoursesController sut)
-    {
-        // Arrange
-        var response = new CreateDraftShortCourseResult { StatusCode = statusCode };
-        mockMediator
-            .Setup(x => x.Send(It.IsAny<CreateDraftShortCourseCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
-
-        // Act
-        var result = await sut.CreateShortCourse(request, ukprn) as StatusCodeResult;
-
-        // Assert
-        result.Should().NotBeNull();
-        result!.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
+        result!.Value.Should().BeEquivalentTo(new { handlerResult.CorrelationId });
     }
 
     [Test, MoqAutoData]

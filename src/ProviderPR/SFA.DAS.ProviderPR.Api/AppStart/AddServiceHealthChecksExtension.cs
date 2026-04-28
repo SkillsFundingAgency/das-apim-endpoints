@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.ProviderPR.Api.AppStart;
 

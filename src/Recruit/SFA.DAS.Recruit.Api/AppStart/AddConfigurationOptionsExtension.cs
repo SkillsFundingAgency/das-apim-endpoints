@@ -3,7 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Recruit.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.Recruit.Api.AppStart
 {
@@ -32,8 +33,6 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
             services.Configure<BusinessMetricsConfiguration>(configuration.GetSection(nameof(BusinessMetricsConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<BusinessMetricsConfiguration>>().Value);
-            services.Configure<RecruitAiApiConfiguration>(configuration.GetSection("RecruitAiApiConfiguration"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitAiApiConfiguration>>().Value);
         }
     }
 }

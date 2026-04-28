@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using System.Linq;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardInformation;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetStandardsLookup;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -40,7 +40,7 @@ public class StandardsLookupGetController : ControllerBase
 
         _logger.LogInformation("Active standards gathered");
 
-        var mappedResponse = new GetStandardsLookupResponse { Standards = result.Body.Standards.Select(standard => (GetStandardResponse)standard).ToList() };
+        var mappedResponse = new GetStandardsLookupResponse { Standards = result.Body.Courses.Select(standard => (GetStandardResponse)standard).ToList() };
 
         return Ok(mappedResponse);
     }

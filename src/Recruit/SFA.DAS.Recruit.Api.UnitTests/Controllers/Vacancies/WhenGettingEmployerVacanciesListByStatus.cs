@@ -1,0 +1,195 @@
+﻿using AutoFixture;
+using Microsoft.AspNetCore.Http.HttpResults;
+using SFA.DAS.Recruit.Api.Controllers;
+using SFA.DAS.Recruit.Api.Extensions;
+using SFA.DAS.Recruit.Api.Models.Requests;
+using SFA.DAS.Recruit.Api.Models.Responses;
+using SFA.DAS.Recruit.Data.Models;
+using SFA.DAS.Recruit.GraphQL;
+using SFA.DAS.Recruit.GraphQL.RecruitInner.Mappers;
+using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Responses;
+using StrawberryShake;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+
+namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.Vacancies;
+
+public class WhenGettingEmployerVacanciesListByStatus
+{
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Referred)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Rejected)]
+    public async Task The_The_Gql_Query_Is_Built_Correctly(
+        Domain.Vacancy.VacancyStatus status,
+        long accountId,
+        IOperationResult<IGetPagedVacanciesListResult> vacanciesResult,
+        VacancyListFilterParams filterParams,
+        SortParams<VacancySortColumn> sortParams,
+        Mock<IRecruitGqlClient> gqlClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Greedy] VacanciesController sut)
+    {
+        // arrange
+        VacancyEntityFilterInput? capturedFilter = null;
+        IReadOnlyList<VacancyEntitySortInput>? capturedSort = null;
+        int? capturedSkip = null;
+        int? capturedTake = null;
+        gqlClient
+            .Setup(x => x.GetPagedVacanciesList.ExecuteAsync(
+                It.IsAny<VacancyEntityFilterInput?>(),
+                It.IsAny<IReadOnlyList<VacancyEntitySortInput>?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<CancellationToken>()))
+            .Callback((VacancyEntityFilterInput? filter, IReadOnlyList<VacancyEntitySortInput>? sort, int? skip, int? take, CancellationToken _) =>
+            {
+                capturedFilter = filter;
+                capturedSort = sort;
+                capturedSkip = skip;
+                capturedTake = take;
+            })
+            .ReturnsAsync(vacanciesResult);
+
+        GqlTypeExtensions.TryMapToGqlStatuses(status, out var gqlStatus);
+
+        // act
+        await sut.GetEmployerVacanciesListByStatus(
+            gqlClient.Object,
+            recruitApiClient.Object,
+            accountId,
+            status,
+            filterParams,
+            sortParams,
+            new PageParams { PageNumber = 1, PageSize = 10 },
+            CancellationToken.None);
+
+        // assert
+        capturedFilter.Should().BeEquivalentTo(filterParams.Build(accountId: accountId, statuses: gqlStatus.ToList()));
+        capturedSort.Should().BeEquivalentTo(sortParams.Build());
+        capturedSkip.Should().Be(0);
+        capturedTake.Should().Be(10);
+    }
+
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Referred)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Rejected)]
+    public async Task Then_Gql_Errors_Are_Handled(
+        Domain.Vacancy.VacancyStatus status,
+        long accountId,
+        IOperationResult<IGetPagedVacanciesListResult> vacanciesResult,
+        VacancyListFilterParams filterParams,
+        SortParams<VacancySortColumn> sortParams,
+        Mock<IRecruitGqlClient> gqlClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Greedy] VacanciesController sut)
+    {
+        // arrange
+        gqlClient
+            .Setup(x => x.GetPagedVacanciesList.ExecuteAsync(
+                It.IsAny<VacancyEntityFilterInput?>(),
+                It.IsAny<IReadOnlyList<VacancyEntitySortInput>?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(vacanciesResult);
+
+        // act
+        var result = await sut.GetEmployerVacanciesListByStatus(
+            gqlClient.Object,
+            recruitApiClient.Object,
+            accountId,
+            status,
+            filterParams,
+            sortParams,
+            new PageParams
+            {
+                PageNumber = 1,
+                PageSize = 10
+            },
+            CancellationToken.None) as ProblemHttpResult;
+
+        // assert
+        result.Should().NotBeNull();
+    }
+
+    [Test]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Draft)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Submitted)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Live)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Closed)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Referred)]
+    [MoqInlineAutoData(Domain.Vacancy.VacancyStatus.Rejected)]
+    public async Task Then_The_Vacancies_Are_Returned(
+        Domain.Vacancy.VacancyStatus status,
+        long accountId,
+        Mock<IOperationResult<IGetPagedVacanciesListResult>> vacanciesResult,
+        DataResponse<Dictionary<long, VacancyStatsItem>> statsResult,
+        VacancyListFilterParams filterParams,
+        SortParams<VacancySortColumn> sortParams,
+        Mock<IRecruitGqlClient> gqlClient,
+        Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Greedy] VacanciesController sut)
+    {
+        // arrange
+        var f = new Fixture();
+        var vacancies = f.CreateMany<FakeLiveVacancyItem>(3).ToList();
+        vacanciesResult.Setup(x => x.Errors).Returns([]);
+        vacanciesResult.Setup(x => x.Data!.PagedVacancies!.Items).Returns(vacancies);
+        vacanciesResult.Setup(x => x.Data!.PagedVacancies!.TotalCount).Returns(vacancies.Count);
+
+        gqlClient
+            .Setup(x => x.GetPagedVacanciesList.ExecuteAsync(
+                It.IsAny<VacancyEntityFilterInput?>(),
+                It.IsAny<IReadOnlyList<VacancyEntitySortInput>?>(),
+                It.IsAny<int?>(),
+                It.IsAny<int?>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(vacanciesResult.Object);
+
+        var statsDict = vacancies.ToDictionary<FakeLiveVacancyItem?, long, VacancyStatsItem>(v => v!.VacancyReference!.Value, v => f.Create<VacancyStatsItem>());
+        var statsDataResponse = new DataResponse<Dictionary<long, VacancyStatsItem>>(statsDict);
+
+        recruitApiClient
+            .Setup(x => x.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(It.IsAny<GetEmployerVacancyApplicationStatsRequest>()))
+            .ReturnsAsync(new ApiResponse<DataResponse<Dictionary<long, VacancyStatsItem>>>(statsDataResponse, HttpStatusCode.OK, null));
+
+        var expectedItems = vacancies.AssignStatsToVacancies(statsDict);
+
+        // act
+        var result = await sut.GetEmployerVacanciesListByStatus(
+            gqlClient.Object,
+            recruitApiClient.Object,
+            accountId,
+            status,
+            filterParams,
+            sortParams,
+            new PageParams
+            {
+                PageNumber = 1,
+                PageSize = 10
+            },
+            CancellationToken.None) as Ok<PagedDataResponse<IEnumerable<VacancyListItem>>>;
+
+        // assert
+        result.Should().NotBeNull();
+        result.Value.Should().NotBeNull();
+        result.Value.PageInfo.RequestedPageNumber.Should().Be(1);
+        result.Value.PageInfo.RequestedPageSize.Should().Be(10);
+        result.Value.PageInfo.TotalCount.Should().Be((uint)vacancies.Count);
+        result.Value.Data.Should().BeEquivalentTo(expectedItems);
+    }
+}

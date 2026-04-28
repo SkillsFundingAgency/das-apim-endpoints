@@ -1,14 +1,19 @@
 using Moq;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Rofjaa;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Rofjaa;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Rofjaa;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Rofjaa;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 

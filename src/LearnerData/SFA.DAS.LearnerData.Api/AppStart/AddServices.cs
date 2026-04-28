@@ -2,10 +2,13 @@
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.LearnerData.Api.AppStart;
 
@@ -26,7 +29,9 @@ public static class AddApiServicesExtension
         services.AddTransient<IUpdateEarningsOnProgrammeRequestBuilder, UpdateEarningsOnProgrammeRequestBuilder>();
         services.AddTransient<IUpdateEarningsEnglishAndMathsRequestBuilder, UpdateEarningsEnglishAndMathsRequestBuilder>();
         services.AddTransient<IUpdateEarningsLearningSupportRequestBuilder, UpdateEarningsLearningSupportRequestBuilder>();
+        services.AddTransient<ICalculateGrowthAndSkillsPaymentsEventBuilder, CalculateGrowthAndSkillsPaymentsEventBuilder>();
         services.AddTransient<ICostsService, CostsService>();
+        services.AddTransient<IShortCourseLookupService, ShortCourseLookupService>();
         services.AddTransient<ICreateDraftShortCoursePostRequestBuilder, CreateDraftShortCoursePostRequestBuilder>();
         services.AddTransient<ILearnerDataCacheService, LearnerDataCacheService>();
         services.AddTransient<ICreateUnapprovedShortCourseLearningRequestBuilder, CreateUnapprovedShortCourseLearningRequestBuilder>();

@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.FindEpao.Application.Epaos.Queries.GetDeliveryAreaList
 {

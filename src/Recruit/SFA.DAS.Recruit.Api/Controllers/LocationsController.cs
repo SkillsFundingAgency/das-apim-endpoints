@@ -5,10 +5,8 @@ using SFA.DAS.Recruit.Application.Queries.GetAddresses;
 using System;
 using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Recruit.Application.Queries.GetGeoPoint;
-using SFA.DAS.Recruit.Application.Queries.GetPostcodeData;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {

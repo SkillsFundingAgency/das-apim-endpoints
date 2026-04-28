@@ -39,6 +39,7 @@ namespace SFA.DAS.Campaign.Models
                 article.ProcessContentNodeTypes(contentItem, contentItems);
                 contentItem.ProcessListNodeTypes(contentItems);
                 article.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
+                article.ProcessEmbeddedEntryInlineNodeTypes(contentItem, contentItems);
             }
 
             var parentPage =

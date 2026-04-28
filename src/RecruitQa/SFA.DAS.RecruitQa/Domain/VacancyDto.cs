@@ -1,5 +1,5 @@
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitQa.Domain;
 
@@ -15,4 +15,5 @@ public class VacancyDto
     public int? NumberOfPositions { get; init; }
     public string? ProgrammeId { get; set; }
     public Wage? Wage { get; set; }
+    public required VacancyStatus Status { get; init; }
 }

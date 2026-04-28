@@ -10,8 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Api.Controllers;
 using SFA.DAS.VacanciesManage.Api.Models;
@@ -77,6 +78,9 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.Controllers
                         && c.PostVacancyRequestData.EmployerContact.Name.Equals(request.SubmitterContactDetails.Name)
                         && c.PostVacancyRequestData.EmployerContact.Phone.Equals(request.SubmitterContactDetails.Phone)
                         && c.PostVacancyRequestData.EmployerContact.Email.Equals(request.SubmitterContactDetails.Email)
+                        && c.PostVacancyV2RequestData.Contact.Name.Equals(request.SubmitterContactDetails.Name)
+                        && c.PostVacancyV2RequestData.Contact.Phone.Equals(request.SubmitterContactDetails.Phone)
+                        && c.PostVacancyV2RequestData.Contact.Email.Equals(request.SubmitterContactDetails.Email)
                         && c.IsSandbox.Equals(false)
                     ), CancellationToken.None))
                 .ReturnsAsync(mediatorResponse);

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <LangVersion>default</LangVersion>
   </PropertyGroup>
 
@@ -10,6 +10,10 @@
     <EmbeddedResource Remove="Application\**" />
     <GraphQL Remove="Application\**" />
     <None Remove="Application\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="SFA.DAS.RecruitJobs.UnitTests" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,11 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.AI.OpenAI" />
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
     <PackageReference Include="StrawberryShake.Blazor" />
   </ItemGroup>
@@ -35,5 +38,28 @@
     <GraphQL Update="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql">
       <Generator>MSBuild:GenerateGraphQLCode</Generator>
     </GraphQL>
+    <GraphQL Update="GraphQL\Inner\Recruit\schema.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\Inner\Recruit\schema.extensions.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetProviderTransferableVacancies.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\Queries\GetProviderTransferableVacancyDetails.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\schema.extensions.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
+    <GraphQL Update="GraphQL\RecruitInner\schema.graphql">
+      <Generator>MSBuild:GenerateGraphQLCode</Generator>
+    </GraphQL>
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="obj\Debug\net8.0\berry\" />
+  </ItemGroup>
+
 </Project>

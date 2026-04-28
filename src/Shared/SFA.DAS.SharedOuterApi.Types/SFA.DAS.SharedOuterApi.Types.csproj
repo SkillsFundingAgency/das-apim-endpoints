@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="SFA.DAS.Apim.Shared" />
+        <PackageReference Include="SFA.DAS.Apprenticeships.Types" />
+        <PackageReference Include="MediatR" />
+    </ItemGroup>
+</Project>

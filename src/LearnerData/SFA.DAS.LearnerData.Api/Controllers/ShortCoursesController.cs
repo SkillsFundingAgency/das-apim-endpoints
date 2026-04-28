@@ -1,12 +1,14 @@
-﻿using System.Net;
+using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.LearnerData.Application.GetLearners;
+using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
+using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Application.DeleteShortCourse;
+using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -28,12 +30,7 @@ public class ShortCoursesController(
                 ShortCourseRequest = request
             });
 
-            if (result.StatusCode.IsSuccessStatusCode())
-                return Accepted();
-            else if(result.StatusCode == HttpStatusCode.Conflict)
-                return Conflict();
-            else
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            return Accepted(new { result.CorrelationId });
         }
         catch (Exception e)
         {
@@ -63,5 +60,64 @@ public class ShortCoursesController(
 
         return Ok((GetShortCourseLearnersResponse)response);
 
+    }
+
+    // This is the short course equivalent of FM36
+    [HttpGet("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
+    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromRoute] int collectionYear, [FromRoute] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+
+        logger.LogInformation("GetShortCourseEarnings for ukprn {Ukprn}, year {Year} and period {period}", ukprn, collectionYear, collectionPeriod);
+
+        pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
+
+        var query = new GetShortCourseEarningsQuery(ukprn, collectionYear, collectionPeriod, page, pagesize);
+
+        var result = await mediator.Send(query);
+        HttpContext.SetPageLinksInResponseHeaders(query, result);
+
+        return Ok(result);
+
+    }
+
+    [HttpDelete("/providers/{ukprn}/shortCourses/{learningKey}")]
+    public async Task<IActionResult> DeleteShortCourse([FromRoute] long ukprn, [FromRoute] Guid learningKey)
+    {
+        try
+        {
+            await mediator.Send(new DeleteShortCourseCommand
+            {
+                Ukprn = ukprn,
+                LearningKey = learningKey
+            });
+
+            return Accepted();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when deleting short course");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+    }
+
+    [HttpPut("/providers/{ukprn}/shortCourses/{learningKey}")]
+    public async Task<IActionResult> UpdateShortCourseLearning(Guid learningKey, ShortCourseRequest request, long ukprn)
+    {
+        try
+        {
+            await mediator.Send(new UpdateShortCourseLearningCommand
+            {
+                LearningKey = learningKey,
+                Ukprn = ukprn,
+                Request = request
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when updating short course learning");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
+
+        return Accepted();
     }
 }

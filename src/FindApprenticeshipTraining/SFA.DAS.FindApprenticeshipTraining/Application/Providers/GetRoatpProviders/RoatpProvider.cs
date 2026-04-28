@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Providers.GetRoatpProviders;
 

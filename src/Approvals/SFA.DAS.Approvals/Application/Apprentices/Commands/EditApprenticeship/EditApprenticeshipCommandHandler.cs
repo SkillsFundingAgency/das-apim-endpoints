@@ -7,11 +7,14 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 

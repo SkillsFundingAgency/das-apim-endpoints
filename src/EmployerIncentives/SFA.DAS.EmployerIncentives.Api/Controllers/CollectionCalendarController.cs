@@ -18,7 +18,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             _logger = logger;
         }
 
-        [HttpPatch]
+        [HttpPatch, Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         [Route("/collectionPeriods")]
         public async Task<IActionResult> UpdateCollectionCalendarPeriod([FromBody] UpdateCollectionCalendarPeriodRequest request)
         {

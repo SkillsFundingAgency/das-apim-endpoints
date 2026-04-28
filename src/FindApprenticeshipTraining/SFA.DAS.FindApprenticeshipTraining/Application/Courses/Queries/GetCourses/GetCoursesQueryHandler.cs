@@ -4,14 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 
@@ -32,19 +32,19 @@ public sealed class GetCoursesQueryHandler(
 
         var coursesStandardsResponse =
             await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(
-                new GetActiveStandardsListRequest()
+                new GetActiveStandardsSearchRequest()
                 {
                     Keyword = query.Keyword ?? string.Empty,
                     OrderBy = query.OrderBy,
                     RouteIds = query.RouteIds,
                     Levels = query.Levels,
-                    ApprenticeshipType = query.ApprenticeshipType
+                    LearningTypes = query.LearningTypes
                 }
         );
 
         coursesStandardsResponse.EnsureSuccessStatusCode();
 
-        if (!coursesStandardsResponse.Body.Standards.Any())
+        if (!coursesStandardsResponse.Body.Courses.Any())
         {
             return GetEmptyResponse(query.PageSize);
         }
@@ -56,7 +56,7 @@ public sealed class GetCoursesQueryHandler(
             return GetEmptyResponse(query.PageSize);
         }
 
-        var pagedStandards = coursesStandardsResponse.Body.Standards
+        var pagedStandards = coursesStandardsResponse.Body.Courses
             .Skip((query.Page - 1) * query.PageSize)
             .Take(query.PageSize)
             .ToArray();
@@ -86,7 +86,7 @@ public sealed class GetCoursesQueryHandler(
         {
             GetStandardsListItem standard = pagedStandards[index];
 
-            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode.ToString());
+            var courseProviderCountModel = providerCounts.GetValueOrDefault(standard.LarsCode);
 
             standardModels.Add(
                 StandardModel.CreateFrom(

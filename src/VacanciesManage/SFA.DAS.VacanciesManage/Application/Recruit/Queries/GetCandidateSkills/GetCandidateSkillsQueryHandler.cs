@@ -2,9 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
 
