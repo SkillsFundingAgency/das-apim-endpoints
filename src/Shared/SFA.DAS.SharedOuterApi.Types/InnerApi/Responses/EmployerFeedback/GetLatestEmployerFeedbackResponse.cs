@@ -1,25 +1,24 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
+
+public class GetLatestEmployerFeedbackResponse
 {
-    public class GetLatestEmployerFeedbackResponse
-    {
-        public long AccountId { get; set; }
-        public string AccountName { get; set; }
+    public long AccountId { get; set; }
+    public string AccountName { get; set; }
 
-        public List<EmployerFeedbackItem> EmployerFeedbacks { get; set; }
-    }
+    public List<EmployerFeedbackItem> EmployerFeedbacks { get; set; }
+}
 
-    public class EmployerFeedbackItem
-    {
-        public long Ukprn { get; set; }
-        public FeedbackResultItem Result { get; set; }
-    }
+public class EmployerFeedbackItem
+{
+    public long Ukprn { get; set; }
+    public FeedbackResultItem Result { get; set; }
+}
 
-    public class FeedbackResultItem
-    {
-        public DateTime DateTimeCompleted { get; set; }
+public class FeedbackResultItem
+{
+    public DateTime DateTimeCompleted { get; set; }
 
-        public string ProviderRating { get; set; }
+    public string ProviderRating { get; set; }
 
-        public int FeedbackSource { get; set; }
-    }
+    public int FeedbackSource { get; set; }
 }

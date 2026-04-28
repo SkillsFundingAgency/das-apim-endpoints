@@ -1,8 +1,7 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+
+public class GetAccountTransferStatusResponse
 {
-    public class GetAccountTransferStatusResponse
-    {
-        public bool IsTransferSender { get; set; }
-        public bool IsTransferReceiver { get; set; }
-    }
+    public bool IsTransferSender { get; set; }
+    public bool IsTransferReceiver { get; set; }
 }

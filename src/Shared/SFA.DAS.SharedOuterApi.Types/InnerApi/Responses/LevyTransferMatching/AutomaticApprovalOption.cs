@@ -1,9 +1,8 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
+
+public enum AutomaticApprovalOption
 {
-    public enum AutomaticApprovalOption
-    {
-        NotApplicable = 0,
-        ImmediateAutoApproval = 1,
-        DelayedAutoApproval = 2
-    }
+    NotApplicable = 0,
+    ImmediateAutoApproval = 1,
+    DelayedAutoApproval = 2
 }

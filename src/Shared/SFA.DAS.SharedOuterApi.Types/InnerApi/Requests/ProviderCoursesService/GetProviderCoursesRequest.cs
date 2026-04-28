@@ -1,18 +1,8 @@
 using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderCoursesService;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderCoursesService
+public class GetProviderCoursesRequest(long trainingProviderId) : IGetApiRequest
 {
-    public class GetProviderCoursesRequest : IGetApiRequest
-    {
-        private readonly long _trainingProviderId;
-
-        public GetProviderCoursesRequest(long trainingProviderId)
-        {
-            _trainingProviderId = trainingProviderId;
-        }
-
-        public string GetUrl => $"api/providers/{_trainingProviderId}/courses";
-    }
+    public string GetUrl => $"api/providers/{trainingProviderId}/courses";
 }

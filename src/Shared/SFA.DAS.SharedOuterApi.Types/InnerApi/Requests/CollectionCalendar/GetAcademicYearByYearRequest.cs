@@ -1,15 +1,8 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar
-{
-	public class GetAcademicYearByYearRequest : IGetApiRequest
-	{
-		private readonly int _year;
-		public string GetUrl => $"academicyears/{_year}";
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
 
-		public GetAcademicYearByYearRequest(int year)
-        {
-            _year = year;
-        }
-	}
+public class GetAcademicYearByYearRequest(int year) : IGetApiRequest
+{
+    public string GetUrl => $"academicyears/{year}";
 }

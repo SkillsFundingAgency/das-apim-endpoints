@@ -1,40 +1,31 @@
-﻿using System.Net;
-using SFA.DAS.Apim.Shared.Interfaces;
-
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using System.Net;
 
-namespace SFA.DAS.SharedOuterApi.Types.Services
+namespace SFA.DAS.SharedOuterApi.Types.Services;
+
+public class AssessorsApiClient(IInternalApiClient<AssessorsApiConfiguration> apiClient)
+    : IAssessorsApiClient<AssessorsApiConfiguration>
 {
-    public class AssessorsApiClient : IAssessorsApiClient<AssessorsApiConfiguration>
+    public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        private readonly IInternalApiClient<AssessorsApiConfiguration> _apiClient;
+        return apiClient.Get<TResponse>(request);
+    }
 
-        public AssessorsApiClient(IInternalApiClient<AssessorsApiConfiguration> apiClient)
-        {
-            _apiClient = apiClient;
-        }
+    public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
+    {
+        return apiClient.GetAll<TResponse>(request);
+    }
 
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.Get<TResponse>(request);
-        }
+    public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+    {
+        return apiClient.GetResponseCode(request);
+    }
 
-        public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
-        {
-            return _apiClient.GetAll<TResponse>(request);
-        }
-
-        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
-        {
-            return _apiClient.GetResponseCode(request);
-        }
-
-        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.GetWithResponseCode<TResponse>(request);
-        }
+    public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+    {
+        return apiClient.GetWithResponseCode<TResponse>(request);
     }
 }

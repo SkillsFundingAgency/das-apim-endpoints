@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
 internal class WhenBuildingGetAccountProvidersRequest
 {
     public class WhenBuildingGetProviderAccountLegalEntitiesRequest

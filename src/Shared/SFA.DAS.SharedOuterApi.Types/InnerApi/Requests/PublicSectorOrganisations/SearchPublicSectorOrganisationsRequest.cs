@@ -1,20 +1,11 @@
-﻿using System.Web;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Web;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations
+public class SearchPublicSectorOrganisationsRequest(string searchTerm) : IGetApiRequest
 {
-    public class SearchPublicSectorOrganisationsRequest : IGetApiRequest
-    {
-        public string SearchTerm { get; }
+    public string SearchTerm { get; } = searchTerm;
 
-        public SearchPublicSectorOrganisationsRequest(string searchTerm)
-        {
-            SearchTerm = searchTerm;
-        }
-
-        public string GetUrl => $"/PublicSectorOrganisations?searchTerm={HttpUtility.UrlEncode(SearchTerm)}";
-    }
+    public string GetUrl => $"/PublicSectorOrganisations?searchTerm={HttpUtility.UrlEncode(SearchTerm)}";
 }

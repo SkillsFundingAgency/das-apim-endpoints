@@ -1,30 +1,27 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFinance
+public class GetTransferConnectionsRequest : IGetApiRequest
 {
-    public class GetTransferConnectionsRequest : IGetApiRequest
+    public long AccountId { get; set; }
+    public TransferConnectionInvitationStatus? Status { get; set; }
+
+    public string GetUrl => BuildUrl();
+
+    private string BuildUrl()
     {
-        public long AccountId { get; set; }
-        public TransferConnectionInvitationStatus? Status { get; set; }
-
-        public string GetUrl => BuildUrl();
-
-        private string BuildUrl()
+        var url = $"api/accounts/internal/{AccountId}/transfers/connections";
+        if (Status.HasValue)
         {
-            var url = $"api/accounts/internal/{AccountId}/transfers/connections";
-            if (Status.HasValue)
-            {
-                url += $"?status={Status}";
-            }
-            return url;
+            url += $"?status={Status}";
         }
+        return url;
     }
-    public enum TransferConnectionInvitationStatus
-    {
-        Pending = 1,
-        Approved = 2,
-        Rejected = 3
-    }
+}
+public enum TransferConnectionInvitationStatus
+{
+    Pending = 1,
+    Approved = 2,
+    Rejected = 3
 }

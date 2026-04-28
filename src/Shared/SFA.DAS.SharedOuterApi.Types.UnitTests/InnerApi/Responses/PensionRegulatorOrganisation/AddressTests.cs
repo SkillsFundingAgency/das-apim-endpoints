@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PensionsRegulator;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.PensionRegulatorOrganisation;
+
 public class AddressTests
 {
     [Test]

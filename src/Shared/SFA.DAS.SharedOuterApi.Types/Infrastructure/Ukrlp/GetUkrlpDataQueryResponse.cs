@@ -1,8 +1,7 @@
-namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
+
+public class GetUkrlpDataQueryResponse
 {
-    public class GetUkrlpDataQueryResponse
-    {
-        public bool Success { get; set; }
-        public List<ProviderAddress> Results { get; set; }
-    }
+    public bool Success { get; set; }
+    public List<ProviderAddress> Results { get; set; }
 }

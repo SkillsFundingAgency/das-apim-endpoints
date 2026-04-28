@@ -1,8 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.Types.Configuration;
+
 [ExcludeFromCodeCoverage]
 public class ApplyApiConfiguration : IInternalApiConfiguration
 {

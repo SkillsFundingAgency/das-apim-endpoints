@@ -1,11 +1,8 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining
+public class GetRegionsRequest : IGetApiRequest
 {
-    public class GetRegionsRequest : IGetApiRequest
-    {
-        public string GetUrl => $"api/regions";
-    }
+    public string GetUrl => $"api/regions";
 }

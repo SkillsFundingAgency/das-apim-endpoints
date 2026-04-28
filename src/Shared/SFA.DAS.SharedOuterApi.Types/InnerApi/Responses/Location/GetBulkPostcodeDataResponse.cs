@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
 using SFA.DAS.SharedOuterApi.Types.Domain;
+using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 

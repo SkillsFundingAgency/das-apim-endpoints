@@ -1,16 +1,14 @@
-using System.Net;
-
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using System.Net;
 
 
-namespace SFA.DAS.SharedOuterApi.Types.Interfaces
+namespace SFA.DAS.SharedOuterApi.Types.Interfaces;
+
+public interface IApprenticeCommitmentsApiClient<T> : IGetApiClient<T>
 {
-    public interface IApprenticeCommitmentsApiClient<T> : IGetApiClient<T>
-    {
-        Task<HttpStatusCode> Patch<TRequest>(IPatchApiRequest<TRequest> request);
-        Task<ApiResponse<TResponse>> PatchWithResponseCode<TRequest, TResponse>(
-            IPatchApiRequest<TRequest> request);        
-        Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = false);
-    }
+    Task<HttpStatusCode> Patch<TRequest>(IPatchApiRequest<TRequest> request);
+    Task<ApiResponse<TResponse>> PatchWithResponseCode<TRequest, TResponse>(
+        IPatchApiRequest<TRequest> request);
+    Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = false);
 }

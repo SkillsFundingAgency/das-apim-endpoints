@@ -1,10 +1,9 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.Configuration
+namespace SFA.DAS.SharedOuterApi.Types.Configuration;
+
+public class CandidateApiConfiguration : IInternalApiConfiguration
 {
-    public class CandidateApiConfiguration : IInternalApiConfiguration
-    {
-        public string Url { get; set; }
-        public string Identifier { get; set; }
-    }
+    public string Url { get; set; }
+    public string Identifier { get; set; }
 }

@@ -1,17 +1,16 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Charities;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
+public class WhenBuildingGetCharityByRegistrationNumberRequest
 {
-    public class WhenBuildingGetCharityByRegistrationNumberRequest
+    [Test, AutoData]
+    public void Then_The_Request_Is_Correctly_Build(int registrationNumber)
     {
-        [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Build(int registrationNumber)
-        {
-            var actual = new GetCharityByRegistrationNumberRequest(registrationNumber);
+        var actual = new GetCharityByRegistrationNumberRequest(registrationNumber);
 
-            var expected = $"/api/Charities/{registrationNumber}";
+        var expected = $"/api/Charities/{registrationNumber}";
 
-            actual.GetUrl.Should().Be(expected);
-        }
+        actual.GetUrl.Should().Be(expected);
     }
 }

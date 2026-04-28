@@ -1,7 +1,6 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PublicSectorOrganisation
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PublicSectorOrganisation;
+
+public class PublicSectorOrganisationsResponse
 {
-    public class PublicSectorOrganisationsResponse
-    {
-        public List<PublicSectorOrganisation> PublicSectorOrganisations { get; set; }         
-    }
+    public List<PublicSectorOrganisation> PublicSectorOrganisations { get; set; }
 }

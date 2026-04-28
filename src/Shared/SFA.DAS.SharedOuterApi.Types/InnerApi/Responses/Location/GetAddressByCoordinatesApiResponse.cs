@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+
 public record GetAddressByCoordinatesApiResponse
 {
     [JsonProperty("uprn")]

@@ -1,6 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 

@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+
 public class GetAccountLegalEntityResponse
 {
     public string Code { get; set; }

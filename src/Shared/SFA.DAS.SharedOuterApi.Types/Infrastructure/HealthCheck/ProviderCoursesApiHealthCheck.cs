@@ -4,16 +4,14 @@ using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck
-{
-    public class ProviderCoursesApiHealthCheck : ApiHealthCheck<ProviderCoursesApiConfiguration>, IHealthCheck
-    {
-        public static readonly string HealthCheckDescription = "Provider Courses API";
-        public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
-        public ProviderCoursesApiHealthCheck(IProviderCoursesApiClient<ProviderCoursesApiConfiguration> client, ILogger<ProviderCoursesApiHealthCheck> logger)
-            : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
-        {
-        }
-    }
+public class ProviderCoursesApiHealthCheck(
+    IProviderCoursesApiClient<ProviderCoursesApiConfiguration> client,
+    ILogger<ProviderCoursesApiHealthCheck> logger)
+    : ApiHealthCheck<ProviderCoursesApiConfiguration>(HealthCheckDescription, HealthCheckResultDescription, client,
+        logger), IHealthCheck
+{
+    public static readonly string HealthCheckDescription = "Provider Courses API";
+    public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
 }

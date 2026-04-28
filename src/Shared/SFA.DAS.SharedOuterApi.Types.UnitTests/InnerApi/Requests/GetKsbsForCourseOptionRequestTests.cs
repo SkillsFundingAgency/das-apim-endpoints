@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests.Courses;
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 
 public class GetKsbsForCourseOptionRequestTests
 {

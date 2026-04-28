@@ -1,28 +1,27 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.SharedOuterApi.Types.Models.RequestApprenticeTraining
+namespace SFA.DAS.SharedOuterApi.Types.Models.RequestApprenticeTraining;
+
+[ExcludeFromCodeCoverage]
+public class Region
 {
-    [ExcludeFromCodeCoverage]
-    public class Region
+    public int Id { get; set; }
+    public string SubregionName { get; set; }
+    public string RegionName { get; set; }
+    public double Latitude { get; set; }
+    public double Longitude { get; set; }
+
+    public static explicit operator Region(InnerApi.Responses.RequestApprenticeTraining.Region source)
     {
-        public int Id { get; set; }
-        public string SubregionName { get; set; }
-        public string RegionName { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
+        if (source == null) return null;
 
-        public static explicit operator Region(InnerApi.Responses.RequestApprenticeTraining.Region source)
+        return new Region
         {
-            if (source == null) return null;
-
-            return new Region
-            {
-                Id = source.Id,
-                SubregionName = source.SubregionName,
-                RegionName = source.RegionName,
-                Latitude = source.Latitude,
-                Longitude = source.Longitude
-            };
-        }
+            Id = source.Id,
+            SubregionName = source.SubregionName,
+            RegionName = source.RegionName,
+            Latitude = source.Latitude,
+            Longitude = source.Longitude
+        };
     }
 }

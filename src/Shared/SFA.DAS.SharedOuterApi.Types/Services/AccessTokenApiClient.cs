@@ -37,7 +37,7 @@ public class AccessTokenApiClient<T> : ApiClient<T>, IAccessTokenApiClient<T> wh
         {
             throw new UnauthorizedAccessException("Could not retrieve access token", e);
         }
-            
+
         httpRequestMessage.Headers.Add("Authorization", $"Bearer {token}");
     }
 

@@ -1,18 +1,17 @@
-﻿using System.Web;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
+using System.Web;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
+public class WhenBuildingGetLatestDetailsForEducationalOrgRequest
 {
-    public class WhenBuildingGetLatestDetailsForEducationalOrgRequest
+    [Test, AutoData]
+    public void Then_The_Request_Is_Correctly_Build(string identifier)
     {
-        [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Build(string identifier)
-        {
-            var actual = new GetLatestDetailsForEducationalOrgRequest(identifier);
+        var actual = new GetLatestDetailsForEducationalOrgRequest(identifier);
 
-            var expected = $"/api/EducationalOrganisations/LatestDetails?identifier={HttpUtility.UrlEncode(identifier)}";
+        var expected = $"/api/EducationalOrganisations/LatestDetails?identifier={HttpUtility.UrlEncode(identifier)}";
 
-            actual.GetUrl.Should().Be(expected);
-        }
+        actual.GetUrl.Should().Be(expected);
     }
 }

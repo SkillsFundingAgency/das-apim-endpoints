@@ -1,26 +1,21 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
 
-public sealed class GetCourseTrainingProvidersCountRequest : IGetApiRequest
+public sealed class GetCourseTrainingProvidersCountRequest(
+    string[] larsCodes,
+    int? distance = null,
+    decimal? latitude = null,
+    decimal? longitude = null)
+    : IGetApiRequest
 {
-    public string[] LarsCodes { get; }
+    public string[] LarsCodes { get; } = larsCodes;
 
-    public int? Distance { get; }
+    public int? Distance { get; } = distance;
 
-    public decimal? Latitude { get; }
+    public decimal? Latitude { get; } = latitude;
 
-    public decimal? Longitude { get; }
-
-    public GetCourseTrainingProvidersCountRequest(string[] larsCodes, int? distance = null, decimal? latitude = null, decimal? longitude = null)
-    {
-        LarsCodes = larsCodes;
-        Distance = distance;
-        Latitude = latitude;
-        Longitude = longitude;
-    }
+    public decimal? Longitude { get; } = longitude;
 
     private const string PROVIDERS_COUNT_URL = "courses/providers-count";
 

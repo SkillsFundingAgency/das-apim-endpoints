@@ -1,12 +1,11 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 
-namespace SFA.DAS.SharedOuterApi.Types.Configuration
+namespace SFA.DAS.SharedOuterApi.Types.Configuration;
+
+[ExcludeFromCodeCoverage]
+public class DigitalCertificatesApiConfiguration : IInternalApiConfiguration
 {
-    [ExcludeFromCodeCoverage]
-    public class DigitalCertificatesApiConfiguration : IInternalApiConfiguration
-    {
-        public string Url { get; set; }
-        public string Identifier { get; set; }
-    }
+    public string Url { get; set; }
+    public string Identifier { get; set; }
 }

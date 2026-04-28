@@ -1,14 +1,8 @@
 using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 
-public class GetAccountTeamMembersRequest : IGetAllApiRequest
+public class GetAccountTeamMembersRequest(long accountId) : IGetAllApiRequest
 {
-    private readonly long _accountId;
-
-    public GetAccountTeamMembersRequest(long accountId) => _accountId = accountId;
-
-    public string GetAllUrl => $"api/accounts/internal/{_accountId}/users";
+    public string GetAllUrl => $"api/accounts/internal/{accountId}/users";
 }

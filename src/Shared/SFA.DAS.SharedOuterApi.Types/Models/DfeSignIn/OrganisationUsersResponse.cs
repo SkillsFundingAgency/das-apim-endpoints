@@ -1,8 +1,7 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.Models.DfeSignIn
+﻿namespace SFA.DAS.SharedOuterApi.Types.Models.DfeSignIn;
+
+public class OrganisationUsersResponse
 {
-    public class OrganisationUsersResponse
-    {
-        public string Ukprn { get; set; } = "";
-        public List<User> Users { get; set; } = new();
-    }
+    public string Ukprn { get; set; } = "";
+    public List<User> Users { get; set; } = new();
 }

@@ -1,16 +1,10 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+
+public class GetAccountTransferStatusRequest(long accountId) : IGetApiRequest
 {
-    public class GetAccountTransferStatusRequest : IGetApiRequest
-    {
-        public long AccountId { get; }
+    public long AccountId { get; } = accountId;
 
-        public GetAccountTransferStatusRequest(long accountId)
-        {
-            AccountId = accountId;
-        }
-
-        public string GetUrl => $"api/accounts/{AccountId}/transfer-status";
-    }
+    public string GetUrl => $"api/accounts/{AccountId}/transfer-status";
 }

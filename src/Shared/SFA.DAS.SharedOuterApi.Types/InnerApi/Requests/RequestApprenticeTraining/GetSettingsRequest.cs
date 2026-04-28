@@ -1,11 +1,8 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining
+public class GetSettingsRequest : IGetApiRequest
 {
-    public class GetSettingsRequest : IGetApiRequest
-    {
-        public string GetUrl => $"api/settings";
-    }
+    public string GetUrl => $"api/settings";
 }

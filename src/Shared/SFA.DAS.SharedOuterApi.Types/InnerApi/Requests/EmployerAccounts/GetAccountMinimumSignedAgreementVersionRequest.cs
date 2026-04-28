@@ -1,18 +1,10 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts
+public class GetAccountMinimumSignedAgreementVersionRequest(long accountId) : IGetApiRequest
 {
-    public class GetAccountMinimumSignedAgreementVersionRequest : IGetApiRequest
-    {
-        public long AccountId { get; }
+    public long AccountId { get; } = accountId;
 
-        public GetAccountMinimumSignedAgreementVersionRequest(long accountId)
-        {
-            AccountId = accountId;
-        }
-
-        public string GetUrl => $"api/accounts/internal/{AccountId}/minimum-signed-agreement-version";
-    }
+    public string GetUrl => $"api/accounts/internal/{AccountId}/minimum-signed-agreement-version";
 }

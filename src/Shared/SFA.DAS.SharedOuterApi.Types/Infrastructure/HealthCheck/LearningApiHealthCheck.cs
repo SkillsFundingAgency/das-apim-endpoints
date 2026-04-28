@@ -5,13 +5,13 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
-public class LearningApiHealthCheck : ApiHealthCheck<LearningApiConfiguration>, IHealthCheck
+
+public class LearningApiHealthCheck(
+    ILearningApiClient<LearningApiConfiguration> client,
+    ILogger<LearningApiHealthCheck> logger)
+    : ApiHealthCheck<LearningApiConfiguration>(HealthCheckDescription, HealthCheckResultDescription, client, logger),
+        IHealthCheck
 {
     public static readonly string HealthCheckDescription = "Learning API";
     public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
-
-    public LearningApiHealthCheck(ILearningApiClient<LearningApiConfiguration> client, ILogger<LearningApiHealthCheck> logger)
-        : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
-    {
-    }
 }

@@ -1,11 +1,8 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining
+public enum RequestStatus
 {
-    public enum RequestStatus
-    {
-        Active = 0,
-        Expired = 1,
-        Cancelled = 2
-    }
+    Active = 0,
+    Expired = 1,
+    Cancelled = 2
 }

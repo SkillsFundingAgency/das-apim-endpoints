@@ -1,15 +1,12 @@
-using System.Collections.Concurrent;
-using System.Net;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-
-
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using System.Collections.Concurrent;
+using System.Net;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
 
@@ -28,7 +25,7 @@ public class EmployerAccountsService(
     public async Task<IEnumerable<TeamMember>> GetTeamMembers(long accountId)
     {
         var response = await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(new GetAccountTeamMembersRequest(accountId));
-        
+
         return response.Select(usersResponse => new TeamMember
         {
             Name = usersResponse.Name,
@@ -98,7 +95,7 @@ public class EmployerAccountsService(
                 var teamMembers =
                     await accountsApiClient.GetAll<GetAccountTeamMembersResponse>(
                         new GetAccountTeamMembersRequest(userAccount.AccountId));
-                
+
                 var member = teamMembers.FirstOrDefault(c =>
                     c.UserRef.Equals(userId, StringComparison.CurrentCultureIgnoreCase));
 

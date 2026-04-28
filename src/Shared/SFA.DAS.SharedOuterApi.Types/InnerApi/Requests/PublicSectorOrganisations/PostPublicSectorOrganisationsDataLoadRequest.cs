@@ -1,12 +1,9 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PublicSectorOrganisations
+public class PostPublicSectorOrganisationsDataLoadRequest : IPostApiRequest
 {
-    public class PostPublicSectorOrganisationsDataLoadRequest : IPostApiRequest
-    {
-        public string PostUrl => "dataload/start";
-        public object Data { get; set; }
-    }
+    public string PostUrl => "dataload/start";
+    public object Data { get; set; }
 }

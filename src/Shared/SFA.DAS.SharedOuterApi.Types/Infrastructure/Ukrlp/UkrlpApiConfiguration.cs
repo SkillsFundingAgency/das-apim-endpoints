@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
+﻿namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 
 public class UkrlpApiConfiguration
 {

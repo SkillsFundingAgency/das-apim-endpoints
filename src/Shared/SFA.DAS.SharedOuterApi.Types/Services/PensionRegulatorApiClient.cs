@@ -1,38 +1,29 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Net;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-
-
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Diagnostics.CodeAnalysis;
+using System.Net;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
 
 [ExcludeFromCodeCoverage]
-public class PensionRegulatorApiClient : IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>
+public class PensionRegulatorApiClient(IInternalApiClient<PensionRegulatorApiConfiguration> apiClient)
+    : IPensionRegulatorApiClient<PensionRegulatorApiConfiguration>
 {
-    private readonly IInternalApiClient<PensionRegulatorApiConfiguration> _apiClient;
-
-    public PensionRegulatorApiClient(IInternalApiClient<PensionRegulatorApiConfiguration> apiClient)
-    {
-        _apiClient = apiClient;
-    }
-
     public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        return _apiClient.Get<TResponse>(request);
+        return apiClient.Get<TResponse>(request);
     }
 
     public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
     {
-        return _apiClient.GetResponseCode(request);
+        return apiClient.GetResponseCode(request);
     }
 
     public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
     {
-        return _apiClient.GetWithResponseCode<TResponse>(request);
+        return apiClient.GetWithResponseCode<TResponse>(request);
     }
 
     public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
@@ -62,7 +53,7 @@ public class PensionRegulatorApiClient : IPensionRegulatorApiClient<PensionRegul
 
     public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
     {
-        return _apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
+        return apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
     }
 
     public Task Patch<TData>(IPatchApiRequest<TData> request)

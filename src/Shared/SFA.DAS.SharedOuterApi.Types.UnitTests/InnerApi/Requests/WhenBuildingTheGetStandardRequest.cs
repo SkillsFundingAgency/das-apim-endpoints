@@ -1,17 +1,16 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
-{
-    public class WhenBuildingTheGetStandardRequest
-    {
-        [Test, AutoData]
-        public void Then_The_Url_Is_Correctly_Constructed(int id)
-        {
-            //Act
-            var actual = new GetStandardRequest(id);
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 
-            //Assert
-            Assert.That($"api/courses/standards/{id}", Is.EqualTo(actual.GetUrl));
-        }
+public class WhenBuildingTheGetStandardRequest
+{
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed(int id)
+    {
+        //Act
+        var actual = new GetStandardRequest(id);
+
+        //Assert
+        Assert.That($"api/courses/standards/{id}", Is.EqualTo(actual.GetUrl));
     }
 }

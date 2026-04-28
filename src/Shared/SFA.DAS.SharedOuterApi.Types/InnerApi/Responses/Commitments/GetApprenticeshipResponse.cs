@@ -3,7 +3,7 @@ using Newtonsoft.Json.Converters;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 
 public class GetApprenticeshipResponse : IPartyResource
 {
@@ -13,7 +13,7 @@ public class GetApprenticeshipResponse : IPartyResource
     public string ProviderName { get; set; }
     public long EmployerAccountId { get; set; }
     public long AccountId => EmployerAccountId;
-    public long AccountLegalEntityId { get; set; } 
+    public long AccountLegalEntityId { get; set; }
     public string EmployerName { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }

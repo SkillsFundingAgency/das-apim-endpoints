@@ -2,7 +2,4 @@
 
 namespace SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-public interface IRecruitApiClient<T> : IInternalApiClient<T>
-{
-        
-}
+public interface IRecruitApiClient<T> : IInternalApiClient<T>;

@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.Models;
+
 public record LocationItem(string Name, double[] GeoPoint, string Country)
 {
     public decimal? Latitude

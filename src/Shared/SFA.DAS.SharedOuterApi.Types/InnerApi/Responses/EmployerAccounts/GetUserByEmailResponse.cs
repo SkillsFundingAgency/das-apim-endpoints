@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+
 public class GetUserByEmailResponse
 {
     public long Id { get; set; }

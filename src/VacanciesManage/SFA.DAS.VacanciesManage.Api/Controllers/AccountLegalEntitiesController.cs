@@ -1,72 +1,63 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.VacanciesManage.Api.Models;
 using SFA.DAS.VacanciesManage.Application.EmployerAccounts.Queries.GetLegalEntitiesForEmployer;
 using SFA.DAS.VacanciesManage.Application.Providers.Queries.GetProviderAccountLegalEntities;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
-namespace SFA.DAS.VacanciesManage.Api.Controllers
+namespace SFA.DAS.VacanciesManage.Api.Controllers;
+
+[ApiController]
+[Route("[controller]/")]
+public class AccountLegalEntitiesController(IMediator mediator,
+    ILogger<AccountLegalEntitiesController> logger)
+    : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]/")]
-    public class AccountLegalEntitiesController : ControllerBase
+    /// <summary>
+    /// GET list of Account Legal Entities.
+    /// </summary>
+    /// <remarks>
+    /// Get a list of Account Legal Entities that are connected to your subscription. The AccountLegalEntityPublicHashedId is required for Vacancy creation.
+    /// If you are a provider only Accounts that have given permission for you to act on there behalf will show in the list. If you are an employer then only
+    /// legal entities that have a signed agreement will be in the list.
+    /// </remarks>
+    /// <returns></returns>
+    [HttpGet]
+    [Route("")]
+    [ProducesResponseType(typeof(GetAccountLegalEntitiesListResponse), (int)HttpStatusCode.OK)]
+    public async Task<IActionResult> GetList([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier)
     {
-        private readonly IMediator _mediator;
-        private readonly ILogger<AccountLegalEntitiesController> _logger;
-
-        public AccountLegalEntitiesController (IMediator mediator, ILogger<AccountLegalEntitiesController> logger)
+        try
         {
-            _mediator = mediator;
-            _logger = logger;
+            var account = new AccountIdentifier(accountIdentifier);
+
+            if (account.AccountType == AccountType.Provider && account.Ukprn == null)
+            {
+                return new BadRequestObjectResult("Account Identifier is not in the correct format.");
+            }
+
+            switch (account.AccountType)
+            {
+                case AccountType.Employer:
+                    var employerQueryResponse = await mediator.Send(new GetLegalEntitiesForEmployerQuery
+                    { EncodedAccountId = account.AccountHashedId });
+                    return Ok((GetAccountLegalEntitiesListResponse)employerQueryResponse);
+                case AccountType.Provider:
+                    var providerQueryResponse = await mediator.Send(new GetProviderAccountLegalEntitiesQuery
+                    { Ukprn = account.Ukprn.Value });
+                    return Ok((GetAccountLegalEntitiesListResponse)providerQueryResponse);
+                default:
+                    return new StatusCodeResult((int)HttpStatusCode.Forbidden);
+            }
         }
-
-        /// <summary>
-        /// GET list of Account Legal Entities.
-        /// </summary>
-        /// <remarks>
-        /// Get a list of Account Legal Entities that are connected to your subscription. The AccountLegalEntityPublicHashedId is required for Vacancy creation.
-        /// If you are a provider only Accounts that have given permission for you to act on there behalf will show in the list. If you are an employer then only
-        /// legal entities that have a signed agreement will be in the list.
-        /// </remarks>
-        /// <returns></returns>
-        [HttpGet]
-        [Route("")]
-        [ProducesResponseType(typeof(GetAccountLegalEntitiesListResponse), (int) HttpStatusCode.OK)]
-        public async Task<IActionResult> GetList([FromHeader(Name = "x-request-context-subscription-name")] string accountIdentifier)
+        catch (Exception e)
         {
-            try
-            {
-                var account = new AccountIdentifier(accountIdentifier);
-                
-                if (account.AccountType == AccountType.Provider && account.Ukprn == null)
-                {
-                    return new BadRequestObjectResult("Account Identifier is not in the correct format.");
-                }
-                
-                switch (account.AccountType)
-                {
-                    case AccountType.Employer:
-                        var employerQueryResponse = await _mediator.Send(new GetLegalEntitiesForEmployerQuery
-                            {EncodedAccountId = account.AccountHashedId});
-                        return Ok((GetAccountLegalEntitiesListResponse) employerQueryResponse);
-                    case AccountType.Provider:
-                        var providerQueryResponse = await _mediator.Send(new GetProviderAccountLegalEntitiesQuery
-                            {Ukprn = account.Ukprn.Value});
-                        return Ok((GetAccountLegalEntitiesListResponse) providerQueryResponse);    
-                    default:
-                        return new StatusCodeResult((int) HttpStatusCode.Forbidden);
-                }
-            }
-            catch (Exception e)
-            {
-                _logger.LogError($"Unable to get account legal entities for {accountIdentifier}", e);
-                return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
-            }
+            logger.LogError($"Unable to get account legal entities for {accountIdentifier}", e);
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }
 }

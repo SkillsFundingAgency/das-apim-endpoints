@@ -1,105 +1,95 @@
-using System.Net;
-
-
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Net;
 
-namespace SFA.DAS.SharedOuterApi.Types.Services
+namespace SFA.DAS.SharedOuterApi.Types.Services;
+
+public class ProviderRelationshipsApiClient(IInternalApiClient<ProviderRelationshipsApiConfiguration> apiClient)
+    : IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>
 {
-    public class ProviderRelationshipsApiClient : IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>
+    public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        private readonly IInternalApiClient<ProviderRelationshipsApiConfiguration> _apiClient;
+        return apiClient.Get<TResponse>(request);
+    }
 
-        public ProviderRelationshipsApiClient(IInternalApiClient<ProviderRelationshipsApiConfiguration> apiClient)
-        {
-            _apiClient = apiClient;
-        }
+    public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+    {
+        return apiClient.GetResponseCode(request);
+    }
 
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.Get<TResponse>(request);
-        }
+    public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+    {
+        return apiClient.GetWithResponseCode<TResponse>(request);
+    }
 
-        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
-        {
-            return _apiClient.GetResponseCode(request);
-        }
+    public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.GetWithResponseCode<TResponse>(request);
-        }
+    public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<IEnumerable<TResponse>> GetAll<TResponse>(IGetAllApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<TResponse> Post<TResponse>(IPostApiRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<PagedResponse<TResponse>> GetPaged<TResponse>(IGetPagedApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task Post<TData>(IPostApiRequest<TData> request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<TResponse> Post<TResponse>(IPostApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task Delete(IDeleteApiRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task Post<TData>(IPostApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
+    {
+        return apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
+    }
 
-        public Task Delete(IDeleteApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task Patch<TData>(IPatchApiRequest<TData> request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<ApiResponse<TResponse>> DeleteWithResponseCode<TResponse>(IDeleteApiRequest request, bool includeResponse = false)
-        {
-            return _apiClient.DeleteWithResponseCode<TResponse>(request, includeResponse);
-        }
+    public Task Put(IPutApiRequest request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task Patch<TData>(IPatchApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task Put<TData>(IPutApiRequest<TData> request)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task Put(IPutApiRequest request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task Put<TData>(IPutApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
+    {
+        throw new NotImplementedException();
+    }
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<ApiResponse<TResponse>> PostWithResponseCode<TResponse>(IPostApiRequest request, bool includeResponse = true)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
+    {
+        throw new NotImplementedException();
+    }
 
-        public Task<ApiResponse<string>> PatchWithResponseCode<TData>(IPatchApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
-        }
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TResponse>(IPutApiRequest request) where TResponse : class
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<ApiResponse<TResponse>> PatchWithResponseCode<TData, TResponse>(IPatchApiRequest<TData> request, bool includeResponse = true)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
-        {
-            throw new System.NotImplementedException();
-        }
+    public Task<ApiResponse<TResponse>> PutWithResponseCode<TData, TResponse>(IPutApiRequest<TData> request)
+    {
+        throw new NotImplementedException();
     }
 }

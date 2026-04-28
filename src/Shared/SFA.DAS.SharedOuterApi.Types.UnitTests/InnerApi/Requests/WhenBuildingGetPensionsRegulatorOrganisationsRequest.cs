@@ -1,5 +1,5 @@
-﻿using System;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PensionRegulator;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.PensionRegulator;
+using System;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 

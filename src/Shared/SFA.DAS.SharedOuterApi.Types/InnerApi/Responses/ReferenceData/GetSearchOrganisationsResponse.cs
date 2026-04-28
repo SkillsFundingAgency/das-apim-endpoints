@@ -1,6 +1,3 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData
-{
-    public class GetSearchOrganisationsResponse : List<Organisation>
-    {
-    }
-}
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
+
+public class GetSearchOrganisationsResponse : List<Organisation>;

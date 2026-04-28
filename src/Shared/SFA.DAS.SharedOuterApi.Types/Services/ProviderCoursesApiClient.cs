@@ -1,37 +1,26 @@
-﻿using System.Net;
-
-
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Net;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+namespace SFA.DAS.SharedOuterApi.Types.Services;
 
-namespace SFA.DAS.SharedOuterApi.Types.Services
+public class ProviderCoursesApiClient(IInternalApiClient<ProviderCoursesApiConfiguration> apiClient)
+    : IProviderCoursesApiClient<ProviderCoursesApiConfiguration>
 {
-    public class ProviderCoursesApiClient : IProviderCoursesApiClient<ProviderCoursesApiConfiguration>
+    public Task<TResponse> Get<TResponse>(IGetApiRequest request)
     {
-        private readonly IInternalApiClient<ProviderCoursesApiConfiguration> _apiClient;
+        return apiClient.Get<TResponse>(request);
+    }
 
-        public ProviderCoursesApiClient(IInternalApiClient<ProviderCoursesApiConfiguration> apiClient)
-        {
-            _apiClient = apiClient;
-        }
+    public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
+    {
+        return apiClient.GetResponseCode(request);
+    }
 
-        public Task<TResponse> Get<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.Get<TResponse>(request);
-        }
-
-        public Task<HttpStatusCode> GetResponseCode(IGetApiRequest request)
-        {
-            return _apiClient.GetResponseCode(request);
-        }
-
-        public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
-        {
-            return _apiClient.GetWithResponseCode<TResponse>(request);
-        }
+    public Task<ApiResponse<TResponse>> GetWithResponseCode<TResponse>(IGetApiRequest request)
+    {
+        return apiClient.GetWithResponseCode<TResponse>(request);
     }
 }

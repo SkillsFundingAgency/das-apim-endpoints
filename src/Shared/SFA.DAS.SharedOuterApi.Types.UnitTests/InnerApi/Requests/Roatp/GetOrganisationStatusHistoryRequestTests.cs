@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests.Roatp;
+
 public class GetOrganisationStatusHistoryRequestTests
 {
     [Test]

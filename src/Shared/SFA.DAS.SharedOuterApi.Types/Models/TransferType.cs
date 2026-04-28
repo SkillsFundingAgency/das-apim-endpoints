@@ -1,8 +1,7 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.Models
+﻿namespace SFA.DAS.SharedOuterApi.Types.Models;
+
+public enum TransferType
 {
-    public enum TransferType
-    {
-        AsSender,
-        AsReceiver
-    }
+    AsSender,
+    AsReceiver
 }

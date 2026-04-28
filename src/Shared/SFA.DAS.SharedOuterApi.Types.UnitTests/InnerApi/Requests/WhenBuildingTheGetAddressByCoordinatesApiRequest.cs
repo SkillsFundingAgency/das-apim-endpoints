@@ -1,6 +1,7 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
 [TestFixture]
 public class WhenBuildingTheGetAddressByCoordinatesApiRequest
 {

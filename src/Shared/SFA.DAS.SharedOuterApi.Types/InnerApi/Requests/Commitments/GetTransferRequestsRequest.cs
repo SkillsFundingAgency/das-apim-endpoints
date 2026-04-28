@@ -1,20 +1,13 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Models;
-
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
 
-public class GetTransferRequestsRequest : IGetApiRequest
+public class GetTransferRequestsRequest(long accountId, TransferType? originator) : IGetApiRequest
 {
-    public long AccountId { get; }
-    public TransferType? Originator { get; }
+    public long AccountId { get; } = accountId;
+    public TransferType? Originator { get; } = originator;
 
-
-    public GetTransferRequestsRequest(long accountId, TransferType? originator)
-    {
-        AccountId = accountId;
-        Originator = originator;
-    }
 
     public string GetUrl => BuildUrl();
 

@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using MediatR;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using SFA.DAS.VacanciesManage.InnerApi.Responses;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MediatR;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
-using SFA.DAS.VacanciesManage.InnerApi.Responses;
 
 namespace SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
 
@@ -24,7 +22,7 @@ public class GetTrainingCoursesQueryHandler(ICourseService courseService,
         {
             return new GetTrainingCoursesQueryResult { TrainingCourses = standards };
         }
-        
+
         var providerCourseDetails = await roatpCourseManagementApiClient
             .Get<List<GetRoatpProviderAdditionalStandardsItem>>(new GetProviderAdditionalStandardsRequest(query.Ukprn.Value));
         var larsCodes = providerCourseDetails?.Select(x => x.LarsCode) ?? [];

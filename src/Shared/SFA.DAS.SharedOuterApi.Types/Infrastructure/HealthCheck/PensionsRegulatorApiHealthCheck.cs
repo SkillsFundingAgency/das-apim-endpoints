@@ -6,13 +6,12 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
-public class PensionsRegulatorApiHealthCheck : ApiHealthCheck<PensionRegulatorApiConfiguration>, IHealthCheck
+public class PensionsRegulatorApiHealthCheck(
+    IProviderCoursesApiClient<PensionRegulatorApiConfiguration> client,
+    ILogger<PensionsRegulatorApiHealthCheck> logger)
+    : ApiHealthCheck<PensionRegulatorApiConfiguration>(HealthCheckDescription, HealthCheckResultDescription, client,
+        logger), IHealthCheck
 {
     public static readonly string HealthCheckDescription = "Pensions Regulator API";
     public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
-
-    public PensionsRegulatorApiHealthCheck(IProviderCoursesApiClient<PensionRegulatorApiConfiguration> client, ILogger<PensionsRegulatorApiHealthCheck> logger)
-        : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
-    {
-    }
 }

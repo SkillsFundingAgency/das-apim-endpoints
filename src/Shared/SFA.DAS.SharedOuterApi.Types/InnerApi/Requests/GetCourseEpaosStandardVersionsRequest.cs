@@ -1,19 +1,11 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests
+public class GetCourseEpaosStandardVersionsRequest(string id, int larsCode) : IGetApiRequest
 {
-    public class GetCourseEpaosStandardVersionsRequest : IGetApiRequest
-    {
-        public GetCourseEpaosStandardVersionsRequest(string id, int larsCode)
-        {
-            organisationId = id;
-            LarsCode = larsCode;
-        }
-        public string organisationId { get; }
-        public int LarsCode { get; }
-        public string GetUrl => $"api/v1/standard-version/standards/epao/{organisationId}/{LarsCode}";
+    public string organisationId { get; } = id;
+    public int LarsCode { get; } = larsCode;
+    public string GetUrl => $"api/v1/standard-version/standards/epao/{organisationId}/{LarsCode}";
 
-    }
 }
