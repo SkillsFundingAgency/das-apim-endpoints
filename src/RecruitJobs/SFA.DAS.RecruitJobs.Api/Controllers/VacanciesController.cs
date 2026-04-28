@@ -325,7 +325,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             var vacancy = response.Data!.Vacancies.FirstOrDefault();
             if (vacancy is null 
                 || vacancy.VacancyReference != vacancyReference
-                || vacancy.Status != VacancyStatus.Closed)
+                || vacancy.Status != GraphQL.VacancyStatus.Closed)
             {
                 logger.LogWarning("Vacancy with id {VacancyId} not found at ArchiveVacancy", request.VacancyId);
                 return TypedResults.NotFound();

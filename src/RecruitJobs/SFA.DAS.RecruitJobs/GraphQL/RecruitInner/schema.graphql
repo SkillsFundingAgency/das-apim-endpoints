@@ -28,7 +28,6 @@ input VacancyEntityFilterInput {
   title: StringOperationFilterInput
   ownerType: NullableOfOwnerTypeOperationFilterInput
   sourceOrigin: NullableOfSourceOriginOperationFilterInput
-  archiveType: NullableOfArchiveTypeOperationFilterInput
   sourceType: NullableOfSourceTypeOperationFilterInput
   sourceVacancyReference: LongOperationFilterInput
   approvedDate: DateTimeOperationFilterInput
@@ -93,7 +92,6 @@ input VacancyEntityFilterInput {
   providerReviewFieldIndicators: StringOperationFilterInput
   submittedByUserId: UuidOperationFilterInput
   reviewRequestedByUserId: UuidOperationFilterInput
-  archivedByUserId: UuidOperationFilterInput
 }
 
 input VacancyEntitySortInput {
@@ -105,7 +103,6 @@ input VacancyEntitySortInput {
   title: SortEnumType
   ownerType: SortEnumType
   sourceOrigin: SortEnumType
-  archiveType: SortEnumType
   sourceType: SortEnumType
   sourceVacancyReference: SortEnumType
   approvedDate: SortEnumType
@@ -170,7 +167,6 @@ input VacancyEntitySortInput {
   providerReviewFieldIndicators: SortEnumType
   submittedByUserId: SortEnumType
   reviewRequestedByUserId: SortEnumType
-  archivedByUserId: SortEnumType
 }
 
 "A segment of a collection."
@@ -253,13 +249,6 @@ input NullableOfSourceOriginOperationFilterInput {
   neq: SourceOrigin
   in: [SourceOrigin]
   nin: [SourceOrigin]
-}
-
-input NullableOfArchiveTypeOperationFilterInput {
-  eq: ArchiveType
-  neq: ArchiveType
-  in: [ArchiveType]
-  nin: [ArchiveType]
 }
 
 input NullableOfSourceTypeOperationFilterInput {
@@ -418,7 +407,6 @@ type VacancyEntity {
   title: String
   ownerType: OwnerType
   sourceOrigin: SourceOrigin
-  archiveType: ArchiveType
   sourceType: SourceType
   sourceVacancyReference: Long
   approvedDate: DateTime
@@ -483,7 +471,6 @@ type VacancyEntity {
   providerReviewFieldIndicators: String
   submittedByUserId: UUID
   reviewRequestedByUserId: UUID
-  archivedByUserId: UUID
 }
 
 enum OwnerType {
@@ -498,11 +485,6 @@ enum SourceOrigin {
   EMPLOYER_WEB
   PROVIDER_WEB
   WEB_COMPLAINT
-}
-
-enum ArchiveType {
-  AUTO
-  MANUAL
 }
 
 enum SourceType {

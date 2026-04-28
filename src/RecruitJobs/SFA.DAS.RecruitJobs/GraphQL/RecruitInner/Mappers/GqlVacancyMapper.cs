@@ -111,10 +111,10 @@ public static class GqlVacancyMapper
                 {
                     CompanyBenefitsInformation = source.Wage_CompanyBenefitsInformation,
                     Duration = source.Wage_Duration,
-                    DurationUnit = source.Wage_DurationUnit != null ?  Enum.Parse<DurationUnit>(source.Wage_DurationUnit.ToString()!) : null,
+                    DurationUnit = source.Wage_DurationUnit != null ?  Enum.Parse<SharedOuterApi.Types.Domain.Recruit.DurationUnit>(source.Wage_DurationUnit.ToString()!) : null,
                     FixedWageYearlyAmount = source.Wage_FixedWageYearlyAmount,
                     WageAdditionalInformation = source.Wage_WageAdditionalInformation,
-                    WageType = source.Wage_WageType != null ? Enum.Parse<WageType>(source.Wage_WageType.ToString()!) : null,
+                    WageType = source.Wage_WageType != null ? Enum.Parse<SharedOuterApi.Types.Domain.Recruit.WageType>(source.Wage_WageType.ToString()!) : null,
                     WeeklyHours = source.Wage_WeeklyHours,
                     WorkingWeekDescription = source.Wage_WorkingWeekDescription,
                 },

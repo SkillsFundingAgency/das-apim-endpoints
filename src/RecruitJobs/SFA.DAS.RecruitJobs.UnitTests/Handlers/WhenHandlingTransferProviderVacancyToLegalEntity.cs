@@ -13,8 +13,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using SFA.DAS.RecruitJobs.GraphQL;
+using ClosureReason = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ClosureReason;
+using OwnerType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.OwnerType;
 using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
 using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.UnitTests.Handlers;
 
@@ -24,7 +28,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Guid Id,
         long? VacancyReference,
         string? Title,
-        VacancyStatus Status,
+        GraphQL.VacancyStatus Status,
         string? TrainingProvider_Name,
         string? LegalEntityName,
         int? Ukprn) : IGetProviderTransferableVacancyDetails_Vacancies;
@@ -78,7 +82,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [MoqInlineAutoData(VacancyStatus.Closed)]
     [MoqInlineAutoData(VacancyStatus.Referred)]
     public async Task Then_The_Vacancy_Is_Transferred(
-        VacancyStatus status,
+        GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -123,7 +127,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [MoqInlineAutoData(VacancyStatus.Rejected)]
     [MoqInlineAutoData(VacancyStatus.Review)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Made_Draft_Again(
-        VacancyStatus status,
+        GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -168,7 +172,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     [Test]
     [MoqInlineAutoData(VacancyStatus.Live)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed(
-        VacancyStatus status,
+        GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -214,9 +218,9 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
     
     [Test]
-    [MoqInlineAutoData(VacancyStatus.Approved)]
+    [MoqInlineAutoData(GraphQL.VacancyStatus.Approved)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Unapproved(
-        VacancyStatus status,
+        GraphQL.VacancyStatus status,
         Guid vacancyId,
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
@@ -284,7 +288,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             LegalEntityName = vacancyDetails.LegalEntityName,
             Reason = TransferReason.EmployerRevokedPermission,
         };
-        vacancyDetails = vacancyDetails with { Status = VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -333,7 +337,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);
@@ -384,7 +388,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
-        vacancyDetails = vacancyDetails with { Status = VacancyStatus.Submitted };
+        vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
         data
             .Setup(x => x.Vacancies)
             .Returns([vacancyDetails]);

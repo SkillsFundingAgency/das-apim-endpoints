@@ -3,18 +3,18 @@ using System.Text.Json;
 using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 using Address = SFA.DAS.RecruitJobs.Domain.Address;
-using GqlApplicationMethod = SFA.DAS.RecruitJobs.ApplicationMethod;
-using GqlApprenticeshipTypes = SFA.DAS.RecruitJobs.ApprenticeshipTypes;
-using GqlClosureReason = SFA.DAS.RecruitJobs.ClosureReason;
-using GqlEmployerNameOption = SFA.DAS.RecruitJobs.EmployerNameOption;
-using GqlGeoCodeMethod = SFA.DAS.RecruitJobs.GeoCodeMethod;
-using GqlOwnerType = SFA.DAS.RecruitJobs.OwnerType;
-using GqlSourceOrigin = SFA.DAS.RecruitJobs.SourceOrigin;
-using GqlSourceType = SFA.DAS.RecruitJobs.SourceType;
-using GqlDurationUnit = SFA.DAS.RecruitJobs.DurationUnit;
-using GqlWageType = SFA.DAS.RecruitJobs.WageType;
-using GqlAvailableWhere = SFA.DAS.RecruitJobs.AvailableWhere;
-using VacancyStatus = SFA.DAS.RecruitJobs.VacancyStatus;
+using GqlApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
+using GqlApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
+using GqlClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
+using GqlEmployerNameOption = SFA.DAS.RecruitJobs.GraphQL.EmployerNameOption;
+using GqlGeoCodeMethod = SFA.DAS.RecruitJobs.GraphQL.GeoCodeMethod;
+using GqlOwnerType = SFA.DAS.RecruitJobs.GraphQL.OwnerType;
+using GqlSourceOrigin = SFA.DAS.RecruitJobs.GraphQL.SourceOrigin;
+using GqlSourceType = SFA.DAS.RecruitJobs.GraphQL.SourceType;
+using GqlDurationUnit = SFA.DAS.RecruitJobs.GraphQL.DurationUnit;
+using GqlWageType = SFA.DAS.RecruitJobs.GraphQL.WageType;
+using GqlAvailableWhere = SFA.DAS.RecruitJobs.GraphQL.AvailableWhere;
+using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.GraphQL.Mappers;
 
@@ -359,7 +359,7 @@ public class WhenMappingAVacancy
         source.Wage_DurationUnit = (GqlDurationUnit)Enum.Parse(typeof(GqlDurationUnit), wage.DurationUnit.ToString()!);
         source.Wage_FixedWageYearlyAmount = wage.FixedWageYearlyAmount;
         source.Wage_WageAdditionalInformation = wage.WageAdditionalInformation;
-        source.Wage_WageType = (GqlWageType)Enum.Parse(typeof(WageType), wage.WageType.ToString()!);
+        source.Wage_WageType = (GqlWageType)Enum.Parse(typeof(GqlWageType), wage.WageType.ToString()!);
         source.Wage_WeeklyHours = wage.WeeklyHours;
         source.Wage_WorkingWeekDescription = wage.WorkingWeekDescription;
             

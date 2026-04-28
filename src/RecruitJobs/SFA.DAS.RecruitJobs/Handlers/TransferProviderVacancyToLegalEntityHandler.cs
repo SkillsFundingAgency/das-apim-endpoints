@@ -10,8 +10,10 @@ using StrawberryShake;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.RecruitJobs.GraphQL;
 using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
 using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Handlers;
 
@@ -42,11 +44,11 @@ public class TransferProviderVacancyToLegalEntityHandler(
         VacancyReview? vacancyReview = null;
         switch (vacancyDetails.Status)
         {
-            case VacancyStatus.Draft:
-            case VacancyStatus.Referred:
-            case VacancyStatus.Closed:
+            case GraphQL.VacancyStatus.Draft:
+            case GraphQL.VacancyStatus.Referred:
+            case GraphQL.VacancyStatus.Closed:
                 break;
-            case VacancyStatus.Submitted:
+            case GraphQL.VacancyStatus.Submitted:
                 var vacancyReviews = (await recruitApiClient.GetAll<VacancyReview>(new GetVacancyReviewsByVacancyReferenceRequest(vacancyDetails.VacancyReference!.Value)))?.ToList() ?? [];
                 vacancyReview = vacancyReviews.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
                 if (vacancyReview is not null && vacancyReview.Status is not ReviewStatus.UnderReview)
@@ -54,19 +56,19 @@ public class TransferProviderVacancyToLegalEntityHandler(
                     patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Draft);
                 }
                 break;
-            case VacancyStatus.Live:
+            case GraphQL.VacancyStatus.Live:
                 patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Closed);
                 patchDocument.Replace(x => x.ClosedDate, now);
                 patchDocument.Replace(x => x.ClosureReason, SharedOuterApi.Types.Domain.Recruit.ClosureReason.TransferredByEmployer);
                 break;
-            case VacancyStatus.Approved:
+            case GraphQL.VacancyStatus.Approved:
                 patchDocument.Replace(x => x.ApprovedDate, null);
                 patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Closed);
                 patchDocument.Replace(x => x.ClosedDate, now);
                 patchDocument.Replace(x => x.ClosureReason, SharedOuterApi.Types.Domain.Recruit.ClosureReason.TransferredByEmployer);
                 break;
-            case VacancyStatus.Rejected:
-            case VacancyStatus.Review:
+            case GraphQL.VacancyStatus.Rejected:
+            case GraphQL.VacancyStatus.Review:
                 patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Draft);
                 break;
             default:
@@ -91,7 +93,7 @@ public class TransferProviderVacancyToLegalEntityHandler(
         var patchResponse = await recruitApiClient.PatchWithResponseCode(patchRequest);
         patchResponse.EnsureSuccessStatusCode();
         
-        if (vacancyDetails.Status is VacancyStatus.Submitted)
+        if (vacancyDetails.Status is GraphQL.VacancyStatus.Submitted)
         {
             switch (vacancyReview)
             {
