@@ -22,7 +22,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using SFA.DAS.RecruitJobs.GraphQL;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
@@ -296,8 +295,8 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             .Data!
             .Vacancies
             .Select(x =>
-                new StaleVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Closed, x.ClosingDate!.Value.UtcDateTime));
-        return TypedResults.Ok(new DataResponse<IEnumerable<StaleVacancyIdentifier>>(data));
+                new StaleArchiveVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Closed, x.ClosingDate!.Value.UtcDateTime));
+        return TypedResults.Ok(new DataResponse<IEnumerable<StaleArchiveVacancyIdentifier>>(data));
     }
 
     [HttpPost, Route("{vacancyReference:long}/archive")]
@@ -332,7 +331,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             }
 
             var domainVacancy = GqlVacancyMapper.From(vacancy);
-            domainVacancy.Status = SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Archived;
+            domainVacancy.Status = VacancyStatus.Archived;
             domainVacancy.LastUpdatedDate = DateTime.UtcNow;
 
             var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));

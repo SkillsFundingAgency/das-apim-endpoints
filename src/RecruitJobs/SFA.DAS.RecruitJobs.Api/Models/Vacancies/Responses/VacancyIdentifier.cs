@@ -2,8 +2,7 @@
 
 namespace SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
 
-public record VacancyIdentifier(
-    Guid Id,
+public record VacancyIdentifier(Guid Id,
     long? VacancyReference,
     VacancyStatus Status,
     DateTime? ClosingDate);
