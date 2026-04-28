@@ -117,12 +117,10 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             
             apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
 
-            //var provider = _trainingProviderService.GetTrainingProviderDetails(
-            //    command.TrainingProviderId);
+            var provider = _trainingProviderService.GetTrainingProviderDetails(
+                command.TrainingProviderId);            
 
-            var provider = new TrainingProviderResponse();
-
-            return (apprenticeship, provider, course);
+            return (apprenticeship, await provider, course);
         }
 
         private static string ProviderName(TrainingProviderResponse trainingProvider)
