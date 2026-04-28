@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="OpenTelemetry.Api" />
         <PackageReference Include="SFA.DAS.Apim.Shared" />
         <PackageReference Include="SFA.DAS.Apprenticeships.Types" />
         <PackageReference Include="MediatR" />

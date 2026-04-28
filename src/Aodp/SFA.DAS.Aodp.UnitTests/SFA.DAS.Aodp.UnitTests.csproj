@@ -20,7 +20,8 @@
 	<PackageReference Include="coverlet.msbuild">
 		<PrivateAssets>all</PrivateAssets>
 		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-	</PackageReference>  
+	</PackageReference>
+	<PackageReference Include="OpenTelemetry.Api" />  
   </ItemGroup>
 
   <ItemGroup>

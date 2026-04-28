@@ -1,7 +1,8 @@
 ﻿using Moq;
 using SFA.DAS.Aodp.Application.Queries.Rollover;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Rollover;
 

@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" />
+    <PackageReference Include="OpenTelemetry.Api" />
     <PackageReference Include="SFA.DAS.Apim.Shared" />
   </ItemGroup>
 
