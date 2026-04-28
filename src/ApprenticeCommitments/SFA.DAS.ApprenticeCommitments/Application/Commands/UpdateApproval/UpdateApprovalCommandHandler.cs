@@ -41,9 +41,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.UpdateApproval
             UpdateApprovalCommand command,
             CancellationToken cancellationToken)
         {
-            var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;
-
-            if (course.ApprenticeshipType == "ApprenticeshipUnit") return default;
+            var (apprenticeship, provider, course) = await GetExternalData(command) ?? default;            
 
             if (apprenticeship == null) return default;
 
