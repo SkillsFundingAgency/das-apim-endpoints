@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.Common.Domain.Models;
 using SFA.DAS.RecruitJobs.Api.Models;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
@@ -19,13 +18,13 @@ using SFA.DAS.RecruitJobs.InnerApi.Responses.ApplicationReviews;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
@@ -281,7 +280,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     [HttpGet, Route("stale/archive")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetClosedVacanciesToArchive(
-    [FromQuery, Required] bool includeVacanciesWithoutOutcomes,
+    [FromQuery] bool includeVacanciesWithoutOutcomes,
     [FromQuery, Required] DateTime pointInTime,
     [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
     [FromServices] IRecruitGqlClient recruitGqlClient,
@@ -297,7 +296,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var gqlVacancies = response.Data!.Vacancies.Take(10);
+        var gqlVacancies = response.Data!.Vacancies;
 
         List<StaleArchiveVacancyIdentifier> result;
 
