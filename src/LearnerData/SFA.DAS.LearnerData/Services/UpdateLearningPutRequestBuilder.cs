@@ -162,13 +162,13 @@ public class UpdateLearningPutRequestBuilder(
         }
 
         if(priorLearningAdjustment.HasValue && !otherFundingAdjustment.HasValue) {
-            return priorLearningAdjustment.GetValueOrDefault(0);
+            return priorLearningAdjustment.Value;
         }
 
         if(!priorLearningAdjustment.HasValue && otherFundingAdjustment.HasValue) {
-            return otherFundingAdjustment.GetValueOrDefault(0);
+            return otherFundingAdjustment.Value;
         }
 
-        return priorLearningAdjustment.GetValueOrDefault(0) * otherFundingAdjustment.GetValueOrDefault(0);
+        return priorLearningAdjustment!.Value * otherFundingAdjustment!.Value;
     }
 }
