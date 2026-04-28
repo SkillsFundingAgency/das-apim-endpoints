@@ -6,6 +6,7 @@ namespace SFA.DAS.Approvals.InnerApi.Responses;
 public record GetLearnersForProviderResponse
 {
     public DateTime? LastSubmissionDate { get; set; }
+    public List<Course> Courses { get; set; } = [];
     public List<LearnerDataRecord> Data { get; set; } = [];
     public int TotalItems { get; set; }
     public int TotalPages { get; set; }
@@ -39,4 +40,10 @@ public record LearnerDataRecord
     public DateTime ReceivedDate { get; set; }
     public string CorrelationId { get; set; }
     public string ConsumerReference { get; set; }
+}
+
+public record Course
+{
+    public string? TrainingCode { get; set; }
+    public string? TrainingName { get; set; }
 }

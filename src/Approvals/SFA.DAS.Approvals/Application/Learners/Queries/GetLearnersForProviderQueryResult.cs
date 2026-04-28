@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
+using SFA.DAS.Approvals.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
 
@@ -15,7 +15,7 @@ public class GetLearnersForProviderQueryResult
     public string EmployerName { get; set; }
     public List<LearnerSummary> Learners { get; set; }
     public int FutureMonths { get; set; }
-    public List<TrainingProgramme> TrainingCourses { get; set; }
+    public List<Course> TrainingCourses { get; set; }
 }
 
 public class LearnerSummary

@@ -1,46 +1,72 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Application.Learners.Queries;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using Course = SFA.DAS.Approvals.InnerApi.Responses.Course;
 
 namespace SFA.DAS.Approvals.Services;
 
 public interface IMapLearnerRecords
 {
-    Task<List<LearnerSummary>> Map(List<LearnerDataRecord> data, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes);
+    List<LearnerSummary> Map(List<LearnerDataRecord> data, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes);
+    List<Course> PopulateMissingTrainingNames(List<Course> data, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes);
 }
 
 public class MapLearnerRecords(ILogger<IMapLearnerRecords> logger) : IMapLearnerRecords
 {
-    public async Task<List<LearnerSummary>> Map(List<LearnerDataRecord> learners, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes)
+    public List<LearnerSummary> Map(List<LearnerDataRecord> learners, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes)
     {
         logger.LogInformation("Mapping Learner record to summary");
 
         return learners.ConvertAll(learner =>
+        {
+            var courseName = learner.TrainingName;
+
+            if (string.IsNullOrEmpty(courseName))
             {
-                var courseName = learner.TrainingName;
+                var matchingProgramme = trainingProgrammes.FirstOrDefault(p => p.CourseCode == learner.TrainingCode);
 
-                if (string.IsNullOrEmpty(courseName))
-                {
-                    var matchingProgramme = trainingProgrammes.FirstOrDefault(p => p.CourseCode == learner.TrainingCode);
+                courseName = matchingProgramme?.Name;
+            }
 
-                    courseName = matchingProgramme?.Name;
-                }
-
-                return new LearnerSummary
-                {
-                    Id = learner.Id,
-                    FirstName = learner.FirstName,
-                    LastName = learner.LastName,
-                    Uln = learner.Uln,
-                    Course = courseName,
-                    StartDate = learner.StartDate,
-                    LearningType = learner.LearningType
-                };
-            });
+            return new LearnerSummary
+            {
+                Id = learner.Id,
+                FirstName = learner.FirstName,
+                LastName = learner.LastName,
+                Uln = learner.Uln,
+                Course = courseName,
+                StartDate = learner.StartDate,
+                LearningType = learner.LearningType
+            };
+        });
     }
+
+    public List<Course> PopulateMissingTrainingNames(List<Course> courses, List<GetAllStandardsResponse.TrainingProgramme> trainingProgrammes)
+    {
+        logger.LogInformation("Populating Learner courses with any missing training names");
+
+        return courses.ConvertAll(course =>
+        {
+            var courseName = course.TrainingName;
+
+            if (string.IsNullOrEmpty(courseName))
+            {
+                var matchingProgramme = trainingProgrammes.FirstOrDefault(p => p.CourseCode == course.TrainingCode);
+
+                courseName = matchingProgramme?.Name;
+            }
+
+            return new Course
+            {
+                TrainingCode = course.TrainingCode,
+                TrainingName = courseName
+            };
+        });
+    }
+
 
 }
