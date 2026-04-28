@@ -4,14 +4,18 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Common.Domain.Models;
 using SFA.DAS.RecruitJobs.Api.Models;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
+using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
+using SFA.DAS.RecruitJobs.InnerApi.Requests.ApplicationReviews;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.DeleteVacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
+using SFA.DAS.RecruitJobs.InnerApi.Responses.ApplicationReviews;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -21,7 +25,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using SFA.DAS.RecruitJobs.GraphQL;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
@@ -277,9 +281,11 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     [HttpGet, Route("stale/archive")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
     public async Task<IResult> GetClosedVacanciesToArchive(
-        [FromQuery, Required] DateTime pointInTime,
-        [FromServices] IRecruitGqlClient recruitGqlClient,
-        CancellationToken cancellationToken)
+    [FromQuery, Required] bool includeVacanciesWithoutOutcomes,
+    [FromQuery, Required] DateTime pointInTime,
+    [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+    [FromServices] IRecruitGqlClient recruitGqlClient,
+    CancellationToken cancellationToken)
     {
         var response = await recruitGqlClient
             .GetVacanciesToArchive
@@ -287,16 +293,51 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
         if (!response.IsSuccessResult())
         {
-            logger.LogError("An error occured at GetQaRejectedVacanciesToClose: {Errors}", response.FormatErrors());
+            logger.LogError("Error in GetClosedVacanciesToArchive: {Errors}", response.FormatErrors());
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var data = response
-            .Data!
-            .Vacancies
-            .Select(x =>
-                new StaleArchiveVacancyIdentifier(x.Id, x.VacancyReference, VacancyStatus.Closed, x.ClosingDate!.Value.UtcDateTime));
-        return TypedResults.Ok(new DataResponse<IEnumerable<StaleArchiveVacancyIdentifier>>(data));
+        var gqlVacancies = response.Data!.Vacancies.Take(10);
+
+        List<StaleArchiveVacancyIdentifier> result;
+
+        if (includeVacanciesWithoutOutcomes)
+        {
+            result = gqlVacancies
+                .Where(v => v.ClosingDate != null)
+                .Select(v => new StaleArchiveVacancyIdentifier(
+                    v.Id,
+                    v.VacancyReference,
+                    VacancyStatus.Closed,
+                    v.ClosingDate!.Value.UtcDateTime))
+                .ToList();
+        }
+        else
+        {
+            var tasks = gqlVacancies.Select(async v =>
+            {
+                var reviews = await recruitApiClient.GetAll<GetApplicationReviewApiResponse>(
+                    new GetManyByVacancyReferenceApiRequest(v.VacancyReference.GetValueOrDefault()));
+
+                var allHaveOutcome = reviews.All(x =>
+                    x.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+
+                return (v, allHaveOutcome);
+            });
+
+            var evaluated = await Task.WhenAll(tasks);
+
+            result = evaluated
+                .Where(x => x.allHaveOutcome && x.v.ClosingDate != null)
+                .Select(x => new StaleArchiveVacancyIdentifier(
+                    x.v.Id,
+                    x.v.VacancyReference,
+                    VacancyStatus.Closed,
+                    x.v.ClosingDate!.Value.UtcDateTime))
+                .ToList();
+        }
+
+        return TypedResults.Ok(new DataResponse<IEnumerable<StaleArchiveVacancyIdentifier>>(result));
     }
 
     [HttpPost, Route("{vacancyReference:long}/archive")]
