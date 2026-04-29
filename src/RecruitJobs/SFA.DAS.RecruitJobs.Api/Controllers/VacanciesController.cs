@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
@@ -22,7 +22,7 @@ using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.RecruitJobs.Domain;
 using StrawberryShake;
 using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
 
@@ -32,6 +32,31 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 [ApiController]
 public class VacanciesController(ILogger<VacanciesController> logger) : ControllerBase
 {
+    [HttpGet]
+    [Route("{id:guid}")]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetOneById(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyById.ExecuteAsync(id, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("Error fetching vacancy '{VacancyId}':\r\n {Errors}", id, response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+        
+        if (response is not { Data.Vacancies.Count: > 0 })
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(new DataResponse<Vacancy>(GqlVacancyMapper.From(response.Data.Vacancies[0])));
+    }
+
     [HttpGet]
     [Route("{vacancyReference:long}/analytics")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
