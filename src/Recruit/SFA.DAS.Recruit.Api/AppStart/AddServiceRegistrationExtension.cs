@@ -7,6 +7,7 @@ using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
+using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
