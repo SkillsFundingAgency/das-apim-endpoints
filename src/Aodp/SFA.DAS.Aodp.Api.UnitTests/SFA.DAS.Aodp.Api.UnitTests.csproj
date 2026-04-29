@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
     <ProjectReference Include="..\SFA.DAS.Aodp.Api\SFA.DAS.Aodp.Api.csproj" />
     <ProjectReference Include="..\SFA.DAS.Aodp\SFA.DAS.Aodp.csproj" />
   </ItemGroup>
