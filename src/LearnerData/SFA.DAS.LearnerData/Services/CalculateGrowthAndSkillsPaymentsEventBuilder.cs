@@ -117,7 +117,7 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                             Employer = new Employer
                             {
                                 AccountId = episode.EmployerAccountId,
-                                FundingAccountId = episode.EmployerAccountId,
+                                FundingAccountId = episode.TransferSenderId ?? episode.EmployerAccountId,
                                 EmployerType = employerType
                             }
                         }).ToList()
