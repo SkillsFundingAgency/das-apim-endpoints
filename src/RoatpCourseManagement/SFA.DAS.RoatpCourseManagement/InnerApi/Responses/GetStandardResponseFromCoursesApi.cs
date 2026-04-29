@@ -30,6 +30,6 @@ public class ApprenticeshipFunding
 public class CourseDates
 {
     public DateTime? LastDateStarts { get; set; }
-    public DateTime EffectiveTo { get; set; }
-    public DateTime? EffectiveFrom { get; set; }
+    public DateTime? EffectiveTo { get; set; }
+    public DateTime EffectiveFrom { get; set; }
 }

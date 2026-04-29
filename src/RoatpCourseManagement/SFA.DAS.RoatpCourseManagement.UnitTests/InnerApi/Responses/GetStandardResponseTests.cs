@@ -79,10 +79,8 @@ public class GetStandardResponseTests
         result.Should().BeNull();
     }
 
-    [TestCase(null, null, false, TestName = "LastDateStartsIsNullAndEffectiveFromIsNull")]
     [TestCase(null, -1, true, TestName = "LastDateStartsIsNullAndEffectiveFromIsPastDate")]
     [TestCase(1, 0, true, TestName = "LastDateStartsIsFutureDateAndNotSameAsEffectiveFrom")]
-    [TestCase(1, null, false, TestName = "LastDateStartsIsFutureDateAndEffectiveFromIsNull")]
     [TestCase(1, 1, false, TestName = "LastDateStartsIsFutureDateAndIsSameAsEffectiveFrom")]
     [TestCase(-1, 0, false, TestName = "LastDateStartsIsPastDate")]
     [TestCase(0, -1, true, TestName = "LastDateStartsIsToday")]
@@ -90,15 +88,15 @@ public class GetStandardResponseTests
     [TestCase(1, 2, false, TestName = "EffectiveFromIsFutureDate")]
     [TestCase(null, 1, false, TestName = "LastDateStartsIsNullEffectiveFromIsFutureDate")]
     public void ImplicitConversion_FromCoursesApi_IsActiveAvailable_TestCases(
-        int? lastDateStartsNoOfDays,
-        int? effectiveFromNoOfDays,
-        bool expectedIsActiveAvailable)
+    int? lastDateStartsNoOfDays,
+    int effectiveFromNoOfDays,
+    bool expectedIsActiveAvailable)
     {
         // Arrange
         DateTime dateTimeNow = DateTime.UtcNow.Date;
 
         DateTime? lastDateStarts = lastDateStartsNoOfDays.HasValue ? dateTimeNow.AddDays(lastDateStartsNoOfDays.Value) : (DateTime?)null;
-        DateTime? effectiveFrom = effectiveFromNoOfDays.HasValue ? dateTimeNow.AddDays(effectiveFromNoOfDays.Value) : (DateTime?)null;
+        DateTime effectiveFrom = dateTimeNow.AddDays(effectiveFromNoOfDays);
 
         var source = new GetStandardResponseFromCoursesApi()
         {
