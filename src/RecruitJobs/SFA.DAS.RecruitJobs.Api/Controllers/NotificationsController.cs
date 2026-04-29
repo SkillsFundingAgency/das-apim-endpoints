@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +11,6 @@ using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.Notifications;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Notifications;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using NotificationEmail = SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications.NotificationEmail;
 
