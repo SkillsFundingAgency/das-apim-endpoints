@@ -6,6 +6,7 @@ using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
+using SFA.DAS.Aodp.Validation;
 using SFA.DAS.AODP.Application.Commands.Qualification;
 using SFA.DAS.AODP.Application.Commands.Qualifications;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
@@ -31,15 +32,9 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetQualifications(
-            [FromQuery] string? status,
-            [FromQuery] int? skip,
-            [FromQuery] int? take,
-            [FromQuery] string? name,
-            [FromQuery] string? organisation,
-            [FromQuery] string? qan,
-            [FromQuery] string? processStatusFilter)
+            [FromQuery] GetQualificationsRequest getQualificationsRequest)
         {
-            var validationResult = ValidateQualificationParams(status, skip, take, name, organisation, qan, processStatusFilter);
+            var validationResult = ValidateQualificationParams(getQualificationsRequest);
 
             if (validationResult.IsValid)
             {
@@ -47,12 +42,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 {
                     var query = new GetNewQualificationsQuery()
                     {
-                        Name = name,
-                        Organisation = organisation,
-                        QAN = qan,
-                        Skip = skip,
-                        Take = take,
-                        ProcessStatusFilter = processStatusFilter
+                        Name = getQualificationsRequest.Name,
+                        Organisation = getQualificationsRequest.Organisation,
+                        QAN = getQualificationsRequest.Qan,
+                        Skip = getQualificationsRequest.Skip,
+                        Take = getQualificationsRequest.Take,
+                        ProcessStatusFilter = getQualificationsRequest.ProcessStatusFilter
                     };
                     return await SendRequestAsync(query);
                 }
@@ -60,12 +55,12 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 {
                     var query = new GetChangedQualificationsQuery()
                     {
-                        Name = name,
-                        Organisation = organisation,
-                        QAN = qan,
-                        Skip = skip,
-                        Take = take,
-                        ProcessStatusFilter = processStatusFilter
+                        Name = getQualificationsRequest.Name,
+                        Organisation = getQualificationsRequest.Organisation,
+                        QAN = getQualificationsRequest.Qan,
+                        Skip = getQualificationsRequest.Skip,
+                        Take = getQualificationsRequest.Take,
+                        ProcessStatusFilter = getQualificationsRequest.ProcessStatusFilter
                     };
                     return await SendRequestAsync(query);
                 }
@@ -86,7 +81,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationDetails(string? qualificationReference)
+        public async Task<IActionResult> GetQualificationDetails([QualificationNumber]string? qualificationReference)
         {
             if (string.IsNullOrWhiteSpace(qualificationReference))
             {
@@ -100,7 +95,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [HttpGet("{qualificationReference}/detailwithversions")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationDetailWithVersions(string? qualificationReference)
+        public async Task<IActionResult> GetQualificationDetailWithVersions([QualificationNumber]string? qualificationReference)
         {
             if (string.IsNullOrWhiteSpace(qualificationReference))
             {
@@ -115,7 +110,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationDetails(string? qualificationReference, int? version)
+        public async Task<IActionResult> GetQualificationDetails([QualificationNumber]string? qualificationReference, int? version)
         {
             if (string.IsNullOrWhiteSpace(qualificationReference))
             {
@@ -152,7 +147,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [HttpGet("{qualificationReference}/qualificationdiscussionhistories")]
         [ProducesResponseType(typeof(BaseMediatrResponse<GetDiscussionHistoriesForQualificationQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetDiscussionHistoriesForQualification(string qualificationReference)
+        public async Task<IActionResult> GetDiscussionHistoriesForQualification([QualificationNumber]string qualificationReference)
         {
             if (string.IsNullOrWhiteSpace(qualificationReference))
             {
@@ -221,7 +216,7 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
         [ProducesResponseType(typeof(BaseMediatrResponse<GetQualificationVersionsForQualificationByReferenceQueryResponse>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetQualificationVersionsForQualificationByReference(string qualificationReference)
+        public async Task<IActionResult> GetQualificationVersionsForQualificationByReference([QualificationNumber]string qualificationReference)
         {
             return await SendRequestAsync(new GetQualificationVersionsForQualificationByReferenceQuery(qualificationReference));
         }
@@ -293,10 +288,10 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
             return await SendRequestAsync(new GetChangedQualificationsExportQuery());
         }
 
-        private ParamValidationResult ValidateQualificationParams(string? status, int? skip, int? take, string? name, string? organisation, string? qan, string? processStatusFilter)
+        private ParamValidationResult ValidateQualificationParams(GetQualificationsRequest getQualificationsRequest)
         {
             var result = new ParamValidationResult() { IsValid = true };
-            status = status?.Trim().ToLower();
+            var status = getQualificationsRequest.Status?.Trim().ToLower();
 
             if (string.IsNullOrEmpty(status))
             {
@@ -308,21 +303,21 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 result.ParsedStatus = status;
             }
 
-            if (skip < 0)
+            if (getQualificationsRequest.Skip < 0)
             {
                 result.IsValid = false;
                 result.ErrorMessage = "Skip param is invalid.";
             }
 
-            if (take < 0)
+            if (getQualificationsRequest.Take < 0)
             {
                 result.IsValid = false;
                 result.ErrorMessage = "Take param is invalid.";
             }
 
-            if (!string.IsNullOrWhiteSpace(processStatusFilter))
+            if (!string.IsNullOrWhiteSpace(getQualificationsRequest.ProcessStatusFilter))
             {
-                var procStatusIdStrings = processStatusFilter.Split(',').Select(v => v.Trim());
+                var procStatusIdStrings = getQualificationsRequest.ProcessStatusFilter.Split(',').Select(v => v.Trim());
                 try
                 {
                     var ids = procStatusIdStrings.Select(s => Guid.Parse(s)).ToList();

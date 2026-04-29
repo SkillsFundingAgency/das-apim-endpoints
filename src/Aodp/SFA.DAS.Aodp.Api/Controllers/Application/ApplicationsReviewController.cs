@@ -4,6 +4,7 @@ using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
+using SFA.DAS.Aodp.Validation;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
 
@@ -50,7 +51,7 @@ public class ApplicationsReviewController : BaseController
     [HttpGet("/api/application-reviews/{applicationReviewId}/feedback/{userType}")]
     [ProducesResponseType(typeof(GetFeedbackForApplicationReviewByIdQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetFeedbackForApplicationReviewById(Guid applicationReviewId, string userType)
+    public async Task<IActionResult> GetFeedbackForApplicationReviewById(Guid applicationReviewId, [UserType]string userType)
     {
         return await SendRequestAsync(new GetFeedbackForApplicationReviewByIdQuery(applicationReviewId, userType));
     }

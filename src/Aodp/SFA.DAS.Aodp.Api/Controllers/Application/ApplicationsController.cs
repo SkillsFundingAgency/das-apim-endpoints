@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
+using SFA.DAS.Aodp.Validation;
 using SFA.DAS.AODP.Application.Commands.Application.Review;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Application;
@@ -225,7 +226,7 @@ public class ApplicationsController : BaseController
     [HttpGet("/api/applications/qualifications/{qan}")]
     [ProducesResponseType(typeof(GetApplicationsByQanQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> GetApplicationsByQan(string qan)
+    public async Task<IActionResult> GetApplicationsByQan([QualificationNumber]string qan)
     {
         var query = new GetApplicationsByQanQuery(qan);
         return await SendRequestAsync(query);

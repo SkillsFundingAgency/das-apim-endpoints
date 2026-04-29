@@ -48,8 +48,19 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetNewQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
+            var request = new GetQualificationsRequest
+            {
+                Status = "new",
+                Skip = 0,
+                Take = 10,
+                Name = "",
+                Organisation = "",
+                Qan = "",
+                ProcessStatusFilter = null
+            };
+
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "",processStatusFilter: null);
+            var result = await controller.GetQualifications(request);
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -71,8 +82,19 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
+            var request = new GetQualificationsRequest
+            {
+                Status = "changed",
+                Skip = 0,
+                Take = 10,
+                Name = "",
+                Organisation = "",
+                Qan = "",
+                ProcessStatusFilter = null
+            };
+
             // Act
-            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(request);
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -95,8 +117,19 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetNewQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
+            var request = new GetQualificationsRequest
+            {
+                Status = "new",
+                Skip = 0,
+                Take = 10,
+                Name = "",
+                Organisation = "",
+                Qan = "",
+                ProcessStatusFilter = null
+            };
+
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(request);
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -114,8 +147,19 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             _mediatorMock.Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), default))
                          .ReturnsAsync(queryResponse);
 
+            var request = new GetQualificationsRequest
+            {
+                Status = "changed",
+                Skip = 0,
+                Take = 10,
+                Name = "",
+                Organisation = "",
+                Qan = "",
+                ProcessStatusFilter = null
+            };
+
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(request);
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -127,9 +171,19 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         {
             //Arrange
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+            var request = new GetQualificationsRequest
+            {
+                Status = "",
+                Skip = 0,
+                Take = 10,
+                Name = "",
+                Organisation = "",
+                Qan = "",
+                ProcessStatusFilter = null
+            };
 
             // Act
-            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(request);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -143,7 +197,18 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         {
             // Act
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-            var result = await controller.GetQualifications("", 0, 0, "", "", "", null);
+            var request = new GetQualificationsRequest
+            {
+                Status = "",
+                Skip = 0,
+                Take = 10,
+                Name = "",
+                Organisation = "",
+                Qan = "",
+                ProcessStatusFilter = null
+            };
+
+            var result = await controller.GetQualifications(request);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
