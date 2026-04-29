@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.JsonPatch.Operations;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Domain;
+using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using SFA.DAS.RecruitJobs.GraphQL;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using ClosureReason = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ClosureReason;
 using OwnerType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.OwnerType;
 using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;

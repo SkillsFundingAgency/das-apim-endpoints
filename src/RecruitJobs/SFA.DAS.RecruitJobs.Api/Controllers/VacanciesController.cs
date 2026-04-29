@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Exceptions;
@@ -26,6 +26,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
+using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -33,6 +34,34 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 [ApiController]
 public class VacanciesController(ILogger<VacanciesController> logger) : ControllerBase
 {
+    [HttpGet]
+    [Route("{id:guid}")]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetOneById(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyById.ExecuteAsync(id, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("Error fetching vacancy '{VacancyId}':\r\n {Errors}", id, response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+        
+        if (response is not { Data.Vacancies.Count: > 0 })
+        {
+            return TypedResults.NotFound();
+        }
+
+        var vacancy = response.Data.Vacancies[0];
+        var domainVacancy = GqlVacancyMapper.From(vacancy);
+
+        return TypedResults.Ok(new DataResponse<Vacancy>(domainVacancy));
+    }
+
     [HttpGet]
     [Route("{vacancyReference:long}/analytics")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -262,7 +291,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
             var domainVacancy = GqlVacancyMapper.From(vacancy);
             domainVacancy.ClosureReason = request.ClosureReason;
-            domainVacancy.Status = SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Closed;
+            domainVacancy.Status = VacancyStatus.Closed;
             domainVacancy.ClosedDate = DateTime.UtcNow;
 
             var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));
