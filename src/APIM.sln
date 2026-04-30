@@ -258,14 +258,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManageme
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RoatpCourseManagement", "RoatpCourseManagement", "{FA811F98-EAC9-448C-B9AD-FBA8484B49C0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress", "TrackProgress\SFA.DAS.TrackProgress\SFA.DAS.TrackProgress.csproj", "{4995E012-8308-4D6B-8E57-CDCD2D0D3A76}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api", "TrackProgress\SFA.DAS.TrackProgress.Api\SFA.DAS.TrackProgress.Api.csproj", "{F0848DD9-F3CC-4BBB-9C4F-28E142728DD9}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgress.Api.AcceptanceTests", "TrackProgress\SFA.DAS.TrackProgress.Api.AcceptanceTests\SFA.DAS.TrackProgress.Api.AcceptanceTests.csproj", "{14DEA7D6-F3C4-4EEF-9707-EDC979065D52}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackProgress", "TrackProgress", "{28342B33-18B0-4B28-9244-7B07C6B1DFFC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies", "Vacancies\SFA.DAS.Vacancies\SFA.DAS.Vacancies.csproj", "{50EE27B7-96B0-4804-8130-BA8218AFBE0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.Vacancies.Api", "Vacancies\SFA.DAS.Vacancies.Api\SFA.DAS.Vacancies.Api.csproj", "{ABF4D56B-9A74-45AE-97F2-2CC273FBD906}"
