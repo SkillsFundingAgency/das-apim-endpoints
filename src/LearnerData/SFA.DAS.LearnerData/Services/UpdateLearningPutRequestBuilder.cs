@@ -169,6 +169,6 @@ public class UpdateLearningPutRequestBuilder(
             return otherFundingAdjustment.Value;
         }
 
-        return priorLearningAdjustment!.Value * otherFundingAdjustment!.Value;
+        return ((priorLearningAdjustment!.Value/100) * (otherFundingAdjustment!.Value/100))*100;
     }
 }
