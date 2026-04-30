@@ -2,13 +2,14 @@ using System.Text.Json.Serialization;
 
 namespace SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
+
 public class Qualification
 {
     public string QualificationType { get; set; }
     public string Subject { get; set; }
     public string Grade { get; set; }
     public int? Level { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public QualificationWeighting? Weighting { get; set; }
     public string OtherQualificationName { get; set; }
 }
