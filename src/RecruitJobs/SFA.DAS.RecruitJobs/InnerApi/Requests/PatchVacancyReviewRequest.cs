@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.RecruitJobs.Domain;
 
