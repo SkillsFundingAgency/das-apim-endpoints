@@ -384,14 +384,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModera
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Application.UnitTests", "RoatpProviderModeration\SFA.DAS.RoatpProviderModeration.Application.UnitTests\SFA.DAS.RoatpProviderModeration.Application.UnitTests.csproj", "{9A1FBAE1-4B26-47E0-BFE4-5248C550B48F}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackProgressInternal", "TrackProgressInternal", "{28EFA61E-CA7C-41C3-AA2C-FF0E5770E818}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgressInternal", "TrackProgressInternal\SFA.DAS.TrackProgressInternal\SFA.DAS.TrackProgressInternal.csproj", "{6FC7D524-AB89-46E0-AEDE-415A820659A0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgressInternal.Api", "TrackProgressInternal\SFA.DAS.TrackProgressInternal.Api\SFA.DAS.TrackProgressInternal.Api.csproj", "{0F77956A-9E91-4B33-B587-B1EB5E668F41}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.TrackProgressInternal.Api.AcceptanceTests", "TrackProgressInternal\SFA.DAS.TrackProgressInternal.Api.AcceptanceTests\SFA.DAS.TrackProgressInternal.Api.AcceptanceTests.csproj", "{5F60C3AD-6D60-44B8-88D5-06728E3AEED1}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "EmployerRequestApprenticeTraining", "EmployerRequestApprenticeTraining", "{3673F5A1-2F53-4F96-B3E8-990A07FC9661}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerRequestApprenticeTraining", "EmployerRequestApprenticeTraining\SFA.DAS.EmployerRequestApprenticeTraining\SFA.DAS.EmployerRequestApprenticeTraining.csproj", "{D95FDCB9-A4E8-4A67-968A-DE1AD6FE56AD}"
