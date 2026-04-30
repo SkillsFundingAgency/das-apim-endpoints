@@ -46,6 +46,19 @@ public class JoinedLearnerData
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
         Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
+
+        foreach (var sldMathsAndEnglish in sldLearnerData.Delivery.EnglishAndMaths)
+        {
+            var earningsMathsAndEnglish = earningsApprenticeship.Episodes
+                .SelectMany(x => x.EnglishAndMaths)
+                .FirstOrDefault(x => x.LearnAimRef == sldMathsAndEnglish.LearnAimRef);
+
+            if (earningsMathsAndEnglish != null)
+            {
+                sldMathsAndEnglish.Course = earningsMathsAndEnglish.Course;
+            }
+        }
+
         LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes);
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
@@ -83,6 +96,12 @@ public class JoinedLearnerData
         foreach(var onProgram in sldLearnerData.Delivery.OnProgramme)
         {
             var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), joinedPriceEpisodes.SelectMany(x=>x.AdditionalPayments));
+            joinedLearningDeliveries.Add(delivery);
+        }
+
+        foreach (var englishAndMath in sldLearnerData.Delivery.EnglishAndMaths)
+        {
+            var delivery = new JoinedLearningDelivery(englishAndMath, joinedPriceEpisodes.SelectMany(x => x.Instalments), joinedPriceEpisodes.SelectMany(x => x.AdditionalPayments));
             joinedLearningDeliveries.Add(delivery);
         }
 
@@ -266,6 +285,25 @@ public class JoinedLearningDelivery
 
         StartDate = onProgramme.StartDate;
         ExpectedEndDate = onProgramme.ExpectedEndDate;
+    }
+
+    public JoinedLearningDelivery(MathsAndEnglish englishAndMath, IEnumerable<JoinedInstalment> instalments, IEnumerable<JoinedAdditionalPayment> additionalPayments)
+    {
+        AimSequenceNumber = englishAndMath.AimSequenceNumber ?? 0;
+        LearnAimRef = englishAndMath.LearnAimRef;
+
+        Instalments = instalments
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= englishAndMath.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (englishAndMath.PauseDate ?? englishAndMath.EndDate))
+            .ToList();
+
+        AdditionalPayments = additionalPayments
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= englishAndMath.StartDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (englishAndMath.PauseDate ?? englishAndMath.EndDate))
+            .ToList();
+
+        StartDate = englishAndMath.StartDate;
+        ExpectedEndDate = englishAndMath.EndDate;
     }
 }
 
