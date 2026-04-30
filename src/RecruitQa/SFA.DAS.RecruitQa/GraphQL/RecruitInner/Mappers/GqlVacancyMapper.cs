@@ -1,5 +1,4 @@
 using System.Text.Json;
-using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
@@ -132,7 +131,7 @@ public static class GqlVacancyMapper
         return source.Status switch
         {
             // draft vacancy that hasn't progressed to setting this property yet
-            Recruit.GraphQL.VacancyStatus.Draft => null,
+            VacancyStatus.Draft => null,
             
             // field should be set by now, so guesstimate it based on the locations
             _ => employerLocations switch
