@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.RecruitQa.Data.Models;
 using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.RecruitQa.GraphQL.RecruitInner.Mappers;
