@@ -1,8 +1,11 @@
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using NUnit.Framework.Internal;
 using SFA.DAS.LearnerData.Application.Fm36.Common;
 using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
+using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
+using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
@@ -27,6 +30,7 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
     public async Task ThenReturnsLearningDeliveryValuesForEachApprenticeship(TestScenario scenario)
     {
         // Arrange
@@ -54,7 +58,7 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
 
         var learnDelAppPrevAccDaysIL = apprenticeship.StartDate.GetNumberOfDaysUntil(effEndDate);
 
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = GetLearningDelivery(testFixture, scenario, apprenticeship);
 
         // note this is a simplified equation and will fail if the value is negative as the actual calc will return 0
         var learnDelHistDaysThisApp = (testFixture.CollectionCalendarResponse.StartDate - firstSldOnProg.StartDate).Days;
@@ -652,6 +656,18 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         var learningDelivery = testFixture.Result.Items.Single().LearningDeliveries.SingleOrDefault();
         learningDelivery.Should().NotBeNull();
         learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
+    }
+
+    private static LearningDelivery? GetLearningDelivery(GetFm36QueryTestFixture testFixture, TestScenario testScenario, Learning learning)
+    {
+        if(testScenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            var deliveries = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == learning.Uln).LearningDeliveries;
+            return deliveries.Where(delivery => delivery.AimSeqNumber == 2).SingleOrDefault(); // Bit of a hack, but usually setting English course Aim as 2
+        }
+
+        return testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == learning.Uln).LearningDeliveries.SingleOrDefault();
+
     }
 }
 #pragma warning restore CS8602 // Defrerred nullability warnings for test cases

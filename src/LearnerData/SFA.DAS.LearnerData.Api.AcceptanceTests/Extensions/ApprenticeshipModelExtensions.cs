@@ -3,6 +3,7 @@ using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.TestHelpers;
 using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
@@ -56,7 +57,27 @@ public static class ApprenticeshipModelExtensions
                             AcademicYear = x.AcademicYear,
                             DueDate = x.DueDate,
                             DeliveryPeriod = x.DeliveryPeriod
-                        }).ToList()
+                        }).ToList(),
+                    EnglishAndMaths = apprenticeshipModel.EnglishAndMaths.Select(x =>
+                        new SFA.DAS.LearnerData.Responses.EarningsInner.EnglishAndMaths
+                        {
+                            LearnAimRef = x.LearnAimRef,
+                            Course = x.Course,
+                            StartDate = x.StartDate,
+                            EndDate = x.EndDate,
+                            Instalments = x.StartDate.Enumerate(x.EndDate, DateIncrement.Monthly, out int instalmentCount)
+                                .Select((date) => {
+                                    (var academicYear, var deliveryPeriod) = date.ToAcademicYearAndPeriod();
+                                    return new EnglishAndMathsInstalment
+                                    {
+                                        AcademicYear = academicYear,
+                                        DeliveryPeriod = deliveryPeriod,
+                                        Amount = x.Amount/instalmentCount,
+                                        InstalmentType = "Regular"
+                                    };
+                                })
+                                .ToList()
+                        }).ToList(),
                 }
             },
             FundingLineType = "test",

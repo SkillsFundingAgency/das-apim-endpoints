@@ -11,7 +11,11 @@ public enum TestScenario
     /// <summary>
     /// Models an apprenticeship with a change of price
     /// </summary>
-    ApprenticeshipWithPriceChange
+    ApprenticeshipWithPriceChange,
+    /// <summary>
+    /// Models an apprenticeship with a single English Course
+    /// </summary>
+    ApprenticeshipWithEnglish
 }
 
 public enum WithdrawalDate

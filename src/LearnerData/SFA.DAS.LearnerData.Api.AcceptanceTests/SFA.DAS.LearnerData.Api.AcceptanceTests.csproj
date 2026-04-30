@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.LearnerData.Api\SFA.DAS.LearnerData.Api.csproj" />
+    <ProjectReference Include="..\SFA.DAS.LearnerData.TestHelpers\SFA.DAS.LearnerData.TestHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

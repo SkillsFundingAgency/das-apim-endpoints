@@ -135,6 +135,26 @@ public static class LearnerBuilder
 
         episode.AdditionalPayments = testLearner.AdditionalPayments ?? new List<AdditionalPayment>();
 
+        if (testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Any())
+        {
+            episode.EnglishAndMaths = testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Select(x => new EnglishAndMaths
+            {
+                LearnAimRef = x.LearnAimRef,
+                StartDate = x.StartDate,
+                EndDate = x.EndDate,
+                Course = x.Course,
+                Instalments = x.StartDate
+                    .Enumerate(x.EndDate, DateIncrement.Monthly, out int instalmentCount)
+                    .Select(dt => new EnglishAndMathsInstalment
+                    {
+                        AcademicYear = dt.ToAcademicYear(),
+                        DeliveryPeriod = dt.ToDeliveryPeriod(),
+                        Amount = x.Amount/instalmentCount,
+                        InstalmentType = "Regular"
+                    }).ToList()
+            }).ToList();
+        }
+
         return new List<SFA.DAS.LearnerData.Responses.EarningsInner.Episode> { episode };
     }
 

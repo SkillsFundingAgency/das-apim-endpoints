@@ -69,6 +69,26 @@ public static class TestLearnerExtensions
         testLearner.UpdateLearnerRequest.Delivery.OnProgramme.Add(programme);
 
     }
+
+    public static void AddEnglish(this TestLearner testLearner, 
+        string? course = null, DateTime? startDate = null, DateTime? endDate = null, int? amount = null)
+    {
+        var englishCourse = DefaultLearner.EnglishCourse;
+        
+        if(course != null)
+            englishCourse.Course = course;
+
+        if (startDate != null)
+            englishCourse.StartDate = startDate.Value;
+
+        if (endDate != null)
+            englishCourse.EndDate = endDate.Value;
+
+        if (amount != null)
+            englishCourse.Amount = amount.Value;
+
+        testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(englishCourse);
+    }
 }
 
 #pragma warning restore CS8618

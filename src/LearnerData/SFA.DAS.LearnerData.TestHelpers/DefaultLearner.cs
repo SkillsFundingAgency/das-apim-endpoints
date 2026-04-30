@@ -42,6 +42,17 @@ public class DefaultLearner
         LearnAimRef = "ZPROG001"
     };
 
+    public static MathsAndEnglish EnglishCourse => new MathsAndEnglish
+    {
+        AimSequenceNumber = 2,
+        LearnAimRef = "ENG001",
+        Amount = 1500,
+        StartDate = new DateTime(2022, 9, 1),
+        EndDate = new DateTime(2024, 8, 31),
+        Course = "English",
+        LearningSupport = new List<LearningSupport>()
+    };
+
     public static TestLearner CreateNew => new TestLearner
     {
         LearningKey = Guid.NewGuid(),

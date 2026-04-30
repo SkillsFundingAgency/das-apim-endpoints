@@ -153,18 +153,6 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
 
             _logger.LogInformation($"Processing learning with key: {learning.Key}");
 
-            foreach (var sldMathsAndEnglish in matchingSld.Delivery.EnglishAndMaths)
-            {
-                var earningsMathsAndEnglish = matchingEarnings.Episodes
-                    .SelectMany(x => x.EnglishAndMaths)
-                    .FirstOrDefault(x => x.LearnAimRef == sldMathsAndEnglish.LearnAimRef);
-
-                if (earningsMathsAndEnglish != null)
-                {
-                    sldMathsAndEnglish.Course = earningsMathsAndEnglish.Course;
-                }
-            }
-
             joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, matchingSld, currentAcademicYear.GetShortAcademicYear()));
         }
 

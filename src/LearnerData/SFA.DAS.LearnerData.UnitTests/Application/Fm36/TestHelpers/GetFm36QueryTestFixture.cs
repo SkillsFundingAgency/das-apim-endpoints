@@ -77,6 +77,9 @@ internal class GetFm36QueryTestFixture
             case TestScenario.ApprenticeshipWithPriceChange:
                 AddApprenticeshipWithPriceChange();
                 break;
+            case TestScenario.ApprenticeshipWithEnglish:
+                AddApprenticeshipWithEnglish();
+                break;
             case TestScenario.AllData:
                 AddSimpleApprenticeship();
                 AddApprenticeshipWithPriceChange();
@@ -167,6 +170,37 @@ internal class GetFm36QueryTestFixture
 
         _fm36TestContext.TestLearners.Add(testLearner);
 
+    }
+
+    private void AddApprenticeshipWithEnglish()
+    {
+        var testLearner = DefaultLearner.CreateNew;
+        testLearner.Ukprn = (int)Ukprn;
+        testLearner.FundingBandMax = 19000;
+        testLearner.ClearProgrammes();
+        testLearner.AddProgramme(
+            ageAtStart: 18,
+            startDate: new DateTime(2020, 1, 1),
+            endDate: new DateTime(2021, 1, 1),
+            trainingPrice: 14000,
+            endpointAssessmentPrice: 1000);
+
+        testLearner.AdditionalPayments = new List<AdditionalPayment>
+        {
+            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 3, 30) },
+            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 3, 30) },
+
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 12, 30) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 12, 30) },
+
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 10, 30) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 11, 30) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 12, 30) },
+        };
+
+        testLearner.AddEnglish();
+
+        _fm36TestContext.TestLearners.Add(testLearner);
     }
 
     internal GetAcademicYearsResponse BuildCollectionCalendarResponse()
