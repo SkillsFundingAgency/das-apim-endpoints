@@ -5,6 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" />
         <PackageReference Include="SFA.DAS.Apim.Shared" />
         <PackageReference Include="SFA.DAS.Apprenticeships.Types" />
         <PackageReference Include="MediatR" />
