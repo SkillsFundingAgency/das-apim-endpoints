@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Responses;
 
@@ -10,22 +12,58 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Responses;
 public class GetStandardResponseTests
 {
     [Test, AutoData]
-    public void ImplicitConversion_FromCoursesApi_MapsAllProperties(GetStandardResponseFromCoursesApi source)
+    public void ImplicitConversion_FromCoursesApiNoFunding_MapsPropertiesAndSetsDefaults(GetStandardResponseFromCoursesApi source)
     {
+        // Arrange
+        source.ApprenticeshipFunding = new List<ApprenticeshipFunding>();
+
         // Act
         GetStandardResponse result = source;
 
-        // Assert
         result.StandardUId.Should().Be(source.StandardUId);
         result.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
-        result.LarsCode.Should().Be(source.LarsCode.ToString());
+        result.LarsCode.Should().Be(source.LarsCode);
         result.Title.Should().Be(source.Title);
         result.Level.Should().Be(source.Level);
-        result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
+        result.ApprenticeshipType.Should().Be(source.LearningType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
-        result.SectorSubjectAreaTier1.Should().Be(source.SectorSubjectAreaTier1);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
+
+        result.Duration.Should().Be(0);
+        result.DurationUnits.Should().Be(default(DurationUnits));
+
+        result.CourseType.Should().Be(source.CourseType);
+    }
+
+    [Test, AutoData]
+    public void ImplicitConversion_FromCoursesApiWithFunding_MapsPropertiesAndUsesMostRecentFunding(GetStandardResponseFromCoursesApi source)
+    {
+        // Arrange
+        var older = new ApprenticeshipFunding { EffectiveFrom = new DateTime(2020, 1, 1), Duration = 74, DurationUnits = DurationUnits.Months };
+        var newer = new ApprenticeshipFunding { EffectiveFrom = new DateTime(2022, 1, 1), Duration = 167, DurationUnits = DurationUnits.Hours };
+
+        // Arrange
+        source.ApprenticeshipFunding = new List<ApprenticeshipFunding> { older, newer };
+
+        // Act
+        var result = (GetStandardResponse)source;
+
+        // Assert - properties are mapped
+        result.StandardUId.Should().Be(source.StandardUId);
+        result.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
+        result.LarsCode.Should().Be(source.LarsCode);
+        result.Title.Should().Be(source.Title);
+        result.Level.Should().Be(source.Level);
+        result.ApprenticeshipType.Should().Be(source.LearningType);
+        result.ApprovalBody.Should().Be(source.ApprovalBody);
+        result.Route.Should().Be(source.Route);
+        result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
+        result.CourseType.Should().Be(source.CourseType);
+
+        // Assert funding chosen is the most recent (by EffectiveFrom)
+        result.Duration.Should().Be(newer.Duration);
+        result.DurationUnits.Should().Be(newer.DurationUnits);
     }
 
     [Test, AutoData]
@@ -43,21 +81,23 @@ public class GetStandardResponseTests
         result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
         result.ApprovalBody.Should().Be(source.ApprovalBody);
         result.Route.Should().Be(source.Route);
-        result.SectorSubjectAreaTier1.Should().Be(source.SectorSubjectAreaTier1);
         result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
+        result.Duration.Should().Be(source.Duration);
+        result.DurationUnits.Should().Be(source.DurationUnits);
+        result.CourseType.Should().Be(source.CourseType);
     }
 
     [Test]
-    public void ImplicitConversion_FromCoursesApi_NullSource_ThrowsNullReferenceException()
+    public void ImplicitConversion_FromCoursesApi_NullSource_ReturnsNull()
     {
         // Arrange
         GetStandardResponseFromCoursesApi source = null;
 
         // Act
-        Action act = () => { var _ = (GetStandardResponse)source; };
+        GetStandardResponse result = source;
 
         // Assert
-        act.Should().Throw<NullReferenceException>();
+        result.Should().BeNull();
     }
 
     [Test]

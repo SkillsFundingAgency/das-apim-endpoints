@@ -1,52 +1,102 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using NUnit.Framework;
+using AutoFixture;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
 
-namespace SFA.DAS.LearnerData.UnitTests.Application.Services
+namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
+
+[TestFixture]
+public class UpdateEarningsEnglishAndMathsRequestBuilderTests
 {
-    [TestFixture]
-    public class UpdateEarningsEnglishAndMathsRequestBuilderTests
+    private readonly Fixture _fixture = new();
+    private UpdateEarningsEnglishAndMathsRequestBuilder _sut;
+
+    [SetUp]
+    public void SetUp()
     {
-        private readonly Fixture _fixture = new();
-        private UpdateEarningsEnglishAndMathsRequestBuilder _sut;
+        _sut = new UpdateEarningsEnglishAndMathsRequestBuilder();
+    }
 
-        [SetUp]
-        public void SetUp()
+    [Test]
+    public void Build_Should_Map_EnglishAndMathsItems_And_LearningKey()
+    {
+        // Arrange
+        var learnAimRef = _fixture.Create<string>();
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x =>
         {
-            _sut = new UpdateEarningsEnglishAndMathsRequestBuilder();
-        }
+            x.LearnAimRef = learnAimRef;
+            x.CompletionDate = null;
+            x.WithdrawalDate = null;
+            x.PauseDate = x.PauseDate;
+            x.EndDate = x.PauseDate.Value.AddDays(30);
+        });
+        var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+        putRequest.Data.EnglishAndMathsCourses.ForEach(x => x.LearnAimRef = learnAimRef);
+        var response = _fixture.Create<UpdateLearnerApiPutResponse>();
 
-        [Test]
-        public void Build_Should_Map_EnglishAndMathsItems_And_LearningKey()
+        // Act
+        var result = _sut.Build(command, response, putRequest);
+
+        // Assert
+        var expectedItems = putRequest.Data.EnglishAndMathsCourses.Select(x => new EnglishAndMathsItem
         {
-            // Arrange
-            var command = _fixture.Create<UpdateLearnerCommand>();
-            var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
-            var response = _fixture.Create<UpdateLearnerApiPutResponse>();
+            StartDate = x.StartDate,
+            EndDate = x.PlannedEndDate,
+            Course = x.Course,
+            LearnAimRef = x.LearnAimRef,
+            Amount = x.Amount,
+            WithdrawalDate = x.WithdrawalDate,
+            PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
+            CompletionDate = x.CompletionDate,
+            PauseDate = x.PauseDate,
+            PeriodsInLearning = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(e => e.LearnAimRef == x.LearnAimRef)
+                .Select(y => new PeriodInLearningItem
+                {
+                    StartDate = y.StartDate,
+                    EndDate = y.PauseDate ?? y.CompletionDate ?? y.WithdrawalDate ?? y.EndDate,
+                    OriginalExpectedEndDate = y.EndDate
+                })
+                .OrderBy(p => p.StartDate)
+                .ToList()
+        }).ToList();
 
-            // Act
-            var result = _sut.Build(command, response, putRequest);
+        result.PutUrl.Should().Be($"learning/{command.LearningKey}/english-and-maths");
+        result.Data.EnglishAndMaths.Should().BeEquivalentTo(expectedItems);
+    }
 
-            // Assert
-            var expectedItems = putRequest.Data.MathsAndEnglishCourses.Select(x => new EnglishAndMathsItem
-            {
-                StartDate = x.StartDate,
-                EndDate = x.PlannedEndDate,
-                Course = x.Course,
-                LearnAimRef = x.LearnAimRef,
-                Amount = x.Amount,
-                WithdrawalDate = x.WithdrawalDate,
-                PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
-                ActualEndDate = x.CompletionDate,
-                PauseDate = x.PauseDate
-            }).ToList();
+    [Test]
+    public void Build_Should_Deduplicate_EnglishAndMaths_With_Same_StartDate()
+    {
+        // Arrange
+        var learnAimRef = _fixture.Create<string>();
+        var sharedStartDate = new DateTime(2026, 4, 1);
+        var endDate = new DateTime(2028, 3, 31);
 
-            result.PutUrl.Should().Be($"learning/{command.LearningKey}/english-and-maths");
-            result.Data.EnglishAndMaths.Should().BeEquivalentTo(expectedItems);
-        }
+        var command = _fixture.Create<UpdateLearnerCommand>();
+        command.UpdateLearnerRequest.Delivery.EnglishAndMaths = new List<MathsAndEnglish>
+        {
+            new() { LearnAimRef = learnAimRef, StartDate = sharedStartDate, EndDate = endDate, CompletionDate = null, WithdrawalDate = null, PauseDate = null },
+            new() { LearnAimRef = learnAimRef, StartDate = sharedStartDate, EndDate = endDate, CompletionDate = null, WithdrawalDate = null, PauseDate = null }
+        };
+
+        var putRequest = _fixture.Create<UpdateLearningApiPutRequest>();
+        putRequest.Data.EnglishAndMathsCourses = new List<MathsAndEnglishDetails>
+        {
+            new() { LearnAimRef = learnAimRef, StartDate = sharedStartDate, PlannedEndDate = endDate }
+        };
+
+        var response = _fixture.Create<UpdateLearnerApiPutResponse>();
+
+        // Act
+        var result = _sut.Build(command, response, putRequest);
+
+        // Assert
+        var periods = result.Data.EnglishAndMaths.Single().PeriodsInLearning;
+        periods.Should().HaveCount(1);
+        periods.Single().StartDate.Should().Be(sharedStartDate);
     }
 }

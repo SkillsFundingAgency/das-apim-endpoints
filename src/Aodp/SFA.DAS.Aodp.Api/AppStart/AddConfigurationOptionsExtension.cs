@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Apim.Shared.Configuration;
+using AodpApiConfiguration = SFA.DAS.Aodp.Configuration.AodpApiConfiguration;
+using DfeSignInApiConfiguration = SFA.DAS.Aodp.Configuration.DfeSignInApiConfiguration;
+
 
 namespace SFA.DAS.Aodp.Api.AppStart
 {
@@ -21,6 +24,9 @@ namespace SFA.DAS.Aodp.Api.AppStart
 
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
+
+            services.Configure<DfeSignInApiConfiguration>(configuration.GetSection(nameof(DfeSignInApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<DfeSignInApiConfiguration>>().Value);
 
 
         }

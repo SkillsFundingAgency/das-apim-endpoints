@@ -1,16 +1,8 @@
-﻿using AutoFixture.NUnit3;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
-using SFA.DAS.Testing.AutoFixture;
 using System.Net;
-using System.Threading.Tasks;
-using System;
 using System.Threading;
-using FluentAssertions;
-using FluentAssertions.Execution;
 using SFA.DAS.FindAnApprenticeship.Application.Commands.Apply.DeleteWorkExperience;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Controllers.VolunteeringOrWorkExperienceController;

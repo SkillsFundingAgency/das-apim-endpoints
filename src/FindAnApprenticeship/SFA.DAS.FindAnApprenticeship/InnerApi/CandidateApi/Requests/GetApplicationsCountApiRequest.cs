@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests

@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.RoatpCourseManagement.Application.ProviderCourseTypes.Queries;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi;
+
+namespace SFA.DAS.RoatpCourseManagement.Application.ProviderCourseTypes.Queries;
+
 public class ProviderCourseTypeResult
 {
-    public string CourseType { get; set; }
+    public CourseType CourseType { get; set; }
 }

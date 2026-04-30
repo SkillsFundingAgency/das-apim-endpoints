@@ -1,9 +1,15 @@
-﻿namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+﻿using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
+
+namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 public sealed class ProviderCourseResponse
 {
     public string CourseName { get; set; }
+    public CourseType CourseType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public int Level { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string IfateReferenceNumber { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ToolsSupport.Api.Controllers;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Queries.GetUserOverview;
@@ -12,7 +12,7 @@ public class WhenGettingUserOverview
          Guid userId,
          GetUserOverviewQueryResult getOverviewResult,
          [Frozen] Mock<IMediator> mockMediator,
-         [Greedy] UsersQueryController controller)
+         [Greedy] UsersController controller)
     {
         mockMediator
                .Setup(mediator => mediator.Send(

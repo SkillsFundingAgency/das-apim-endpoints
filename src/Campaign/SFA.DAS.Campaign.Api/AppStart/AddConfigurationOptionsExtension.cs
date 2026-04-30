@@ -3,7 +3,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Campaign.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.Campaign.Api.AppStart
 {
@@ -28,6 +29,9 @@ namespace SFA.DAS.Campaign.Api.AppStart
             
             services.Configure<ContentfulPreviewApiConfiguration>(configuration.GetSection(nameof(ContentfulPreviewApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ContentfulPreviewApiConfiguration>>().Value);
+
+            services.Configure<CampaignApiConfiguration>(configuration.GetSection(nameof(CampaignApiConfiguration)));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<CampaignApiConfiguration>>().Value);
         }
     }
 }

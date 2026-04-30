@@ -3,9 +3,10 @@ using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using System.Text.RegularExpressions;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services
@@ -80,12 +81,12 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                     Weighting = q.Weighting
                 }).ToList() ?? [],
                 OutcomeDescription = source.OutcomeDescription,
-                EmployerContactName = source.EmployerContactName,
-                EmployerContactEmail = source.EmployerContactEmail,
-                EmployerContactPhone = source.EmployerContactPhone,
-                ProviderContactEmail = source.ProviderContactEmail,
-                ProviderContactName = source.ProviderContactName,
-                ProviderContactPhone = source.ProviderContactPhone,
+                EmployerContactName = source.OwnerType == OwnerType.Employer ? source.Contact?.Name : null,
+                EmployerContactEmail = source.OwnerType == OwnerType.Employer ? source.Contact?.Email : null,
+                EmployerContactPhone = source.OwnerType == OwnerType.Employer ? source.Contact?.Phone : null,
+                ProviderContactName = source.OwnerType == OwnerType.Provider ? source.Contact?.Name : null,
+                ProviderContactEmail = source.OwnerType == OwnerType.Provider ? source.Contact?.Email : null,
+                ProviderContactPhone = source.OwnerType == OwnerType.Provider ? source.Contact?.Phone : null,
                 EmployerDescription = source.EmployerDescription,
                 EmployerWebsiteUrl = source.EmployerWebsiteUrl,
                 Address = source.Address,
@@ -163,7 +164,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Services
                 Id = source.JobCode ?? string.Empty,
                 EmployerName = source.Department.En,
                 VacancyReference = source.JobReference ?? string.Empty,
-                Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMinimum),
+                Wage = GetCivilServiceJobWage(source.SalaryMinimum, source.SalaryMaximum),
                 ApplicationUrl = source.JobUrl,
                 ClosingDate = source.KeyTimes.ClosingTime,
                 PostedDate = source.KeyTimes.PublishedTime,

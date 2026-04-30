@@ -1,5 +1,4 @@
-﻿using Azure.Core;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
@@ -58,4 +57,6 @@ public class ApplicationMessagesController : BaseController
         return await SendRequestAsync(command);
 
     }
+
+    
 }

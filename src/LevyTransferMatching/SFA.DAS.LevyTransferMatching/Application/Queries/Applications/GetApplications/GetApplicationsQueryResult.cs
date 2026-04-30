@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using SFA.DAS.LevyTransferMatching.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Queries.Applications.GetApplications
 {

@@ -11,9 +11,12 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetProviderCourse;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
@@ -64,6 +67,9 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                 result.IsApprovedByRegulator.Should().Be(course.IsApprovedByRegulator);
                 result.IsRegulatedForProvider.Should().Be(course.IsRegulatedForProvider);
                 result.HasLocations.Should().Be(course.HasLocations);
+                result.CourseType.Should().Be(standard.CourseType);
+                result.Duration.Should().Be(standard.Duration);
+                result.DurationUnits.Should().Be(standard.DurationUnits);
             }
         }
 

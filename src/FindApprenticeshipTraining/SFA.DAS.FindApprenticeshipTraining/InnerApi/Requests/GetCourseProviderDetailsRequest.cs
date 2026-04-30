@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Web;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 public sealed class GetCourseProviderDetailsRequest : IGetApiRequest
 {
+    public string Version => ApiVersionNumber.Two;
     private string LarsCode { get; }
     private long Ukprn { get; }
     private string Location { get; }

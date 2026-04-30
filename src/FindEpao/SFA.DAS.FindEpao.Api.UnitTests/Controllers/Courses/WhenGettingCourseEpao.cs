@@ -9,10 +9,10 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.FindEpao.Api.Controllers;
 using SFA.DAS.FindEpao.Api.Models;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao;
-using SFA.DAS.SharedOuterApi.Exceptions;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindEpao.Api.UnitTests.Controllers.Courses

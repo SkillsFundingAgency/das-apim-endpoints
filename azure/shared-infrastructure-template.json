@@ -127,7 +127,7 @@
                 "input": {
                     "name": "[parameters('serviceSubnetNames')[copyIndex('serviceSubnetCopy')]]",
                     "properties": {
-                        "addressPrefix": "[blocks.getNextAddressRange(parameters('sharedEnvVirtualNetworkAddressPrefix'), 220, copyIndex('serviceSubnetCopy'), parameters('subnetAddressSpaceCIDR'))]",
+                        "addressPrefix": "[blocks.getNextAddressRange(parameters('sharedEnvVirtualNetworkAddressPrefix'), 70, copyIndex('serviceSubnetCopy'), parameters('subnetAddressSpaceCIDR'))]",
                         "serviceEndpointList": "[parameters('subnetServiceEndpointList')]",
                         "delegations": "[parameters('subnetDelegations')]",
                         "networkSecurityGroup": "[variables('emptyObject')]",
