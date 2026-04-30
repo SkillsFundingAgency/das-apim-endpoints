@@ -71,7 +71,8 @@ public static class ApprenticeshipModelExtensions
             },
             Delivery = new UpdateLearnerRequestDeliveryDetails
             {
-                OnProgramme = GetSldOnProgrammes(apprenticeshipModel)
+                OnProgramme = GetSldOnProgrammes(apprenticeshipModel),
+                EnglishAndMaths = GetSldEnglishAndMaths(apprenticeshipModel),
             }
         };
 
@@ -155,6 +156,22 @@ public static class ApprenticeshipModelExtensions
             PauseDate = ld.ActualEndDate,
             AimSequenceNumber = ld.AimSequenceNumber,
             LearnAimRef = ld.LearnAimRef
+        }).ToList();
+    }
+
+    private static List<MathsAndEnglish> GetSldEnglishAndMaths(ApprenticeshipModel apprenticeshipModel)
+    {
+        if (!apprenticeshipModel.EnglishAndMaths.Any())
+            return new List<MathsAndEnglish>();
+
+        return apprenticeshipModel.EnglishAndMaths.Select(em => new MathsAndEnglish
+        {
+            Course = em.Course,
+            LearnAimRef = em.LearnAimRef,
+            Amount = em.Amount,
+            StartDate = em.StartDate,
+            EndDate = em.EndDate,
+            AimSequenceNumber = em.AimSequenceNumber
         }).ToList();
     }
 }
