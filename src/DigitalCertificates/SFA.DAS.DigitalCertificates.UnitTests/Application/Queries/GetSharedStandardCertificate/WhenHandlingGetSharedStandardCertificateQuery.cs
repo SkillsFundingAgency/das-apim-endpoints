@@ -9,9 +9,12 @@ using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharedStandardCertificate;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedStandardCertificate
@@ -43,7 +46,15 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharedSta
             actual.Should().NotBeNull();
             actual.FamilyName.Should().Be(responseBody.LearnerFamilyName);
             actual.GivenNames.Should().Be(responseBody.LearnerGivenNames);
-            // basic mappings
+            actual.CertificateType.Should().Be(responseBody.Type);
+            actual.CertificateReference.Should().Be(responseBody.CertificateReference);
+            actual.CourseName.Should().Be(responseBody.StandardName);
+            actual.CourseOption.Should().Be(responseBody.CourseOption);
+            actual.CourseLevel.Should().Be(responseBody.StandardLevel);
+            actual.DateAwarded.Should().Be(responseBody.AchievementDate);
+            actual.OverallGrade.Should().Be(responseBody.OverallGrade);
+            actual.ProviderName.Should().Be(responseBody.ProviderName);
+            actual.StartDate.Should().Be(responseBody.LearningStartDate);
         }
 
         [Test, MoqAutoData]

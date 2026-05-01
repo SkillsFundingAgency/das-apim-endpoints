@@ -1,16 +1,16 @@
 ﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Types;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Apprentices.Commands
 {

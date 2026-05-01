@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetAddDraftApprenticeshipDetails;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
@@ -14,9 +10,12 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using Party = SFA.DAS.Approvals.InnerApi.Responses.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.DraftApprenticeships

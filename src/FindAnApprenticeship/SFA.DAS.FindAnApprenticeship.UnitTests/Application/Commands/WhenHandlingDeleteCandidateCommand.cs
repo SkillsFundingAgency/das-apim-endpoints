@@ -4,17 +4,22 @@ using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Requests;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Requests;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
+using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitV2Api.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Net;
-using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
 {
@@ -44,7 +49,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 GetCandidateApiResponse candidateApiResponse,
                 EmailEnvironmentHelper emailEnvironmentHelper,
                 GetApprenticeshipVacancyItemResponse vacancyResponse,
-                [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+                [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
                 [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
                 [Frozen] Mock<INotificationService> notificationService,
                 [Frozen] Mock<IVacancyService> vacancyService,
@@ -85,9 +90,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .ReturnsAsync(candidateApiResponse);
 
             candidateApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
-            recruitApiClient
-                .Setup(x => x.PostWithResponseCode<NullResponse>(
-                    It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            recruitApiV2Client.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, null));
+
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync(vacancyResponse);
             vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, false)).Returns(expectedAddress);
 
@@ -104,12 +109,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                     (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Withdrawn
                 )), Times.AtLeastOnce);
 
-                recruitApiClient
-                    .Verify(x => x.PostWithResponseCode<NullResponse>(
-                        It.Is<PostWithdrawApplicationRequest>(c =>
-                            c.PostUrl.Contains(command.CandidateId.ToString())
-                            && c.PostUrl.Contains(vacancyRef.ToString())
-                        ), false), Times.Exactly(applicationsApiResponse.Applications.Count));
+                recruitApiV2Client.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+                    c.PatchUrl.Contains(application.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/WithdrawnDate" &&
+                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
+                )), Times.Once);
 
                 notificationService.Verify(x => x.Send(
                     It.Is<SendEmailCommand>(c =>
@@ -142,7 +146,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 GetCandidateApiResponse candidateApiResponse,
                 EmailEnvironmentHelper emailEnvironmentHelper,
                 GetApprenticeshipVacancyItemResponse vacancyResponse,
-                [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+                [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
                 [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
                 [Frozen] Mock<INotificationService> notificationService,
                 [Frozen] Mock<IVacancyService> vacancyService,
@@ -179,9 +183,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .ReturnsAsync(candidateApiResponse);
 
             candidateApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
-            recruitApiClient
-                .Setup(x => x.PostWithResponseCode<NullResponse>(
-                    It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            recruitApiV2Client.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, null));
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync(vacancyResponse);
             vacancyService.Setup(x => x.GetVacancyWorkLocation(vacancyResponse, false)).Returns(expectedAddress);
 
@@ -198,12 +201,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                     (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Withdrawn
                 )), Times.AtLeastOnce);
 
-                recruitApiClient
-                    .Verify(x => x.PostWithResponseCode<NullResponse>(
-                        It.Is<PostWithdrawApplicationRequest>(c =>
-                            c.PostUrl.Contains(command.CandidateId.ToString())
-                            && c.PostUrl.Contains(vacancyRef.ToString())
-                        ), false), Times.Exactly(applicationsApiResponse.Applications.Count));
+                recruitApiV2Client.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+                    c.PatchUrl.Contains(application.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/WithdrawnDate" &&
+                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
+                )), Times.Once());
 
                 notificationService.Verify(x => x.Send(
                     It.Is<SendEmailCommand>(c =>
@@ -231,7 +233,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             long vacancyRef,
             DeleteCandidateCommand command,
             GetApplicationsApiResponse applicationsApiResponse,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] Mock<INotificationService> notificationService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
@@ -269,7 +271,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             long vacancyRef,
             DeleteCandidateCommand command,
             GetApplicationsApiResponse applicationsApiResponse,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] Mock<INotificationService> notificationService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
@@ -301,7 +303,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
             long vacancyRef,
             DeleteCandidateCommand command,
             GetApplicationsApiResponse applicationsApiResponse,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
             [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
             [Frozen] Mock<INotificationService> notificationService,
             [Frozen] Mock<IFindApprenticeshipApiClient<FindApprenticeshipApiConfiguration>> findApprenticeshipApiClient,
@@ -323,10 +325,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                     )))
                 .ReturnsAsync(applicationsApiResponse);
 
-            recruitApiClient
-                .Setup(x => x.PostWithResponseCode<NullResponse>(
-                    It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.InternalServerError, ""));
-
+            recruitApiV2Client.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.InternalServerError, null));
 
             var act = async () => { await handler.Handle(command, CancellationToken.None); };
             await act.Should().ThrowAsync<HttpRequestContentException>();
@@ -362,7 +362,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                GetCandidateApiResponse candidateApiResponse,
                EmailEnvironmentHelper emailEnvironmentHelper,
                GetClosedVacancyResponse closedVacancyResponse,
-               [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+               [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
                [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
                [Frozen] Mock<INotificationService> notificationService,
                [Frozen] Mock<IVacancyService> vacancyService,
@@ -403,10 +403,9 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .ReturnsAsync(candidateApiResponse);
 
             candidateApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
-            recruitApiClient
-                .Setup(x => x.PostWithResponseCode<NullResponse>(
-                    It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
-            
+            recruitApiV2Client.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, null));
+
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
             vacancyService.Setup(x => x.GetClosedVacancy($"VAC{vacancyRef}")).ReturnsAsync(closedVacancyResponse);
             vacancyService.Setup(x => x.GetVacancyWorkLocation(closedVacancyResponse, false)).Returns(expectedAddress);
@@ -424,12 +423,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                     (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Withdrawn
                 )), Times.AtLeastOnce);
 
-                recruitApiClient
-                    .Verify(x => x.PostWithResponseCode<NullResponse>(
-                        It.Is<PostWithdrawApplicationRequest>(c =>
-                            c.PostUrl.Contains(command.CandidateId.ToString())
-                            && c.PostUrl.Contains(vacancyRef.ToString())
-                        ), false), Times.Exactly(applicationsApiResponse.Applications.Count));
+                recruitApiV2Client.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+                    c.PatchUrl.Contains(application.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/WithdrawnDate" &&
+                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
+                )), Times.Once);
 
                 notificationService.Verify(x => x.Send(
                     It.Is<SendEmailCommand>(c =>
@@ -462,7 +460,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                GetCandidateApiResponse candidateApiResponse,
                EmailEnvironmentHelper emailEnvironmentHelper,
                GetClosedVacancyResponse closedVacancyResponse,
-               [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+               [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
                [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
                [Frozen] Mock<INotificationService> notificationService,
                [Frozen] Mock<IVacancyService> vacancyService,
@@ -499,9 +497,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .ReturnsAsync(candidateApiResponse);
 
             candidateApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
-            recruitApiClient
-                .Setup(x => x.PostWithResponseCode<NullResponse>(
-                    It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            recruitApiV2Client.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, null));
 
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
             vacancyService.Setup(x => x.GetClosedVacancy($"VAC{vacancyRef}")).ReturnsAsync(closedVacancyResponse);
@@ -520,12 +517,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                     (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Withdrawn
                 )), Times.AtLeastOnce);
 
-                recruitApiClient
-                    .Verify(x => x.PostWithResponseCode<NullResponse>(
-                        It.Is<PostWithdrawApplicationRequest>(c =>
-                            c.PostUrl.Contains(command.CandidateId.ToString())
-                            && c.PostUrl.Contains(vacancyRef.ToString())
-                        ), false), Times.Exactly(applicationsApiResponse.Applications.Count));
+                recruitApiV2Client.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+                    c.PatchUrl.Contains(application.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/WithdrawnDate" &&
+                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
+                )), Times.Once);
 
                 notificationService.Verify(x => x.Send(
                     It.Is<SendEmailCommand>(c =>
@@ -558,7 +554,7 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                GetCandidateApiResponse candidateApiResponse,
                EmailEnvironmentHelper emailEnvironmentHelper,
                GetClosedVacancyResponse closedVacancyResponse,
-               [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+               [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiV2Client,
                [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
                [Frozen] Mock<INotificationService> notificationService,
                [Frozen] Mock<IVacancyService> vacancyService,
@@ -602,9 +598,8 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                 .ReturnsAsync(candidateApiResponse);
 
             candidateApiClient.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchApplicationApiRequest>())).ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.Accepted, ""));
-            recruitApiClient
-                .Setup(x => x.PostWithResponseCode<NullResponse>(
-                    It.IsAny<PostWithdrawApplicationRequest>(), false)).ReturnsAsync(new ApiResponse<NullResponse>(new NullResponse(), HttpStatusCode.NoContent, ""));
+            recruitApiV2Client.Setup(x => x.PatchWithResponseCode(It.IsAny<PatchRecruitApplicationReviewApiRequest>()))
+                .ReturnsAsync(new ApiResponse<string>("", HttpStatusCode.OK, null));
 
             vacancyService.Setup(x => x.GetVacancy($"VAC{vacancyRef}")).ReturnsAsync((GetApprenticeshipVacancyItemResponse)null!);
             vacancyService.Setup(x => x.GetClosedVacancy($"VAC{vacancyRef}")).ReturnsAsync(closedVacancyResponse);
@@ -623,12 +618,11 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Commands
                     (ApplicationStatus)c.Data.Operations[0].value == ApplicationStatus.Withdrawn
                 )), Times.AtLeastOnce);
 
-                recruitApiClient
-                    .Verify(x => x.PostWithResponseCode<NullResponse>(
-                        It.Is<PostWithdrawApplicationRequest>(c =>
-                            c.PostUrl.Contains(command.CandidateId.ToString())
-                            && c.PostUrl.Contains(vacancyRef.ToString())
-                        ), false), Times.Exactly(applicationsApiResponse.Applications.Count));
+                recruitApiV2Client.Verify(x => x.PatchWithResponseCode(It.Is<PatchRecruitApplicationReviewApiRequest>(c =>
+                    c.PatchUrl.Contains(application.Id.ToString(), StringComparison.CurrentCultureIgnoreCase) &&
+                    c.Data.Operations[0].path == "/WithdrawnDate" &&
+                    DateTime.Parse(c.Data.Operations[0].value.ToString()!).Date == DateTime.UtcNow.Date
+                )), Times.Once);
 
                 notificationService.Verify(x => x.Send(
                     It.Is<SendEmailCommand>(c =>

@@ -6,11 +6,12 @@ using SFA.DAS.Vacancies.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Vacancies.Enums;
 using SFA.DAS.Vacancies.InnerApi.Responses;
 using SFA.DAS.Vacancies.Services;
@@ -57,7 +58,7 @@ namespace SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancies
                 request.PageNumber, request.PageSize, request.AccountLegalEntityPublicHashedId, request.EmployerName,
                 request.Ukprn, request.AccountPublicHashedId, request.StandardLarsCode, request.NationWideOnly, 
                 request.Lat, request.Lon, request.DistanceInMiles, request.Routes, request.PostedInLastNumberOfDays, request.AdditionalDataSources, request.Sort,
-                request.ExcludeNational));
+                request.ExcludeNational, request.OnlyPrimaryLocations, request.IncludeDetails));
             var standardsTask = courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
 
             await Task.WhenAll(vacanciesTask, standardsTask);

@@ -1,5 +1,6 @@
 ﻿using System;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
@@ -12,5 +13,5 @@ public class DeleteShortlistItemRequest : IDeleteApiRequest
         _id = id;
     }
 
-    public string DeleteUrl => $"api/shortlists/{_id}";
+    public string DeleteUrl => $"shortlists/{_id}";
 }

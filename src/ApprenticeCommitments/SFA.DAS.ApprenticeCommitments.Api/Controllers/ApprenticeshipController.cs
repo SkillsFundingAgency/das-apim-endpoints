@@ -5,9 +5,9 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.ApprenticeCommitments.Apis.CommitmentsV2InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using SFA.DAS.SharedOuterApi.Exceptions;
 using System;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.Exceptions;
 
 namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
 {
@@ -15,11 +15,12 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
     public class ApprenticeshipController : ControllerBase
     {
         private readonly ResponseReturningApiClient _client;
+        private readonly CommitmentsV2Service _commitmentsV2Service;
         private readonly IMediator _mediator;
         private readonly ILogger<ApprenticeshipController> _logger;
 
-        public ApprenticeshipController(ResponseReturningApiClient client, IMediator mediator, ILogger<ApprenticeshipController> logger)
-            => (_client, _mediator, _logger) = (client, mediator, logger);
+        public ApprenticeshipController(ResponseReturningApiClient client, CommitmentsV2Service commitmentsV2Service, IMediator mediator, ILogger<ApprenticeshipController> logger)
+            => (_client, _commitmentsV2Service, _mediator, _logger) = (client, commitmentsV2Service, mediator, logger);
 
         [HttpPost("/apprenticeships")]
         public async Task<IActionResult> CreateApprenticeship(CreateApprenticeshipFromRegistration.Command request)
@@ -62,7 +63,11 @@ namespace SFA.DAS.ApprenticeCommitments.Api.Controllers
         public Task<IActionResult> GetApprenticeshipRevisions(Guid apprenticeId, long apprenticeshipId)
             => _client.Get($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions");
 
-        [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}")]
+        [HttpGet("/commitments-apprenticeships/{apprenticeshipId}")]
+        public Task<ApprenticeshipResponse> GetCommitmentsApprenticeshipById(long apprenticeshipId)
+            =>  _commitmentsV2Service.GetApprenticeshipDetails(apprenticeshipId);
+
+        [HttpPatch("apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public Task PatchApprenticeship(Guid apprenticeId, long apprenticeshipId, [FromBody] JsonPatchDocument<ApprenticeshipResponse> changes)
             => _client.Patch($"apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}", changes);
     }

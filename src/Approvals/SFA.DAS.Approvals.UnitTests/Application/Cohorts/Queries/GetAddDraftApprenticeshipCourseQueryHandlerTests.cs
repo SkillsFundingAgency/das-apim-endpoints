@@ -2,20 +2,19 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetEditApprenticeshipCourse;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
@@ -43,12 +42,16 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetAccountLegalEntityResponse>(accountLegalEntity, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(provider.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(provider.ProviderId))
                 .ReturnsAsync(providerStandardsData);
+
+            var standardsData = providerStandardsData.Standards.Select(x =>
+                    new GetEditApprenticeshipCourseQueryResult.Standard
+                    { CourseCode = x.CourseCode, Name = x.Name });
 
             var result = await handler.Handle(query, CancellationToken.None);
 
-            result.Standards.ToList().Should().BeEquivalentTo(providerStandardsData.Standards.ToList());
+            result.Standards.ToList().Should().BeEquivalentTo(standardsData);
         }
 
         [Test, MoqAutoData]
@@ -71,7 +74,7 @@ namespace SFA.DAS.Approvals.UnitTests.Application.Cohorts
             apiClient.Setup(x => x.GetWithResponseCode<GetAccountLegalEntityResponse>(It.IsAny<GetAccountLegalEntityRequest>()))
                 .ReturnsAsync(() => new ApiResponse<GetAccountLegalEntityResponse>(accountLegalEntity, HttpStatusCode.OK, string.Empty));
 
-            providerStandardsService.Setup(x => x.GetStandardsData(provider.ProviderId))
+            providerStandardsService.Setup(x => x.GetCoursesData(provider.ProviderId))
                 .ReturnsAsync(providerStandardsData);
 
             var result = await handler.Handle(query, CancellationToken.None);

@@ -1,8 +1,4 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
-using SFA.DAS.Testing.AutoFixture;
+﻿using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using static SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetApplication.GetApplicationQueryResult;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.Candidate;

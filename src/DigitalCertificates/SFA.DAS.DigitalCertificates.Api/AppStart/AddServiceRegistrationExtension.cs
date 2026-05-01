@@ -1,11 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
-using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.DigitalCertificates.Api.AppStart
 {

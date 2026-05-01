@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
@@ -6,9 +6,9 @@ namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
     {
         public string GetUrl => $"providers/{Ukprn}/courses/{LarsCode}/locations";
         public int Ukprn { get; }
-        public int LarsCode { get; }
+        public string LarsCode { get; }
 
-        public GetProviderCourseLocationsRequest(int ukprn, int larsCode)
+        public GetProviderCourseLocationsRequest(int ukprn, string larsCode)
         {
             Ukprn = ukprn;
             LarsCode = larsCode;

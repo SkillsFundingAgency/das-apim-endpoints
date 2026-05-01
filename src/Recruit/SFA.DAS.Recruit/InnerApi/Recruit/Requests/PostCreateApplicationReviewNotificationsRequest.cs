@@ -1,0 +1,11 @@
+﻿using System;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests;
+
+public class PostCreateApplicationReviewNotificationsRequest(Guid applicationReviewId): IPostApiRequest
+{
+    public string PostUrl => $"api/applicationreviews/{applicationReviewId}/create-notifications";
+    public object Data { get; set; }
+}

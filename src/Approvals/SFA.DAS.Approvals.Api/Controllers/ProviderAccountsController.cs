@@ -37,6 +37,6 @@ namespace SFA.DAS.Approvals.Api.Controllers
             {
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
             }
-        }
+        }        
     }
 }

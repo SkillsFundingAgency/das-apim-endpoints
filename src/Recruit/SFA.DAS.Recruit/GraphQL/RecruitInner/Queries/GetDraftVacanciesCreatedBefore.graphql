@@ -1,0 +1,14 @@
+query GetDraftVacanciesCreatedBefore($createdDate: DateTime) {
+    vacancies (
+        where: {
+            status: { eq: DRAFT }
+            deletedDate:  { eq: null }
+            createdDate:  { lt: $createdDate }
+        }
+    ) {
+        id
+        vacancyReference
+        status
+        closingDate
+    }
+}

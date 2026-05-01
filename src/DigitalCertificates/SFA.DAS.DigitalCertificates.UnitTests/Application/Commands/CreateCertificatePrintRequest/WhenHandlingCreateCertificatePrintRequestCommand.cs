@@ -6,14 +6,15 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrintRequest;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateCertificatePrintRequest

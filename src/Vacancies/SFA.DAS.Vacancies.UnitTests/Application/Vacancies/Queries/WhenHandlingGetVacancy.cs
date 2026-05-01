@@ -3,9 +3,11 @@ using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
 using SFA.DAS.Vacancies.Configuration;
@@ -53,8 +55,11 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
             actual.Vacancy.CourseTitle.Should().Be(courseResponse.Title);
             actual.Vacancy.Route.Should().Be(courseResponse.Route);
         }
-        [Test, MoqAutoData]
-        public async Task Then_The_Vacancy_Url_Is_Correct_For_Nhs_Vacancy(
+        
+        [Test]
+        [MoqInlineAutoData(DataSource.Nhs)]
+        [MoqInlineAutoData(DataSource.Csj)]
+        public async Task Then_The_Vacancy_Url_Is_Correct_For_Non_Raa_Vacancy(DataSource dataSource,
             Guid vacancyReference,
             GetVacancyQuery query,
             GetVacancyApiResponse vacancyApiResponse,
@@ -68,7 +73,7 @@ namespace SFA.DAS.Vacancies.UnitTests.Application.Vacancies.Queries
         {
             vacanciesConfiguration.Object.Value.FindAnApprenticeshipBaseUrl = findAnApprenticeshipBaseUrl;
             courseResponse.LarsCode = vacancyApiResponse.StandardLarsCode!.Value;
-            vacancyApiResponse.VacancySource = DataSource.Nhs;
+            vacancyApiResponse.VacancySource = dataSource;
             vacancyApiResponse.VacancyReference = vacancyReference.ToString();
             standardsService.Setup(x => x.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse))).ReturnsAsync(new GetStandardsListResponse
                 { Standards = new List<GetStandardsListItem> { courseResponse } });

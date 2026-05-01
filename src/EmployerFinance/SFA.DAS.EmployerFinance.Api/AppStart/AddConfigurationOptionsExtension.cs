@@ -2,7 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.EmployerFinance.Api.AppStart
 {
@@ -21,8 +22,6 @@ namespace SFA.DAS.EmployerFinance.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<LevyTransferMatchingApiConfiguration>>().Value);
             services.Configure<AzureActiveDirectoryConfiguration>(configuration.GetSection("AzureAd"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AzureActiveDirectoryConfiguration>>().Value);
-            services.Configure<ForecastingApiConfiguration>(configuration.GetSection(nameof(ForecastingApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ForecastingApiConfiguration>>().Value);
             services.Configure<EmployerProfilesApiConfiguration>(configuration.GetSection(nameof(EmployerProfilesApiConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<EmployerProfilesApiConfiguration>>().Value);
             services.Configure<FinanceApiConfiguration>(configuration.GetSection(nameof(FinanceApiConfiguration)));

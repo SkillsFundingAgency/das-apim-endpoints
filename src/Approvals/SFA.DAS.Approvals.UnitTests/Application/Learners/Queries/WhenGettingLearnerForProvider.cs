@@ -1,15 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.Learners.Queries;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.Learners.Queries;
 

@@ -1,5 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.Http.Headers;
+using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,13 +13,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.Recruit.Api.AppStart;
-using SFA.DAS.Recruit.Jobs.Api.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.RecruitJobs.Api.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-namespace SFA.DAS.Recruit.Jobs.Api;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
+namespace SFA.DAS.RecruitJobs.Api;
+
+[ExcludeFromCodeCoverage]
 public static class Startup
 {
     public static void ConfigureServices(
@@ -40,8 +46,12 @@ public static class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        //services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetTrainingProgrammesQuery).Assembly));
-        services.AddServiceRegistration(configuration);
+        services.AddSingleton(new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            PropertyNameCaseInsensitive = true,
+        });
+        services.AddServiceRegistration();
 
         services.Configure<RouteOptions>(options =>
             {
@@ -66,6 +76,30 @@ public static class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecruitJobsOuterApi", Version = "v1" });
         });
+
+        services
+            .AddRecruitGqlClient()
+            .ConfigureHttpClient((sp, x) =>
+            {
+                var clientConfig = sp.GetService<RecruitApiConfiguration>();
+                x.BaseAddress = new Uri($"{clientConfig.Url.TrimEnd('/')}/graphql");
+
+                if (configuration.IsLocalOrDev())
+                {
+                    return;
+                }
+
+                var correlationId = CorrelationContext.CorrelationId;
+                if (!string.IsNullOrWhiteSpace(correlationId))
+                {
+                    x.DefaultRequestHeaders.Remove("x-correlation-id");
+                    x.DefaultRequestHeaders.Add("x-correlation-id", correlationId);
+                }
+
+                var credentialHelper = sp.GetService<IAzureClientCredentialHelper>();
+                var token = credentialHelper.GetAccessTokenAsync(clientConfig.Identifier).Result;
+                x.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            });
     }
     
     public static void ConfigureApp(IApplicationBuilder app, IConfigurationRoot configuration)

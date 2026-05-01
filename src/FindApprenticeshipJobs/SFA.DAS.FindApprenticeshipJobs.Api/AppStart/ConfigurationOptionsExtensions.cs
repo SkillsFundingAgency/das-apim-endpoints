@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.AppStart;
 
@@ -24,6 +25,10 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<CandidateApiConfiguration>>().Value);
         services.Configure<FindApprenticeshipApiConfiguration>(configuration.GetSection(nameof(FindApprenticeshipApiConfiguration)));
         services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipApiConfiguration>>().Value);
+        services.Configure<CivilServiceJobsApiConfiguration>(configuration.GetSection(nameof(CivilServiceJobsApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CivilServiceJobsApiConfiguration>>()!.Value);
         services.AddSingleton(new NhsJobsConfiguration());
+        services.Configure<RecruitApiV2Configuration>(configuration.GetSection("RecruitAltApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiV2Configuration>>()!.Value);
     }
 }

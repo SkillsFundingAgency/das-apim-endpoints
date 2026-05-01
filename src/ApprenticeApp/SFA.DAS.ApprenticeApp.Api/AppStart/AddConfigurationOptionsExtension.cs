@@ -3,7 +3,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Apim.Shared.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.ApprenticeApp.Api.AppStart
 {
@@ -20,12 +22,14 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.Configure<TrainingProviderConfiguration>(configuration.GetSection("TrainingProviderApi"));
             services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection("CommitmentsV2InnerApi"));
             services.Configure<CoursesApiConfiguration>(configuration.GetSection("CoursesApi"));
+            services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection("RoatpV2ApiConfiguration"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeProgressApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CommitmentsV2ApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
 
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);

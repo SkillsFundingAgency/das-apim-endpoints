@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+	<TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+		<PackageReference Include="SFA.DAS.CollectionCalendar.Contracts" Version="0.1.24-prerelease-5" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+	</ItemGroup>
+	
+  <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Learning\SFA.DAS.Learning.csproj" />
+  </ItemGroup>
+
+</Project>

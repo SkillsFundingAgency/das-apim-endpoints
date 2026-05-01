@@ -1,0 +1,68 @@
+using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Shared;
+using OnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
+
+namespace SFA.DAS.LearnerData.Services.ShortCourses
+{
+    public interface ICreateDraftShortCoursePostRequestBuilder
+    {
+        Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn);
+    }
+
+    public class CreateDraftShortCoursePostRequestBuilder(
+        ILogger<CreateDraftShortCoursePostRequestBuilder> logger,
+        IShortCourseLookupService shortCourseLookupService) : ICreateDraftShortCoursePostRequestBuilder
+    {
+        public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn)
+        {
+            if (request.Delivery.OnProgramme.Count > 1)
+            {
+                logger.LogWarning("Multiple OnProgramme elements supplied for ShortCourse. Element with earliest StartDate will be processed; subsequent will be ignored");
+            }
+
+            var firstOnProg = request.Delivery.OnProgramme.MinBy(x => x.StartDate);
+
+            var milestones = firstOnProg.Milestones
+                .Select(m =>
+                {
+                    if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
+                    throw new InvalidOperationException($"Invalid milestone value: {m}");
+                })
+                .ToList();
+
+            if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
+                milestones.Add(Milestone.LearningComplete);
+
+            var courseDetails = await shortCourseLookupService.GetCourseDetails(firstOnProg.CourseCode, firstOnProg.StartDate);
+
+            return new CreateDraftShortCourseRequest
+            {
+                LearnerUpdateDetails = new ShortCourseLearningUpdateDetails
+                {
+                    Uln = request.Learner.Uln,
+                    FirstName = request.Learner.FirstName,
+                    LastName = request.Learner.LastName,
+                    DateOfBirth = request.Learner.Dob,
+                    EmailAddress = request.Learner.Email,
+                    LearnerRef = request.Learner.LearnerRef
+                },
+                LearningSupport = firstOnProg.LearningSupport,
+                OnProgramme = new SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme
+                {
+                    CourseCode = firstOnProg.CourseCode,
+                    Ukprn = ukprn,
+                    StartDate = firstOnProg.StartDate,
+                    ExpectedEndDate = firstOnProg.ExpectedEndDate,
+                    CompletionDate = firstOnProg.CompletionDate,
+                    WithdrawalDate = firstOnProg.WithdrawalDate,
+                    Milestones = milestones,
+                    Price = courseDetails.Price,
+                    LearningType = courseDetails.LearningType
+                }
+            };
+        }
+    }
+}

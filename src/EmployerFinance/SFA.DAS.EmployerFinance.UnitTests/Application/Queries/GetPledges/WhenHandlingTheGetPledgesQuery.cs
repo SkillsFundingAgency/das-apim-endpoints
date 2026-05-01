@@ -1,20 +1,14 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetPledges;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
+﻿using SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetPledges;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetPledges
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+
+namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetPledges;
+
+public class WhenHandlingTheGetPledgesQuery
 {
-    public class WhenHandlingTheGetPledgesQuery
-    {
         [Test, MoqAutoData]
         public async Task And_AccountId_Specified_Then_Pledges_Returned(
             long accountId,
@@ -34,7 +28,6 @@ namespace SFA.DAS.EmployerFinance.UnitTests.Application.Queries.GetPledges
             var results = await getPledgesQueryHandler.Handle(getPledgesQuery, CancellationToken.None);
 
             results.Pledges.Should().BeEquivalentTo(getPledgesResponse.Pledges);
-            Assert.That(getPledgesResponse.TotalPledges, Is.EqualTo(results.TotalPledges));
+            results.TotalPledges.Should().Be(getPledgesResponse.TotalPledges);
         }
-    }
 }

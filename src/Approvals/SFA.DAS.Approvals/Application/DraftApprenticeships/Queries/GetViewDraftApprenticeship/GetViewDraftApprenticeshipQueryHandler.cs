@@ -4,9 +4,11 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraftApprenticeship
 {
@@ -48,6 +50,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraf
                 TrainingCourseOption = apprenticeship.TrainingCourseOption,
                 TrainingCourseVersionConfirmed = apprenticeship.TrainingCourseVersionConfirmed,
                 StandardUId = apprenticeship.StandardUId,
+                TrainingPrice = apprenticeship.TrainingPrice,
+                EndPointAssessmentPrice = apprenticeship.EndPointAssessmentPrice,
                 Cost = apprenticeship.Cost,
                 StartDate = apprenticeship.StartDate,
                 ActualStartDate = apprenticeship.ActualStartDate,
@@ -72,7 +76,7 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetViewDraf
                 EmailAddressConfirmed = apprenticeship.EmailAddressConfirmed,
                 DurationReducedByHours = apprenticeship.DurationReducedByHours,
                 IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl,
-                TrainingTotalHours = apprenticeship.TrainingTotalHours,
+                TrainingTotalHours = apprenticeship.TrainingTotalHours
             };
         }
     }

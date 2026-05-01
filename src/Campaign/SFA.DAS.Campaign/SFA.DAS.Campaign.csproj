@@ -1,15 +1,27 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+      <Compile Remove="Application\Commands\**" />
+      <EmbeddedResource Remove="Application\Commands\**" />
+      <None Remove="Application\Commands\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="MediatR"  />
+      <Compile Remove="InnerApi\Requests\PostRegisterInterestRequest.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="MediatR" />
+      <PackageReference Include="RestEase" />
+      <PackageReference Include="RestEase.HttpClientFactory" />
     </ItemGroup>
 
 </Project>

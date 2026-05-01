@@ -1,12 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MediatR" />
-        <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" />
+        <PackageReference Include="MediatR" />        
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
@@ -23,7 +22,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\SFA.DAS.ApprenticeCommitments\SFA.DAS.ApprenticeCommitments.csproj" />
-      <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
       <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth\SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.csproj">
         <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
       </ProjectReference>

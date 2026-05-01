@@ -2,7 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Apim.Shared.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 {
@@ -35,9 +37,6 @@ namespace SFA.DAS.LevyTransferMatching.Api.AppStart
 
             services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
-
-            services.Configure<ForecastingApiConfiguration>(configuration.GetSection(nameof(ForecastingApiConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<ForecastingApiConfiguration>>().Value);
         }
     }
 }

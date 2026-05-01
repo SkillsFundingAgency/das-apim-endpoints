@@ -4,17 +4,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using Moq;
+using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
-using Moq;
-using NUnit.Framework;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries
 {

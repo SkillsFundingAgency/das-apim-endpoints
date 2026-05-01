@@ -1,0 +1,345 @@
+using AutoFixture;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Shared;
+
+namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
+
+[TestFixture]
+public class LearningSupportServiceTests
+{
+    [Test]
+    public void With_LearningSupport_Pre_And_Post_Break_Then_Learning_Is_Updated_With_Merged_LSF()
+    {
+        // Arrange
+        var testData = new TestData(hasOnProgrammeBreaks: true);
+
+        var lsf1 = new LearningSupport
+        {
+            StartDate = testData.FirstOnProgramme.StartDate,
+            EndDate = testData.FirstOnProgramme.PauseDate!.Value
+        };
+
+        var lsf2 = new LearningSupport
+        {
+            StartDate = testData.LatestOnProgramme.StartDate,
+            EndDate = testData.LatestOnProgramme.ExpectedEndDate
+        };
+
+        testData.FirstOnProgramme.LearningSupport.Add(lsf1);
+        testData.LatestOnProgramme.LearningSupport.Add(lsf2);
+
+        var sut = new LearningSupportService();
+
+        // Act
+        var actual = sut.GetCombinedLearningSupport(testData.OnProgrammes,
+            testData.OnProgrammeEndDate,
+            testData.OnProgrammeBreaksInLearning,
+            testData.EnglishAndMathsCourses,
+            testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
+
+        // Assert
+        actual.Count.Should().Be(2);
+        actual.First().Should().BeEquivalentTo(lsf1);
+        actual.Skip(1).First().Should().BeEquivalentTo(lsf2);
+    }
+
+    [Test]
+    public void With_LearningSupport_Overhanging_Start_Of_Break_Then_LSF_Is_Truncated()
+    {
+        // Arrange
+        var testData = new TestData(hasOnProgrammeBreaks: true);
+
+        var lsf1 = new LearningSupport
+        {
+            StartDate = testData.FirstOnProgramme.StartDate,
+            EndDate = testData.FirstOnProgramme.PauseDate!.Value.AddMonths(1)
+        };
+        testData.FirstOnProgramme.LearningSupport.Add(lsf1);
+
+        var sut = new LearningSupportService();
+
+        // Act
+        var actual = sut.GetCombinedLearningSupport(
+            testData.OnProgrammes,
+            testData.OnProgrammeEndDate,
+            testData.OnProgrammeBreaksInLearning,
+            testData.EnglishAndMathsCourses,
+            testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
+
+        // Assert
+        var expected = new LearningSupport
+        {
+            StartDate = testData.FirstOnProgramme.StartDate,
+            EndDate = testData.FirstOnProgramme.PauseDate.Value
+        };
+
+        actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void With_LearningSupport_Overhanging_End_Of_Break_Then_LSF_Is_Truncated()
+    {
+        // Arrange
+        var testData = new TestData(hasOnProgrammeBreaks: true);
+
+        var lsf1 = new LearningSupport
+        {
+            StartDate = testData.LatestOnProgramme.StartDate.AddMonths(-1),
+            EndDate = testData.LatestOnProgramme.ExpectedEndDate
+        };
+        testData.LatestOnProgramme.LearningSupport.Add(lsf1);
+
+        var sut = new LearningSupportService();
+
+        // Act
+        var actual = sut.GetCombinedLearningSupport(
+            testData.OnProgrammes,
+            testData.OnProgrammeEndDate,
+            testData.OnProgrammeBreaksInLearning,
+            testData.EnglishAndMathsCourses,
+            testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
+
+        // Assert
+        var expected = new LearningSupport
+        {
+            StartDate = testData.LatestOnProgramme.StartDate,
+            EndDate = testData.LatestOnProgramme.ExpectedEndDate
+        };
+
+        actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void With_LearningSupport_Containing_Break_Then_LSF_Is_Split()
+    {
+        // Arrange
+        var testData = new TestData(hasOnProgrammeBreaks: true);
+
+        var lsf1 = new LearningSupport
+        {
+            StartDate = testData.FirstOnProgramme.StartDate,
+            EndDate = testData.LatestOnProgramme.ExpectedEndDate
+        };
+        testData.FirstOnProgramme.LearningSupport.Add(lsf1);
+
+        var sut = new LearningSupportService();
+
+        // Act
+        var actual = sut.GetCombinedLearningSupport(
+            testData.OnProgrammes,
+            testData.OnProgrammeEndDate,
+            testData.OnProgrammeBreaksInLearning,
+            testData.EnglishAndMathsCourses,
+            testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
+
+        // Assert
+        var expected = new[]
+        {
+            new LearningSupport { StartDate = testData.FirstOnProgramme.StartDate, EndDate = testData.FirstOnProgramme.PauseDate.Value },
+            new LearningSupport { StartDate = testData.LatestOnProgramme.StartDate, EndDate = testData.LatestOnProgramme.ExpectedEndDate }
+        };
+
+        actual.Should().BeEquivalentTo(expected, opts => opts.WithoutStrictOrdering());
+    }
+
+    [Test]
+    public void With_EnglishAndMaths_LearningSupport_Overhanging_Start_Of_Break_Then_LSF_Is_Truncated()
+    {
+        // Arrange
+        var testData = new TestData();
+        var pauseDate = testData.FirstMathsAndEnglishDetails.StartDate.AddMonths(6);
+        testData.FirstMathsAndEnglishDetails.PauseDate = pauseDate;
+
+        var lsf1 = new LearningSupport
+        {
+            StartDate = testData.FirstMathsAndEnglishDetails.StartDate,
+            EndDate = pauseDate
+        };
+
+        testData.AddEnglishAndMathsLearningSupport(testData.FirstMathsAndEnglishDetails.LearnAimRef, lsf1);
+
+        var sut = new LearningSupportService();
+
+        // Act
+        var actual = sut.GetCombinedLearningSupport(
+            testData.OnProgrammes,
+            testData.OnProgrammeEndDate,
+            testData.OnProgrammeBreaksInLearning,
+            testData.EnglishAndMathsCourses,
+            testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
+
+        // Assert
+        var expected = new LearningSupport
+        {
+            StartDate = lsf1.StartDate,
+            EndDate = pauseDate
+        };
+
+        actual.Should().ContainSingle().Which.Should().BeEquivalentTo(expected);
+    }
+
+    [Test]
+    public void With_EnglishAndMaths_LearningSupport_With_Breaks_Then_LSF_Is_Split()
+    {
+        var testData = new TestData(hasEnglishAndMathsBreaks: true);
+        var lsf1 = new LearningSupport
+        {
+            StartDate = testData.FirstMathsAndEnglishDetails.StartDate,
+            EndDate = testData.LatestMathsAndEnglishDetails.PlannedEndDate
+        };
+
+        testData.AddEnglishAndMathsLearningSupport(testData.FirstMathsAndEnglishDetails.LearnAimRef, lsf1);
+
+        var sut = new LearningSupportService();
+
+        // Act
+        var actual = sut.GetCombinedLearningSupport(
+            testData.OnProgrammes,
+            testData.OnProgrammeEndDate,
+            testData.OnProgrammeBreaksInLearning,
+            testData.EnglishAndMathsCourses,
+            testData.EnglishAndMathsRequestedLearningSupportByLearnAimRef);
+        
+        // Assert
+        var expected = new List<LearningSupport>
+        {
+            new LearningSupport{
+                StartDate = lsf1.StartDate,
+                EndDate = testData.EnglishAndMathsPauseDate!.Value
+            },
+            new LearningSupport{
+                StartDate = testData.EnglishAndMathsResumeDate!.Value,
+                EndDate = lsf1.EndDate
+            }
+        };
+
+        actual.Should().BeEquivalentTo(expected);
+    }
+
+    private class TestData
+    {
+        internal OnProgrammeRequestDetails FirstOnProgramme { get; set; }
+        internal OnProgrammeRequestDetails LatestOnProgramme { get; set; }
+        internal List<OnProgrammeRequestDetails> OnProgrammes { get; set; } = new List<OnProgrammeRequestDetails>();
+        internal DateTime OnProgrammeEndDate { get; set; }
+        internal List<BreakInLearning> OnProgrammeBreaksInLearning { get; set; } = new List<BreakInLearning>();
+
+        internal MathsAndEnglishDetails FirstMathsAndEnglishDetails { get; set; }
+        internal MathsAndEnglishDetails LatestMathsAndEnglishDetails { get; set; }
+        
+        internal DateTime? EnglishAndMathsPauseDate { get; set; }
+        internal DateTime? EnglishAndMathsResumeDate { get; set; }
+
+        internal List<MathsAndEnglishDetails> EnglishAndMathsCourses { get; set; } = new List<MathsAndEnglishDetails>();
+        private List<KeyValuePair<string, List<LearningSupport>>> _englishAndMathsRequestedLearningSupport = new List<KeyValuePair<string, List<LearningSupport>>>();
+        internal IEnumerable<KeyValuePair<string, List<LearningSupport>>> EnglishAndMathsRequestedLearningSupportByLearnAimRef => _englishAndMathsRequestedLearningSupport;
+
+        internal TestData(bool hasOnProgrammeBreaks = false, bool hasEnglishAndMathsBreaks = false)
+        {
+            var fixture = new Fixture();
+            var startDate = fixture.Create<DateTime>();
+
+            // On Programme setup
+            if (hasOnProgrammeBreaks)
+            {
+                OnProgrammeSetupWithBreaks(startDate);
+            }
+            else
+            {
+                OnProgrammes.Add(new OnProgrammeRequestDetails
+                {
+                    StartDate = startDate,
+                    ExpectedEndDate = startDate.AddYears(2),
+                    LearningSupport = []
+                });
+            }
+
+            FirstOnProgramme = OnProgrammes.OrderBy(x => x.StartDate).First();
+            LatestOnProgramme = OnProgrammes.OrderBy(x => x.StartDate).Last();
+
+            var latestOnProgramme = LatestOnProgramme;
+            OnProgrammeEndDate = new[]
+            {
+                latestOnProgramme.ExpectedEndDate,
+                latestOnProgramme.CompletionDate ?? DateTime.MaxValue,
+                latestOnProgramme.WithdrawalDate ?? DateTime.MaxValue,
+                latestOnProgramme.PauseDate ?? DateTime.MaxValue
+            }.Min();
+
+            // English and Maths setup
+            var learnAimRef = fixture.Create<string>();
+
+            if (hasEnglishAndMathsBreaks)
+            {
+                EnglishAndMathsSetupWithBreaks(startDate, learnAimRef);
+            }
+            else
+            {
+                EnglishAndMathsCourses.Add(new MathsAndEnglishDetails
+                {
+                    StartDate = startDate,
+                    PlannedEndDate = startDate.AddYears(2),
+                    LearnAimRef = learnAimRef,
+                    BreaksInLearning = []
+                });
+            }
+
+            FirstMathsAndEnglishDetails = EnglishAndMathsCourses.OrderBy(x => x.StartDate).First();
+            LatestMathsAndEnglishDetails = EnglishAndMathsCourses.OrderBy(x => x.StartDate).Last();
+        }
+
+        internal void AddEnglishAndMathsLearningSupport(string learnAimRef, LearningSupport lsf)
+        {
+            _englishAndMathsRequestedLearningSupport.Add(new KeyValuePair<string, List<LearningSupport>>(learnAimRef, new List<LearningSupport> { lsf }));
+        }
+
+        private void EnglishAndMathsSetupWithBreaks(DateTime startDate, string learnAimRef)
+        {
+            EnglishAndMathsPauseDate = startDate.AddMonths(6);
+            EnglishAndMathsResumeDate = EnglishAndMathsPauseDate.Value.AddMonths(6);
+
+            EnglishAndMathsCourses.Add(new MathsAndEnglishDetails
+            {
+                StartDate = startDate,
+                PlannedEndDate = startDate.AddYears(2),
+                LearnAimRef = learnAimRef,
+                BreaksInLearning = [new BreakInLearning
+                {
+                    StartDate = EnglishAndMathsPauseDate!.Value.AddDays(1),
+                    EndDate = EnglishAndMathsResumeDate!.Value.AddDays(-1)
+                }]
+            });
+
+        }
+
+        private void OnProgrammeSetupWithBreaks(DateTime startDate)
+        {
+            var pauseDate = startDate.AddMonths(6);
+            var resumeDate = pauseDate.AddMonths(6);
+
+            OnProgrammes.Add(new OnProgrammeRequestDetails
+            {
+                StartDate = startDate,
+                ExpectedEndDate = startDate.AddYears(2),
+                PauseDate = pauseDate,
+                LearningSupport = []
+            });
+
+            OnProgrammes.Add(new OnProgrammeRequestDetails
+            {
+                StartDate = resumeDate,
+                ExpectedEndDate = resumeDate.AddYears(2),
+                LearningSupport = []
+            });
+
+            OnProgrammeBreaksInLearning.Add(new BreakInLearning
+            {
+                StartDate = pauseDate.AddDays(1),
+                EndDate = resumeDate.AddDays(-1)
+            });
+        }
+    }
+}
+

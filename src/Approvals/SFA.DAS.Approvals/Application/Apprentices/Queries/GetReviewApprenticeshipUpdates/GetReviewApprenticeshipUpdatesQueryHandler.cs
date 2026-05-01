@@ -10,11 +10,14 @@ using SFA.DAS.Approvals.InnerApi;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates
@@ -22,12 +25,12 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprentices
     public class GetReviewApprenticeshipUpdatesQueryHandler : IRequestHandler<GetReviewApprenticeshipUpdatesQuery, GetReviewApprenticeshipUpdatesQueryResult>
     {
         private readonly ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> _apiClient;
-        private readonly IProviderStandardsService _providerStandardsService;
+        private readonly IProviderCoursesOrStandardsService _providerStandardsService;
         private readonly ServiceParameters _serviceParameters;
 
         public GetReviewApprenticeshipUpdatesQueryHandler(
             ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration> apiClient,
-            IProviderStandardsService providerStandardsService,
+            IProviderCoursesOrStandardsService providerStandardsService,
             ServiceParameters serviceParameters)
         {
             _apiClient = apiClient;
@@ -120,7 +123,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprentices
 
                 if (!string.IsNullOrWhiteSpace(update.TrainingCode))
                 {
-                    var providerStandardsData = await _providerStandardsService.GetStandardsData(apprenticeship.ProviderId);
+                    var providerStandardsData = await _providerStandardsService.GetCoursesData(apprenticeship.ProviderId);
 
                     var standard = providerStandardsData.Standards.FirstOrDefault(x => x.CourseCode.Trim() == update.TrainingCode.Trim());
 

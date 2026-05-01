@@ -1,17 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.DigitalCertificates.Models;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using User = SFA.DAS.DigitalCertificates.InnerApi.Responses.User;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
 {

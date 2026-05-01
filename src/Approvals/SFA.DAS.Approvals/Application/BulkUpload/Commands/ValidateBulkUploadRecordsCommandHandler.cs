@@ -7,8 +7,9 @@ using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.BulkUpload.Commands;
 
@@ -41,7 +42,7 @@ public class ValidateBulkUploadRecordsCommandHandler(
             await reservationApiClient.PostWithResponseCode<BulkReservationValidationResults>(
                 new PostValidateReservationRequest(command.ProviderId, reservationRequests));
 
-        var providerStandardResults = await providerStandardsService.GetStandardsData(command.ProviderId);
+        var providerStandardResults = await providerStandardsService.GetCoursesData(command.ProviderId);
 
         var uniqueCourseCodes = command.CsvRecords.Select(r => r.CourseCode).Distinct();
         var otjTrainingHours = await bulkCourseMetadataService.GetOtjTrainingHoursForBulkUploadAsync(uniqueCourseCodes);

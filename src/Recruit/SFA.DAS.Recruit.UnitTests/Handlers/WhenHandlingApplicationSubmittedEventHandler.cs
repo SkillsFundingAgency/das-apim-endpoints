@@ -5,12 +5,13 @@ using SFA.DAS.Recruit.Events;
 using SFA.DAS.Recruit.Handlers;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using InnerResponses = SFA.DAS.Recruit.InnerApi.Recruit.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Recruit.Domain;
 using System;
 using System.Linq;
-using System.Threading;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.UnitTests.Handlers;

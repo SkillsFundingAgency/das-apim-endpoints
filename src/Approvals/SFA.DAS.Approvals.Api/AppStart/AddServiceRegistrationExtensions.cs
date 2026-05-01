@@ -1,15 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Approvals.Api.Clients;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.Approvals.Api.AppStart;
 
@@ -55,18 +57,29 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ICourseTypesApiClient, CourseTypesApiClient>();
         AddCommitmentApiInternalClient(services, configuration);
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
+        services.AddTransient<IEmploymentCheckApiClient<EmploymentCheckConfiguration>, EmploymentCheckApiClient>();
         services.AddTransient<IReservationApiClient<ReservationApiConfiguration>, ReservationApiClient>();
         services.AddTransient<IFinanceApiClient<FinanceApiConfiguration>, FinanceApiClient>();
         services.AddTransient<IDeliveryModelService, DeliveryModelService>();
         services.AddTransient<IFjaaService, FjaaService>();
         services.AddTransient<ITrainingProviderService, TrainingProviderService>();
-        services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         services.AddTransient<IEmployerAccountsService, EmployerAccountsService>();
         services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IAutoReservationsService, AutoReservationsService>();
-        services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
+
+        if (configuration.GetValue<bool>("UseNewCoursesApi") == true)
+        {
+            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesServiceWithCourses>();
+            services.AddTransient<IProviderCoursesOrStandardsService, ProviderCoursesService>();
+        }
+        else
+        {
+            services.AddTransient<ICourseTypeRulesService, CourseTypeRulesService>();
+            services.AddTransient<IProviderCoursesOrStandardsService, ProviderStandardsService>();
+        }
+        services.AddTransient<IProviderStandardsService, ProviderStandardsService>();
         services.AddTransient<IBulkCourseMetadataService, BulkCourseMetadataService>();
         services.AddSingleton<IMapLearnerRecords, MapLearnerRecords>();
         services.AddTransient<IAddCourseTypeDataToCsvService, AddCourseTypeDataToCsvService>();

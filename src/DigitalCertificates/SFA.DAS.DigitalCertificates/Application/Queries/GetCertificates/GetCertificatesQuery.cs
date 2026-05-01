@@ -1,5 +1,5 @@
-﻿using MediatR;
-using System;
+﻿using System;
+using MediatR;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates
 {

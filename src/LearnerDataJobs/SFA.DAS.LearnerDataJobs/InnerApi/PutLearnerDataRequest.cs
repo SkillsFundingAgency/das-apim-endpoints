@@ -1,9 +1,9 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LearnerDataJobs.InnerApi;
 
-public class PutLearnerDataRequest(long providerId, long uln, int academicYear, int standardCode, LearnerDataRequest data) : IPutApiRequest
+public class PutLearnerDataRequest(long providerId, long uln, LearnerDataRequest data) : IPutApiRequest
 {
-    public string PutUrl => $"providers/{providerId}/learners/{uln}/academicyears/{academicYear}/standardcodes/{standardCode}";
+    public string PutUrl => $"providers/{providerId}/learners/{uln}";
     public object Data { get; set; } = data;
 }

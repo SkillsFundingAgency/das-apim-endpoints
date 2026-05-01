@@ -7,6 +7,6 @@ namespace SFA.DAS.DigitalCertificates.Configuration
     public class DigitalCertificatesConfiguration
     {
         public List<NotificationTemplate> NotificationTemplates { get; set; }
-        public double MinMatch { get; set; }
+        public double LocationsApiMinMatch { get; set; }
     }
 }

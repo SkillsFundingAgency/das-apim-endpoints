@@ -1,11 +1,11 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 public class GetLiveVacanciesApiRequest : IGetApiRequest
 {
     public GetLiveVacanciesApiRequest(int? pageNumber, int? pageSize, DateTime? closingDate)
     {
-        var getUrl = $"api/livevacancies?pageSize={pageSize}&pageNo={pageNumber}";
+        var getUrl = $"api/vacancies/live?pageSize={pageSize}&page={pageNumber}";
 
         if (closingDate != null)
         {

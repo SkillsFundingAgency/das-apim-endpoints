@@ -1,32 +1,29 @@
 parameters:
-  OuterApiName:
+  OuterApiName: ''
   SandboxEnabled: $False
   AddXForwardedAuthorization: $False
   CheckClientCert: $False
   MandateCheckClientCert: $False
-  SharedOuterApiProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi/SFA.DAS.SharedOuterApi.csproj'
-  SharedOuterApiTestProjectPathToInclude: 'src/Shared/SFA.DAS.SharedOuterApi.UnitTests/SFA.DAS.SharedOuterApi.UnitTests.csproj'
   AdditionalProjectPathToInclude: ''
   AdditionalTestProjectPathToInclude: ''
   ConfigurationSecrets: {}
   useProductAppInsights: ''
   AzureArtifactsFeed: ''
+  RunTests: ''
 
 stages:
 - stage: Build
   jobs:
   - template: ../../pipeline-templates/job/code-build.yml
     parameters:
+      OuterApiName: ${{ parameters.OuterApiName }}
       SonarCloudProjectKey: SkillsFundingAgency_das-apim-endpoints_${{ parameters.OuterApiName }}
       TargetProjects: |
         src/${{ parameters.OuterApiName }}/**/*.csproj
-        ${{ parameters.SharedOuterApiProjectPathToInclude }}
-        ${{ parameters.SharedOuterApiTestProjectPathToInclude }}
         ${{ parameters.AdditionalProjectPathToInclude }}
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       UnitTestProjects: |
         src/${{ parameters.OuterApiName }}/**/*UnitTests.csproj
-        ${{ parameters.SharedOuterApiTestProjectPathToInclude }}
         ${{ parameters.AdditionalTestProjectPathToInclude }}
       AcceptanceTestProjects: 'src/${{ parameters.OuterApiName }}/**/*AcceptanceTests.csproj'
       PublishProject: 'src/${{ parameters.OuterApiName }}/SFA.DAS.${{ parameters.OuterApiName }}.Api/SFA.DAS.${{ parameters.OuterApiName }}.Api.csproj'
@@ -66,6 +63,20 @@ stages:
       useProductAppInsights: ${{ parameters.useProductAppInsights }}
       CheckClientCert: ${{ parameters.CheckClientCert }}
       MandateCheckClientCert: ${{ parameters.MandateCheckClientCert }}
+
+- ${{ if eq(parameters.RunTests, 'True') }}:
+  - stage: Run_Tests_AT
+    dependsOn: Deploy_AT
+    displayName: Run Integration tests
+    variables:
+    - group: DevTest Management Resources
+    - group: AT DevTest Shared Resources
+    - group: AT das-apim-endpoints
+    jobs:
+    - template: ../../pipeline-templates/job/integration-tests.yml
+      parameters:
+        OuterApiName: ${{ parameters.OuterApiName }}
+        ServiceConnection: SFA-DAS-DevTest-ARM
 
 - stage: Deploy_TEST
   dependsOn: Build

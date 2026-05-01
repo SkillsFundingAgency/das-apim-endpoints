@@ -10,5 +10,6 @@ namespace SFA.DAS.ApprenticeApp.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public bool TermsOfUseAccepted { get; set; }
+        public string GovUkIdentifier { get; set; }
     }
 }

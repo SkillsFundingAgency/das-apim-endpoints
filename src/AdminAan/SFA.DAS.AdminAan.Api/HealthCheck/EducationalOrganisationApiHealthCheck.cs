@@ -1,7 +1,10 @@
 ﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AdminAan.Api.HealthCheck;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -13,8 +14,9 @@ using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.FindApprenticeshipTraining.Api.AppStart;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FindApprenticeshipTraining.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api;
 
@@ -64,7 +66,12 @@ public class Startup
                 {
                     o.Filters.Add(new AuthorizeFilter("default"));
                 }
-            });
+            })
+        .AddJsonOptions(opt =>
+         {
+             opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+         });
+
 
         var configuration = _configuration
             .GetSection("FindApprenticeshipTrainingConfiguration")
