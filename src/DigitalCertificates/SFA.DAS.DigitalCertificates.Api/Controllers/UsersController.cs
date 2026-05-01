@@ -11,7 +11,9 @@ using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Models;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -140,6 +142,38 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to create user action for user {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{userId}/match")]
+        public async Task<IActionResult> CreateUserMatch([FromRoute] Guid userId, [FromBody] CreateUserMatchCommand command)
+        {
+            try
+            {
+                command.UserId = userId;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to create user match for user {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{userId}/authorise")]
+        public async Task<IActionResult> CreateUserAuthorise([FromRoute] Guid userId, [FromBody] CreateUserAuthoriseCommand command)
+        {
+            try
+            {
+                command.UserId = userId;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to authorise user {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
