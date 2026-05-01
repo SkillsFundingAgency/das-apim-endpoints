@@ -53,5 +53,26 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
+
+        [HttpPost("{id}/printrequest")]
+        public async Task<IActionResult> CreatePrintRequest([FromRoute] Guid id, [FromBody] Application.Commands.CreateCertificatePrintRequest.CreateCertificatePrintRequestCommand command)
+        {
+            try
+            {
+                command.CertificateId = id;
+                await _mediator.Send(command);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                _logger.LogWarning(ex, "Bad request when attempting to create print request for certificate {CertificateId}", id);
+                return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error attempting to create print request for certificate {CertificateId}", id);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
     }
 }
