@@ -15,7 +15,8 @@ public static class LearningUpdateChangesExtensions
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.DateOfBirthChanged)
-               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Care);
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Care)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.AchievementDateChanged);
     }
 
     public static bool HasEnglishAndMathsUpdate(this List<UpdateLearnerApiPutResponse.LearningUpdateChanges> changes)

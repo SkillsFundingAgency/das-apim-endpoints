@@ -100,6 +100,7 @@ public class UpdateLearningPutRequestBuilder(
 
         return new OnProgrammeDetails
         {
+            AchievementDate = latestOnProgramme.AchievementDate,
             ExpectedEndDate = latestOnProgramme.ExpectedEndDate,
             Costs = costs.GetCostsOrDefault(firstOnProgramme.StartDate),
             PauseDate = latestOnProgramme.PauseDate,
