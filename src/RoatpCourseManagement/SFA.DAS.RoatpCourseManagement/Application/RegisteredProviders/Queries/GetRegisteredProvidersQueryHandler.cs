@@ -7,9 +7,7 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.RegisteredProviders.Queries;
 
