@@ -21,7 +21,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
 
         public async Task<GetFrameworkCertificateQueryResult> Handle(GetFrameworkCertificateQuery request, CancellationToken cancellationToken)
         {
-            var response = await _assessorsApiClient.GetWithResponseCode<GetFrameworkCertificateResponse>(new GetFrameworkCertificateRequest(request.Id,false));
+            var response = await _assessorsApiClient.GetWithResponseCode<GetFrameworkCertificateResponse>(new GetFrameworkCertificateRequest(request.Id, true));
 
             if (response == null || response.StatusCode == HttpStatusCode.NotFound)
             {
