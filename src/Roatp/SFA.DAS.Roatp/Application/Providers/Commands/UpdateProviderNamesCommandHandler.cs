@@ -127,8 +127,8 @@ public class
                     OrganisationTypeId = provider.OrganisationTypeId,
                     CharityNumber = provider.CharityNumber,
                     CompanyNumber = provider.CompanyNumber,
-                    LegalName = ukrlp.ProviderName ?? "",
-                    TradingName = ukrlp.TradingName ?? "",
+                    LegalName = ukrlp.ProviderName,
+                    TradingName = ukrlp.TradingName,
                     RequestingUserId = "System"
                 };
 
