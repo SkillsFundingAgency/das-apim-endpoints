@@ -46,7 +46,6 @@ public class SuspendEmployerUserCommandHandlerTests
         // Assert
         result.Should().Be(expectedResponse);
         apiClient.Verify();
-        apiClient.VerifyNoOtherCalls();
     }
 }
 

@@ -5,12 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
   
   <!--Transitive Packages-->
   <ItemGroup>
-    <PackageReference Include="Microsoft.Identity.Client" />
+    <PackageReference Include="Microsoft.Identity.Client" Version="4.79.2" />
   </ItemGroup>
   <!--Transitive Packages-->
   

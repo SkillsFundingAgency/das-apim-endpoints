@@ -13,23 +13,23 @@
     </ItemGroup>
 
     <ItemGroup>
-	    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" />
-	    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" />
-	    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
-		<PackageReference Include="MediatR" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
-        <PackageReference Include="Microsoft.Extensions.Options" />
-	    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
-	    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
-	    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
-        <PackageReference Include="SFA.DAS.Api.Common" />
-        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
-        <PackageReference Include="SFA.DAS.NServiceBus" />
-        <PackageReference Include="Swashbuckle.AspNetCore" />
+	    <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.1" />
+	    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.1.1" />
+	    <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.2.0" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="10.0.5" />
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+        <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.5" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
+	    <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.8.1" />
+	    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.8.1" />
+	    <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.8.1" />
+        <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
+        <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165" />
+        <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     </ItemGroup>
 
 

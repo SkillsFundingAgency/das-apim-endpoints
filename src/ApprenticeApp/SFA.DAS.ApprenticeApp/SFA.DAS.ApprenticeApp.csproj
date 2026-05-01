@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="MediatR" />
-	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
-    <PackageReference Include="SFA.DAS.Common.Domain" />
-    <PackageReference Include="contentful.csharp" />
-    <PackageReference Include="contentful.aspnetcore" />
+	<PackageReference Include="MediatR" Version="12.5.0" />
+	<PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
+    <PackageReference Include="SFA.DAS.Common.Domain" Version="1.4.308" />
+    <PackageReference Include="contentful.csharp" Version="7.5.2" />
+    <PackageReference Include="contentful.aspnetcore" Version="7.5.2" />
 </ItemGroup>
 
   <ItemGroup>

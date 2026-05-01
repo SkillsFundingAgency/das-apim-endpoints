@@ -8,9 +8,9 @@
   </PropertyGroup>
     
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="RestEase" />
-    <PackageReference Include="SFA.DAS.Api.Common" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="RestEase" Version="1.6.4" />
+    <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
   </ItemGroup>
 
   <ItemGroup>

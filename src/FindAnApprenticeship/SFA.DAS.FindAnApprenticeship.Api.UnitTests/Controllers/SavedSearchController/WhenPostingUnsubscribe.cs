@@ -1,5 +1,6 @@
 using System.Net;
 using System.Threading;
+using AutoFixture.NUnit4;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindAnApprenticeship.Api.Models.SavedSearches;
@@ -31,7 +32,7 @@ public class WhenPostingUnsubscribe
     {
         mediator.Setup(
             x => x.Send(It.Is<UnsubscribeSavedSearchCommand>(c => c.Id == request.SavedSearchId),
-                It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
+                It.IsAny<CancellationToken>())).Throws(new Exception());
         
         var actual = await savedSearchController.PostUnsubscribeSavedSearch(request) as StatusCodeResult;
         

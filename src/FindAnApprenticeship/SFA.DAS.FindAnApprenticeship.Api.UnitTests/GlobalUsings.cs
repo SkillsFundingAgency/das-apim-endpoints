@@ -2,7 +2,7 @@
 global using Moq;
 global using FluentAssertions;
 global using FluentAssertions.Execution;
-global using AutoFixture.NUnit3;
+global using AutoFixture.NUnit4;
 global using SFA.DAS.Testing.AutoFixture;
 global using System.Threading.Tasks;
 global using System;

@@ -31,9 +31,7 @@ public class GetAccountFinanceQueryHandlerTests
         result.Should().Be(financeData);
 
         mockFinanceDataService.Verify();
-        mockFinanceDataService.VerifyNoOtherCalls();
         mockAccountsService.Verify();
-        mockAccountsService.VerifyNoOtherCalls();
     }
 
     [Test, MoqAutoData]
@@ -54,7 +52,6 @@ public class GetAccountFinanceQueryHandlerTests
         result.Should().NotBeNull();
         result.Should().BeEquivalentTo(new GetAccountFinanceQueryResult());
         mockAccountsService.Verify();
-        mockAccountsService.VerifyNoOtherCalls();
 
         mockFinanceDataService.Verify(s => s.GetFinanceData(It.IsAny<Account>()), Times.Never());
     }

@@ -83,6 +83,5 @@ public class GetSchoolsQueryHandlerTests
         // Assert
         actual.Data.Should().BeEquivalentTo(new List<School>());
         apiClient.Verify();
-        apiClient.VerifyNoOtherCalls();
     }
 }

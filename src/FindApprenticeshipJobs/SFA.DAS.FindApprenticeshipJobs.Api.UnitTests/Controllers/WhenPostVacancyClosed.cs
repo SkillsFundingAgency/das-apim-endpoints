@@ -39,7 +39,7 @@ public class WhenPostVacancyClosed
             x => x.Send(
                 It.Is<ProcessVacancyClosedEarlyCommand>(c =>
                     c.VacancyReference == vacancyRef),
-                CancellationToken.None)).ThrowsAsync(new Exception());
+                CancellationToken.None)).Throws(new Exception());
             
         var actual = await controller.PostVacancyClosed(vacancyRef) as StatusCodeResult;
 

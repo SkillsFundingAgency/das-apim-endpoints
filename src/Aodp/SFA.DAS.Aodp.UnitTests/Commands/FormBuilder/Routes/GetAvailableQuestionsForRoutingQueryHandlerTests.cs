@@ -52,7 +52,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.FormBuilder.Tests
             var exception = _fixture.Create<Exception>();
 
             _apiClientMock.Setup(x => x.Delete(It.IsAny<DeleteRouteApiRequest>()))
-                          .ThrowsAsync(exception);
+                          .Throws(exception);
 
             // Act
             var result = await _handler.Handle(query, CancellationToken.None);

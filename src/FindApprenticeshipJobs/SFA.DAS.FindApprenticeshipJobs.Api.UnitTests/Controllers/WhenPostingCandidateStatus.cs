@@ -45,7 +45,7 @@ namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Controllers
                         && (x.Email == model.Email)
                         && x.Status == model.Status),
                     It.IsAny<CancellationToken>()))
-                .ThrowsAsync(new Exception());
+                .Throws(new Exception());
 
             var actual = await controller.UpdateStatus(govIdentifier, model) as StatusCodeResult;
 

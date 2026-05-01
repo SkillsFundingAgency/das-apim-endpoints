@@ -7,15 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="SFA.DAS.Telemetry" />
-    <PackageReference Include="Swashbuckle.AspNetCore" />
-    <PackageReference Include="SFA.DAS.Api.Common" />
-	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
-	<PackageReference Include="SFA.DAS.Apim.Shared" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="SFA.DAS.Telemetry" Version="17.1.70" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+    <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
+	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.5" />
+	<PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.184" />
   </ItemGroup>
 
   <ItemGroup>

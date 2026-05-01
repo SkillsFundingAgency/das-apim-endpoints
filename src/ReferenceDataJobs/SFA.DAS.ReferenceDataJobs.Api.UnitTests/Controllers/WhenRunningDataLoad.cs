@@ -31,7 +31,7 @@ public class WhenRunningDataLoad
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] DataLoadController sut)
     {
-        mockMediator.Setup(x => x.Send(It.IsAny<StartDataLoadsCommand>(), It.IsAny<CancellationToken>())).ThrowsAsync(new Exception("test"));
+        mockMediator.Setup(x => x.Send(It.IsAny<StartDataLoadsCommand>(), It.IsAny<CancellationToken>())).Throws(new Exception("test"));
 
         var result = await sut.Post(CancellationToken.None) as StatusCodeResult;
 

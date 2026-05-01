@@ -5,13 +5,13 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="SFA.DAS.Notifications.Messages" />
-    <PackageReference Include="SFA.DAS.NServiceBus" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
-    <PackageReference Include="SFA.DAS.VacancyServices.Wage" />
-    <PackageReference Include="Polly" />
-    <PackageReference Include="Polly.Extensions.Http" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
+    <PackageReference Include="SFA.DAS.VacancyServices.Wage" Version="1.0.45" />
+    <PackageReference Include="Polly" Version="8.5.2" />
+    <PackageReference Include="Polly.Extensions.Http" Version="3.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />

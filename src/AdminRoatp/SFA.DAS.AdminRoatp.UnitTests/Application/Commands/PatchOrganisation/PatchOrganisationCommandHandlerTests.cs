@@ -65,7 +65,7 @@ public class PatchOrganisationCommandHandlerTests
         var command = new PatchOrganisationCommand(ukprn, userId, userName, patchDoc);
 
         var exception = new ApiResponseException(expected, expected.ToString());
-        roatpServiceRestApiClientMock.Setup(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken)).ThrowsAsync(exception);
+        roatpServiceRestApiClientMock.Setup(api => api.PatchOrganisation(ukprn, userId, patchDoc, cancellationToken)).Throws(exception);
 
         var handler = new PatchOrganisationCommandHandler(roatpServiceRestApiClientMock.Object, roatpV2ApiClientMock.Object, roatpServiceApiClient.Object);
 
