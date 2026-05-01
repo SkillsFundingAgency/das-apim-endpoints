@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.RecruitJobs.Ai;
@@ -19,7 +20,7 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/vacancies/{vacancyId:guid}")]
-public class AiController: ControllerBase
+public class AiController(ILogger<AiController> logger): ControllerBase
 {
     [HttpPost]
     [Route("review/{vacancyReviewId:guid}")]
@@ -30,6 +31,7 @@ public class AiController: ControllerBase
         [FromBody] CreateVacancyReviewData data,
         CancellationToken cancellationToken)
     {
+        logger.LogInformation("Creating AiVacancyReview record for Vacancy {VacancyId} (VacancyReview: {VacancyReviewId})", vacancyId, vacancyReviewId);
         var reviewRequired = data.ReviewStatus switch
         {
             AiReviewStatus.Skipped => true,
@@ -56,6 +58,7 @@ public class AiController: ControllerBase
         [FromBody] Guid vacancyReviewId,
         CancellationToken cancellationToken)
     {
+        logger.LogInformation("Performing AI review of Vacancy {VacancyId} (VacancyReview: {VacancyReviewId})", vacancyId, vacancyReviewId);
         var response = await recruitApiClient.GetWithResponseCode<GetVacancyResponse>(new GetVacancyRequest(vacancyId));
         if (response.StatusCode == HttpStatusCode.NotFound)
         {
@@ -74,6 +77,7 @@ public class AiController: ControllerBase
         [FromBody] Guid vacancyReviewId,
         CancellationToken cancellationToken)
     {
+        logger.LogInformation("Sending Vacancy {VacancyId} for manual review, patching VacancyReview {VacancyReviewId} to status PendingReview", vacancyId, vacancyReviewId);
         var patchDocument = new JsonPatchDocument<PatchableVacancyReviewDto>();
         patchDocument.Replace(x => x.Status, ReviewStatus.PendingReview);
         
@@ -93,6 +97,8 @@ public class AiController: ControllerBase
         CancellationToken cancellationToken)
     {
         // Patch the VacancyReview
+        logger.LogInformation("Auto approving Vacancy {VacancyId}, patching VacancyReview {VacancyReviewId} to status Closed", vacancyId, vacancyReviewId);
+        
         var vacancyReviewPatchDocument = new JsonPatchDocument<PatchableVacancyReviewDto>();
         vacancyReviewPatchDocument.Replace(x => x.ManualOutcome, nameof(ManualQaOutcome.Bypassed));
         vacancyReviewPatchDocument.Replace(x => x.Status, ReviewStatus.Closed);
