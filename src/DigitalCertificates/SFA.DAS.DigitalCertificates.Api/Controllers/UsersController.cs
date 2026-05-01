@@ -11,6 +11,7 @@ using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.DigitalCertificates.Models;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -102,6 +103,27 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to retrieve sharings {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{userId}/match")]
+        public async Task<IActionResult> GetCertificatesMatch([FromRoute] Guid userId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetCertificatesMatchQuery { UserId = userId });
+
+                if (result == null)
+                {
+                    return NoContent();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve certificate matches for user {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
