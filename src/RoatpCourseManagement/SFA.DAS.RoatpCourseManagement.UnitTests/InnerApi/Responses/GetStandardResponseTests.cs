@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -12,7 +12,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Responses;
 public class GetStandardResponseTests
 {
     [Test, AutoData]
-    public void ImplicitConversion_FromCoursesApiNoFunding_MapsPropertiesAndSetsDefaults(GetStandardResponseFromCoursesApi source)
+    public void ImplicitConversion_WhenCoursesApiHasNoFunding_MapsPropertiesAndSetsDefaults(GetStandardResponseFromCoursesApi source)
     {
         // Arrange
         source.ApprenticeshipFunding = new List<ApprenticeshipFunding>();
@@ -37,7 +37,7 @@ public class GetStandardResponseTests
     }
 
     [Test, AutoData]
-    public void ImplicitConversion_FromCoursesApiWithFunding_MapsPropertiesAndUsesMostRecentFunding(GetStandardResponseFromCoursesApi source)
+    public void ImplicitConversion_WhenCoursesApiHasFunding_MapsPropertiesAndUsesMostRecentFunding(GetStandardResponseFromCoursesApi source)
     {
         // Arrange
         var older = new ApprenticeshipFunding { EffectiveFrom = new DateTime(2020, 1, 1), Duration = 74, DurationUnits = DurationUnits.Months };
@@ -66,27 +66,6 @@ public class GetStandardResponseTests
         result.DurationUnits.Should().Be(newer.DurationUnits);
     }
 
-    [Test, AutoData]
-    public void ImplicitConversion_FromCourseManagementApi_MapsAllProperties(GetStandardResponseFromCourseManagementApi source)
-    {
-        // Act
-        GetStandardResponse result = source;
-
-        // Assert
-        result.StandardUId.Should().BeNull();
-        result.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
-        result.LarsCode.Should().Be(source.LarsCode);
-        result.Title.Should().Be(source.Title);
-        result.Level.Should().Be(source.Level);
-        result.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
-        result.ApprovalBody.Should().Be(source.ApprovalBody);
-        result.Route.Should().Be(source.Route);
-        result.IsRegulatedForProvider.Should().Be(source.IsRegulatedForProvider);
-        result.Duration.Should().Be(source.Duration);
-        result.DurationUnits.Should().Be(source.DurationUnits);
-        result.CourseType.Should().Be(source.CourseType);
-    }
-
     [Test]
     public void ImplicitConversion_FromCoursesApi_NullSource_ReturnsNull()
     {
@@ -100,16 +79,54 @@ public class GetStandardResponseTests
         result.Should().BeNull();
     }
 
-    [Test]
-    public void ImplicitConversion_FromCourseManagementApi_NullSource_ThrowsNullReferenceException()
+    [TestCase(null, -1, true, TestName = "LastDateStartsIsNullAndEffectiveFromIsPastDate")]
+    [TestCase(1, 0, true, TestName = "LastDateStartsIsFutureDateAndNotSameAsEffectiveFrom")]
+    [TestCase(1, 1, false, TestName = "LastDateStartsIsFutureDateAndIsSameAsEffectiveFrom")]
+    [TestCase(-1, 0, false, TestName = "LastDateStartsIsPastDate")]
+    [TestCase(0, -1, true, TestName = "LastDateStartsIsToday")]
+    [TestCase(1, 0, true, TestName = "EffectiveFromIsToday")]
+    [TestCase(1, 2, false, TestName = "EffectiveFromIsFutureDate")]
+    [TestCase(null, 1, false, TestName = "LastDateStartsIsNullEffectiveFromIsFutureDate")]
+    public void ImplicitConversion_FromCoursesApi_IsActiveAvailable_TestCases(
+    int? lastDateStartsNoOfDays,
+    int effectiveFromNoOfDays,
+    bool expectedIsActiveAvailable)
     {
         // Arrange
-        GetStandardResponseFromCourseManagementApi source = null;
+        DateTime dateTimeNow = DateTime.UtcNow.Date;
+
+        DateTime? lastDateStarts = lastDateStartsNoOfDays.HasValue ? dateTimeNow.AddDays(lastDateStartsNoOfDays.Value) : (DateTime?)null;
+        DateTime effectiveFrom = dateTimeNow.AddDays(effectiveFromNoOfDays);
+
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = new CourseDates()
+            {
+                LastDateStarts = lastDateStarts,
+                EffectiveFrom = effectiveFrom,
+            }
+        };
 
         // Act
-        Action act = () => { var _ = (GetStandardResponse)source; };
+        GetStandardResponse result = source;
 
         // Assert
-        act.Should().Throw<NullReferenceException>();
+        result.IsActiveAvailable.Should().Be(expectedIsActiveAvailable);
+    }
+
+    [Test]
+    public void ImplicitConversion_WhenCourseDatesIsNull_ReturnsIsActiveAvailableFalse()
+    {
+        // Arrange
+        var source = new GetStandardResponseFromCoursesApi()
+        {
+            CourseDates = null
+        };
+
+        // Act
+        GetStandardResponse result = source;
+
+        // Assert
+        result.IsActiveAvailable.Should().BeFalse();
     }
 }

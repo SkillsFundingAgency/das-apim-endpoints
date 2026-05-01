@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Approvals.Application;
 using SFA.DAS.Approvals.Application.Shared.Enums;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
@@ -11,24 +12,22 @@ using SFA.DAS.Approvals.InnerApi.ManagingStandards.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models.Roatp;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
-namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
+namespace SFA.DAS.Approvals.UnitTests.Services.ProviderStandardsServiceTest
 {
     [TestFixture]
-    public class WhenGettingCoursesForAProvider
+    public class WhenGettingStandardsForAProvider
     {
-        private ProviderCoursesServiceTestFixture _fixture;
+        private ProviderStandardsServiceTestFixture _fixture;
 
         [SetUp]
         public void Setup()
         {
-            _fixture = new ProviderCoursesServiceTestFixture();
+            _fixture = new ProviderStandardsServiceTestFixture();
         }
 
         [Test]
@@ -82,7 +81,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             _fixture.AssertResultIsAsDefinedInManagingStandards();
         }
 
-        public class ProviderCoursesServiceTestFixture
+        public class ProviderStandardsServiceTestFixture
         {
             private Approvals.Services.ProviderStandardsService _providerStandardsService;
             private ServiceParameters _serviceParameters;
@@ -99,7 +98,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
             private IEnumerable<GetProviderStandardsResponse> _getProviderStandardsResponse;
             private GetAllStandardsResponse _allStandardsCacheResponse;
 
-            public ProviderCoursesServiceTestFixture()
+            public ProviderStandardsServiceTestFixture()
             {
                 _trainingProviderService = new Mock<ITrainingProviderService>();
                 _managingStandardsApiClient = new Mock<IProviderCoursesApiClient<ProviderCoursesApiConfiguration>>();
@@ -140,13 +139,13 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                     Mock.Of<ILogger<ProviderStandardsService>>());
             }
 
-            public ProviderCoursesServiceTestFixture WithProviderType(ProviderType providerType)
+            public ProviderStandardsServiceTestFixture WithProviderType(ProviderType providerType)
             {
                 _trainingProviderResponse.ProviderType = providerType;
                 return this;
             }
 
-            public ProviderCoursesServiceTestFixture WithEmployerAsCallingParty()
+            public ProviderStandardsServiceTestFixture WithEmployerAsCallingParty()
             {
                 _serviceParameters = new ServiceParameters(Party.Employer, 456);
 
@@ -159,7 +158,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 return this;
             }
 
-            public ProviderCoursesServiceTestFixture WithAllStandardsInCache()
+            public ProviderStandardsServiceTestFixture WithAllStandardsInCache()
             {
                 _allStandardsCacheResponse = _autoFixture.Create<GetAllStandardsResponse>();
                 _cacheStorageService.Setup(x =>
@@ -172,7 +171,7 @@ namespace SFA.DAS.Approvals.UnitTests.Services.ProviderCoursesService
                 return this;
             }
 
-            public ProviderCoursesServiceTestFixture WithMainProviderDetailsInCache()
+            public ProviderStandardsServiceTestFixture WithMainProviderDetailsInCache()
             {
                 _trainingProviderCacheResponse = _autoFixture.Build<ProviderDetailsModel>()
                     .With(x => x.ProviderType, ProviderType.Main)
