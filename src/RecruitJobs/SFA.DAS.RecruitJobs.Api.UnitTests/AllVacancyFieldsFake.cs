@@ -39,6 +39,7 @@ public class AllVacancyFieldsFake: IAllVacancyFields
     public OwnerType? OwnerType { get; set; }
     public SourceOrigin? SourceOrigin { get; set; }
     public SourceType? SourceType { get; set; }
+    public ArchiveType? ArchiveType { get; set; }
     public long? SourceVacancyReference { get; set; }
     public DateTimeOffset? ApprovedDate { get; set; }
     public DateTimeOffset? CreatedDate { get; set; }
@@ -50,6 +51,7 @@ public class AllVacancyFieldsFake: IAllVacancyFields
     public DateTimeOffset? LiveDate { get; set; }
     public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? ClosingDate { get; set; }
+    public DateTimeOffset? ArchivedDate { get; set; }
     public int ReviewCount { get; set; }
     public string? ApplicationUrl { get; set; }
     public ApplicationMethod? ApplicationMethod { get; set; }
@@ -102,4 +104,5 @@ public class AllVacancyFieldsFake: IAllVacancyFields
     public string? ProviderReviewFieldIndicators { get; set; }
     public Guid? SubmittedByUserId { get; set; }
     public Guid? ReviewRequestedByUserId { get; set; }
+    public Guid? ArchivedByUserId { get; set; }
 }

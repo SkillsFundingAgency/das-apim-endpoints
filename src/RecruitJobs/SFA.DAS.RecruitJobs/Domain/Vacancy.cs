@@ -13,6 +13,7 @@ public class Vacancy
     public SharedOuterApi.Types.Domain.Recruit.OwnerType? OwnerType { get; init; }
     public SharedOuterApi.Types.Domain.Recruit.SourceOrigin? SourceOrigin { get; init; }
     public SharedOuterApi.Types.Domain.Recruit.SourceType? SourceType { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.ArchiveType? ArchiveType { get; set; }
     public long? SourceVacancyReference { get; init; }
     public DateTime? ApprovedDate { get; init; }
     public DateTime? CreatedDate { get; init; }
@@ -24,6 +25,7 @@ public class Vacancy
     public DateTime? LiveDate { get; init; }
     public DateTime? StartDate { get; init; }
     public DateTime? ClosingDate { get; init; }
+    public DateTime? ArchivedDate { get; set; }
     public int ReviewCount { get; init; }
     public string? ApplicationUrl { get; init; }
     public SharedOuterApi.Types.Domain.Recruit.ApplicationMethod? ApplicationMethod { get; init; }
@@ -65,4 +67,5 @@ public class Vacancy
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public Guid? SubmittedByUserId { get; init; }
     public Guid? ReviewRequestedByUserId { get; init; }
+    public Guid? ArchivedByUserId { get; init; }
 }

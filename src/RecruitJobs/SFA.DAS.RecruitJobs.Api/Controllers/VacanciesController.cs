@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
+using ArchiveType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ArchiveType;
 using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
 
@@ -308,9 +309,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
     [HttpGet, Route("stale/archive")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
-    public async Task<IResult> GetClosedVacanciesToArchive(
-    [FromQuery] bool includeVacanciesWithoutOutcomes,
-    [FromQuery, Required] DateTime pointInTime,
+    public async Task<IResult> GetClosedVacanciesToArchive([FromQuery, Required] DateTime pointInTime,
     [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
     [FromServices] IRecruitGqlClient recruitGqlClient,
     CancellationToken cancellationToken)
@@ -327,43 +326,28 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
         var gqlVacancies = response.Data!.Vacancies;
 
-        List<StaleArchiveVacancyIdentifier> result;
-
-        if (includeVacanciesWithoutOutcomes)
+        var tasks = gqlVacancies.Select(async v =>
         {
-            result = gqlVacancies
-                .Where(v => v.ClosingDate != null)
-                .Select(v => new StaleArchiveVacancyIdentifier(
-                    v.Id,
-                    v.VacancyReference,
-                    VacancyStatus.Closed,
-                    v.ClosingDate!.Value.UtcDateTime))
-                .ToList();
-        }
-        else
-        {
-            var tasks = gqlVacancies.Select(async v =>
-            {
-                var reviews = await recruitApiClient.GetAll<GetApplicationReviewApiResponse>(
-                    new GetManyByVacancyReferenceApiRequest(v.VacancyReference.GetValueOrDefault()));
+            var reviews = await recruitApiClient.GetAll<GetApplicationReviewApiResponse>(
+                new GetManyByVacancyReferenceApiRequest(v.VacancyReference.GetValueOrDefault()));
 
-                var allHaveOutcome = reviews.All(x =>
-                    x.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+            var allHaveOutcome = reviews.All(x =>
+                x.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
 
-                return (v, allHaveOutcome);
-            });
+            return (v, allHaveOutcome);
+        });
 
-            var evaluated = await Task.WhenAll(tasks);
+        var evaluated = await Task.WhenAll(tasks);
 
-            result = evaluated
-                .Where(x => x.allHaveOutcome && x.v.ClosingDate != null)
-                .Select(x => new StaleArchiveVacancyIdentifier(
-                    x.v.Id,
-                    x.v.VacancyReference,
-                    VacancyStatus.Closed,
-                    x.v.ClosingDate!.Value.UtcDateTime))
-                .ToList();
-        }
+        var result = evaluated
+            .Where(x => x.allHaveOutcome && x.v.ClosingDate != null)
+            .Select(x => new StaleArchiveVacancyIdentifier(
+                x.v.Id,
+                x.v.VacancyReference,
+                VacancyStatus.Closed,
+                x.v.ClosingDate!.Value.UtcDateTime))
+            .ToList();
+        
 
         return TypedResults.Ok(new DataResponse<IEnumerable<StaleArchiveVacancyIdentifier>>(result));
     }
@@ -401,7 +385,9 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
 
             var domainVacancy = GqlVacancyMapper.From(vacancy);
             domainVacancy.Status = VacancyStatus.Archived;
+            domainVacancy.ArchiveType = ArchiveType.Auto;
             domainVacancy.LastUpdatedDate = DateTime.UtcNow;
+            domainVacancy.ArchivedDate = DateTime.UtcNow;
 
             var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancy.Id, VacancyMapper.ToInnerDto(domainVacancy)));
 

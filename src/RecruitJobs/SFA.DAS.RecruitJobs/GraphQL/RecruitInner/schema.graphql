@@ -29,6 +29,7 @@ input VacancyEntityFilterInput {
   ownerType: NullableOfOwnerTypeOperationFilterInput
   sourceOrigin: NullableOfSourceOriginOperationFilterInput
   sourceType: NullableOfSourceTypeOperationFilterInput
+  archiveType: NullableOfArchiveTypeOperationFilterInput
   sourceVacancyReference: LongOperationFilterInput
   approvedDate: DateTimeOperationFilterInput
   createdDate: DateTimeOperationFilterInput
@@ -40,6 +41,7 @@ input VacancyEntityFilterInput {
   liveDate: DateTimeOperationFilterInput
   startDate: DateTimeOperationFilterInput
   closingDate: DateTimeOperationFilterInput
+  archivedDate: DateTimeOperationFilterInput
   reviewCount: IntOperationFilterInput
   applicationUrl: StringOperationFilterInput
   applicationMethod: NullableOfApplicationMethodOperationFilterInput
@@ -92,6 +94,7 @@ input VacancyEntityFilterInput {
   providerReviewFieldIndicators: StringOperationFilterInput
   submittedByUserId: UuidOperationFilterInput
   reviewRequestedByUserId: UuidOperationFilterInput
+  archivedByUserId: UuidOperationFilterInput
 }
 
 input VacancyEntitySortInput {
@@ -104,6 +107,7 @@ input VacancyEntitySortInput {
   ownerType: SortEnumType
   sourceOrigin: SortEnumType
   sourceType: SortEnumType
+  archiveType: SortEnumType
   sourceVacancyReference: SortEnumType
   approvedDate: SortEnumType
   createdDate: SortEnumType
@@ -115,6 +119,7 @@ input VacancyEntitySortInput {
   liveDate: SortEnumType
   startDate: SortEnumType
   closingDate: SortEnumType
+  archivedDate: SortEnumType
   reviewCount: SortEnumType
   applicationUrl: SortEnumType
   applicationMethod: SortEnumType
@@ -167,6 +172,7 @@ input VacancyEntitySortInput {
   providerReviewFieldIndicators: SortEnumType
   submittedByUserId: SortEnumType
   reviewRequestedByUserId: SortEnumType
+  archivedByUserId: SortEnumType
 }
 
 "A segment of a collection."
@@ -256,6 +262,13 @@ input NullableOfSourceTypeOperationFilterInput {
   neq: SourceType
   in: [SourceType]
   nin: [SourceType]
+}
+
+input NullableOfArchiveTypeOperationFilterInput {
+  eq: ArchiveType
+  neq: ArchiveType
+  in: [ArchiveType]
+  nin: [ArchiveType]
 }
 
 input DateTimeOperationFilterInput {
@@ -408,6 +421,7 @@ type VacancyEntity {
   ownerType: OwnerType
   sourceOrigin: SourceOrigin
   sourceType: SourceType
+  archiveType: ArchiveType
   sourceVacancyReference: Long
   approvedDate: DateTime
   createdDate: DateTime
@@ -419,6 +433,7 @@ type VacancyEntity {
   liveDate: DateTime
   startDate: DateTime
   closingDate: DateTime
+  archivedDate: DateTime
   reviewCount: Int!
   applicationUrl: String
   applicationMethod: ApplicationMethod
@@ -471,6 +486,7 @@ type VacancyEntity {
   providerReviewFieldIndicators: String
   submittedByUserId: UUID
   reviewRequestedByUserId: UUID
+  archivedByUserId: UUID
 }
 
 enum OwnerType {
@@ -491,6 +507,11 @@ enum SourceType {
   CLONE
   EXTENSION
   NEW
+}
+
+enum ArchiveType {
+  AUTO
+  MANUAL
 }
 
 enum ApplicationMethod {
