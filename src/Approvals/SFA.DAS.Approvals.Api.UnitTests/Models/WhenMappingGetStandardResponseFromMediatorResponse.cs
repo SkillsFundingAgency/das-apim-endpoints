@@ -13,16 +13,16 @@ namespace SFA.DAS.Approvals.Api.UnitTests.Models
 
             //Assert
             actual.Should().BeEquivalentTo(source, options => options
-                .Excluding(c => c.StandardDates)
+                .Excluding(c => c.CourseDates)
                 .Excluding(c => c.TypicalDuration)
                 .Excluding(c => c.IsActive)
                 .Excluding(c => c.StandardUId)
                 .Excluding(c => c.LarsCode)
                 .ExcludingMissingMembers()
             );
-            actual.EffectiveFrom.Should().Be(source.StandardDates.EffectiveFrom);
-            actual.EffectiveTo.Should().Be(source.StandardDates.EffectiveTo);
-            actual.LastDateForNewStarts.Should().Be(source.StandardDates.LastDateStarts);
+            actual.EffectiveFrom.Should().Be(source.CourseDates.EffectiveFrom);
+            actual.EffectiveTo.Should().Be(source.CourseDates.EffectiveTo);
+            actual.LastDateForNewStarts.Should().Be(source.CourseDates.LastDateStarts);
             actual.Duration.Should().Be(source.TypicalDuration);
             actual.LarsCode.Should().Be(source.LarsCode);
             actual.IfateReferenceNumber.Should().Be(source.IfateReferenceNumber);
