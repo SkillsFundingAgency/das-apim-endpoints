@@ -156,17 +156,20 @@ public class UpdateLearningPutRequestBuilder(
 
     private static decimal? ResolveCombinedFundingAdjustmentPercentage(decimal? priorLearningAdjustment, decimal? otherFundingAdjustment)
     {
-        if (!priorLearningAdjustment.HasValue && !otherFundingAdjustment.HasValue)
+        var priorLearningHadNonZeroAdjustment = priorLearningAdjustment.HasValue && priorLearningAdjustment.Value != 0;
+        var otherFundingHadNonZeroAdjustment = otherFundingAdjustment.HasValue && otherFundingAdjustment.Value != 0;
+
+        if (!priorLearningHadNonZeroAdjustment && !otherFundingHadNonZeroAdjustment)
         {
             return null;
         }
 
-        if(priorLearningAdjustment.HasValue && !otherFundingAdjustment.HasValue) {
-            return priorLearningAdjustment.Value / 100;
+        if(priorLearningHadNonZeroAdjustment && !otherFundingHadNonZeroAdjustment) {
+            return priorLearningAdjustment!.Value / 100;
         }
 
-        if(!priorLearningAdjustment.HasValue && otherFundingAdjustment.HasValue) {
-            return otherFundingAdjustment.Value / 100;
+        if(!priorLearningHadNonZeroAdjustment && otherFundingHadNonZeroAdjustment) {
+            return otherFundingAdjustment!.Value / 100;
         }
 
         return (priorLearningAdjustment!.Value / 100) * (otherFundingAdjustment!.Value / 100);
