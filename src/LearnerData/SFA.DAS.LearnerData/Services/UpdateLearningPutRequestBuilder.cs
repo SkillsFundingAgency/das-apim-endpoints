@@ -154,7 +154,7 @@ public class UpdateLearningPutRequestBuilder(
         }).ToList();
     }
 
-    private static int? ResolveCombinedFundingAdjustmentPercentage(int? priorLearningAdjustment, int? otherFundingAdjustment)
+    private static decimal? ResolveCombinedFundingAdjustmentPercentage(decimal? priorLearningAdjustment, decimal? otherFundingAdjustment)
     {
         if (!priorLearningAdjustment.HasValue && !otherFundingAdjustment.HasValue)
         {
@@ -162,13 +162,13 @@ public class UpdateLearningPutRequestBuilder(
         }
 
         if(priorLearningAdjustment.HasValue && !otherFundingAdjustment.HasValue) {
-            return priorLearningAdjustment.Value;
+            return priorLearningAdjustment.Value / 100;
         }
 
         if(!priorLearningAdjustment.HasValue && otherFundingAdjustment.HasValue) {
-            return otherFundingAdjustment.Value;
+            return otherFundingAdjustment.Value / 100;
         }
 
-        return ((priorLearningAdjustment!.Value/100) * (otherFundingAdjustment!.Value/100))*100;
+        return (priorLearningAdjustment!.Value / 100) * (otherFundingAdjustment!.Value / 100);
     }
 }
