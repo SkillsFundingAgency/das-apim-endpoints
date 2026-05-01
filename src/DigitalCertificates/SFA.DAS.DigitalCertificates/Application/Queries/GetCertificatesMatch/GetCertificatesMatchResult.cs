@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
+using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
@@ -18,8 +19,9 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
         public string CourseLevel { get; set; }
         public DateTime? DateAwarded { get; set; }
         public string ProviderName { get; set; }
-        
-        public static implicit operator CertificateMatchResult(SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor.CertificateSearchMatch m)
+        public int? Ukprn { get; set; }
+
+        public static implicit operator CertificateMatchResult(CertificateSearchMatch m)
         {
             if (m == null) return null;
             return new CertificateMatchResult
@@ -30,7 +32,8 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
                 CourseName = m.CourseName,
                 CourseLevel = m.CourseLevel,
                 DateAwarded = m.DateAwarded,
-                ProviderName = m.ProviderName
+                ProviderName = m.ProviderName,
+                Ukprn = int.TryParse(m.Ukprn, out var ukprn) ? ukprn : (int?)null
             };
         }
     }
@@ -43,7 +46,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
         public string CourseLevel { get; set; }
         public string ProviderName { get; set; }
 
-        public static implicit operator CertificateMaskResult(SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor.CertificateMask m)
+        public static implicit operator CertificateMaskResult(CertificateMask m)
         {
             if (m == null) return null;
             return new CertificateMaskResult
