@@ -4,7 +4,7 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
 {
     public abstract class StandardApiResponseBase
     {
-        public StandardDate StandardDates { get; set; }
+        public CourseDate CourseDates { get; set; }
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
 
         [JsonIgnore]
@@ -13,6 +13,16 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
         public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
         [JsonIgnore]
         public bool IsActive => IsStandardActive();
+        public bool IsActiveAvailable => IsStandardActiveAvailable();
+
+        private bool IsStandardActiveAvailable()
+        {
+            if (CourseDates == null) return false;
+
+            return (CourseDates.LastDateStarts == null || CourseDates.LastDateStarts >= DateTime.UtcNow.Date)
+                    && CourseDates.LastDateStarts != CourseDates.EffectiveFrom
+                    && CourseDates.EffectiveFrom <= DateTime.UtcNow.Date;
+        }
 
         public int MaxFundingOn(DateTime effectiveDate)
         {
@@ -49,17 +59,17 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
 
         private bool IsStandardActive()
         {
-            if (StandardDates == null) return false;
+            if (CourseDates == null) return false;
 
-            return StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
-                   && (!StandardDates.EffectiveTo.HasValue ||
-                       StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)
-                   && (!StandardDates.LastDateStarts.HasValue ||
-                       StandardDates.LastDateStarts.Value.Date >= DateTime.UtcNow.Date);
+            return CourseDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
+                   && (!CourseDates.EffectiveTo.HasValue ||
+                       CourseDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)
+                   && (!CourseDates.LastDateStarts.HasValue ||
+                       CourseDates.LastDateStarts.Value.Date >= DateTime.UtcNow.Date);
         }
     }
 
-    public class StandardDate
+    public class CourseDate
     {
         public DateTime? LastDateStarts { get; set; }
 
