@@ -1,9 +1,4 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading;
 using Microsoft.AspNetCore.JsonPatch.Operations;
-using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Domain;
@@ -11,11 +6,19 @@ using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
-using ClosureReason = SFA.DAS.RecruitJobs.Domain.ClosureReason;
-using OwnerType = SFA.DAS.RecruitJobs.Domain.OwnerType;
-using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
+using ClosureReason = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ClosureReason;
+using OwnerType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.OwnerType;
+using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
+using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.UnitTests.Handlers;
 
@@ -215,7 +218,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
     
     [Test]
-    [MoqInlineAutoData(VacancyStatus.Approved)]
+    [MoqInlineAutoData(GraphQL.VacancyStatus.Approved)]
     public async Task Then_The_Vacancy_Is_Transferred_And_Closed_And_Unapproved(
         GraphQL.VacancyStatus status,
         Guid vacancyId,
