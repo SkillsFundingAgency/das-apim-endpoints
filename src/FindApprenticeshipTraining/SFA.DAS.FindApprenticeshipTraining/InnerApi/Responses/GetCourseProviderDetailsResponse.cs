@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
@@ -15,6 +14,7 @@ public sealed class GetCourseProviderDetailsResponse
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType ApprenticeshipType { get; set; }
+    public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
