@@ -44,9 +44,15 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             CreateApprovalCommand command,
             CancellationToken cancellationToken)
         {
-            var (apprentice, trainingProvider, course) = await GetExternalData(command);
+            var (apprentice, trainingProvider, course) = await GetExternalData(command);            
 
             if (apprentice == null) return default;
+
+            if (course.ApprenticeshipType == "ApprenticeshipUnit")
+            {
+                _logger.LogInformation("Method skipped due to ApprenticeshipType: Short Course | ApprenticeshipId: {Id}", apprentice.Id);
+                return default;
+            }
 
             var id = Guid.NewGuid();
 
@@ -112,7 +118,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
 
             var provider = _trainingProviderService.GetTrainingProviderDetails(
-                command.TrainingProviderId);
+                command.TrainingProviderId);            
 
             return (apprenticeship, await provider, course);
         }
