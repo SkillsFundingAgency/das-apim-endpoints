@@ -26,6 +26,6 @@ public class EnglishAndMathsItem
     public DateTime? PauseDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? CompletionDate { get; set; }
-    public int? PriorLearningAdjustmentPercentage { get; set; }
+    public decimal? CombinedFundingAdjustmentPercentage { get; set; }
     public List<PeriodInLearningItem> PeriodsInLearning { get; set; } = [];
 }

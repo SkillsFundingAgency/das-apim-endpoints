@@ -59,7 +59,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public DateTime? CompletionDate { get; set; }
         public DateTime? WithdrawalDate { get; set; }
         public DateTime? PauseDate { get; set; }
-        public int? PriorLearningPercentage { get; set; }
+        public decimal? CombinedFundingAdjustmentPercentage { get; set; }
         public decimal Amount { get; set; }
         public List<BreakInLearning> BreaksInLearning { get; set; }
     }
