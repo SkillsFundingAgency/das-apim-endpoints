@@ -9,7 +9,7 @@ namespace SFA.DAS.RecruitQa.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/")]
-public class VacanciesController(ILogger<VacanciesController> logger): ControllerBase
+public class VacanciesController: ControllerBase
 {
     [HttpGet, Route("{vacancyId:guid}")]
     [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
