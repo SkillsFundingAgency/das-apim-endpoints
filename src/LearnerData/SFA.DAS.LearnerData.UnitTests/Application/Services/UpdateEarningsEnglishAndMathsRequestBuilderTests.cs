@@ -50,7 +50,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilderTests
             LearnAimRef = x.LearnAimRef,
             Amount = x.Amount,
             WithdrawalDate = x.WithdrawalDate,
-            PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
+            CombinedFundingAdjustmentPercentage = x.CombinedFundingAdjustmentPercentage,
             CompletionDate = x.CompletionDate,
             PauseDate = x.PauseDate,
             PeriodsInLearning = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Where(e => e.LearnAimRef == x.LearnAimRef)
