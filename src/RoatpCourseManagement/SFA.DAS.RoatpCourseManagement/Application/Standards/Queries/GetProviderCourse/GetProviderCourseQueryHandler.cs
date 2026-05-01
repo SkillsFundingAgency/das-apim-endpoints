@@ -30,7 +30,7 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
     {
         _logger.LogInformation("Get Provider Course request received for ukprn {Ukprn}, LarsCode {LarsCode}", request.Ukprn, request.LarsCode);
 
-        var standardResponse = await _courseManagementApiClient.GetWithResponseCode<GetStandardResponseFromCourseManagementApi>(new GetStandardLookRequest(request.LarsCode));
+        var standardResponse = await _courseManagementApiClient.GetWithResponseCode<GetStandardResponse>(new GetStandardLookRequest(request.LarsCode));
         if (standardResponse.StatusCode != HttpStatusCode.OK)
         {
             var errorMessage =
