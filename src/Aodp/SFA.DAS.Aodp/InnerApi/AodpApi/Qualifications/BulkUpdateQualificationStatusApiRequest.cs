@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.AODP.Application.Commands.Qualifications;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System.Diagnostics.CodeAnalysis;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AODP.Domain.Qualifications.Requests
 {

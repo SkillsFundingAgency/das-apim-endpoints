@@ -1,12 +1,14 @@
-﻿using MediatR;
+using System.Net;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
+using SFA.DAS.LearnerData.Application.DeleteShortCourse;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using System.Net;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -22,13 +24,13 @@ public class ShortCoursesController(
     {
         try
         {
-            await mediator.Send(new CreateDraftShortCourseCommand
+            var result = await mediator.Send(new CreateDraftShortCourseCommand
             {
                 Ukprn = ukprn,
                 ShortCourseRequest = request
             });
 
-            return Accepted();
+            return Accepted(new { result.CorrelationId });
         }
         catch (Exception e)
         {
@@ -76,6 +78,26 @@ public class ShortCoursesController(
 
         return Ok(result);
 
+    }
+
+    [HttpDelete("/providers/{ukprn}/shortCourses/{learningKey}")]
+    public async Task<IActionResult> DeleteShortCourse([FromRoute] long ukprn, [FromRoute] Guid learningKey)
+    {
+        try
+        {
+            await mediator.Send(new DeleteShortCourseCommand
+            {
+                Ukprn = ukprn,
+                LearningKey = learningKey
+            });
+
+            return Accepted();
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Internal error occurred when deleting short course");
+            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+        }
     }
 
     [HttpPut("/providers/{ukprn}/shortCourses/{learningKey}")]

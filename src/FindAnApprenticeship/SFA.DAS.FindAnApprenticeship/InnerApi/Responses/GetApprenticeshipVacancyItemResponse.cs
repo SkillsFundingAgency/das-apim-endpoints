@@ -3,7 +3,7 @@ using SFA.DAS.FindAnApprenticeship.Services;
 using System;
 using System.Collections.Generic;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.InnerApi.Responses
 {

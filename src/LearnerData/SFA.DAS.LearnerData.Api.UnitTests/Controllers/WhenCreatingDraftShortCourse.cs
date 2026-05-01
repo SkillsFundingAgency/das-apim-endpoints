@@ -1,4 +1,3 @@
-using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
@@ -11,6 +10,7 @@ using SFA.DAS.LearnerData.Application.CreateShortCourse;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.Api.UnitTests.Controllers;
 
@@ -41,6 +41,27 @@ public class WhenCreatingDraftShortCourse
 
         // Assert
         result.Should().NotBeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_CorrelationId_Is_Returned_In_Response_Body(
+        long ukprn,
+        ShortCourseRequest request,
+        CreateDraftShortCourseResult handlerResult,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Frozen] Mock<ILogger<ShortCoursesController>> mockLogger,
+        [Greedy] ShortCoursesController sut)
+    {
+        // Arrange
+        mockMediator
+            .Setup(x => x.Send(It.IsAny<CreateDraftShortCourseCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(handlerResult);
+
+        // Act
+        var result = await sut.CreateShortCourse(request, ukprn) as AcceptedResult;
+
+        // Assert
+        result!.Value.Should().BeEquivalentTo(new { handlerResult.CorrelationId });
     }
 
     [Test, MoqAutoData]

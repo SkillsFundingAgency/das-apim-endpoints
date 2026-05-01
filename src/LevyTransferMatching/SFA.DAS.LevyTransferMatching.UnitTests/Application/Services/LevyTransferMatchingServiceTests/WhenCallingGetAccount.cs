@@ -5,8 +5,10 @@ using NUnit.Framework;
 using SFA.DAS.LevyTransferMatching.Application.Services;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LevyTransferMatching.UnitTests.Application.Services.LevyTransferMatchingServiceTests
 {

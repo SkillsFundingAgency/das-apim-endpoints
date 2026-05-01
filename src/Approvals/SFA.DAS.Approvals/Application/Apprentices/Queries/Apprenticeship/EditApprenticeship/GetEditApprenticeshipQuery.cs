@@ -2,14 +2,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship
 {
@@ -23,7 +26,10 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
         public string CourseName { get; set; }
         public bool HasMultipleDeliveryModelOptions { get; set; }
         public bool IsFundedByTransfer { get; set; }
+        public short Status { get; set; }
+        [JsonConverter(typeof(StringEnumConverter))]
         public LearningType? LearningType { get; set; }
+
     }
 
     public class GetEditApprenticeshipQueryHandler : IRequestHandler<GetEditApprenticeshipQuery, GetEditApprenticeshipQueryResult>
@@ -64,6 +70,7 @@ namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditA
                 CourseName = apprenticeship.CourseName,
                 IsFundedByTransfer = apprenticeship.TransferSenderId.HasValue,
                 HasMultipleDeliveryModelOptions = deliveryModel.Count > 1,
+                Status = apprenticeship.Status, 
                 LearningType = apprenticeship.LearningType
             };
         }

@@ -3,8 +3,9 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ProviderFeedback.Services;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ProviderFeedback.UnitTests.Services

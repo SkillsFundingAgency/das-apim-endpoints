@@ -8,9 +8,12 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using System.Collections.Generic;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificate;

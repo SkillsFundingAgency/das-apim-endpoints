@@ -5,11 +5,10 @@ using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Requests;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi.Responses;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.Approvals.Types;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Reservations;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAssignAllowEmployerAdd;
 

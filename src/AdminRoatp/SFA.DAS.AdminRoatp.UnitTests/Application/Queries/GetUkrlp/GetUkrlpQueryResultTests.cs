@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
 using SFA.DAS.AdminRoatp.Application.Queries.GetUkrlp;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 
 namespace SFA.DAS.AdminRoatp.UnitTests.Application.Queries.GetUkrlp;
 public class GetUkrlpQueryResultTests

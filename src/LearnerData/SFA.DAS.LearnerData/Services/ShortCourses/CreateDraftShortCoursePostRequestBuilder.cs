@@ -1,20 +1,22 @@
-﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses;
-using Milestone = SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData.ShortCourses.Milestone;
-using SourceMilestone = SFA.DAS.LearnerData.Requests.Milestone;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Shared;
+using OnProgramme = SFA.DAS.LearnerData.Requests.EarningsInner.OnProgramme;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses
 {
     public interface ICreateDraftShortCoursePostRequestBuilder
     {
-        CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn);
+        Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn);
     }
 
-    public class CreateDraftShortCoursePostRequestBuilder(ILogger<CreateDraftShortCoursePostRequestBuilder> logger) : ICreateDraftShortCoursePostRequestBuilder
+    public class CreateDraftShortCoursePostRequestBuilder(
+        ILogger<CreateDraftShortCoursePostRequestBuilder> logger,
+        IShortCourseLookupService shortCourseLookupService) : ICreateDraftShortCoursePostRequestBuilder
     {
-        public CreateDraftShortCourseRequest Build(ShortCourseRequest request, long ukprn)
+        public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn)
         {
             if (request.Delivery.OnProgramme.Count > 1)
             {
@@ -31,8 +33,10 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                 })
                 .ToList();
 
-            if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(SourceMilestone.LearningComplete))
+            if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
                 milestones.Add(Milestone.LearningComplete);
+
+            var courseDetails = await shortCourseLookupService.GetCourseDetails(firstOnProg.CourseCode, firstOnProg.StartDate);
 
             return new CreateDraftShortCourseRequest
             {
@@ -43,16 +47,10 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     LastName = request.Learner.LastName,
                     DateOfBirth = request.Learner.Dob,
                     EmailAddress = request.Learner.Email,
-					LearnerRef = request.Learner.LearnerRef
+                    LearnerRef = request.Learner.LearnerRef
                 },
-                LearningSupport = firstOnProg.LearningSupport
-                    .Select(ls => new LearningSupportUpdatedDetails
-                    {
-                        StartDate = ls.StartDate,
-                        EndDate = ls.EndDate
-                    })
-                    .ToList(),
-                OnProgramme = new OnProgramme
+                LearningSupport = firstOnProg.LearningSupport,
+                OnProgramme = new SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme
                 {
                     CourseCode = firstOnProg.CourseCode,
                     Ukprn = ukprn,
@@ -61,7 +59,8 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     CompletionDate = firstOnProg.CompletionDate,
                     WithdrawalDate = firstOnProg.WithdrawalDate,
                     Milestones = milestones,
-                    Price = 1000
+                    Price = courseDetails.Price,
+                    LearningType = courseDetails.LearningType
                 }
             };
         }

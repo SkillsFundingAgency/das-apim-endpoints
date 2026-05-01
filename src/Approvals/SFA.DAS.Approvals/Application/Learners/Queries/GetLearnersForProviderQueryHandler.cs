@@ -12,9 +12,11 @@ using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Reservations;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Reservations;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using GetAllStandardsRequest = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses.GetAllStandardsRequest;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
@@ -125,7 +127,8 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
                 request.StartYear,
                 request.MaxStartDate,
                 string.Join(",", request.ExcludeUlns),
-                request.CourseCode
+                request.CourseCode,
+                request.LearningType
             ));
 
         if (!string.IsNullOrEmpty(response.ErrorContent))

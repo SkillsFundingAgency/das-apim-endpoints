@@ -21,4 +21,4 @@ namespace SFA.DAS.Approvals.Services
         public GetCourseLookupResponse Course { get; set; }
         public GetRecognitionOfPriorLearningResponse RplRules { get; set; }
     }
-} 
+}

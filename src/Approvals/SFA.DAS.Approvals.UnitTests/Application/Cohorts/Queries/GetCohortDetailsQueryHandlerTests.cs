@@ -11,10 +11,14 @@ using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using Party = SFA.DAS.Approvals.InnerApi.Responses.Party;
 using Standard = SFA.DAS.Approvals.Types.Standard;
 
@@ -44,7 +48,7 @@ public class GetCohortDetailsQueryHandlerTests
     private List<string> _deliveryModels;
     private Mock<IDeliveryModelService> _deliveryModelService;
     private Mock<IFjaaService> _fjaaService;
-    private Mock<IProviderStandardsService> _providerCoursesService;
+    private Mock<IProviderCoursesOrStandardsService> _providerCoursesService;
 
     [SetUp]
     public void Setup()
@@ -98,7 +102,7 @@ public class GetCohortDetailsQueryHandlerTests
         _serviceParameters = new ServiceParameters((Approvals.Application.Shared.Enums.Party)_cohort.WithParty, _cohort.AccountId);
 
         _providerStandards = fixture.Create<List<Standard>>();
-        _providerCoursesService = new Mock<IProviderStandardsService>();
+        _providerCoursesService = new Mock<IProviderCoursesOrStandardsService>();
         _providerCoursesService.Setup(x => x.GetCoursesData(It.Is<long>(id => id == _cohort.ProviderId)))
             .ReturnsAsync(() => new ProviderStandardsData { Standards = _providerStandards });
 

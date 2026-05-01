@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RecruitJobs.Api.Models;
@@ -12,17 +16,15 @@ using SFA.DAS.RecruitJobs.InnerApi.Requests.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.VacancyAnalytics;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.RecruitJobs.Domain;
 using StrawberryShake;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net;
-using VacancyStatus = SFA.DAS.RecruitJobs.Domain.Vacancy.VacancyStatus;
+using VacancyStatus = SFA.DAS.RecruitJobs.Domain.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -30,6 +32,31 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 [ApiController]
 public class VacanciesController(ILogger<VacanciesController> logger) : ControllerBase
 {
+    [HttpGet]
+    [Route("{id:guid}")]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetOneById(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyById.ExecuteAsync(id, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("Error fetching vacancy '{VacancyId}':\r\n {Errors}", id, response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+        
+        if (response is not { Data.Vacancies.Count: > 0 })
+        {
+            return TypedResults.NotFound();
+        }
+
+        return TypedResults.Ok(new DataResponse<Vacancy>(GqlVacancyMapper.From(response.Data.Vacancies[0])));
+    }
+
     [HttpGet]
     [Route("{vacancyReference:long}/analytics")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]

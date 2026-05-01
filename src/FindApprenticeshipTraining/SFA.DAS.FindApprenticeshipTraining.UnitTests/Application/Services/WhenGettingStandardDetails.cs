@@ -4,11 +4,15 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services;
@@ -61,6 +65,50 @@ public class WhenGettingStandardDetails
             service.SaveToCache(
                 $"{nameof(StandardDetailsLookupResponse)}-{larsCode}",
                 coursesFromApi,
+                expectedExpirationInHours, null));
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetKsbsForCourseOption_KsbsFoundInCache_ReturnsCachedKsbs(
+        GetKsbsForCourseOptionResponse ksbsFromCache,
+        [Frozen] Mock<ICacheStorageService> mockCacheService,
+        CachedStandardDetailsService service)
+    {
+        var larsCode = "123";
+
+        mockCacheService
+            .Setup(s => s.RetrieveFromCache<GetKsbsForCourseOptionResponse>($"{nameof(GetKsbsForCourseOptionResponse)}-{larsCode}"))
+            .ReturnsAsync(ksbsFromCache);
+
+        var result = await service.GetKsbsForCourseOption(larsCode);
+
+        result.Should().BeEquivalentTo(ksbsFromCache);
+    }
+
+    [Test, MoqAutoData]
+    public async Task GetKsbsForCourseOption_KsbsNotFoundInCache_GetsFromApiAndStoresInCache(
+        GetKsbsForCourseOptionResponse ksbsFromApi,
+        [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
+        [Frozen] Mock<ICacheStorageService> mockCacheService,
+        CachedStandardDetailsService service)
+    {
+        var expectedExpirationInHours = 4;
+        var larsCode = "123";
+
+        mockCoursesApiClient.Setup(client => client.GetWithResponseCode<GetKsbsForCourseOptionResponse>(It.IsAny<GetKsbsForCourseOptionRequest>()))
+            .ReturnsAsync(new ApiResponse<GetKsbsForCourseOptionResponse>(ksbsFromApi, System.Net.HttpStatusCode.OK, ""));
+
+        mockCacheService
+            .Setup(s => s.RetrieveFromCache<GetKsbsForCourseOptionResponse>($"{nameof(GetKsbsForCourseOptionResponse)}-{larsCode}"))
+            .ReturnsAsync((GetKsbsForCourseOptionResponse)null);
+
+        var result = await service.GetKsbsForCourseOption(larsCode);
+
+        result.Should().BeEquivalentTo(ksbsFromApi);
+        mockCacheService.Verify(s =>
+            s.SaveToCache(
+                $"{nameof(GetKsbsForCourseOptionResponse)}-{larsCode}",
+                ksbsFromApi,
                 expectedExpirationInHours, null));
     }
 }

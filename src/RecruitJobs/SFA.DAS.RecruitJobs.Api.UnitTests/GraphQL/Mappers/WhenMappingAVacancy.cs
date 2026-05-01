@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text.Json;
-using SFA.DAS.RecruitJobs.Domain.Vacancy;
+using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using Address = SFA.DAS.RecruitJobs.Domain.Address;
 using GqlApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
 using GqlApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
 using GqlClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
@@ -15,6 +16,7 @@ using GqlSourceType = SFA.DAS.RecruitJobs.GraphQL.SourceType;
 using GqlDurationUnit = SFA.DAS.RecruitJobs.GraphQL.DurationUnit;
 using GqlWageType = SFA.DAS.RecruitJobs.GraphQL.WageType;
 using GqlAvailableWhere = SFA.DAS.RecruitJobs.GraphQL.AvailableWhere;
+using VacancyStatus = SFA.DAS.RecruitJobs.GraphQL.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.GraphQL.Mappers;
 
@@ -394,7 +396,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (RecruitJobs.GraphQL.VacancyStatus)VacancyStatus.Draft;
+        source.Status = (VacancyStatus)Domain.VacancyStatus.Draft;
 
         // act
         var result = GqlVacancyMapper.From(source);
@@ -409,7 +411,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (RecruitJobs.GraphQL.VacancyStatus)VacancyStatus.Live;
+        source.Status = (VacancyStatus)Domain.VacancyStatus.Live;
 
         // act
         var result = GqlVacancyMapper.From(source);
@@ -424,7 +426,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (RecruitJobs.GraphQL.VacancyStatus)VacancyStatus.Live;
+        source.Status = (VacancyStatus)Domain.VacancyStatus.Live;
         source.EmployerLocations = JsonSerializer.Serialize(new List<Address> { address }, Global.JsonSerializerOptions);
 
         // act
@@ -440,7 +442,7 @@ public class WhenMappingAVacancy
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = null;
-        source.Status = (RecruitJobs.GraphQL.VacancyStatus)VacancyStatus.Live;
+        source.Status = (VacancyStatus)Domain.VacancyStatus.Live;
         source.EmployerLocations = null;
 
         // act
