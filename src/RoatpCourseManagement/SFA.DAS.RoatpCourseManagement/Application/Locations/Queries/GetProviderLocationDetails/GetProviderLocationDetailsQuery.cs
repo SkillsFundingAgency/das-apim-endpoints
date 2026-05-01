@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 

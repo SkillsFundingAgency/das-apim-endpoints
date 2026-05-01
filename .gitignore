@@ -284,4 +284,3 @@ src/**/generated.sh
 *.learningtransport*
 src/ApprenticeApp/SFA.DAS.ApprenticeApp.Api/appsettings.json
 /src/FindApprenticeshipTraining/.github/copilot-instructions.md
-/src/RoatpCourseManagement/.github/copilot-instructions.md

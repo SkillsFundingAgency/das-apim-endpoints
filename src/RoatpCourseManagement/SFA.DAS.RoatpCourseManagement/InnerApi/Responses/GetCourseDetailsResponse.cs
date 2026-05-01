@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Types.Constants;
+﻿using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using DurationUnits = SFA.DAS.SharedOuterApi.Types.Constants.DurationUnits;
 
@@ -17,5 +18,4 @@ public class GetCourseDetailsResponse
     public string Route { get; set; }
     public LearningType ApprenticeshipType { get; set; }
     public CourseType CourseType { get; set; }
-    public bool IsActiveAvailable { get; set; }
 }

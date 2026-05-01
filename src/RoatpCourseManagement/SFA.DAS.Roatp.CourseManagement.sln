@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 18
-VisualStudioVersion = 18.5.11716.220 stable
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32414.318
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement", "SFA.DAS.RoatpCourseManagement\SFA.DAS.RoatpCourseManagement.csproj", "{59916D5A-5B8A-4D60-A938-6A0AAB747890}"
 EndProject
@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManageme
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpCourseManagement.UnitTests", "SFA.DAS.RoatpCourseManagement.UnitTests\SFA.DAS.RoatpCourseManagement.UnitTests.csproj", "{B630AF48-0477-4AE7-BB07-BA8F39614AAB}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{871A9784-62BE-457C-929B-47D6690F92C4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Types.UnitTests\SFA.DAS.SharedOuterApi.Types.UnitTests.csproj", "{0C2923A8-A4BF-0481-0A98-3EE75752A64C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +39,14 @@ Global
 		{B630AF48-0477-4AE7-BB07-BA8F39614AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B630AF48-0477-4AE7-BB07-BA8F39614AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B630AF48-0477-4AE7-BB07-BA8F39614AAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65FA32A3-13DD-4B0A-9B11-A85C6AB4C7F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,7 +54,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EBA53352-99A4-4150-9851-0C26ED8FB732} = {871A9784-62BE-457C-929B-47D6690F92C4}
 		{B630AF48-0477-4AE7-BB07-BA8F39614AAB} = {871A9784-62BE-457C-929B-47D6690F92C4}
-		{0C2923A8-A4BF-0481-0A98-3EE75752A64C} = {871A9784-62BE-457C-929B-47D6690F92C4}
+		{45A1AC36-2A2B-4BB9-9957-8C3B3FAEAA4C} = {871A9784-62BE-457C-929B-47D6690F92C4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {35695315-ADEC-4A65-B8C4-BE7BD41E3A48}

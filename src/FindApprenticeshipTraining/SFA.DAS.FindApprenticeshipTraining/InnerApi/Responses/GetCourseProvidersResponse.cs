@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
@@ -17,7 +18,6 @@ public class GetCourseProvidersResponse
     public string StandardName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType ApprenticeshipType { get; set; }
-    public bool IsActiveAvailable { get; set; }
 
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }

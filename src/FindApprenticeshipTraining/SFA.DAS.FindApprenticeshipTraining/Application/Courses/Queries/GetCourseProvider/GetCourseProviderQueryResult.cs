@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
@@ -17,7 +18,6 @@ public sealed class GetCourseProviderQueryResult
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType ApprenticeshipType { get; set; }
-    public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
@@ -42,7 +42,6 @@ public sealed class GetCourseProviderQueryResult
             CourseName = source.CourseName,
             CourseType = source.CourseType,
             ApprenticeshipType = source.ApprenticeshipType,
-            IsActiveAvailable = source.IsActiveAvailable,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
@@ -19,7 +20,6 @@ public class GetStandardResponse
     public int Duration { get; set; }
     public DurationUnits DurationUnits { get; set; }
     public CourseType CourseType { get; set; }
-    public bool IsActiveAvailable { get; set; }
 
     public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source)
     {
@@ -41,17 +41,60 @@ public class GetStandardResponse
             IsRegulatedForProvider = source.IsRegulatedForProvider,
             Duration = apprenticeshipFunding?.Duration ?? 0,
             DurationUnits = apprenticeshipFunding?.DurationUnits ?? default(DurationUnits),
-            CourseType = source.CourseType,
-            IsActiveAvailable = IsActiveAvailableStandard(source.CourseDates)
+            CourseType = source.CourseType
         };
     }
 
-    private static bool IsActiveAvailableStandard(CourseDates courseDates)
-    {
-        if (courseDates == null) return false;
+    public static implicit operator GetStandardResponse(GetStandardResponseFromCourseManagementApi source) =>
+        new()
+        {
+            IfateReferenceNumber = source.IfateReferenceNumber,
+            LarsCode = source.LarsCode,
+            Title = source.Title,
+            Level = source.Level,
+            ApprenticeshipType = source.ApprenticeshipType,
+            ApprovalBody = source.ApprovalBody,
+            Route = source.Route,
+            IsRegulatedForProvider = source.IsRegulatedForProvider,
+            Duration = source.Duration,
+            DurationUnits = source.DurationUnits,
+            CourseType = source.CourseType
+        };
+}
 
-        return (courseDates.LastDateStarts == null || courseDates.LastDateStarts >= DateTime.UtcNow.Date)
-        && courseDates.LastDateStarts != courseDates.EffectiveFrom
-        && courseDates.EffectiveFrom <= DateTime.UtcNow.Date;
-    }
+public class GetStandardResponseFromCoursesApi
+{
+    public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; } = new();
+    public string StandardUId { get; set; }
+    public string IfateReferenceNumber { get; set; }
+    public string LarsCode { get; set; }
+    public string Title { get; set; }
+    public int Level { get; set; }
+    public LearningType LearningType { get; set; }
+    public string ApprovalBody { get; set; }
+    public string Route { get; set; }
+    public bool IsRegulatedForProvider { get; set; }
+    public CourseType CourseType { get; set; }
+}
+public class ApprenticeshipFunding
+{
+    public DateTime EffectiveFrom { get; set; }
+    public DurationUnits DurationUnits { get; set; }
+    public int Duration { get; set; }
+}
+
+public class GetStandardResponseFromCourseManagementApi
+{
+    public string IfateReferenceNumber { get; set; }
+    public string LarsCode { get; set; }
+    public string Title { get; set; }
+    public int Level { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
+    public CourseType CourseType { get; set; }
+    public string ApprovalBody { get; set; }
+    public string Route { get; set; }
+    public bool IsRegulatedForProvider { get; set; }
+    public int Duration { get; set; }
+    public DurationUnits DurationUnits { get; set; }
+
 }
