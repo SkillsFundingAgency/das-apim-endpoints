@@ -185,7 +185,7 @@ namespace SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyRefere
                     ProviderName = source.TrainingProvider.Name,
                     Qualifications = source.Qualifications.Select(q => new VacancyQualification
                     {
-                        QualificationType = q.QualificationType,
+                        QualificationType = q.QualificationType.Equals("Other", StringComparison.CurrentCultureIgnoreCase) ? q.OtherQualificationName! : q.QualificationType,
                         Subject = q.Subject,
                         Grade = q.Grade,
                         Weighting = q.Weighting != null ? (Weighting)q.Weighting : default

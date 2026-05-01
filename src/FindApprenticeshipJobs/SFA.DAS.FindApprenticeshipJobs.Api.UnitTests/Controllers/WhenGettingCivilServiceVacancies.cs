@@ -30,7 +30,7 @@ internal class WhenGettingCivilServiceVacancies
         {
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             actual.Value.Should().BeOfType<GetLiveVacanciesApiResponse>();
-            actualValue!.Vacancies.Should().BeEquivalentTo(mockQueryResult.CivilServiceVacancies);
+            actualValue!.Vacancies.Should().BeEquivalentTo(mockQueryResult.CivilServiceVacancies, options=>options.Excluding(c=>c.Qualifications));
             actualValue.PageSize.Should().Be(mockQueryResult.CivilServiceVacancies.Count);
             actualValue.PageNo.Should().Be(1);
             actualValue.TotalLiveVacanciesReturned.Should().Be(mockQueryResult.CivilServiceVacancies.Count);

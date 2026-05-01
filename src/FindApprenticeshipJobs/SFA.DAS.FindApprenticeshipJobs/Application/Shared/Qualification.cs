@@ -7,4 +7,5 @@ public class Qualification
     public string Subject { get; set; } = null!;
     public string Grade { get; set; } = null!;
     public QualificationWeighting? Weighting { get; set; }
+    public string? OtherQualificationName { get; set; }
 }
