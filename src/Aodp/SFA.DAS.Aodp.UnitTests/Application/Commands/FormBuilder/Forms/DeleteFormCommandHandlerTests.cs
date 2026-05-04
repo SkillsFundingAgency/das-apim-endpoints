@@ -54,7 +54,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Application.Application
             var request = _fixture.Create<DeleteFormCommand>();
             _apiClientMock
                 .Setup(a => a.Delete(It.IsAny<DeleteFormApiRequest>()))
-                .Throws(expectedException);
+                .ThrowsAsync(expectedException);
 
             // Act
             var result = await _handler.Handle(request, CancellationToken.None);

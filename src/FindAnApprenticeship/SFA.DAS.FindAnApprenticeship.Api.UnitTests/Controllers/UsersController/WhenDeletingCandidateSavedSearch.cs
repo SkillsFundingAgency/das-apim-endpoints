@@ -41,7 +41,7 @@ public class WhenDeletingCandidateSavedSearch
         // arrange
         mediator
             .Setup(x => x.Send(It.IsAny<DeleteSavedSearchCommand>(), It.IsAny<CancellationToken>()))
-            .Throws(new InvalidOperationException());
+            .ThrowsAsync(new InvalidOperationException());
         
         // act
         var response = await sut.DeleteUserSavedSearch(Guid.NewGuid(), Guid.NewGuid(), default) as StatusCodeResult;

@@ -47,7 +47,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Application.Qualifications
             var exceptionMessage = "API call failed";
 
             _apiClientMock.Setup(x => x.Put(It.IsAny<CreateQualificationDiscussionHistoryNoteForFundingApiRequest>()))
-                          .Throws(new Exception(exceptionMessage));
+                          .ThrowsAsync(new Exception(exceptionMessage));
 
             // Act
             var result = await _handler.Handle(command, CancellationToken.None);
