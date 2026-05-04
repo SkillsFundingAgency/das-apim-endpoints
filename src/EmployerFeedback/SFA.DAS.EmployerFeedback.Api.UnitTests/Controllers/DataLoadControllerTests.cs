@@ -46,7 +46,7 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.Controllers
             var boom = new InvalidOperationException("boom");
             _mediatorMock
                 .Setup(m => m.Send(It.IsAny<GenerateFeedbackSummariesCommand>(), It.IsAny<CancellationToken>()))
-                .Throws(boom);
+                .ThrowsAsync(boom);
 
             var result = await _controller.GenerateFeedbackSummaries();
 

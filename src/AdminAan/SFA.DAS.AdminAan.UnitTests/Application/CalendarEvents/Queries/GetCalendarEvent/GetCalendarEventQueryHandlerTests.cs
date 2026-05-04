@@ -124,5 +124,6 @@ public class GetCalendarEventQueryHandlerTests
         aanHubRestApiClientMock.Verify(x => x.GetRegions(cancellationToken), Times.Never);
         aanHubRestApiClientMock.Verify(x => x.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken), Times.Once);
         educationalOrgsApiClientMock.Verify();
+        educationalOrgsApiClientMock.VerifyNoOtherCalls();
     }
 }

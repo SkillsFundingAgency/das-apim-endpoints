@@ -44,6 +44,7 @@ public class ResumeEmployerUserCommandHandlerTests
 
         result.Should().Be(expectedResponse);
         apiClient.Verify();
+        apiClient.VerifyNoOtherCalls();
     }
 }
 
