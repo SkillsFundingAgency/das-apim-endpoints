@@ -38,15 +38,15 @@ public class CachedStandardDetailsService : ICachedStandardDetailsService
         return cachedKsbsForCourseOption;
     }
 
-    public async Task<GetCoursesLookupResponse> GetStandardDetails(string larsCode)
+    public async Task<GetCourseLookupResponse> GetStandardDetails(string larsCode)
     {
-        var standardDetailsCacheKey = $"{nameof(GetCoursesLookupResponse)}-{larsCode}";
-        GetCoursesLookupResponse cachedStandardDetails = await _cacheStorageService.RetrieveFromCache<GetCoursesLookupResponse>(standardDetailsCacheKey);
+        var standardDetailsCacheKey = $"{nameof(GetCourseLookupResponse)}-{larsCode}";
+        GetCourseLookupResponse cachedStandardDetails = await _cacheStorageService.RetrieveFromCache<GetCourseLookupResponse>(standardDetailsCacheKey);
 
         if (cachedStandardDetails != null)
             return cachedStandardDetails;
 
-        var apiResponse = await _coursesApiClient.GetWithResponseCode<GetCoursesLookupResponse>(new GetCoursesLookupRequest(larsCode));
+        var apiResponse = await _coursesApiClient.GetWithResponseCode<GetCourseLookupResponse>(new GetCourseLookupRequest(larsCode));
         apiResponse.EnsureSuccessStatusCode();
         cachedStandardDetails = apiResponse.Body;
         await _cacheStorageService.SaveToCache(standardDetailsCacheKey, cachedStandardDetails, StandardDetailsCacheDurationInHours);

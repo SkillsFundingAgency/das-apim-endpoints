@@ -7,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Types.Domain;
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 [ExcludeFromCodeCoverage]
-public class GetCoursesLookupResponse : StandardApiResponseBase
+public class GetCourseLookupResponse : StandardApiResponseBase
 {
     public string StandardUId { get; set; }
     public string IfateReferenceNumber { get; set; }

@@ -5,12 +5,12 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
 {
-    public class GetCoursesLookupResponseTests
+    public class GetCourseLookupResponseTests
     {
         [Test]
         public void IsActiveAvailable_CourseDatesAreNull_ReturnsFalse()
         {
-            var standard = new GetCoursesLookupResponse
+            var standard = new GetCourseLookupResponse
             {
                 CourseDates = null
             };
@@ -21,7 +21,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         [Test]
         public void IsActiveAvailable_LastDateStartsIsNullAndEffectiveFromIsToday_ReturnsTrue()
         {
-            var standard = new GetCoursesLookupResponse
+            var standard = new GetCourseLookupResponse
             {
                 CourseDates = new()
                 {
@@ -36,7 +36,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         [Test]
         public void IsActiveAvailable_LastDateStartsIsInFutureAndEffectiveFromIsInPast_ReturnsTrue()
         {
-            var standard = new GetCoursesLookupResponse
+            var standard = new GetCourseLookupResponse
             {
                 CourseDates = new()
                 {
@@ -52,7 +52,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         public void IsActiveAvailable_LastDateStartsEqualsEffectiveFrom_ReturnsFalse()
         {
             var today = DateTime.UtcNow.Date;
-            var standard = new GetCoursesLookupResponse
+            var standard = new GetCourseLookupResponse
             {
                 CourseDates = new()
                 {
@@ -67,7 +67,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         [Test]
         public void IsActiveAvailable_LastDateStartsIsInPast_ReturnsFalse()
         {
-            var standard = new GetCoursesLookupResponse
+            var standard = new GetCourseLookupResponse
             {
                 CourseDates = new()
                 {
@@ -82,7 +82,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
         [Test]
         public void IsActiveAvailable_EffectiveFromIsInFuture_ReturnsFalse()
         {
-            var standard = new GetCoursesLookupResponse
+            var standard = new GetCourseLookupResponse
             {
                 CourseDates = new()
                 {

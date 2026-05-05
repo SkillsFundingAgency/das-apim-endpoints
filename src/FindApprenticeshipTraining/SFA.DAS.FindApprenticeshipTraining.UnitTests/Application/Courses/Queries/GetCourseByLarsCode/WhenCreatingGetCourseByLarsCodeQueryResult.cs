@@ -10,7 +10,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
 {
     [Test, MoqAutoData]
-    public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(GetCoursesLookupResponse response)
+    public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(GetCourseLookupResponse response)
     {
         GetCourseByLarsCodeQueryResult sut = response;
         Assert.Multiple(() =>
@@ -35,7 +35,7 @@ public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
     [Test]
     public void ImplicitConversion_ActiveStandardWithRelatedOccupations_MapsIsActiveAndRelatedOccupations()
     {
-        var response = new GetCoursesLookupResponse
+        var response = new GetCourseLookupResponse
         {
             CourseDates = new StandardDate
             {

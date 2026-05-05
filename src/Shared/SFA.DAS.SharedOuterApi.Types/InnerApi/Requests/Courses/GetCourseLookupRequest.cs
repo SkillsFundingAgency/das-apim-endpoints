@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
-public class GetCoursesLookupRequest(string id) : IGetApiRequest
+public class GetCourseLookupRequest(string id) : IGetApiRequest
 {
     public string Id { get; } = id;
     public string GetUrl => $"api/courses/lookup/{Id}";
