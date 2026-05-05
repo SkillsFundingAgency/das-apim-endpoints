@@ -5,7 +5,6 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
     public abstract class StandardApiResponseBase
     {
         public StandardDate StandardDates { get; set; }
-        public CourseDate CourseDates { get; set; }
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
 
         [JsonIgnore]
@@ -14,16 +13,6 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
         public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
         [JsonIgnore]
         public bool IsActive => IsStandardActive();
-        public bool IsActiveAvailable => IsStandardActiveAvailable();
-
-        private bool IsStandardActiveAvailable()
-        {
-            if (CourseDates == null) return false;
-
-            return (CourseDates.LastDateStarts == null || CourseDates.LastDateStarts >= DateTime.UtcNow.Date)
-                    && CourseDates.LastDateStarts != CourseDates.EffectiveFrom
-                    && CourseDates.EffectiveFrom <= DateTime.UtcNow.Date;
-        }
 
         public int MaxFundingOn(DateTime effectiveDate)
         {
@@ -71,15 +60,6 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
     }
 
     public class StandardDate
-    {
-        public DateTime? LastDateStarts { get; set; }
-
-        public DateTime? EffectiveTo { get; set; }
-
-        public DateTime EffectiveFrom { get; set; }
-    }
-
-    public class CourseDate
     {
         public DateTime? LastDateStarts { get; set; }
 

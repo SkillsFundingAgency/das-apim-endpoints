@@ -31,7 +31,7 @@ public sealed class GetCourseByLarsCodeQueryResult
     public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public int IncentivePayment { get; set; }
 
-    public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailsLookupResponse source)
+    public static implicit operator GetCourseByLarsCodeQueryResult(GetCoursesLookupResponse source)
     {
         return new()
         {

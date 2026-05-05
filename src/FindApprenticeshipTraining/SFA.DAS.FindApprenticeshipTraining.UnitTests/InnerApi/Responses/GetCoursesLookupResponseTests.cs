@@ -1,13 +1,16 @@
 using System;
+using FluentAssertions;
+using NUnit.Framework;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiResponseBaseTests
+namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Responses
 {
-    public class WhenGettingIsActiveAvailable
+    public class GetCoursesLookupResponseTests
     {
         [Test]
         public void IsActiveAvailable_CourseDatesAreNull_ReturnsFalse()
         {
-            var standard = new TestStandardResponse
+            var standard = new GetCoursesLookupResponse
             {
                 CourseDates = null
             };
@@ -18,7 +21,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
         [Test]
         public void IsActiveAvailable_LastDateStartsIsNullAndEffectiveFromIsToday_ReturnsTrue()
         {
-            var standard = new TestStandardResponse
+            var standard = new GetCoursesLookupResponse
             {
                 CourseDates = new()
                 {
@@ -33,7 +36,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
         [Test]
         public void IsActiveAvailable_LastDateStartsIsInFutureAndEffectiveFromIsInPast_ReturnsTrue()
         {
-            var standard = new TestStandardResponse
+            var standard = new GetCoursesLookupResponse
             {
                 CourseDates = new()
                 {
@@ -49,7 +52,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
         public void IsActiveAvailable_LastDateStartsEqualsEffectiveFrom_ReturnsFalse()
         {
             var today = DateTime.UtcNow.Date;
-            var standard = new TestStandardResponse
+            var standard = new GetCoursesLookupResponse
             {
                 CourseDates = new()
                 {
@@ -64,7 +67,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
         [Test]
         public void IsActiveAvailable_LastDateStartsIsInPast_ReturnsFalse()
         {
-            var standard = new TestStandardResponse
+            var standard = new GetCoursesLookupResponse
             {
                 CourseDates = new()
                 {
@@ -79,7 +82,7 @@ namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses.StandardApiRespons
         [Test]
         public void IsActiveAvailable_EffectiveFromIsInFuture_ReturnsFalse()
         {
-            var standard = new TestStandardResponse
+            var standard = new GetCoursesLookupResponse
             {
                 CourseDates = new()
                 {

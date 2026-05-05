@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
@@ -5,7 +7,7 @@ using SFA.DAS.SharedOuterApi.Types.Domain;
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
 [ExcludeFromCodeCoverage]
-public class StandardDetailsLookupResponse : StandardApiResponseBase
+public class GetCoursesLookupResponse : StandardApiResponseBase
 {
     public string StandardUId { get; set; }
     public string IfateReferenceNumber { get; set; }
@@ -51,4 +53,16 @@ public class StandardDetailsLookupResponse : StandardApiResponseBase
     public int VersionMajor { get; set; }
     public int VersionMinor { get; set; }
     public bool EpaoMustBeApprovedByRegulatorBody { get; set; }
+    public StandardDate CourseDates { get; set; }
+    public bool IsActiveAvailable => IsStandardActiveAvailable();
+
+    private bool IsStandardActiveAvailable()
+    {
+        if (CourseDates == null) return false;
+
+        return (CourseDates.LastDateStarts == null || CourseDates.LastDateStarts >= DateTime.UtcNow.Date)
+                && CourseDates.LastDateStarts != CourseDates.EffectiveFrom
+                && CourseDates.EffectiveFrom <= DateTime.UtcNow.Date;
+    }
 }
+

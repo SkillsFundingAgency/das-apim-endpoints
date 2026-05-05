@@ -1,17 +1,14 @@
 using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses
+public class GetFrameworkRequest : IGetApiRequest
 {
-    public class GetFrameworkRequest : IGetApiRequest
+    public GetFrameworkRequest(string code)
     {
-        public GetFrameworkRequest(string code)
-        {
-            FrameworkCode = code;
-        }
-
-        public string FrameworkCode { get; }
-        public string GetUrl => $"api/courses/frameworks/{FrameworkCode}";
+        FrameworkCode = code;
     }
+
+    public string FrameworkCode { get; }
+    public string GetUrl => $"api/courses/frameworks/{FrameworkCode}";
 }
