@@ -4,6 +4,7 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
 {
     public abstract class StandardApiResponseBase
     {
+        public StandardDate StandardDates { get; set; }
         public CourseDate CourseDates { get; set; }
         public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
 
@@ -59,14 +60,23 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
 
         private bool IsStandardActive()
         {
-            if (CourseDates == null) return false;
+            if (StandardDates == null) return false;
 
-            return CourseDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
-                   && (!CourseDates.EffectiveTo.HasValue ||
-                       CourseDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)
-                   && (!CourseDates.LastDateStarts.HasValue ||
-                       CourseDates.LastDateStarts.Value.Date >= DateTime.UtcNow.Date);
+            return StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
+                   && (!StandardDates.EffectiveTo.HasValue ||
+                       StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)
+                   && (!StandardDates.LastDateStarts.HasValue ||
+                       StandardDates.LastDateStarts.Value.Date >= DateTime.UtcNow.Date);
         }
+    }
+
+    public class StandardDate
+    {
+        public DateTime? LastDateStarts { get; set; }
+
+        public DateTime? EffectiveTo { get; set; }
+
+        public DateTime EffectiveFrom { get; set; }
     }
 
     public class CourseDate
