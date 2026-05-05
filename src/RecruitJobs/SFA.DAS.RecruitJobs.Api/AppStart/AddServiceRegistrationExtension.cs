@@ -9,6 +9,7 @@ using SFA.DAS.Apim.Shared.Services;
 using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Handlers;
+using SFA.DAS.SharedOuterApi.Recruit.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
@@ -34,5 +35,10 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IRecruitAiService, RecruitAiService>();
         services.AddTransient<VacancyMapper>();
         services.AddTransient<ITransferProviderVacancyToLegalEntityHandler, TransferProviderVacancyToLegalEntityHandler>();
+        services.AddTransient<ITransferProviderVacancyToQaReviewHandler, TransferProviderVacancyToQaReviewHandler>();
+        services.AddKeyedTransient<IBankHolidaysService, BankHolidaysService>("vanilla");
+        services.AddTransient<IBankHolidaysService, CachingBankHolidaysService>();
+        services.AddTransient<IVacancySlaDeadlineService, VacancySlaDeadlineService>();
+        services.AddTransient<IVacancyReviewService, VacancyReviewService>();
     }
 }

@@ -63,5 +63,18 @@ public class UpdatedEmployerPermissionsController: ControllerBase
         var data = response.Data?.Vacancies.Select(x => x.Id) ?? [];
         return TypedResults.Ok(data);
     }
+    
+    [HttpPost]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [Route("vacancies/{vacancyId:guid}/transfer/in-review")]
+    public async Task<IResult> TransferVacancyToQaReview(
+        [FromServices] ITransferProviderVacancyToQaReviewHandler handler,        
+        [FromRoute] Guid vacancyId,
+        [FromQuery, Required] Guid? userReference,
+        CancellationToken cancellationToken)
+    {
+        await handler.HandleAsync(vacancyId, userReference!.Value, cancellationToken);
+        return Results.NoContent();
+    }
 }
-
