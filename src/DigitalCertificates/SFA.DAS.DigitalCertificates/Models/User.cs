@@ -9,7 +9,7 @@ namespace SFA.DAS.DigitalCertificates.Models
         public string EmailAddress { get; set;  }
         public string PhoneNumber { get; set; }
         public DateTime? LastLoginAt { get; set; }
-        public DateTime? LockedAt { get; set; }
+        public bool IsLocked { get; set; }
 
         public static explicit operator User(InnerApi.Responses.User source)
         {
@@ -22,7 +22,7 @@ namespace SFA.DAS.DigitalCertificates.Models
                 EmailAddress = source.EmailAddress,
                 PhoneNumber = source.PhoneNumber,
                 LastLoginAt = source.LastLoginAt,
-                LockedAt = source.LockedAt
+                IsLocked = source.IsLocked
             };
         }
     }
