@@ -1,14 +1,15 @@
 using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
-
-public class GetStandardRequest : IGetApiRequest
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses
 {
-    public GetStandardRequest(int id)
+    public class GetStandardRequest : IGetApiRequest
     {
-        StandardId = id;
-    }
+        public GetStandardRequest(int id)
+        {
+            StandardId = id;
+        }
 
-    public int StandardId { get; }
-    public string GetUrl => $"api/courses/standards/{StandardId}";
+        public int StandardId { get; }
+        public string GetUrl => $"api/courses/standards/{StandardId}";
+    }
 }
