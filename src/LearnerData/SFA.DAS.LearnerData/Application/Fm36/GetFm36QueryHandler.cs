@@ -126,7 +126,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             return new List<Apprenticeship>();
         }
 
-        return result.Body.Apprenticeships;
+        return result.Body.Apprenticeships ?? [];
     }
 
     private List<JoinedLearnerData> JoinDataSources(List<Learning> learnings, List<Apprenticeship> earnings, List<UpdateLearnerRequest> sldData, GetAcademicYearsResponse currentAcademicYear)

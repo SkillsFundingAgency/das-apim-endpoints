@@ -24,7 +24,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
                 LearnAimRef = x.LearnAimRef,
                 Course = x.Course,
                 Amount = x.Amount,
-                PriorLearningAdjustmentPercentage = x.PriorLearningPercentage,
+                CombinedFundingAdjustmentPercentage = x.CombinedFundingAdjustmentPercentage,
                 PauseDate = x.PauseDate,
                 WithdrawalDate = x.WithdrawalDate,
                 CompletionDate = x.CompletionDate,

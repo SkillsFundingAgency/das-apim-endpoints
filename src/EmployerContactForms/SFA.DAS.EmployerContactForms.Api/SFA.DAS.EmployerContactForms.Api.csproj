@@ -22,18 +22,18 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-      <PackageReference Include="MediatR"  />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" />
-      <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
-      <PackageReference Include="Microsoft.Extensions.Options" />
-      <PackageReference Include="NLog.Web.AspNetCore" />
-      <PackageReference Include="SFA.DAS.Api.Common" />
-      <PackageReference Include="SFA.DAS.NLog.Targets.Redis" />
-      <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
-      <PackageReference Include="Swashbuckle.AspNetCore" />
+      <PackageReference Include="MediatR" Version="12.5.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.5" />
+      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" Version="10.0.5" />
+      <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="10.0.5" />
+      <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+      <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.5" />
+      <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
+      <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.8" />
+      <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
+      <PackageReference Include="SFA.DAS.NLog.Targets.Redis" Version="1.2.1" />
+      <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     </ItemGroup>
 
 

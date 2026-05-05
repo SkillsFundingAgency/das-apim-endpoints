@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24
+# Visual Studio Version 18
+VisualStudioVersion = 18.4.11626.88 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RecruitQa", "SFA.DAS.RecruitQa\SFA.DAS.RecruitQa.csproj", "{ADA24135-3FB3-7C72-4F23-D9852B1DC36D}"
 EndProject
@@ -13,9 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RecruitQa.UnitTests
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.RecruitQa.Api.UnitTests", "SFA.DAS.RecruitQa.Api.UnitTests\SFA.DAS.RecruitQa.Api.UnitTests.csproj", "{D6D3E81D-0414-4AD1-B6A0-1BF5037B95FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi", "..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj", "{FD29B479-371F-106A-99CA-4AB92D8E5B88}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.UnitTests\SFA.DAS.SharedOuterApi.UnitTests.csproj", "{BA42848C-142E-4452-F891-F4F9C7633D96}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +39,14 @@ Global
 		{D6D3E81D-0414-4AD1-B6A0-1BF5037B95FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6D3E81D-0414-4AD1-B6A0-1BF5037B95FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6D3E81D-0414-4AD1-B6A0-1BF5037B95FE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD29B479-371F-106A-99CA-4AB92D8E5B88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD29B479-371F-106A-99CA-4AB92D8E5B88}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD29B479-371F-106A-99CA-4AB92D8E5B88}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD29B479-371F-106A-99CA-4AB92D8E5B88}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA42848C-142E-4452-F891-F4F9C7633D96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA42848C-142E-4452-F891-F4F9C7633D96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA42848C-142E-4452-F891-F4F9C7633D96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA42848C-142E-4452-F891-F4F9C7633D96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
