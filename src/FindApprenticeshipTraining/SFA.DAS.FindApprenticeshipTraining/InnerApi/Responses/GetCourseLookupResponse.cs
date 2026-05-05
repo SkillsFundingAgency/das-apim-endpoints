@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
 [ExcludeFromCodeCoverage]
 public class GetCourseLookupResponse : StandardApiResponseBase
