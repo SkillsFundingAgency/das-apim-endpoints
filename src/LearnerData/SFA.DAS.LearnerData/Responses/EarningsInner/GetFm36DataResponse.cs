@@ -5,7 +5,7 @@ namespace SFA.DAS.LearnerData.Responses.EarningsInner;
 
 public class GetFm36DataResponse
 {
-    public List<Apprenticeship> Apprenticeships { get; set; }
+    public List<Apprenticeship> Apprenticeships { get; set; } = [];
 }
 
 public class Apprenticeship

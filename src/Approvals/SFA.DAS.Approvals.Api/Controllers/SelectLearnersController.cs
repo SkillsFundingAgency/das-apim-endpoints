@@ -32,7 +32,8 @@ public class SelectLearnersController(IMediator mediator, ILogger<SelectLearners
                 PageSize = request.PageSize,
                 StartMonth = request.StartMonth,
                 StartYear = request.StartYear,
-                CourseCode = request.CourseCode
+                CourseCode = request.CourseCode,
+                LearningType = request.LearningType
             });
             return Ok(result);
         }

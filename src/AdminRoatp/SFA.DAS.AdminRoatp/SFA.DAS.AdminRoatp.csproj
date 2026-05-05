@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
-    <PackageReference Include="RestEase" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
+    <PackageReference Include="RestEase" Version="1.6.4" />
   </ItemGroup>
 
   <ItemGroup>
