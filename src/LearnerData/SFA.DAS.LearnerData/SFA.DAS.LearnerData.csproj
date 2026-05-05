@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-	<PackageReference Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" />
-    <PackageReference Include="FluentValidation" />
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="SFA.DAS.AcademicYearService" />
-    <PackageReference Include="SFA.DAS.Payments.EarningEvents.Messages.External" />
+	<PackageReference Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" Version="0.1.17" />
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="SFA.DAS.AcademicYearService" Version="17.1.147" />
+    <PackageReference Include="SFA.DAS.Payments.EarningEvents.Messages.External" Version="2.0.8-prerelease-9" />
   </ItemGroup>
 
   <ItemGroup>
