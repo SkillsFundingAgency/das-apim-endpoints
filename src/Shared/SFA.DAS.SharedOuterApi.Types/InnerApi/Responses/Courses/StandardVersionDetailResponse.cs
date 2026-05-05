@@ -12,4 +12,4 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
         public int ProposedTypicalDuration { get; set; }
         public int ProposedMaxFunding { get; set; }
     }
- }
+}
