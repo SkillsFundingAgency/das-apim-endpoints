@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-// ActionStatus uses string now; no enum import required
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions
 {
@@ -42,24 +41,24 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions
 
     public class UserActionDetail
     {
-        public long Id { get; set; }
-        public Guid UserId { get; set; }
-        public string ActionType { get; set; } = string.Empty;
-        public DateTime ActionTime { get; set; }
-        public string ActionStatus { get; set; } = string.Empty;
-        public string FamilyName { get; set; } = string.Empty;
-        public string GivenNames { get; set; } = string.Empty;
+        public required long Id { get; set; }
+        public required Guid UserId { get; set; }
+        public required string ActionType { get; set; }
+        public required DateTime ActionTime { get; set; }
+        public required string ActionStatus { get; set; }
+        public required string FamilyName { get; set; }
+        public required string GivenNames { get; set; }
         public Guid? CertificateId { get; set; }
-        public string CertificateType { get; set; } = string.Empty;
+        public string CertificateType { get; set; }
         public string CourseName { get; set; } = string.Empty;
-        public string ActionCode { get; set; }
+        public required string ActionCode { get; set; }
         public IEnumerable<AdminActionDetail> AdminActions { get; set; }
     }
 
     public class AdminActionDetail
     {
-        public string Username { get; set; } = string.Empty;
-        public DateTime ActionTime { get; set; }
-        public string Action { get; set; } = string.Empty;
+        public required string Username { get; set; }
+        public required DateTime ActionTime { get; set; }
+        public required string Action { get; set; }
     }
 }

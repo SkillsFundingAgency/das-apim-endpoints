@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,9 +44,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetUserActio
             // Assert
             actual.Should().NotBeNull();
             actual.UserActions.Should().HaveCount(responseBody.UserActions.Count);
-            // check a couple of mappings
             var expected = responseBody.UserActions[0];
-            var actualFirst = System.Linq.Enumerable.First(actual.UserActions);
+            var actualFirst = Enumerable.First(actual.UserActions);
             actualFirst.Id.Should().Be(expected.Id);
             actualFirst.UserId.Should().Be(expected.UserId);
             actualFirst.ActionCode.Should().Be(expected.ActionCode);

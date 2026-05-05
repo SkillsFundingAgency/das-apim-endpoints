@@ -15,7 +15,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
             var request = new GetUserActionsRequest(userId);
 
             // Assert
-            request.GetUrl.Should().Be($"api/useractions/users/{userId}");
+            request.GetUrl.Should().Be($"api/users/{userId}/actions");
         }
     }
 }

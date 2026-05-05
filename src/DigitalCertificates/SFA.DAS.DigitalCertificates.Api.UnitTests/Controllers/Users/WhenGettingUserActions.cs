@@ -34,7 +34,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
             // Assert
             actual.Should().NotBeNull();
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
-            actual.Value.Should().Be(queryResult.UserActions);
+            actual.Value.Should().BeEquivalentTo(new { useractions = queryResult.UserActions });
 
             mediator.Verify(m => m.Send(It.Is<GetUserActionsQuery>(q => q.UserId == userId), It.IsAny<CancellationToken>()), Times.Once);
         }

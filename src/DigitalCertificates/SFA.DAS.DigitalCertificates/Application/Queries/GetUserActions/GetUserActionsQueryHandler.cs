@@ -4,6 +4,7 @@ using SFA.DAS.DigitalCertificates.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Configuration;
 using SFA.DAS.SharedOuterApi.Extensions;
 using SFA.DAS.SharedOuterApi.Interfaces;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,7 +28,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions
                 apiResponse?.EnsureSuccessStatusCode();
             }
 
-            var responseBody = apiResponse?.Body ?? new GetUserActionsResponse { UserActions = new System.Collections.Generic.List<UserAction>() };
+            var responseBody = apiResponse?.Body ?? new GetUserActionsResponse { UserActions = new List<UserAction>() };
 
             return responseBody;
         }
