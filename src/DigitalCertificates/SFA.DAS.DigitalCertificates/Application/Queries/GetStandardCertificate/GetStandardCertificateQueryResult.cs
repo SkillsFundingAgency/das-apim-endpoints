@@ -29,12 +29,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
         public DateTime? PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
         public List<DeliveryInformation> DeliveryInformation { get; set; }
+        public bool CoronationEmblem { get; set; }
 
         public static implicit operator GetStandardCertificateQueryResult(GetStandardCertificateResponse source)
         {
             if (source == null) return null;
 
             var employerName = source.CertificateData?.EmployerName ?? "";
+            var coronationEmblem = source.CertificateData?.CoronationEmblem ?? false;
 
             return new GetStandardCertificateQueryResult
             {
@@ -57,8 +59,8 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
                 DeliveryInformation = Models.DeliveryInformation.FromCertificateLogs(source.CertificateLogs),
                 PrintRequestedAt = source.PrintRequestedAt,
                 PrintRequestedBy = source.PrintRequestedBy,
+                CoronationEmblem = coronationEmblem
             };
         }
     }
 }
-

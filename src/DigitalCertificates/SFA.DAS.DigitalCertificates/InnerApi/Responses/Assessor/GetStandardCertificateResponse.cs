@@ -31,5 +31,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor
     public class CertificateData
     {
         public string EmployerName { get; set; }
+        public bool CoronationEmblem { get; set; }
     }
 }
