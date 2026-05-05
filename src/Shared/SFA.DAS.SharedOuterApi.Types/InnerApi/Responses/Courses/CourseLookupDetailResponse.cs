@@ -1,4 +1,4 @@
-﻿﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
