@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
 public class GetCourseLookupRequest(string id) : IGetApiRequest
 {

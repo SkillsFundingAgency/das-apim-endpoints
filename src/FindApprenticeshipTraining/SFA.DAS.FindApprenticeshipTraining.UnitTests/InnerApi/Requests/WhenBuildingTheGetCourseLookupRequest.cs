@@ -1,6 +1,9 @@
-﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
+using NUnit.Framework;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.InnerApi.Requests;
 
 public class WhenBuildingTheGetCourseLookupRequest
 {
