@@ -50,4 +50,4 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
         public int VersionMinor { get; set; }
         public bool EpaoMustBeApprovedByRegulatorBody { get; set; }
     }
- }
+}
