@@ -35,4 +35,4 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses
         Score,
         Title
     }
-}
+ }
