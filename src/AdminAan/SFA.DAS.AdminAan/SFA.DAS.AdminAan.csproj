@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" />
-    <PackageReference Include="RestEase" />
-    <PackageReference Include="RestEase.HttpClientFactory" />
-    <PackageReference Include="SFA.DAS.Api.Common" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
+    <PackageReference Include="RestEase" Version="1.6.4" />
+    <PackageReference Include="RestEase.HttpClientFactory" Version="1.6.4" />
+    <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
   </ItemGroup>
 
   <ItemGroup>
