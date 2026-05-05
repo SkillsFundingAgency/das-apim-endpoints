@@ -1,14 +1,15 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 using SFA.DAS.Apim.Shared.Interfaces;
+
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses
 {
     public class GetAvailableToStartStandardsListRequest : IGetApiRequest
     {
-        public string Keyword { get; set; }
+        public string Keyword { get ; set ; }
         public CoursesOrderBy OrderBy { get; set; }
         public List<int> RouteIds { get; set; }
-        public List<int> Levels { get; set; }
+        public List<int> Levels { get ; set ; }
         public string GetUrl => BuildUrl();
 
         private string BuildUrl()
