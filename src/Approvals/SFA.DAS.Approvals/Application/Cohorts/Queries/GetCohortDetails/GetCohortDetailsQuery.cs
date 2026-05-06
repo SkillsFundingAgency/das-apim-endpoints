@@ -128,8 +128,7 @@ public class GetCohortDetailsQueryHandler(
         {
             LegalEntityName = cohort.LegalEntityName,
             ProviderName = cohort.ProviderName,
-            //HasNoDeclaredStandards = providerCourses.Standards?.Any() != true,
-            HasNoDeclaredStandards = false,
+            HasNoDeclaredStandards = providerCourses.Standards?.Any() != true,
             HasUnavailableFlexiJobAgencyDeliveryModel = !isOnRegister && draftApprenticeships.DraftApprenticeships.Any(a => a.DeliveryModel.Equals(DeliveryModel.FlexiJobAgency)),
             InvalidProviderCourseCodes = invalidCourses,
             CohortId = cohort.CohortId,
