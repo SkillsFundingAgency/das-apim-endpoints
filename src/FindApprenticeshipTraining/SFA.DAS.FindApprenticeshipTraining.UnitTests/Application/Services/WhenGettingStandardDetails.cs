@@ -3,16 +3,15 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Services;
@@ -22,7 +21,7 @@ public class WhenGettingStandardDetails
     [Test, MoqAutoData]
     public async Task GetStandardDetails_StandardDetailsFoundInCache_ReturnsCachedStandardDetails(
 
-        StandardDetailsLookupResponse standardDetailsFromCache,
+        GetCourseLookupResponse standardDetailsFromCache,
         [Frozen] Mock<ICacheStorageService> mockCacheService,
         CachedStandardDetailsService service)
     {
@@ -30,7 +29,7 @@ public class WhenGettingStandardDetails
         standardDetailsFromCache.LarsCode = larsCode;
 
         mockCacheService
-            .Setup(service => service.RetrieveFromCache<StandardDetailsLookupResponse>($"{nameof(StandardDetailsLookupResponse)}-{larsCode}"))
+            .Setup(service => service.RetrieveFromCache<GetCourseLookupResponse>($"{nameof(GetCourseLookupResponse)}-{larsCode}"))
             .ReturnsAsync(standardDetailsFromCache);
 
         var result = await service.GetStandardDetails(larsCode.ToString());
@@ -41,7 +40,7 @@ public class WhenGettingStandardDetails
     [Test, MoqAutoData]
     public async Task GetStandardDetails_StandardDetailsNotFoundInCache_GetsFromApiAndStoresInCache(
 
-        StandardDetailsLookupResponse coursesFromApi,
+        GetCourseLookupResponse coursesFromApi,
         [Frozen] Mock<ICoursesApiClient<CoursesApiConfiguration>> mockCoursesApiClient,
         [Frozen] Mock<ICacheStorageService> mockCacheService,
         CachedStandardDetailsService service)
@@ -51,19 +50,19 @@ public class WhenGettingStandardDetails
         coursesFromApi.LarsCode = larsCode;
 
         mockCoursesApiClient
-            .Setup(client => client.GetWithResponseCode<StandardDetailsLookupResponse>(It.IsAny<GetStandardDetailsLookupRequest>()))
-            .ReturnsAsync(new ApiResponse<StandardDetailsLookupResponse>(coursesFromApi, System.Net.HttpStatusCode.OK, ""));
+            .Setup(client => client.GetWithResponseCode<GetCourseLookupResponse>(It.IsAny<GetCourseLookupRequest>()))
+            .ReturnsAsync(new ApiResponse<GetCourseLookupResponse>(coursesFromApi, System.Net.HttpStatusCode.OK, ""));
 
         mockCacheService
-            .Setup(service => service.RetrieveFromCache<StandardDetailsLookupResponse>($"{nameof(StandardDetailsLookupResponse)}-{larsCode}"))
-            .ReturnsAsync((StandardDetailsLookupResponse)null);
+            .Setup(service => service.RetrieveFromCache<GetCourseLookupResponse>($"{nameof(GetCourseLookupResponse)}-{larsCode}"))
+            .ReturnsAsync((GetCourseLookupResponse)null);
 
         var result = await service.GetStandardDetails(larsCode.ToString());
 
         result.Should().BeEquivalentTo(coursesFromApi);
         mockCacheService.Verify(service =>
             service.SaveToCache(
-                $"{nameof(StandardDetailsLookupResponse)}-{larsCode}",
+                $"{nameof(GetCourseLookupResponse)}-{larsCode}",
                 coursesFromApi,
                 expectedExpirationInHours, null));
     }
