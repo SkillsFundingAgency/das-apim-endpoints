@@ -10,7 +10,7 @@ public class Vacancy
     public long? VacancyReference { get; init; }
     public long? AccountId { get; set; }
     public required VacancyStatus Status { get; set; }
-    public ApprenticeshipTypes? ApprenticeshipType { get; init; }
+    public SharedOuterApi.Types.Domain.ApprenticeshipTypes? ApprenticeshipType { get; init; }
     public string? Title { get; init; }
     public OwnerType? OwnerType { get; set; }
     public SourceOrigin? SourceOrigin { get; init; }
@@ -37,7 +37,7 @@ public class Vacancy
     public ContactDetail? Contact { get; set; }
     public string? EmployerDescription { get; init; }
     public List<DomainAddress>? EmployerLocations { get; set; }
-    public AvailableWhere? EmployerLocationOption { get; set; }
+    public SharedOuterApi.Types.Domain.AvailableWhere? EmployerLocationOption { get; set; }
     public string? EmployerLocationInformation { get; init; }
     public string? EmployerName { get; init; }
     public EmployerNameOption? EmployerNameOption { get; init; }
