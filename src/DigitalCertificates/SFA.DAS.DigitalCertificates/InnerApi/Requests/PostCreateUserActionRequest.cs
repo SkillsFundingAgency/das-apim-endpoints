@@ -1,5 +1,5 @@
-﻿using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
 using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests

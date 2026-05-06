@@ -2,9 +2,11 @@
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.InnerApi.Requests;
 using SFA.DAS.Recruit.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ProviderCoursesService;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderCoursesService;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -93,5 +95,37 @@ public class WhenHandlingTheGetTrainingProgrammesQuery
             .Select(s => (TrainingProgramme)s);
 
         result.TrainingProgrammes.Should().BeEquivalentTo(expected);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_If_Ukprn_Is_An_Employer_Provider_All_Training_Courses_Are_Returned(
+        int ukprn,
+        GetStandardsListResponse standardsListResponse,
+        [Frozen] Mock<ICourseService> courseService,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpClient,
+        GetTrainingProgrammesQueryHandler sut)
+    {
+        // arrange
+        foreach (var standard in standardsListResponse.Standards)
+        {
+            standard.ApprenticeshipType = "Apprenticeship";
+            standard.Level = 4;
+        }
+        var expectedProgrammes = standardsListResponse.Standards.Select(item => (TrainingProgramme)item);
+        
+        courseService
+            .Setup(service => service.GetActiveStandards<GetStandardsListResponse>("ActiveStandards"))
+            .ReturnsAsync(standardsListResponse);
+        
+        roatpClient
+            .Setup(x => x.Get<GetProvidersListItem>(It.IsAny<GetProviderRequest>()))
+            .ReturnsAsync(new GetProvidersListItem { ProviderTypeId = 2 } );
+
+        // act
+        var result = await sut.Handle(new GetTrainingProgrammesQuery() { Ukprn = ukprn }, CancellationToken.None);
+
+        // assert
+        result.TrainingProgrammes.Should().BeEquivalentTo(expectedProgrammes);
+        roatpClient.Verify(x => x.Get<List<ProviderCourse>>(It.IsAny<GetAllProviderCoursesRequest>()), Times.Never);
     }
 }

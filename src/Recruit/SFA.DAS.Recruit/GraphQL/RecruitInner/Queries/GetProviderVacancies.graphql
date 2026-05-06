@@ -1,0 +1,15 @@
+query GetProviderVacancies($ukprn: Int) {
+    vacancies(
+        where: {
+            deletedDate:  { eq: null }
+            ukprn: { eq: $ukprn }
+        }
+    )
+    {
+        id
+        vacancyReference
+        status
+        ownerType
+        accountId
+    }
+}

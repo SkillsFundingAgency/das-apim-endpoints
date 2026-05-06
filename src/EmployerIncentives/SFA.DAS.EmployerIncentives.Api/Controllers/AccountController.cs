@@ -83,7 +83,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             return Accepted();
         }
 
-        [HttpPatch("/accounts/{accountId}/legalentities/{accountLegalEntityId}")]
+        [HttpPatch("/accounts/{accountId}/legalentities/{accountLegalEntityId}"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public async Task<IActionResult> SignAgreement(long accountId, long accountLegalEntityId,
             SignAgreementRequest request)
         {
@@ -123,7 +123,7 @@ namespace SFA.DAS.EmployerIncentives.Api.Controllers
             return NoContent();
         }
 
-        [HttpPatch("/blockedpayments")]
+        [HttpPatch("/blockedpayments"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public async Task<IActionResult> BlockAccountLegalEntityForPayments(
             List<BlockAccountLegalEntityForPaymentsRequest> request)
         {

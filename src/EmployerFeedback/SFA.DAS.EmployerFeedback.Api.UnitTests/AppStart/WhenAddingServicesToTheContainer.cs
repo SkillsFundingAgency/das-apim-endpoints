@@ -8,9 +8,10 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerFeedback.Api.AppStart;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.EmployerFeedback.Api.UnitTests.AppStart
 {
@@ -45,7 +46,8 @@ namespace SFA.DAS.EmployerFeedback.Api.UnitTests.AppStart
                 InitialData = new List<KeyValuePair<string, string>>
                 {
                     new KeyValuePair<string, string>("AccountsInnerApi:url", "http://localhost:1"),
-                    new KeyValuePair<string, string>("EmployerProfilesApiConfiguration:url", "http://localhost:3")
+                    new KeyValuePair<string, string>("EmployerProfilesApiConfiguration:url", "http://localhost:3"),
+                    new KeyValuePair<string, string>("SFA.DAS.Encoding", "{\"Encodings\": [{\"EncodingType\": \"AccountId\", \"Salt\": \"test\", \"MinHashLength\": 6, \"Alphabet\": \"46789BCDFGHJKLMNPQRTVWXY\"}]}")
                 }
             };
 

@@ -1,15 +1,14 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
+
+public class GetStandardRequest : IGetApiRequest
 {
-    public class GetStandardRequest : IGetApiRequest
-    {
-        public string GetUrl => $"api/courses/Standards/{LarsCode}";
-        public int LarsCode { get; }
+    public string GetUrl => $"api/courses/Standards/{LarsCode}";
+    public string LarsCode { get; }
 
-        public GetStandardRequest(int larsCode)
-        {
-            LarsCode = larsCode;
-        }
+    public GetStandardRequest(string larsCode)
+    {
+        LarsCode = larsCode;
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using ApprenticeshipEmployerType = SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts.ApprenticeshipEmployerType;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using ApprenticeshipEmployerType = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts.ApprenticeshipEmployerType;
 
 namespace SFA.DAS.Approvals.Application.AgreementNotSigned.Queries;
 

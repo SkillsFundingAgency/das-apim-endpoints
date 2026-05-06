@@ -1,12 +1,15 @@
 using System.Net;
-using System.Threading;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Recruit.Application.User.Commands.UpsertUser;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Recruit.UnitTests.Application.User.Commands;
 
@@ -29,5 +32,23 @@ public class WhenHandlingUpsertUserCommand
         recruitApiClient.Verify(
             x => x.PutWithResponseCode<NullResponse>(
                 It.Is<PutUserRequest>(c => c.PutUrl == expectedPutRequest.PutUrl)), Times.Once);
+    }
+    
+    [Test, MoqAutoData]
+    public async Task Then_An_Error_Is_Thrown_Is_The_Call_Is_Unsuccessful(
+        UpsertUserCommand command,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        UpsertUserCommandHandler handler)
+    {
+        // arrange
+        recruitApiClient
+            .Setup(x => x.PutWithResponseCode<NullResponse>(It.IsAny<PutUserRequest>()))
+            .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.BadRequest, "Some error text"));
+
+        // act
+        var action = async () => await handler.Handle(command, CancellationToken.None);
+
+        // assert
+        await action.Should().ThrowAsync<ApiResponseException>();
     }
 }

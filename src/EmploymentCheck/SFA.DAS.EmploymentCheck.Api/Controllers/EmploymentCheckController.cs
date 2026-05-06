@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.EmploymentCheck.Api.Models;
 using SFA.DAS.EmploymentCheck.Application.Commands.RegisterCheck;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.EmploymentCheck.Api.Controllers

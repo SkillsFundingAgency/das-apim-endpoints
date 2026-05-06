@@ -2,14 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture;
 using KellermanSoftware.CompareNetObjects;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Api.Models.Cohorts;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetCohortDetails;
 
@@ -89,7 +84,7 @@ public class WhenGettingCohortDetails
     public async Task GetCohortDetailsResponseWithCorrectlyMappedHasFoundationApprenticeshipsIsReturned()
     {
         // Arrange
-        _queryResult.HasFoundationApprenticeships = true;
+        _queryResult.HasAgeRestrictedApprenticeships = true;
 
         // Act
         var result = await _controller.GetCohortDetails(_cohortId);
@@ -97,6 +92,6 @@ public class WhenGettingCohortDetails
         // Assert
         var okObjectResult = (OkObjectResult)result;
         var objectResult = (GetCohortDetailsResponse)okObjectResult.Value;
-        Assert.That(objectResult.HasFoundationApprenticeships, Is.EqualTo(_queryResult.HasFoundationApprenticeships));
+        objectResult.HasAgeRestrictedApprenticeships.Should().Be(_queryResult.HasAgeRestrictedApprenticeships);
     }
 }

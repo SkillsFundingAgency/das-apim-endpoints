@@ -1,19 +1,19 @@
 ﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.InnerApi.Requests
 {
     public class AddNationalLocationToProviderCourseLocationsRequest : IPostApiRequest
     {
         public int Ukprn { get; set; }
-        public int LarsCode { get; set; }
+        public string LarsCode { get; set; }
         public string UserId { get; set; }
         public string UserDisplayName { get; set; }
         public string PostUrl => $"/providers/{Ukprn}/courses/{LarsCode}/locations/national";
 
         public object Data { get; set; }
 
-        public AddNationalLocationToProviderCourseLocationsRequest(int ukprn, int larsCode, string userId, string userDisplayName)
+        public AddNationalLocationToProviderCourseLocationsRequest(int ukprn, string larsCode, string userId, string userDisplayName)
         {
             Ukprn = ukprn;
             LarsCode = larsCode;

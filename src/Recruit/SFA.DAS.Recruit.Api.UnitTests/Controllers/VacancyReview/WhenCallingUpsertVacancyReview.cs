@@ -4,6 +4,7 @@ using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Controllers;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Application.VacancyReview.Commands.UpsertVacancyReview;
 
 namespace SFA.DAS.Recruit.Api.UnitTests.Controllers.VacancyReview;
@@ -15,10 +16,15 @@ public class WhenCallingUpsertVacancyReview
         Guid id,
         VacancyReviewDto vacancyReview,
         [Frozen] Mock<IMediator> mediator,
-        [Greedy] VacancyReviewController controller)
+        [Greedy] VacancyReviewController sut)
     {
-        var actual = await controller.UpsertVacancyReview(id, vacancyReview) as CreatedResult;
+        // arrange
+        sut.AddControllerContext();
+        
+        // act
+        var actual = await sut.UpsertVacancyReview(id, vacancyReview) as CreatedResult;
 
+        // assert
         actual.Should().NotBeNull();
         mediator.Verify(x => x.Send(
                 It.Is<UpsertVacancyReviewCommand>(c => 

@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 
@@ -10,8 +12,11 @@ public sealed class GetCourseProviderDetailsResponse
     public ShortProviderAddressModel Address { get; set; }
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
+    public CourseType CourseType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
+    public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel QAR { get; set; }
     public ReviewModel Reviews { get; set; }

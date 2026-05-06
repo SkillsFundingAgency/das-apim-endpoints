@@ -1,7 +1,8 @@
 using System;
 using Microsoft.AspNetCore.JsonPatch;
 using SFA.DAS.Recruit.Enums;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Recruit.InnerApi.Requests;
 

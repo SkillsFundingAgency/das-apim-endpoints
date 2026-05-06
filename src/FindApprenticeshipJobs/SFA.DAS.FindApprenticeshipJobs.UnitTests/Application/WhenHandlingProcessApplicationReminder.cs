@@ -1,7 +1,3 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands;
 using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Constants;
@@ -9,10 +5,14 @@ using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;
@@ -42,7 +42,7 @@ public class WhenHandlingProcessApplicationReminder
         GetCandidateApplicationApiResponse candidateApiResponse,
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
@@ -104,7 +104,7 @@ public class WhenHandlingProcessApplicationReminder
         GetCandidateApplicationApiResponse candidateApiResponse,
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
@@ -165,7 +165,7 @@ public class WhenHandlingProcessApplicationReminder
         GetCandidateApplicationApiResponse candidateApiResponse,
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
@@ -237,7 +237,7 @@ public class WhenHandlingProcessApplicationReminder
         GetCandidateApplicationApiResponse candidateApiResponse,
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
@@ -307,7 +307,7 @@ public class WhenHandlingProcessApplicationReminder
         Preference candidatePreference1,
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)
@@ -346,7 +346,7 @@ public class WhenHandlingProcessApplicationReminder
         GetLiveVacancyApiResponse recruitApiResponse,
         EmailEnvironmentHelper emailEnvironmentHelper,
         GetCandidateApplicationApiResponse candidateApplicationApiResponse,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> recruitApiClient,
         [Frozen] Mock<ICandidateApiClient<CandidateApiConfiguration>> candidateApiClient,
         [Frozen] Mock<INotificationService> notificationService,
         ProcessApplicationReminderCommandHandler handler)

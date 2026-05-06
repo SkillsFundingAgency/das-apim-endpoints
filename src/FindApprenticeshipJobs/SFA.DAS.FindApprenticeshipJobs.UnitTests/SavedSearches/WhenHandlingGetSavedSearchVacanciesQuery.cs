@@ -3,10 +3,13 @@ using SFA.DAS.FindApprenticeshipJobs.Application.Queries.SavedSearch.GetSavedSea
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.SavedSearches;

@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Models;
+﻿using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Api.Models.DataLock;
 using SFA.DAS.Approvals.InnerApi.Responses.ProviderEvent;
 using System;

@@ -1,7 +1,6 @@
 ﻿using System;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrintRequest;
-using SFA.DAS.DigitalCertificates.Constants;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
 {
@@ -41,7 +40,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor
             {
                 Address = addr,
                 PrintRequestedAt = DateTime.UtcNow,
-                PrintRequestedBy = CertificateConstants.PrintRequestedBy
+                PrintRequestedBy = command?.Address?.ContactName
             };
         }
     }

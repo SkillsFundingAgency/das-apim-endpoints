@@ -52,7 +52,7 @@ public class EventsController(
     [HttpPost, Route("application-submitted")]
     public async Task<IActionResult> OnApplicationSubmitted([FromBody] PostApplicationSubmittedEventModel body)
     {
-        logger.LogInformation("ApplicationSubmitted for VacancyId: {VacancyId}, ApplicationId: {ApplicationId}", body.VacancyId, body.ApplicationId);
+        logger.LogInformation("OnApplicationSubmitted for VacancyId: {VacancyId}, ApplicationId: {ApplicationId}", body.VacancyId, body.ApplicationId);
         await mediator.Publish(new ApplicationSubmittedEvent(body.ApplicationId, body.VacancyId));
         return NoContent();
     }
@@ -60,8 +60,16 @@ public class EventsController(
     [HttpPost, Route("shared-application-reviewed")]
     public async Task<IActionResult> OnSharedApplicationReviewed([FromBody] PostSharedApplicationReviewedEventModel payload)
     {
-        logger.LogInformation("OnSharedApplicationReviewed triggered for vacancy {VacancyId} ({VacancyReference})", payload.VacancyId, payload.VacancyReference);
-        await mediator.Publish(new SharedApplicationReviewedEvent(payload.VacancyId, payload.VacancyReference));
+        logger.LogInformation("OnSharedApplicationReviewed triggered for application review '{ApplicationReviewId}'", payload.ApplicationReviewId);
+        await mediator.Publish(new SharedApplicationReviewedEvent(payload.ApplicationReviewId));
+        return NoContent();
+    }
+    
+    [HttpPost, Route("employer-rejected-vacancy")]
+    public async Task<IActionResult> OnEmployerRejectedVacancy([FromBody] PostVacancyRejectedEventModel payload, CancellationToken cancellationToken)
+    {
+        logger.LogInformation("{EventName} triggered for vacancy {VacancyId})", nameof(OnEmployerRejectedVacancy), payload.VacancyId);
+        await mediator.Publish(new VacancyRejectedEvent(payload.VacancyId), cancellationToken);
         return NoContent();
     }
 }

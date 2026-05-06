@@ -15,14 +15,9 @@ public class WhenPostingSharedApplicationReviewedNotification
         [Frozen] Mock<IPublisher> mockMediator,
         [Greedy] EventsController controller)
     {
-
         var actual = await controller.OnSharedApplicationReviewed(request) as NoContentResult;
 
         actual.Should().NotBeNull();
-        mockMediator.Verify(x => x.Publish(It.Is<SharedApplicationReviewedEvent>(
-            c =>
-                c.VacancyId == request.VacancyId
-                && c.VacancyReference == request.VacancyReference
-        ), CancellationToken.None), Times.Once);
+        mockMediator.Verify(x => x.Publish(It.Is<SharedApplicationReviewedEvent>(c => c.ApplicationReviewId == request.ApplicationReviewId), CancellationToken.None), Times.Once);
     }
 }

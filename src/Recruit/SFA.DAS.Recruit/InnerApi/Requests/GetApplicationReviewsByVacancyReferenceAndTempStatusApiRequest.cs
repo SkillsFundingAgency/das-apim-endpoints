@@ -1,0 +1,11 @@
+﻿using SFA.DAS.Recruit.Enums;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.Recruit.InnerApi.Requests;
+public record GetApplicationReviewsByVacancyReferenceAndTempStatusApiRequest(
+    long VacancyReference,
+    ApplicationReviewStatus Status) : IGetApiRequest
+{
+    public string GetUrl => $"api/applicationReviews/{VacancyReference}/temp-status/{Status}";
+}

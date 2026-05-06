@@ -7,8 +7,8 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.Approvals.Api.Models.Apprentices;
 using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
-using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
@@ -20,6 +20,7 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.Inform;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDeliveryModel;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.GetSelectNewEmployer;
 using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -28,7 +29,7 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 [Route("[controller]/")]
 public class ApprenticesController(
     ILogger<ApprenticesController> logger,
-    IMediator mediator, 
+    IMediator mediator,
     IMapper mapper) : ControllerBase
 {
     [HttpGet]
@@ -59,7 +60,7 @@ public class ApprenticesController(
         try
         {
             var result = await mediator.Send(new GetInformQuery
-                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId });
+            { ApprenticeshipId = apprenticeshipId, ProviderId = providerId });
 
             if (result == null)
             {
@@ -87,7 +88,7 @@ public class ApprenticesController(
         try
         {
             var result = await mediator.Send(new GetConfirmEmployerQuery
-                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
+            { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
 
             if (result == null)
             {
@@ -119,7 +120,7 @@ public class ApprenticesController(
         try
         {
             var result = await mediator.Send(new GetChangeOfEmployerApprenticeDataQuery
-                { ApprenticeshipId = apprenticeshipId, AccountLegalEntityId = accountLegalEntityId });
+            { ApprenticeshipId = apprenticeshipId, AccountLegalEntityId = accountLegalEntityId });
 
             if (result == null)
             {
@@ -172,7 +173,7 @@ public class ApprenticesController(
         try
         {
             var result = await mediator.Send(new GetSelectDeliveryModelQuery
-                { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
+            { ApprenticeshipId = apprenticeshipId, ProviderId = providerId, AccountLegalEntityId = accountLegalEntityId });
 
             if (result == null)
             {
@@ -233,7 +234,7 @@ public class ApprenticesController(
     {
         logger.LogInformation("=== APIM CONTROLLER: EditApprenticeshipEmployer called ===");
         logger.LogInformation("AccountId: {AccountId}, ApprenticeshipId: {ApprenticeshipId}", accountId, apprenticeshipId);
-        
+
         // Log all incoming headers
         logger.LogInformation("=== INCOMING REQUEST HEADERS ===");
         if (Request?.Headers != null)
@@ -247,7 +248,7 @@ public class ApprenticesController(
         {
             logger.LogInformation("Request or Headers is null (unit test context)");
         }
-        
+
         // Log authentication context
         if (User?.Identity?.IsAuthenticated == true)
         {
@@ -262,14 +263,58 @@ public class ApprenticesController(
         {
             logger.LogWarning("User is NOT authenticated or User is null!");
         }
-        
+
         return await EditApprenticeshipInternal(apprenticeshipId, request.ProviderId, accountId, request);
     }
 
+    [HttpGet]
+    [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/select-employer")]
+    public async Task<IActionResult> GetSelectEmployer(
+        [FromRoute] int providerId,
+        [FromRoute] long apprenticeshipId,
+        [FromQuery] string searchTerm,
+        [FromQuery] string sortField,
+        [FromQuery] bool reverseSort,
+        [FromQuery] bool useLearnerData,
+        [FromQuery] int pageNumber = 1,
+        [FromQuery] int pageSize = 50)
+    {
+        if (pageNumber < 1 || pageSize < 1 || pageSize > 100)
+        {
+            return BadRequest();
+        }
+
+        try
+        {
+            var result = await mediator.Send(new GetSelectNewEmployerQuery
+            {
+                ApprenticeshipId = apprenticeshipId,
+                ProviderId = providerId,
+                SearchTerm = searchTerm,
+                SortField = sortField,
+                ReverseSort = reverseSort,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok((GetSelectEmployerResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in GetSelectEmployer for provider {ProviderId}", providerId);
+            return BadRequest();
+        }
+    }
+
     private async Task<IActionResult> EditApprenticeshipInternal(
-        long apprenticeshipId, 
-        long? providerId, 
-        long? employerAccountId, 
+        long apprenticeshipId,
+        long? providerId,
+        long? employerAccountId,
         EditApprenticeshipRequest request)
     {
         var command = new EditApprenticeshipCommand
@@ -302,7 +347,7 @@ public class ApprenticesController(
             ApprenticeshipId = result.ApprenticeshipId,
             HasOptions = result.HasOptions,
             Version = result.Version,
-            CourseOrStartDateChange =  result.CourseOrStartDateChanged
+            CourseOrStartDateChange = result.CourseOrStartDateChanged
         });
     }
 
@@ -328,7 +373,6 @@ public class ApprenticesController(
             return BadRequest();
         }
     }
-
 
     [HttpGet]
     [Route("/employer/{providerId}/apprentices/{apprenticeshipId}/edit/select-course")]
@@ -375,7 +419,6 @@ public class ApprenticesController(
             return BadRequest();
         }
     }
-
 
     [HttpGet]
     [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/details")]
@@ -447,8 +490,8 @@ public class ApprenticesController(
     [HttpPost]
     [Route("/provider/{providerId}/apprentices/{apprenticeshipId}/edit/confirm")]
     public async Task<IActionResult> ConfirmEditApprenticeshipProvider(
-        [FromRoute] long providerId, 
-        [FromRoute] long apprenticeshipId, 
+        [FromRoute] long providerId,
+        [FromRoute] long apprenticeshipId,
         [FromBody] ConfirmEditApprenticeshipRequest request)
     {
         return await ConfirmEditApprenticeshipInternal(apprenticeshipId, providerId, null, request);
@@ -457,8 +500,8 @@ public class ApprenticesController(
     [HttpPost]
     [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/edit/confirm")]
     public async Task<IActionResult> ConfirmEditApprenticeshipEmployer(
-        [FromRoute] long accountId, 
-        [FromRoute] long apprenticeshipId, 
+        [FromRoute] long accountId,
+        [FromRoute] long apprenticeshipId,
         [FromBody] ConfirmEditApprenticeshipRequest request)
     {
         return await ConfirmEditApprenticeshipInternal(apprenticeshipId, null, accountId, request);
@@ -503,11 +546,11 @@ public class ApprenticesController(
             return BadRequest();
         }
     }
-    
+
     private async Task<IActionResult> ConfirmEditApprenticeshipInternal(
-        long apprenticeshipId, 
-        long? providerId, 
-        long? accountId, 
+        long apprenticeshipId,
+        long? providerId,
+        long? accountId,
         ConfirmEditApprenticeshipRequest request)
     {
         try
@@ -533,7 +576,6 @@ public class ApprenticesController(
                 Option = request.Option,
                 UserInfo = request.UserInfo,
                 EmployerReference = request.EmployerReference
-                
             };
 
             var result = await mediator.Send(command);

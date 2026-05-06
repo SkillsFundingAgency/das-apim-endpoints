@@ -2,7 +2,7 @@ using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
-using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.Controllers;
 
@@ -14,7 +14,7 @@ public class NhsVacanciesController(IMediator mediator, ILogger<NhsVacanciesCont
     [HttpGet]
     public async Task<IActionResult> Get( CancellationToken cancellationToken)
     {
-        logger.LogInformation("Get Live Vacancies invoked");
+        logger.LogInformation("Get Nhs Vacancies invoked");
 
         try
         {
@@ -24,7 +24,7 @@ public class NhsVacanciesController(IMediator mediator, ILogger<NhsVacanciesCont
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "An error occurred getting live vacancies");
+            logger.LogError(ex, "An error occurred getting Nhs vacancies");
             return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
         }
     }

@@ -1,23 +1,14 @@
 ﻿using System;
 using System.Linq;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Api.Controllers;
 using SFA.DAS.EmployerFinance.Api.Models;
 using SFA.DAS.EmployerFinance.Application.Queries.GetStandards;
-using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.TrainingCourses
+namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.TrainingCourses;
+
+public class WhenGettingAllStandards
 {
-    public class WhenGettingAllStandards
-    {
         [Test, MoqAutoData]
         public async Task Then_Gets_Standards_From_Mediator(
             GetStandardsQueryResult mediatorResult,
@@ -32,10 +23,10 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.TrainingCourses
 
             var controllerResult = await controller.GetStandards() as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetStandardsResponse;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             model.Standards.Should().BeEquivalentTo(mediatorResult.Standards.Select(item => (StandardResponse)item));
         }
 
@@ -54,5 +45,4 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.TrainingCourses
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
-    }
 }

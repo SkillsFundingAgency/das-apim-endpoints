@@ -1,5 +1,5 @@
-﻿using FluentAssertions;
-using System.Net;
+﻿using System.Net;
+using FluentAssertions;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -43,6 +43,20 @@ public class HealthCheckSteps(TestContext context)
     public void GivenTheCollectionCalendarApiIs(HttpStatusCode status)
     {
         context.CollectionCalendarApi.MockServer
+            .Given(
+                Request.Create().WithPath($"/ping")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(status)
+            );
+    }
+
+
+    [Given(@"the Courses Api status is (.*)")]
+    public void GivenTheCoursesApiIs(HttpStatusCode status)
+    {
+        context.CoursesApi.MockServer
             .Given(
                 Request.Create().WithPath($"/ping")
                     .UsingGet())

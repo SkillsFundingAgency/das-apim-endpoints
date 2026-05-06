@@ -4,7 +4,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.Approvals.Api.Clients;
 

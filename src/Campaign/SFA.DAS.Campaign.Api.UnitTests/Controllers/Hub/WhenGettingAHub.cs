@@ -13,7 +13,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.Campaign.Api.UnitTests.Controllers.Hub
 {
-    public class WhenGettingAHub
+    public class CampaignEnquiryControllerTests
     {
         [Test, RecursiveMoqAutoData]
         public async Task And_Given_A_Valid_Hub_Then_The_Hub_Is_Returned(

@@ -1,0 +1,530 @@
+schema {
+  query: Query
+}
+
+type Query {
+  vacancies(where: VacancyEntityFilterInput order: [VacancyEntitySortInput!]): [VacancyEntity!]!
+}
+
+"Defines when a policy shall be executed."
+enum ApplyPolicy {
+  "Before the resolver was executed."
+  BEFORE_RESOLVER
+  "After the resolver was executed."
+  AFTER_RESOLVER
+  "The policy is applied in the validation step before the execution."
+  VALIDATION
+}
+
+input VacancyEntityFilterInput {
+  and: [VacancyEntityFilterInput!]
+  or: [VacancyEntityFilterInput!]
+  id: UuidOperationFilterInput
+  vacancyReference: LongOperationFilterInput
+  accountId: LongOperationFilterInput
+  status: VacancyStatusOperationFilterInput
+  apprenticeshipType: NullableOfApprenticeshipTypesOperationFilterInput
+  title: StringOperationFilterInput
+  ownerType: NullableOfOwnerTypeOperationFilterInput
+  sourceOrigin: NullableOfSourceOriginOperationFilterInput
+  sourceType: NullableOfSourceTypeOperationFilterInput
+  sourceVacancyReference: LongOperationFilterInput
+  approvedDate: DateTimeOperationFilterInput
+  createdDate: DateTimeOperationFilterInput
+  lastUpdatedDate: DateTimeOperationFilterInput
+  submittedDate: DateTimeOperationFilterInput
+  reviewRequestedDate: DateTimeOperationFilterInput
+  closedDate: DateTimeOperationFilterInput
+  deletedDate: DateTimeOperationFilterInput
+  liveDate: DateTimeOperationFilterInput
+  startDate: DateTimeOperationFilterInput
+  closingDate: DateTimeOperationFilterInput
+  reviewCount: IntOperationFilterInput
+  applicationUrl: StringOperationFilterInput
+  applicationMethod: NullableOfApplicationMethodOperationFilterInput
+  applicationInstructions: StringOperationFilterInput
+  shortDescription: StringOperationFilterInput
+  description: StringOperationFilterInput
+  anonymousReason: StringOperationFilterInput
+  disabilityConfident: BooleanOperationFilterInput
+  contactName: StringOperationFilterInput
+  contactEmail: StringOperationFilterInput
+  contactPhone: StringOperationFilterInput
+  employerDescription: StringOperationFilterInput
+  employerLocations: StringOperationFilterInput
+  employerLocationOption: NullableOfAvailableWhereOperationFilterInput
+  employerLocationInformation: StringOperationFilterInput
+  employerName: StringOperationFilterInput
+  employerNameOption: NullableOfEmployerNameOptionOperationFilterInput
+  employerRejectedReason: StringOperationFilterInput
+  legalEntityName: StringOperationFilterInput
+  employerWebsiteUrl: StringOperationFilterInput
+  geoCodeMethod: NullableOfGeoCodeMethodOperationFilterInput
+  accountLegalEntityId: LongOperationFilterInput
+  numberOfPositions: IntOperationFilterInput
+  outcomeDescription: StringOperationFilterInput
+  programmeId: StringOperationFilterInput
+  skills: StringOperationFilterInput
+  qualifications: StringOperationFilterInput
+  thingsToConsider: StringOperationFilterInput
+  trainingDescription: StringOperationFilterInput
+  additionalTrainingDescription: StringOperationFilterInput
+  ukprn: IntOperationFilterInput
+  trainingProvider_Name: StringOperationFilterInput
+  trainingProvider_Address: StringOperationFilterInput
+  wage_Duration: IntOperationFilterInput
+  wage_DurationUnit: NullableOfDurationUnitOperationFilterInput
+  wage_WorkingWeekDescription: StringOperationFilterInput
+  wage_WeeklyHours: DecimalOperationFilterInput
+  wage_WageType: NullableOfWageTypeOperationFilterInput
+  wage_FixedWageYearlyAmount: DecimalOperationFilterInput
+  wage_WageAdditionalInformation: StringOperationFilterInput
+  wage_CompanyBenefitsInformation: StringOperationFilterInput
+  closureReason: NullableOfClosureReasonOperationFilterInput
+  transferInfo: StringOperationFilterInput
+  additionalQuestion1: StringOperationFilterInput
+  additionalQuestion2: StringOperationFilterInput
+  hasSubmittedAdditionalQuestions: BooleanOperationFilterInput
+  hasChosenProviderContactDetails: BooleanOperationFilterInput
+  hasOptedToAddQualifications: BooleanOperationFilterInput
+  employerReviewFieldIndicators: StringOperationFilterInput
+  providerReviewFieldIndicators: StringOperationFilterInput
+  submittedByUserId: UuidOperationFilterInput
+  reviewRequestedByUserId: UuidOperationFilterInput
+}
+
+input VacancyEntitySortInput {
+  id: SortEnumType
+  vacancyReference: SortEnumType
+  accountId: SortEnumType
+  status: SortEnumType
+  apprenticeshipType: SortEnumType
+  title: SortEnumType
+  ownerType: SortEnumType
+  sourceOrigin: SortEnumType
+  sourceType: SortEnumType
+  sourceVacancyReference: SortEnumType
+  approvedDate: SortEnumType
+  createdDate: SortEnumType
+  lastUpdatedDate: SortEnumType
+  submittedDate: SortEnumType
+  reviewRequestedDate: SortEnumType
+  closedDate: SortEnumType
+  deletedDate: SortEnumType
+  liveDate: SortEnumType
+  startDate: SortEnumType
+  closingDate: SortEnumType
+  reviewCount: SortEnumType
+  applicationUrl: SortEnumType
+  applicationMethod: SortEnumType
+  applicationInstructions: SortEnumType
+  shortDescription: SortEnumType
+  description: SortEnumType
+  anonymousReason: SortEnumType
+  disabilityConfident: SortEnumType
+  contactName: SortEnumType
+  contactEmail: SortEnumType
+  contactPhone: SortEnumType
+  employerDescription: SortEnumType
+  employerLocations: SortEnumType
+  employerLocationOption: SortEnumType
+  employerLocationInformation: SortEnumType
+  employerName: SortEnumType
+  employerNameOption: SortEnumType
+  employerRejectedReason: SortEnumType
+  legalEntityName: SortEnumType
+  employerWebsiteUrl: SortEnumType
+  geoCodeMethod: SortEnumType
+  accountLegalEntityId: SortEnumType
+  numberOfPositions: SortEnumType
+  outcomeDescription: SortEnumType
+  programmeId: SortEnumType
+  skills: SortEnumType
+  qualifications: SortEnumType
+  thingsToConsider: SortEnumType
+  trainingDescription: SortEnumType
+  additionalTrainingDescription: SortEnumType
+  ukprn: SortEnumType
+  trainingProvider_Name: SortEnumType
+  trainingProvider_Address: SortEnumType
+  wage_Duration: SortEnumType
+  wage_DurationUnit: SortEnumType
+  wage_WorkingWeekDescription: SortEnumType
+  wage_WeeklyHours: SortEnumType
+  wage_WageType: SortEnumType
+  wage_FixedWageYearlyAmount: SortEnumType
+  wage_WageAdditionalInformation: SortEnumType
+  wage_CompanyBenefitsInformation: SortEnumType
+  closureReason: SortEnumType
+  transferInfo: SortEnumType
+  additionalQuestion1: SortEnumType
+  additionalQuestion2: SortEnumType
+  hasSubmittedAdditionalQuestions: SortEnumType
+  hasChosenProviderContactDetails: SortEnumType
+  hasOptedToAddQualifications: SortEnumType
+  employerReviewFieldIndicators: SortEnumType
+  providerReviewFieldIndicators: SortEnumType
+  submittedByUserId: SortEnumType
+  reviewRequestedByUserId: SortEnumType
+}
+
+input UuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID]
+  nin: [UUID]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input LongOperationFilterInput {
+  eq: Long
+  neq: Long
+  in: [Long]
+  nin: [Long]
+  gt: Long
+  ngt: Long
+  gte: Long
+  ngte: Long
+  lt: Long
+  nlt: Long
+  lte: Long
+  nlte: Long
+}
+
+input VacancyStatusOperationFilterInput {
+  eq: VacancyStatus
+  neq: VacancyStatus
+  in: [VacancyStatus!]
+  nin: [VacancyStatus!]
+}
+
+input NullableOfApprenticeshipTypesOperationFilterInput {
+  eq: ApprenticeshipTypes
+  neq: ApprenticeshipTypes
+  in: [ApprenticeshipTypes]
+  nin: [ApprenticeshipTypes]
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input NullableOfOwnerTypeOperationFilterInput {
+  eq: OwnerType
+  neq: OwnerType
+  in: [OwnerType]
+  nin: [OwnerType]
+}
+
+input NullableOfSourceOriginOperationFilterInput {
+  eq: SourceOrigin
+  neq: SourceOrigin
+  in: [SourceOrigin]
+  nin: [SourceOrigin]
+}
+
+input NullableOfSourceTypeOperationFilterInput {
+  eq: SourceType
+  neq: SourceType
+  in: [SourceType]
+  nin: [SourceType]
+}
+
+input DateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input IntOperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int]
+  nin: [Int]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input NullableOfApplicationMethodOperationFilterInput {
+  eq: ApplicationMethod
+  neq: ApplicationMethod
+  in: [ApplicationMethod]
+  nin: [ApplicationMethod]
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+input NullableOfAvailableWhereOperationFilterInput {
+  eq: AvailableWhere
+  neq: AvailableWhere
+  in: [AvailableWhere]
+  nin: [AvailableWhere]
+}
+
+input NullableOfEmployerNameOptionOperationFilterInput {
+  eq: EmployerNameOption
+  neq: EmployerNameOption
+  in: [EmployerNameOption]
+  nin: [EmployerNameOption]
+}
+
+input NullableOfGeoCodeMethodOperationFilterInput {
+  eq: GeoCodeMethod
+  neq: GeoCodeMethod
+  in: [GeoCodeMethod]
+  nin: [GeoCodeMethod]
+}
+
+input NullableOfDurationUnitOperationFilterInput {
+  eq: DurationUnit
+  neq: DurationUnit
+  in: [DurationUnit]
+  nin: [DurationUnit]
+}
+
+input DecimalOperationFilterInput {
+  eq: Decimal
+  neq: Decimal
+  in: [Decimal]
+  nin: [Decimal]
+  gt: Decimal
+  ngt: Decimal
+  gte: Decimal
+  ngte: Decimal
+  lt: Decimal
+  nlt: Decimal
+  lte: Decimal
+  nlte: Decimal
+}
+
+input NullableOfWageTypeOperationFilterInput {
+  eq: WageType
+  neq: WageType
+  in: [WageType]
+  nin: [WageType]
+}
+
+input NullableOfClosureReasonOperationFilterInput {
+  eq: ClosureReason
+  neq: ClosureReason
+  in: [ClosureReason]
+  nin: [ClosureReason]
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+scalar UUID
+
+"The `Long` scalar type represents non-fractional signed whole 64-bit numeric values. Long can represent values between -(2^63) and 2^63 - 1."
+scalar Long
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+"The `Decimal` scalar type represents a decimal floating-point number."
+scalar Decimal
+
+enum VacancyStatus {
+  DRAFT
+  REVIEW
+  REJECTED
+  SUBMITTED
+  REFERRED
+  LIVE
+  CLOSED
+  APPROVED
+}
+
+type VacancyEntity {
+  id: UUID!
+  vacancyReference: Long
+  accountId: Long
+  status: VacancyStatus!
+  apprenticeshipType: ApprenticeshipTypes
+  title: String
+  ownerType: OwnerType
+  sourceOrigin: SourceOrigin
+  sourceType: SourceType
+  sourceVacancyReference: Long
+  approvedDate: DateTime
+  createdDate: DateTime
+  lastUpdatedDate: DateTime
+  submittedDate: DateTime
+  reviewRequestedDate: DateTime
+  closedDate: DateTime
+  deletedDate: DateTime
+  liveDate: DateTime
+  startDate: DateTime
+  closingDate: DateTime
+  reviewCount: Int!
+  applicationUrl: String
+  applicationMethod: ApplicationMethod
+  applicationInstructions: String
+  shortDescription: String
+  description: String
+  anonymousReason: String
+  disabilityConfident: Boolean
+  contactName: String
+  contactEmail: String
+  contactPhone: String
+  employerDescription: String
+  employerLocations: String
+  employerLocationOption: AvailableWhere
+  employerLocationInformation: String
+  employerName: String
+  employerNameOption: EmployerNameOption
+  employerRejectedReason: String
+  legalEntityName: String
+  employerWebsiteUrl: String
+  geoCodeMethod: GeoCodeMethod
+  accountLegalEntityId: Long
+  numberOfPositions: Int
+  outcomeDescription: String
+  programmeId: String
+  skills: String
+  qualifications: String
+  thingsToConsider: String
+  trainingDescription: String
+  additionalTrainingDescription: String
+  ukprn: Int
+  trainingProvider_Name: String
+  trainingProvider_Address: String
+  wage_Duration: Int
+  wage_DurationUnit: DurationUnit
+  wage_WorkingWeekDescription: String
+  wage_WeeklyHours: Decimal
+  wage_WageType: WageType
+  wage_FixedWageYearlyAmount: Decimal
+  wage_WageAdditionalInformation: String
+  wage_CompanyBenefitsInformation: String
+  closureReason: ClosureReason
+  transferInfo: String
+  additionalQuestion1: String
+  additionalQuestion2: String
+  hasSubmittedAdditionalQuestions: Boolean
+  hasChosenProviderContactDetails: Boolean
+  hasOptedToAddQualifications: Boolean
+  employerReviewFieldIndicators: String
+  providerReviewFieldIndicators: String
+  submittedByUserId: UUID
+  reviewRequestedByUserId: UUID
+}
+
+enum ApprenticeshipTypes {
+  STANDARD
+  FOUNDATION
+}
+
+enum OwnerType {
+  EMPLOYER
+  PROVIDER
+  EXTERNAL
+  UNKNOWN
+}
+
+enum SourceOrigin {
+  API
+  EMPLOYER_WEB
+  PROVIDER_WEB
+  WEB_COMPLAINT
+}
+
+enum SourceType {
+  CLONE
+  EXTENSION
+  NEW
+}
+
+enum ApplicationMethod {
+  THROUGH_FIND_AN_APPRENTICESHIP
+  THROUGH_EXTERNAL_APPLICATION_SITE
+  THROUGH_FIND_A_TRAINEESHIP
+  UNSPECIFIED
+}
+
+enum AvailableWhere {
+  ONE_LOCATION
+  MULTIPLE_LOCATIONS
+  ACROSS_ENGLAND
+}
+
+enum EmployerNameOption {
+  REGISTERED_NAME
+  TRADING_NAME
+  ANONYMOUS
+}
+
+enum GeoCodeMethod {
+  UNSPECIFIED
+  EXISTING_VACANCY
+  POSTCODES_IO
+  LOQATE
+  POSTCODES_IO_OUTCODE
+  OUTER_API
+  FAILED_TO_GEO_CODE
+}
+
+enum DurationUnit {
+  WEEK
+  MONTH
+  YEAR
+}
+
+enum WageType {
+  FIXED_WAGE
+  NATIONAL_MINIMUM_WAGE_FOR_APPRENTICES
+  NATIONAL_MINIMUM_WAGE
+  COMPETITIVE_SALARY
+  UNSPECIFIED
+}
+
+enum ClosureReason {
+  AUTO
+  MANUAL
+  TRANSFERRED_BY_QA
+  BLOCKED_BY_QA
+  TRANSFERRED_BY_EMPLOYER
+  WITHDRAWN_BY_QA
+}
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION

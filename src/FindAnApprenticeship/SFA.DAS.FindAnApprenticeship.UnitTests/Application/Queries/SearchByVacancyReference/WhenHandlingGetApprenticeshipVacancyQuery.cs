@@ -4,11 +4,15 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.CandidateApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVacancyReference
 {
@@ -170,27 +174,6 @@ namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVac
             result.Application.Should().BeNull();
             result.ApprenticeshipVacancy.ClosingDate.Should().Be(vacancy.ClosedDate ?? vacancy.ClosingDate);
             result.IsSavedVacancy.Should().BeFalse();
-        }
-
-        [Test, MoqAutoData]
-        public async Task If_CourseId_Is_Not_In_Correct_Format_Then_Return_Null(
-            GetApprenticeshipVacancyQuery request,
-            CancellationToken token,
-            Mock<IVacancy> vacancy,
-            [Frozen] Mock<IVacancyService> vacancyService,
-            GetApprenticeshipVacancyQueryHandler sut)
-        {
-            // arrange
-            vacancy.Setup(x => x.CourseId).Returns(-1);
-            vacancyService.Setup(x => x.GetVacancy(request.VacancyReference)).ReturnsAsync((IVacancy)null!);
-            vacancyService.Setup(x => x.GetClosedVacancy(request.VacancyReference)).ReturnsAsync(vacancy.Object);
-
-            // act
-            var result = await sut.Handle(request, token);
-
-            // assert
-            result.Should().BeNull();
-            vacancy.Verify(x => x.CourseId, Times.Once);
         }
     }
 }

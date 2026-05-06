@@ -1,17 +1,17 @@
 ﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using SFA.DAS.LearnerData.Application.Fm36.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 
 internal static class PriceEpisodeBuilder
 {
     internal static List<PriceEpisode> GetPriceEpisodes(
-        JoinedEarningsApprenticeship joinedEarningsApprenticeship,
+        JoinedLearnerData joinedLearnerData,
         GetAcademicYearsResponse currentAcademicYear,
         byte collectionPeriod)
     {
-        var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedEarningsApprenticeship.Episodes, currentAcademicYear)
+        var priceEpisodesForAcademicYear = GetPriceEpisodesByFm36StartAndFinishPeriods(joinedLearnerData.Episodes, currentAcademicYear)
             .ToList();
 
         //If there are no price episodes for the requested academic year, create one, using the values of the first actual episode
@@ -19,7 +19,7 @@ internal static class PriceEpisodeBuilder
         {
             priceEpisodesForAcademicYear =
             [
-                new JoinedPriceEpisode(joinedEarningsApprenticeship.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear(), true)
+                new JoinedPriceEpisode(joinedLearnerData.Episodes.First(), currentAcademicYear.StartDate, currentAcademicYear.EndDate, currentAcademicYear.GetShortAcademicYear(), true)
             ];
         }
 
@@ -34,8 +34,8 @@ internal static class PriceEpisodeBuilder
                 {
                     PriceEpisodeIdentifier = $"{EarningsFM36Constants.ProgType}-{priceEpisodeModel.TrainingCode.Trim()}-{priceEpisodeModel.StartDate:dd/MM/yyyy}",
 
-                    PriceEpisodeValues = joinedEarningsApprenticeship.GetPriceEpisodeValues(priceEpisodeModel, currentAcademicYear, collectionPeriod, hasSubsequentPriceEpisodes),
-                    PriceEpisodePeriodisedValues = joinedEarningsApprenticeship.GetPriceEpisodePeriodisedValues(priceEpisodeModel, currentAcademicYear)
+                    PriceEpisodeValues = joinedLearnerData.GetPriceEpisodeValues(priceEpisodeModel, currentAcademicYear, collectionPeriod, hasSubsequentPriceEpisodes),
+                    PriceEpisodePeriodisedValues = joinedLearnerData.GetPriceEpisodePeriodisedValues(priceEpisodeModel, currentAcademicYear)
                 };
 
             }).ToList();

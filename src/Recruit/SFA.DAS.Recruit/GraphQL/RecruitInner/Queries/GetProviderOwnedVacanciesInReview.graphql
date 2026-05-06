@@ -1,0 +1,14 @@
+query GetProviderOwnedVacanciesInReview($ukprn: Int, $accountLegalEntityId: Long) {
+    vacancies(
+        where: {
+            status: { eq: REVIEW }
+            ownerType:  { eq: PROVIDER }
+            ukprn: { eq: $ukprn }
+            deletedDate:  { eq: null }
+            accountLegalEntityId:  { eq: $accountLegalEntityId }
+        }
+    )
+    {
+        ...AllVacancyFields
+    }
+}

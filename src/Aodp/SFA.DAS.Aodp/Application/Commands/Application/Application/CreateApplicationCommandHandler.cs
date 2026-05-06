@@ -1,6 +1,6 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.Services;
 
 public class CreateApplicationCommandHandler : IRequestHandler<CreateApplicationCommand, BaseMediatrResponse<CreateApplicationCommandResponse>>
 {
@@ -9,7 +9,6 @@ public class CreateApplicationCommandHandler : IRequestHandler<CreateApplication
     {
         _apiClient = apiClient;
     }
-
 
     public async Task<BaseMediatrResponse<CreateApplicationCommandResponse>> Handle(CreateApplicationCommand request, CancellationToken cancellationToken)
     {
@@ -25,8 +24,11 @@ public class CreateApplicationCommandHandler : IRequestHandler<CreateApplication
                 Data = request
             });
 
-            response.Value.Id = result.Body.Id;
             response.Success = true;
+
+            response.Value.Id = result.Body.Id;
+            response.Value.IsQanValid = result.Body.IsQanValid;
+            response.Value.QanValidationMessage = result.Body.QanValidationMessage;
         }
         catch (Exception ex)
         {

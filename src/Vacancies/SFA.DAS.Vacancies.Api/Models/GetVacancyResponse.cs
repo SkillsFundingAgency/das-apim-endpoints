@@ -1,4 +1,4 @@
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Vacancies.Application.Vacancies.Queries.GetVacancy;
 using SFA.DAS.Vacancies.Enums;
 using System;
@@ -66,7 +66,11 @@ namespace SFA.DAS.Vacancies.Api.Models
                 IsDisabilityConfident = source.Vacancy.IsDisabilityConfident,
                 IsNationalVacancy = isRecruitNationally,
                 IsNationalVacancyDetails = isRecruitNationally ? source.Vacancy.EmploymentLocationInformation : string.Empty,
-                Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation { Lat = source.Vacancy.Location.Lat, Lon = source.Vacancy.Location.Lon } : null,
+                Location = !source.Vacancy.IsEmployerAnonymous ? new VacancyLocation
+                {
+                    Lat = source.Vacancy.Location?.Lat ?? source.Vacancy.Address?.Latitude ?? 0,
+                    Lon = source.Vacancy.Location?.Lon ?? source.Vacancy.Address?.Longitude ?? 0,
+                } : null,
                 NumberOfPositions = source.Vacancy.NumberOfPositions,
                 OtherAddresses = source.Vacancy.OtherAddresses?.Select(GetVacancyAddressItem.From).ToList() ?? [],
                 OutcomeDescription = source.Vacancy.OutcomeDescription,
@@ -79,7 +83,7 @@ namespace SFA.DAS.Vacancies.Api.Models
                 Title = source.Vacancy.Title,
                 TrainingDescription = source.Vacancy.TrainingDescription,
                 Ukprn = int.Parse(source.Vacancy.Ukprn),
-                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Nhs) ? source.Vacancy.VacancyReference : source.Vacancy.VacancyReference.TrimVacancyReference(),
+                VacancyReference = source.Vacancy.VacancySource.Equals(DataSource.Raa) ? source.Vacancy.VacancyReference.TrimVacancyReference() : source.Vacancy.VacancyReference,
                 VacancyUrl = source.Vacancy.VacancyUrl,
                 Wage = source.Vacancy,
             };

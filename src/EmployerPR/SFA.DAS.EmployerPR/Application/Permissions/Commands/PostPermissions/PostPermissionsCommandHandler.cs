@@ -5,7 +5,7 @@ using SFA.DAS.EmployerPR.Application.Permissions.Queries.GetPermissions;
 using SFA.DAS.EmployerPR.Common;
 using SFA.DAS.EmployerPR.Infrastructure;
 using SFA.DAS.EmployerPR.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.EmployerPR.Application.Permissions.Commands.PostPermissions;
 

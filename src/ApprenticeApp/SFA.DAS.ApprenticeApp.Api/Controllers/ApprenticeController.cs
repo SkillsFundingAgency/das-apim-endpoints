@@ -31,7 +31,26 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(queryResult.Apprentice);
         }
 
-        [HttpPatch("/apprentices/{id}")]
+        [HttpGet]
+        [Route("/apprentices")]
+        public async Task<IActionResult> GetApprenticeByName([FromQuery] string firstName, [FromQuery] string lastName, [FromQuery] DateTime dateOfBirth)
+        {
+            var queryResult = await _mediator.Send(new GetApprenticeAccountByNameQuery
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                DateOfBirth = dateOfBirth
+            });
+
+            if (queryResult.Apprentices == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(queryResult.Apprentices);
+        }
+
+        [HttpPatch("/apprentices/{id}"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public async Task<IActionResult> UpdateApprentice([Path] Guid id, [Body] object patch)
         {
             await _mediator.Send(new ApprenticePatchCommand
@@ -68,6 +87,14 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             
             return Ok();
         }
+
+        [HttpDelete("/apprentice/{id}")]
+        public async Task<IActionResult> DeleteApprenticeAccountById(Guid id)
+        {
+            var result = await _mediator.Send(new DeleteApprenticeAccountCommand { ApprenticeId = id });
+            return Ok(result);
+        }
+
         public class ApprenticeAddSubscriptionRequest
         {
             public string Endpoint { get; set; }

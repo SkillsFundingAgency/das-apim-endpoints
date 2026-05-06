@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 
 namespace SFA.DAS.EmployerFeedback.Api
 {
@@ -18,6 +19,7 @@ namespace SFA.DAS.EmployerFeedback.Api
                 {
                     webBuilder
                         .UseStartup<Startup>();
-                });
+                })
+                .UseNServiceBusContainer();
     }
 }

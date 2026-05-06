@@ -4,6 +4,7 @@ using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipJobs.Api.Models;
 using SFA.DAS.FindApprenticeshipJobs.Application.Queries;
+using SFA.DAS.FindApprenticeshipJobs.Application.Queries.NhsJobs;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Api.UnitTests.Models;

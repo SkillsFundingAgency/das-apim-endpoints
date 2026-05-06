@@ -12,18 +12,6 @@ public class EmailEnvironmentHelper
         UnsuccessfulApplicationEmailTemplateId=
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "8387c857-b4f9-4cfb-8c44-df4c2560e446" : "95d7ff0c-79fc-4585-9fff-5e583b478d23";
-        VacancyReviewApprovedEmployerTemplateId=
-            environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
-                ? "d8855c4f-9ce1-4870-93ff-53e609f59a51" : "9a45ff1d-769d-4be2-96fb-dcf605e0108f";
-        VacancyReviewApprovedProviderTemplateId=
-            environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
-                ? "ee2d7ab3-7ac1-47f8-bc32-86290bda55c9" : "48c9ab9e-5b13-4843-b4d5-ee1caa46cc64";
-        VacancyReviewEmployerRejectedByDfeTemplateId = 
-            environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
-                ? "27acd0e9-96fe-47ec-ae33-785e00a453f8" : "5869140a-2a76-4a7c-b4b9-083d2afc5aa5";
-        VacancyReviewProviderRejectedByDfeTemplateId = 
-            environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
-                ? "872e847b-77f5-44a7-b12e-4a19df969ec1" : "048d93c9-4371-45a3-96c4-3f93241a5908";
         ApplicationReviewSharedEmailTemplatedId =
             environmentName.Equals("PRD", StringComparison.CurrentCultureIgnoreCase) 
                 ? "53058846-e369-4396-87b2-015c9d16360a" : "f6fc57e6-7318-473d-8cb5-ca653035391a";
@@ -60,10 +48,6 @@ public class EmailEnvironmentHelper
     public string ManageVacancyProviderUrl { get; }
     public string SuccessfulApplicationEmailTemplateId { get; }
     public string UnsuccessfulApplicationEmailTemplateId { get; }
-    public string VacancyReviewApprovedEmployerTemplateId { get; }
-    public string VacancyReviewApprovedProviderTemplateId { get; }
-    public string VacancyReviewEmployerRejectedByDfeTemplateId { get; }
-    public string VacancyReviewProviderRejectedByDfeTemplateId { get; }
     public string ApplicationReviewSharedEmailTemplatedId { get; }
 
     public string AdvertApprovedByDfeTemplateId { get; }

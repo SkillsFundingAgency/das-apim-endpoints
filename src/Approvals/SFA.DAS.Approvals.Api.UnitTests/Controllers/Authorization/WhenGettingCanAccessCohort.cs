@@ -2,17 +2,10 @@
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
 using SFA.DAS.Approvals.Application.Authorization.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.Testing.AutoFixture;
-using GetCohortAccessResponse = SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments.GetCohortAccessResponse;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using GetCohortAccessResponse = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments.GetCohortAccessResponse;
 
 namespace SFA.DAS.Approvals.Api.UnitTests.Controllers.Authorization;
 

@@ -6,6 +6,8 @@ namespace SFA.DAS.Aodp.Application.Queries.Application.Review
     {
         public string? ApplicationSearch { get; set; }
         public string? AwardingOrganisationSearch { get; set; }
+        public string? ReviewerSearch { get; set; }
+        public bool UnassignedOnly { get; set; }
         public List<string>? ApplicationStatuses { get; set; } = new();
         public string ReviewUser { get; set; }
 

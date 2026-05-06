@@ -1,7 +1,6 @@
-using MediatR;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.TrackProgress.Api;
 using SFA.DAS.TrackProgress.Api.AppStart;
 using SFA.DAS.TrackProgress.Application.Commands.TrackProgress;

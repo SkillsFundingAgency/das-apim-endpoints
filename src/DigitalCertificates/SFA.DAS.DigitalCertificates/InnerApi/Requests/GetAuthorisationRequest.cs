@@ -1,12 +1,13 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using System;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
 {
     public class GetAuthorisationRequest : IGetApiRequest
     {
         public Guid UserId { get; set; }
-        
+
         public GetAuthorisationRequest(Guid userId)
         {
             UserId = userId;

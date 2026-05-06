@@ -7,11 +7,16 @@ using SFA.DAS.FindAnApprenticeship.InnerApi.FindApprenticeApi.Responses;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Requests;
 using SFA.DAS.FindAnApprenticeship.InnerApi.Responses;
 using SFA.DAS.FindAnApprenticeship.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Collections.ObjectModel;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries;
 
@@ -64,7 +69,8 @@ public class WhenHandlingSearchApprenticeshipsQuery
             query.DisabilityConfident,
             new List<VacancyDataSource>
             {
-                VacancyDataSource.Nhs
+                VacancyDataSource.Nhs,
+                VacancyDataSource.Csj,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);
@@ -90,6 +96,7 @@ public class WhenHandlingSearchApprenticeshipsQuery
             {
                 VacancyDataSource.Raa,
                 VacancyDataSource.Nhs,
+                VacancyDataSource.Csj
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);
@@ -227,7 +234,8 @@ public class WhenHandlingSearchApprenticeshipsQuery
             query.DisabilityConfident,
             new List<VacancyDataSource>
             {
-                VacancyDataSource.Nhs
+                VacancyDataSource.Nhs,
+                VacancyDataSource.Csj,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);
@@ -352,7 +360,8 @@ public class WhenHandlingSearchApprenticeshipsQuery
             query.DisabilityConfident,
             new List<VacancyDataSource>
             {
-                VacancyDataSource.Nhs
+                VacancyDataSource.Nhs,
+                VacancyDataSource.Csj,
             },
             query.ExcludeNational,
             query.ApprenticeshipTypes);

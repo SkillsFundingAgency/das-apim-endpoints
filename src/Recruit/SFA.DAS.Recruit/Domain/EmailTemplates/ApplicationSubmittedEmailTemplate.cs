@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models.Messages;
+﻿using SFA.DAS.SharedOuterApi.Types.Models.Messages;
 using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.Domain.EmailTemplates

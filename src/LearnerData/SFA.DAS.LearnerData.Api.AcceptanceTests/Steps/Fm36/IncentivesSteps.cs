@@ -1,8 +1,8 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
+using System.Net;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Newtonsoft.Json;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Extensions;
-using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
-using System.Net;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
@@ -50,18 +50,26 @@ public class IncentivesSteps(TestContext testContext, ScenarioContext scenarioCo
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
-                    .WithBodyAsJson(apiResponses.LearningsInnerApiResponse)
+                    .WithBodyAsJson(apiResponses.UnPagedLearningsInnerApiResponse)
             );
+
 
         testContext.EarningsApi.MockServer
             .Given(
                 Request.Create().WithPath($"/{10005077}/fm36/{academicYear}/{deliveryPeriod}")
-                    .UsingGet())
+                    .UsingPost())
             .RespondWith(
                 Response.Create()
                     .WithStatusCode(HttpStatusCode.OK)
                     .WithBodyAsJson(apiResponses.EarningsInnerApiResponse)
             );
+
+        var cancellationToken = new CancellationToken();
+        foreach (var sldData in apiResponses.SldLearnerData)
+        {
+            await testContext.Cache.StoreLearner(sldData, 10005077,  cancellationToken);
+        }
+
 
         var response = await testContext.OuterApiClient.GetAsync($"/learners/providers/10005077/collectionPeriod/{academicYear}/{deliveryPeriod}/fm36Data");
         var contentString = await response.Content.ReadAsStringAsync();

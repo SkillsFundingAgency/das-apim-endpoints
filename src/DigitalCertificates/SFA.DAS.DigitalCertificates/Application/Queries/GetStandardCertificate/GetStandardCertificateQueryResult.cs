@@ -4,6 +4,7 @@ using System.Linq;
 using SFA.DAS.DigitalCertificates.Constants;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
 using SFA.DAS.DigitalCertificates.Models;
+using SFA.DAS.DigitalCertificates.Application.Queries;
 
 namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
 {
@@ -28,12 +29,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
         public DateTime? PrintRequestedAt { get; set; }
         public string PrintRequestedBy { get; set; }
         public List<DeliveryInformation> DeliveryInformation { get; set; }
+        public bool CoronationEmblem { get; set; }
 
         public static implicit operator GetStandardCertificateQueryResult(GetStandardCertificateResponse source)
         {
             if (source == null) return null;
 
             var employerName = source.CertificateData?.EmployerName ?? "";
+            var coronationEmblem = source.CertificateData?.CoronationEmblem ?? false;
 
             return new GetStandardCertificateQueryResult
             {
@@ -53,31 +56,11 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetStandardCertificate
                 EmployerName = employerName,
                 AssessorName = "",
                 StartDate = source.LearningStartDate,
-                DeliveryInformation = BuildDeliveryInformation(source.CertificateLogs),
+                DeliveryInformation = Models.DeliveryInformation.FromCertificateLogs(source.CertificateLogs),
                 PrintRequestedAt = source.PrintRequestedAt,
                 PrintRequestedBy = source.PrintRequestedBy,
+                CoronationEmblem = coronationEmblem
             };
-        }
-
-        private static List<DeliveryInformation> BuildDeliveryInformation(List<CertificateLog> logs)
-        {
-            if (logs == null || logs.Count == 0)
-                return null;
-
-            return logs
-                .Where(log => CertificateConstants.DeliveryInformationStatuses.Any(entry => entry.Action == log.Action && entry.Status == log.Status))
-                .GroupBy(log => (log.Action, log.Status))
-                .Select(group => group.OrderByDescending(log => log.EventTime).First())
-                .OrderByDescending(log => log.EventTime)
-                .Select(log => new DeliveryInformation
-                {
-                    Id = log.Id,
-                    Action = log.Action,
-                    Status = log.Status,
-                    EventTime = log.EventTime,
-                })
-                .ToList();
         }
     }
 }
-

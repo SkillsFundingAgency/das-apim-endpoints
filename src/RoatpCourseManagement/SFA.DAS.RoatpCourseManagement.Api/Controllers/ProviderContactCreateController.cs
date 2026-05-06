@@ -1,13 +1,14 @@
 ﻿using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Contacts.Commands;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
-
 [ApiController]
+[Tags("Provider Contacts")]
 [Route("providers/{ukprn}/contact")]
 public class ProviderContactCreateController(IMediator _mediator, ILogger<ProviderContactCreateController> _logger) : ControllerBase
 {

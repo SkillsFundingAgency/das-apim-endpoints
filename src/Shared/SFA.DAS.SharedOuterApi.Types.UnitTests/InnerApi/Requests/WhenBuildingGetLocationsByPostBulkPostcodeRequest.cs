@@ -1,0 +1,17 @@
+using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
+
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
+public class WhenBuildingGetLocationsByPostBulkPostcodeRequest
+{
+    [Test, AutoData]
+    public void Then_The_Url_Is_Correctly_Constructed(List<string> postCodes)
+    {
+        var actual = new GetLocationsByPostBulkPostcodeRequest(postCodes);
+
+        actual.PostUrl.Should().Be("api/Postcodes/bulk");
+        ((List<string>)actual.Data).Should().BeEquivalentTo(postCodes);
+        actual.Version.Should().Be("2.0");
+    }
+}

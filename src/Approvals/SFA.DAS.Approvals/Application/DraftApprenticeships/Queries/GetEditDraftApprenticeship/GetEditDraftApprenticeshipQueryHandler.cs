@@ -8,9 +8,11 @@ using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeship
 {
@@ -61,7 +63,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 courseCode, cohort.AccountLegalEntityId, apprenticeship.ContinuationOfId);
 
             var course = (await _apiClient.Get<GetTrainingProgrammeResponse>(new GetCalculatedVersionOfTrainingProgrammeRequest(courseCode, apprenticeship.StartDate)))?.TrainingProgramme;
-
+            if (course == null)
+            {
+                course = (await _apiClient.Get<GetTrainingProgrammeResponse>(new GetTrainingProgrammeRequest(courseCode)))?.TrainingProgramme;
+            }
             return new GetEditDraftApprenticeshipQueryResult
             {
                 FirstName = apprenticeship.FirstName,
@@ -106,7 +111,10 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 IsDurationReducedByRpl = apprenticeship.IsDurationReducedByRpl,
                 StandardPageUrl = course?.StandardPageUrl,
                 ProposedMaxFunding = course?.FundingPeriods.GetFundingBandForDate(apprenticeship.StartDate),
-                LearnerDataId = apprenticeship.LearnerDataId
+                LearnerDataId = apprenticeship.LearnerDataId,
+                HasLearnerDataChanges = apprenticeship.HasLearnerDataChanges,
+                LastLearnerDataSync = apprenticeship.LastLearnerDataSync,
+                TrainingCourseVersion = apprenticeship.TrainingCourseVersion
             };
         }
     }

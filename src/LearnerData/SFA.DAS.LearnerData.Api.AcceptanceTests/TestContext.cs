@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.LearnerData.Api.AcceptanceTests.Bindings;
+using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.Api.AcceptanceTests;
 
@@ -7,6 +8,7 @@ public static class MockServers
     public static MockApi EarningsApi { get; set; }
     public static MockApi ApprenticeshipsApi { get; set; }
     public static MockApi CollectionCalendarApi { get; set; }
+    public static MockApi CoursesApi { get; set; }
 }
 
 public class TestContext : IDisposable
@@ -40,7 +42,19 @@ public class TestContext : IDisposable
             CleanUpOuterApi();
         }
     }
+
+    public MockApi CoursesApi
+    {
+        get => MockServers.CoursesApi;
+        set
+        {
+            MockServers.CoursesApi = value;
+            CleanUpOuterApi();
+        }
+    }
+
     public HttpClient OuterApiClient { get; set; }
+    public ILearnerDataCacheService Cache { get; set; }
 
     private bool _isDisposed;
 
@@ -59,6 +73,7 @@ public class TestContext : IDisposable
             EarningsApi?.Reset();
             ApprenticeshipsApi?.Reset();
             CollectionCalendarApi?.Reset();
+            CoursesApi?.Reset();
         }
 
         _isDisposed = true;

@@ -1,23 +1,25 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Roatp;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AdminRoatp.Application.Queries.GetOrganisations;
 
-public class GetOrganisationsQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _apiClient, ILogger<GetOrganisationsQueryHandler> _logger) : IRequestHandler<GetOrganisationsQuery, GetOrganisationsQueryResponse>
+public class GetOrganisationsQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _apiClient, ILogger<GetOrganisationsQueryHandler> _logger) : IRequestHandler<GetOrganisationsQuery, GetOrganisationsQueryResult>
 {
-    public async Task<GetOrganisationsQueryResponse> Handle(GetOrganisationsQuery request, CancellationToken cancellationToken)
+    public async Task<GetOrganisationsQueryResult> Handle(GetOrganisationsQuery request, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Get Organisations request received for search term {SearchTerm}", request.SearchTerm);
+        _logger.LogInformation("Handle GetOrganisations request");
 
-        var response = await _apiClient.GetWithResponseCode<SearchOrganisationResponse>(new SearchOrganisationRequest(request.SearchTerm));
+        var response = await _apiClient.GetWithResponseCode<GetOrganisationsResponse>(new GetOrganisationsRequest());
 
         response.EnsureSuccessStatusCode();
 
-        return new() { Organisations = response.Body.SearchResults.Select(c => (Organisation)c) };
+        return new() { Organisations = response.Body.Organisations.Select(o => (OrganisationSummary)o) };
     }
 }

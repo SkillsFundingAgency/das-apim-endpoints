@@ -1,5 +1,4 @@
 ﻿using System;
-using NUnit.Framework;
 using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests

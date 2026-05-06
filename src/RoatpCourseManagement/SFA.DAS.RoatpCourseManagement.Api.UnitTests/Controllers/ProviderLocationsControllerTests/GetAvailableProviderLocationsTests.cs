@@ -1,4 +1,6 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -7,8 +9,6 @@ using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Queries.GetAvailableProviderLocations;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocationsControllerTests
 {
@@ -18,7 +18,7 @@ namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.ProviderLocati
         [Test, MoqAutoData]
         public async Task GetAvailableProviderLocations_ValidRequest_ReturnsLocations(
             int ukprn,
-            int larsCode,
+            string larsCode,
             [Frozen] Mock<IMediator> mediatorMock,
             GetAvailableProviderLocationsQueryResult result,
             [Greedy] GetProviderLocationsController sut)

@@ -11,12 +11,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Approvals.Api.AppStart;
 using SFA.DAS.Approvals.Application.TrainingCourses.Queries;
 using SFA.DAS.Approvals.ErrorHandling;
-using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.Approvals.Api
 {
@@ -33,7 +33,7 @@ namespace SFA.DAS.Approvals.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton(_env);       
+            services.AddSingleton(_env);
 
             services.AddConfigurationOptions(_configuration);
 
@@ -94,7 +94,7 @@ namespace SFA.DAS.Approvals.Api
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseMiddleware<SecurityHeadersMiddleware>();
 
             app.Use(async (context, next) =>

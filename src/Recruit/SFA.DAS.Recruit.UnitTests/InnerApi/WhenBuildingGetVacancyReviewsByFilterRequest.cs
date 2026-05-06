@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
-using SFA.DAS.Recruit.InnerApi.Requests;
+using SFA.DAS.Recruit.InnerApi.Recruit.Requests.VacancyReviews;
 
 namespace SFA.DAS.Recruit.UnitTests.InnerApi;
 
@@ -20,6 +19,6 @@ public class WhenBuildingGetVacancyReviewsByFilterRequest
     {
         var actual = new GetVacancyReviewsByFilterRequest(expiredAssignationDateTime:expiredAssignationDateTime);
         
-        actual.GetUrl.Should().Be($"api/vacancyreviews?reviewStatus=&expiredAssignationDateTime={expiredAssignationDateTime}");
+        actual.GetUrl.Should().Be($"api/vacancyreviews?reviewStatus=&expiredAssignationDateTime={expiredAssignationDateTime:yyyy-MMM-dd HH:mm:ss}");
     }
 }

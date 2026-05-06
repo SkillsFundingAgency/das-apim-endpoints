@@ -1,0 +1,19 @@
+query GetProviderTransferableVacancyDetails($id: UUID) {
+    vacancies(
+        where: {
+            id:
+            {
+                eq: $id
+            }
+        }
+    )
+    {
+        id,
+        vacancyReference,
+        title,
+        status,
+        trainingProvider_Name,
+        legalEntityName,
+        ukprn
+    }
+}

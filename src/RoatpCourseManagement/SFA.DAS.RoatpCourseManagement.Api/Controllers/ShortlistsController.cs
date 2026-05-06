@@ -5,8 +5,8 @@ using SFA.DAS.RoatpCourseManagement.Application.Shortlists.Commands.DeleteExpire
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
-[Route("[controller]")]
 [ApiController]
+[Route("[controller]")]
 public class ShortlistsController(IMediator _mediator) : ControllerBase
 {
     [HttpDelete]

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao;
-using SFA.DAS.SharedOuterApi.Validation;
+using SFA.DAS.SharedOuterApi.Types.Validation;
 
 namespace SFA.DAS.FindEpao.Api.AppStart
 {

@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using Azure.Core;
+using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 

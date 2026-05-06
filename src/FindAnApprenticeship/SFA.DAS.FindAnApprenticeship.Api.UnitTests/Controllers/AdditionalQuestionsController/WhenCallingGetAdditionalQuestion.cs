@@ -1,14 +1,6 @@
-﻿using System;
-using System.Net;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions.Execution;
-using FluentAssertions;
+﻿using System.Net;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetAdditionalQuestion;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;

@@ -1,13 +1,13 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Text.Json.Serialization;
-using MediatR;
-using Microsoft.AspNetCore.Mvc.Authorization;
+﻿using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Earnings.Api.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Earnings.Application.Training;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.Earnings.Api;
 
@@ -25,7 +25,6 @@ public class Startup
 
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddNLog();
         services.AddOptions();
         services.AddSingleton(_env);
 
@@ -44,7 +43,7 @@ public class Startup
             services.AddAuthentication(azureAdConfiguration, policies);
         }
 
-        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(Earning).Assembly));
+        services.AddMediatR(configuration => configuration.RegisterServicesFromAssembly(typeof(GetStandardQuery).Assembly));
         services.AddServiceRegistration(_configuration);
 
         services
@@ -77,6 +76,8 @@ public class Startup
 
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
     {
+        app.UseMiddleware<SecurityHeadersMiddleware>();
+
         if (env.IsDevelopment())
         {
             app.UseDeveloperExceptionPage();

@@ -1,8 +1,5 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
+﻿using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.DisabilityConfident;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindAnApprenticeship.Api.UnitTests.Models;
 

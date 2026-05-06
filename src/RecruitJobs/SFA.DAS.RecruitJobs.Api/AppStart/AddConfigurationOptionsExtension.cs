@@ -1,18 +1,25 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using SFA.DAS.Recruit.Jobs.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-namespace SFA.DAS.Recruit.Api.AppStart
+
+namespace SFA.DAS.RecruitJobs.Api.AppStart;
+
+[ExcludeFromCodeCoverage]
+public static class AddConfigurationOptionsExtension
 {
-    public static class AddConfigurationOptionsExtension
+    public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
     {
-        public static void AddConfigurationOptions(this IServiceCollection services, IConfiguration configuration)
-        {
-            services.AddOptions();
-            services.Configure<RecruitJobsConfiguration>(configuration.GetSection(nameof(RecruitJobsConfiguration)));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitJobsConfiguration>>().Value);
-            
-        }
+        services.AddOptions();
+        services.Configure<RecruitApiConfiguration>(configuration.GetSection("RecruitAltApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitApiConfiguration>>().Value);
+        services.Configure<BusinessMetricsConfiguration>(configuration.GetSection("BusinessMetricsApi"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<BusinessMetricsConfiguration>>().Value);
+        services.Configure<CoursesApiConfiguration>(configuration.GetSection(nameof(CoursesApiConfiguration)));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
+        services.Configure<RecruitAiApiConfiguration>(configuration.GetSection("RecruitAiApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitAiApiConfiguration>>().Value);
     }
 }

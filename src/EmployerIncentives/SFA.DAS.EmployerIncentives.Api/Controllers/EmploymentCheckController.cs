@@ -4,7 +4,7 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.EmploymentCheck;
 using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.Application.Commands.RegisterEmploymentCheck;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {

@@ -2,12 +2,16 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 using SFA.DAS.VacanciesManage.InnerApi.Requests;
@@ -19,7 +23,9 @@ using System.Net;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Common;
+using SFA.DAS.Apim.Shared.Common;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 {
@@ -45,7 +51,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -101,7 +107,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship
+                ApprenticeshipType = LearningType.FoundationApprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -161,7 +167,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -218,7 +224,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -254,9 +260,10 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
 
         [Test, MoqAutoData]
         public async Task And_IsSandbox_Then_Api_Called_To_Validate_Request(
-            long responseValue,
+            PostVacancyResponse responseValue,
             CreateVacancyCommand command,
-            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClientV1,
             [Frozen] Mock<ICourseService> courseServiceMock,
             CreateVacancyCommandHandler handler)
         {
@@ -268,7 +275,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse
@@ -279,23 +286,65 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             courseServiceMock
                 .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(getStandardsResponse);
-            var apiResponse = new ApiResponse<long?>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient
                 .Setup(x =>
-                    x.PostWithResponseCode<long?>(
-                        It.Is<PostValidateVacancyRequest>(c =>
-                            c.PostUrl.Contains($"{command.Id.ToString()}/validate?ukprn={command.PostVacancyRequestData.User.Ukprn}&userEmail={command.PostVacancyRequestData.User.Email}")
-                            && ((PostVacancyRequestData)c.Data).Title.Equals(command.PostVacancyRequestData.Title)
-                            && ((PostVacancyRequestData)c.Data).AccountType.Equals(command.PostVacancyRequestData.AccountType)
+                    x.PostWithResponseCode<PostVacancyResponse>(
+                        It.Is<PostVacancyV2Request>(c =>
+                            c.PostUrl.Contains($"api/vacancies?validateOnly=true&ruleset=All")
+                            && ((PostVacancyV2RequestData)c.Data).Title.Equals(command.PostVacancyV2RequestData.Title)
                         ), true))
-                .ReturnsAsync(apiResponse);
+                .ReturnsAsync(new ApiResponse<PostVacancyResponse>(responseValue, HttpStatusCode.Created,""));
 
             //Act
             var result = await handler.Handle(command, CancellationToken.None);
 
             //Assert
-            result.VacancyReference.Should().Be(apiResponse.Body.ToString());
-            mockRecruitApiClient.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true),
+            result.VacancyReference.Should().Be(responseValue.VacancyReference.ToString());
+            mockRecruitApiClientV1.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true),
+                Times.Never);
+        }
+        
+        [Test, MoqAutoData]
+        public async Task And_IsSandbox_Then_If_Course_Is_Not_Active_Error_Returned(
+            PostVacancyResponse responseValue,
+            CreateVacancyCommand command,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiV2Configuration>> mockRecruitApiClient,
+            [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> mockRecruitApiClientV1,
+            [Frozen] Mock<ICourseService> courseServiceMock,
+            CreateVacancyCommandHandler handler)
+        {
+            //Arrange
+            command.IsSandbox = true;
+            var expectedLarsCode = 123;
+            command.PostVacancyRequestData.ProgrammeId = expectedLarsCode.ToString();
+
+            var matchingStandard = new GetStandardsListItem
+            {
+                LarsCode = expectedLarsCode,
+                ApprenticeshipType = LearningType.Apprenticeship,
+                LastDateStarts = command.PostVacancyV2RequestData.StartDate.AddDays(-1)
+            };
+
+            var getStandardsResponse = new GetStandardsListResponse
+            {
+                Standards = new List<GetStandardsListItem> { matchingStandard }
+            };
+
+            courseServiceMock
+                .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
+                .ReturnsAsync(getStandardsResponse);
+            
+            //Act
+            Func<Task> act = async () => await handler.Handle(command, CancellationToken.None);
+
+            //Assert
+            act.Should().ThrowAsync<HttpRequestContentException>().WithMessage($"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})")
+                .Result.Which.ErrorContent.Should().Contain("Start date must be on or before");
+            mockRecruitApiClient
+                .Verify(x =>
+                    x.PostWithResponseCode<PostVacancyResponse>(
+                        It.IsAny<PostVacancyV2Request>(), true), Times.Never());
+            mockRecruitApiClientV1.Verify(client => client.PostWithResponseCode<long?>(It.IsAny<PostVacancyRequest>(), true),
                 Times.Never);
         }
 
@@ -342,7 +391,7 @@ namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands
             var matchingStandard = new GetStandardsListItem
             {
                 LarsCode = expectedLarsCode,
-                ApprenticeshipType = ApprenticeshipType.Apprenticeship
+                ApprenticeshipType = LearningType.Apprenticeship
             };
 
             var getStandardsResponse = new GetStandardsListResponse

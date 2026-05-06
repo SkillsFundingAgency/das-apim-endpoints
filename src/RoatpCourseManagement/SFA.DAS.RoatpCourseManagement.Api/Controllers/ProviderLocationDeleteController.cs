@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.DeleteProviderLocation;
@@ -9,6 +10,7 @@ using SFA.DAS.RoatpCourseManagement.Application.Locations.Commands.DeleteProvide
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
 [ApiController]
+[Tags("Provider Locations")]
 [Route("providers/{ukprn}/locations/{id}")]
 public class ProviderLocationDeleteController(ILogger<ProviderLocationDeleteController> logger, IMediator mediator) : ControllerBase
 {

@@ -1,6 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
+﻿using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
 
@@ -25,6 +23,6 @@ public class WhenHandlingGetFm36Query_HistoricEarningOutputValues
     public void EmptyArrayIsReturned()
     {
         // Assert
-        _testFixture.Result.FM36Learners.Should().AllSatisfy(x => x.HistoricEarningOutputValues.Should().BeEmpty());
+        _testFixture.Result.Items.Should().AllSatisfy(x => x.HistoricEarningOutputValues.Should().BeEmpty());
     }
 }

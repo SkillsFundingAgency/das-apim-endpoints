@@ -1,0 +1,15 @@
+query GetReferredVacanciesSubmittedBefore($submittedDate: DateTime) {
+    vacancies(
+        where: {
+            status: { eq: REFERRED }
+            deletedDate: { eq: null }
+            submittedDate: { lt: $submittedDate }
+        }
+    )
+    {
+        id
+        vacancyReference
+        status
+        closingDate
+    }
+}

@@ -6,4 +6,4 @@ Scenario: Remove Learner
 	Given there is a learner
 	When the learner is removed
 	Then a remove learning request is sent to the learning domain
-	And a withdraw learner request is sent to the earnings domain
+	And a delete learner request is sent to the earnings domain

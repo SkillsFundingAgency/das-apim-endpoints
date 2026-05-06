@@ -1,6 +1,6 @@
 ﻿using System;
 using SFA.DAS.EmployerAccounts.Application.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.EmployerAccounts.Api.Models
 {

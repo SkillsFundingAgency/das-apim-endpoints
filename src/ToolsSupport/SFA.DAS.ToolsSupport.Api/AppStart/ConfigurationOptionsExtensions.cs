@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.ToolsSupport.Configuration;
 
 namespace SFA.DAS.ToolsSupport.Api.AppStart;

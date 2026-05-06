@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.EmployerIncentives.InnerApi.Responses.Accounts;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.EmployerIncentives.Interfaces
 {

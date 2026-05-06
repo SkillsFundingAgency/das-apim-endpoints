@@ -1,15 +1,20 @@
-﻿using System;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Api.Controllers;
+using SFA.DAS.ApprenticeApp.Application.Commands.Commitments;
 using SFA.DAS.ApprenticeApp.Application.Queries.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Application.Queries.GetMyApprenticeshipByUln;
+using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.ApprenticeApp.Telemetry;
 using SFA.DAS.Testing.AutoFixture;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests
 {
@@ -35,6 +40,118 @@ namespace SFA.DAS.ApprenticeApp.UnitTests
 
             var result = await controller.GetApprenticeDetails(apprenticeId);
             result.Should().BeOfType(typeof(NotFoundResult));
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetApprenticeshipByUln_Returns_Ok_When_Apprenticeship_Exists(
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] ApprenticeDetailsController controller,
+            MyApprenticeship myApprenticeship)
+        {
+            // Arrange
+            var uln = 1234567890;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.Is<GetMyApprenticeshipByUlnQuery>(q => q.Uln == uln),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetMyApprenticeshipByUlnQueryResult
+                {
+                    MyApprenticeship = myApprenticeship
+                });
+
+            // Act
+            var result = await controller.GetApprenticeshipByUln(uln);
+
+            // Assert
+            var okResult = result.Should().BeOfType<OkObjectResult>().Subject;
+            okResult.Value.Should().BeEquivalentTo(myApprenticeship);
+
+            mediatorMock.Verify(m => m.Send(
+                It.Is<GetMyApprenticeshipByUlnQuery>(q => q.Uln == uln),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task GetApprenticeshipByUln_Returns_NotFound_When_Apprenticeship_Does_Not_Exist(
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] ApprenticeDetailsController controller)
+        {
+            // Arrange
+            var uln = 1234567890;
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.Is<GetMyApprenticeshipByUlnQuery>(q => q.Uln == uln),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new GetMyApprenticeshipByUlnQueryResult
+                {
+                    MyApprenticeship = null
+                });
+
+            // Act
+            var result = await controller.GetApprenticeshipByUln(uln);
+
+            // Assert
+            result.Should().BeOfType<NotFoundResult>();
+
+            mediatorMock.Verify(m => m.Send(
+                It.Is<GetMyApprenticeshipByUlnQuery>(q => q.Uln == uln),
+                It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Test, MoqAutoData]
+        public async Task ConfirmApprenticeship_Returns_Ok_When_Command_Succeeds(
+            [Frozen] Mock<IMediator> mediatorMock,
+            [Greedy] ApprenticeDetailsController controller,
+            Confirmations confirmations)
+        {
+            // Arrange
+            var apprenticeId = Guid.NewGuid();
+            var apprenticeshipId = 12345L;
+            var revisionId = 67890L;
+
+            controller.ControllerContext = new ControllerContext
+            {
+                HttpContext = new DefaultHttpContext()
+            };
+
+            mediatorMock
+                .Setup(m => m.Send(
+                    It.Is<ConfirmApprenticeshipPatchCommand>(c =>
+                        c.ApprenticeId == apprenticeId &&
+                        c.ApprenticeshipId == apprenticeshipId &&
+                        c.RevisionId == revisionId &&
+                        c.Patch == confirmations),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(Unit.Value);
+
+            // Act
+            var result = await controller.ConfirmApprenticeship(
+                apprenticeId,
+                apprenticeshipId,
+                revisionId,
+                confirmations);
+
+            // Assert
+            result.Should().BeOfType<OkResult>();
+
+            mediatorMock.Verify(m => m.Send(
+                It.Is<ConfirmApprenticeshipPatchCommand>(c =>
+                    c.ApprenticeId == apprenticeId &&
+                    c.ApprenticeshipId == apprenticeshipId &&
+                    c.RevisionId == revisionId &&
+                    c.Patch == confirmations),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
         }
     }
 }

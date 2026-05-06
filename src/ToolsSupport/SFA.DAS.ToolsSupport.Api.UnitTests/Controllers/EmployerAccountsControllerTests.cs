@@ -1,11 +1,5 @@
 ﻿using System.Net;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Api.Controllers;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
 using SFA.DAS.ToolsSupport.Api.sources.EmployerAccount;

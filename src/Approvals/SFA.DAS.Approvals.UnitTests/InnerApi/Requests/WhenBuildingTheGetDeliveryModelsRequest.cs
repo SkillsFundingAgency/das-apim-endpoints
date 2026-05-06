@@ -1,7 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.Approvals.InnerApi.Requests;
-using SFA.DAS.Testing.AutoFixture;
+﻿using SFA.DAS.Approvals.InnerApi.Requests;
 
 namespace SFA.DAS.Approvals.UnitTests.InnerApi.Requests
 {

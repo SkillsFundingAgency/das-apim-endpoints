@@ -10,7 +10,6 @@ using SFA.DAS.Recruit.Application.Queries.GetDashboardVacanciesCountByAccountId;
 using SFA.DAS.Recruit.Enums;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using SFA.DAS.Recruit.Application.Queries.GetAlertsByAccountId;

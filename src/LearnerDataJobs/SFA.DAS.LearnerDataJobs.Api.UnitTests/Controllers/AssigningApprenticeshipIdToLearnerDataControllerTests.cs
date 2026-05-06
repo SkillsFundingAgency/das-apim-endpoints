@@ -1,5 +1,4 @@
-﻿using System.Net;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,6 +7,7 @@ using SFA.DAS.LearnerDataJobs.Api.Controllers;
 using SFA.DAS.LearnerDataJobs.Application.Commands;
 using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.Testing.AutoFixture;
+using System.Net;
 
 namespace SFA.DAS.LearnerDataJobs.Api.UnitTests.Controllers;
 
@@ -73,5 +73,5 @@ public class AssigningApprenticeshipIdToLearnerDataControllerTests
         var result = await controller.PatchLearnerDataApprenticeshipId(providerId, learnerDataId, request) as StatusCodeResult;
 
         result.StatusCode.Should().Be((int) HttpStatusCode.InternalServerError);
-    }
+    }   
 }

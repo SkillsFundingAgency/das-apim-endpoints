@@ -9,10 +9,13 @@ using NUnit.Framework;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.InnerApi.Requests;
 using SFA.DAS.DigitalCertificates.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
@@ -49,7 +52,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
         }
 
         [Test, MoqAutoData]
-        public void Then_NotFound_Throws_ApiResponseException(
+        public async Task Then_NotFound_Returns_Null_Response(
             Guid userId,
             GetSharingsQuery query,
             [Frozen] Mock<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>> mockDigitalCertificatesApiClient,
@@ -65,11 +68,10 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetSharings
                 .ReturnsAsync(apiResponse);
 
             // Act
-            Func<Task> act = async () => await handler.Handle(query, CancellationToken.None);
+            var actual = await handler.Handle(query, CancellationToken.None);
 
             // Assert
-            act.Should().ThrowAsync<ApiResponseException>()
-                .Where(e => e.Status == HttpStatusCode.NotFound);
+            actual.Response.Should().BeNull();
         }
 
         [Test, MoqAutoData]

@@ -1,7 +1,8 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Newtonsoft.Json.Converters;
 using SFA.DAS.AdminRoatp.Api.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,10 +19,12 @@ builder.Services
     .AddEndpointsApiExplorer()
     .AddSwagger(configuration)
     .AddServiceRegistrations()
+    .AddRoatpServiceApiClient(configuration)
     .AddControllers(o =>
     {
         if (!configuration.IsLocalOrDev()) o.Filters.Add(new AuthorizeFilter("default"));
     })
+    .AddNewtonsoftJson(options => options.SerializerSettings.Converters.Add(new StringEnumConverter()))
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());

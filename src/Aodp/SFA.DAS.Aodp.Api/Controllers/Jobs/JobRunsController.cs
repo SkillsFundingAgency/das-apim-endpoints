@@ -1,7 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Queries.Jobs;
-using SFA.DAS.Aodp.Application.Queries.Qualifications;
 
 namespace SFA.DAS.Aodp.Api.Controllers.JobRuns
 {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using SFA.DAS.EmployerAccounts.Application.Queries.GetLatestDetails;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.EmployerAccounts.Strategies
 {

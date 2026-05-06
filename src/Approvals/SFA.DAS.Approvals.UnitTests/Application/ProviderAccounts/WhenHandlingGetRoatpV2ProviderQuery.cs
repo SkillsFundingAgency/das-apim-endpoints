@@ -1,13 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.Approvals.Application.ProviderAccounts.Queries;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.ProviderAccounts
 {

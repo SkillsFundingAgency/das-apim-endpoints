@@ -1,20 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-	<PackageReference Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" />
-    <PackageReference Include="FluentValidation" />
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="SFA.DAS.AcademicYearService" />
+    <Compile Remove="Services\Models\**" />
+    <EmbeddedResource Remove="Services\Models\**" />
+    <None Remove="Services\Models\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+	<PackageReference Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" Version="0.1.17" />
+    <PackageReference Include="FluentValidation" Version="11.9.0" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="SFA.DAS.AcademicYearService" Version="17.1.147" />
+    <PackageReference Include="SFA.DAS.Payments.EarningEvents.Messages.External" Version="2.0.8-prerelease-9" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 
 </Project>

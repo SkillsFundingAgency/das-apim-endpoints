@@ -1,12 +1,11 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
-using System;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
 {
     public class GetUserRequest : IGetApiRequest
     {
         public string GovUkIdentifier { get; set; }
-        
+
         public GetUserRequest(string govUkIdentifier)
         {
             GovUkIdentifier = govUkIdentifier;

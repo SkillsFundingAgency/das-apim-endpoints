@@ -12,6 +12,6 @@ public class WhenBuildingTheGetShortlistCountForUserRequest
     {
         var actual = new GetShortlistCountForUserRequest(shortlistUserId);
 
-        actual.GetUrl.Should().Be($"api/shortlists/users/{shortlistUserId}/count");
+        actual.GetUrl.Should().Be($"shortlists/users/{shortlistUserId}/count");
     }
 }

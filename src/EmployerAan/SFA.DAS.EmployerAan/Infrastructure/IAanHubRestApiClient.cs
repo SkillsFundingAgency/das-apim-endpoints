@@ -4,7 +4,6 @@ using SFA.DAS.EmployerAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.EmployerAan.Application.Employer.Commands.CreateEmployerMember;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
 using SFA.DAS.EmployerAan.Application.InnerApi.Notifications;
-using SFA.DAS.EmployerAan.Application.MemberNotificationSettings.Queries.GetMemberNotificationSettings;
 using SFA.DAS.EmployerAan.Application.MemberProfiles.Queries.GetMemberProfileWithPreferences;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMember;
 using SFA.DAS.EmployerAan.Application.Members.Queries.GetMembers;

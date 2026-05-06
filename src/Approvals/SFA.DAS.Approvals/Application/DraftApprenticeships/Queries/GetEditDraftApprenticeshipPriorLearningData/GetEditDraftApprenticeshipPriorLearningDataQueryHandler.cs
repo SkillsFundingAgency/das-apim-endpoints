@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraftApprenticeshipPriorLearningData
 {
@@ -44,7 +46,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 DurationReducedByHours = response.Body.DurationReducedByHours,
                 IsDurationReducedByRpl = isDurationReducedByRpl,
                 DurationReducedBy = reducedDuration,
-                PriceReduced = response.Body.PriceReducedBy
+                PriceReduced = response.Body.PriceReducedBy,
+                LearnerDataId = response.Body.LearnerDataId
             };
         }
     }

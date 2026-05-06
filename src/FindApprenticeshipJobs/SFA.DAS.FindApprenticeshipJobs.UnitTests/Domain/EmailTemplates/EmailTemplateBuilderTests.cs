@@ -3,8 +3,8 @@ using Microsoft.Extensions.Primitives;
 using SFA.DAS.FindApprenticeshipJobs.Application.Commands.SavedSearch.SendNotification;
 using SFA.DAS.FindApprenticeshipJobs.Domain.EmailTemplates;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using AvailableWhere = SFA.DAS.FindApprenticeshipJobs.Application.Shared.AvailableWhere;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Domain.EmailTemplates;

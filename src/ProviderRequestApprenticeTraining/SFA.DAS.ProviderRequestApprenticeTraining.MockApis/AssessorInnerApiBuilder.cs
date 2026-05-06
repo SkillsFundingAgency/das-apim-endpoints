@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Assessor;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Assessor;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;

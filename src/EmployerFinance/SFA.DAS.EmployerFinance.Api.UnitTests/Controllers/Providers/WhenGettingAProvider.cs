@@ -1,22 +1,13 @@
 ﻿using System;
 using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.EmployerFinance.Api.Controllers;
 using SFA.DAS.EmployerFinance.Api.Models.Providers;
 using SFA.DAS.EmployerFinance.Application.Queries.GetProvider;
-using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Providers
+namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Providers;
+
+public class WhenGettingAProvider
 {
-    public class WhenGettingAProvider
-    {
         [Test, MoqAutoData]
         public async Task Then_Gets_Providers_From_Mediator(
             int id,
@@ -32,10 +23,10 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Providers
 
             var controllerResult = await controller.GetProvider(id) as ObjectResult;
 
-            Assert.That(controllerResult, Is.Not.Null);
+            controllerResult.Should().NotBeNull();
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = controllerResult.Value as GetProviderResponse;
-            Assert.That(model, Is.Not.Null);
+            model.Should().NotBeNull();
             model.Should().BeEquivalentTo(mediatorResult);
         }
 
@@ -55,5 +46,4 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Controllers.Providers
 
             controllerResult.StatusCode.Should().Be((int)HttpStatusCode.BadRequest);
         }
-    }
 }

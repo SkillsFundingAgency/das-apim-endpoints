@@ -1,0 +1,20 @@
+﻿using System.Web;
+
+using SFA.DAS.Apim.Shared.Interfaces;
+
+using SFA.DAS.Apim.Shared.Interfaces;
+
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location
+{
+    [Obsolete("GetLocationByFullPostcodeRequestV2 should be used instead, note it returns a slightly different response to this request")]
+    public class GetLocationByFullPostcodeRequest : IGetApiRequest
+    {
+        private readonly string _fullPostcode;
+
+        public GetLocationByFullPostcodeRequest(string fullPostcode)
+        {
+            _fullPostcode = fullPostcode;            
+        }
+        public string GetUrl => $"api/postcodes?postcode={HttpUtility.UrlEncode(_fullPostcode)}";
+    }
+}

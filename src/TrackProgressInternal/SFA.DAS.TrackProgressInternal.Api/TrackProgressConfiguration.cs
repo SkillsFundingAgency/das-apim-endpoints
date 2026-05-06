@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Api.Common.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.TrackProgressInternal.Api;
 

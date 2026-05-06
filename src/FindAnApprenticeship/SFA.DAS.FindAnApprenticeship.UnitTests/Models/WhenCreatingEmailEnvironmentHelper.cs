@@ -1,5 +1,3 @@
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Models;

@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
@@ -11,11 +14,9 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.DigitalCertificates.Api.AppStart;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 namespace SFA.DAS.DigitalCertificates.Api
 {

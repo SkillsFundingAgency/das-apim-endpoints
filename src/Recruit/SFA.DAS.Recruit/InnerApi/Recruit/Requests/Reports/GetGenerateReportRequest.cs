@@ -1,0 +1,9 @@
+﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using System;
+
+namespace SFA.DAS.Recruit.InnerApi.Recruit.Requests.Reports;
+public record GetGenerateReportRequest(Guid ReportId) : IGetApiRequest
+{
+    public string GetUrl => $"api/reports/generate/{ReportId}";
+}

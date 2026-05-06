@@ -9,27 +9,28 @@ namespace SFA.DAS.Reservations.Api.UnitTests.Models
     public class WhenCastingGetTrainingCoursesResponseFromMediatorType
     {
         [Test, AutoData]
-        public void Then_Maps_Fields_Appropriately(
-            GetStandardsListItem source)
+        public void Then_Maps_Fields_Appropriately(TrainingCourseListItem source)
         {
             var response = (GetTrainingCoursesListItem)source;
 
-            response.Should().BeEquivalentTo(source, options => options
-                .Excluding(r => r.StandardUId)
-                .Excluding(r => r.LarsCode));
             response.Id.Should().Be(source.LarsCode);
-            response.ApprenticeshipType.Should().Be(source.ApprenticeshipType);
+            response.Title.Should().Be(source.Title);
+            response.Level.Should().Be(source.Level);
+            response.EffectiveTo.Should().Be(source.EffectiveTo);
+            response.LearningType.Should().Be(source.LearningType);
         }
 
-        [Test, AutoData]
-        public void Then_Maps_ApprenticeshipType_Values_Correctly()
+        [Test]
+        public void Then_Maps_LearningType_And_Id_From_LarsCode_Correctly()
         {
-            var source = new GetStandardsListItem
+            var source = new TrainingCourseListItem
             {
-                ApprenticeshipType = "Apprenticeship"
+                LarsCode = "822",
+                LearningType = "ApprenticeshipUnit"
             };
             var response = (GetTrainingCoursesListItem)source;
-            response.ApprenticeshipType.Should().Be("Apprenticeship");
+            response.LearningType.Should().Be("ApprenticeshipUnit");
+            response.Id.Should().Be("822");
         }
     }
 }

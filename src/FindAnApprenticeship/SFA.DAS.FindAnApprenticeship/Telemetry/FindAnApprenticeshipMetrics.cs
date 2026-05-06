@@ -1,9 +1,8 @@
-﻿using System;
+﻿using SFA.DAS.FindAnApprenticeship.Domain;
+using SFA.DAS.FindAnApprenticeship.Services;
+using SFA.DAS.Apim.Shared.Extensions;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
-using SFA.DAS.FindAnApprenticeship.Domain;
-using SFA.DAS.FindAnApprenticeship.Services;
-using SFA.DAS.SharedOuterApi.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.Telemetry
 {

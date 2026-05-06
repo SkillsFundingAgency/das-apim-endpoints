@@ -8,17 +8,17 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseEpao;
 using SFA.DAS.FindEpao.InnerApi.Requests;
 using SFA.DAS.FindEpao.InnerApi.Responses;
 using SFA.DAS.FindEpao.Interfaces;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Validation;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Validation;
 using SFA.DAS.Testing.AutoFixture;
-using ValidationResult = SFA.DAS.SharedOuterApi.Validation.ValidationResult;
+using ValidationResult = SFA.DAS.SharedOuterApi.Types.Validation.ValidationResult;
 
 namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseEpao
 {

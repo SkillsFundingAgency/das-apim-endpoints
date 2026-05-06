@@ -1,12 +1,5 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
-using NUnit.Framework;
-using SFA.DAS.Approvals.Api.Controllers;
+﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Approvals.Application.OverlappingTrainingDateRequest.Queries;
-using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;

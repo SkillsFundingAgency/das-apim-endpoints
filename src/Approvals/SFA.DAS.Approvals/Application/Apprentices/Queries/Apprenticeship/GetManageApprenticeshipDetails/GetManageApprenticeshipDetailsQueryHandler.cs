@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.Apim.Shared.Common;
 using SFA.DAS.Apprenticeships.Types;
 using SFA.DAS.Approvals.Enums;
 using SFA.DAS.Approvals.Exceptions;
@@ -10,15 +11,18 @@ using SFA.DAS.Approvals.Extensions;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Common;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.CollectionCalendar;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Commitments;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 using GetApprenticeshipUpdatesResponse = SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.GetApprenticeshipUpdatesResponse;
 
 namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetManageApprenticeshipDetails;
@@ -40,7 +44,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         }
 
         apprenticeshipResponse.EnsureSuccessStatusCode();
-        
+
         var apprenticeship = apprenticeshipResponse.Body;
 
         if (apprenticeship == null)
@@ -86,7 +90,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         var canActualStartDateBeChanged = canActualStartDateBeChangedTask.Result;
 
         var result = new GetManageApprenticeshipDetailsQueryResult();
-        
+
         result.Apprenticeship = apprenticeship;
         result.PriceEpisodes = priceEpisodesResponse.Body?.PriceEpisodes;
         result.ApprenticeshipUpdates = apprenticeshipUpdatesResponse.Body?.ApprenticeshipUpdates;
@@ -101,7 +105,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.PendingStartDateChange = null;
         result.PaymentsStatus = new PaymentsStatus { PaymentsFrozen = false };
         result.LearnerStatusDetails = new LearnerStatusDetails { LearnerStatus = LearnerStatus.None };
-
         return result;
     }
 
@@ -131,7 +134,7 @@ public class GetManageApprenticeshipDetailsQueryHandler(
             throw new AcademicYearDataIncompleteException(PreviousOrCurrentAcademicYear.Previous);
         }
 
-        var isStartDateInPreviousAcademicYear = previousAcademicYear.StartDate <= actualStartDate; 
+        var isStartDateInPreviousAcademicYear = previousAcademicYear.StartDate <= actualStartDate;
         var isItR13R14PeriodOfPreviousAcademicYear = previousAcademicYear.HardCloseDate > DateTime.Now;
         if (isStartDateInPreviousAcademicYear && isItR13R14PeriodOfPreviousAcademicYear)
         {

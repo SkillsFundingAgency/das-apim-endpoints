@@ -10,7 +10,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerDemand.Api.Controllers;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.AnonymiseDemand;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand

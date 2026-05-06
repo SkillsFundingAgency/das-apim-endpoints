@@ -1,5 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.AdminRoatp.Api.AppStart;
 

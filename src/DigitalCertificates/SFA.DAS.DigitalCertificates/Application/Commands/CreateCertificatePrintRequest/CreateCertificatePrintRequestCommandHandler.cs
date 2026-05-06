@@ -1,17 +1,18 @@
-﻿using MediatR;
-using Microsoft.Extensions.Logging;
-using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
-using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.Notifications.Messages.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.DigitalCertificates.InnerApi.Requests.Assessor;
+using SFA.DAS.DigitalCertificates.InnerApi.Responses.Assessor;
+using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrintRequest
 {
@@ -56,7 +57,14 @@ namespace SFA.DAS.DigitalCertificates.Application.Commands.CreateCertificatePrin
 
             response.EnsureSuccessStatusCode();
 
-            await SendConfirmationEmail(command, certificate.Type).ConfigureAwait(false);
+            try
+            {
+                await SendConfirmationEmail(command, certificate.Type).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Print requested for certificate {CertificateId} but failed to send confirmation email. Print request has already been sent.", command.CertificateId);
+            }
 
             return Unit.Value;
         }

@@ -1,17 +1,14 @@
-﻿using AutoFixture;
+using AutoFixture;
 using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
-using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using System.Net;
-using FluentAssertions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Learning;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.UpdateLearner;
 
@@ -22,57 +19,56 @@ public class WhenHandlingUpdateLearnerCommand
 #pragma warning disable CS8618 // Non-nullable field, instantiated in SetUp method
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
+    private Mock<IUpdateLearningPutRequestBuilder> _updateLearningPutRequestBuilder;
+    private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _updateEarningsOnProgrammeRequestBuilder;
+    private Mock<IUpdateEarningsLearningSupportRequestBuilder> _updateEarningsLearningSupportRequestBuilder;
+    private Mock<IUpdateEarningsEnglishAndMathsRequestBuilder> _updateEarningsEnglishAndMathsRequestBuilder;
+    private Mock<ILearnerDataCacheService> _distributedCache;
     private Mock<ILogger<UpdateLearnerCommandHandler>> _logger;
     private UpdateLearnerCommandHandler _sut;
-
-
-    public WhenHandlingUpdateLearnerCommand()
-    {
-        _fixture = new Fixture();    
-    }
 #pragma warning restore CS8618 // Non-nullable field, instantiated in SetUp method
 
     [SetUp]
     public void Setup()
     {
+        _fixture = new Fixture();
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
+        _updateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
+        _updateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
+        _updateEarningsEnglishAndMathsRequestBuilder = new Mock<IUpdateEarningsEnglishAndMathsRequestBuilder>();
+        _updateEarningsLearningSupportRequestBuilder = new Mock<IUpdateEarningsLearningSupportRequestBuilder>();
+        _distributedCache = new Mock<ILearnerDataCacheService>();
         _logger = new Mock<ILogger<UpdateLearnerCommandHandler>>();
         _sut = new UpdateLearnerCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
-            _earningsApiClient.Object);
+            _earningsApiClient.Object,
+            _updateLearningPutRequestBuilder.Object,
+            _updateEarningsOnProgrammeRequestBuilder.Object,
+            _updateEarningsEnglishAndMathsRequestBuilder.Object,
+            _updateEarningsLearningSupportRequestBuilder.Object,
+            _distributedCache.Object);
     }
 
     [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_Changes()
+    public async Task Then_Learning_Is_Updated()
     {
-        // Arrange
+        //Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
+        MockLearningApiResponse();
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate }
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
+        //Act
         await _sut.Handle(command, CancellationToken.None);
 
-        // Assert
+        //Assert
         _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
-                It.Is<UpdateLearningApiPutRequest>(r => r.Data.Learner.CompletionDate == expectedCompletionDate)), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveCompletionApiPatchRequest>(
-            r => r.Data.CompletionDate == expectedCompletionDate)), Times.Once);
+            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(apiPutRequest));
     }
 
     [Test]
-    public async Task Then_No_Earnings_Updated_If_No_Changes()
+    public async Task Then_Earnings_Is_Not_Updated_If_No_Changes()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
@@ -83,7 +79,7 @@ public class WhenHandlingUpdateLearnerCommand
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _earningsApiClient.Verify(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()), Times.Never);
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
     [Test]
@@ -96,286 +92,122 @@ public class WhenHandlingUpdateLearnerCommand
 
         // Act/Assert
         Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
-
     }
 
+
     [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_MathsAndEnglish_Changes()
+    public async Task Then_Earnings_Is_Updated_With_OnProgrammeUpdates()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedCompletionDate = command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate;
-        var expectedMathsAndEnglishCourses = command.UpdateLearnerRequest.Delivery.EnglishAndMaths;
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.MathsAndEnglish }
-        }, HttpStatusCode.OK);
+        var updateOnProgPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate); // on-prog change
+
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .ReturnsAsync(updateOnProgPutRequest);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
-                It.Is<UpdateLearningApiPutRequest>(r => r.Data.Learner.CompletionDate == expectedCompletionDate)), Times.Once);
+        //Assert
+        _earningsApiClient.Verify(x => x.Put(
+                It.Is<UpdateOnProgrammeApiPutRequest>(r => r == updateOnProgPutRequest)),
+            Times.Once);
 
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveMathsAndEnglishApiPatchRequest>(
-            r => Matches(r.Data, expectedMathsAndEnglishCourses))), Times.Once);
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
     [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_LearningSupport_Changes()
+    public async Task Then_Earnings_Is_Updated_With_LearningSupport_Updates()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate = null;
-        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x => x.CompletionDate = null);
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x=>x.LearningSupport).ToList();
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
-        }, HttpStatusCode.OK);
+        var updateLearningSupportApiPutRequest = _fixture.Create<UpdateLearningSupportApiPutRequest>();
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport); // LSF change
+
+        _updateEarningsLearningSupportRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(updateLearningSupportApiPutRequest);
+
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
+
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateLearningSupportApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+        //Assert
+        _earningsApiClient.Verify(x => x.Put(
+                It.Is<UpdateLearningSupportApiPutRequest>(r => r == updateLearningSupportApiPutRequest)),
+            Times.Once);
 
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
-            r => r.Data.HasEquivalentItems(expectedLearningSupport,(actual,expected) => 
-                actual.StartDate == expected.StartDate &&
-                actual.EndDate == expected.EndDate
-            ))), Times.Once);
+        _earningsApiClient.VerifyNoOtherCalls();
     }
 
     [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_LearningSupport_Changes_OnCompletion()
+    public async Task Then_Earnings_Is_Updated_With_EnglishAndMaths_Updates()
     {
         // Arrange
         var command = _fixture.Create<UpdateLearnerCommand>();
-        
-        var completionDate = new[]
-        {
-            command.UpdateLearnerRequest.Delivery.OnProgramme.LearningSupport.Min(x => x.EndDate).AddDays(-1),
-            command.UpdateLearnerRequest.Delivery.EnglishAndMaths.Min(y => y.EndDate).AddDays(-1)
-        }.Min();
+        var apiPutRequest = MockLearningPutRequestBuilder(command);
 
-        command.UpdateLearnerRequest.Delivery.OnProgramme.CompletionDate = completionDate;
-        command.UpdateLearnerRequest.Delivery.EnglishAndMaths.ForEach(x => x.CompletionDate = completionDate);
+        var englishAndMathsApiPutRequest = _fixture.Create<UpdateEnglishAndMathsApiPutRequest>();
 
-        var expectedLearningSupport = command.UpdateLearnerRequest.Delivery.EnglishAndMaths.SelectMany(x => x.LearningSupport).ToList();
-        expectedLearningSupport.AddRange(command.UpdateLearnerRequest.Delivery.OnProgramme!.LearningSupport!);
-        expectedLearningSupport.ForEach(x => x.EndDate = completionDate);
+        var updateLearningApiResponse = _fixture.Create<UpdateLearnerApiPutResponse>();
+        updateLearningApiResponse.Changes.Clear();
+        updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.EnglishAndMaths); // E&M change
 
+        _updateEarningsEnglishAndMathsRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+            .Returns(englishAndMathsApiPutRequest);
 
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.LearningSupport }
-        }, HttpStatusCode.OK);
+        MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
 
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
+        _earningsApiClient.Setup(x => x.Put(It.IsAny<UpdateEnglishAndMathsApiPutRequest>()))
             .Returns(Task.CompletedTask);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+        //Assert
+        _earningsApiClient.Verify(x => x.Put(
+                It.Is<UpdateEnglishAndMathsApiPutRequest>(r => r == englishAndMathsApiPutRequest)),
+            Times.Once);
 
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SaveLearningSupportApiPutRequest>(
-            r => r.Data.HasEquivalentItems(expectedLearningSupport, (actual, expected) =>
-                actual.StartDate == expected.StartDate &&
-                actual.EndDate == expected.EndDate
-            ))), Times.Once);
+        _earningsApiClient.VerifyNoOtherCalls();
     }
-
-    [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_Price_Changes()
+    protected void MockLearningApiResponse()
     {
-        var fixture = new Fixture();
-
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedEpisodeKey = Guid.NewGuid();
-        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
-        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices },
-            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
-            LearningEpisodeKey = expectedEpisodeKey,
-            Prices = expectedCosts
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SavePricesApiPatchRequest>(
-            r => 
-                r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
-                r.Data.AgeAtStartOfLearning == expectedAgeAtStartOfLearning &&
-                r.Data.Prices.HasEquivalentItems(expectedCosts, (actual, expected) =>
-                actual.StartDate == expected.StartDate &&
-                actual.EndDate == expected.EndDate &&
-                actual.TrainingPrice == expected.TrainingPrice &&
-                actual.EndPointAssessmentPrice == expected.EndPointAssessmentPrice &&
-                actual.TotalPrice == expected.TotalPrice
-            ))), Times.Once);
+        var responseBody = new UpdateLearnerApiPutResponse();
+        var response = new ApiResponse<UpdateLearnerApiPutResponse>(responseBody, HttpStatusCode.OK, string.Empty);
+        _learningApiClient.Setup(x =>
+                x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
+            .ReturnsAsync(response);
     }
 
-    [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_ExpectedEndDate_Changes()
+    protected UpdateLearningApiPutRequest MockLearningPutRequestBuilder(UpdateLearnerCommand command)
     {
         var fixture = new Fixture();
-
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedEpisodeKey = Guid.NewGuid();
-        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
-        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate },
-            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
-            LearningEpisodeKey = expectedEpisodeKey,
-            Prices = expectedCosts
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<SaveCompletionApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.Is<SavePricesApiPatchRequest>(
-            r =>
-                r.Data.ApprenticeshipEpisodeKey == expectedEpisodeKey &&
-                r.Data.AgeAtStartOfLearning == expectedAgeAtStartOfLearning &&
-                r.Data.Prices.HasEquivalentItems(expectedCosts, (actual, expected) =>
-                    actual.StartDate == expected.StartDate &&
-                    actual.EndDate == expected.EndDate &&
-                    actual.TrainingPrice == expected.TrainingPrice &&
-                    actual.EndPointAssessmentPrice == expected.EndPointAssessmentPrice &&
-                    actual.TotalPrice == expected.TotalPrice
-                ))), Times.Once);
+        var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
+        _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
+        return apiPutRequest;
     }
 
-
-    [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_PersonalDetails_Changes()
-    {
-        var fixture = new Fixture();
-
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedEpisodeKey = Guid.NewGuid();
-        var expectedAgeAtStartOfLearning = _fixture.Create<int>();
-        var expectedCosts = fixture.Create<List<UpdateLearnerApiPutResponse.EpisodePrice>>();
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.PersonalDetails },
-            AgeAtStartOfLearning = expectedAgeAtStartOfLearning,
-            LearningEpisodeKey = expectedEpisodeKey,
-            Prices = expectedCosts
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<WithdrawApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.Is<UpdateLearningApiPutRequest>(
-                r => r.Data.Learner.FirstName == command.UpdateLearnerRequest.Learner.FirstName
-                && r.Data.Learner.LastName == command.UpdateLearnerRequest.Learner.LastName
-                && r.Data.Learner.EmailAddress == command.UpdateLearnerRequest.Learner.Email
-                )), Times.Once);
-
-        _earningsApiClient.Invocations.Count.Should().Be(0);
-    }
-
-    [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_Withdrawal()
-    {
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal }
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<WithdrawApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
-                It.Is<UpdateLearningApiPutRequest>(r => r.Data.Delivery.WithdrawalDate == expectedWithdrawalDate)), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.Is<WithdrawApiPatchRequest>(
-            r => r.Data.WithdrawalDate == expectedWithdrawalDate)), Times.Once);
-    }
-
-    [Test]
-    public async Task Then_Learner_Is_Updated_Successfully_With_Reverse_Withdrawal()
-    {
-        // Arrange
-        var command = _fixture.Create<UpdateLearnerCommand>();
-        var expectedWithdrawalDate = command.UpdateLearnerRequest.Delivery.OnProgramme.WithdrawalDate;
-
-        MockLearningApiResponse(_learningApiClient, new UpdateLearnerApiPutResponse
-        {
-            Changes = { UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal }
-        }, HttpStatusCode.OK);
-
-        _earningsApiClient.Setup(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()))
-            .Returns(Task.CompletedTask);
-
-        // Act
-        await _sut.Handle(command, CancellationToken.None);
-
-        // Assert
-        _learningApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(
-                It.Is<UpdateLearningApiPutRequest>(r => r.Data.Delivery.WithdrawalDate == expectedWithdrawalDate)), Times.Once);
-
-        _earningsApiClient.Verify(x => x.Patch(It.IsAny<ReverseWithdrawalApiPatchRequest>()), Times.Once);
-    }
-
-    private static void MockLearningApiResponse(
+    protected static void MockLearningApiResponse(
         Mock<ILearningApiClient<LearningApiConfiguration>> learningApiClient,
         UpdateLearnerApiPutResponse responseBody,
         HttpStatusCode statusCode,
@@ -389,37 +221,5 @@ public class WhenHandlingUpdateLearnerCommand
         learningApiClient.Setup(x =>
             x.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(It.IsAny<UpdateLearningApiPutRequest>()))
         .ReturnsAsync(response);
-    }
-
-    private static bool Matches(SaveMathsAndEnglishRequest request, List<MathsAndEnglish> courses)
-    {
-        return request.Count == courses.Count &&
-               request.All(r => courses.Any(c => c.StartDate == r.StartDate &&
-                                                 c.EndDate == r.EndDate &&
-                                                 c.Course == r.Course &&
-                                                 c.Amount == r.Amount &&
-                                                 c.WithdrawalDate == r.WithdrawalDate &&
-                                                 c.PriorLearningPercentage == r.PriorLearningAdjustmentPercentage &&
-                                                 c.CompletionDate == r.ActualEndDate));
-    }
-}
-
-internal static class ListExtensions
-{
-    public static bool HasEquivalentItems<TSource, TTarget>(
-        this IEnumerable<TSource> source,
-        IEnumerable<TTarget> target,
-        Func<TSource, TTarget, bool> comparison)
-    {
-        if (source is null && target is null)
-            return true;
-
-        if (source is null || target is null)
-            return false;
-
-        if (source.Count() != target.Count())
-            return false;
-
-        return source.All(sourceItem => target.Any(targetItem => comparison(sourceItem, targetItem)));
     }
 }
