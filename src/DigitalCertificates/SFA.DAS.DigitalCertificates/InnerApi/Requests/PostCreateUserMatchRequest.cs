@@ -1,5 +1,5 @@
-﻿using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
 using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests

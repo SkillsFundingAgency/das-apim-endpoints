@@ -1,6 +1,6 @@
 ﻿using System;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
-using SFA.DAS.SharedOuterApi.Interfaces;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
 {
