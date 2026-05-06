@@ -14,6 +14,7 @@ using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -142,6 +143,21 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to create user action for user {UserId}", userId);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet("{userId}/actions")]
+        public async Task<IActionResult> GetUserActions([FromRoute] Guid userId)
+        {
+            try
+            {
+                var result = await _mediator.Send(new GetUserActionsQuery { UserId = userId });
+                return Ok(new { useractions = result.UserActions });
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve user actions for user {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
