@@ -4,9 +4,9 @@ using SFA.DAS.Common.Domain.Models;
 
 namespace SFA.DAS.SharedOuterApi.Types.Json;
 
-public class JsonVacancyReferenceConverter: JsonConverter<VacancyReference?>
+public class JsonVacancyReferenceConverter: JsonConverter<VacancyReference>
 {
-    public override VacancyReference? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public override VacancyReference Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         return reader.TokenType switch
         {
@@ -16,9 +16,9 @@ public class JsonVacancyReferenceConverter: JsonConverter<VacancyReference?>
         };
     }
 
-    public override void Write(Utf8JsonWriter writer, VacancyReference? value, JsonSerializerOptions options)
+    public override void Write(Utf8JsonWriter writer, VacancyReference value, JsonSerializerOptions options)
     {
-        if (value is null || value == VacancyReference.None)
+        if (value == VacancyReference.None)
         {
             writer.WriteNullValue();
         }
