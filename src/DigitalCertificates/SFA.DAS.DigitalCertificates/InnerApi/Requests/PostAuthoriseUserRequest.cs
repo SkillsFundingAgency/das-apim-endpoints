@@ -20,13 +20,15 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
     public class PostAuthoriseUserRequestData
     {
         public long Uln { get; set; }
+        public Guid UserId { get; set; }
 
         public static implicit operator PostAuthoriseUserRequestData(CreateUserAuthoriseCommand command)
         {
-            return new PostAuthoriseUserRequestData
-            {
-                Uln = command.Uln
-            };
+                return new PostAuthoriseUserRequestData
+                {
+                    Uln = command.Uln,
+                    UserId = command.UserId
+                };
         }
     }
 }

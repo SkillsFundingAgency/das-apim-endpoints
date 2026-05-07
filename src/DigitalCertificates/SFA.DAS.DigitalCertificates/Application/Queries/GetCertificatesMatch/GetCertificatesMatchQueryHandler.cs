@@ -63,7 +63,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
                 var familyNames = identity.Identity
                     .Select(i => i.FamilyName)
                     .Where(n => !string.IsNullOrWhiteSpace(n))
-                    .Distinct()
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToList();
 
                 foreach (var familyName in familyNames)
@@ -93,19 +93,23 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 
             // Step 3: Collect all ULNs (new matches plus previously excluded) for mask retrieval
 
-            var standardUlns = allMatches
+            var standardMatches = allMatches
                 .Where(m => IsCertificateType(m.CertificateType, CertificateType.Standard))
                 .Select(m => m.Uln)
-                .Union(excludedUlns)
-                .Distinct()
                 .ToList();
 
-            var frameworkUlns = allMatches
+            var frameworkMatches = allMatches
                 .Where(m => IsCertificateType(m.CertificateType, CertificateType.Framework))
                 .Select(m => m.Uln)
-                .Union(excludedUlns)
-                .Distinct()
                 .ToList();
+
+            var standardUlns = standardMatches.Any()
+                ? standardMatches.Union(excludedUlns).Distinct().ToList()
+                : new List<long>();
+
+            var frameworkUlns = frameworkMatches.Any()
+                ? frameworkMatches.Union(excludedUlns).Distinct().ToList()
+                : new List<long>();
 
             // Step 4: Retrieve masking data for standard and/or framework certificates
             var standardMasksList = new List<CertificateMaskResult>();

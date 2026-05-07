@@ -20,6 +20,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
     public class PostCreateUserMatchRequestData
     {
         public long? Uln { get; set; }
+        public Guid UserId { get; set; }
         public string FamilyName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string CertificateType { get; set; }
@@ -37,6 +38,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             return new PostCreateUserMatchRequestData
             {
                 Uln = command.Uln,
+                UserId = command.UserId,
                 FamilyName = command.FamilyName,
                 DateOfBirth = command.DateOfBirth,
                 CertificateType = command.CertificateType,
