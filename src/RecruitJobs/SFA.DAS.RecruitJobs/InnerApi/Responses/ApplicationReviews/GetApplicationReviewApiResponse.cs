@@ -7,4 +7,5 @@ public record GetApplicationReviewApiResponse
     public Guid Id { get; init; }
     public long VacancyReference { get; init; }
     public ApplicationReviewStatus Status { get; init; }
+    public DateTime? WithdrawnDate { get; init; }
 }

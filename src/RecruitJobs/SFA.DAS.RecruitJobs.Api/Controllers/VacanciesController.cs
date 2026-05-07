@@ -324,15 +324,16 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var gqlVacancies = response.Data!.Vacancies;
+        var gqlVacancies = response.Data!.Vacancies.Take(10);
 
         var tasks = gqlVacancies.Select(async v =>
         {
             var reviews = await recruitApiClient.GetAll<GetApplicationReviewApiResponse>(
                 new GetManyByVacancyReferenceApiRequest(v.VacancyReference.GetValueOrDefault()));
 
-            var allHaveOutcome = reviews.All(x =>
-                x.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+            var allHaveOutcome = reviews
+                .All(x =>
+                x.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful || x.WithdrawnDate != null);
 
             return (v, allHaveOutcome);
         });
@@ -347,7 +348,6 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
                 VacancyStatus.Closed,
                 x.v.ClosingDate!.Value.UtcDateTime))
             .ToList();
-        
 
         return TypedResults.Ok(new DataResponse<IEnumerable<StaleArchiveVacancyIdentifier>>(result));
     }
