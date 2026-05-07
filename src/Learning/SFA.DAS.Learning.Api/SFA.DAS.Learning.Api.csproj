@@ -11,6 +11,7 @@
 		<PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.188-prerelease-3" />
 		<PackageReference Include="SFA.DAS.CollectionCalendar.Contracts" Version="0.1.24-prerelease-5" />
 		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.0.7" />
 	</ItemGroup>
 	
   <ItemGroup>
