@@ -39,6 +39,7 @@ public static class AddServiceRegistrationExtension
         services.AddKeyedTransient<IBankHolidaysService, BankHolidaysService>("vanilla");
         services.AddTransient<IBankHolidaysService, CachingBankHolidaysService>();
         services.AddTransient<IVacancySlaDeadlineService, VacancySlaDeadlineService>();
+        services.AddTransient<IVacancyComparerService, VacancyComparerService>();
         services.AddTransient<IVacancyReviewService, VacancyReviewService>();
     }
 }

@@ -28,9 +28,9 @@ public class WhenFetchingBankHolidayData
         handler.Requests.Should().HaveCount(1);
         handler.Requests.First().RequestUri.AbsoluteUri.Should().Be("https://www.gov.uk/bank-holidays.json");
         result.Should().BeEquivalentTo(JsonSerializer.Deserialize<BankHolidaysData>(TestData.BankHolidaysJson, JsonOptions));
-        result.EnglandAndWales.Events.Should().HaveCount(1);
-        result.EnglandAndWales.Events[0].Title.Should().Be("Boxing Day");
-        result.EnglandAndWales.Events[0].Date.Should().Be("2028-12-26");
+        result.EnglandAndWales.Events.Should().HaveCount(83);
+        result.EnglandAndWales.Events[0].Title.Should().Be("New Year’s Day");
+        result.EnglandAndWales.Events[0].Date.Should().Be("2019-01-01");
         result.EnglandAndWales.Events[0].Notes.Should().BeEmpty();
     }
 }

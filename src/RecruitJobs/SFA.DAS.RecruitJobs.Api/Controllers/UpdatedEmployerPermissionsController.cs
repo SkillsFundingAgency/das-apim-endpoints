@@ -72,9 +72,10 @@ public class UpdatedEmployerPermissionsController: ControllerBase
         [FromServices] ITransferProviderVacancyToQaReviewHandler handler,        
         [FromRoute] Guid vacancyId,
         [FromQuery, Required] Guid? userReference,
+        [FromQuery, Required] string? userEmailAddress,
         CancellationToken cancellationToken)
     {
-        await handler.HandleAsync(vacancyId, userReference!.Value, cancellationToken);
+        await handler.HandleAsync(vacancyId, userReference!.Value, userEmailAddress, cancellationToken);
         return Results.NoContent();
     }
 }
