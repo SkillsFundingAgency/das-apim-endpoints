@@ -8,6 +8,7 @@ using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
+using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.RecruitQa.Api.AppStart;
@@ -19,6 +20,7 @@ public static class AddServiceRegistrationExtension
         services.AddHttpClient();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
+        services.AddTransient<VacancyMapper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
