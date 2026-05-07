@@ -111,6 +111,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
 
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
+            .Returns(new UpdateShortCourseOnProgrammeRequestBody { CompletionDate = _completionDate, Milestones = [] });
+
         var earningsResponse = _fixture.Create<UpdateShortCourseEarningPutResponse>();
 
         _earningsApiClient
