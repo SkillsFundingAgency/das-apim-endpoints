@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.Testing.AutoFixture;
@@ -10,7 +11,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
 {
     [Test, MoqAutoData]
-    public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(StandardDetailsLookupResponse response)
+    public void ImplicitConversion_StandardDetailsLookupResponse_MapsAllProperties(GetCourseLookupResponse response)
     {
         GetCourseByLarsCodeQueryResult sut = response;
         Assert.Multiple(() =>
@@ -35,9 +36,9 @@ public sealed class WhenCreatingGetCourseByLarsCodeQueryResult
     [Test]
     public void ImplicitConversion_ActiveStandardWithRelatedOccupations_MapsIsActiveAndRelatedOccupations()
     {
-        var response = new StandardDetailsLookupResponse
+        var response = new GetCourseLookupResponse
         {
-            CourseDates = new CourseDate
+            CourseDates = new StandardDate
             {
                 EffectiveFrom = DateTime.UtcNow.AddDays(-1),
                 EffectiveTo = DateTime.UtcNow.AddDays(30)

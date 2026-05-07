@@ -6,8 +6,12 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.5.0" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Identity.Client" Version="4.79.2" />
   </ItemGroup>
+  <!--Transitive Packages-->
+  
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
