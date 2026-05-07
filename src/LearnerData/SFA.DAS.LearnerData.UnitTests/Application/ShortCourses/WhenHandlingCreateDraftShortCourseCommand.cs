@@ -23,6 +23,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ICreateDraftShortCoursePostRequestBuilder> _createDraftShortCoursePostRequestBuilder;
     private Mock<ICreateUnapprovedShortCourseLearningRequestBuilder> _createUnapprovedShortCourseLearningRequestBuilder;
+    private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private Mock<IMessageSession> _messageSession;
 
     private CreateDraftShortCourseCommand _command;
@@ -41,6 +42,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _createDraftShortCoursePostRequestBuilder = new Mock<ICreateDraftShortCoursePostRequestBuilder>();
         _createUnapprovedShortCourseLearningRequestBuilder = new Mock<ICreateUnapprovedShortCourseLearningRequestBuilder>();
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         _messageSession = new Mock<IMessageSession>();
 
         _handler = new CreateDraftShortCourseCommandHandler(
@@ -49,6 +51,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             _earningsApiClient.Object,
             _createDraftShortCoursePostRequestBuilder.Object,
             _createUnapprovedShortCourseLearningRequestBuilder.Object,
+            _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
             _messageSession.Object);
 
         // Arrange
@@ -215,5 +218,32 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         // Assert
         Assert.That(result, Is.Not.Null);
+    }
+
+    [Test]
+    public async Task Then_When_Reinstated_Earnings_Is_Updated_Via_Put()
+    {
+        // Arrange
+        var reinstatedResponse = new ApiResponse<CreateShortCoursePostResponse>(
+            new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey, IsReinstated = true },
+            HttpStatusCode.OK, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .ReturnsAsync(reinstatedResponse);
+
+        var builtBody = new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] };
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder
+            .Setup(x => x.Build(_builtRequest.OnProgramme))
+            .Returns(builtBody);
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.Put(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
+                r.Data == builtBody && r.PutUrl.Contains(_learningKey.ToString()))),
+            Times.Once);
+        _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Never);
     }
 }

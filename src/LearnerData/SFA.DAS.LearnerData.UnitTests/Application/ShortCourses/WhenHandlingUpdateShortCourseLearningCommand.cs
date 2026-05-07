@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Configuration;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
@@ -27,6 +28,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
+    private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private Mock<IMessageSession> _messageSession;
 
     private UpdateShortCourseLearningCommand _command;
@@ -41,6 +43,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
+            .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
         _messageSession = new Mock<IMessageSession>();
 
         _handler = new UpdateShortCourseLearningCommandHandler(
@@ -48,6 +54,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _learningApiClient.Object,
             _earningsApiClient.Object,
             _calculateGrowthAndSkillsPaymentsEventBuilder.Object,
+            _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
             _messageSession.Object,
             new PaymentsConfiguration { PaymentsEndpoint = "test-payments-endpoint" });
 
@@ -216,7 +223,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     }
 
     [Test]
-    public async Task Then_LearningComplete_Milestone_Is_Added_When_CompletionDate_Set_And_Milestone_Absent()
+    public async Task Then_Builder_Body_Is_Passed_To_Earnings_Api()
     {
         // Arrange
         var learningResponse = new UpdateShortCourseLearningPutResponse
@@ -230,20 +237,27 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
 
-        var earningsResponse = _fixture.Create<UpdateShortCourseEarningPutResponse>();
+        var builtBody = new UpdateShortCourseOnProgrammeRequestBody
+        {
+            CompletionDate = _completionDate,
+            Milestones = [Milestone.LearningComplete]
+        };
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
+            .Returns(builtBody);
 
         _earningsApiClient
             .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
                 It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(earningsResponse, HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(_fixture.Create<UpdateShortCourseEarningPutResponse>(), HttpStatusCode.OK, string.Empty));
 
         // Act
         await _handler.Handle(_command, CancellationToken.None);
 
         // Assert
         _earningsApiClient.Verify(x =>
-            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
-                r.Data.Milestones.Contains(Milestone.LearningComplete))),
+            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r => r.Data == builtBody)),
             Times.Once);
     }
 }
