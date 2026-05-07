@@ -2,6 +2,15 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Domain;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using ApplicationMethod = SFA.DAS.RecruitQa.Domain.ApplicationMethod;
+using ClosureReason = SFA.DAS.RecruitQa.Domain.ClosureReason;
+using EmployerNameOption = SFA.DAS.RecruitQa.Domain.EmployerNameOption;
+using GeoCodeMethod = SFA.DAS.RecruitQa.Domain.GeoCodeMethod;
+using OwnerType = SFA.DAS.RecruitQa.Domain.OwnerType;
+using SourceOrigin = SFA.DAS.RecruitQa.Domain.SourceOrigin;
+using SourceType = SFA.DAS.RecruitQa.Domain.SourceType;
+using VacancyStatus = SFA.DAS.RecruitQa.Domain.VacancyStatus;
+using Wage = SFA.DAS.RecruitQa.Domain.Wage;
 
 namespace SFA.DAS.RecruitQa.InnerApi.Requests;
 
