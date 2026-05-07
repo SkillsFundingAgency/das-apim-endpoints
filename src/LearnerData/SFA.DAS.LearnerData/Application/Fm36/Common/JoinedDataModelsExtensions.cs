@@ -233,7 +233,7 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelHistDaysThisApp = GetLearnDelHistDaysThisApp(currentAcademicYear, joinedLearningDelivery);
         ldv.LearnDelHistProgEarnings = GetLearnDelHistProgEarnings(joinedLearnerData, currentAcademicYear);
         ldv.LearnDelInitialFundLineType = joinedLearnerData.FundingLineType;
-        ldv.LearnDelMathEng = EarningsFM36Constants.LearnDelMathEng;
+        ldv.LearnDelMathEng = joinedLearningDelivery.LearningDeliveryType == LearningDeliveryType.EnglishAndMaths;
         ldv.LearnDelProgEarliestACT2Date = EarningsFM36Constants.LearnDelProgEarliestACT2Date;
         ldv.LearnDelNonLevyProcured = EarningsFM36Constants.LearnDelNonLevyProcured;
         ldv.MathEngAimValue = EarningsFM36Constants.MathEngAimValue;
@@ -254,7 +254,6 @@ internal static class JoinedDataModelsExtensions
         ldv.LearnDelRedStartDate = EarningsFM36Constants.LearnDelRedStartDate;
         ldv.FirstIncentiveThresholdDate = GetIncentiveThresholdDate(joinedLearningDelivery, firstAdditionalPaymentDate);
 
-
         return ldv;
     }
 
@@ -263,6 +262,8 @@ internal static class JoinedDataModelsExtensions
     /// </summary>
     private static int GetLearnDelAppAccDaysIL(JoinedLearnerData joinedLearnerData, JoinedLearningDelivery joinedLearningDelivery, GetAcademicYearsResponse currentAcademicYear)
     {
+
+
         var programAim = joinedLearnerData.ProgramAims[joinedLearningDelivery.LearnAimRef];
         var programAimEndDate = programAim.Max(x => x.ExpectedEndDate);
         var programAimStartDate = programAim.Min(x => x.StartDate);
@@ -432,11 +433,16 @@ internal static class JoinedDataModelsExtensions
                         .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == collectionPeriod) ? 1 : 0;
     }
 
-    private static int GetLearnDelAppPrevAccDaysIL(
+    private static int? GetLearnDelAppPrevAccDaysIL(
         JoinedLearnerData joinedLearnerData,
         JoinedLearningDelivery joinedLearningDelivery,
         GetAcademicYearsResponse currentAcademicYear)
     {
+        if(joinedLearningDelivery.LearningDeliveryType == LearningDeliveryType.EnglishAndMaths)
+        {
+            return null; // this is only required for onProgramme aim, and should be null for English and Maths aims
+        }
+
         var programAim = joinedLearnerData.ProgramAims[joinedLearningDelivery.LearnAimRef];
         var programAimEndDate = programAim.Max(x => x.ExpectedEndDate);
         var programAimStartDate = programAim.Min(x => x.StartDate);

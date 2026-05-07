@@ -1,19 +1,22 @@
 using AutoFixture;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.Extensions.Logging;
+using NUnit.Framework.Internal;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.TestHelpers;
-using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
+using LearningEpisode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
+using EarningEpisode = SFA.DAS.LearnerData.Responses.EarningsInner.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
@@ -259,7 +262,7 @@ internal class GetFm36QueryTestFixture
         Result = await _handler.Handle(_query, CancellationToken.None);
     }
 
-    internal IEnumerable<(Episode Episode, EpisodePrice Price)> GetExpectedPriceEpisodesSplitByAcademicYear(List<Episode> apprenticeshipEpisodes)
+    internal IEnumerable<(LearningEpisode Episode, EpisodePrice Price)> GetExpectedPriceEpisodesSplitByAcademicYear(List<LearningEpisode> apprenticeshipEpisodes)
     {
         foreach (var episodePrice in apprenticeshipEpisodes
                      .SelectMany(episode => episode.Prices.Select(price => (Episode: episode, Price: price))))
@@ -277,7 +280,7 @@ internal class GetFm36QueryTestFixture
                     TrainingPrice = episodePrice.Price.TrainingPrice
                 };
 
-                yield return new ValueTuple<Episode, EpisodePrice>(episodePrice.Episode, price);
+                yield return new ValueTuple<LearningEpisode, EpisodePrice>(episodePrice.Episode, price);
             }
             else
             {
@@ -285,5 +288,35 @@ internal class GetFm36QueryTestFixture
             }
         }
     }
+
+    internal LearningDelivery GetLearningDelivery(TestScenario testScenario)
+    {
+        Result.Should().NotBeNull();
+        var learning = UnpagedLearningsResponse.Single();
+
+        LearningDelivery? learningDelivery;
+        if (testScenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery = Result!.Items?.SingleOrDefault(learner =>
+                learner.ULN.ToString() == learning.Uln
+                )?.LearningDeliveries.SingleOrDefault(delivery => delivery.AimSeqNumber == 2);
+        }
+        else
+        {
+            learningDelivery = Result!.Items?.SingleOrDefault(learner => learner.ULN.ToString() == learning.Uln).LearningDeliveries.SingleOrDefault();
+        }
+
+        learningDelivery.Should().NotBeNull();
+
+        return learningDelivery;
+    }
+
+    internal EarningEpisode GetEarningEpisode()
+    {
+        var earningApprenticeship = EarningsResponse.Apprenticeships.First();
+        var earningEpisode = earningApprenticeship.Episodes.Single();
+        return earningEpisode;
+    }
 }
+
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

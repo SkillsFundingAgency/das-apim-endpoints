@@ -47,8 +47,8 @@ public class DefaultLearner
         AimSequenceNumber = 2,
         LearnAimRef = "ENG001",
         Amount = 1500,
-        StartDate = new DateTime(2022, 9, 1),
-        EndDate = new DateTime(2024, 8, 31),
+        StartDate = new DateTime(2020, 9, 1),
+        EndDate = new DateTime(2021, 1, 1),
         Course = "English",
         LearningSupport = new List<LearningSupport>()
     };

@@ -267,6 +267,7 @@ public class JoinedLearningDelivery
 
     public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
+    public LearningDeliveryType LearningDeliveryType { get; set; }
 
     public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, IEnumerable<JoinedAdditionalPayment> additionalPayments)
     {
@@ -285,6 +286,7 @@ public class JoinedLearningDelivery
 
         StartDate = onProgramme.StartDate;
         ExpectedEndDate = onProgramme.ExpectedEndDate;
+        LearningDeliveryType = LearningDeliveryType.OnProgramme;
     }
 
     public JoinedLearningDelivery(MathsAndEnglish englishAndMath, IEnumerable<JoinedInstalment> instalments, IEnumerable<JoinedAdditionalPayment> additionalPayments)
@@ -304,7 +306,14 @@ public class JoinedLearningDelivery
 
         StartDate = englishAndMath.StartDate;
         ExpectedEndDate = englishAndMath.EndDate;
+        LearningDeliveryType = LearningDeliveryType.EnglishAndMaths;
     }
+}
+
+public enum LearningDeliveryType
+{
+    OnProgramme = 0,
+    EnglishAndMaths = 1
 }
 
 [DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}, InstalmentType: {InstalmentType}")]

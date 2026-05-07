@@ -1,148 +1,11 @@
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using NUnit.Framework.Internal;
-using SFA.DAS.LearnerData.Application.Fm36.Common;
-using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.LearnerData.Responses.EarningsInner;
+﻿using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
-using Learning = SFA.DAS.LearnerData.Responses.LearningInner.Learning;
 
-namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36;
+namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.WhenHandlingLearningDeliveries;
 
-#pragma warning disable CS8602 // Defrerred nullability warnings for test cases
-public class WhenHandlingGetFm36Query_LearningDeliveries
+public class LearningDeliveryPeriodisedValues
 {
-    [Test]
-    public async Task ThenALearningDeliveryIsCreatedForEachApprenticeship()
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(TestScenario.AllData);
-
-        // Act
-        await testFixture.CallSubjectUnderTest();
-
-        // Assert
-        testFixture.Result.Should().NotBeNull();
-
-        testFixture.Result.Items.Count.Should().Be(testFixture.UnpagedLearningsResponse.Count);
-        testFixture.Result.Items.SelectMany(learner => learner.LearningDeliveries).Count().Should().Be(testFixture.UnpagedLearningsResponse.Count);
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task ThenReturnsLearningDeliveryValuesForEachApprenticeship(TestScenario scenario)
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(scenario);
-
-        // Act
-        await testFixture.CallSubjectUnderTest();
-
-        // Assert
-        testFixture.Result.Should().NotBeNull();
-
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-
-        var expectedPriceEpisodeStartDate = apprenticeship.StartDate > testFixture.CollectionCalendarResponse.StartDate ? apprenticeship.StartDate : testFixture.CollectionCalendarResponse.StartDate;
-        var expectedPriceEpisodeEndDate = apprenticeship.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate ? apprenticeship.PlannedEndDate : testFixture.CollectionCalendarResponse.EndDate;
-        var earningApprenticeship = testFixture.EarningsResponse.Apprenticeships.First();
-        var earningEpisode = earningApprenticeship.Episodes.Single();
-        var firstSldOnProg = testFixture.SldLearnerData.First().Delivery.OnProgramme.First();
-
-        //This is is simplified and will fail if there are multiple learning deliveries with different LearnerAimRefs
-        //It also will not work in the case of Paused, Withdrawn or Completed learnings
-        var effEndDate = apprenticeship.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate
-            ? apprenticeship.PlannedEndDate
-            : testFixture.CollectionCalendarResponse.EndDate;
-
-        var learnDelAppPrevAccDaysIL = apprenticeship.StartDate.GetNumberOfDaysUntil(effEndDate);
-
-        var learningDelivery = GetLearningDelivery(testFixture, scenario, apprenticeship);
-
-        // note this is a simplified equation and will fail if the value is negative as the actual calc will return 0
-        var learnDelHistDaysThisApp = (testFixture.CollectionCalendarResponse.StartDate - firstSldOnProg.StartDate).Days;
-
-        learningDelivery.Should().NotBeNull();
-        learningDelivery.AimSeqNumber.Should().Be(1);
-        learningDelivery.LearningDeliveryValues.ActualDaysIL.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.ActualNumInstalm.Should().BeNull();
-        learningDelivery.LearningDeliveryValues.AdjStartDate.Should().Be(apprenticeship.StartDate);
-        learningDelivery.LearningDeliveryValues.AgeAtProgStart.Should().Be(apprenticeship.AgeAtStartOfApprenticeship);
-        learningDelivery.LearningDeliveryValues.AppAdjLearnStartDate.Should().Be(apprenticeship.StartDate);
-        learningDelivery.LearningDeliveryValues.AppAdjLearnStartDateMatchPathway.Should().Be(apprenticeship.StartDate);
-        learningDelivery.LearningDeliveryValues.ApplicCompDate.Should().Be(new DateTime(9999, 9, 9));
-        learningDelivery.LearningDeliveryValues.CombinedAdjProp.Should().Be(1);
-        learningDelivery.LearningDeliveryValues.Completed.Should().BeFalse();
-        var firstAdditionalPaymentDueDate =
-            earningEpisode.AdditionalPayments
-                .Where(x => AdditionalPaymentsTypes.Incentives.Contains(x.AdditionalPaymentType))
-                .OrderBy(x => x.DueDate).First().DueDate;
-        var expectedFirstIncentiveThresholdDate =
-            firstAdditionalPaymentDueDate >= apprenticeship.StartDate &&
-            firstAdditionalPaymentDueDate <= apprenticeship.PlannedEndDate
-                ? firstAdditionalPaymentDueDate
-                : (DateTime?)null;
-        learningDelivery.LearningDeliveryValues.FirstIncentiveThresholdDate.Should().Be(expectedFirstIncentiveThresholdDate);
-        learningDelivery.LearningDeliveryValues.LDApplic1618FrameworkUpliftTotalActEarnings.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnAimRef.Should().Be(firstSldOnProg.LearnAimRef);
-        learningDelivery.LearningDeliveryValues.LearnStartDate.Should().Be(apprenticeship.StartDate);
-        learningDelivery.LearningDeliveryValues.LearnDel1618AtStart
-            .Should()
-            .Be(earningEpisode.AdditionalPayments.Any(x =>
-                x.AdditionalPaymentType
-                    is EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive
-                    or EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive));
-        learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - apprenticeship.StartDate).Days);
-        learningDelivery.LearningDeliveryValues.LearnDelApplicDisadvAmount.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));
-        learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618FrameworkUplift.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").Sum(x => x.Amount));
-        learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(learnDelAppPrevAccDaysIL);
-        learningDelivery.LearningDeliveryValues.LearnDelDisadAmount.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelEligDisadvPayment.Should().BeFalse();
-        learningDelivery.LearningDeliveryValues.LearnDelEmpIdFirstAdditionalPaymentThreshold.Should().BeNull();
-        learningDelivery.LearningDeliveryValues.LearnDelEmpIdSecondAdditionalPaymentThreshold.Should().BeNull();
-        learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(learnDelHistDaysThisApp);
-        learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments.Sum(i => i.Amount));
-        learningDelivery.LearningDeliveryValues.LearnDelInitialFundLineType.Should().Be(earningApprenticeship.FundingLineType);
-        learningDelivery.LearningDeliveryValues.LearnDelMathEng.Should().BeFalse();
-        learningDelivery.LearningDeliveryValues.LearnDelProgEarliestACT2Date.Should().BeNull();
-        learningDelivery.LearningDeliveryValues.LearnDelNonLevyProcured.Should().BeFalse();
-        learningDelivery.LearningDeliveryValues.MathEngAimValue.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.OutstandNumOnProgInstalm.Should().BeNull();
-
-        var expectedPlannedTotalDays = 1 + (apprenticeship.PlannedEndDate - apprenticeship.StartDate).Days;
-
-        learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(apprenticeship.StartDate, apprenticeship.PlannedEndDate));
-        learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
-        learningDelivery.LearningDeliveryValues.ProgType.Should().Be(25);
-        learningDelivery.LearningDeliveryValues.PwayCode.Should().BeNull();
-        var secondAdditionalPaymentDueDate =
-            earningEpisode.AdditionalPayments
-                .Where(x => AdditionalPaymentsTypes.Incentives.Contains(x.AdditionalPaymentType))
-                .DistinctBy(x => x.DueDate)
-                .OrderBy(x => x.DueDate)
-                .Skip(1)
-                .FirstOrDefault()?
-                .DueDate;
-        var expectedSecondIncentiveThresholdDate =
-            secondAdditionalPaymentDueDate >= apprenticeship.StartDate &&
-            secondAdditionalPaymentDueDate <= apprenticeship.PlannedEndDate
-                ? secondAdditionalPaymentDueDate
-                : (DateTime?)null;
-        learningDelivery.LearningDeliveryValues.SecondIncentiveThresholdDate.Should().Be(expectedSecondIncentiveThresholdDate);
-        learningDelivery.LearningDeliveryValues.StdCode.Should().Be(int.Parse(apprenticeship.Episodes.Single().TrainingCode));
-        learningDelivery.LearningDeliveryValues.ThresholdDays.Should().Be(42);
-        learningDelivery.LearningDeliveryValues.LearnDelApplicCareLeaverIncentive.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelHistDaysCareLeavers.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelAccDaysILCareLeavers.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelPrevAccDaysILCareLeavers.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelLearnerAddPayThresholdDate.Should().BeNull();
-        learningDelivery.LearningDeliveryValues.LearnDelRedCode.Should().Be(0);
-        learningDelivery.LearningDeliveryValues.LearnDelRedStartDate.Should().Be(new DateTime(9999, 9, 9));
-    }
-
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
     public async Task ThenReturnsDefaultedLearningDeliveryPeriodisedValuesForEachApprenticeship(TestScenario scenario)
@@ -435,32 +298,6 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsLearningDeliveryPeriodisedTextValuesForEachApprenticeship(TestScenario scenario)
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(scenario);
-
-        // Act
-        await testFixture.CallSubjectUnderTest();
-
-
-        // Assert
-        testFixture.Result.Should().NotBeNull();
-
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-        var earningsApprenticeship = testFixture.EarningsResponse.Apprenticeships.First();
-
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
-        learningDelivery.LearningDeliveryPeriodisedTextValues.Should().NotBeNull();
-        learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
-            x.AttributeName == "FundLineType" && x.AllValuesAreSetTo(earningsApprenticeship.FundingLineType));
-        learningDelivery.LearningDeliveryPeriodisedTextValues.Should().Contain(x =>
-            x.AttributeName == "LearnDelContType" && x.AllValuesAreSetTo("Contract for services with the employer"));
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
 
     public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelFirstProv1618PayValuesForEachApprenticeship(TestScenario scenario)
     {
@@ -640,34 +477,4 @@ public class WhenHandlingGetFm36Query_LearningDeliveries
         result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
     }
 
-    [TestCase(WithdrawalDate.None, true)]
-    [TestCase(WithdrawalDate.AfterQualifyingPeriod, true)]
-    [TestCase(WithdrawalDate.DuringQualifyingPeriod, false)]
-    public async Task ThenReturnsCorrectFundStartValueForApprenticeship(WithdrawalDate withdrawalDate, bool expectedFundingStart)
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(TestScenario.SimpleApprenticeship);
-        testFixture.UnpagedLearningsResponse.First().SetWithdrawalDate(withdrawalDate);
-
-        // Act
-        await testFixture.CallSubjectUnderTest();
-
-        // Assert
-        var learningDelivery = testFixture.Result.Items.Single().LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
-        learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
-    }
-
-    private static LearningDelivery? GetLearningDelivery(GetFm36QueryTestFixture testFixture, TestScenario testScenario, Learning learning)
-    {
-        if(testScenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            var deliveries = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == learning.Uln).LearningDeliveries;
-            return deliveries.Where(delivery => delivery.AimSeqNumber == 2).SingleOrDefault(); // Bit of a hack, but usually setting English course Aim as 2
-        }
-
-        return testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == learning.Uln).LearningDeliveries.SingleOrDefault();
-
-    }
 }
-#pragma warning restore CS8602 // Defrerred nullability warnings for test cases
