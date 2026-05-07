@@ -1,83 +1,82 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+
+public abstract class StandardApiResponseBase
 {
-    public abstract class StandardApiResponseBase
+    public StandardDate StandardDates { get; set; }
+    public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
+
+    [JsonIgnore]
+    public int MaxFunding => GetFundingDetails(nameof(MaxFunding));
+    [JsonIgnore]
+    public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
+    [JsonIgnore]
+    public bool IsActive => IsStandardActive();
+
+    public int MaxFundingOn(DateTime effectiveDate)
     {
-        public StandardDate StandardDates { get; set; }
-        public List<ApprenticeshipFunding> ApprenticeshipFunding { get; set; }
+        return GetFundingDetails(nameof(MaxFunding), effectiveDate);
+    }
 
-        [JsonIgnore]
-        public int MaxFunding => GetFundingDetails(nameof(MaxFunding));
-        [JsonIgnore]
-        public int TypicalDuration => GetFundingDetails(nameof(TypicalDuration));
-        [JsonIgnore]
-        public bool IsActive => IsStandardActive();
+    protected virtual int GetFundingDetails(string prop, DateTime? effectiveDate = null)
+    {
+        if (ApprenticeshipFunding == null || !ApprenticeshipFunding.Any()) return 0;
 
-        public int MaxFundingOn(DateTime effectiveDate)
+        var effDate = effectiveDate ?? DateTime.UtcNow;
+
+        var funding = ApprenticeshipFunding
+            .FirstOrDefault(c =>
+                c.EffectiveFrom <= effDate
+                && (c.EffectiveTo == null || c.EffectiveTo >= effDate));
+
+        if (funding == null)
         {
-            return GetFundingDetails(nameof(MaxFunding), effectiveDate);
+            funding = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
         }
 
-        protected virtual int GetFundingDetails(string prop, DateTime? effectiveDate = null)
+        if (prop == nameof(MaxFunding))
         {
-            if (ApprenticeshipFunding == null || !ApprenticeshipFunding.Any()) return 0;
-
-            var effDate = effectiveDate ?? DateTime.UtcNow;
-
-            var funding = ApprenticeshipFunding
-                .FirstOrDefault(c =>
-                    c.EffectiveFrom <= effDate
-                    && (c.EffectiveTo == null || c.EffectiveTo >= effDate));
-
-            if (funding == null)
-            {
-                funding = ApprenticeshipFunding.FirstOrDefault(c => c.EffectiveTo == null);
-            }
-
-            if (prop == nameof(MaxFunding))
-            {
-                return funding?.MaxEmployerLevyCap
-                       ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
-                       ?? 0;
-            }
-
-            return funding?.Duration
-                   ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
+            return funding?.MaxEmployerLevyCap
+                   ?? ApprenticeshipFunding.FirstOrDefault()?.MaxEmployerLevyCap
                    ?? 0;
         }
 
-        private bool IsStandardActive()
-        {
-            if (StandardDates == null) return false;
-
-            return StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
-                   && (!StandardDates.EffectiveTo.HasValue ||
-                       StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)
-                   && (!StandardDates.LastDateStarts.HasValue ||
-                       StandardDates.LastDateStarts.Value.Date >= DateTime.UtcNow.Date);
-        }
+        return funding?.Duration
+               ?? ApprenticeshipFunding.FirstOrDefault()?.Duration
+               ?? 0;
     }
 
-    public class StandardDate
+    private bool IsStandardActive()
     {
-        public DateTime? LastDateStarts { get; set; }
+        if (StandardDates == null) return false;
 
-        public DateTime? EffectiveTo { get; set; }
-
-        public DateTime EffectiveFrom { get; set; }
+        return StandardDates.EffectiveFrom.Date <= DateTime.UtcNow.Date
+               && (!StandardDates.EffectiveTo.HasValue ||
+                   StandardDates.EffectiveTo.Value.Date >= DateTime.UtcNow.Date)
+               && (!StandardDates.LastDateStarts.HasValue ||
+                   StandardDates.LastDateStarts.Value.Date >= DateTime.UtcNow.Date);
     }
+}
 
-    public class ApprenticeshipFunding
-    {
-        public int MaxEmployerLevyCap { get; set; }
+public class StandardDate
+{
+    public DateTime? LastDateStarts { get; set; }
 
-        public DateTime? EffectiveTo { get; set; }
+    public DateTime? EffectiveTo { get; set; }
 
-        public DateTime EffectiveFrom { get; set; }
-        public int Duration { get; set; }
-        public int? FoundationAppFirstEmpPayment { get; set; }
-        public int? FoundationAppSecondEmpPayment { get; set; }
-        public int? FoundationAppThirdEmpPayment { get; set; }
-    }
+    public DateTime EffectiveFrom { get; set; }
+}
+
+public class ApprenticeshipFunding
+{
+    public int MaxEmployerLevyCap { get; set; }
+
+    public DateTime? EffectiveTo { get; set; }
+
+    public DateTime EffectiveFrom { get; set; }
+    public int Duration { get; set; }
+    public int? FoundationAppFirstEmpPayment { get; set; }
+    public int? FoundationAppSecondEmpPayment { get; set; }
+    public int? FoundationAppThirdEmpPayment { get; set; }
 }
