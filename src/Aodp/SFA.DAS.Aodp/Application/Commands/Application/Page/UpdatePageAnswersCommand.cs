@@ -1,4 +1,6 @@
 ﻿using MediatR;
+using SFA.DAS.Aodp.Validation;
+using System.ComponentModel.DataAnnotations;
 
 public class UpdatePageAnswersCommand : IRequest<BaseMediatrResponse<UpdatePageAnswersCommandResponse>>
 {
@@ -7,7 +9,6 @@ public class UpdatePageAnswersCommand : IRequest<BaseMediatrResponse<UpdatePageA
     public Guid SectionId { get; set; }
     public List<Question> Questions { get; set; } = new();
     public Guid ApplicationId { get; set; }
-
     public Route Routing { get; set; } = new();
 
 
@@ -24,16 +25,23 @@ public class UpdatePageAnswersCommand : IRequest<BaseMediatrResponse<UpdatePageA
     public class Question
     {
         public Guid QuestionId { get; set; }
+        [QuestionType]
         public string QuestionType { get; set; }
+        [Required]
         public Answer Answer { get; set; }
     }
 
     public class Answer
     {
+        [AllowedCharacters(TextCharacterProfile.FreeText)]
         public string? TextValue { get; set; }
         public decimal? NumberValue { get; set; }
         public DateOnly? DateValue { get; set; }
+
+        [AllowedCharactersForEach(TextCharacterProfile.FreeText)]
         public List<string>? MultipleChoiceValue { get; set; }
+
+        [AllowedCharacters(TextCharacterProfile.FreeText)]
         public string? RadioChoiceValue { get; set; }
     }
 

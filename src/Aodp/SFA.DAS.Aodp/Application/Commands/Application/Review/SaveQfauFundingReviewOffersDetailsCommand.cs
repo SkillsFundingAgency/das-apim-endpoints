@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Aodp.Validation;
 
 namespace SFA.DAS.Aodp.Application.Commands.Application.Review
 {
@@ -13,6 +14,8 @@ namespace SFA.DAS.Aodp.Application.Commands.Application.Review
             public Guid FundingOfferId { get; set; }
             public DateOnly? StartDate { get; set; }
             public DateOnly? EndDate { get; set; }
+
+            [AllowedCharacters(TextCharacterProfile.FreeText)]
             public string? Comments { get; set; }
         }
     }

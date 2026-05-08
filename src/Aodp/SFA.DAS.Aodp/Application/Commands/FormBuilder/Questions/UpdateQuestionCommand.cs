@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SFA.DAS.Aodp.Validation;
 
 namespace SFA.DAS.Aodp.Application.Commands.FormBuilder.Questions;
 
@@ -8,8 +9,11 @@ public class UpdateQuestionCommand : IRequest<BaseMediatrResponse<EmptyResponse>
     public Guid FormVersionId { get; set; }
     public Guid SectionId { get; set; }
     public Guid PageId { get; set; }
+    [AllowedCharacters(TextCharacterProfile.Title)]
     public string Title { get; set; }
+    [AllowedCharacters(TextCharacterProfile.FreeText)]
     public string? Hint { get; set; }
+    [AllowedCharacters(TextCharacterProfile.FreeText)]
     public string? Helper { get; set; }
     public bool Required { get; set; }
     public TextInputOptions TextInput { get; set; } = new();
@@ -27,6 +31,7 @@ public class UpdateQuestionCommand : IRequest<BaseMediatrResponse<EmptyResponse>
     public class OptionItem
     {
         public Guid Id { get; set; }
+        [AllowedCharacters(TextCharacterProfile.FreeText)]
         public string Value { get; set; }
     }
 
@@ -53,6 +58,7 @@ public class UpdateQuestionCommand : IRequest<BaseMediatrResponse<EmptyResponse>
 
     public class FileUploadOptions
     {
+        [AllowedCharacters(TextCharacterProfile.FreeText)]
         public string? FileNamePrefix { get; set; }
         public int NumberOfFiles { get; set; }
     }
