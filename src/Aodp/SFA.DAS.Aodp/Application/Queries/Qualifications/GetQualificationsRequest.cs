@@ -4,7 +4,6 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
     public class GetQualificationsRequest
     {
-        [AllowedValues("new", "changed")]
         public string? Status { get; set; }
 
         public int? Skip { get; set; }
