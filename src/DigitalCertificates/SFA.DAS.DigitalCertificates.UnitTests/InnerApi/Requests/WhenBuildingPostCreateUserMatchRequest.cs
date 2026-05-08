@@ -29,7 +29,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Requests
             requestData.CourseCode.Should().Be(command.CourseCode);
             requestData.CourseName.Should().Be(command.CourseName);
             requestData.CourseLevel.Should().Be(command.CourseLevel);
-            requestData.DateAwarded.Should().Be(command.DateAwarded);
+            requestData.YearAwarded.Should().Be(command.YearAwarded);
             requestData.ProviderName.Should().Be(command.ProviderName);
             requestData.Ukprn.Should().Be(command.Ukprn);
             requestData.IsMatched.Should().Be(command.IsMatched);

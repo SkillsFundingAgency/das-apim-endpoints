@@ -18,7 +18,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
             string courseCode,
             string courseName,
             string courseLevel,
-            int? dateAwarded,
+            int? yearAwarded,
             string providerName,
             int? ukprn,
             bool isMatched,
@@ -35,7 +35,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                 CourseCode = courseCode,
                 CourseName = courseName,
                 CourseLevel = courseLevel,
-                DateAwarded = dateAwarded,
+                YearAwarded = yearAwarded,
                 ProviderName = providerName,
                 Ukprn = ukprn,
                 IsMatched = isMatched,
@@ -51,7 +51,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
             command.CourseCode.Should().Be(courseCode);
             command.CourseName.Should().Be(courseName);
             command.CourseLevel.Should().Be(courseLevel);
-            command.DateAwarded.Should().Be(dateAwarded);
+            command.YearAwarded.Should().Be(yearAwarded);
             command.ProviderName.Should().Be(providerName);
             command.Ukprn.Should().Be(ukprn);
             command.IsMatched.Should().Be(isMatched);
