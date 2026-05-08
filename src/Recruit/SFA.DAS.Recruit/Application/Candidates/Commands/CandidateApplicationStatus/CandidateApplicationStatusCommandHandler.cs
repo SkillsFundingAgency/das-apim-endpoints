@@ -1,5 +1,5 @@
 using MediatR;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Domain;
 using SFA.DAS.Recruit.Domain.EmailTemplates;
