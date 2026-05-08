@@ -4,6 +4,7 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
 {
     public class GetQualificationsRequest
     {
+        [AllowedCharacters(TextCharacterProfile.FreeText)]
         public string? Status { get; set; }
 
         public int? Skip { get; set; }
