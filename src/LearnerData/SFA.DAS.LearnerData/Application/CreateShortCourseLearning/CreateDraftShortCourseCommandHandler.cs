@@ -38,18 +38,18 @@ public class CreateDraftShortCourseCommandHandler(
             return new CreateDraftShortCourseResult();
         }
 
+        var correlationId = Guid.NewGuid();
+
         if (learningResponse.Body.IsReinstated)
         {
             var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(requestData.OnProgramme);
             await earningsApiClient.Put(new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, earningsPutBody));
-        }
-        else
-        {
-            var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn, requestData);
-            await earningsApiClient.Post(new SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
+            return new CreateDraftShortCourseResult { CorrelationId = correlationId };
         }
 
-        var correlationId = Guid.NewGuid();
+        var earningsRequestData = createUnapprovedShortCourseLearningRequestBuilder.Build(command.ShortCourseRequest, learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, command.Ukprn, requestData);
+        await earningsApiClient.Post(new SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
+
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData, command.ShortCourseRequest, correlationId));
 
         return new CreateDraftShortCourseResult { CorrelationId = correlationId };

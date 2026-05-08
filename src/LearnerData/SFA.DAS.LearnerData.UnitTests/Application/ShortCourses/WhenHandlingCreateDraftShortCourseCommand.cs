@@ -245,5 +245,16 @@ public class WhenHandlingCreateDraftShortCourseCommand
                 r.Data == builtBody && r.PutUrl.Contains(_learningKey.ToString()))),
             Times.Once);
         _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Never);
+        _messageSession.Verify(x => x.Publish(It.IsAny<object>(), It.IsAny<PublishOptions>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_When_Not_Reinstated_A_LearnerDataEvent_Is_Published()
+    {
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()), Times.Once);
     }
 }
