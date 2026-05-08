@@ -46,20 +46,7 @@ public class JoinedLearnerData
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
         Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
-
-        foreach (var sldMathsAndEnglish in sldLearnerData.Delivery.EnglishAndMaths)
-        {
-            var earningsMathsAndEnglish = earningsApprenticeship.Episodes
-                .SelectMany(x => x.EnglishAndMaths)
-                .FirstOrDefault(x => x.LearnAimRef == sldMathsAndEnglish.LearnAimRef);
-
-            if (earningsMathsAndEnglish != null)
-            {
-                sldMathsAndEnglish.Course = earningsMathsAndEnglish.Course;
-            }
-        }
-
-        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes);
+        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes, earningsApprenticeship);
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
@@ -89,7 +76,7 @@ public class JoinedLearnerData
         return joinedEpisodes.OrderBy(x => x.StartDate).ToList();
     }
 
-    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes)
+    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes, EarningsApprenticeship earningsApprenticeship)
     {
         var joinedLearningDeliveries = new List<JoinedLearningDelivery>();
 
@@ -101,7 +88,20 @@ public class JoinedLearnerData
 
         foreach (var englishAndMath in sldLearnerData.Delivery.EnglishAndMaths)
         {
-            var delivery = new JoinedLearningDelivery(englishAndMath, joinedPriceEpisodes.SelectMany(x => x.Instalments), joinedPriceEpisodes.SelectMany(x => x.AdditionalPayments));
+            var matchingCourse = earningsApprenticeship.Episodes
+                .SelectMany(x => x.EnglishAndMaths)
+                .FirstOrDefault(x => x.LearnAimRef == englishAndMath.LearnAimRef);
+
+            var delivery = new JoinedLearningDelivery(
+                englishAndMath,
+                matchingCourse.Instalments.Select(x => new JoinedInstalment
+                {
+                    AcademicYear = x.AcademicYear,
+                    DeliveryPeriod = x.DeliveryPeriod,
+                    Amount = x.Amount,
+                    InstalmentType = Enum.Parse<InstalmentType>(x.InstalmentType)
+                }), 
+                new List<JoinedAdditionalPayment>());
             joinedLearningDeliveries.Add(delivery);
         }
 

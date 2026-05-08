@@ -184,7 +184,7 @@ internal class GetFm36QueryTestFixture
         testLearner.AddProgramme(
             ageAtStart: 18,
             startDate: new DateTime(2020, 1, 1),
-            endDate: new DateTime(2021, 1, 1),
+            endDate: new DateTime(2021, 1, 31),
             trainingPrice: 14000,
             endpointAssessmentPrice: 1000);
 

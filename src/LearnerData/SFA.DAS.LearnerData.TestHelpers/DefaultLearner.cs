@@ -48,7 +48,7 @@ public class DefaultLearner
         LearnAimRef = "ENG001",
         Amount = 1500,
         StartDate = new DateTime(2020, 9, 1),
-        EndDate = new DateTime(2021, 1, 1),
+        EndDate = new DateTime(2021, 1, 31),
         Course = "English",
         LearningSupport = new List<LearningSupport>()
     };

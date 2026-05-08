@@ -8,7 +8,8 @@ public class LearningDeliveryPeriodisedValues
 {
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsDefaultedLearningDeliveryPeriodisedValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsDefaultedValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -21,8 +22,8 @@ public class LearningDeliveryPeriodisedValues
 
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
+
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "DisadvFirstPayment" && x.AllValuesAreSetToZero());
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
@@ -42,10 +43,6 @@ public class LearningDeliveryPeriodisedValues
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "LearnDelESFAContribPct" && x.AllValuesAreSetTo(0.95m));
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
-            .Contain(x => x.AttributeName == "MathEngBalPayment" && x.AllValuesAreSetToZero());
-        learningDelivery.LearningDeliveryPeriodisedValues.Should()
-            .Contain(x => x.AttributeName == "MathEngOnProgPayment" && x.AllValuesAreSetToZero());
-        learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "ProgrammeAimBalPayment" && x.AllValuesAreSetToZero());
         learningDelivery.LearningDeliveryPeriodisedValues.Should()
             .Contain(x => x.AttributeName == "ProgrammeAimCompletionPayment" && x.AllValuesAreSetToZero());
@@ -53,7 +50,51 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsLearningSupportValues(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsCorrectEnglishAndMathsValues(TestScenario scenario)
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(scenario);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        // Assert
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
+
+        if(scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            var academicYearInstalments = GetAcademicYearInstalments(testFixture, scenario);
+
+            var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "MathEngOnProgPayment");
+            result.Should().NotBeNull();
+            result.Period1.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 1)?.Amount).GetValueOrDefault());
+            result.Period2.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 2)?.Amount).GetValueOrDefault());
+            result.Period3.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 3)?.Amount).GetValueOrDefault());
+            result.Period4.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 4)?.Amount).GetValueOrDefault());
+            result.Period5.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 5)?.Amount).GetValueOrDefault());
+            result.Period6.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 6)?.Amount).GetValueOrDefault());
+            result.Period7.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 7)?.Amount).GetValueOrDefault());
+            result.Period8.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 8)?.Amount).GetValueOrDefault());
+            result.Period9.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 9)?.Amount).GetValueOrDefault());
+            result.Period10.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 10)?.Amount).GetValueOrDefault());
+            result.Period11.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 11)?.Amount).GetValueOrDefault());
+            result.Period12.Should().Be((academicYearInstalments.SingleOrDefault(i => i.DeliveryPeriod == 12)?.Amount).GetValueOrDefault());
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "MathEngBalPayment" && x.AllValuesAreSetToZero());
+            learningDelivery.LearningDeliveryPeriodisedValues.Should()
+                .Contain(x => x.AttributeName == "MathEngOnProgPayment" && x.AllValuesAreSetToZero());
+        }
+
+    }
+
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsLearningSupportValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -63,7 +104,7 @@ public class LearningDeliveryPeriodisedValues
 
         //Assert
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
 
         var expectedLearningSupport = testFixture.EarningsResponse.Apprenticeships.First()
             .Episodes.First()
@@ -103,7 +144,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsInstPerPeriodValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsInstPerPeriodValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -114,13 +156,9 @@ public class LearningDeliveryPeriodisedValues
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
+        var academicYearInstalments = GetAcademicYearInstalments(testFixture, scenario);
 
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
-
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "InstPerPeriod");
         result.Should().NotBeNull();
@@ -140,7 +178,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsProgrammeAimOnProgPaymentValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsProgrammeAimOnProgPaymentValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -154,11 +193,9 @@ public class LearningDeliveryPeriodisedValues
 
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+        var academicYearInstalments = GetAcademicYearInstalments(testFixture, scenario);
 
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimOnProgPayment");
         result.Should().NotBeNull();
@@ -178,7 +215,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsProgrammeAimProgFundIndMaxEmpContValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsProgrammeAimProgFundIndMaxEmpContValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -192,11 +230,9 @@ public class LearningDeliveryPeriodisedValues
 
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+        var academicYearInstalments = GetAcademicYearInstalments(testFixture, scenario);
 
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMaxEmpCont");
         result.Should().NotBeNull();
@@ -219,7 +255,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsProgrammeAimProgFundIndMinCoInvestValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsProgrammeAimProgFundIndMinCoInvestValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -233,11 +270,9 @@ public class LearningDeliveryPeriodisedValues
 
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+        var academicYearInstalments = GetAcademicYearInstalments(testFixture, scenario);
 
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimProgFundIndMinCoInvest");
         result.Should().NotBeNull();
@@ -260,7 +295,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    public async Task ThenReturnsProgrammeAimTotProgFundValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsProgrammeAimTotProgFundValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -274,11 +310,9 @@ public class LearningDeliveryPeriodisedValues
 
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
 
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var academicYearInstalments = earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList();
+        var academicYearInstalments = GetAcademicYearInstalments(testFixture, scenario);
 
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "ProgrammeAimTotProgFund");
         result.Should().NotBeNull();
@@ -298,8 +332,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
-    public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelFirstProv1618PayValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsLearnDelFirstProv1618PayValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -310,21 +344,23 @@ public class LearningDeliveryPeriodisedValues
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
-
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstProv1618Pay");
         result.Should().NotBeNull();
 
-        var expectedIncentive = providerIncentives.FirstOrDefault();
-        if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
+        AdditionalPayment expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+
+        if (scenario != TestScenario.ApprenticeshipWithEnglish)
         {
-            expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
+            var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
+
+            expectedIncentive = providerIncentives.FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
         }
 
         result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive.Amount : 0));
@@ -343,8 +379,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
-    public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelSecondProv1618PayValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsLearnDelSecondProv1618PayValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -355,21 +391,23 @@ public class LearningDeliveryPeriodisedValues
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
-
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondProv1618Pay");
         result.Should().NotBeNull();
 
-        var expectedIncentive = providerIncentives.Skip(1).FirstOrDefault();
-        if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
+        AdditionalPayment expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+
+        if (scenario != TestScenario.ApprenticeshipWithEnglish)
         {
-            expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            var earningEpisode = testFixture.GetEarningEpisode();
+            var providerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").ToList();
+
+            expectedIncentive = providerIncentives.Skip(1).FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
         }
 
         result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive.Amount : 0));
@@ -388,8 +426,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
-    public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelFirstEmp1618PayValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsLearnDelFirstEmp1618PayValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -400,21 +438,23 @@ public class LearningDeliveryPeriodisedValues
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
-
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelFirstEmp1618Pay");
         result.Should().NotBeNull();
 
-        var expectedIncentive = employerIncentives.FirstOrDefault();
-        if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
+        AdditionalPayment expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+
+        if (scenario != TestScenario.ApprenticeshipWithEnglish)
         {
-            expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            var earningEpisode = testFixture.GetEarningEpisode();
+            var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
+
+            expectedIncentive = employerIncentives.FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
         }
 
         result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive?.Amount : 0));
@@ -433,8 +473,8 @@ public class LearningDeliveryPeriodisedValues
 
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-
-    public async Task ThenReturnsLearningDeliveryPeriodisedLearnDelSecondEmp1618PayValuesForEachApprenticeship(TestScenario scenario)
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsLearnDelSecondEmp1618PayValues(TestScenario scenario)
     {
         // Arrange
         var testFixture = new GetFm36QueryTestFixture(scenario);
@@ -446,22 +486,24 @@ public class LearningDeliveryPeriodisedValues
         // Assert
         testFixture.Result.Should().NotBeNull();
 
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
+        AdditionalPayment expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
 
-        var earningEpisode = testFixture.EarningsResponse.Apprenticeships.First().Episodes.Single();
-        var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
+        if(scenario != TestScenario.ApprenticeshipWithEnglish)
+        {
+            var earningEpisode = testFixture.GetEarningEpisode();
+            var employerIncentives = earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").ToList();
 
-        var learningDelivery = testFixture.Result.Items.SingleOrDefault(learner => learner.ULN.ToString() == apprenticeship.Uln).LearningDeliveries.SingleOrDefault();
-        learningDelivery.Should().NotBeNull();
+            expectedIncentive = employerIncentives.Skip(1).FirstOrDefault();
+            if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
+            {
+                expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
+            }
+        }
+
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
         learningDelivery.LearningDeliveryPeriodisedValues.Should().NotBeNull();
         var result = learningDelivery.LearningDeliveryPeriodisedValues.SingleOrDefault(x => x.AttributeName == "LearnDelSecondEmp1618Pay");
         result.Should().NotBeNull();
-
-        var expectedIncentive = employerIncentives.Skip(1).FirstOrDefault();
-        if (expectedIncentive == null || expectedIncentive.AcademicYear.ToString() != testFixture.CollectionCalendarResponse.AcademicYear)
-        {
-            expectedIncentive = new AdditionalPayment { Amount = 0, DeliveryPeriod = 0 };
-        }
 
         result.Period1.Should().Be((expectedIncentive?.DeliveryPeriod == 1 ? expectedIncentive.Amount : 0));
         result.Period2.Should().Be((expectedIncentive?.DeliveryPeriod == 2 ? expectedIncentive.Amount : 0));
@@ -477,4 +519,18 @@ public class LearningDeliveryPeriodisedValues
         result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
     }
 
+
+    private static List<IInstalment> GetAcademicYearInstalments(GetFm36QueryTestFixture testFixture, TestScenario scenario)
+    {
+        var earningEpisode = testFixture.GetEarningEpisode();
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            return earningEpisode.EnglishAndMaths.Single().Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList<IInstalment>();
+        }
+        else
+        {
+            return earningEpisode.Instalments.Where(x => x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear)).ToList<IInstalment>();
+        }
+    }
+    
 }

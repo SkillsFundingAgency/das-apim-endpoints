@@ -29,7 +29,7 @@ public class Episode
 
 [DebuggerDisplay("AY {AcademicYear} DP {DeliveryPeriod} Amount: {Amount} EpisodePriceKey: {EpisodePriceKey}")]
 
-public class Instalment
+public class Instalment : IInstalment
 {
     public short AcademicYear { get; set; }
     public byte DeliveryPeriod { get; set; }
@@ -57,10 +57,18 @@ public class EnglishAndMaths
     public List<EnglishAndMathsInstalment> Instalments { get; set; }
 }
 
-public class EnglishAndMathsInstalment
+public class EnglishAndMathsInstalment : IInstalment
 {
     public short AcademicYear { get; set; }
     public byte DeliveryPeriod { get; set; }
     public decimal Amount { get; set; }
     public string InstalmentType { get; set; }
+}
+
+public interface IInstalment
+{
+    short AcademicYear { get; set; }
+    byte DeliveryPeriod { get; set; }
+    decimal Amount { get; set; }
+    string InstalmentType { get; set; }
 }

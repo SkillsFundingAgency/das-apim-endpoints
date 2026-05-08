@@ -228,7 +228,15 @@ public class LearningDeliveryValues
         var expectedPriceEpisodeEndDate = learning.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate ? learning.PlannedEndDate : testFixture.CollectionCalendarResponse.EndDate;
 
         // Assert
-        learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - learning.StartDate).Days);
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().BeNull();
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - learning.StartDate).Days);
+        }
+
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -242,7 +250,14 @@ public class LearningDeliveryValues
         var earningEpisode = testFixture.GetEarningEpisode();
 
         // Assert
-        learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().BeNull();
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));
+        }
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -256,7 +271,14 @@ public class LearningDeliveryValues
         var earningEpisode = testFixture.GetEarningEpisode();
 
         // Assert
-        learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").Sum(x => x.Amount));
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().BeNull();
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").Sum(x => x.Amount));
+        }
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -303,7 +325,14 @@ public class LearningDeliveryValues
         var learnDelHistDaysThisApp = (testFixture.CollectionCalendarResponse.StartDate - firstSldOnProg.StartDate).Days;
 
         // Assert
-        learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(learnDelHistDaysThisApp);
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().BeNull();
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(learnDelHistDaysThisApp);
+        }
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -317,7 +346,15 @@ public class LearningDeliveryValues
         var earningEpisode = testFixture.GetEarningEpisode();
 
         // Assert
-        learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(earningEpisode.Instalments.Sum(i => i.Amount));
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().BeNull();
+        }
+        else
+        {
+            var sum = earningEpisode.Instalments.Sum(i => i.Amount);
+            learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(sum);
+        }
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -365,7 +402,14 @@ public class LearningDeliveryValues
         var learning = testFixture.UnpagedLearningsResponse.Single();
 
         // Assert
-        learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(learning.StartDate, learning.PlannedEndDate));
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().BeNull();
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(learning.StartDate, learning.PlannedEndDate));
+        }
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -380,7 +424,14 @@ public class LearningDeliveryValues
         var expectedPlannedTotalDays = 1 + (learning.PlannedEndDate - learning.StartDate).Days;
 
         // Assert
-        learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().BeNull();
+        }
+        else
+        {
+            learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
+        }
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
