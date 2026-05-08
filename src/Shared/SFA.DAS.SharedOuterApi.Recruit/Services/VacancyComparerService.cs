@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using System.Reflection;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.SharedOuterApi.Recruit.Services;
 
@@ -16,7 +17,6 @@ public class VacancyComparerService: IVacancyComparerService
         var fields = new List<VacancyComparerField>
         {
             CompareValue(a, b, v => v.VacancyReference, FieldIdResolver.ToFieldId(v => v.VacancyReference)),
-            CompareValue(a, b, v => v.AccountId, FieldIdResolver.ToFieldId(v => v.AccountId)),
             CompareValue(a, b, v => v.AnonymousReason, FieldIdResolver.ToFieldId(v => v.AnonymousReason)),
             CompareValue(a, b, v => v.ApplicationInstructions, FieldIdResolver.ToFieldId(v => v.ApplicationInstructions)),
             CompareValue(a, b, v => v.ApplicationMethod, FieldIdResolver.ToFieldId(v => v.ApplicationMethod)),
@@ -28,7 +28,7 @@ public class VacancyComparerService: IVacancyComparerService
             CompareValue(a, b, v => v.Contact?.Name, FieldIdResolver.ToFieldId(v => v.Contact.Name)),
             CompareValue(a, b, v => v.Contact?.Phone, FieldIdResolver.ToFieldId(v => v.Contact.Phone)),
             CompareValue(a, b, v => v.EmployerDescription, FieldIdResolver.ToFieldId(v => v.EmployerDescription)),
-            CompareList(a, b, v => v.EmployerLocations,  FieldIdResolver.ToFieldId(v => v.EmployerLocations)),
+            CompareLocations(a, b, FieldIdResolver.ToFieldId(v => v.EmployerLocations)),
             CompareValue(a, b, v => v.EmployerLocationInformation,  FieldIdResolver.ToFieldId(v => v.EmployerLocationInformation)),
             CompareValue(a, b, v => v.EmployerName, FieldIdResolver.ToFieldId(v => v.EmployerName)),
             CompareValue(a, b, v => v.EmployerWebsiteUrl, FieldIdResolver.ToFieldId(v => v.EmployerWebsiteUrl)),
@@ -55,6 +55,21 @@ public class VacancyComparerService: IVacancyComparerService
         };
         
         return new VacancyComparerResult {Fields = fields };
+    }
+
+    private static VacancyComparerField CompareLocations(Vacancy left, Vacancy right, string fieldName)
+    {
+        if (ReferenceEquals(left.EmployerLocations, right.EmployerLocations))
+        {
+            return new VacancyComparerField(fieldName, true);
+        }
+        if (left.EmployerLocations is null || right.EmployerLocations is null)
+        {
+            return new VacancyComparerField(fieldName, false);
+        }
+
+        var areEqual = left.EmployerLocations.OrderBy(x => x.AddressLine1 + x.Postcode).SequenceEqual(right.EmployerLocations.OrderBy(x => x.AddressLine1 + x.Postcode), new AddressComparer()); 
+        return new VacancyComparerField(fieldName, areEqual);
     }
 
     private static VacancyComparerField CompareValue<T, TP>(T a, T b, Func<T, TP> valueFunc, string fieldName)
@@ -115,5 +130,22 @@ public static class ExpressionExtensions
         }
 
         return fieldId;
+    }
+}
+
+public class AddressComparer : IEqualityComparer<Address>
+{
+    public bool Equals(Address? x, Address? y)
+    {
+        if (ReferenceEquals(x, y)) return true;
+        if (x is null) return false;
+        if (y is null) return false;
+        if (x.GetType() != y.GetType()) return false;
+        return x.AddressLine1 == y.AddressLine1 && x.AddressLine2 == y.AddressLine2 && x.AddressLine3 == y.AddressLine3 && x.AddressLine4 == y.AddressLine4 && x.Postcode == y.Postcode;
+    }
+
+    public int GetHashCode(Address obj)
+    {
+        return HashCode.Combine(obj.AddressLine1, obj.AddressLine2, obj.AddressLine3, obj.AddressLine4, obj.Postcode);
     }
 }

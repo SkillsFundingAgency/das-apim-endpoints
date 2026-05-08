@@ -20,7 +20,6 @@ public class WhenComparingVacancies
         var result = sut.Compare(a, b);
 
         result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.VacancyReference)).AreEqual.Should().Be(expectedAreEqual);
-        result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.AccountId)).AreEqual.Should().Be(expectedAreEqual);
         result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ApplicationInstructions)).AreEqual.Should().Be(expectedAreEqual);
         result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ApplicationMethod)).AreEqual.Should().Be(expectedAreEqual);
         result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.ApplicationUrl)).AreEqual.Should().Be(expectedAreEqual);
@@ -52,5 +51,40 @@ public class WhenComparingVacancies
         result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.Wage.Duration)).AreEqual.Should().Be(expectedAreEqual);
         result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.AdditionalQuestion1)).AreEqual.Should().Be(expectedAreEqual);
         result.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.AdditionalQuestion2)).AreEqual.Should().Be(expectedAreEqual);
+    }
+
+    [Test, MoqAutoData]
+    public void Then_Locations_Are_Not_Compared_On_Certain_Fields(
+        [Greedy] VacancyComparerService sut)
+    {
+        // arrange
+        var left = VacancyUtils.CreateVacancy();
+        var right = VacancyUtils.CreateVacancy();
+
+        right.EmployerLocations![0].Latitude = 1.0d;
+        right.EmployerLocations[0].Longitude = 1.0d;
+        right.EmployerLocations[0].Country = "Somewhere";
+
+        // act
+        var results = sut.Compare(left, right);
+
+        // assert
+        results.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocations)).AreEqual.Should().BeTrue();
+    }
+    
+    [Test, MoqAutoData]
+    public void Then_The_Order_Of_Addresses_Does_Not_Matter(
+        Vacancy left,
+        Vacancy right,
+        [Greedy] VacancyComparerService sut)
+    {
+        // arrange
+        right.EmployerLocations = Enumerable.Reverse(left.EmployerLocations!).ToList();
+        
+        // act
+        var results = sut.Compare(left, right);
+
+        // assert
+        results.Fields.Single(f => f.FieldName == FieldIdResolver.ToFieldId(v => v.EmployerLocations)).AreEqual.Should().BeTrue();
     }
 }
