@@ -15,7 +15,14 @@ public enum TestScenario
     /// <summary>
     /// Models an apprenticeship with a single English Course
     /// </summary>
-    ApprenticeshipWithEnglish
+    ApprenticeshipWithEnglish,
+    /// <summary>
+    /// This scenario is for an appernticeship with 2 English and Maths courses in addition to the main apprenticeship.
+    /// The maths course will conclude after the apprenticeship
+    /// Learning support will span the onprogramme delivery as well as the maths course, which will continue after the 
+    /// apprenticeship has completed. 
+    /// </summary>
+    LearningSupportComplexScenario,
 }
 
 public enum WithdrawalDate

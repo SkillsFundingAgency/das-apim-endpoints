@@ -42,7 +42,7 @@ public class DefaultLearner
         LearnAimRef = "ZPROG001"
     };
 
-    public static MathsAndEnglish EnglishCourse => new MathsAndEnglish
+    public static MathsAndEnglish EnglishAndMathsLearningDelivery => new MathsAndEnglish
     {
         AimSequenceNumber = 2,
         LearnAimRef = "ENG001",

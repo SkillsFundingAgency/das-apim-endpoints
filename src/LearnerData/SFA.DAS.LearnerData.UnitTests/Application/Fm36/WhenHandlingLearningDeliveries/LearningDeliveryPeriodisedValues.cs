@@ -1,4 +1,6 @@
-﻿using SFA.DAS.LearnerData.Responses.EarningsInner;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using NUnit.Framework.Internal;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
 
@@ -89,57 +91,6 @@ public class LearningDeliveryPeriodisedValues
                 .Contain(x => x.AttributeName == "MathEngOnProgPayment" && x.AllValuesAreSetToZero());
         }
 
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_ReturnsLearningSupportValues(TestScenario scenario)
-    {
-        // Arrange
-        var testFixture = new GetFm36QueryTestFixture(scenario);
-
-        // Act
-        await testFixture.CallSubjectUnderTest();
-
-        //Assert
-        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-
-        var expectedLearningSupport = testFixture.EarningsResponse.Apprenticeships.First()
-            .Episodes.First()
-            .AdditionalPayments.Where(x =>
-                x.AdditionalPaymentType == AdditionalPaymentsTypes.LearningSupport &&
-                x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
-            .ToList();
-
-        var valueResult = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnSuppFundCash);
-        valueResult.Period1.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 1)?.Amount ?? 0);
-        valueResult.Period2.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 2)?.Amount ?? 0);
-        valueResult.Period3.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 3)?.Amount ?? 0);
-        valueResult.Period4.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 4)?.Amount ?? 0);
-        valueResult.Period5.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 5)?.Amount ?? 0);
-        valueResult.Period6.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 6)?.Amount ?? 0);
-        valueResult.Period7.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 7)?.Amount ?? 0);
-        valueResult.Period8.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 8)?.Amount ?? 0);
-        valueResult.Period9.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 9)?.Amount ?? 0);
-        valueResult.Period10.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 10)?.Amount ?? 0);
-        valueResult.Period11.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 11)?.Amount ?? 0);
-        valueResult.Period12.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 12)?.Amount ?? 0);
-
-        var indicatorResult = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnSuppFund);
-        indicatorResult.Period1.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 1)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period2.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 2)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period3.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 3)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period4.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 4)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period5.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 5)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period6.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 6)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period7.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 7)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period8.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 8)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period9.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 9)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period10.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 10)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period11.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 11)?.Amount > 0 ? 1 : 0);
-        indicatorResult.Period12.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 12)?.Amount > 0 ? 1 : 0);
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -519,6 +470,110 @@ public class LearningDeliveryPeriodisedValues
         result.Period12.Should().Be((expectedIncentive?.DeliveryPeriod == 12 ? expectedIncentive.Amount : 0));
     }
 
+    [TestCase(TestScenario.SimpleApprenticeship)]
+    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
+    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
+    public async Task Then_ReturnsLearningSupportValues(TestScenario scenario)
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(scenario);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        //Assert
+        var learningDelivery = testFixture.GetLearningDelivery(scenario);
+
+        List<AdditionalPayment> expectedLearningSupport;
+
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            expectedLearningSupport = new List<AdditionalPayment>(); // In this test scenario, there are learning support
+                                                                     // payments but they all fall within onprogramme date range
+                                                                     // Learning support should only be recorded against English and maths
+                                                                     // if the payments fall outside of the onprogramme date range.
+                                                                     // this is covered in a seperate test scenario
+        }
+        else
+        {
+            expectedLearningSupport = testFixture.EarningsResponse.Apprenticeships.First()
+                .Episodes.First()
+                .AdditionalPayments.Where(x =>
+                    x.AdditionalPaymentType == AdditionalPaymentsTypes.LearningSupport &&
+                    x.AcademicYear == short.Parse(testFixture.CollectionCalendarResponse.AcademicYear))
+                .ToList();
+        }
+
+
+        AssertLearningSupport(learningDelivery, expectedLearningSupport);
+    }
+
+    [Test]
+    public async Task Then_ReturnsLearningSupportValues_WhenComplexScenario()
+    {
+        // Arrange
+        var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario);
+
+        // Act
+        await testFixture.CallSubjectUnderTest();
+
+        //Assert
+        var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
+        var onPrgrammeLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(1);
+        var englishLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(2);
+        var mathsLearningDelivery = testFixture.GetLearningDeliveryByAimSequenceNumber(3);
+
+        List<AdditionalPayment> expectedLearningSupport;
+
+        AssertLearningSupport(onPrgrammeLearningDelivery, new List<AdditionalPayment>
+        {
+            new AdditionalPayment {DeliveryPeriod = 3, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 4, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 5, Amount = 150 },
+        });
+
+        AssertLearningSupport(englishLearningDelivery, new List<AdditionalPayment>());
+
+        AssertLearningSupport(mathsLearningDelivery, new List<AdditionalPayment>
+        {
+            new AdditionalPayment {DeliveryPeriod = 6, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 7, Amount = 150 },
+            new AdditionalPayment {DeliveryPeriod = 8, Amount = 150 },
+        });
+    }
+
+    private void AssertLearningSupport(
+        ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery learningDelivery, List<AdditionalPayment> expectedLearningSupport)
+    {
+
+        var valueResult = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnSuppFundCash);
+        valueResult.Period1.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 1)?.Amount ?? 0);
+        valueResult.Period2.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 2)?.Amount ?? 0);
+        valueResult.Period3.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 3)?.Amount ?? 0);
+        valueResult.Period4.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 4)?.Amount ?? 0);
+        valueResult.Period5.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 5)?.Amount ?? 0);
+        valueResult.Period6.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 6)?.Amount ?? 0);
+        valueResult.Period7.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 7)?.Amount ?? 0);
+        valueResult.Period8.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 8)?.Amount ?? 0);
+        valueResult.Period9.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 9)?.Amount ?? 0);
+        valueResult.Period10.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 10)?.Amount ?? 0);
+        valueResult.Period11.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 11)?.Amount ?? 0);
+        valueResult.Period12.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 12)?.Amount ?? 0);
+
+        var indicatorResult = learningDelivery.LearningDeliveryPeriodisedValues.Single(x => x.AttributeName == PeriodisedAttributes.LearnSuppFund);
+        indicatorResult.Period1.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 1)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period2.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 2)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period3.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 3)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period4.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 4)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period5.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 5)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period6.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 6)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period7.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 7)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period8.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 8)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period9.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 9)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period10.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 10)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period11.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 11)?.Amount > 0 ? 1 : 0);
+        indicatorResult.Period12.Should().Be(expectedLearningSupport.SingleOrDefault(x => x.DeliveryPeriod == 12)?.Amount > 0 ? 1 : 0);
+    }
 
     private static List<IInstalment> GetAcademicYearInstalments(GetFm36QueryTestFixture testFixture, TestScenario scenario)
     {

@@ -17,6 +17,7 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using LearningEpisode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 using EarningEpisode = SFA.DAS.LearnerData.Responses.EarningsInner.Episode;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
@@ -86,6 +87,9 @@ internal class GetFm36QueryTestFixture
             case TestScenario.AllData:
                 AddSimpleApprenticeship();
                 AddApprenticeshipWithPriceChange();
+                break;
+            case TestScenario.LearningSupportComplexScenario:
+                AddLearningSupportComplexScenario();
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
@@ -201,7 +205,65 @@ internal class GetFm36QueryTestFixture
             new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 12, 30) },
         };
 
-        testLearner.AddEnglish();
+        testLearner.AddEnglishAndMathsDelivery();
+
+        _fm36TestContext.TestLearners.Add(testLearner);
+    }
+
+    private void AddLearningSupportComplexScenario()
+    {
+        var testLearner = DefaultLearner.CreateNew;
+        testLearner.Ukprn = (int)Ukprn;
+        testLearner.FundingBandMax = 19000;
+        testLearner.ClearProgrammes();
+
+        testLearner.AddProgramme(
+            ageAtStart: 18,
+            startDate: new DateTime(2020, 1, 1),
+            endDate: new DateTime(2021, 1, 31),
+            trainingPrice: 14000,
+            endpointAssessmentPrice: 1000);
+
+        testLearner.AdditionalPayments = new List<AdditionalPayment>
+        {
+            // Onprogramme additional payments
+            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 3, 30) },
+            new AdditionalPayment{ AcademicYear = 1920, DeliveryPeriod = 8, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 3, 30) },
+
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeProviderIncentive, DueDate = new DateTime(2020, 12, 30) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 500, AdditionalPaymentType = AdditionalPaymentTypeEmployerIncentive, DueDate = new DateTime(2020, 12, 30) },
+
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 3, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 10, 30) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 4, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 11, 30) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 5, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2020, 12, 30) },
+
+            // English and Maths additional payments
+            // (note limitation of the test mocking this goes here, but it works because in earnings all learning support gets stored together)
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 02, 28) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 03, 31) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 04, 30) },
+        };
+
+        testLearner.AddEnglishAndMathsDelivery(
+            aimSequenceNumber:2,
+            learnAimRef: "ENG001",
+            course: "English",
+            startDate: new DateTime(2020, 9, 1),
+            endDate: new DateTime(2021, 1, 31),
+            amount: 1500);
+
+        testLearner.AddEnglishAndMathsDelivery(
+            aimSequenceNumber: 3,
+            learnAimRef: "MAT001",
+            course: "Maths",
+            startDate: new DateTime(2020, 12, 1),
+            endDate: new DateTime(2021, 4, 30),
+            amount: 1200,
+            learningSupports: new List<LearningSupport>
+                {
+                    new LearningSupport{ StartDate = new DateTime(2021, 2, 1), EndDate = new DateTime(2021, 04, 30) },
+                }
+            );
 
         _fm36TestContext.TestLearners.Add(testLearner);
     }
@@ -309,6 +371,14 @@ internal class GetFm36QueryTestFixture
         learningDelivery.Should().NotBeNull();
 
         return learningDelivery;
+    }
+
+    internal LearningDelivery GetLearningDeliveryByAimSequenceNumber(int aimSequenceNumber)
+    {
+        Result.Should().NotBeNull();
+        var learning = UnpagedLearningsResponse.Single();
+        var fm36Result = Result!.Items!.Single(learner => learner.ULN.ToString() == learning.Uln);
+        return fm36Result.LearningDeliveries.Single(delivery => delivery.AimSeqNumber == aimSequenceNumber);
     }
 
     internal EarningEpisode GetEarningEpisode()

@@ -2,6 +2,7 @@
 using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.LearnerData.Application.Fm36.Common;
@@ -522,5 +523,29 @@ internal static class JoinedDataModelsExtensions
             .Where(x => x.EpisodePriceKey != currentPriceEpisode.EpisodePriceKey)
             .OrderBy(x => x.StartDate)
             .FirstOrDefault(x => x.StartDate > currentPriceEpisode.StartDate);
+    }
+
+    public static List<JoinedAdditionalPayment> TakeMatching(
+        this List<JoinedAdditionalPayment> payments,
+        DateTime startDate,
+        DateTime endDate,
+        params string[] includedTypes)
+    {
+        var matches = payments
+            .Where(x =>
+            {
+                var paymentDate = x.AcademicYear
+                    .GetDateTime(x.DeliveryPeriod)
+                    .EndOfMonth();
+
+                return paymentDate >= startDate &&
+                       paymentDate <= endDate &&
+                       includedTypes.Contains(x.AdditionalPaymentType);
+            })
+            .ToList();
+
+        payments.RemoveAll(x => matches.Contains(x));
+
+        return matches;
     }
 }

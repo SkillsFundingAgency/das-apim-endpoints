@@ -1,4 +1,5 @@
 using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.TestHelpers;
 
@@ -70,24 +71,39 @@ public static class TestLearnerExtensions
 
     }
 
-    public static void AddEnglish(this TestLearner testLearner, 
-        string? course = null, DateTime? startDate = null, DateTime? endDate = null, int? amount = null)
+    public static void AddEnglishAndMathsDelivery(this TestLearner testLearner, 
+        int? aimSequenceNumber = null, 
+        string? learnAimRef = null,
+        string? course = null, 
+        DateTime? startDate = null, 
+        DateTime? endDate = null, 
+        int? amount = null,
+        List<LearningSupport>? learningSupports = null)
     {
-        var englishCourse = DefaultLearner.EnglishCourse;
+        var englishAndMathsLearningDelivery = DefaultLearner.EnglishAndMathsLearningDelivery;
         
-        if(course != null)
-            englishCourse.Course = course;
+        if (aimSequenceNumber != null)
+            englishAndMathsLearningDelivery.AimSequenceNumber = aimSequenceNumber.Value;
+
+        if (learnAimRef != null)
+            englishAndMathsLearningDelivery.LearnAimRef = learnAimRef;
+
+        if (course != null)
+            englishAndMathsLearningDelivery.Course = course;
 
         if (startDate != null)
-            englishCourse.StartDate = startDate.Value;
+            englishAndMathsLearningDelivery.StartDate = startDate.Value;
 
         if (endDate != null)
-            englishCourse.EndDate = endDate.Value;
+            englishAndMathsLearningDelivery.EndDate = endDate.Value;
 
         if (amount != null)
-            englishCourse.Amount = amount.Value;
+            englishAndMathsLearningDelivery.Amount = amount.Value;
 
-        testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(englishCourse);
+        if(learningSupports != null)
+            englishAndMathsLearningDelivery.LearningSupport = learningSupports;
+
+        testLearner.UpdateLearnerRequest.Delivery.EnglishAndMaths.Add(englishAndMathsLearningDelivery);
     }
 }
 
