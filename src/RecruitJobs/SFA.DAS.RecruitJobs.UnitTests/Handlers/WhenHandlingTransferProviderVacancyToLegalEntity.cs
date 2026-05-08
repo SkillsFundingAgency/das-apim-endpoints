@@ -1,4 +1,10 @@
 using Microsoft.AspNetCore.JsonPatch.Operations;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Threading;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Domain;
