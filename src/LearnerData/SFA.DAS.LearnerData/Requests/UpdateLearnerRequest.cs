@@ -66,7 +66,8 @@ public class MathsAndEnglish
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
-    public int? PriorLearningPercentage { get; set; }
+    public int? PriorLearningAdjustment { get; set; }
+    public int? OtherFundingAdjustment { get; set; }
     public int? AimSequenceNumber { get; set; }
     public List<LearningSupport> LearningSupport { get; set; }
 }
