@@ -6,18 +6,18 @@
     </PropertyGroup>
     
     <ItemGroup>
-        <PackageReference Include="coverlet.msbuild">
+        <PackageReference Include="coverlet.msbuild" Version="6.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
-        <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="SFA.DAS.Testing.AutoFixture" />
-        <PackageReference Include="System.ComponentModel.TypeConverter" />
-        <PackageReference Include="Newtonsoft.Json" />
+        <PackageReference Include="FluentAssertions" Version="7.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
+        <PackageReference Include="NUnit" Version="4.2.2" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+        <PackageReference Include="SFA.DAS.Testing.AutoFixture" Version="17.1.103" />
+        <PackageReference Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
 
     <ItemGroup>
