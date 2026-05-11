@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.JsonPatch.Operations;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RecruitJobs.Domain;
@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using ClosureReason = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ClosureReason;
 using OwnerType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.OwnerType;
 using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
@@ -166,7 +165,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Draft));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Draft));
     }
     
     [Test]
@@ -211,8 +210,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Closed));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/ClosureReason", null, ClosureReason.TransferredByEmployer));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Closed));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ClosureReason", null, ClosureReason.TransferredByEmployer));
         var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/ClosedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
@@ -259,9 +258,9 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/ApprovedDate", null, null));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Closed));
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/ClosureReason", null, ClosureReason.TransferredByEmployer));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ApprovedDate", null, null));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Closed));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ClosureReason", null, ClosureReason.TransferredByEmployer));
         var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/ClosedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
@@ -320,7 +319,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
 
         // assert
         CommonAssertions(capturedPatchRequest, expectedTransferInfo);
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Draft));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Status", null, VacancyStatus.Draft));
     }
     
     [Test]
@@ -368,8 +367,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
 
         // assert
-        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Operation<VacancyReview>("replace", "/ManualOutcome", null, nameof(ManualQaOutcome.Transferred)));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<VacancyReview>("replace", "/Status", null, ReviewStatus.Closed));
+        capturedPatchRequest!.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/ManualOutcome", null, nameof(ManualQaOutcome.Transferred)));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<VacancyReview>("replace", "/Status", null, ReviewStatus.Closed));
         var closedDate = capturedPatchRequest.Data.Operations.First(x => x.path == "/ClosedDate").value as DateTime?;
         closedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
     }
@@ -424,10 +423,10 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     {
         // these are common changes irrespective of the vacancy status
         capturedPatchRequest.Should().NotBeNull();
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/OwnerType", null, OwnerType.Employer));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/Contact", null, null));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/SubmittedByUserId", null, null));
-        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Operation<Vacancy>("replace", "/ReviewRequestedByUserId", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/OwnerType", null, OwnerType.Employer));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/Contact", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/SubmittedByUserId", null, null));
+        capturedPatchRequest.Data.Operations.Should().ContainEquivalentOf(new Microsoft.AspNetCore.JsonPatch.SystemTextJson.Operations.Operation<Vacancy>("replace", "/ReviewRequestedByUserId", null, null));
         var transferInfo = capturedPatchRequest.Data.Operations.First(x => x.path == "/TransferInfo").value as TransferInfo;
         transferInfo.Should().BeEquivalentTo(expectedTransferInfo, opt => opt.Excluding(x => x.TransferredDate));
         transferInfo.TransferredDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));

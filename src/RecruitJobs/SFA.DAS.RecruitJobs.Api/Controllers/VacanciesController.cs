@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NServiceBus;
 using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Infrastructure;
@@ -19,6 +21,7 @@ using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Collections.Generic;
@@ -26,8 +29,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using ArchiveType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ArchiveType;
-using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -306,6 +309,72 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             return TypedResults.Problem(title: ex.Message, detail: ex.Error);
         }
     }
+    
+    [HttpPost, Route("{vacancyId:guid}/approve")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IResult> ApproveVacancy(
+        [FromServices] IMessageSession messageSession,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] Guid vacancyId,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyById.ExecuteAsync(vacancyId, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var vacancy = response.Data!.Vacancies.FirstOrDefault();
+        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Submitted } or { DeletedDate: not null } or { Status: not GraphQL.VacancyStatus.Submitted })
+        {
+            // it's been transferred/deleted so ignore
+            return TypedResults.NoContent();
+        }
+        
+        // Patch the Vacancy
+        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
+        patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Approved);
+        patchDocument.Replace(x => x.ApprovedDate, DateTime.UtcNow);
+        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
+        patchResponse.EnsureSuccessStatusCode();
+        return TypedResults.NoContent();
+    }
+    
+    [HttpPost, Route("{vacancyId:guid}/publish")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IResult> PublishVacancy(
+        [FromServices] IMessageSession messageSession,
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] Guid vacancyId,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyById.ExecuteAsync(vacancyId, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        var vacancy = response.Data!.Vacancies.FirstOrDefault();
+        if (vacancy is { TransferInfo: not null, Status: not GraphQL.VacancyStatus.Approved } or { DeletedDate: not null } or { Status: not GraphQL.VacancyStatus.Approved })
+        {
+            // it's been transferred/deleted so ignore
+            return TypedResults.NoContent();
+        }
+        
+        // Patch the Vacancy
+        var patchDocument = new JsonPatchDocument<PatchableVacancyDto>();
+        patchDocument.Replace(x => x.Status, SharedOuterApi.Types.Domain.Recruit.VacancyStatus.Live);
+        patchDocument.Replace(x => x.LiveDate, DateTime.UtcNow);
+        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<PatchableVacancyDto>, NullResponse>(patchRequest, false);
+        patchResponse.EnsureSuccessStatusCode();
+        return TypedResults.NoContent();
+    }
 
     [HttpGet, Route("stale/archive")]
     [ProducesResponseType(typeof(DataResponse<IEnumerable<StaleVacancyIdentifier>>), StatusCodes.Status200OK)]
@@ -324,15 +393,16 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             return TypedResults.Problem(response.ToProblemDetails());
         }
 
-        var gqlVacancies = response.Data!.Vacancies;
+        var gqlVacancies = response.Data!.Vacancies.Take(10);
 
         var tasks = gqlVacancies.Select(async v =>
         {
             var reviews = await recruitApiClient.GetAll<GetApplicationReviewApiResponse>(
                 new GetManyByVacancyReferenceApiRequest(v.VacancyReference.GetValueOrDefault()));
 
-            var allHaveOutcome = reviews.All(x =>
-                x.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful);
+            var allHaveOutcome = reviews
+                .All(x =>
+                x.Status is ApplicationReviewStatus.Successful or ApplicationReviewStatus.Unsuccessful || x.WithdrawnDate != null);
 
             return (v, allHaveOutcome);
         });
@@ -347,7 +417,6 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
                 VacancyStatus.Closed,
                 x.v.ClosingDate!.Value.UtcDateTime))
             .ToList();
-        
 
         return TypedResults.Ok(new DataResponse<IEnumerable<StaleArchiveVacancyIdentifier>>(result));
     }
