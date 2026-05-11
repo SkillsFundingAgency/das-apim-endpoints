@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Apim.Shared.Exceptions;
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Data.Models;
 using SFA.DAS.RecruitQa.Domain;
 using SFA.DAS.RecruitQa.GraphQL.RecruitInner.Mappers;
-using SFA.DAS.RecruitQa.InnerApi.Requests;
-using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
+using Wage = SFA.DAS.Recruit.Contracts.ApiResponses.Wage;
 
 namespace SFA.DAS.RecruitQa.Api.Controllers;
 
@@ -57,24 +54,73 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
             : TypedResults.NotFound();
     }
     
-    // TODO: Semi proxy for the inner api endpoint - this should go once we have migrated vacancies over to SQL
-    [HttpPost, Route("{vacancyId:guid}")]
-    public async Task<IActionResult> PostOne(
-        [FromRoute] Guid vacancyId,
-        [FromBody] PostVacancyRequest vacancy,
-        [FromServices] VacancyMapper vacancyMapper,
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+    [HttpPost, Route("update-from-qa/{id:Guid}")]
+    public async Task<IResult> UpdateVacancyFromQaEdit([FromRoute] Guid id,
+        [FromServices] IRecruitApiClient<RecruitAiApiConfiguration> recruitApiClient,
+        [FromBody] UpdateVacancyRequest request,
+        CancellationToken cancellationToken)
     {
-        var response = await recruitApiClient.PutWithResponseCode<PutVacancyResponse>(new PutVacancyRequest(vacancyId, vacancyMapper.ToInnerDto(vacancy)));
-        try
+        await recruitApiClient.Patch(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
         {
-            response.EnsureSuccessStatusCode();
-            return Ok(vacancyMapper.ToOuterDto(response.Body));
-        }
-        catch (ApiResponseException ex)
+            VacancyId = id,
+            Data = new Recruit.Contracts.ApiResponses.Vacancy
+            {
+                Status = Enum.Parse<Recruit.Contracts.ApiResponses.VacancyStatus>(request.Status),
+                OutcomeDescription = request.OutcomeDescription,
+                TrainingDescription = request.TrainingDescription,
+                AdditionalTrainingDescription = request.AdditionalTrainingDescription,
+                ShortDescription = request.ShortDescription,
+                Description = request.Description,
+                Wage = new Wage
+                {
+                    CompanyBenefitsInformation =  request.CompanyBenefitsInformation,
+                    WorkingWeekDescription =  request.WorkingWeekDescription
+                },
+                ThingsToConsider =  request.ThingsToConsider,
+                ApplicationInstructions =  request.ApplicationInstructions,
+                LastUpdatedDate = DateTime.UtcNow,
+                EmployerLocationInformation =  request.EmployerLocationInformation,
+            }
+        });
+        
+        return TypedResults.Ok();
+    }
+    
+    [HttpPost, Route("close/{id:Guid}")]
+    public async Task<IResult> CloseVacancyFromQa([FromRoute] Guid id,
+        [FromServices] IRecruitApiClient<RecruitAiApiConfiguration> recruitApiClient,
+        [FromBody] CloseVacancyRequest request,
+        CancellationToken cancellationToken)
+    {
+        await recruitApiClient.Patch(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
         {
-            logger.LogError(ex, "Error updating vacancy");
-            return Problem(title: ex.Message, detail: ex.Error);
-        }
+            VacancyId = id,
+            Data = new Recruit.Contracts.ApiResponses.Vacancy
+            {
+                Status = Recruit.Contracts.ApiResponses.VacancyStatus.Closed,
+                LastUpdatedDate = DateTime.UtcNow,
+                ClosureReason =  Enum.Parse<Recruit.Contracts.ApiResponses.ClosureReason>(request.ClosureReason)
+            }
+        });
+        
+        return TypedResults.Ok();
+    }
+    
+    [HttpPost, Route("publish/{id:Guid}")]
+    public async Task<IResult> PublishVacancyFromQa([FromRoute] Guid id,
+        [FromServices] IRecruitApiClient<RecruitAiApiConfiguration> recruitApiClient,
+        CancellationToken cancellationToken)
+    {
+        await recruitApiClient.Patch(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
+        {
+            VacancyId = id,
+            Data = new Recruit.Contracts.ApiResponses.Vacancy
+            {
+                Status = Recruit.Contracts.ApiResponses.VacancyStatus.Live,
+                LastUpdatedDate = DateTime.UtcNow
+            }
+        });
+        
+        return TypedResults.Ok();
     }
 }

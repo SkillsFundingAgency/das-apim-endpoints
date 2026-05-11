@@ -20,7 +20,6 @@ public static class AddServiceRegistrationExtension
         services.AddHttpClient();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
-        services.AddTransient<VacancyMapper>();
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
