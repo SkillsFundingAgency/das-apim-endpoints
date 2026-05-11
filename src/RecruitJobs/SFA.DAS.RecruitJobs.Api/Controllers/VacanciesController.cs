@@ -10,7 +10,6 @@ using SFA.DAS.RecruitJobs.Api.Models;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.RecruitJobs.Api.Models.Requests;
 using SFA.DAS.RecruitJobs.Api.Models.Vacancies.Responses;
-using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 using SFA.DAS.RecruitJobs.InnerApi.Requests.ApplicationReviews;
@@ -22,6 +21,7 @@ using SFA.DAS.RecruitJobs.InnerApi.Responses.Vacancy;
 using SFA.DAS.RecruitJobs.InnerApi.Responses.VacancyAnalytics;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Collections.Generic;
@@ -29,8 +29,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using ArchiveType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ArchiveType;
-using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
+using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
