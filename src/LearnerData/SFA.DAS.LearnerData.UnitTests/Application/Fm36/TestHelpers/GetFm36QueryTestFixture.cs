@@ -1,7 +1,6 @@
 using AutoFixture;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using Microsoft.Extensions.Logging;
-using NUnit.Framework.Internal;
 using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Requests;
@@ -10,14 +9,14 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Shared;
 using SFA.DAS.LearnerData.TestHelpers;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using LearningEpisode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 using EarningEpisode = SFA.DAS.LearnerData.Responses.EarningsInner.Episode;
-using SFA.DAS.LearnerData.Shared;
+using LearningEpisode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Fm36.TestHelpers;
 
@@ -37,30 +36,39 @@ internal class GetFm36QueryTestFixture
     internal GetFm36DataResponse EarningsResponse => _fm36TestContext.EarningsInnerApiResponse;
     internal GetAcademicYearsResponse CollectionCalendarResponse;
     internal List<UpdateLearnerRequest> SldLearnerData => _fm36TestContext.SldLearnerData;
-    internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient;
-    internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient;
-    internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient;
-    internal Mock<ILearnerDataCacheService> MockDistributedCache;
+    internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient = new();
+    internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient = new();
+    internal Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>> MockCollectionCalendarApiClient = new();
+    internal Mock<ILearnerDataCacheService> MockDistributedCache = new();
     internal GetFm36Result Result;
 
     private GetFm36QueryHandler _handler;
     private GetFm36Query _query;
     private Fm36TestContext _fm36TestContext;
 
-    internal GetFm36QueryTestFixture(TestScenario scenario)
+    internal GetFm36QueryTestFixture(TestScenario scenario): this(scenario, null)
+    {
+        
+    }
+
+    internal GetFm36QueryTestFixture(TestScenario scenario, Action<Fm36TestContext>? configure)
     {
         // Arrange
         _fm36TestContext = new Fm36TestContext();
-        MockApprenticeshipsApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
-        MockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
-        MockCollectionCalendarApiClient = new Mock<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>>();
-        MockDistributedCache = new Mock<ILearnerDataCacheService>();
 
         Ukprn = Fixture.Create<long>();
         CollectionPeriod = 2;
         CollectionYear = 2425;
 
         GenerateData(scenario);
+
+        if (configure != null)
+            configure(_fm36TestContext);
+
+        if (scenario != TestScenario.NoData)
+        {
+            _fm36TestContext.Build();
+        }
 
         CollectionCalendarResponse = BuildCollectionCalendarResponse();
         SetupMocks(Ukprn, CollectionCalendarResponse);
@@ -93,11 +101,6 @@ internal class GetFm36QueryTestFixture
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
-        }
-
-        if (scenario != TestScenario.NoData)
-        {
-            _fm36TestContext.Build();
         }
 
     }
@@ -239,9 +242,9 @@ internal class GetFm36QueryTestFixture
 
             // English and Maths additional payments
             // (note limitation of the test mocking this goes here, but it works because in earnings all learning support gets stored together)
-            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 6, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 02, 28) },
-            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 03, 31) },
-            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 04, 30) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 7, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 02, 28) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 8, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 03, 31) },
+            new AdditionalPayment{ AcademicYear = 2021, DeliveryPeriod = 9, Amount = 150, AdditionalPaymentType = AdditionalPaymentTypeLearningSupport, DueDate = new DateTime(2021, 04, 30) },
         };
 
         testLearner.AddEnglishAndMathsDelivery(

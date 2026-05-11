@@ -90,6 +90,8 @@ public class JoinedLearnerData
             joinedLearningDeliveries.Add(delivery);
         }
 
+        unassignedAdditionalPayments.AddRange(joinedPriceEpisodes.SelectMany(x => x.OutOfRangeAdditionalPayments));// These are additional payments that fell outside of onprogramme range
+
         foreach (var englishAndMath in sldLearnerData.Delivery.EnglishAndMaths.OrderBy(x=>x.AimSequenceNumber))
         {
             var matchingCourse = earningsApprenticeship.Episodes
@@ -129,6 +131,13 @@ public class JoinedPriceEpisode
 
     /// <summary> Derived from combining earnings.AdditionalPayments and apprenticeship.Episode.EpisodePrice</summary>
     public List<JoinedAdditionalPayment> AdditionalPayments { get; set; }
+
+    /// <summary> 
+    /// These are additional payments that belong to the episode, but are outside of the onprogramme start and end date. 
+    /// These may belong to english or maths aims
+    /// Derived from combining earnings.AdditionalPayments and apprenticeship.Episode.EpisodePrice 
+    /// </summary>
+    public List<JoinedAdditionalPayment> OutOfRangeAdditionalPayments { get; set; }
 
     /// <summary> Derived from earnings.CompletionPayment </summary>
     public decimal CompletionPayment { get; set; }
@@ -182,7 +191,15 @@ public class JoinedPriceEpisode
         EndPointAssessmentPrice = apprenticeshipEpisodePrice.EndPointAssessmentPrice;
         FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
         Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
-        AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
+
+        var allAdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
+
+        AdditionalPayments = allAdditionalPayments.Where(x =>
+                x.DueDate >= apprenticeshipEpisodePrice.StartDate &&
+                x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
+
+        OutOfRangeAdditionalPayments = allAdditionalPayments.Except(AdditionalPayments).ToList();
+
         ActualEndDate = apprenticeshipEpisode.LastDayOfLearning;
     }
 
@@ -256,9 +273,7 @@ public class JoinedPriceEpisode
             DueDate = x.DueDate
         }).ToList();
 
-        return allAdditionalPayments.Where(x =>
-                x.DueDate >= apprenticeshipEpisodePrice.StartDate &&
-                x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
+        return allAdditionalPayments;
     }
 }
 
