@@ -3,10 +3,13 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -21,7 +24,9 @@ public class CreateDraftShortCourseCommandHandler(
     ICreateDraftShortCoursePostRequestBuilder createDraftShortCoursePostRequestBuilder,
     ICreateUnapprovedShortCourseLearningRequestBuilder createUnapprovedShortCourseLearningRequestBuilder,
     IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
-    IMessageSession messageSession
+    ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
+    IMessageSession messageSession,
+    PaymentsConfiguration paymentsConfiguration
 ) : IRequestHandler<CreateDraftShortCourseCommand, CreateDraftShortCourseResult>
 {
     public async Task<CreateDraftShortCourseResult> Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
@@ -43,7 +48,10 @@ public class CreateDraftShortCourseCommandHandler(
         if (learningResponse.Body.IsReinstated)
         {
             var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(requestData.OnProgramme);
-            await earningsApiClient.Put(new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, earningsPutBody));
+            var earningsResponse = await earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, earningsPutBody));
+
+            await PublishPaymentsEventForReinstatement(command.Ukprn, learningResponse.Body, earningsResponse.Body);
             return new CreateDraftShortCourseResult { CorrelationId = correlationId };
         }
 
@@ -53,6 +61,22 @@ public class CreateDraftShortCourseCommandHandler(
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData, command.ShortCourseRequest, correlationId));
 
         return new CreateDraftShortCourseResult { CorrelationId = correlationId };
+    }
+
+    private async Task PublishPaymentsEventForReinstatement(long ukprn, CreateShortCoursePostResponse learningResponse, UpdateShortCourseEarningPutResponse earningsResponse)
+    {
+        logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for reinstated LearningKey: {LearningKey}", learningResponse.LearningKey);
+
+        var command = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
+
+        var options = new SendOptions();
+        options.DoNotEnforceBestPractices();
+        options.SetDestination(paymentsConfiguration.PaymentsEndpoint);
+        await messageSession.Send(command, options);
+
+        await messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
+
+        logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for reinstated LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 
     private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request, ShortCourseRequest shortCourseRequest, Guid correlationId)
