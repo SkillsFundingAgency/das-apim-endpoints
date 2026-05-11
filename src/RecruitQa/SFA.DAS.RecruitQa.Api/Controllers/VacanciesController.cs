@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Recruit.GraphQL;
 using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.RecruitQa.Data.Models;
@@ -56,31 +58,58 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
     
     [HttpPost, Route("update-from-qa/{id:Guid}")]
     public async Task<IResult> UpdateVacancyFromQaEdit([FromRoute] Guid id,
-        [FromServices] IRecruitApiClient<RecruitAiApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromBody] UpdateVacancyRequest request,
         CancellationToken cancellationToken)
     {
-        await recruitApiClient.Patch(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
+        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        data.Replace(x => x.Status, Enum.Parse<Recruit.Contracts.ApiResponses.VacancyStatus>(request.Status));
+        data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
+        if (!string.IsNullOrEmpty(request.CompanyBenefitsInformation))
+        {
+            data.Replace(x => x.Wage.CompanyBenefitsInformation, request.CompanyBenefitsInformation);    
+        }
+        if (!string.IsNullOrEmpty(request.WorkingWeekDescription))
+        {
+            data.Replace(x => x.Wage.WorkingWeekDescription, request.WorkingWeekDescription);    
+        }
+        if (!string.IsNullOrEmpty(request.OutcomeDescription))
+        {
+            data.Replace(x => x.OutcomeDescription, request.OutcomeDescription);    
+        }
+        if (!string.IsNullOrEmpty(request.TrainingDescription))
+        {
+            data.Replace(x => x.TrainingDescription, request.TrainingDescription);    
+        }
+        if (!string.IsNullOrEmpty(request.AdditionalTrainingDescription))
+        {
+            data.Replace(x => x.AdditionalTrainingDescription, request.AdditionalTrainingDescription);    
+        }
+        if (!string.IsNullOrEmpty(request.ShortDescription))
+        {
+            data.Replace(x => x.ShortDescription, request.ShortDescription);    
+        }
+        if (!string.IsNullOrEmpty(request.Description))
+        {
+            data.Replace(x => x.Description, request.Description);    
+        }
+        if (!string.IsNullOrEmpty(request.ThingsToConsider))
+        {
+            data.Replace(x => x.ThingsToConsider, request.ThingsToConsider);    
+        }
+        if (!string.IsNullOrEmpty(request.ApplicationInstructions))
+        {
+            data.Replace(x => x.ApplicationInstructions, request.ApplicationInstructions);    
+        }
+        if (!string.IsNullOrEmpty(request.EmployerLocationInformation))
+        {
+            data.Replace(x => x.EmployerLocationInformation, request.EmployerLocationInformation);    
+        }
+
+        await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
         {
             VacancyId = id,
-            Data = new Recruit.Contracts.ApiResponses.Vacancy
-            {
-                Status = Enum.Parse<Recruit.Contracts.ApiResponses.VacancyStatus>(request.Status),
-                OutcomeDescription = request.OutcomeDescription,
-                TrainingDescription = request.TrainingDescription,
-                AdditionalTrainingDescription = request.AdditionalTrainingDescription,
-                ShortDescription = request.ShortDescription,
-                Description = request.Description,
-                Wage = new Wage
-                {
-                    CompanyBenefitsInformation =  request.CompanyBenefitsInformation,
-                    WorkingWeekDescription =  request.WorkingWeekDescription
-                },
-                ThingsToConsider =  request.ThingsToConsider,
-                ApplicationInstructions =  request.ApplicationInstructions,
-                LastUpdatedDate = DateTime.UtcNow,
-                EmployerLocationInformation =  request.EmployerLocationInformation,
-            }
+            Data = data
         });
         
         return TypedResults.Ok();
@@ -88,19 +117,19 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
     
     [HttpPost, Route("close/{id:Guid}")]
     public async Task<IResult> CloseVacancyFromQa([FromRoute] Guid id,
-        [FromServices] IRecruitApiClient<RecruitAiApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         [FromBody] CloseVacancyRequest request,
         CancellationToken cancellationToken)
     {
-        await recruitApiClient.Patch(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
+        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Closed);
+        data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
+        data.Replace(x => x.ClosureReason, Enum.Parse<Recruit.Contracts.ApiResponses.ClosureReason>(request.ClosureReason));
+        
+        await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
         {
             VacancyId = id,
-            Data = new Recruit.Contracts.ApiResponses.Vacancy
-            {
-                Status = Recruit.Contracts.ApiResponses.VacancyStatus.Closed,
-                LastUpdatedDate = DateTime.UtcNow,
-                ClosureReason =  Enum.Parse<Recruit.Contracts.ApiResponses.ClosureReason>(request.ClosureReason)
-            }
+            Data = data
         });
         
         return TypedResults.Ok();
@@ -108,17 +137,17 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
     
     [HttpPost, Route("publish/{id:Guid}")]
     public async Task<IResult> PublishVacancyFromQa([FromRoute] Guid id,
-        [FromServices] IRecruitApiClient<RecruitAiApiConfiguration> recruitApiClient,
+        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
     {
-        await recruitApiClient.Patch(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
+        var data = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        data.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Live);
+        data.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
+        
+        await recruitApiClient.PatchWithResponseCode(new Recruit.Contracts.ApiRequests.PatchVacanciesByVacancyIdApiRequest
         {
             VacancyId = id,
-            Data = new Recruit.Contracts.ApiResponses.Vacancy
-            {
-                Status = Recruit.Contracts.ApiResponses.VacancyStatus.Live,
-                LastUpdatedDate = DateTime.UtcNow
-            }
+            Data = data
         });
         
         return TypedResults.Ok();
