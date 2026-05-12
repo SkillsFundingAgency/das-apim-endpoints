@@ -7,18 +7,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="SFA.DAS.NServiceBus" />
-		<PackageReference Include="Swashbuckle.AspNetCore" />
+		<PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MediatR" />
-		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-		<PackageReference Include="SFA.DAS.Api.Common" />
-		<PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" />
-		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" />
-		<PackageReference Include="Microsoft.Extensions.Options" />
-		<PackageReference Include="System.Security.Cryptography.X509Certificates" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
+		<PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
+		<PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165" />
+		<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
+		<PackageReference Include="System.Security.Cryptography.X509Certificates" Version="4.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>
