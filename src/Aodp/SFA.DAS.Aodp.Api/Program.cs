@@ -7,6 +7,7 @@ using SFA.DAS.Aodp.Application.Commands.FormBuilder.Forms;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using System.Text.Json.Serialization;
 using Microsoft.OpenApi;
+using Microsoft.OpenApi.Models;
 using SFA.DAS.Apim.Shared.AppStart;
 
 [assembly: ApiController]
