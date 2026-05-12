@@ -34,7 +34,7 @@ internal class GetFm36QueryTestFixture
     internal int CollectionYear;
     internal List<Learning> UnpagedLearningsResponse => _fm36TestContext.LearningInnerApiResponse;
     internal GetFm36DataResponse EarningsResponse => _fm36TestContext.EarningsInnerApiResponse;
-    internal GetAcademicYearsResponse CollectionCalendarResponse;
+    internal GetAcademicYearsResponse CollectionCalendarResponse => _collectionYearResponses[CollectionYear];
     internal List<UpdateLearnerRequest> SldLearnerData => _fm36TestContext.SldLearnerData;
     internal Mock<ILearningApiClient<LearningApiConfiguration>> MockApprenticeshipsApiClient = new();
     internal Mock<IEarningsApiClient<EarningsApiConfiguration>> MockEarningsApiClient = new();
@@ -43,8 +43,8 @@ internal class GetFm36QueryTestFixture
     internal GetFm36Result Result;
 
     private GetFm36QueryHandler _handler;
-    private GetFm36Query _query;
     private Fm36TestContext _fm36TestContext;
+    private Dictionary<int,GetAcademicYearsResponse> _collectionYearResponses;
 
     internal GetFm36QueryTestFixture(TestScenario scenario): this(scenario, null)
     {
@@ -53,7 +53,13 @@ internal class GetFm36QueryTestFixture
 
     internal GetFm36QueryTestFixture(TestScenario scenario, Action<Fm36TestContext>? configure)
     {
-        // Arrange
+        _collectionYearResponses = new Dictionary<int, GetAcademicYearsResponse>();
+        for (var year = 2015; year <= 2030; year++)
+        {
+            var collectionCalendarResponse = BuildCollectionCalendarResponse(year);
+            _collectionYearResponses.Add(int.Parse(collectionCalendarResponse.AcademicYear), collectionCalendarResponse);
+        }
+
         _fm36TestContext = new Fm36TestContext();
 
         Ukprn = Fixture.Create<long>();
@@ -70,11 +76,9 @@ internal class GetFm36QueryTestFixture
             _fm36TestContext.Build();
         }
 
-        CollectionCalendarResponse = BuildCollectionCalendarResponse();
-        SetupMocks(Ukprn, CollectionCalendarResponse);
+        SetupMocks(Ukprn);
 
         _handler = new GetFm36QueryHandler(MockApprenticeshipsApiClient.Object, MockEarningsApiClient.Object, MockCollectionCalendarApiClient.Object, MockDistributedCache.Object, Mock.Of<ILogger<GetFm36QueryHandler>>());
-        _query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, null, null);
     }
 
     internal void GenerateData(TestScenario scenario)
@@ -271,19 +275,21 @@ internal class GetFm36QueryTestFixture
         _fm36TestContext.TestLearners.Add(testLearner);
     }
 
-    internal GetAcademicYearsResponse BuildCollectionCalendarResponse()
+    internal GetAcademicYearsResponse BuildCollectionCalendarResponse(int year)
     {
+        var yearLastTwoDigits = (year % 100);
+
+        var academicYear = $"{yearLastTwoDigits}{yearLastTwoDigits+1}";
+
         return new GetAcademicYearsResponse
         {
-            AcademicYear = "2021",
-            StartDate = new DateTime(2020, 8, 1),
-            EndDate = new DateTime(2021, 7, 31)
+            AcademicYear = academicYear,
+            StartDate = new DateTime(year, 8, 1),
+            EndDate = new DateTime(year + 1, 7, 31)
         };
     }
 
-    internal void SetupMocks(
-        long ukprn,
-        GetAcademicYearsResponse collectionCalendarResponse)
+    internal void SetupMocks(long ukprn)
     {
         MockApprenticeshipsApiClient
             .Setup(x => x.Get<List<Learning>>(It.Is<GetLearningsRequest>(r => r.Ukprn == ukprn)))
@@ -299,10 +305,12 @@ internal class GetFm36QueryTestFixture
             .Setup(x => x.PostWithResponseCode<GetFm36DataResponse>(
                 It.Is<PostGetFm36DataRequest>(r => r.Ukprn == ukprn), It.IsAny<bool>())).ReturnsAsync(response);
 
-        MockCollectionCalendarApiClient
-            .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{CollectionYear}")))
-            .ReturnsAsync(collectionCalendarResponse);
-
+        foreach (var collectionCalendarResponse in _collectionYearResponses.Values)
+        {
+            MockCollectionCalendarApiClient
+                .Setup(x => x.Get<GetAcademicYearsResponse>(It.Is<GetAcademicYearByYearRequest>(y => y.GetUrl == $"academicyears/{collectionCalendarResponse.AcademicYear}")))
+                .ReturnsAsync(collectionCalendarResponse);
+        }
 
         var learners = _fm36TestContext.SldLearnerData.Select(x => x.Learner.Uln.ToString());
         MockDistributedCache.Setup(x => x.GetLearners(ukprn, learners, It.IsAny<CancellationToken>()))
@@ -315,16 +323,26 @@ internal class GetFm36QueryTestFixture
         Unpaged
     }
 
-    internal async Task CallSubjectUnderTest(QueryType queryType = QueryType.Unpaged)
+    internal async Task CallSubjectUnderTest(QueryType queryType = QueryType.Unpaged, int? collectionYear = null)
     {
-        if(queryType == QueryType.Paged)
+        if (collectionYear.HasValue)
         {
-            _query.Page = 1;
-            _query.PageSize = 1;
+            CollectionYear = collectionYear.Value;
         }
 
+        int? page = null;
+        int? pageSize = null;
+
+        if (queryType == QueryType.Paged)
+        {
+            page = 1;
+            pageSize = 1;
+        }
+
+        var query = new GetFm36Query(Ukprn, CollectionYear, CollectionPeriod, page, pageSize);
+
         // Act
-        Result = await _handler.Handle(_query, CancellationToken.None);
+        Result = await _handler.Handle(query, CancellationToken.None);
     }
 
     internal IEnumerable<(LearningEpisode Episode, EpisodePrice Price)> GetExpectedPriceEpisodesSplitByAcademicYear(List<LearningEpisode> apprenticeshipEpisodes)

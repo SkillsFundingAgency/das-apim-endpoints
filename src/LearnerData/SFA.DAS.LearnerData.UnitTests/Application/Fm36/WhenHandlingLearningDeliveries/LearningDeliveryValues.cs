@@ -341,7 +341,7 @@ public class LearningDeliveryValues
     public async Task Then_LearnDelHistProgEarnings_IsCorrect(TestScenario scenario)
     {
         // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
+        var testFixture = await CallFm36Handler(scenario, 2021);
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
         var earningEpisode = testFixture.GetEarningEpisode();
 
@@ -508,10 +508,10 @@ public class LearningDeliveryValues
         learningDelivery.LearningDeliveryValues.FundStart.Should().Be(expectedFundingStart);
     }
 
-    private async Task<GetFm36QueryTestFixture> CallFm36Handler(TestScenario scenario)
+    private async Task<GetFm36QueryTestFixture> CallFm36Handler(TestScenario scenario, int? collectionYear = null)
     {
         var testFixture = new GetFm36QueryTestFixture(scenario);
-        await testFixture.CallSubjectUnderTest();
+        await testFixture.CallSubjectUnderTest(collectionYear: collectionYear);
 
         return testFixture;
     }

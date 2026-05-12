@@ -519,7 +519,7 @@ public class LearningDeliveryPeriodisedValues
         var testFixture = new GetFm36QueryTestFixture(TestScenario.LearningSupportComplexScenario);
 
         // Act
-        await testFixture.CallSubjectUnderTest();
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
 
         //Assert
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
@@ -562,7 +562,7 @@ public class LearningDeliveryPeriodisedValues
         });
 
         // Act
-        await testFixture.CallSubjectUnderTest();
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
 
         //Assert
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();
@@ -621,7 +621,7 @@ public class LearningDeliveryPeriodisedValues
             });
 
         // Act
-        await testFixture.CallSubjectUnderTest();
+        await testFixture.CallSubjectUnderTest(collectionYear: 2021);
 
         //Assert
         var apprenticeship = testFixture.UnpagedLearningsResponse.Single();

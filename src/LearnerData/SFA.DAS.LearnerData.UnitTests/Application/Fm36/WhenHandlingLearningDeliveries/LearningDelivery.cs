@@ -34,7 +34,14 @@ public class LearningDelivery
 
         // Assert
         var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        learningDelivery.AimSeqNumber.Should().Be(1);
 
+        if (scenario == TestScenario.ApprenticeshipWithEnglish)
+        {
+            learningDelivery.AimSeqNumber.Should().Be(2);
+        }
+        else
+        {
+            learningDelivery.AimSeqNumber.Should().Be(1);
+        }
     }
 }

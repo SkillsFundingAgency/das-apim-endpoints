@@ -374,12 +374,13 @@ internal static class JoinedDataModelsExtensions
         return periodisedValues;
     }
 
-    internal static List<LearningDeliveryPeriodisedTextValues> GetLearningDeliveryPeriodisedTextValues(this JoinedLearnerData joinedLearnerData)
+    internal static List<LearningDeliveryPeriodisedTextValues> GetLearningDeliveryPeriodisedTextValues(this JoinedLearnerData joinedLearnerData, JoinedLearningDelivery learningDelivery, GetAcademicYearsResponse currentAcademicYear)
     {
+        var currentAcademicYearShort = currentAcademicYear.GetShortAcademicYear();
         return new List<LearningDeliveryPeriodisedTextValues>
             {
-                LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.FundLineType, joinedLearnerData.FundingLineType),
-                LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValues(EarningsFM36Constants.PeriodisedAttributes.LearnDelContType, EarningsFM36Constants.LearnDelContType)
+                LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValuesWhereActive(learningDelivery, EarningsFM36Constants.PeriodisedAttributes.FundLineType, joinedLearnerData.FundingLineType, currentAcademicYearShort),
+                LearningDeliveryPeriodisedTextValuesBuilder.BuildWithSameValuesWhereActive(learningDelivery, EarningsFM36Constants.PeriodisedAttributes.LearnDelContType, EarningsFM36Constants.LearnDelContType, currentAcademicYearShort)
             };
     }
 
@@ -547,5 +548,12 @@ internal static class JoinedDataModelsExtensions
         payments.RemoveAll(x => matches.Contains(x));
 
         return matches;
+    }
+
+    internal static List<JoinedInstalment> GetInstalmentsForAcademicYear(this JoinedLearningDelivery joinedLearningDelivery, short academicYear, InstalmentType instalmentType)
+    {
+        return joinedLearningDelivery.Instalments
+            .Where(i => i.AcademicYear == academicYear && i.InstalmentType == instalmentType)
+            .ToList();
     }
 }
