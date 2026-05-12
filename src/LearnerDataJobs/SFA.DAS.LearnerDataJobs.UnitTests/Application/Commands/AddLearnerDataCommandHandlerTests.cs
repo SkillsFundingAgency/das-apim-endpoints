@@ -26,11 +26,12 @@ public class AddLearnerDataCommandHandlerTests
     public async Task Then_AddingANewLearner_Returns_200_Range_HttpStatusCode(
         AddLearnerDataCommand command,
         CourseLookupDetailResponse courseResponse,
+        [Frozen] Mock<IConfiguration> configuration,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-
+        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("true");
         courseResponse.LearningType = "Apprenticeship";
 
         var expectedUrl =
@@ -53,9 +54,20 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Returns_Non200_Range_HttpStatusCode(
         AddLearnerDataCommand command,
+        CourseLookupDetailResponse courseResponse,
+        [Frozen] Mock<IConfiguration> configuration,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
+        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
+        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("true");
+        courseResponse.LearningType = "Apprenticeship";
+
+        courseClient.Setup(x =>
+                x.Get<CourseLookupDetailResponse>(
+                    It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+            .ReturnsAsync(courseResponse);
+
         client.Setup(x =>
                 x.PutWithResponseCode<NullResponse>(It.IsAny<PutLearnerDataRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.BadRequest, "Error"));
