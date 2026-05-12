@@ -2,13 +2,13 @@
 using AutoFixture.AutoMoq;
 using Moq;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
-using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
 using SFA.DAS.Aodp.Configuration;
+using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
+using SFA.DAS.Aodp.Models;
 using SFA.DAS.Aodp.Services;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications;
 
 
@@ -83,5 +83,37 @@ public class GetChangedQualificationsQueryHandlerTests
         _apiClientMock.Verify(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()), Times.Once);
         Assert.That(result.Success, Is.False);
         Assert.That(result.ErrorMessage, Is.EqualTo(exceptionMessage));
+    }
+
+    [Test]
+    public async Task Handle_Passes_ProcessStatusFilter_And_AgeGroups_To_ApiRequest()
+    {
+        // Arrange
+        var processIds = new List<Guid> { Guid.NewGuid() };
+        var ageGroups = new List<AgeGroup> { AgeGroup.EighteenPlus };
+
+        GetChangedQualificationsApiRequest? captured = null;
+
+        _apiClientMock
+            .Setup(x => x.Get<GetChangedQualificationsApiResponse>(It.IsAny<GetChangedQualificationsApiRequest>()))
+            .Callback<IGetApiRequest>(req => captured = (GetChangedQualificationsApiRequest)req)
+            .ReturnsAsync(new GetChangedQualificationsApiResponse
+            {
+                Data = new List<ChangedQualification>()
+            });
+
+        var query = new GetChangedQualificationsQuery
+        {
+            ProcessStatusFilter = processIds,
+            AgeGroups = ageGroups
+        };
+
+        // Act
+        await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        Assert.That(captured, Is.Not.Null);
+        Assert.That(captured!.ProcessStatusFilter, Is.EqualTo(processIds));
+        Assert.That(captured.AgeGroups, Is.EqualTo(ageGroups));
     }
 }
