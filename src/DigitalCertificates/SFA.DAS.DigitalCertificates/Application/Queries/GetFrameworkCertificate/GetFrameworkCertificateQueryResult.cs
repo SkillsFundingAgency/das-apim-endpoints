@@ -26,13 +26,6 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetFrameworkCertificat
         public List<QualificationDetails> QualificationsAndAwardingBodies { get; set; }
         public List<DeliveryInformation> DeliveryInformation { get; set; }
 
-        // TODO: The fields below are not available from the Inner API and are not required for P2-2551.
-        // They can be populated in future tickets if needed or it can be remove if not required for the upcoming tickets
-        public string CourseCode { get; set; }
-        public string OverallGrade { get; set; }
-        public long? Ukprn { get; set; }
-        public string AssessorName { get; set; }
-
         public static implicit operator GetFrameworkCertificateQueryResult(GetFrameworkCertificateResponse source)
         {
             if (source == null) return null;
