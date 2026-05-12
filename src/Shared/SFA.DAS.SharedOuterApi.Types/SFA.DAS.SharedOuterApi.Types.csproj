@@ -6,8 +6,8 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.0.7" />
-        <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.184" />
-        <PackageReference Include="SFA.DAS.Apprenticeships.Types" Version="6.8.5-prerelease-73" />
-        <PackageReference Include="MediatR" Version="12.5.0" />
+        <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.189" />
+        <PackageReference Include="SFA.DAS.Apprenticeships.Types" Version="6.8.14" />
+        <PackageReference Include="MediatR" Version="14.1.0" />
     </ItemGroup>
 </Project>
