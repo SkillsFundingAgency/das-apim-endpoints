@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-		<PackageReference Include="Azure.Identity" />
-		<PackageReference Include="MediatR" />
-		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
-		<PackageReference Include="SFA.DAS.Employer.Shared.UI" />
-		<PackageReference Include="SFA.DAS.Encoding" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+		<PackageReference Include="Azure.Identity" Version="1.17.1" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.17.0" />
+		<PackageReference Include="SFA.DAS.Employer.Shared.UI" Version="17.1.109" />
+		<PackageReference Include="SFA.DAS.Encoding" Version="1.1.76" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0" />
   </ItemGroup>
 	
   <ItemGroup>

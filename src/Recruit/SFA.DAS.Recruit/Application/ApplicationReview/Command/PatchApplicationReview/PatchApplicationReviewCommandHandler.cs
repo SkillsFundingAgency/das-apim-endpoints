@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
