@@ -10,6 +10,7 @@ public static class LearningUpdateChangesExtensions
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal)
+               || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Reinstated)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved)
                || changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)
