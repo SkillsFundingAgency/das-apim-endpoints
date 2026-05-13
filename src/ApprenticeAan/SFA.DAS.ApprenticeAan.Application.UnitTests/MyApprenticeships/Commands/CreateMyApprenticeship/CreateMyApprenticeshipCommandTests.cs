@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using SFA.DAS.ApprenticeAan.Application.Commitments.GetRecentCommitment;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.StagedApprentices;

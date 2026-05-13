@@ -1,5 +1,5 @@
 ﻿using AutoFixture;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Moq;
 using SFA.DAS.ApprenticeAan.Application.Commitments.GetRecentCommitment;
