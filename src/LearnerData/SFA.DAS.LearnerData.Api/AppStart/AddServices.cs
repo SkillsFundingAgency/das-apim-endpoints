@@ -35,6 +35,7 @@ public static class AddApiServicesExtension
         services.AddTransient<ICreateDraftShortCoursePostRequestBuilder, CreateDraftShortCoursePostRequestBuilder>();
         services.AddTransient<ILearnerDataCacheService, LearnerDataCacheService>();
         services.AddTransient<ICreateUnapprovedShortCourseLearningRequestBuilder, CreateUnapprovedShortCourseLearningRequestBuilder>();
+        services.AddTransient<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder, UpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<IFjaaApiClient<FjaaApiConfiguration>, FjaaApiClient>();
