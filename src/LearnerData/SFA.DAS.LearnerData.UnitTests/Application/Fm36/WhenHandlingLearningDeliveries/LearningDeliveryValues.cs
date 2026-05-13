@@ -43,6 +43,13 @@ public class LearningDeliveryValues
         learningDelivery.LearningDeliveryValues.LearnDelLearnerAddPayThresholdDate.Should().BeNull();
         learningDelivery.LearningDeliveryValues.LearnDelRedCode.Should().Be(0);
         learningDelivery.LearningDeliveryValues.LearnDelRedStartDate.Should().Be(new DateTime(9999, 9, 9));
+        learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().BeNull();
+        learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().BeNull();
+        learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().BeNull(); learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().BeNull();
+        learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().BeNull();
+        learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().BeNull(); 
+        learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().BeNull();
+        learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().BeNull();
     }
 
     [TestCase(TestScenario.SimpleApprenticeship)]
@@ -218,148 +225,6 @@ public class LearningDeliveryValues
     [TestCase(TestScenario.SimpleApprenticeship)]
     [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
     [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_LearnDelAppAccDaysIL_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var learning = testFixture.UnpagedLearningsResponse.Single();
-
-        var expectedPriceEpisodeEndDate = learning.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate ? learning.PlannedEndDate : testFixture.CollectionCalendarResponse.EndDate;
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().BeNull();
-        }
-        else
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelAppAccDaysIL.Should().Be(1 + (expectedPriceEpisodeEndDate - learning.StartDate).Days);
-        }
-
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_LearnDelApplicEmp1618Incentive_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var earningEpisode = testFixture.GetEarningEpisode();
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().BeNull();
-        }
-        else
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelApplicEmp1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "EmployerIncentive").Sum(x => x.Amount));
-        }
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_LearnDelApplicProv1618Incentive_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var earningEpisode = testFixture.GetEarningEpisode();
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().BeNull();
-        }
-        else
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelApplicProv1618Incentive.Should().Be(earningEpisode.AdditionalPayments.Where(x => x.AdditionalPaymentType == "ProviderIncentive").Sum(x => x.Amount));
-        }
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_LearnDelAppPrevAccDaysIL_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var learning = testFixture.UnpagedLearningsResponse.Single();
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().BeNull();
-        }
-        else
-        {
-            //This is is simplified and will fail if there are multiple learning deliveries with different LearnerAimRefs
-            //It also will not work in the case of Paused, Withdrawn or Completed learnings
-            var effEndDate = learning.PlannedEndDate < testFixture.CollectionCalendarResponse.EndDate
-                ? learning.PlannedEndDate
-                : testFixture.CollectionCalendarResponse.EndDate;
-
-            var learnDelAppPrevAccDaysIL = learning.StartDate.GetNumberOfDaysUntil(effEndDate);
-
-            learningDelivery.LearningDeliveryValues.LearnDelAppPrevAccDaysIL.Should().Be(learnDelAppPrevAccDaysIL);
-        }
-
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_LearnDelHistDaysThisApp_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var firstSldOnProg = testFixture.SldLearnerData.First().Delivery.OnProgramme.First();
-
-        // note this is a simplified equation and will fail if the value is negative as the actual calc will return 0
-        var learnDelHistDaysThisApp = (testFixture.CollectionCalendarResponse.StartDate - firstSldOnProg.StartDate).Days;
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().BeNull();
-        }
-        else
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelHistDaysThisApp.Should().Be(learnDelHistDaysThisApp);
-        }
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_LearnDelHistProgEarnings_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario, 2021);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var earningEpisode = testFixture.GetEarningEpisode();
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().BeNull();
-        }
-        else
-        {
-            var sum = earningEpisode.Instalments.Sum(i => i.Amount);
-            learningDelivery.LearningDeliveryValues.LearnDelHistProgEarnings.Should().Be(sum);
-        }
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
     public async Task Then_LearnDelInitialFundLineType_IsCorrect(TestScenario scenario)
     {
         // Arrange / Act
@@ -388,49 +253,6 @@ public class LearningDeliveryValues
         else
         {
             learningDelivery.LearningDeliveryValues.LearnDelMathEng.Should().BeFalse();
-        }
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_PlannedNumOnProgInstalm_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var learning = testFixture.UnpagedLearningsResponse.Single();
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().BeNull();
-        }
-        else
-        {
-            learningDelivery.LearningDeliveryValues.PlannedNumOnProgInstalm.Should().Be(InstalmentHelper.GetNumberOfInstalmentsBetweenDates(learning.StartDate, learning.PlannedEndDate));
-        }
-    }
-
-    [TestCase(TestScenario.SimpleApprenticeship)]
-    [TestCase(TestScenario.ApprenticeshipWithPriceChange)]
-    [TestCase(TestScenario.ApprenticeshipWithEnglish)]
-    public async Task Then_PlannedTotalDaysIL_IsCorrect(TestScenario scenario)
-    {
-        // Arrange / Act
-        var testFixture = await CallFm36Handler(scenario);
-        var learningDelivery = testFixture.GetLearningDelivery(scenario);
-        var learning = testFixture.UnpagedLearningsResponse.Single();
-        var expectedPlannedTotalDays = 1 + (learning.PlannedEndDate - learning.StartDate).Days;
-
-        // Assert
-        if (scenario == TestScenario.ApprenticeshipWithEnglish)
-        {
-            learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().BeNull();
-        }
-        else
-        {
-            learningDelivery.LearningDeliveryValues.PlannedTotalDaysIL.Should().Be(expectedPlannedTotalDays);
         }
     }
 

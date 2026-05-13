@@ -220,10 +220,16 @@ internal static class JoinedDataModelsExtensions
                 additionalPayment.AdditionalPaymentType
                     is EarningsFM36Constants.AdditionalPaymentsTypes.EmployerIncentive
                     or EarningsFM36Constants.AdditionalPaymentsTypes.ProviderIncentive));
-
+        ldv.LearnDelAppAccDaysIL = null;
         ldv.LearnDelApplicDisadvAmount = EarningsFM36Constants.LearnDelApplicDisadvAmount;
         ldv.LearnDelApplicProv1618FrameworkUplift = EarningsFM36Constants.LearnDelApplicProv1618FrameworkUplift;
-        ldv.LearnDelAppPrevAccDaysIL = GetLearnDelAppPrevAccDaysIL(joinedLearnerData, joinedLearningDelivery, currentAcademicYear);
+        ldv.LearnDelApplicEmp1618Incentive = null;
+        ldv.LearnDelApplicProv1618Incentive = null;
+        ldv.LearnDelHistDaysThisApp = null; 
+        ldv.PlannedNumOnProgInstalm = null;
+        ldv.PlannedTotalDaysIL = null;
+        ldv.LearnDelHistProgEarnings = null;
+        ldv.LearnDelAppPrevAccDaysIL = null;
         ldv.LearnDelDisadAmount = EarningsFM36Constants.LearnDelDisadAmount;
         ldv.LearnDelEligDisadvPayment = EarningsFM36Constants.LearnDelEligDisadvPayment;
         ldv.LearnDelEmpIdFirstAdditionalPaymentThreshold = EarningsFM36Constants.LearnDelEmpIdFirstAdditionalPaymentThreshold;
@@ -251,49 +257,14 @@ internal static class JoinedDataModelsExtensions
         {
             // English and Maths
             ldv.LearnDelMathEng = true;
-            ldv.LearnDelApplicEmp1618Incentive = null;
-            ldv.LearnDelApplicProv1618Incentive = null;
-            ldv.LearnDelAppAccDaysIL = null;
-            ldv.LearnDelHistDaysThisApp = null;
-            ldv.PlannedNumOnProgInstalm = null;
-            ldv.PlannedTotalDaysIL = null;
-            ldv.LearnDelHistProgEarnings = null;
         }
         else
         {
             // On Programme
             ldv.LearnDelMathEng = false;
-            ldv.LearnDelApplicEmp1618Incentive = joinedLearningDelivery.GetIncentivePayment("EmployerIncentive");
-            ldv.LearnDelApplicProv1618Incentive = joinedLearningDelivery.GetIncentivePayment("ProviderIncentive");
-            ldv.LearnDelAppAccDaysIL = GetLearnDelAppAccDaysIL(joinedLearnerData, joinedLearningDelivery, currentAcademicYear);
-            ldv.LearnDelHistDaysThisApp = GetLearnDelHistDaysThisApp(currentAcademicYear, joinedLearningDelivery);
-            ldv.PlannedNumOnProgInstalm = joinedLearningDelivery.StartDate.GetNumberOfIncludedCensusDatesUntil(joinedLearningDelivery.ExpectedEndDate);
-            ldv.PlannedTotalDaysIL = joinedLearningDelivery.StartDate.GetNumberOfDaysUntil(joinedLearningDelivery.ExpectedEndDate);
-            ldv.LearnDelHistProgEarnings = GetLearnDelHistProgEarnings(joinedLearnerData, currentAcademicYear);
         }
 
         return ldv;
-    }
-
-    private static decimal? GetIncentivePayment(this JoinedLearningDelivery joinedLearningDelivery, string incentiveType)
-    {
-        return joinedLearningDelivery.AdditionalPayments.Where(x => x.AdditionalPaymentType == incentiveType).Sum(x => x.Amount);
-    }
-
-    /// <summary>
-    /// Returns Days the learning delivery has been active in the current academic year plus previous academic years
-    /// </summary>
-    private static int? GetLearnDelAppAccDaysIL(JoinedLearnerData joinedLearnerData, JoinedLearningDelivery joinedLearningDelivery, GetAcademicYearsResponse currentAcademicYear)
-    {
-        var programAim = joinedLearnerData.ProgramAims[joinedLearningDelivery.LearnAimRef];
-        var programAimEndDate = programAim.Max(x => x.ExpectedEndDate);
-        var programAimStartDate = programAim.Min(x => x.StartDate);
-
-        var endDate = programAimEndDate < currentAcademicYear.EndDate
-            ? programAimEndDate
-            : currentAcademicYear.EndDate;
-
-        return programAimStartDate.GetNumberOfDaysUntil(endDate);
     }
 
     /// <summary>
@@ -302,20 +273,6 @@ internal static class JoinedDataModelsExtensions
     private static DateTime? GetIncentiveThresholdDate(JoinedLearningDelivery joinedLearningDelivery, DateTime? additionalPaymentDate)
     {
         return additionalPaymentDate >= joinedLearningDelivery.StartDate && additionalPaymentDate <= joinedLearningDelivery.ExpectedEndDate ? additionalPaymentDate : null;
-    }
-
-    /// <summary>
-    /// Returns Days the learning delivery has been active in the previous academic years
-    /// </summary>
-    private static int? GetLearnDelHistDaysThisApp(GetAcademicYearsResponse currentAcademicYear, JoinedLearningDelivery joinedLearningDelivery)
-    {
-        var start = joinedLearningDelivery.StartDate;
-        var end = currentAcademicYear.StartDate.AddDays(-1);
-
-        if (start > end)
-            return 0;
-
-        return (end - start).Days + 1; // inclusive
     }
 
     internal static List<LearningDeliveryPeriodisedValues> GetLearningDeliveryPeriodisedValues(
@@ -475,47 +432,6 @@ internal static class JoinedDataModelsExtensions
                 && joinedLearnerData.Episodes
                         .SelectMany(x => x.Instalments)
                         .Any(x => x.AcademicYear == short.Parse(currentAcademicYear.AcademicYear) && x.DeliveryPeriod == collectionPeriod) ? 1 : 0;
-    }
-
-    private static int? GetLearnDelAppPrevAccDaysIL(
-        JoinedLearnerData joinedLearnerData,
-        JoinedLearningDelivery joinedLearningDelivery,
-        GetAcademicYearsResponse currentAcademicYear)
-    {
-        if(joinedLearningDelivery.LearningDeliveryType == LearningDeliveryType.EnglishAndMaths)
-        {
-            return null; // this is only required for onProgramme aim, and should be null for English and Maths aims
-        }
-
-        var programAim = joinedLearnerData.ProgramAims[joinedLearningDelivery.LearnAimRef];
-        var programAimEndDate = programAim.Max(x => x.ExpectedEndDate);
-        var programAimStartDate = programAim.Min(x => x.StartDate);
-
-
-        var endDate = programAimEndDate < currentAcademicYear.EndDate
-                        ? programAimEndDate
-                        : currentAcademicYear.EndDate;
-
-        return programAimStartDate.GetNumberOfDaysUntil(endDate);
-    }
-
-    private static decimal GetLearnDelHistProgEarnings(JoinedLearnerData joinedLearnerData, GetAcademicYearsResponse currentAcademicYear)
-    {
-        //  Currently this will be for only this provider as the api request is for a single provider, but this may need to be expanded in the future
-        var previousYearEarnings = joinedLearnerData?
-            .Episodes
-            .SelectMany(x => x.Instalments)
-            .Where(x => x.AcademicYear == currentAcademicYear.AcademicYear.GetLastYear())
-            .Sum(x => x.Amount);
-
-        var currentYearEarnings = joinedLearnerData?
-            .Episodes
-            .SelectMany(x => x.Instalments)
-            .Where(x => x.AcademicYear == currentAcademicYear.GetShortAcademicYear())
-            .Sum(x => x.Amount);
-
-        return previousYearEarnings.GetValueOrDefault() + currentYearEarnings.GetValueOrDefault();
-
     }
 
     private static JoinedPriceEpisode? GetNextPriceEpisode(this JoinedLearnerData joinedLearnerData, JoinedPriceEpisode currentPriceEpisode)
