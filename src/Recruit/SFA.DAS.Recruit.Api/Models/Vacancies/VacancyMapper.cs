@@ -143,6 +143,7 @@ public class VacancyMapper()
             TransferInfo = result.TransferInfo,
             VacancyReference = result.VacancyReference,
             Wage = result.Wage,
+            SubmittedByUserId = result.SubmittedByUserId
         };
     }
 }
