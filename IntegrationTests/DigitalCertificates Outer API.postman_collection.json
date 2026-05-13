@@ -1,9 +1,9 @@
 {
   "info": {
-    "_postman_id": "135a5494-da4b-4a11-af6c-df10eb183565",
+    "_postman_id": "b3562a98-3dcb-4a05-85d5-c3b0c7f3fad5",
     "name": "DigitalCertificates Outer API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "1033522"
+    "_exporter_id": "21174429"
   },
   "item": [
     {
@@ -72,6 +72,79 @@
             "certificates",
             "{{FrameworkLearnerId}}",
             "framework"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetLocations",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/Locations?query=NG85AN",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "Locations"
+          ],
+          "query": [
+            {
+              "key": "query",
+              "value": "NG85AN"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreatePrintRequest",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"certificateId\":  \"{{StandardCertificateId}}\",\r\n  \"address\": {\r\n    \"contactName\": \"Smith\",\r\n    \"contactOrganisation\": \"DFE\",\r\n    \"contactAddLine1\": \"contactAddLine1\",\r\n    \"contactAddLine2\": \"contactAddLine2\",\r\n    \"contactAddLine3\": \"contactAddLine3\",\r\n    \"contactAddLine4\": \"contactAddLine4\",\r\n    \"contactPostCode\": \"NG85AN\"\r\n  },\r\n  \"email\": {\r\n    \"emailAddress\": \"smith@gmail.com\",\r\n    \"userName\": \"smith\",\r\n    \"linkDomain\": \"string\",\r\n    \"templateId\": \"string\"\r\n  }\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/certificates/{{StandardCertificateId}}/printrequest",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "certificates",
+            "{{StandardCertificateId}}",
+            "printrequest"
           ]
         }
       },
@@ -270,6 +343,105 @@
       "response": []
     },
     {
+      "name": "CreateUserAction",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"actionType\": \"Reprint\",\r\n  \"familyName\": \"Smith\",\r\n  \"givenNames\": \"Alexa\",\r\n  \"certificateId\":  \"{{StandardCertificateId}}\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Accountancy or taxation professional\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/actions",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "{{UserId}}",
+            "actions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateUserAuthorise",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": 2697749755\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/authorise",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "{{UserId}}",
+            "authorise"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateUserMatch",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": 2697749755,\r\n  \"familyName\": \"Smith\",\r\n  \"dateOfBirth\": \"1974-03-03\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseCode\": \"66\",\r\n  \"courseName\": \"Senior housing and property management\",\r\n  \"courseLevel\": \"4\",\r\n  \"yearAwarded\": 2025,\r\n  \"providerName\": \"PROFOUND SERVICES LIMITED\",\r\n  \"ukprn\": 90010528,\r\n  \"isMatched\": false,\r\n  \"isFailed\": false\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/match",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "{{UserId}}",
+            "match"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "GetSharingById",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
@@ -449,6 +621,42 @@
       "response": []
     },
     {
+      "name": "GetUserActions",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/actions",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "{{UserId}}",
+            "actions"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
       "name": "GetCertificates",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
@@ -479,6 +687,42 @@
             "users",
             "{{UserId}}",
             "certificates"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetCertificatesMatch",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://{{Environment}}-apim-digc-api.apprenticeships.education.gov.uk/users/{{UserId}}/match",
+          "protocol": "https",
+          "host": [
+            "{{Environment}}-apim-digc-api",
+            "apprenticeships",
+            "education",
+            "gov",
+            "uk"
+          ],
+          "path": [
+            "users",
+            "{{UserId}}",
+            "match"
           ]
         }
       },
