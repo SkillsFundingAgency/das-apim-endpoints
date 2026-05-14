@@ -9,7 +9,7 @@ namespace SFA.DAS.ApprenticeCommitments.Apis.ApprenticeAccountsApi
 {
     public class UpdateApprenticeValidator :AbstractValidator<Apprentice>
     {
-        private static readonly Regex ValidNameRegex = new Regex(@"^[a-zA-Z\s\-']+$", RegexOptions.Compiled);
+        private static readonly Regex ValidNameRegex = new Regex(@"^[a-zA-Z\s\-']+$", RegexOptions.Compiled, TimeSpan.FromMicroseconds(500));
 
         public bool IsValidPatchOperation(Operation<Apprentice> operation)
         {
