@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using MediatR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
@@ -9,7 +8,6 @@ using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.EmployerAan.Api.HealthCheck;
 using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
-using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
 using SFA.DAS.EmployerAan.Configuration;
 using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.Apim.Shared.AppStart;
