@@ -1,9 +1,11 @@
-﻿using FluentAssertions;
-using FluentValidation.TestHelper;
+﻿using System;
+using System.Linq;
+using System.Text.Json;
+using FluentAssertions;
+using FluentValidation;
+using FluentValidation.Results;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
-using System;
-using System.Text.Json;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Validators
 {
@@ -27,9 +29,9 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Validators
             ]
             """);
 
-            var result = _validator.TestValidate(command);
+            var result = _validator.Validate(command);
 
-            result.ShouldNotHaveAnyValidationErrors();
+            result.IsValid.Should().BeTrue(result.ToString());
         }
 
         [Test]
@@ -39,10 +41,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Validators
             { "op": "replace", "path": "/email", "value": "new.email@example.com" }
             """);
 
-            var result = _validator.TestValidate(command);
+            var result = _validator.Validate(command);
 
-            result.ShouldHaveValidationErrorFor(x => x.Patch)
-                .WithErrorMessage("Patch must be an array of operations.");
+            Assert.That(result.Errors, Has.Some.Matches<ValidationFailure>(
+                e => e.ErrorMessage == "Patch must be an array of operations."));
         }
 
         [Test]
@@ -54,10 +56,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Validators
             ]
             """);
 
-            var result = _validator.TestValidate(command);
+            var result = _validator.Validate(command);
 
-            result.ShouldHaveValidationErrorFor(x => x.Patch)
-                .WithErrorMessage("Operation 'add' is not allowed.");
+            Assert.That(result.Errors, Has.Some.Matches<ValidationFailure>(
+                e => e.ErrorMessage == "Operation 'add' is not allowed."));
         }
 
         [Test]
@@ -69,10 +71,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Validators
             ]
             """);
 
-            var result = _validator.TestValidate(command);
+            var result = _validator.Validate(command);
 
-            result.ShouldHaveValidationErrorFor(x => x.Patch)
-                .WithErrorMessage("Patch path '/emailAddress' is not allowed.");
+            Assert.That(result.Errors, Has.Some.Matches<ValidationFailure>(
+                e => e.ErrorMessage == "Patch path '/emailAddress' is not allowed."));
         }
 
         [Test]
@@ -80,14 +82,14 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Validators
         {
             var command = CreateCommand("""
             [
-              { "op": "replace", "path": "/email", "value": "not-an-email" }
+              { "op": "replace", "path": "/email", "value": "not<-an->email" }
             ]
             """);
 
-            var result = _validator.TestValidate(command);
+            var result = _validator.Validate(command);
 
-            result.ShouldHaveValidationErrorFor(x => x.Patch)
-                .WithErrorMessage("/email must be a valid email address.");
+            Assert.That(result.Errors, Has.Some.Matches<ValidationFailure>(
+                e => e.ErrorMessage == "/email must be a valid email address."));
         }
 
         private static ApprenticePatchCommand CreateCommand(string patchJson)
