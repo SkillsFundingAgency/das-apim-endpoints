@@ -324,13 +324,13 @@ namespace SFA.DAS.AODP.Api.Controllers.Qualification
                 result.ErrorMessage = "Take param is invalid.";
             }
 
-            if (processStatusFilter.Any(id => id == Guid.Empty) == true)
+            if (processStatusFilter?.Any(id => id == Guid.Empty) == true)
             {
                 result.IsValid = false;
                 result.ErrorMessage = "Process status filter contains invalid values.";
             }
 
-            if (ageGroups.Any(a => !Enum.IsDefined(typeof(AgeGroup), a)) == true)
+            if (ageGroups?.Any(a => !Enum.IsDefined(typeof(AgeGroup), a)) == true)
             {
                 result.IsValid = false;
                 result.ErrorMessage = "Age groups contain invalid values.";
