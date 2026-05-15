@@ -124,7 +124,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"certificateId\":  \"{{StandardCertificateId}}\",\r\n  \"address\": {\r\n    \"contactName\": \"Smith\",\r\n    \"contactOrganisation\": \"DFE\",\r\n    \"contactAddLine1\": \"contactAddLine1\",\r\n    \"contactAddLine2\": \"contactAddLine2\",\r\n    \"contactAddLine3\": \"contactAddLine3\",\r\n    \"contactAddLine4\": \"contactAddLine4\",\r\n    \"contactPostCode\": \"NG85AN\"\r\n  },\r\n  \"email\": {\r\n    \"emailAddress\": \"smith@gmail.com\",\r\n    \"userName\": \"smith\",\r\n    \"linkDomain\": \"string\",\r\n    \"templateId\": \"string\"\r\n  }\r\n}",
+          "raw": "{\r\n  \"certificateId\":  \"{{StandardCertificateId}}\",\r\n  \"address\": {\r\n    \"contactName\": \"Smith\",\r\n    \"contactOrganisation\": \"DFE\",\r\n    \"contactAddLine1\": \"contactAddLine1\",\r\n    \"contactAddLine2\": \"contactAddLine2\",\r\n    \"contactAddLine3\": \"contactAddLine3\",\r\n    \"contactAddLine4\": \"contactAddLine4\",\r\n    \"contactPostCode\": \"NG85AN\"\r\n  },\r\n  \"email\": {\r\n    \"emailAddress\": \"smith@gmail.com\",\r\n    \"userName\": \"smith\",\r\n    \"linkDomain\": \"string\",\r\n    \"templateId\": \"220e31f1-ead9-4ceb-bf6f-942b1be5df41\"\r\n  }\r\n}",
           "options": {
             "raw": {
               "language": "json"
