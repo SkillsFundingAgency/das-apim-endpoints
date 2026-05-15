@@ -67,7 +67,7 @@ public class GetSchoolsQueryHandlerTests
         GetSchoolsQuery query)
     {
         // Arrange
-        var apiResponse = new ApiResponse<EducationalOrganisationResponse>(null, HttpStatusCode.NotFound, string.Empty);
+        var apiResponse = new ApiResponse<EducationalOrganisationResponse>(default!, HttpStatusCode.NotFound, string.Empty);
 
         apiClient
             .Setup(x => x.GetWithResponseCode<EducationalOrganisationResponse>(
