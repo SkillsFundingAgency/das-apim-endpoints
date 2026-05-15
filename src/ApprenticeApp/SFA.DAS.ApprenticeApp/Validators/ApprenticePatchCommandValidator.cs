@@ -17,7 +17,7 @@ public class ApprenticePatchCommandValidator : AbstractValidator<ApprenticePatch
         "/termsOfUseAccepted"
     };
 
-    private static readonly Regex NameRegex = new(@"^[\p{L}\p{M} '\-]+$", RegexOptions.Compiled);
+    private static readonly Regex NameRegex = new(@"^[\p{L}\p{M} '\-]+$", RegexOptions.Compiled, TimeSpan.FromMicroseconds(500));
 
     public ApprenticePatchCommandValidator()
     {
