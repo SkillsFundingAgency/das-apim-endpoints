@@ -5,6 +5,7 @@ using SFA.DAS.ApprenticeApp.InnerApi.ApprenticeAccounts.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,6 +27,7 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts
             _validator = validator;
         }
 
+        [ExcludeFromCodeCoverage]
         public async Task<Unit> Handle(ApprenticePatchCommand command, CancellationToken cancellationToken)
         {
             _logger.LogInformation("[ApprenticeUpdateCommandHandler] command {@command}", command);
