@@ -2,10 +2,12 @@
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+[ExcludeFromCodeCoverage]
 public class ApprenticePatchCommandValidator : AbstractValidator<ApprenticePatchCommand>
 {
     private static readonly HashSet<string> AllowedPaths = new(StringComparer.OrdinalIgnoreCase)
