@@ -6,6 +6,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Validators;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Validators
 {
