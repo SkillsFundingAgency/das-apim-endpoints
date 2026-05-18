@@ -1,9 +1,9 @@
 {
   "info": {
-    "_postman_id": "b3562a98-3dcb-4a05-85d5-c3b0c7f3fad5",
+    "_postman_id": "8f55dd1a-612b-4ae4-bc3a-ec5ad7188d28",
     "name": "DigitalCertificates Outer API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "21174429"
+    "_exporter_id": "1033522"
   },
   "item": [
     {
@@ -157,7 +157,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"certificateId\": \"{{StandardCertificateId}}\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Software tester\"\r\n}",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"certificateId\": \"{{StandardCertificateId}}\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Network engineer\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -317,7 +317,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"govUkIdentifier\": \"{{GovUkIdentifier}}\",\r\n  \"emailAddress\": \"abc@education.gov.uk\",\r\n  \"phoneNumber\": \"07880360143\",\r\n  \"names\": [\r\n    {\r\n      \"validSince\": \"2026-04-14T10:16:40.331Z\",\r\n      \"validUntil\": \"2026-04-14T10:16:40.331Z\",\r\n      \"familyName\": \"John\",\r\n      \"givenNames\": \"Smith\"\r\n    }\r\n  ],\r\n  \"dateOfBirth\": \"2026-04-14T10:16:40.331Z\"\r\n}",
+          "raw": "{\r\n  \"govUkIdentifier\": \"{{GovUkIdentifier}}\",\r\n  \"emailAddress\": \"digcui.testing+john+saggan@gmail.com\",\r\n  \"phoneNumber\": \"07890123456\",\r\n  \"names\": [\r\n    {\r\n      \"validSince\": null,\r\n      \"validUntil\": null,\r\n      \"familyName\": \"Saggan\",\r\n      \"givenNames\": \"John\"\r\n    }\r\n  ],\r\n  \"dateOfBirth\": \"1938-10-14T00:00:00.000Z\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -349,7 +349,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"actionType\": \"Reprint\",\r\n  \"familyName\": \"Smith\",\r\n  \"givenNames\": \"Alexa\",\r\n  \"certificateId\":  \"{{StandardCertificateId}}\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Accountancy or taxation professional\"\r\n}",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"actionType\": \"Reprint\",\r\n  \"familyName\": \"Saggan\",\r\n  \"givenNames\": \"John\",\r\n  \"certificateId\":  \"{{StandardCertificateId}}\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseName\": \"Network engineer\"\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -382,7 +382,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": 2697749755\r\n}",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": {{Uln}}\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -415,7 +415,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": 2697749755,\r\n  \"familyName\": \"Smith\",\r\n  \"dateOfBirth\": \"1974-03-03\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseCode\": \"66\",\r\n  \"courseName\": \"Senior housing and property management\",\r\n  \"courseLevel\": \"4\",\r\n  \"yearAwarded\": 2025,\r\n  \"providerName\": \"PROFOUND SERVICES LIMITED\",\r\n  \"ukprn\": 90010528,\r\n  \"isMatched\": false,\r\n  \"isFailed\": false\r\n}",
+          "raw": "{\r\n  \"userId\": \"{{UserId}}\",\r\n  \"uln\": {{Uln}},\r\n  \"familyName\": \"Saggan\",\r\n  \"dateOfBirth\": \"1974-10-14\",\r\n  \"certificateType\": \"Standard\",\r\n  \"courseCode\": \"66\",\r\n  \"courseName\": \"Network engineer\",\r\n  \"courseLevel\": \"4\",\r\n  \"yearAwarded\": 2022,\r\n  \"providerName\": \"SKILLNET LIMITED\",\r\n  \"ukprn\": 1234123412,\r\n  \"isMatched\": false,\r\n  \"isFailed\": false\r\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -812,38 +812,43 @@
     },
     {
       "key": "UserId",
-      "value": "7501D794-8A92-4082-8638-08DE9C5E1CAE"
+      "value": "4639ACF6-F4BF-4205-6614-08DEAF324F80"
     },
     {
       "key": "GovUkIdentifier",
-      "value": "2EE4AB72-11B3-4B6F-BBC7-A5BE968652FB"
+      "value": "urn:fdc:gov.uk:2022:ruFjQz8uSpWAo2U0gxNszmm7zsRogQlvg5umbuWpYHA"
     },
     {
       "key": "StandardCertificateId",
-      "value": "127FED64-57D9-4279-AE59-69532DA4B1AF"
+      "value": "D61A7AD4-261E-436E-8E6D-12A822B0DC38"
     },
     {
       "key": "FrameworkLearnerId",
-      "value": "F6971FFE-85FC-413E-B365-017706D71AE3"
+      "value": "9EFF940D-931B-4CA3-ACF0-CC508D3D1218"
     },
     {
       "key": "SharingId",
-      "value": "de70ce4c-0306-42a4-c9a5-08de9c6eee18",
+      "value": "",
       "description": "Obtained from CreateSharing sharingId"
     },
     {
       "key": "SharingLinkCode",
-      "value": "d8097c71-3823-4878-9955-6e59f2fdca8d",
+      "value": "",
       "description": "Obtained from GetSharingById linkCode"
     },
     {
       "key": "SharingEmailId",
-      "value": "f9ec450c-5e41-480a-0c7c-08de9c6efdb3",
+      "value": "",
       "description": "Obtained from CreateSharingEmail id"
     },
     {
       "key": "DeletedSharingId",
-      "value": "7766BE5D-260A-4A5A-CF67-08DE9C6D078D"
+      "value": "",
+      "description": "Obtained from CreateSharing sharingId"
+    },
+    {
+      "key": "Uln",
+      "value": "8756125698"
     }
   ]
 }
