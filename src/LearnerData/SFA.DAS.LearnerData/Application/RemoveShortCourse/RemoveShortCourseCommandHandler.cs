@@ -45,7 +45,7 @@ public class RemoveShortCourseCommandHandler(
             return;
         }
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey, learningResponse.Body.RemovedEpisodeKey);
 
         var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
