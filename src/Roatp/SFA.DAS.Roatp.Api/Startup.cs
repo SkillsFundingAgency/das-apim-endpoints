@@ -14,7 +14,6 @@ using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Roatp.Api.AppStart;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Application.Charities.Queries;
-using SFA.DAS.Roatp.Application.Providers.Commands;
 
 namespace SFA.DAS.Roatp.Api;
 
