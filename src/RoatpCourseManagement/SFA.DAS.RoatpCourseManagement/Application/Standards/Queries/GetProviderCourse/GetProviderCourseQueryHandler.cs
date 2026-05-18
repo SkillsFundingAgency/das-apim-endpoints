@@ -65,7 +65,7 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
             IfateReferenceNumber = standard.IfateReferenceNumber,
             CourseName = standard.Title,
             Level = standard.Level,
-            ApprenticeshipType = standard.ApprenticeshipType,
+            LearningType = standard.LearningType,
             RegulatorName = standard.ApprovalBody,
             Sector = standard.Route,
             StandardInfoUrl = course.StandardInfoUrl,
