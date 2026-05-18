@@ -10,7 +10,6 @@ using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.AparRegister.Application.Queries.ProviderRegister;
 
