@@ -291,7 +291,7 @@ public class JoinedLearningDelivery
     public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
     {
         var startDate = onProgramme.StartDate;
-        var endDate = onProgramme.PauseDate ?? onProgramme.ExpectedEndDate;
+        var endDate = onProgramme.PauseDate ?? onProgramme.CompletionDate ?? onProgramme.ExpectedEndDate;
 
         AimSequenceNumber = onProgramme.AimSequenceNumber;
         LearnAimRef = onProgramme.LearnAimRef;
@@ -316,7 +316,7 @@ public class JoinedLearningDelivery
     public JoinedLearningDelivery(MathsAndEnglish englishAndMath, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
     {
         var startDate = englishAndMath.StartDate;
-        var endDate = englishAndMath.PauseDate ?? englishAndMath.EndDate;
+        var endDate = englishAndMath.PauseDate ?? englishAndMath.CompletionDate ?? englishAndMath.EndDate;
 
         AimSequenceNumber = englishAndMath.AimSequenceNumber ?? 0;
         LearnAimRef = englishAndMath.LearnAimRef;
