@@ -4,7 +4,7 @@
 
 <img src="https://avatars.githubusercontent.com/u/9841374?s=200&v=4" align="right" alt="UK Government logo">
 
-https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_apis/build/status%2Fdas-apim-endpoints-RoatpProviderModeration?repoName=SkillsFundingAgency%2Fdas-apim-endpoints&branchName=refs%2Fpull%2F1335%2Fmerge)](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_build/latest?definitionId=2980&repoName=SkillsFundingAgency%2Fdas-apim-endpoints&branchName=refs%2Fpull%2F1335%2Fmerge)
+[![Build Status](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_apis/build/status%2Fdas-apim-endpoints-RoatpProviderModeration?repoName=SkillsFundingAgency%2Fdas-apim-endpoints&branchName=master)](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_build/latest?definitionId=2980&repoName=SkillsFundingAgency%2Fdas-apim-endpoints&branchName=master)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SkillsFundingAgency_das-apim-endpoints_RoatpProviderModeration&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=SkillsFundingAgency_das-apim-endpoints_RoatpProviderModeration)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?longCache=true&style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
 
@@ -12,7 +12,9 @@ https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_apis/bui
 
 ### Pre-Requisites
 * A clone of this repository
-* A storage emulator like Azurite
+* Visual Studio or similar IDE
+* .NET 10 
+* A storage emulator (for example Azurite)
 
 ### Dependencies
 * Roatp V2 Api: https://github.com/SkillsFundingAgency/das-roatp-api
@@ -40,7 +42,7 @@ In the SFA.DAS.Roatp.API project, if not exist already, add appSettings.Developm
 ```
 
 ## Technologies
-* .Net 8.0
+* .Net 10.0
 * Azure Table Storage
 * NUnit
 * Moq
