@@ -73,7 +73,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearningKey}");
             }
             var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(currentOnProgramme);
-            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(command.LearningKey, earningBody);
+            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(command.LearningKey, learningResponse.Body.UpdatedEpisodeKey, earningBody);
             var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
             earningsResponse = response.Body;
         }

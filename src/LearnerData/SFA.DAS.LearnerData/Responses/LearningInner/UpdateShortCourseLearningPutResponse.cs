@@ -2,6 +2,7 @@
 
 public class UpdateShortCourseLearningPutResponse : IShortCourseLearningPaymentEventBuildContext
 {
+    public Guid UpdatedEpisodeKey { get; set; }
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
     public string[] Changes { get; set; } = [];
