@@ -9,13 +9,10 @@ using SFA.DAS.LearnerDataJobs.InnerApi;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.LearnerDataJobs.UnitTests.Application.Commands;
@@ -28,10 +25,11 @@ public class AddLearnerDataCommandHandlerTests
         CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
         [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
-
         courseResponse.LearningType = "Apprenticeship";
+        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("true");
 
         var expectedUrl =
             $"providers/{command.LearnerData.UKPRN}/learners/{command.LearnerData.ULN}";
@@ -53,9 +51,20 @@ public class AddLearnerDataCommandHandlerTests
     [Test, MoqAutoData]
     public async Task Then_AddingANewLearner_Returns_Non200_Range_HttpStatusCode(
         AddLearnerDataCommand command,
+        CourseLookupDetailResponse courseResponse,
         [Frozen] Mock<IInternalApiClient<LearnerDataInnerApiConfiguration>> client,
+        [Frozen] Mock<IInternalApiClient<CoursesApiConfiguration>> courseClient,
+        [Frozen] Mock<IConfiguration> configuration,
         [Greedy] AddLearnerDataCommandHandler handler)
     {
+        courseResponse.LearningType = "Apprenticeship";
+        configuration.Setup(x => x["UseNewCoursesApi"]).Returns("true");
+
+        courseClient.Setup(x =>
+        x.Get<CourseLookupDetailResponse>(
+                It.Is<GetCourseLookupDetailsByIdRequest>(p => p.Id == command.LearnerData.LarsCode)))
+            .ReturnsAsync(courseResponse);
+
         client.Setup(x =>
                 x.PutWithResponseCode<NullResponse>(It.IsAny<PutLearnerDataRequest>()))
             .ReturnsAsync(new ApiResponse<NullResponse>(null, HttpStatusCode.BadRequest, "Error"));

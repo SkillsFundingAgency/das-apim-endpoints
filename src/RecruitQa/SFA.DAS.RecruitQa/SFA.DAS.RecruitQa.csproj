@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <Folder Include="Application\VacancyReviews\Queries\" />
+    <Folder Include="Domain\Vacancies\" />
   </ItemGroup>
 
   <ItemGroup>

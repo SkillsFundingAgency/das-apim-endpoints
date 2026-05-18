@@ -34,13 +34,16 @@ public class GetProviderRelationshipQueryHandler(
 
         await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
 
+        var employers = await employerDetailsTask;
+        var coursesForProvider = await coursesForProviderTask;
+
         return new GetProviderRelationshipQueryResponse()
         {
             Ukprn = request.Ukprn,
             Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
             Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
-            Employers = employerDetailsTask.Result ?? [],
-            SupportedCourses = coursesForProviderTask.Result?.CourseTypes ?? []
+            Employers = employers ?? [],
+            SupportedCourses = coursesForProvider?.CourseTypes ?? []
         };
     }
 
