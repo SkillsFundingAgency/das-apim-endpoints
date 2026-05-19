@@ -38,7 +38,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         r.Data.CourseCode == command.CourseCode &&
                         r.Data.CourseName == command.CourseName &&
                         r.Data.CourseLevel == command.CourseLevel &&
-                        r.Data.DateAwarded == command.DateAwarded &&
+                        r.Data.YearAwarded == command.YearAwarded &&
                         r.Data.ProviderName == command.ProviderName &&
                         r.Data.Ukprn == command.Ukprn &&
                         r.Data.IsMatched == command.IsMatched &&
@@ -62,7 +62,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Commands.CreateUserM
                         r.Data.CourseCode == command.CourseCode &&
                         r.Data.CourseName == command.CourseName &&
                         r.Data.CourseLevel == command.CourseLevel &&
-                        r.Data.DateAwarded == command.DateAwarded &&
+                        r.Data.YearAwarded == command.YearAwarded &&
                         r.Data.ProviderName == command.ProviderName &&
                         r.Data.Ukprn == command.Ukprn &&
                         r.Data.IsMatched == command.IsMatched &&

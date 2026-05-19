@@ -34,7 +34,7 @@ namespace SFA.DAS.DigitalCertificates.Api.UnitTests.Controllers.Users
                     c.CourseCode == command.CourseCode &&
                     c.CourseName == command.CourseName &&
                     c.CourseLevel == command.CourseLevel &&
-                    c.DateAwarded == command.DateAwarded &&
+                    c.YearAwarded == command.YearAwarded &&
                     c.ProviderName == command.ProviderName &&
                     c.Ukprn == command.Ukprn &&
                     c.IsMatched == command.IsMatched &&

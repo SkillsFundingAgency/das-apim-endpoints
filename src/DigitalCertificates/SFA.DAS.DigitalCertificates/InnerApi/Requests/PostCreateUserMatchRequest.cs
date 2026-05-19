@@ -27,7 +27,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
         public string CourseCode { get; set; }
         public string CourseName { get; set; }
         public string CourseLevel { get; set; }
-        public int? DateAwarded { get; set; }
+        public int? YearAwarded { get; set; }
         public string ProviderName { get; set; }
         public int? Ukprn { get; set; }
         public bool IsMatched { get; set; }
@@ -45,7 +45,7 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
                 CourseCode = command.CourseCode,
                 CourseName = command.CourseName,
                 CourseLevel = command.CourseLevel,
-                DateAwarded = command.DateAwarded,
+                YearAwarded = command.YearAwarded,
                 ProviderName = command.ProviderName,
                 Ukprn = command.Ukprn,
                 IsMatched = command.IsMatched,
