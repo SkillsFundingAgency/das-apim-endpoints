@@ -1,7 +1,8 @@
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -12,14 +13,12 @@ using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Models.Roatp;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
+using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Security;
 using System.Threading;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
 
@@ -67,7 +66,7 @@ public class WhenHandlingCreateVacancyCommand
             .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
             .ReturnsAsync(getStandardsResponse);
 
-        var apiResponse = new Apim.Shared.Models.ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
+        var apiResponse = new ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
         mockRecruitApiClient
             .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
             .ReturnsAsync(apiResponse);
@@ -86,7 +85,7 @@ public class WhenHandlingCreateVacancyCommand
         result.VacancyReference.Should().Be(apiResponse.Body.VacancyReference.ToString());
 
         mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
-        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
+        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
     }
     [Test, MoqAutoData]
     public async Task Then_The_Command_Is_Handled_With_Account_Info_looked_Up_For_Employer_And_Api_Called_With_Response_And_Vacancy_Review_Not_Created_For_Sandbox(
@@ -126,7 +125,7 @@ public class WhenHandlingCreateVacancyCommand
             .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
             .ReturnsAsync(getStandardsResponse);
 
-        var apiResponse = new Apim.Shared.Models.ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
+        var apiResponse = new ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
         mockRecruitApiClient
             .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
             .ReturnsAsync(apiResponse);
@@ -184,7 +183,7 @@ public class WhenHandlingCreateVacancyCommand
             .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
             .ReturnsAsync(getStandardsResponse);
 
-        var apiResponse = new Apim.Shared.Models.ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
+        var apiResponse = new ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
         mockRecruitApiClient
             .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
             .ReturnsAsync(apiResponse);
@@ -220,7 +219,7 @@ public class WhenHandlingCreateVacancyCommand
             Func<Task> act = () => handler.Handle(command, CancellationToken.None);
 
             // Assert
-            await act.Should().ThrowAsync<SecurityException>();
+            await act.Should().ThrowAsync<HttpRequestContentException>();
             mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Never);
             mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
         }
@@ -344,6 +343,7 @@ public class WhenHandlingCreateVacancyCommand
             command.AccountIdentifier = new AccountIdentifier("Provider-ABC123-Product");
             command.PostVacancyRequest.OwnerType = OwnerType.Provider;
             command.PostVacancyRequest.ProgrammeId = ExpectedLarsCode.ToString();
+            command.IsSandbox = false;
 
             var matchingStandard = new GetStandardsListItem
             {
@@ -370,14 +370,14 @@ public class WhenHandlingCreateVacancyCommand
                 .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(new GetStandardsListResponse { Standards = [matchingStandard] });
 
-            var apiResponse = new Apim.Shared.Models.ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
+            var apiResponse = new ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient
                 .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
             mockRecruitApiClient
                 .Setup(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()))
-                .ReturnsAsync(new Apim.Shared.Models.ApiResponse<VacancyReview>(putVacancyReviewResponse, HttpStatusCode.OK, ""));
+                .ReturnsAsync(new ApiResponse<VacancyReview>(putVacancyReviewResponse, HttpStatusCode.OK, ""));
 
             // Act
             await handler.Handle(command, CancellationToken.None);
@@ -385,6 +385,7 @@ public class WhenHandlingCreateVacancyCommand
             // Assert
             command.PostVacancyRequest.Status.Should().Be(VacancyStatus.Review);
             mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
@@ -422,7 +423,7 @@ public class WhenHandlingCreateVacancyCommand
                 .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(new GetStandardsListResponse { Standards = [matchingStandard] });
 
-            var apiResponse = new Apim.Shared.Models.ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
+            var apiResponse = new ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient
                 .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
                 .ReturnsAsync(apiResponse);
@@ -433,6 +434,7 @@ public class WhenHandlingCreateVacancyCommand
             // Assert
             command.PostVacancyRequest.Status.Should().Be(VacancyStatus.Submitted);
             command.PostVacancyRequest.SubmittedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -469,7 +471,7 @@ public class WhenHandlingCreateVacancyCommand
                 .Setup(s => s.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse)))
                 .ReturnsAsync(new GetStandardsListResponse { Standards = [matchingStandard] });
 
-            var apiResponse = new Apim.Shared.Models.ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
+            var apiResponse = new ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
             mockRecruitApiClient
                 .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()))
                 .ReturnsAsync(apiResponse);
@@ -481,6 +483,7 @@ public class WhenHandlingCreateVacancyCommand
             command.PostVacancyRequest.Qualifications.Should().BeEmpty();
             command.PostVacancyRequest.Skills.Should().BeEmpty();
             command.PostVacancyRequest.ApprenticeshipType.Should().Be(ApprenticeshipTypes.Foundation);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
         }
     }
 }

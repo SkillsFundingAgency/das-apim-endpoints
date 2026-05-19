@@ -1,34 +1,37 @@
 using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.VacanciesManage.InnerApi.Requests;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using SFA.DAS.VacanciesManage.Services;
 using System;
 using System.Linq;
 using System.Net;
-using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
-using SFA.DAS.VacanciesManage.InnerApi.Requests;
+using EmployerNameOption = SFA.DAS.Recruit.Contracts.ApiResponses.EmployerNameOption;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
+using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
 using Operation = SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Operation;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using PutVacancyReviewRequest = SFA.DAS.Recruit.Contracts.ApiResponses.PutVacancyReviewRequest;
 using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
+using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 
 namespace SFA.DAS.VacanciesManage.Application.Recruit.Commands.CreateVacancy;
 
 public class CreateVacancyCommandHandler(
-    SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+    IRecruitApiClient recruitApiClient,
     IAccountLegalEntityPermissionService accountLegalEntityPermissionService,
     ICourseService courseService,
     ISlaService slaService,
@@ -39,128 +42,179 @@ public class CreateVacancyCommandHandler(
     public async Task<CreateVacancyCommandResponse> Handle(CreateVacancyCommand request, CancellationToken cancellationToken)
     {
         var dateTimeNow = DateTime.UtcNow;
-        var accountLegalEntity = await accountLegalEntityPermissionService.GetAccountLegalEntity(request.AccountIdentifier,
-            request.PostVacancyRequest.AccountLegalEntityPublicHashedId);
-
-        // if the account legal entity cannot be found or the account legal entity is not associated with the given Training Provider UKPRN, throw a security exception as the user should not have access to create a vacancy.
-        if (accountLegalEntity == null)
-        {
-            throw new SecurityException();
-        }
-        if (request.PostVacancyRequest.TrainingProvider.Ukprn is null)
-        {
-            throw new HttpRequestContentException("Training Provider UKPRN not valid", HttpStatusCode.NotFound);
-        }
+        var vacancy = request.PostVacancyRequest;
+        
+        ValidateUkprn(vacancy);
 
         //additional check to validate the given Training Provider UKPRN is valid.
-        var trainingProvider = await roatpCourseManagementApiClient.Get<GetProvidersListItem>(new GetProvidersRequest((int)request.PostVacancyRequest.TrainingProvider.Ukprn!));
-        if (trainingProvider == null)
-        {
-            throw new HttpRequestContentException("Training Provider UKPRN not valid", HttpStatusCode.NotFound);
-        }
+        await ValidatedTrainingProvider(vacancy);
 
-        // additional check to validate the given Training Provider is a Main or Employer Profile with Status not equal to "Not Currently Starting New Apprentices".
-        if (trainingProvider.ProviderTypeId  == (int)ProviderType.Supporting)
-        {
-            throw new HttpRequestContentException("UKPRN of a training provider must be registered to deliver apprenticeship training", HttpStatusCode.Forbidden);
-        }
+        var accountLegalEntity = await GetValidatedAccountLegalEntity(request);
 
-        request.PostVacancyRequest.LegalEntityName = accountLegalEntity.Name;
+        EnrichVacancy(vacancy, request, accountLegalEntity);
 
-        request.PostVacancyRequest.OwnerType = request.AccountIdentifier.AccountType == AccountType.Provider
-            ? OwnerType.Provider
-            : OwnerType.Employer;
+        var course = await GetCourse(vacancy.ProgrammeId, cancellationToken);
 
-        request.PostVacancyRequest.AccountId = accountLegalEntity.AccountId;
-        request.PostVacancyRequest.AccountLegalEntityId = accountLegalEntity.AccountLegalEntityId;
-        if (request.PostVacancyRequest.EmployerNameOption == EmployerNameOption.RegisteredName)
-        {
-            request.PostVacancyRequest.EmployerName = accountLegalEntity.Name;
-        }
-        var standards = await courseService.GetActiveStandards<GetStandardsListResponse>(nameof(GetStandardsListResponse));
+        ApplyCourseRules(vacancy, course);
+       
+        ValidateCourseStartDate(vacancy, course);
 
-        var course = standards.Standards.FirstOrDefault(c =>
-            c.LarsCode.ToString() == request.PostVacancyRequest.ProgrammeId);
+        var requiresEmployerApproval = await RequiresEmployerApproval(vacancy);
 
-        request.PostVacancyRequest.ApprenticeshipType = ApprenticeshipTypes.Standard;
+        ApplyVacancyStatus(vacancy, requiresEmployerApproval, dateTimeNow);
 
-        if (course is { ApprenticeshipType: LearningType.FoundationApprenticeship })
-        {
-            request.PostVacancyRequest.Qualifications = [];
-            request.PostVacancyRequest.Skills = [];
-            request.PostVacancyRequest.ApprenticeshipType = ApprenticeshipTypes.Foundation;
-        }
+        vacancy.Id = request.Id;
 
-        if (course != null && ((course.LastDateStarts != null && course.LastDateStarts < request.PostVacancyRequest.StartDate)
-                               || (course.EffectiveTo != null && course.EffectiveTo < request.PostVacancyRequest.StartDate)))
-        {
-            var dateToDisplay = course.LastDateStarts ?? course.EffectiveTo.Value;
-
-            var message = $"Start date must be on or before {dateToDisplay} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course";
-            throw new HttpRequestContentException(
-                $"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})",
-                HttpStatusCode.BadRequest,
-                message);
-        }
-
-        var requiresEmployerApproval = await CheckEmployerApprovalNeeded(request);
-
-        if (requiresEmployerApproval)
-        {
-            request.PostVacancyRequest.Status = VacancyStatus.Review;
-        }
-        else
-        {
-            request.PostVacancyRequest.Status = VacancyStatus.Submitted;
-            request.PostVacancyRequest.SubmittedDate = dateTimeNow;
-        }
-
-        request.PostVacancyRequest.Id = request.Id;
-
-        var result = await recruitApiClient.PostWithResponseCode<Vacancy>(new PostVacanciesApiRequest(request.PostVacancyRequest)
-        {
-            RuleSet = VacancyRuleSet.All,
-            ValidateOnly = request.IsSandbox,
-        });
+        var result = await CreateVacancy(vacancy, request.IsSandbox);
 
         HandleHttpResponseError(result);
 
-        if (!request.IsSandbox)
+        if (!request.IsSandbox && requiresEmployerApproval)
         {
-            if (result is not { StatusCode: HttpStatusCode.Created } || requiresEmployerApproval)
-                return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
-
-            var slaDeadline = await slaService.GetSlaDeadlineAsync(dateTimeNow);
-            var vacancyReview = new PutVacancyreviewsByIdApiRequest
-            {
-                Id = Guid.NewGuid(),
-                Data = new PutVacancyReviewRequest
-                {
-                    VacancyReference = result.Body.VacancyReference.ToString(),
-                    VacancyTitle = request.PostVacancyRequest.Title,
-                    CreatedDate = dateTimeNow,
-                    Status = ReviewStatus.New,
-                    VacancySnapshot = JsonSerializer.Serialize(request.PostVacancyRequest, new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true,
-                        Converters = { new JsonStringEnumConverter() }
-                    }),
-                    SubmittedByUserEmail = request.PostVacancyRequest?.Contact.Email,
-                    SubmissionCount = 1,
-                    SlaDeadLine = slaDeadline,
-                    UpdatedFieldIdentifiers = [],
-                    DismissedAutomatedQaOutcomeIndicators = [],
-                }
-            };
-
-            var reviewResponse = await recruitApiClient.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(vacancyReview);
-            reviewResponse.EnsureSuccessStatusCode();
+            await CreateVacancyReview(vacancy, result.Body.VacancyReference.ToString(), dateTimeNow);
         }
         
         return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
     }
 
-    private static void HandleHttpResponseError<T>(Apim.Shared.Models.ApiResponse<T> result)
+    private async Task CreateVacancyReview(PostVacancyRequest vacancy, string vacancyReference, DateTime createdDate)
+    {
+        var slaDeadline =
+            await slaService.GetSlaDeadlineAsync(createdDate);
+
+        var reviewRequest = new PutVacancyreviewsByIdApiRequest
+        {
+            Id = Guid.NewGuid(),
+            Data = new PutVacancyReviewRequest
+            {
+                VacancyReference = vacancyReference,
+                VacancyTitle = vacancy.Title,
+                CreatedDate = createdDate,
+                Status = ReviewStatus.New,
+                VacancySnapshot = JsonSerializer.Serialize(vacancy, options: new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true,
+                    Converters = { new JsonStringEnumConverter() }
+                }),
+                SubmittedByUserEmail = vacancy.Contact.Email,
+                SubmissionCount = 1,
+                SlaDeadLine = slaDeadline,
+                UpdatedFieldIdentifiers = [],
+                DismissedAutomatedQaOutcomeIndicators = []
+            }
+        };
+
+        var response = await recruitApiClient.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(reviewRequest);
+        response.EnsureSuccessStatusCode();
+    }
+
+    private static void ValidateUkprn(PostVacancyRequest vacancy)
+    {
+        if (vacancy.TrainingProvider.Ukprn is null)
+        {
+            throw new HttpRequestContentException("Training Provider UKPRN not valid", HttpStatusCode.NotFound);
+        }
+    }
+
+    private async Task<AccountLegalEntityItem> GetValidatedAccountLegalEntity(CreateVacancyCommand request)
+    {
+        var accountLegalEntity =
+            await accountLegalEntityPermissionService.GetAccountLegalEntity(
+                request.AccountIdentifier,
+                request.PostVacancyRequest.AccountLegalEntityPublicHashedId);
+
+        return accountLegalEntity ?? throw new UnauthorizedAccessException("Account legal entity not accessible.");
+    }
+
+    private async Task ValidatedTrainingProvider(PostVacancyRequest vacancy)
+    {
+        var provider =
+            await roatpCourseManagementApiClient.Get<GetProvidersListItem>(
+                new GetProvidersRequest((int)vacancy.TrainingProvider.Ukprn!));
+
+        if (provider is null)
+        {
+            throw new HttpRequestContentException("Training Provider UKPRN not valid", HttpStatusCode.NotFound);
+        }
+
+        if (provider.ProviderTypeId == (int)ProviderType.Supporting)
+        {
+            throw new HttpRequestContentException("UKPRN of a training provider must be registered to deliver apprenticeship training", HttpStatusCode.Forbidden);
+        }
+    }
+
+    private static void EnrichVacancy(PostVacancyRequest vacancy, CreateVacancyCommand request, AccountLegalEntityItem accountLegalEntity)
+    {
+        vacancy.LegalEntityName = accountLegalEntity.Name;
+
+        vacancy.OwnerType =
+            request.AccountIdentifier.AccountType == AccountType.Provider
+                ? OwnerType.Provider
+                : OwnerType.Employer;
+
+        vacancy.AccountId = accountLegalEntity.AccountId;
+        vacancy.AccountLegalEntityId = accountLegalEntity.AccountLegalEntityId;
+
+        if (vacancy.EmployerNameOption == EmployerNameOption.RegisteredName)
+        {
+            vacancy.EmployerName = accountLegalEntity.Name;
+        }
+    }
+
+    private async Task<GetStandardsListItem?> GetCourse(string programmeId, CancellationToken cancellationToken)
+    {
+        var standards =
+            await courseService.GetActiveStandards<GetStandardsListResponse>(
+                nameof(GetStandardsListResponse));
+
+        return standards.Standards.FirstOrDefault(x =>
+            x.LarsCode.ToString() == programmeId);
+    }
+
+    private static void ApplyCourseRules(PostVacancyRequest vacancy, GetStandardsListItem? course)
+    {
+        vacancy.ApprenticeshipType = ApprenticeshipTypes.Standard;
+
+        if (course is
+            {
+                ApprenticeshipType: LearningType.FoundationApprenticeship
+            })
+        {
+            vacancy.Qualifications = [];
+            vacancy.Skills = [];
+            vacancy.ApprenticeshipType = ApprenticeshipTypes.Foundation;
+        }
+    }
+
+    private static void ValidateCourseStartDate(PostVacancyRequest vacancy, GetStandardsListItem? course)
+    {
+        if (course is null)
+        {
+            return;
+        }
+
+        var exceedsLastDateStarts = course.LastDateStarts is not null &&
+                                    course.LastDateStarts < vacancy.StartDate;
+
+        var exceedsEffectiveTo = course.EffectiveTo is not null &&
+                                 course.EffectiveTo < vacancy.StartDate;
+
+        if (!exceedsLastDateStarts && !exceedsEffectiveTo)
+        {
+            return;
+        }
+
+        var lastAllowedDate =
+            course.LastDateStarts ?? course.EffectiveTo!.Value;
+
+        var message = $"Start date must be on or before {lastAllowedDate:d} as this is the last day for new starters for the training course you have selected. If you don't want to change the start date, you can change the training course";
+        throw new HttpRequestContentException(
+            $"Response status code does not indicate success: {(int)HttpStatusCode.BadRequest} ({HttpStatusCode.BadRequest})",
+            HttpStatusCode.BadRequest,
+            message);
+    }
+
+    private static void HandleHttpResponseError<T>(ApiResponse<T> result)
     {
         if ((int)result.StatusCode >= 200 && (int)result.StatusCode <= 299) return;
         if (result.StatusCode.Equals(HttpStatusCode.BadRequest))
@@ -172,22 +226,55 @@ public class CreateVacancyCommandHandler(
             $"Response status code does not indicate success: {(int)result.StatusCode} ({result.StatusCode})");
     }
 
-    private async Task<bool> CheckEmployerApprovalNeeded(CreateVacancyCommand request)
+    private async Task<bool> RequiresEmployerApproval(PostVacancyRequest vacancy)
     {
-        if (request.PostVacancyRequest.OwnerType != OwnerType.Provider)
+        if (vacancy.OwnerType != OwnerType.Provider)
+        {
             return false;
+        }
 
-        if (request.PostVacancyRequest.TrainingProvider.Ukprn == null)
+        if (vacancy.TrainingProvider.Ukprn is null)
+        {
             return false;
+        }
 
-        if (request.PostVacancyRequest.AccountId is null)
+        if (vacancy.AccountId is null)
+        {
             return false;
+        }
 
-        bool hasPermission = await accountLegalEntityPermissionService.HasProviderGotEmployersPermissionAsync(
-            (long)request.PostVacancyRequest.TrainingProvider.Ukprn,
-            (long)request.PostVacancyRequest.AccountId,
-            [Operation.RecruitmentRequiresReview]);
+        var hasPermission =
+            await accountLegalEntityPermissionService
+                .HasProviderGotEmployersPermissionAsync(
+                    (long)vacancy.TrainingProvider.Ukprn,
+                    (long)vacancy.AccountId,
+                    [Operation.RecruitmentRequiresReview]);
 
         return !hasPermission;
+    }
+
+    private static void ApplyVacancyStatus(PostVacancyRequest vacancy, bool requiresEmployerApproval, DateTime now)
+    {
+        if (requiresEmployerApproval)
+        {
+            vacancy.Status = VacancyStatus.Review;
+            return;
+        }
+
+        vacancy.Status = VacancyStatus.Submitted;
+        vacancy.SubmittedDate = now;
+    }
+
+    private async Task<ApiResponse<Vacancy>> CreateVacancy(PostVacancyRequest vacancy, bool isSandbox)
+    {
+        var response =
+            await recruitApiClient.PostWithResponseCode<Vacancy>(
+                new PostVacanciesApiRequest(vacancy)
+                {
+                    RuleSet = VacancyRuleSet.All,
+                    ValidateOnly = isSandbox
+                });
+
+        return response;
     }
 }

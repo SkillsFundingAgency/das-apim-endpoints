@@ -1,4 +1,3 @@
-using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -9,6 +8,7 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Providers.Queries.GetProviderAccountLegalEntities;
 using System.Threading;
+using AutoFixture.NUnit4;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Providers.Queries;
 

@@ -1,12 +1,10 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.VacanciesManage.Application.Recruit.Queries.GetCandidateSkills;
 using System.Collections.Generic;
