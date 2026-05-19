@@ -76,6 +76,7 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
             IsRegulatedForProvider = course.IsRegulatedForProvider,
             HasLocations = course.HasLocations,
             HasOnlineDeliveryOption = course.HasOnlineDeliveryOption,
+            CourseType = standard.CourseType,
             Duration = standard.Duration,
             DurationUnits = standard.DurationUnits,
         };
