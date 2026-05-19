@@ -114,19 +114,19 @@ public class Startup
             app.UseHealthChecks();
         }
 
+        app.UseSwagger();
+        app.UseSwaggerUI(c =>
+        {
+            c.SwaggerEndpoint("/swagger/v1/swagger.json", "AparRegisterOuterApi");
+            c.RoutePrefix = string.Empty;
+        });
+
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllerRoute(
                 name: "default",
                 pattern: "api/{controller=Account}/{action=index}/{id?}");
-        });
-
-        app.UseSwagger();
-        app.UseSwaggerUI(c =>
-        {
-            c.SwaggerEndpoint("/swagger/v1/swagger.json", "AparRegisterOuterApi");
-            c.RoutePrefix = string.Empty;
         });
     }
 }
