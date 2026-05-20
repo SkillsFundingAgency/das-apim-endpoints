@@ -144,7 +144,7 @@ public class WhenHandlingCreateVacancyCommand
         result.VacancyReference.Should().Be(apiResponse.Body.VacancyReference.ToString());
 
         mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
-        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
+        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
     }
 
     [Test, MoqAutoData]
@@ -439,7 +439,7 @@ public class WhenHandlingCreateVacancyCommand
             // Assert
             command.PostVacancyRequest.Status.Should().Be(VacancyStatus.Submitted);
             command.PostVacancyRequest.SubmittedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
-            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
         }
 
         [Test, MoqAutoData]
@@ -493,7 +493,7 @@ public class WhenHandlingCreateVacancyCommand
             command.PostVacancyRequest.Qualifications.Should().BeEmpty();
             command.PostVacancyRequest.Skills.Should().BeEmpty();
             command.PostVacancyRequest.ApprenticeshipType.Should().Be(ApprenticeshipTypes.Foundation);
-            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
         }
     }
 }

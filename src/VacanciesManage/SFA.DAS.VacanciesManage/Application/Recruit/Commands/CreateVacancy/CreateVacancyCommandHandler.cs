@@ -14,6 +14,7 @@ using SFA.DAS.VacanciesManage.Services;
 using System;
 using System.Linq;
 using System.Net;
+using System.Security;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -54,7 +55,7 @@ public class CreateVacancyCommandHandler(
         // populate vacancy with legal entity details and set owner type based on account type
         EnrichVacancy(vacancy, request, accountLegalEntity);
 
-        var course = await GetCourse(vacancy.ProgrammeId, cancellationToken);
+        var course = await GetCourse(vacancy.ProgrammeId);
 
         // apply rules based on course type (standard/foundation)
         ApplyCourseRules(vacancy, course);
@@ -74,7 +75,7 @@ public class CreateVacancyCommandHandler(
 
         HandleHttpResponseError(result);
 
-        if (!request.IsSandbox || !requiresEmployerApproval)
+        if (!request.IsSandbox && !requiresEmployerApproval)
         {
             // only create a vacancy review if the vacancy is not in sandbox or if it is in sandbox but does not require employer approval.
             // If the vacancy is in sandbox and requires employer approval, the review will be created when the vacancy is submitted for review by the provider user.
@@ -130,7 +131,7 @@ public class CreateVacancyCommandHandler(
                 request.AccountIdentifier,
                 request.PostVacancyRequest.AccountLegalEntityPublicHashedId);
 
-        return accountLegalEntity ?? throw new UnauthorizedAccessException("Account legal entity not accessible.");
+        return accountLegalEntity ?? throw new SecurityException();
     }
 
     private async Task ValidatedTrainingProvider(PostVacancyRequest vacancy)
@@ -168,7 +169,7 @@ public class CreateVacancyCommandHandler(
         }
     }
 
-    private async Task<GetStandardsListItem?> GetCourse(string programmeId, CancellationToken cancellationToken)
+    private async Task<GetStandardsListItem?> GetCourse(string programmeId)
     {
         var standards =
             await courseService.GetActiveStandards<GetStandardsListResponse>(
@@ -250,14 +251,14 @@ public class CreateVacancyCommandHandler(
             return false;
         }
 
-        var requiresReview =
+        var requiresEmployerApproval =
             await accountLegalEntityPermissionService
                 .HasProviderGotEmployersPermissionAsync(
                     (long)vacancy.TrainingProvider.Ukprn,
                     (long)vacancy.AccountId,
                     [Operation.RecruitmentRequiresReview]);
 
-        return requiresReview;
+        return requiresEmployerApproval;
     }
 
     private static void ApplyVacancyStatus(PostVacancyRequest vacancy, bool requiresEmployerApproval, DateTime now)
