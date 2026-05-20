@@ -85,7 +85,7 @@ public class WhenHandlingCreateVacancyCommand
         result.VacancyReference.Should().Be(apiResponse.Body.VacancyReference.ToString());
 
         mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
-        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
+        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
     }
     [Test, MoqAutoData]
     public async Task Then_The_Command_Is_Handled_With_Account_Info_looked_Up_For_Employer_And_Api_Called_With_Response_And_Vacancy_Review_Not_Created_For_Sandbox(
@@ -144,7 +144,7 @@ public class WhenHandlingCreateVacancyCommand
         result.VacancyReference.Should().Be(apiResponse.Body.VacancyReference.ToString());
 
         mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
-        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
+        mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -383,7 +383,7 @@ public class WhenHandlingCreateVacancyCommand
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
-            command.PostVacancyRequest.Status.Should().Be(VacancyStatus.Review);
+            command.PostVacancyRequest.Status.Should().Be(VacancyStatus.Submitted);
             mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
             mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
         }
@@ -392,6 +392,7 @@ public class WhenHandlingCreateVacancyCommand
         public async Task Then_Sets_Status_To_Submitted_When_Employer_Approval_Not_Required(
             Vacancy responseValue,
             CreateVacancyCommand command,
+            VacancyReview putVacancyReviewResponse,
             AccountLegalEntityItem accountLegalEntityItem,
             GetProvidersListItem trainingProviderDetails,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
@@ -428,19 +429,24 @@ public class WhenHandlingCreateVacancyCommand
                 .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
+            mockRecruitApiClient
+                .Setup(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()))
+                .ReturnsAsync(new ApiResponse<VacancyReview>(putVacancyReviewResponse, HttpStatusCode.OK, ""));
+
             // Act
             await handler.Handle(command, CancellationToken.None);
 
             // Assert
             command.PostVacancyRequest.Status.Should().Be(VacancyStatus.Submitted);
             command.PostVacancyRequest.SubmittedDate.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(5));
-            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Clears_Qualifications_And_Skills_For_Foundation_Apprenticeship(
             Vacancy responseValue,
             CreateVacancyCommand command,
+            VacancyReview putVacancyReviewResponse,
             AccountLegalEntityItem accountLegalEntityItem,
             GetProvidersListItem trainingProviderDetails,
             [Frozen] Mock<IAccountLegalEntityPermissionService> accountLegalEntityPermissionService,
@@ -476,6 +482,10 @@ public class WhenHandlingCreateVacancyCommand
                 .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()))
                 .ReturnsAsync(apiResponse);
 
+            mockRecruitApiClient
+                .Setup(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()))
+                .ReturnsAsync(new ApiResponse<VacancyReview>(putVacancyReviewResponse, HttpStatusCode.OK, ""));
+
             // Act
             await handler.Handle(command, CancellationToken.None);
 
@@ -483,7 +493,7 @@ public class WhenHandlingCreateVacancyCommand
             command.PostVacancyRequest.Qualifications.Should().BeEmpty();
             command.PostVacancyRequest.Skills.Should().BeEmpty();
             command.PostVacancyRequest.ApprenticeshipType.Should().Be(ApprenticeshipTypes.Foundation);
-            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
+            mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
         }
     }
 }

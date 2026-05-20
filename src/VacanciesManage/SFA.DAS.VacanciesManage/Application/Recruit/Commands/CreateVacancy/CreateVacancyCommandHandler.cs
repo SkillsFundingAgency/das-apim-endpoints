@@ -51,16 +51,21 @@ public class CreateVacancyCommandHandler(
 
         var accountLegalEntity = await GetValidatedAccountLegalEntity(request);
 
+        // populate vacancy with legal entity details and set owner type based on account type
         EnrichVacancy(vacancy, request, accountLegalEntity);
 
         var course = await GetCourse(vacancy.ProgrammeId, cancellationToken);
 
+        // apply rules based on course type (standard/foundation)
         ApplyCourseRules(vacancy, course);
        
+        // validate the course start date
         ValidateCourseStartDate(vacancy, course);
 
+        // check if employer approval is required for the provider vacancy
         var requiresEmployerApproval = await RequiresEmployerApproval(vacancy);
 
+        // apply vacancy status based on employer approval requirement
         ApplyVacancyStatus(vacancy, requiresEmployerApproval, dateTimeNow);
 
         vacancy.Id = request.Id;
@@ -69,8 +74,10 @@ public class CreateVacancyCommandHandler(
 
         HandleHttpResponseError(result);
 
-        if (!request.IsSandbox && requiresEmployerApproval)
+        if (!request.IsSandbox || !requiresEmployerApproval)
         {
+            // only create a vacancy review if the vacancy is not in sandbox or if it is in sandbox but does not require employer approval.
+            // If the vacancy is in sandbox and requires employer approval, the review will be created when the vacancy is submitted for review by the provider user.
             await CreateVacancyReview(vacancy, result.Body.VacancyReference.ToString(), dateTimeNow);
         }
         
@@ -243,14 +250,14 @@ public class CreateVacancyCommandHandler(
             return false;
         }
 
-        var hasPermission =
+        var requiresReview =
             await accountLegalEntityPermissionService
                 .HasProviderGotEmployersPermissionAsync(
                     (long)vacancy.TrainingProvider.Ukprn,
                     (long)vacancy.AccountId,
                     [Operation.RecruitmentRequiresReview]);
 
-        return !hasPermission;
+        return requiresReview;
     }
 
     private static void ApplyVacancyStatus(PostVacancyRequest vacancy, bool requiresEmployerApproval, DateTime now)
