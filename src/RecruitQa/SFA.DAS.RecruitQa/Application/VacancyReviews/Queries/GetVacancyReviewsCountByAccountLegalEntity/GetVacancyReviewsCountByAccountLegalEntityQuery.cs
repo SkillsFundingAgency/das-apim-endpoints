@@ -1,5 +1,3 @@
-using MediatR;
-
 namespace SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsCountByAccountLegalEntity;
 
 public class GetVacancyReviewsCountByAccountLegalEntityQuery : IRequest<GetVacancyReviewsCountByAccountLegalEntityQueryResult>

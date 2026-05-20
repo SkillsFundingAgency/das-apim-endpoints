@@ -12,7 +12,7 @@ using SFA.DAS.EmployerDemand.Api.ApiRequests;
 using SFA.DAS.EmployerDemand.Api.Controllers;
 using SFA.DAS.EmployerDemand.Api.Models;
 using SFA.DAS.EmployerDemand.Application.Demand.Commands.VerifyEmployerDemand;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.EmployerDemand.Api.UnitTests.Controllers.Demand

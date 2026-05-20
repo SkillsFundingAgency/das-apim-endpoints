@@ -28,7 +28,7 @@ namespace SFA.DAS.Vacancies.Api.Models
         /// </summary>
         public string Type { get; set; }
 
-        public static implicit operator GetVacancyCourseItem (GetVacanciesListItem source)
+        public static implicit operator GetVacancyCourseItem (GetVacancyApiResponse source)
         {
             if (source.StandardLarsCode is null or 0)
             {

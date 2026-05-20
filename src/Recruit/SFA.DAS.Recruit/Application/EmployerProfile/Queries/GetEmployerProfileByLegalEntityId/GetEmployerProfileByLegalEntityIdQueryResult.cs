@@ -1,0 +1,3 @@
+﻿namespace SFA.DAS.Recruit.Application.EmployerProfile.Queries.GetEmployerProfileByLegalEntityId;
+
+public sealed record GetEmployerProfileByLegalEntityIdQueryResult(InnerApi.Models.EmployerProfile EmployerProfile);

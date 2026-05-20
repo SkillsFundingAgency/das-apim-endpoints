@@ -1,10 +1,13 @@
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.GetProviderRelationships;
 

@@ -1,5 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.FormBuilder.Pages;
 

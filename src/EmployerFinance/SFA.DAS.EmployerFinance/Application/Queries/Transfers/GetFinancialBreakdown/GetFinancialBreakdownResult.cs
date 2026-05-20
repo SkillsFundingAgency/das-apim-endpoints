@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown
+﻿namespace SFA.DAS.EmployerFinance.Application.Queries.Transfers.GetFinancialBreakdown
 {
     public class GetFinancialBreakdownResult
     {

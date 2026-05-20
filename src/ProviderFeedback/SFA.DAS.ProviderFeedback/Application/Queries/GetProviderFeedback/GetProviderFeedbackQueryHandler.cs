@@ -1,8 +1,9 @@
 using MediatR;
 using SFA.DAS.ProviderFeedback.Application.InnerApi.Requests;
 using SFA.DAS.ProviderFeedback.Application.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.ProviderFeedback.Application.Queries.GetProviderFeedback
 {

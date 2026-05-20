@@ -22,7 +22,7 @@ namespace SFA.DAS.EmployerFinance.Api.Models
             public IEnumerable<string> JobRoles { get; set; }
             public IEnumerable<string> Levels { get; set; }
 
-            public static implicit operator Pledge(SharedOuterApi.InnerApi.Responses.GetPledgesResponse.Pledge pledge)
+            public static implicit operator Pledge(SharedOuterApi.Types.InnerApi.Responses.GetPledgesResponse.Pledge pledge)
             {
                 return new Pledge()
                 {

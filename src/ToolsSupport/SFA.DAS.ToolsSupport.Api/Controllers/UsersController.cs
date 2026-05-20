@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.ToolsSupport.Api.Models.Users;
 using SFA.DAS.ToolsSupport.Api.Models.EmployerAccount;
 using SFA.DAS.ToolsSupport.Application.Commands.EmployerUsers;

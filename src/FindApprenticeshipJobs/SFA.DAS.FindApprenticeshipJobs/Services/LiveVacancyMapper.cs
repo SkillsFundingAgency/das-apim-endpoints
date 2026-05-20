@@ -3,9 +3,10 @@ using SFA.DAS.FindApprenticeshipJobs.Application.Shared;
 using SFA.DAS.FindApprenticeshipJobs.Domain.Models;
 using SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using System.Text.RegularExpressions;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using LiveVacancy = SFA.DAS.FindApprenticeshipJobs.InnerApi.Responses.LiveVacancy;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services

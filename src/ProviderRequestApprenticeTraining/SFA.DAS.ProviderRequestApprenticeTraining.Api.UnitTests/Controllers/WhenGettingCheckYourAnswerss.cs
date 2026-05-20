@@ -8,7 +8,6 @@ using SFA.DAS.ProviderRequestApprenticeTraining.Api.Controllers;
 using SFA.DAS.ProviderRequestApprenticeTraining.Api.Models;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetEmployerRequestsByIds;
 using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetProviderWebsite;
-using SFA.DAS.ProviderRequestApprenticeTraining.Application.Queries.GetSelectEmployerRequests;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;

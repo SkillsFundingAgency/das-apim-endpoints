@@ -1,9 +1,8 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc.Authorization;
-using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.EmployerAan.Api.AppStart;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 

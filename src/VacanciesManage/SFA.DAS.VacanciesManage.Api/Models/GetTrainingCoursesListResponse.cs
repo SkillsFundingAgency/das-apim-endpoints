@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.Common;
 using SFA.DAS.VacanciesManage.Application.TrainingCourses.Queries;
 using SFA.DAS.VacanciesManage.InnerApi.Responses;
 

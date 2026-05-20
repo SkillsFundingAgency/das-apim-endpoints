@@ -1,6 +1,6 @@
 using SFA.DAS.ApprenticeCommitments.Apis.ApprenticeLoginApi;
 using SFA.DAS.ApprenticeCommitments.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.ApprenticeCommitments.Application.Services.ApprenticeLogin

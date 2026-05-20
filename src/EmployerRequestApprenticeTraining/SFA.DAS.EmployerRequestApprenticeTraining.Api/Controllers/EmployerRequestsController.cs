@@ -14,7 +14,7 @@ using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetProvider;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetSettings;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetStandard;
 using SFA.DAS.EmployerRequestApprenticeTraining.Models;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RequestApprenticeTraining;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 using System;
 using System.Collections.Generic;
 using System.Linq;

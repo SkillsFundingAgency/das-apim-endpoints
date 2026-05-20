@@ -2,18 +2,19 @@
 using Microsoft.Extensions.Options;
 using SFA.DAS.EmployerFeedback.Application.Common.Constants;
 using SFA.DAS.EmployerFeedback.Configuration;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+using Provider = SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2.Provider;
 
 namespace SFA.DAS.EmployerFeedback.Application.Queries.GetTrainingProviderSearch
 {

@@ -4,7 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 using System.Net;
 using System.Threading;

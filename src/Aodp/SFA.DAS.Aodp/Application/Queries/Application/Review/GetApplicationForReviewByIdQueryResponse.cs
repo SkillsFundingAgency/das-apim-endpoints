@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Models.DfeSignIn;
+﻿using SFA.DAS.SharedOuterApi.Types.Models.DfeSignIn;
 
 namespace SFA.DAS.Aodp.Application.Queries.Application.Review
 {

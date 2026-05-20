@@ -1,7 +1,4 @@
 ﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
 using SFA.DAS.LearnerData.Services;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
@@ -9,7 +6,6 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 [TestFixture]
 public class UpdateLearningPutRequestBuilderTests
 {
-
     [Test]
     public void Build_Sets_WithdrawalDate_From_LatestOnProgramme()
     {

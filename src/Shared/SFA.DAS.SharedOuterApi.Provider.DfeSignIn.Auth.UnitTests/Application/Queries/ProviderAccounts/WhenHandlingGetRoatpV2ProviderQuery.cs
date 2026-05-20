@@ -2,9 +2,9 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.Application.Queries.ProviderAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.SharedOuterApi.Provider.DfeSignIn.Auth.UnitTests.Application.Queries.ProviderAccounts

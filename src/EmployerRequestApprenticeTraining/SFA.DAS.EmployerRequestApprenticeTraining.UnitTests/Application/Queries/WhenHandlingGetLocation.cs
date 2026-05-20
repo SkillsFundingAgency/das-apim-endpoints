@@ -1,16 +1,16 @@
-﻿using FluentAssertions;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.EmployerRequestApprenticeTraining.Application.Queries.GetLocation;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using FluentAssertions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 
 namespace SFA.DAS.EmployerRequestApprenticeTraining.UnitTests.Application.Queries
 {

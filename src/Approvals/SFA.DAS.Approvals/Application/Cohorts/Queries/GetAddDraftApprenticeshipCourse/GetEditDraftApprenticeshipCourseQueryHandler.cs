@@ -6,9 +6,11 @@ using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using Party = SFA.DAS.Approvals.Application.Shared.Enums.Party;
 
 namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipCourse
@@ -53,7 +55,7 @@ namespace SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshi
 
             if (provider == null || accountLegalEntity == null) return null;
 
-            var providerStandardsData = await _providerStandardsService.GetStandardsData(_serviceParameters.CallingPartyId);
+            var providerStandardsData = await _providerStandardsService.GetCoursesData(_serviceParameters.CallingPartyId);
 
             return new GetAddDraftApprenticeshipCourseQueryResult
             {

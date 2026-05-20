@@ -5,7 +5,7 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LevyTransferMatching.InnerApi.Requests.Applications;
 using SFA.DAS.LevyTransferMatching.InnerApi.LevyTransferMatching.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 
 namespace SFA.DAS.LevyTransferMatching.Application.Commands.ApplicationCreatedForImmediateAutoApproval
 {

@@ -1,8 +1,7 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Requests;
 

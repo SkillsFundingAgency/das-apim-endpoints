@@ -22,6 +22,10 @@ public class StubLearner
     public long Uln { get; set; }
     [Required]
     public string LearnerRef { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public DateTime Dob { get; set; }
+    public string Email { get; set; }
     [Required]
     public bool? HasEhcp { get; set; }
 }

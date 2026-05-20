@@ -1,4 +1,3 @@
-using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -14,12 +13,13 @@ using SFA.DAS.ApprenticeCommitments.Api.AppStart;
 using SFA.DAS.ApprenticeCommitments.Api.ErrorHandler;
 using SFA.DAS.ApprenticeCommitments.Configuration;
 using SFA.DAS.ApprenticeCommitments.Infrastructure;
-using SFA.DAS.SharedOuterApi.AppStart;
 using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 using SFA.DAS.SharedOuterApi.Apprentice.GovUK.Auth.Application.Commands;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using CommitmentsV2HealthCheck = SFA.DAS.ApprenticeCommitments.Infrastructure.CommitmentsV2HealthCheck;
 using CoursesApiHealthCheck = SFA.DAS.ApprenticeCommitments.Infrastructure.CoursesApiHealthCheck;
 
@@ -41,8 +41,8 @@ namespace SFA.DAS.ApprenticeCommitments.Api
             services.AddOptions();
             services.AddSingleton(_env);
             
-            services.Configure<SharedOuterApi.Configuration.ApprenticeAccountsApiConfiguration>(_configuration.GetSection("ApprenticeAccountsInnerApi"));
-            services.AddSingleton(cfg => cfg.GetService<IOptions<SharedOuterApi.Configuration.ApprenticeAccountsApiConfiguration>>().Value); 
+            services.Configure<ApprenticeAccountsApiConfiguration>(_configuration.GetSection("ApprenticeAccountsInnerApi"));
+            services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>().Value); 
             services.Configure<ApprenticeCommitmentsConfiguration>(_configuration.GetSection("ApprenticeCommitmentsInnerApi"));
             services.Configure<ApprenticeAccountsConfiguration>(_configuration.GetSection("ApprenticeAccountsInnerApi"));
             services.Configure<ApprenticeLoginConfiguration>(_configuration.GetSection("ApprenticeLoginApi"));

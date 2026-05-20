@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.ApprenticeApp.Application.Commands.Cmad;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetCommitmentsApprenticeshipById;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByAccountDetails;
+using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRegistrationsByEmail;
 using SFA.DAS.ApprenticeApp.Application.Queries.Cmad.GetRevisionById;
 using SFA.DAS.ApprenticeApp.Models;
 using System;
@@ -30,6 +31,15 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
                     LastName = lastName,
                     DateOfBirth = dateOfBirth
                 });
+
+            return Ok(result.Registrations);
+        }
+
+        [HttpGet("/registrations/email/")]
+        public async Task<IActionResult> GetRegistrationsByEmail(string email)
+        {
+            var result = await _mediator.Send(
+                new GetRegistrationsByEmailQuery { Email = email });
 
             return Ok(result.Registrations);
         }

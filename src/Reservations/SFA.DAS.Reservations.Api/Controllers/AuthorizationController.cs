@@ -5,7 +5,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Reservations.Application.Cohorts.Queries.GetCohortAccess;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 
 namespace SFA.DAS.Reservations.Api.Controllers;
 

@@ -1,0 +1,24 @@
+query GetPagedVacanciesList($filterCriteria: VacancyEntityFilterInput, $sortCriteria: [VacancyEntitySortInput!], $skip: Int, $take: Int) {
+    pagedVacancies (
+        where: $filterCriteria
+        order: $sortCriteria
+        skip: $skip
+        take: $take
+    ) {
+        items {
+            id
+            vacancyReference
+            title
+            legalEntityName
+            closingDate
+            status
+            sourceOrigin
+            apprenticeshipType
+            ownerType
+            applicationMethod
+            hasSubmittedAdditionalQuestions,
+            transferInfo
+        }
+        totalCount
+    }
+}

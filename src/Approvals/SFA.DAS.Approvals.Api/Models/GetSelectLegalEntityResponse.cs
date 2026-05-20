@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectLegalEntity;
 using SFA.DAS.Approvals.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 
 namespace SFA.DAS.Approvals.Api.Models
 {

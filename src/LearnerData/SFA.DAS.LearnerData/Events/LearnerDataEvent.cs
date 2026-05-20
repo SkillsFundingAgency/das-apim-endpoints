@@ -15,14 +15,15 @@ public class LearnerDataEvent
     public int? PercentageLearningToBeDelivered { get; set; }
     public int EpaoPrice { get; set; }
     public int TrainingPrice { get; set; }
-    public string? AgreementId { get; set; }
+    public string AgreementId { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
     public int StandardCode { get; set; }
+    public string LarsCode { get; set; }
+    public string? ConsumerReference { get; set; }
     public Guid CorrelationId { get; set; }
     public DateTime ReceivedDate { get; set; }
     public int AcademicYear { get; set; }
-    public string ConsumerReference { get; set; }
     public LearningType LearningType { get; set; }
 }
 

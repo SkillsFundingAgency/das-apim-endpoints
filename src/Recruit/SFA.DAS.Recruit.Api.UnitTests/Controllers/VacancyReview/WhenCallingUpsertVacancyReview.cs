@@ -22,7 +22,7 @@ public class WhenCallingUpsertVacancyReview
         sut.AddControllerContext();
         
         // act
-        var actual = await sut.UpsertVacancyReview(id, vacancyReview, Mock.Of<IRecruitArtificialIntelligenceService>()) as CreatedResult;
+        var actual = await sut.UpsertVacancyReview(id, vacancyReview) as CreatedResult;
 
         // assert
         actual.Should().NotBeNull();
@@ -47,7 +47,7 @@ public class WhenCallingUpsertVacancyReview
                     c.VacancyReview.VacancyTitle == ((InnerApi.Recruit.Requests.VacancyReviewDto)vacancyReview).VacancyTitle), 
                 It.IsAny<CancellationToken>())).ThrowsAsync(new Exception());
         
-        var actual = await controller.UpsertVacancyReview(id, vacancyReview, Mock.Of<IRecruitArtificialIntelligenceService>()) as StatusCodeResult;
+        var actual = await controller.UpsertVacancyReview(id, vacancyReview) as StatusCodeResult;
 
         actual.StatusCode.Should().Be((int)HttpStatusCode.InternalServerError);
         

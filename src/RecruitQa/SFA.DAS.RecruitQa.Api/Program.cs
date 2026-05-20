@@ -1,7 +1,7 @@
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.NServiceBus.Configuration.MicrosoftDependencyInjection;
 using SFA.DAS.RecruitQa.Api;
-using SFA.DAS.SharedOuterApi.AppStart;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new NServiceBusServiceProviderFactory());

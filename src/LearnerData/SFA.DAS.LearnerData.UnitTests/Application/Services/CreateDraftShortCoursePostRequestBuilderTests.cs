@@ -1,8 +1,10 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using NUnit.Framework;
+using AutoFixture;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.LearnerData.Shared;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -11,16 +13,28 @@ public class CreateDraftShortCoursePostRequestBuilderTests
 {
     private Fixture _fixture;
     private CreateDraftShortCoursePostRequestBuilder _sut;
+    private Mock<IShortCourseLookupService> _shortCourseLookupService;
+
+    private const int ExpectedPrice = 2500;
+    private const LearningType ExpectedLearningType = LearningType.ApprenticeshipUnit;
 
     [SetUp]
     public void SetUp()
     {
         _fixture = new Fixture();
-        _sut = new CreateDraftShortCoursePostRequestBuilder();
+        _shortCourseLookupService = new Mock<IShortCourseLookupService>();
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(It.IsAny<string>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = ExpectedPrice, LearningType = ExpectedLearningType });
+
+        _sut = new CreateDraftShortCoursePostRequestBuilder(
+            Mock.Of<ILogger<CreateDraftShortCoursePostRequestBuilder>>(),
+            _shortCourseLookupService.Object);
     }
 
     [Test]
-    public void Build_Should_Map_AllFields_Correctly()
+    public async Task Build_Should_Map_AllFields_Correctly()
     {
         // Arrange
         var ukprn = _fixture.Create<long>();
@@ -38,7 +52,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .With(x => x.ExpectedEndDate, DateTime.UtcNow.AddMonths(6))
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.WithdrawalDate, (DateTime?)null)
-            .With(x => x.LearningSupport, _fixture.CreateMany<LearningSupportRequestDetails>(2).ToList())
+            .With(x => x.LearningSupport, _fixture.CreateMany<LearningSupport>(2).ToList())
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
             .Create();
 
@@ -48,7 +62,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, ukprn);
+        var result = await _sut.Build(request, ukprn);
 
         // Assert
         result.LearnerUpdateDetails.Uln.Should().Be(learner.Uln);
@@ -56,6 +70,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         result.LearnerUpdateDetails.LastName.Should().Be(learner.LastName);
         result.LearnerUpdateDetails.DateOfBirth.Should().Be(learner.Dob);
         result.LearnerUpdateDetails.EmailAddress.Should().Be(learner.Email);
+        result.LearnerUpdateDetails.LearnerRef.Should().Be(learner.LearnerRef);
 
         result.LearningSupport.Should().HaveCount(onProgramme.LearningSupport.Count);
         for (int i = 0; i < onProgramme.LearningSupport.Count; i++)
@@ -70,8 +85,99 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         result.OnProgramme.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
         result.OnProgramme.CompletionDate.Should().Be(onProgramme.CompletionDate);
         result.OnProgramme.WithdrawalDate.Should().Be(onProgramme.WithdrawalDate);
-        result.OnProgramme.Price.Should().Be(1000m);
+        result.OnProgramme.Price.Should().Be(ExpectedPrice);
+        result.OnProgramme.LearningType.Should().Be(ExpectedLearningType);
 
         result.OnProgramme.Milestones.Should().BeEquivalentTo(onProgramme.Milestones);
+    }
+
+    [Test]
+    public async Task Build_Calls_LookupService_With_CourseCode_And_StartDate()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CourseCode, "ZSC00001")
+            .With(x => x.StartDate, new DateTime(2026, 8, 1))
+            .With(x => x.Milestones, Array.Empty<Milestone>())
+            .With(x => x.LearningSupport, new List<LearningSupport>())
+            .With(x => x.CompletionDate, (DateTime?)null)
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        await _sut.Build(request, ukprn);
+
+        // Assert
+        _shortCourseLookupService.Verify(x => x.GetCourseDetails("ZSC00001", new DateTime(2026, 8, 1)), Times.Once);
+    }
+
+    [Test]
+    public async Task Build_Adds_LearningComplete_Milestone_When_CompletionDate_Set_And_Milestone_Absent()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupport>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = await _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().Contain(Milestone.LearningComplete);
+    }
+
+    [Test]
+    public async Task Build_Does_Not_Duplicate_LearningComplete_When_Already_Present()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupport>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = await _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().ContainSingle(m => m == Milestone.LearningComplete);
+    }
+
+    [Test]
+    public async Task Build_Does_Not_Add_LearningComplete_When_CompletionDate_Not_Set()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var onProgramme = _fixture.Build<ShortCourseOnProgramme>()
+            .With(x => x.CompletionDate, (DateTime?)null)
+            .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete })
+            .With(x => x.LearningSupport, new List<LearningSupport>())
+            .Create();
+
+        var request = _fixture.Build<ShortCourseRequest>()
+            .With(x => x.Delivery, new ShortCourseDelivery { OnProgramme = [onProgramme] })
+            .Create();
+
+        // Act
+        var result = await _sut.Build(request, ukprn);
+
+        // Assert
+        result.OnProgramme.Milestones.Should().NotContain(Milestone.LearningComplete);
     }
 }

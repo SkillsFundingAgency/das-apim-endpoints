@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
@@ -12,6 +9,9 @@ using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
+using FluentValidation;
+using FluentValidation.Results;
+using MediatR;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 

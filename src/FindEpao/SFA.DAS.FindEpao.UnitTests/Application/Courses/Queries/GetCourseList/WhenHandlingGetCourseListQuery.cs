@@ -4,12 +4,15 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FindEpao.Application.Courses.Queries.GetCourseList;
 using SFA.DAS.FindEpao.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 
 namespace SFA.DAS.FindEpao.UnitTests.Application.Courses.Queries.GetCourseList
 {

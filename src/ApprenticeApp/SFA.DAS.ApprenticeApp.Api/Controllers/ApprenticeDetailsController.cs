@@ -40,7 +40,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             return Ok(result.MyApprenticeship);
         }
 
-        [HttpPatch("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}/confirmations")]
+        [HttpPatch("/apprentices/{apprenticeId}/apprenticeships/{apprenticeshipId}/revisions/{revisionId}/confirmations"), Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
         public async Task<IActionResult> ConfirmApprenticeship(Guid apprenticeId, long apprenticeshipId, long revisionId, [FromBody] Confirmations confirmations)
         {
             await _mediator.Send(new ConfirmApprenticeshipPatchCommand

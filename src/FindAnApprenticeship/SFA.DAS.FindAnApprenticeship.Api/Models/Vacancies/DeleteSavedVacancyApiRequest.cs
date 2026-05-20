@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies
+﻿namespace SFA.DAS.FindAnApprenticeship.Api.Models.Vacancies
 {
     public record DeleteSavedVacancyApiRequest
     {

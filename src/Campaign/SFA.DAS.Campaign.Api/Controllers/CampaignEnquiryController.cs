@@ -2,7 +2,6 @@
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Campaign.InnerApi.Requests;
 using SFA.DAS.Campaign.Interfaces;

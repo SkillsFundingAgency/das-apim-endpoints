@@ -15,6 +15,7 @@ using SFA.DAS.Approvals.Api.Models;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAddDraftApprenticeshipDeliveryModel;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetConfirmEmployer;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectLegalEntity;
+using SFA.DAS.Approvals.Application.Cohorts.Queries.GetAssignAllowEmployerAdd;
 using SFA.DAS.Approvals.Application.Cohorts.Queries.GetSelectEmployer;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -95,6 +96,24 @@ public class CohortController(
         catch (Exception e)
         {
             logger.LogError(e, $"Error in Post Cohort Details - cohort id {cohortId}");
+            return BadRequest();
+        }
+    }
+
+    [HttpGet]
+    [Route("employer/{accountHashedId}/unapproved/add/assign/allow-employer-add")]
+    public async Task<IActionResult> GetAssignAllowEmployerAdd([FromRoute] string accountHashedId, [FromQuery] Guid reservationId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetAssignAllowEmployerAddQuery { ReservationId = reservationId });
+            if (result == null)
+                return NotFound();
+            return Ok((GetAssignAllowEmployerAddResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error in GetAssignAllowEmployerAdd for reservation {ReservationId}", reservationId);
             return BadRequest();
         }
     }

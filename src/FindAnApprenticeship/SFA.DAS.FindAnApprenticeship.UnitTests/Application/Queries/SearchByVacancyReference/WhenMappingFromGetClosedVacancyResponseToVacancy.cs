@@ -4,7 +4,7 @@ using SFA.DAS.FindAnApprenticeship.Application.Queries.SearchByVacancyReference;
 using SFA.DAS.FindAnApprenticeship.Domain;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;
 using SFA.DAS.FindAnApprenticeship.InnerApi.RecruitApi.Responses;
-using SFA.DAS.SharedOuterApi.Extensions;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.FindAnApprenticeship.UnitTests.Application.Queries.SearchByVacancyReference;
 

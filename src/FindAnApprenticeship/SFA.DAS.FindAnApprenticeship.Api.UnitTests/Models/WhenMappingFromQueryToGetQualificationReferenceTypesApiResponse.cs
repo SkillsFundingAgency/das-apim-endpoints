@@ -1,7 +1,3 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
-using SFA.DAS.FindAnApprenticeship.Api.Models.Applications;
 using SFA.DAS.FindAnApprenticeship.Api.Models.Applications.Qualifications;
 using SFA.DAS.FindAnApprenticeship.Application.Queries.Apply.GetQualificationTypes;
 

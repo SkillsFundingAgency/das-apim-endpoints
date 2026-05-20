@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.ProviderPR.Application.Requests.Commands.AccountInvitation;
 

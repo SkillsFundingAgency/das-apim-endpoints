@@ -6,8 +6,9 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.Standards.Queries.GetAllProviderCourses;
 
@@ -45,7 +46,8 @@ public class GetAllProviderCoursesQueryHandler : IRequestHandler<GetAllProviderC
                     IsApprovedByRegulator = c.IsApprovedByRegulator,
                     IsRegulatedForProvider = c.IsRegulatedForProvider,
                     HasLocations = c.HasLocations,
-                    HasOnlineDeliveryOption = c.HasOnlineDeliveryOption
+                    HasOnlineDeliveryOption = c.HasOnlineDeliveryOption,
+                    CourseType = c.CourseType
                 };
                 results.Add(course);
             }

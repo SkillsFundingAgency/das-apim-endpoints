@@ -2,10 +2,6 @@
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using System.Collections.Generic;
-using System;
-using Azure;
 
 namespace SFA.DAS.ProviderRequestApprenticeTraining.UnitTests.InnerApi.Requests
 {

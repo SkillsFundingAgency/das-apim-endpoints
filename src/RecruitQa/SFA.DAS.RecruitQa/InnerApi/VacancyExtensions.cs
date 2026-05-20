@@ -18,6 +18,7 @@ public static class VacancyExtensions
             Title = source.Title,
             VacancyReference = source.VacancyReference,
             Wage = source.Wage,
+            Status = source.Status
         };
     }
 }

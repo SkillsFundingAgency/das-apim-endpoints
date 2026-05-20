@@ -1,7 +1,4 @@
-﻿using Azure.Core;
-using FluentAssertions;
-using FluentValidation.Results;
-using NUnit.Framework;
+﻿using FluentValidation.Results;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Validators;
 

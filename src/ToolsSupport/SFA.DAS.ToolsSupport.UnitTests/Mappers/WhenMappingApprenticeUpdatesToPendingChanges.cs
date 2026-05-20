@@ -1,6 +1,6 @@
 ﻿using AutoFixture;
 using FluentAssertions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
 using SFA.DAS.Testing.AutoFixture;
 using SFA.DAS.ToolsSupport.Extensions;
 using SFA.DAS.ToolsSupport.InnerApi.Responses;

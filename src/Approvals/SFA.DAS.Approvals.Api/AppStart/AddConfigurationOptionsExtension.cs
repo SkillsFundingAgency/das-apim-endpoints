@@ -4,7 +4,8 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Approvals.InnerApi.CourseTypesApi;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
-using SFA.DAS.SharedOuterApi.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
 
 namespace SFA.DAS.Approvals.Api.AppStart;
 

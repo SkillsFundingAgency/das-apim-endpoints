@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using SFA.DAS.ApprenticeApp.InnerApi.Courses.Requests;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Services;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;

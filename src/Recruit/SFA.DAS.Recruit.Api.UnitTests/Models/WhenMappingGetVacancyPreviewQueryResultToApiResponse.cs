@@ -1,6 +1,3 @@
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
 using SFA.DAS.Recruit.Api.Models;
 using SFA.DAS.Recruit.Application.Queries.GetVacancyPreview;
 using SFA.DAS.Recruit.Domain;

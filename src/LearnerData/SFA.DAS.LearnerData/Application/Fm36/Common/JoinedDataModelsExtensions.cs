@@ -2,7 +2,7 @@
 using SFA.DAS.LearnerData.Application.Fm36.LearningDeliveryHelper;
 using SFA.DAS.LearnerData.Application.Fm36.PriceEpisodeHelper;
 using SFA.DAS.LearnerData.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.CollectionCalendar;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.CollectionCalendar;
 
 namespace SFA.DAS.LearnerData.Application.Fm36.Common;
 

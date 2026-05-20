@@ -12,13 +12,13 @@ using SFA.DAS.EmployerFeedback.Api.AppStart;
 using SFA.DAS.EmployerFeedback.Api.TaskQueue;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetAttributes;
 using SFA.DAS.EmployerFeedback.Configuration;
-using SFA.DAS.SharedOuterApi.AppStart;
 using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using SFA.DAS.Apim.Shared.AppStart;
 
 namespace SFA.DAS.EmployerFeedback.Api
 {

@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Queries.Application.Application;
 using SFA.DAS.Aodp.Application.Queries.Application.Review;
@@ -145,6 +146,14 @@ public class ApplicationsReviewController : BaseController
     {
         var query = new GetApplicationFormAnswersByReviewIdQuery(applicationReviewId);
         return await SendRequestAsync(query);
+    }
+
+    [HttpPut("/api/application-reviews/bulk-action")]
+    [ProducesResponseType(typeof(BulkApplicationActionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> BulkApplicationAction([FromBody] BulkApplicationActionCommand command)
+    {
+        return await SendRequestAsync(command);
     }
 }
  

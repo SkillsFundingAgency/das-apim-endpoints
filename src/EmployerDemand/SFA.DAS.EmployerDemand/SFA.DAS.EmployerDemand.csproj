@@ -1,18 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi\SFA.DAS.SharedOuterApi.csproj" />
+    <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
-    <PackageReference Include="SFA.DAS.Notifications.Messages" />
-    <PackageReference Include="SFA.DAS.NServiceBus" />
-    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="SFA.DAS.Notifications.Messages" Version="3.0.0" />
+    <PackageReference Include="SFA.DAS.NServiceBus" Version="17.0.49" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>
 
   <ItemGroup>

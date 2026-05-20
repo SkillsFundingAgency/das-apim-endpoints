@@ -6,7 +6,7 @@ public sealed class LocationModel
     public bool AtEmployer { get; set; }
     public bool BlockRelease { get; set; }
     public bool DayRelease { get; set; }
-    public int LocationType { get; set; }
+    public LocationType LocationType { get; set; }
     public string CourseLocation { get; set; }
     public string AddressLine1 { get; set; }
     public string AddressLine2 { get; set; }

@@ -1,9 +1,9 @@
 ﻿using System;
 using SFA.DAS.EmployerAccounts.ExternalApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.PublicSectorOrganisation;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ReferenceData;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PublicSectorOrganisation;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ReferenceData;
 
 namespace SFA.DAS.EmployerAccounts.Application.Models;
 
