@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -11,15 +11,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="StrawberryShake.Blazor" />
+    <PackageReference Include="StrawberryShake.Blazor" Version="16.0.0-p.11.47" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Application\VacancyReviews\Queries\" />
+    <Folder Include="Domain\Vacancies\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MediatR" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
   </ItemGroup>
 
   <ItemGroup>

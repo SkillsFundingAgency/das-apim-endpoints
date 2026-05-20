@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Recruit.InnerApi.Recruit.Requests.EmployerProfiles;
 using System.Net;
 using System.Threading;

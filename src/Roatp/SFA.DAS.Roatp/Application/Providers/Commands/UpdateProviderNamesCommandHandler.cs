@@ -117,7 +117,7 @@ public class
 
             if (provider != null &&
                 (!string.Equals(provider.LegalName, ukrlp.ProviderName) ||
-                 !string.Equals(provider.TradingName ?? "", ukrlp.TradingName ?? "")))
+                 !string.Equals(provider.TradingName, ukrlp.TradingName)))
             {
                 _logger.LogInformation("Updating organisation name for ukprn {Ukprn}", provider.Ukprn);
 
@@ -127,8 +127,8 @@ public class
                     OrganisationTypeId = provider.OrganisationTypeId,
                     CharityNumber = provider.CharityNumber,
                     CompanyNumber = provider.CompanyNumber,
-                    LegalName = ukrlp.ProviderName ?? "",
-                    TradingName = ukrlp.TradingName ?? "",
+                    LegalName = ukrlp.ProviderName,
+                    TradingName = ukrlp.TradingName,
                     RequestingUserId = "System"
                 };
 

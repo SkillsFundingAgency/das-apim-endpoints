@@ -1,5 +1,4 @@
-﻿using SFA.DAS.Apim.Shared.Common;
-using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+﻿using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.InnerApi;
 using DurationUnits = SFA.DAS.SharedOuterApi.Types.Constants.DurationUnits;
@@ -20,6 +19,7 @@ public class GetStandardInformationQueryResult
     public DurationUnits DurationUnits { get; set; }
     public bool IsRegulatedForProvider { get; set; }
     public CourseType CourseType { get; set; }
+    public bool IsActiveAvailable { get; set; }
 
     public static implicit operator GetStandardInformationQueryResult(GetCourseDetailsResponse source) =>
         new()
@@ -36,5 +36,6 @@ public class GetStandardInformationQueryResult
             DurationUnits = source.DurationUnits,
             IsRegulatedForProvider = source.IsRegulatedForProvider,
             CourseType = source.CourseType,
+            IsActiveAvailable = source.IsActiveAvailable,
         };
 }

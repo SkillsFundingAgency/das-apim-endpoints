@@ -194,6 +194,46 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
 
 
     [Test]
+    public async Task When_TransferSenderIdSet_Then_FundingAccountIdIsTransferSenderId()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
+        episode.TransferSenderId = 999L;
+
+        var earningsResponse = GetEarningsResponse();
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.SelectMany(x => x.PricePeriods).SelectMany(x => x.Periods)
+            .Should().OnlyContain(p => p.Employer.FundingAccountId == 999L);
+    }
+
+    [Test]
+    public async Task When_TransferSenderIdNotSet_Then_FundingAccountIdIsEmployerAccountId()
+    {
+        // Arrange
+        var ukprn = _fixture.Create<long>();
+        var learningResponse = GetLearningPriceResponse();
+        var episode = learningResponse.Episodes.Single();
+        episode.TransferSenderId = null;
+
+        var earningsResponse = GetEarningsResponse();
+        var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
+
+        // Act
+        var result = await builder.Build(ukprn, learningResponse, earningsResponse);
+
+        // Assert
+        result.Earnings.SelectMany(x => x.PricePeriods).SelectMany(x => x.Periods)
+            .Should().OnlyContain(p => p.Employer.FundingAccountId == episode.EmployerAccountId);
+    }
+
+    [Test]
     public async Task When_EarningsOverSingleYear_ThenCorrectlySet()
     {
         // Arrange
@@ -412,6 +452,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
                 .With(x => x.StartDate, new DateTime(2025, 7, 1))
                 .With(x => x.PlannedEndDate, new DateTime(2025, 9, 20))
                 .With(x => x.EmployerType, EmployerType.Levy.ToString())
+                .With(x => x.TransferSenderId, (long?)null)
                 .Create()
         };
 
