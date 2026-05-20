@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.6.11806.211 stable
+VisualStudioVersion = 18.6.11806.211
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{BABD2C9B-36F1-4593-9E43-0B16E8106D87}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.RoatpProviderModeration.Application.UnitTests", "SFA.DAS.RoatpProviderModeration.Application.UnitTests\SFA.DAS.RoatpProviderModeration.Application.UnitTests.csproj", "{40C5FD23-24BF-4476-BC76-E2EA2233F56A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Types.UnitTests\SFA.DAS.SharedOuterApi.Types.UnitTests.csproj", "{0C2923A8-A4BF-0481-0A98-3EE75752A64C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B382186-57D9-5A6C-1D74-9EAB7074B281}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
