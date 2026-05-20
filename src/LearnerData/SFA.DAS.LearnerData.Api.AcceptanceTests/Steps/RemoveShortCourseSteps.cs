@@ -2,7 +2,6 @@ using AutoFixture;
 using FluentAssertions;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using System.Net;
 using TechTalk.SpecFlow;
 using WireMock.RequestBuilders;
@@ -16,6 +15,7 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
     private readonly Fixture _fixture = new Fixture();
     private const string LearnerKey = "ShortCourseLearnerKey";
     private const string UkprnKey = "ShortCourseUkprnKey";
+    private const string EpisodeKey = "ShortCourseEpisodeKey";
     private const string LearningNoContentKey = "ShortCourseRemovalLearningNoContent";
 
     [Given(@"the learning domain will return no content for the short course removal")]
@@ -51,10 +51,11 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
     public void ThenARemoveShortCourseRequestIsSentToTheEarningsDomain()
     {
         var learningKey = scenarioContext.Get<Guid>(LearnerKey);
+        var removedEpisodeKey = scenarioContext.Get<Guid>(EpisodeKey);
         var requests = testContext.EarningsApi.MockServer.LogEntries;
 
         requests.Should().ContainSingle(
-            r => r.RequestMessage.Url.Contains($"/{learningKey}/shortCourses/") &&
+            r => r.RequestMessage.Url.Contains($"/{learningKey}/shortCourses/{removedEpisodeKey}") &&
                  r.RequestMessage.Method == "DELETE",
             "Expected a DELETE request to the Earnings domain for the short course");
     }
@@ -70,6 +71,8 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
     {
         var learningKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
+        var removedEpisodeKey = Guid.NewGuid();
+        scenarioContext.Set(removedEpisodeKey, EpisodeKey);
 
         var builder = Response.Create().WithStatusCode(returnNoContent ? HttpStatusCode.NoContent : HttpStatusCode.OK);
 
@@ -79,9 +82,32 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
             {
                 LearningKey = learningKey,
                 LearnerKey = learningKey,
-                RemovedEpisodeKey = _fixture.Create<Guid>(),
-                Learner = _fixture.Create<LearningInnerShortCourseLearner>(),
-                Episodes = []
+                RemovedEpisodeKey = removedEpisodeKey,
+                Learner = new LearningInnerShortCourseLearner
+                {
+                    Uln = _fixture.Create<long>().ToString(),
+                    FirstName = _fixture.Create<string>(),
+                    LastName = _fixture.Create<string>(),
+                    DateOfBirth = _fixture.Create<DateTime>()
+                },
+                Episodes =
+                [
+                    new LearningInnerShortCourseEpisode
+                    {
+                        Ukprn = ukprn,
+                        EmployerAccountId = 12,
+                        CourseCode = "ZSC00001",
+                        CourseType = "ShortCourse",
+                        LearningType = "ApprenticeshipUnit",
+                        StartDate = DateTime.UtcNow.AddMonths(-6),
+                        AgeAtStart = 20,
+                        PlannedEndDate = DateTime.UtcNow.AddMonths(6),
+                        IsApproved = true,
+                        Price = 1000m,
+                        LearnerRef = "LearnerRef",
+                        EmployerType = "Levy"
+                    }
+                ]
             };
             builder = builder.WithHeader("Content-Type", "application/json").WithBodyAsJson(responseBody);
         }
