@@ -152,6 +152,7 @@ public class GetFm36QueryHandler : IRequestHandler<GetFm36Query, GetFm36Result>
             }
 
             _logger.LogInformation($"Processing learning with key: {learning.Key}");
+
             joinedApprenticeships.Add(new JoinedLearnerData(learning, matchingEarnings, matchingSld, currentAcademicYear.GetShortAcademicYear()));
         }
 
