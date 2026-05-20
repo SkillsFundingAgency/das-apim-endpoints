@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
 using SFA.DAS.LearnerData.Application.GetShortCourseLearners;
-using SFA.DAS.LearnerData.Application.DeleteShortCourse;
+using SFA.DAS.LearnerData.Application.RemoveShortCourse;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
@@ -81,11 +81,11 @@ public class ShortCoursesController(
     }
 
     [HttpDelete("/providers/{ukprn}/shortCourses/{learningKey}")]
-    public async Task<IActionResult> DeleteShortCourse([FromRoute] long ukprn, [FromRoute] Guid learningKey)
+    public async Task<IActionResult> RemoveShortCourse([FromRoute] long ukprn, [FromRoute] Guid learningKey)
     {
         try
         {
-            await mediator.Send(new DeleteShortCourseCommand
+            await mediator.Send(new RemoveShortCourseCommand
             {
                 Ukprn = ukprn,
                 LearningKey = learningKey

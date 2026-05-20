@@ -2,6 +2,7 @@
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.CollectionCalendar.Contracts.Client;
 using SFA.DAS.Employer.Shared.UI;
 using SFA.DAS.Encoding;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -30,7 +31,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<ILearningApiClient<LearningApiConfiguration>, LearningApiClient>();
         services.AddTransient<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>, CommitmentsV2ApiClient>();
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
-        services.AddTransient<ICollectionCalendarApiClient<CollectionCalendarApiConfiguration>, CollectionCalendarApiClient>();
+        services.AddCollectionCalendarClient(configuration);
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<IProviderAccountApiClient<ProviderAccountApiConfiguration>, ProviderAccountApiClient>();
 
@@ -55,7 +56,6 @@ public static class AddConfigurationOptionsExtension
         services.AddConfigurationOptions<AzureActiveDirectoryConfiguration>(configuration, "AzureAd");
         services.AddConfigurationOptions<CommitmentsV2ApiConfiguration>(configuration);
         services.AddConfigurationOptions<AccountsConfiguration>(configuration, "AccountsInnerApi");
-        services.AddConfigurationOptions<CollectionCalendarApiConfiguration>(configuration);
         services.AddConfigurationOptions<NServiceBusConfiguration>(configuration);
 
         services.AddConfigurationOptions<ProviderAccountApiConfiguration>(configuration);
