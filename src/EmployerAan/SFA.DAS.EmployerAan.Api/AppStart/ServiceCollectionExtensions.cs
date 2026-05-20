@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using MediatR;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
@@ -7,20 +6,17 @@ using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.EmployerAan.Api.HealthCheck;
-using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
-using SFA.DAS.EmployerAan.Application.MyApprenticeships.Queries.GetMyApprenticeship;
-using SFA.DAS.EmployerAan.Configuration;
-using SFA.DAS.EmployerAan.Infrastructure;
 using SFA.DAS.Apim.Shared.AppStart;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
-using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
-
+using SFA.DAS.EmployerAan.Api.HealthCheck;
+using SFA.DAS.EmployerAan.Application.Employer.Queries.GetEmployerMember;
+using SFA.DAS.EmployerAan.Configuration;
+using SFA.DAS.EmployerAan.Infrastructure;
+using SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.Application.Queries.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.EmployerAan.Api.AppStart;
@@ -104,7 +100,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "AanHubApiConfiguration");
 
         services.AddRestEaseClient<IAanHubRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddCommitmentsV2ApiClient(IServiceCollection services, IConfiguration configuration)
@@ -114,7 +110,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton(apiConfig);
         services.AddRestEaseClient<ICommitmentsV2ApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddApprenticeAccountsApiClient(IServiceCollection services, IConfiguration configuration)
@@ -122,7 +118,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "ApprenticeAccountsApiConfiguration");
 
         services.AddRestEaseClient<Infrastructure.IApprenticeAccountsApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddCoursesApiClient(IServiceCollection services, IConfiguration configuration)
@@ -130,7 +126,7 @@ public static class ServiceCollectionExtensions
         var apiConfig = GetApiConfiguration(configuration, "CoursesApiConfiguration");
 
         services.AddRestEaseClient<ICoursesApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
 
