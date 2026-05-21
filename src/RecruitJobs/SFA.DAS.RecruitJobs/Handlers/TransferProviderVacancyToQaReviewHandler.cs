@@ -44,7 +44,7 @@ public class TransferProviderVacancyToQaReviewHandler(
         patchDocument.Replace(x => x.LastUpdatedDate, DateTime.UtcNow);
         patchDocument.Replace(x => x.SubmittedByUserId, userReference);
 
-        var patchVacancyResponse = await recruitApiClient.PatchWithResponseCode(new PatchVacancyRequest(vacancyId, patchDocument));
+        var patchVacancyResponse = await recruitApiClient.PatchWithResponseCode(new InnerApi.Requests.PatchVacancyRequest(vacancyId, patchDocument));
         patchVacancyResponse.EnsureSuccessStatusCode();
         
         // create the vacancy review
