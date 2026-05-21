@@ -20,6 +20,7 @@
     <PackageReference Include="NUnit" Version="4.2.2" />
     <PackageReference Include="NUnit.Analyzers" Version="4.2.0" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.6.0" />
+    <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.189" />
 	<PackageReference Include="SpecFlow" Version="3.9.74" />
 	<PackageReference Include="SpecFlow.NUnit" Version="3.9.74" />
 	<PackageReference Include="SpecFlow.Tools.MsBuild.Generation" Version="3.9.74" />
@@ -28,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.LearnerData.Api\SFA.DAS.LearnerData.Api.csproj" />
+    <ProjectReference Include="..\SFA.DAS.LearnerData.TestHelpers\SFA.DAS.LearnerData.TestHelpers.csproj" />
   </ItemGroup>
 
   <ItemGroup>

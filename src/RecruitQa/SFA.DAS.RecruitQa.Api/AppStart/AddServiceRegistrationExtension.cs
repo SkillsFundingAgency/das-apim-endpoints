@@ -8,6 +8,7 @@ using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
+using SFA.DAS.RecruitQa.Api.Models;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.RecruitQa.Api.AppStart;
