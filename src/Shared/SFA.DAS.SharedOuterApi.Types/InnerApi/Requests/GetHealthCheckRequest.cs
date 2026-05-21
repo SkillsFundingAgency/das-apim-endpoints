@@ -1,11 +1,8 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests
+public class GetHealthCheckRequest : IGetApiRequest
 {
-    public class GetHealthCheckRequest : IGetApiRequest
-    {
-        public string GetUrl => "api/healthcheck";
-    }
+    public string GetUrl => "api/healthcheck";
 }

@@ -4,16 +4,14 @@ using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck
-{
-    public class EmployerProfilesApiHealthCheck : ApiHealthCheck<EmployerProfilesApiConfiguration>, IHealthCheck
-    {
-        public static readonly string HealthCheckDescription = "Employer Profiles API";
-        public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
-        public EmployerProfilesApiHealthCheck(IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> client, ILogger<EmployerProfilesApiHealthCheck> logger)
-            : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
-        {
-        }
-    }
+public class EmployerProfilesApiHealthCheck(
+    IEmployerProfilesApiClient<EmployerProfilesApiConfiguration> client,
+    ILogger<EmployerProfilesApiHealthCheck> logger)
+    : ApiHealthCheck<EmployerProfilesApiConfiguration>(HealthCheckDescription, HealthCheckResultDescription, client,
+        logger), IHealthCheck
+{
+    public static readonly string HealthCheckDescription = "Employer Profiles API";
+    public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
 }
