@@ -1,10 +1,9 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
+
+public class UkrlpDataQuery : IRequest<GetUkrlpDataQueryResponse>
 {
-    public class UkrlpDataQuery : IRequest<GetUkrlpDataQueryResponse>
-    {
-        public List<long> Ukprns { get; set; }
-        public DateTime? ProvidersUpdatedSince { get; set; }
-    }
+    public List<long> Ukprns { get; set; }
+    public DateTime? ProvidersUpdatedSince { get; set; }
 }

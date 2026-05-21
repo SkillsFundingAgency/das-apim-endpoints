@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
+using System.Collections.Generic;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
 

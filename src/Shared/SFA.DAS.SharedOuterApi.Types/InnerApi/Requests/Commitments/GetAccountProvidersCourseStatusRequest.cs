@@ -1,25 +1,17 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
+
+public class GetAccountProvidersCourseStatusRequest(long accountId, int completionLag, int startLag, int newStartWindow)
+    : IGetApiRequest
 {
-    public class GetAccountProvidersCourseStatusRequest : IGetApiRequest
-    {
-        public long AccountId { get; }
+    public long AccountId { get; } = accountId;
 
-        public int CompletionLag { get;  }
+    public int CompletionLag { get; } = completionLag;
 
-        public int StartLag { get;  }
+    public int StartLag { get; } = startLag;
 
-        public int NewStartWindow { get; }
+    public int NewStartWindow { get; } = newStartWindow;
 
-        public GetAccountProvidersCourseStatusRequest(long accountId, int completionLag, int startLag, int newStartWindow)
-        {
-            AccountId = accountId;
-            CompletionLag = completionLag;
-            StartLag = startLag;
-            NewStartWindow = newStartWindow;
-        }
-
-        public string GetUrl => $"/api/accounts/{AccountId}/status?completionlag={CompletionLag}&startlag={StartLag}&newstartwindow={NewStartWindow}";
-    }
+    public string GetUrl => $"/api/accounts/{AccountId}/status?completionlag={CompletionLag}&startlag={StartLag}&newstartwindow={NewStartWindow}";
 }

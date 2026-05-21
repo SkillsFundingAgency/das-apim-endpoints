@@ -2,6 +2,7 @@
 using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
 public class WhenBuildingGetHasPermissionRequest
 {
     [Test, AutoData]
