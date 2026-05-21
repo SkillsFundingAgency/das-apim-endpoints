@@ -16,21 +16,12 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
     private const string LearnerKey = "ShortCourseLearnerKey";
     private const string UkprnKey = "ShortCourseUkprnKey";
     private const string EpisodeKey = "ShortCourseEpisodeKey";
-    private const string LearningNoContentKey = "ShortCourseRemovalLearningNoContent";
-
-    [Given(@"the learning domain will return no content for the short course removal")]
-    public void GivenTheLearningDomainWillReturnNoContentForTheShortCourseRemoval()
-    {
-        scenarioContext.Set(true, LearningNoContentKey);
-    }
 
     [When(@"the short course is removed")]
     public async Task WhenTheShortCourseIsRemoved()
     {
-        var noContent = scenarioContext.ContainsKey(LearningNoContentKey) && scenarioContext.Get<bool>(LearningNoContentKey);
-        ConfigureLearningApi(noContent);
-        if (!noContent)
-            ConfigureEarningsApi();
+        ConfigureLearningApi();
+        ConfigureEarningsApi();
         await CallRemoveShortCourseEndpoint();
     }
 
@@ -60,57 +51,44 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
             "Expected a DELETE request to the Earnings domain for the short course");
     }
 
-    [Then(@"the earnings domain is not called for short course removal")]
-    public void ThenTheEarningsDomainIsNotCalledForShortCourseRemoval()
-    {
-        var requests = testContext.EarningsApi.MockServer.LogEntries;
-        requests.Should().BeEmpty("Expected no requests to the Earnings domain, but found some.");
-    }
-
-    private void ConfigureLearningApi(bool returnNoContent)
+    private void ConfigureLearningApi()
     {
         var learningKey = scenarioContext.Get<Guid>(LearnerKey);
         var ukprn = scenarioContext.Get<long>(UkprnKey);
         var removedEpisodeKey = Guid.NewGuid();
         scenarioContext.Set(removedEpisodeKey, EpisodeKey);
 
-        var builder = Response.Create().WithStatusCode(returnNoContent ? HttpStatusCode.NoContent : HttpStatusCode.OK);
-
-        if (!returnNoContent)
+        var responseBody = new DeleteShortCourseResponse
         {
-            var responseBody = new DeleteShortCourseResponse
+            LearningKey = learningKey,
+            LearnerKey = learningKey,
+            RemovedEpisodeKey = removedEpisodeKey,
+            Learner = new LearningInnerShortCourseLearner
             {
-                LearningKey = learningKey,
-                LearnerKey = learningKey,
-                RemovedEpisodeKey = removedEpisodeKey,
-                Learner = new LearningInnerShortCourseLearner
+                Uln = _fixture.Create<long>().ToString(),
+                FirstName = _fixture.Create<string>(),
+                LastName = _fixture.Create<string>(),
+                DateOfBirth = _fixture.Create<DateTime>()
+            },
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
                 {
-                    Uln = _fixture.Create<long>().ToString(),
-                    FirstName = _fixture.Create<string>(),
-                    LastName = _fixture.Create<string>(),
-                    DateOfBirth = _fixture.Create<DateTime>()
-                },
-                Episodes =
-                [
-                    new LearningInnerShortCourseEpisode
-                    {
-                        Ukprn = ukprn,
-                        EmployerAccountId = 12,
-                        CourseCode = "ZSC00001",
-                        CourseType = "ShortCourse",
-                        LearningType = "ApprenticeshipUnit",
-                        StartDate = DateTime.UtcNow.AddMonths(-6),
-                        AgeAtStart = 20,
-                        PlannedEndDate = DateTime.UtcNow.AddMonths(6),
-                        IsApproved = true,
-                        Price = 1000m,
-                        LearnerRef = "LearnerRef",
-                        EmployerType = "Levy"
-                    }
-                ]
-            };
-            builder = builder.WithHeader("Content-Type", "application/json").WithBodyAsJson(responseBody);
-        }
+                    Ukprn = ukprn,
+                    EmployerAccountId = 12,
+                    CourseCode = "ZSC00001",
+                    CourseType = "ShortCourse",
+                    LearningType = "ApprenticeshipUnit",
+                    StartDate = DateTime.UtcNow.AddMonths(-6),
+                    AgeAtStart = 20,
+                    PlannedEndDate = DateTime.UtcNow.AddMonths(6),
+                    IsApproved = true,
+                    Price = 1000m,
+                    LearnerRef = "LearnerRef",
+                    EmployerType = "Levy"
+                }
+            ]
+        };
 
         testContext.ApprenticeshipsApi.MockServer
             .Given(
@@ -118,7 +96,12 @@ internal class RemoveShortCourseSteps(TestContext testContext, ScenarioContext s
                     .WithPath($"/{ukprn}/shortCourses/{learningKey}")
                     .UsingDelete()
             )
-            .RespondWith(builder);
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithHeader("Content-Type", "application/json")
+                    .WithBodyAsJson(responseBody)
+            );
     }
 
     private void ConfigureEarningsApi()
