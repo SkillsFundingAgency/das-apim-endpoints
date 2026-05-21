@@ -22,5 +22,7 @@ public static class AddConfigurationOptionsExtension
         services.AddSingleton(cfg => cfg.GetService<IOptions<RecruitAiApiConfiguration>>().Value);
         services.Configure<AccountsConfiguration>(configuration.GetSection("AccountsInnerApiConfiguration"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<AccountsConfiguration>>().Value);
+        services.Configure<LocationApiConfiguration>(configuration.GetSection("LocationApiConfiguration"));
+        services.AddSingleton(cfg => cfg.GetService<IOptions<LocationApiConfiguration>>().Value);
     }
 }

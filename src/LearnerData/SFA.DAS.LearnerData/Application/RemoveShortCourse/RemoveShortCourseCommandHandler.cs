@@ -13,19 +13,19 @@ using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.LearnerData.Application.DeleteShortCourse;
+namespace SFA.DAS.LearnerData.Application.RemoveShortCourse;
 
-public class DeleteShortCourseCommandHandler(
-    ILogger<DeleteShortCourseCommandHandler> logger,
+public class RemoveShortCourseCommandHandler(
+    ILogger<RemoveShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
     ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
     IMessageSession messageSession,
     PaymentsConfiguration paymentsConfiguration
 
-) : IRequestHandler<DeleteShortCourseCommand>
+) : IRequestHandler<RemoveShortCourseCommand>
 {
-    public async Task Handle(DeleteShortCourseCommand command, CancellationToken cancellationToken)
+    public async Task Handle(RemoveShortCourseCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Handling DeleteShortCourseCommand for Ukprn: {Ukprn}, LearningKey: {LearningKey}", command.Ukprn, command.LearningKey);
 

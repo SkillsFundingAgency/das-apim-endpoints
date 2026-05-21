@@ -6,5 +6,5 @@ public enum ManualQaOutcome : byte
     Referred,
     Transferred,
     Blocked,
-    Bypassed
+    Bypassed,
 }

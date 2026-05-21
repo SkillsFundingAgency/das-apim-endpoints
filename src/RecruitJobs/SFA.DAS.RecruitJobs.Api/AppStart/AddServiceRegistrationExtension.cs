@@ -1,16 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.RecruitJobs.Ai;
+using SFA.DAS.RecruitJobs.Api.Models.Mappers;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.RecruitJobs.Handlers;
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
-using SFA.DAS.RecruitJobs.Ai;
-using SFA.DAS.RecruitJobs.Api.Models.Mappers;
-using SFA.DAS.RecruitJobs.Handlers;
 using SFA.DAS.SharedOuterApi.Recruit.Services;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
@@ -27,6 +27,7 @@ public static class AddServiceRegistrationExtension
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
         services.AddTransient<IRecruitAiApiClient<RecruitAiApiConfiguration>, RecruitAiApiClient>();
+        services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         services.AddTransient<IBusinessMetricsApiClient<BusinessMetricsConfiguration>, BusinessMetricsApiClient>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
@@ -41,5 +42,6 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IVacancySlaDeadlineService, VacancySlaDeadlineService>();
         services.AddTransient<IVacancyComparerService, VacancyComparerService>();
         services.AddTransient<IVacancyReviewService, VacancyReviewService>();
+        services.AddTransient<ILocationLookupService, LocationLookupService>();
     }
 }
