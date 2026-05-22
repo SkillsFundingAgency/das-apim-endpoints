@@ -1,3 +1,6 @@
+using System.Net;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -17,23 +20,24 @@ public class ShortCourseLookupServiceTests
     public void SetUp()
     {
         _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
-        _sut = new ShortCourseLookupService(_coursesApiClient.Object);
+        _sut = new ShortCourseLookupService(_coursesApiClient.Object, Mock.Of<ILogger<ShortCourseLookupService>>());
     }
 
     [Test]
     public async Task GetCourseDetails_Returns_Price_From_Funding_Band_Active_On_StartDate()
     {
         _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
-            .ReturnsAsync(new CourseLookupDetailResponse
-            {
-                LearningType = "ApprenticeshipUnit",
-                ApprenticeshipFunding =
-                [
-                    new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = new DateTime(2022, 12, 31) },
-                    new ApprenticeshipFunding { MaxEmployerLevyCap = 9000, EffectiveFrom = new DateTime(2023, 1, 1), EffectiveTo = null }
-                ]
-            });
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(
+                new CourseLookupDetailResponse
+                {
+                    LearningType = "ApprenticeshipUnit",
+                    ApprenticeshipFunding =
+                    [
+                        new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = new DateTime(2022, 12, 31) },
+                        new ApprenticeshipFunding { MaxEmployerLevyCap = 9000, EffectiveFrom = new DateTime(2023, 1, 1), EffectiveTo = null }
+                    ]
+                }, HttpStatusCode.OK, string.Empty));
 
         var result = await _sut.GetCourseDetails("ZSC00001", new DateTime(2024, 6, 1));
 
@@ -44,15 +48,16 @@ public class ShortCourseLookupServiceTests
     public async Task GetCourseDetails_Returns_LearningType_From_Response()
     {
         _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
-            .ReturnsAsync(new CourseLookupDetailResponse
-            {
-                LearningType = "FoundationApprenticeship",
-                ApprenticeshipFunding =
-                [
-                    new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
-                ]
-            });
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(
+                new CourseLookupDetailResponse
+                {
+                    LearningType = "FoundationApprenticeship",
+                    ApprenticeshipFunding =
+                    [
+                        new ApprenticeshipFunding { MaxEmployerLevyCap = 6000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
+                    ]
+                }, HttpStatusCode.OK, string.Empty));
 
         var result = await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
 
@@ -63,19 +68,20 @@ public class ShortCourseLookupServiceTests
     public async Task GetCourseDetails_CallsApi_WithCourseCode()
     {
         _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
-            .ReturnsAsync(new CourseLookupDetailResponse
-            {
-                LearningType = "ApprenticeshipUnit",
-                ApprenticeshipFunding =
-                [
-                    new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
-                ]
-            });
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(
+                new CourseLookupDetailResponse
+                {
+                    LearningType = "ApprenticeshipUnit",
+                    ApprenticeshipFunding =
+                    [
+                        new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
+                    ]
+                }, HttpStatusCode.OK, string.Empty));
 
         await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
 
-        _coursesApiClient.Verify(x => x.Get<CourseLookupDetailResponse>(
+        _coursesApiClient.Verify(x => x.GetWithResponseCode<CourseLookupDetailResponse>(
             It.Is<IGetApiRequest>(r => r.GetUrl.Contains("ZSC00001"))), Times.Once);
     }
 
@@ -83,7 +89,7 @@ public class ShortCourseLookupServiceTests
     public async Task GetCourseDetails_WhenApiThrows_ExceptionBubblesUp()
     {
         _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
             .ThrowsAsync(new HttpRequestException("Service unavailable"));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
@@ -91,11 +97,11 @@ public class ShortCourseLookupServiceTests
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenApiReturnsNull_ThrowsInvalidOperationException()
+    public async Task GetCourseDetails_WhenApiReturns404_ThrowsInvalidOperationException()
     {
         _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
-            .ReturnsAsync((CourseLookupDetailResponse)null!);
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
             .Should().ThrowAsync<InvalidOperationException>()
@@ -103,15 +109,33 @@ public class ShortCourseLookupServiceTests
     }
 
     [Test]
+    public async Task GetCourseDetails_WhenApiReturns5xx_ThrowsAfterRetries()
+    {
+        _coursesApiClient
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(null, HttpStatusCode.InternalServerError, string.Empty));
+
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*ZSC00001*");
+
+        // 1 initial attempt + 3 retries
+        _coursesApiClient.Verify(
+            x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()),
+            Times.Exactly(4));
+    }
+
+    [Test]
     public async Task GetCourseDetails_WhenNoFundingBandForStartDate_ThrowsInvalidOperationException()
     {
         _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
-            .ReturnsAsync(new CourseLookupDetailResponse
-            {
-                LearningType = "FoundationApprenticeship",
-                ApprenticeshipFunding = []
-            });
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(
+                new CourseLookupDetailResponse
+                {
+                    LearningType = "FoundationApprenticeship",
+                    ApprenticeshipFunding = []
+                }, HttpStatusCode.OK, string.Empty));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
             .Should().ThrowAsync<InvalidOperationException>()
@@ -122,15 +146,16 @@ public class ShortCourseLookupServiceTests
     public async Task GetCourseDetails_WhenUnrecognisedLearningType_ThrowsInvalidOperationException()
     {
         _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
-            .ReturnsAsync(new CourseLookupDetailResponse
-            {
-                LearningType = "SomethingUnknown",
-                ApprenticeshipFunding =
-                [
-                    new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
-                ]
-            });
+            .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
+            .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(
+                new CourseLookupDetailResponse
+                {
+                    LearningType = "SomethingUnknown",
+                    ApprenticeshipFunding =
+                    [
+                        new ApprenticeshipFunding { MaxEmployerLevyCap = 5000, EffectiveFrom = new DateTime(2020, 1, 1), EffectiveTo = null }
+                    ]
+                }, HttpStatusCode.OK, string.Empty));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
             .Should().ThrowAsync<InvalidOperationException>()
