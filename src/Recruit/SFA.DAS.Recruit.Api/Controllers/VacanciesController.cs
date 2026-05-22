@@ -257,7 +257,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         }
 
         var vacancyReferences = items
-            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Archived)
             .Select(x => x.VacancyReference!.Value);
 
         var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetEmployerVacancyApplicationStatsRequest(accountId, vacancyReferences));
@@ -304,7 +304,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         }
 
         var vacancyReferences = items
-            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Archived)
             .Select(x => x.VacancyReference!.Value);
 
         var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetProviderVacancyApplicationStatsRequest(ukprn, vacancyReferences));
