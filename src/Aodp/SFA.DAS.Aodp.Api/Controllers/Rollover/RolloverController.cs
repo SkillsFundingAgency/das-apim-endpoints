@@ -44,10 +44,4 @@ public class RolloverController : BaseController
     {
         return await SendRequestAsync(createRolloverWorkflowRunCommand);
     }
-
-    [HttpPost("/api/rollover/p1checks")]
-    public async Task<IActionResult> UpdateRolloverWorkflowCandidatesAfterP1Checks(UpdateRolloverWorkflowCandidatesAfterP1ChecksCommand command)
-    {
-        return await SendRequestAsync(command);
-    }
 }
