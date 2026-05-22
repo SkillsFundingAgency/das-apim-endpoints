@@ -1,31 +1,25 @@
-using System;
-using System.Net;
-using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Models;
+using SFA.DAS.Recruit.Application.Queries.GetProviderPermissions;
 using SFA.DAS.Recruit.Application.Queries.ProviderAccounts;
+using System;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]/")]
-    public class ProviderAccountsController : Controller
+    [Route("[controller]/{ukprn}")]
+    public class ProviderAccountsController(IMediator mediator) : Controller
     {
-        private readonly IMediator _mediator;
-
-        public ProviderAccountsController(IMediator mediator)
-        {
-            _mediator = mediator;
-        }
-
         [HttpGet]
-        [Route("{ukprn}")]
+        [Route("")]
         public async Task<IActionResult> GetProviderStatus([FromRoute]int ukprn)
         {
             try
             {
-                var result = await _mediator.Send(new GetRoatpV2ProviderQuery
+                var result = await mediator.Send(new GetRoatpV2ProviderQuery
                 {
                     Ukprn = ukprn
                 });
@@ -36,6 +30,23 @@ namespace SFA.DAS.Recruit.Api.Controllers
             catch (Exception)
             {
                 return new StatusCodeResult((int) HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpGet]
+        [Route("permissions")]
+        public async Task<IActionResult> GetProviderPermissions([FromRoute] int ukprn)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetProviderPermissionsByUkprnQuery(ukprn));
+
+                return Ok(new GetProviderPermissionsResponse(result.Permissions));
+
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
     }

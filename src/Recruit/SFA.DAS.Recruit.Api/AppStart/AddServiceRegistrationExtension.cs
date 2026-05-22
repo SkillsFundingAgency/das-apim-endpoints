@@ -37,6 +37,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
             services.AddTransient<IBusinessMetricsApiClient<BusinessMetricsConfiguration>, BusinessMetricsApiClient>();
             services.AddTransient<INotificationService, NotificationService>();
+            services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
+            services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
             services.AddTransient<VacancyMapper>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
 

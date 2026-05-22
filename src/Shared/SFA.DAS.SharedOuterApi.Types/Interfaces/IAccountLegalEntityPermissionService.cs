@@ -8,4 +8,6 @@ public interface IAccountLegalEntityPermissionService
     Task<AccountLegalEntityItem> GetAccountLegalEntity(AccountIdentifier accountIdentifier, string accountLegalEntityPublicHashedId);
 
     Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, long accountHashedId, List<Operation> operationTypes);
+
+    Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn, List<Operation> operationTypes);
 }

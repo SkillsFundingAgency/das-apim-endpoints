@@ -9,7 +9,8 @@ using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
 
-public class AccountLegalEntityPermissionService(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient,
+public class AccountLegalEntityPermissionService(
+    IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient,
     IAccountsApiClient<AccountsConfiguration> accountsApiClient) : IAccountLegalEntityPermissionService
 {
     public async Task<AccountLegalEntityItem> GetAccountLegalEntity(
@@ -32,6 +33,13 @@ public class AccountLegalEntityPermissionService(IProviderRelationshipsApiClient
             ukprn, accountHashedId, operationTypes);
 
         return permittedLegalEntities is { Count: > 0 };
+    }
+
+    public async Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn, List<Operation> operationTypes)
+    {
+        var response = await GetProviderAccountLegalEntities(ukprn, operationTypes);
+
+        return response is null ? [] : response.ToList();
     }
 
     private async Task<AccountLegalEntityItem> GetProviderAccountLegalEntity(int ukprn,
