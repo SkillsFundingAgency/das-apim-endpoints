@@ -8,7 +8,6 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Roatp.Domain.Models;
 using SFA.DAS.Roatp.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Ukrlp;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 
 namespace SFA.DAS.Roatp.Application.Providers.Commands;
@@ -117,7 +116,7 @@ public class
 
             if (provider != null &&
                 (!string.Equals(provider.LegalName, ukrlp.ProviderName) ||
-                 !string.Equals(provider.TradingName ?? "", ukrlp.TradingName ?? "")))
+                 !string.Equals(provider.TradingName, ukrlp.TradingName)))
             {
                 _logger.LogInformation("Updating organisation name for ukprn {Ukprn}", provider.Ukprn);
 
@@ -127,8 +126,8 @@ public class
                     OrganisationTypeId = provider.OrganisationTypeId,
                     CharityNumber = provider.CharityNumber,
                     CompanyNumber = provider.CompanyNumber,
-                    LegalName = ukrlp.ProviderName ?? "",
-                    TradingName = ukrlp.TradingName ?? "",
+                    LegalName = ukrlp.ProviderName,
+                    TradingName = ukrlp.TradingName,
                     RequestingUserId = "System"
                 };
 

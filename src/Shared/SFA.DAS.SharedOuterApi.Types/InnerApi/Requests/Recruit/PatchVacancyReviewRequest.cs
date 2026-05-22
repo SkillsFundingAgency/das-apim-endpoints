@@ -6,7 +6,9 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Recruit;
 
 public class PatchableVacancyReviewDto
 {
-    public ReviewStatus Status { get; init; }   
+    public ReviewStatus Status { get; init; } 
+    public string ManualOutcome { get; init; }
+    public DateTime ClosedDate { get; init; }
 }
 
 public sealed class PatchVacancyReviewRequest(Guid vacancyReviewId, JsonPatchDocument<PatchableVacancyReviewDto> data): IPatchApiRequest<JsonPatchDocument<PatchableVacancyReviewDto>>

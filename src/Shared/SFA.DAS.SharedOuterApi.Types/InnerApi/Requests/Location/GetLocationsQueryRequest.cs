@@ -1,20 +1,9 @@
-﻿using System.Web;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Web;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location
+public class GetLocationsQueryRequest(string query) : IGetApiRequest
 {
-    public class GetLocationsQueryRequest :IGetApiRequest
-    {
-        private readonly string _query;
-
-        public GetLocationsQueryRequest(string query)
-        {
-            _query = query;
-        }
-
-        public string GetUrl => $"api/search?query={HttpUtility.UrlEncode(_query)}";
-    }
+    public string GetUrl => $"api/search?query={HttpUtility.UrlEncode(query)}";
 }

@@ -1,16 +1,17 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.ApprenticeApp.Services;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
-
+using SFA.DAS.ApprenticeApp.Application.Commands.ApprenticeAccounts;
+using SFA.DAS.ApprenticeApp.Services;
+using SFA.DAS.ApprenticeApp.Validators;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.ApprenticeApp.Api.AppStart
 {
@@ -34,7 +35,8 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<SubscriptionService>();
             services.AddTransient<ContentService>();
-            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();            
+            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
+            services.AddTransient<IValidator<ApprenticePatchCommand>, ApprenticePatchCommandValidator>();
         }
     }
 }

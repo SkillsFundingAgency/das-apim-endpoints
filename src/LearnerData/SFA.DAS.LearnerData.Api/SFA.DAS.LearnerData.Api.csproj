@@ -10,9 +10,11 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.23.0" />
 	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.5" />
     <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
+    <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.189" />
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch.SystemTextJson" Version="10.0.7" />
   </ItemGroup>
 
   <ItemGroup>

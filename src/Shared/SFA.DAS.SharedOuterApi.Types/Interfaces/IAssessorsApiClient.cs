@@ -1,9 +1,5 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.Interfaces
-{
-    public interface IAssessorsApiClient<T> : IInternalApiClient<T>
-    {
-        
-    }
-}
+namespace SFA.DAS.SharedOuterApi.Types.Interfaces;
+
+public interface IAssessorsApiClient<T> : IInternalApiClient<T>;
