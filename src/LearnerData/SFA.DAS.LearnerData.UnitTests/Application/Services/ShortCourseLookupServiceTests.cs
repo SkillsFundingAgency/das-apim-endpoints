@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
@@ -18,7 +17,7 @@ public class ShortCourseLookupServiceTests
     public void SetUp()
     {
         _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
-        _sut = new ShortCourseLookupService(_coursesApiClient.Object, Mock.Of<ILogger<ShortCourseLookupService>>());
+        _sut = new ShortCourseLookupService(_coursesApiClient.Object);
     }
 
     [Test]
@@ -81,54 +80,30 @@ public class ShortCourseLookupServiceTests
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenApiThrows_ReturnsDefaults()
+    public async Task GetCourseDetails_WhenApiThrows_ExceptionBubblesUp()
     {
         _coursesApiClient
             .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
             .ThrowsAsync(new HttpRequestException("Service unavailable"));
 
-        var result = await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
-
-        result.Price.Should().Be(0);
-        result.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<HttpRequestException>();
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenApiThrows_LogsError()
-    {
-        var logger = new Mock<ILogger<ShortCourseLookupService>>();
-        _sut = new ShortCourseLookupService(_coursesApiClient.Object, logger.Object);
-
-        _coursesApiClient
-            .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
-            .ThrowsAsync(new HttpRequestException("Service unavailable"));
-
-        await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
-
-        logger.Verify(x => x.Log(
-            LogLevel.Error,
-            It.IsAny<EventId>(),
-            It.IsAny<It.IsAnyType>(),
-            It.IsAny<Exception>(),
-            It.IsAny<Func<It.IsAnyType, Exception?, string>>()),
-            Times.Once);
-    }
-
-    [Test]
-    public async Task GetCourseDetails_WhenApiReturnsNull_ReturnsDefaults()
+    public async Task GetCourseDetails_WhenApiReturnsNull_ThrowsInvalidOperationException()
     {
         _coursesApiClient
             .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
             .ReturnsAsync((CourseLookupDetailResponse)null!);
 
-        var result = await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
-
-        result.Price.Should().Be(0);
-        result.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*ZSC00001*");
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenNoFundingBands_ReturnsDefaults()
+    public async Task GetCourseDetails_WhenNoFundingBandForStartDate_ThrowsInvalidOperationException()
     {
         _coursesApiClient
             .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
@@ -138,14 +113,13 @@ public class ShortCourseLookupServiceTests
                 ApprenticeshipFunding = []
             });
 
-        var result = await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
-
-        result.Price.Should().Be(0);
-        result.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*ZSC00001*");
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenUnrecognisedLearningType_DefaultsToApprenticeshipUnit()
+    public async Task GetCourseDetails_WhenUnrecognisedLearningType_ThrowsInvalidOperationException()
     {
         _coursesApiClient
             .Setup(x => x.Get<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
@@ -158,9 +132,8 @@ public class ShortCourseLookupServiceTests
                 ]
             });
 
-        var result = await _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow);
-
-        result.LearningType.Should().Be(LearningType.ApprenticeshipUnit);
-        result.Price.Should().Be(5000);
+        await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
+            .Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("*SomethingUnknown*");
     }
 }
