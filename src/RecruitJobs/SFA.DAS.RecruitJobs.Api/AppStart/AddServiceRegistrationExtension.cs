@@ -6,12 +6,12 @@ using SFA.DAS.RecruitJobs.Ai;
 using SFA.DAS.RecruitJobs.Api.Models.Mappers;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.RecruitJobs.Handlers;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Services;
+using SFA.DAS.SharedOuterApi.Recruit.Services;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.RecruitJobs.Api.AppStart;
@@ -31,10 +31,17 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IBusinessMetricsApiClient<BusinessMetricsConfiguration>, BusinessMetricsApiClient>();
         services.AddTransient<INotificationService, NotificationService>();
         services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
         services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<IRecruitAiService, RecruitAiService>();
         services.AddTransient<VacancyMapper>();
         services.AddTransient<ITransferProviderVacancyToLegalEntityHandler, TransferProviderVacancyToLegalEntityHandler>();
+        services.AddTransient<ITransferProviderVacancyToQaReviewHandler, TransferProviderVacancyToQaReviewHandler>();
+        services.AddKeyedTransient<IBankHolidaysService, BankHolidaysService>("vanilla");
+        services.AddTransient<IBankHolidaysService, CachingBankHolidaysService>();
+        services.AddTransient<IVacancySlaDeadlineService, VacancySlaDeadlineService>();
+        services.AddTransient<IVacancyComparerService, VacancyComparerService>();
+        services.AddTransient<IVacancyReviewService, VacancyReviewService>();
         services.AddTransient<ILocationLookupService, LocationLookupService>();
     }
 }
