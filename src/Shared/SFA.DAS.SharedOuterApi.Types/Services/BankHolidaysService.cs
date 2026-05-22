@@ -1,38 +1,31 @@
-using System.Collections.Generic;
-using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace SFA.DAS.Recruit.Application.Services;
+namespace SFA.DAS.SharedOuterApi.Types.Services;
 
 public interface IBankHolidaysService
 {
     Task<BankHolidaysData> GetBankHolidayData();
 }
 
-public class BankHolidaysService : IBankHolidaysService
+public class BankHolidaysService(IHttpClientFactory httpClientFactory) : IBankHolidaysService
 {
-    private readonly HttpClient _httpClient;
-    
-    public BankHolidaysService(IHttpClientFactory httpClientFactory)
-    {
-        _httpClient = httpClientFactory.CreateClient();
-    }
+    private readonly HttpClient _httpClient = httpClientFactory.CreateClient();
+    private const string BankHolidaysUrl = "https://www.gov.uk/bank-holidays.json";
 
     public async Task<BankHolidaysData> GetBankHolidayData()
     {
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "https://www.gov.uk/bank-holidays.json");
-        
+        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, BankHolidaysUrl);
+
         var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
-        
+
         var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-        
+
         return JsonSerializer.Deserialize<BankHolidaysData>(json);
     }
 }
 
-public class Event
+public record Event
 {
     [JsonPropertyName("title")]
     public string Title { get; set; }
@@ -45,7 +38,7 @@ public class Event
 
 }
 
-public class Data
+public record Data
 {
     [JsonPropertyName("division")]
     public string Division { get; set; }
@@ -53,7 +46,7 @@ public class Data
     public List<Event> Events { get; set; }
 }
 
-public class BankHolidaysData
+public record BankHolidaysData
 {
     [JsonPropertyName("england-and-wales")]
     public Data EnglandAndWales { get; set; }

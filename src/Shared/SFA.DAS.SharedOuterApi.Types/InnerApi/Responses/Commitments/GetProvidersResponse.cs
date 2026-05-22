@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+
 public class GetProvidersResponse
 {
     public IEnumerable<Provider> Providers { get; set; }

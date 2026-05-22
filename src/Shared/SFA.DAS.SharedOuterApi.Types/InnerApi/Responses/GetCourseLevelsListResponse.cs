@@ -1,16 +1,15 @@
 using Newtonsoft.Json;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses
-{
-    public class GetCourseLevelsListResponse
-    {
-        [JsonProperty("Levels")]
-        public IEnumerable<GetCourseLevelsListItem> Levels { get; set; }
-    }
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 
-    public class GetCourseLevelsListItem
-    {
-        public int Code { get; set; }
-        public string Name { get; set; }
-    }
+public class GetCourseLevelsListResponse
+{
+    [JsonProperty("Levels")]
+    public IEnumerable<GetCourseLevelsListItem> Levels { get; set; }
+}
+
+public class GetCourseLevelsListItem
+{
+    public int Code { get; set; }
+    public string Name { get; set; }
 }
