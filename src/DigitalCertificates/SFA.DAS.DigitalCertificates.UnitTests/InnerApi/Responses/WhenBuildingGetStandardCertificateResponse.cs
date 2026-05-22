@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -25,7 +26,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses.Assessor
             string employerName,
             DateTime? learningStartDate,
             DateTime? printRequestedAt,
-            string printRequestedBy)
+            string printRequestedBy,
+            List<CertificateLog> certificateLogs)
         {
             var response = new GetStandardCertificateResponse
             {
@@ -47,7 +49,8 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses.Assessor
                 CertificateData = new CertificateData
                 {
                     EmployerName = employerName
-                }
+                },
+                CertificateLogs = certificateLogs
             };
 
             response.OrganisationId.Should().Be(organisationId);
@@ -66,6 +69,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.InnerApi.Responses.Assessor
             response.LearningStartDate.Should().Be(learningStartDate);
             response.PrintRequestedAt.Should().Be(printRequestedAt);
             response.PrintRequestedBy.Should().Be(printRequestedBy);
+            response.CertificateLogs.Should().BeEquivalentTo(certificateLogs);
         }
     }
 }
