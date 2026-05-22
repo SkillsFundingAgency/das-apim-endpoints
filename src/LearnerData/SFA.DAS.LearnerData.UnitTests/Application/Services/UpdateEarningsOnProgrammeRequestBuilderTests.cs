@@ -72,7 +72,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                 .Select(x => new PeriodInLearningItem
                 {
                     StartDate = x.StartDate,
-                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.CompletionDate ?? x.ExpectedEndDate,
+                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.CompletionDate,
                     OriginalExpectedEndDate = x.ExpectedEndDate
                 }));
 

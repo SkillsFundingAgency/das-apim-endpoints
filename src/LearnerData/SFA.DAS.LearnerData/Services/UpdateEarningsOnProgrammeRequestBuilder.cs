@@ -78,7 +78,7 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
 
         foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
         {
-            var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.CompletionDate ?? onProgramme.ExpectedEndDate;
+            var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.CompletionDate;
 
             periodsInLearning.Add(new PeriodInLearningItem
             {

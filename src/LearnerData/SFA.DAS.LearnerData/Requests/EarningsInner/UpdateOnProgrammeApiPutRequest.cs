@@ -33,11 +33,11 @@ public class PriceItem
     public decimal TotalPrice { get; set; }
 }
 
-[DebuggerDisplay("Start={StartDate.ToString(\"yyyy-MM-dd\")}, End={EndDate.ToString(\"yyyy-MM-dd\")}")]
+[DebuggerDisplay("Start={StartDate.ToString(\"yyyy-MM-dd\")}, End={EndDate?.ToString(\"yyyy-MM-dd\") ?? \"(in progress)\"}")]
 public class PeriodInLearningItem
 {
     public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
     public DateTime OriginalExpectedEndDate { get; set; }
 }
 
