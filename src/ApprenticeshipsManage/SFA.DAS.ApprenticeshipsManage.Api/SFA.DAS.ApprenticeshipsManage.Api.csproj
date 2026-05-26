@@ -15,8 +15,4 @@
 	  <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SFA.DAS.ApprenticeshipsManage\SFA.DAS.ApprenticeshipsManage.csproj" />
-  </ItemGroup>
-
 </Project>
