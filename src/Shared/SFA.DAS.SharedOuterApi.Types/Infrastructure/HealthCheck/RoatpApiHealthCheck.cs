@@ -5,13 +5,11 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
-public class RoatpApiHealthCheck : ApiHealthCheck<RoatpConfiguration>, IHealthCheck
+
+public class RoatpApiHealthCheck(IRoatpServiceApiClient<RoatpConfiguration> client, ILogger<RoatpApiHealthCheck> logger)
+    : ApiHealthCheck<RoatpConfiguration>(HealthCheckDescription, HealthCheckResultDescription, client, logger),
+        IHealthCheck
 {
     public static readonly string HealthCheckDescription = "Roatp API";
     public static string HealthCheckResultDescription => $"{HealthCheckDescription} check";
-
-    public RoatpApiHealthCheck(IRoatpServiceApiClient<RoatpConfiguration> client, ILogger<RoatpApiHealthCheck> logger)
-        : base(HealthCheckDescription, HealthCheckResultDescription, client, logger)
-    {
-    }
 }

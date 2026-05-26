@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.Models.RequestApprenticeTraining;
+
 public class EmployerRequestForResponseNotification
 {
     public Guid RequestedBy { get; set; }

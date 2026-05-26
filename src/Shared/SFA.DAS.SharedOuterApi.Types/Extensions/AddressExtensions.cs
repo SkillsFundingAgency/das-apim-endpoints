@@ -6,7 +6,7 @@ public static class AddressExtensions
 {
     private const int PostcodeMinLength = 5;
     private const int InCodeLength = 3;
-    
+
     public static string GetCity(this Address? address)
     {
         if (address is null)
@@ -20,7 +20,7 @@ public static class AddressExtensions
             address.AddressLine3,
             address.AddressLine2
         ];
-        
+
         return lines.FirstOrDefault(x => !string.IsNullOrWhiteSpace(x))?.Trim();
     }
 
@@ -49,12 +49,12 @@ public static class AddressExtensions
 
         return string.Join(", ", lines.Where(x => !string.IsNullOrWhiteSpace(x)).Select(x => x.Trim()));
     }
-    
+
     private static string? PostcodeAsOutCode(this Address address)
     {
         var postcode = address.Postcode?.Replace(" ", "").Trim();
 
-        return postcode is {Length: < PostcodeMinLength}
+        return postcode is { Length: < PostcodeMinLength }
             ? postcode // If the length is less than InCodeLength it's already an outcode or empty/null
             : postcode?[..^InCodeLength];
     }
@@ -65,7 +65,7 @@ public static class AddressExtensions
         {
             return;
         }
-            
+
         var city = address.GetCity();
 
         address.AddressLine1 = null;

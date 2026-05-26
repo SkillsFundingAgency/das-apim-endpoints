@@ -2,14 +2,9 @@
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
 
-public class GetPendingApprenticeChangesRequest : IGetApiRequest
+public class GetPendingApprenticeChangesRequest(long accountId) : IGetApiRequest
 {
-    public long AccountId { get; }
-
-    public GetPendingApprenticeChangesRequest(long accountId)
-    {
-        AccountId = accountId;
-    }
+    public long AccountId { get; } = accountId;
 
     public string GetUrl => $"api/accounts/{AccountId}/pending-apprentice-changes";
 }

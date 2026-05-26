@@ -1,20 +1,11 @@
-﻿using System.Web;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
+using System.Web;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations
+public class GetLatestDetailsForEducationalOrgRequest(string identifier) : IGetApiRequest
 {
-    public class GetLatestDetailsForEducationalOrgRequest : IGetApiRequest
-    {
-        public string Identifier { get; }
+    public string Identifier { get; } = identifier;
 
-        public GetLatestDetailsForEducationalOrgRequest(string identifier)
-        {
-            Identifier = identifier;
-        }
-
-        public string GetUrl => $"/api/EducationalOrganisations/LatestDetails?identifier={HttpUtility.UrlEncode(Identifier)}";
-    }
+    public string GetUrl => $"/api/EducationalOrganisations/LatestDetails?identifier={HttpUtility.UrlEncode(Identifier)}";
 }

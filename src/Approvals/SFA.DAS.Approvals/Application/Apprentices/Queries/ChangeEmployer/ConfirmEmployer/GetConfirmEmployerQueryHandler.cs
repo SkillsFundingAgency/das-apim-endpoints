@@ -4,7 +4,6 @@ using MediatR;
 using SFA.DAS.Approvals.InnerApi.Requests;
 using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Commitments;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Commitments;
