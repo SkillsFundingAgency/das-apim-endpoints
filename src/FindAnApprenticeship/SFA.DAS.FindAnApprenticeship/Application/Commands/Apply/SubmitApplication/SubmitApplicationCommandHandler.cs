@@ -1,5 +1,5 @@
 using MediatR;
-using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FindAnApprenticeship.Domain.EmailTemplates;
 using SFA.DAS.FindAnApprenticeship.Domain.Models;

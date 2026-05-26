@@ -1,18 +1,8 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests
+public class GetEmployerAccountLegalEntityRequest(string href) : IGetApiRequest
 {
-    public class GetEmployerAccountLegalEntityRequest : IGetApiRequest
-    {
-        private readonly string _href;
-
-        public GetEmployerAccountLegalEntityRequest(string href)
-        {
-            _href = href;
-        }
-
-        public string GetUrl => _href;
-    }
+    public string GetUrl => href;
 }
