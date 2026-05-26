@@ -7,6 +7,6 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Rollover
     {
         public string PostUrl => $"api/rollover/rolloverworkflowruns";
 
-        public object Data { get; set; }
+        public object Data { get; set; } = new { };
     }
 }
