@@ -1,14 +1,13 @@
-﻿using System.Net;
-using System.Text.Encodings.Web;
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using System.Net;
+using System.Text.Encodings.Web;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests;
 
@@ -36,7 +35,7 @@ public class WhenGettingPostcodeInfo
         capturedRequest.GetUrl.Should().Be($"api/postcodes?postcode={HtmlEncoder.Default.Encode(postcode)}");
         result.Should().Be(null);
     }
-    
+
     [Test, MoqAutoData]
     public async Task Then_The_Info_Is_Returned_When_The_Postcode_Is_Found(
         string postcode,
@@ -58,7 +57,7 @@ public class WhenGettingPostcodeInfo
         // assert
         capturedRequest.Version.Should().Be("2.0");
         capturedRequest.GetUrl.Should().Be($"api/postcodes?postcode={HtmlEncoder.Default.Encode(postcode)}");
-        result.Should().BeEquivalentTo(response, 
+        result.Should().BeEquivalentTo(response,
             opt => opt.WithMapping<GetLookupPostcodeResponse, PostcodeInfo>(x => x.DistrictName, x => x.AdminDistrict));
     }
 }

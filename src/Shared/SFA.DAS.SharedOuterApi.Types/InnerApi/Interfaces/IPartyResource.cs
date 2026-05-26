@@ -1,8 +1,7 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces
+﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces;
+
+public interface IPartyResource
 {
-    public interface IPartyResource
-    {
-        long AccountId { get; }
-        long ProviderId { get;  }
-    }
+    long AccountId { get; }
+    long ProviderId { get; }
 }
