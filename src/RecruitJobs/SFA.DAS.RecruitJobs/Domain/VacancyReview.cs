@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 
 namespace SFA.DAS.RecruitJobs.Domain;
 
@@ -19,7 +20,7 @@ public record VacancyReview
     public string? ManualQaComment { get; init; }
     public List<string> ManualQaFieldIndicators { get; init; }
     public string? AutomatedQaOutcome { get; init; }
-    public string? AutomatedQaOutcomeIndicators { get; init; }
+    public List<RuleOutcome> AutomatedQaOutcomeIndicators { get; init; } = [];
     public List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public List<string> UpdatedFieldIdentifiers { get; init; }
     public string VacancySnapshot { get; init; }
