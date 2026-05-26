@@ -41,12 +41,24 @@ public class ShortCourseLookupService : IShortCourseLookupService
 
     public async Task<ShortCourseLookupResult> GetCourseDetails(string courseCode, DateTime startDate)
     {
-        var apiResponse = await _retryPolicy.ExecuteAsync(
-            () => _coursesApiClient.GetWithResponseCode<CourseLookupDetailResponse>(
-                new GetCourseLookupDetailsByIdRequest(courseCode)));
+        ApiResponse<CourseLookupDetailResponse> apiResponse;
+        try
+        {
+            apiResponse = await _retryPolicy.ExecuteAsync(
+                () => _coursesApiClient.GetWithResponseCode<CourseLookupDetailResponse>(
+                    new GetCourseLookupDetailsByIdRequest(courseCode)));
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            throw new CoursesApiUnavailableException($"Courses API unavailable for course {courseCode} after retries.", ex);
+        }
 
         if (!apiResponse.StatusCode.IsSuccessStatusCode())
-            throw new InvalidOperationException($"Courses API returned {apiResponse.StatusCode} for course {courseCode}.");
+        {
+            if ((int)apiResponse.StatusCode >= 500)
+                throw new CoursesApiUnavailableException($"Courses API returned {apiResponse.StatusCode} for course {courseCode} after retries.");
+            throw new InvalidCourseException($"Courses API returned {apiResponse.StatusCode} for course {courseCode}.");
+        }
 
         var response = apiResponse.Body;
 
@@ -56,7 +68,7 @@ public class ShortCourseLookupService : IShortCourseLookupService
         var price = response.ApprenticeshipFunding.MaxFundingOn(startDate);
 
         if (price == 0)
-            throw new InvalidOperationException($"No funding band found for course {courseCode} on start date {startDate:yyyy-MM-dd}.");
+            throw new InvalidCourseException($"No funding band found for course {courseCode} on start date {startDate:yyyy-MM-dd}.");
 
         if (!Enum.TryParse<LearningType>(response.LearningType, out var learningType))
             throw new InvalidOperationException($"Unrecognised learning type '{response.LearningType}' for course {courseCode}.");

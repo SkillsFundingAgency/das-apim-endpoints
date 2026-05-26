@@ -86,37 +86,38 @@ public class ShortCourseLookupServiceTests
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenApiThrows_ExceptionBubblesUp()
+    public async Task GetCourseDetails_WhenApiThrowsNetworkError_ThrowsCoursesApiUnavailableException()
     {
         _coursesApiClient
             .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
             .ThrowsAsync(new HttpRequestException("Service unavailable"));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
-            .Should().ThrowAsync<HttpRequestException>();
+            .Should().ThrowAsync<CoursesApiUnavailableException>()
+            .WithMessage("*ZSC00001*");
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenApiReturns404_ThrowsInvalidOperationException()
+    public async Task GetCourseDetails_WhenApiReturns404_ThrowsInvalidCourseException()
     {
         _coursesApiClient
             .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
             .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(null, HttpStatusCode.NotFound, string.Empty));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
-            .Should().ThrowAsync<InvalidOperationException>()
+            .Should().ThrowAsync<InvalidCourseException>()
             .WithMessage("*ZSC00001*");
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenApiReturns5xx_ThrowsAfterRetries()
+    public async Task GetCourseDetails_WhenApiReturns5xx_ThrowsCoursesApiUnavailableExceptionAfterRetries()
     {
         _coursesApiClient
             .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
             .ReturnsAsync(new ApiResponse<CourseLookupDetailResponse>(null, HttpStatusCode.InternalServerError, string.Empty));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
-            .Should().ThrowAsync<InvalidOperationException>()
+            .Should().ThrowAsync<CoursesApiUnavailableException>()
             .WithMessage("*ZSC00001*");
 
         // 1 initial attempt + 3 retries
@@ -126,7 +127,7 @@ public class ShortCourseLookupServiceTests
     }
 
     [Test]
-    public async Task GetCourseDetails_WhenNoFundingBandForStartDate_ThrowsInvalidOperationException()
+    public async Task GetCourseDetails_WhenNoFundingBandForStartDate_ThrowsInvalidCourseException()
     {
         _coursesApiClient
             .Setup(x => x.GetWithResponseCode<CourseLookupDetailResponse>(It.IsAny<IGetApiRequest>()))
@@ -138,7 +139,7 @@ public class ShortCourseLookupServiceTests
                 }, HttpStatusCode.OK, string.Empty));
 
         await FluentActions.Invoking(() => _sut.GetCourseDetails("ZSC00001", DateTime.UtcNow))
-            .Should().ThrowAsync<InvalidOperationException>()
+            .Should().ThrowAsync<InvalidCourseException>()
             .WithMessage("*ZSC00001*");
     }
 
