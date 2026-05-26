@@ -45,6 +45,7 @@ public class OnProgrammeRequestDetails
     public Care Care { get; set; }
     public int AimSequenceNumber { get; set; }
     public string LearnAimRef { get; set; }
+    public DateTime? AchievementDate { get; set; }
 }
 
 public class CostDetails
