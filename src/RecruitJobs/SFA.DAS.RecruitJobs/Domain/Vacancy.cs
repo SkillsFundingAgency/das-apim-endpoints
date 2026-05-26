@@ -7,16 +7,17 @@ public class Vacancy
     public Guid Id { get; init; }
     public long? VacancyReference { get; init; }
     public long? AccountId { get; init; }
-    public required VacancyStatus Status { get; set; }
+    public required SharedOuterApi.Types.Domain.Recruit.VacancyStatus Status { get; set; }
     public SharedOuterApi.Types.Domain.ApprenticeshipTypes? ApprenticeshipType { get; init; }
     public string? Title { get; init; }
-    public OwnerType? OwnerType { get; init; }
-    public SourceOrigin? SourceOrigin { get; init; }
-    public SourceType? SourceType { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.OwnerType? OwnerType { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.SourceOrigin? SourceOrigin { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.SourceType? SourceType { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.ArchiveType? ArchiveType { get; set; }
     public long? SourceVacancyReference { get; init; }
     public DateTime? ApprovedDate { get; init; }
     public DateTime? CreatedDate { get; init; }
-    public DateTime? LastUpdatedDate { get; init; }
+    public DateTime? LastUpdatedDate { get; set; }
     public DateTime? SubmittedDate { get; init; }
     public DateTime? ReviewRequestedDate { get; init; }
     public DateTime? ClosedDate { get; set; }
@@ -24,9 +25,10 @@ public class Vacancy
     public DateTime? LiveDate { get; init; }
     public DateTime? StartDate { get; init; }
     public DateTime? ClosingDate { get; init; }
+    public DateTime? ArchivedDate { get; set; }
     public int ReviewCount { get; init; }
     public string? ApplicationUrl { get; init; }
-    public ApplicationMethod? ApplicationMethod { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.ApplicationMethod? ApplicationMethod { get; init; }
     public string? ApplicationInstructions { get; init; }
     public string? ShortDescription { get; init; }
     public string? Description { get; init; }
@@ -38,11 +40,11 @@ public class Vacancy
     public SharedOuterApi.Types.Domain.AvailableWhere? EmployerLocationOption { get; init; }
     public string? EmployerLocationInformation { get; init; }
     public string? EmployerName { get; init; }
-    public EmployerNameOption? EmployerNameOption { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.EmployerNameOption? EmployerNameOption { get; init; }
     public string? EmployerRejectedReason { get; init; }
     public string? LegalEntityName { get; init; }
     public string? EmployerWebsiteUrl { get; init; }
-    public GeoCodeMethod? GeoCodeMethod { get; init; }
+    public SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod? GeoCodeMethod { get; init; }
     public long? AccountLegalEntityId { get; init; }
     public int? NumberOfPositions { get; init; }
     public string? OutcomeDescription { get; init; }
@@ -54,7 +56,7 @@ public class Vacancy
     public string? AdditionalTrainingDescription { get; init; }
     public TrainingProvider? TrainingProvider { get; init; }
     public Wage? Wage { get; set; }
-    public ClosureReason? ClosureReason { get; set; }
+    public SharedOuterApi.Types.Domain.Recruit.ClosureReason? ClosureReason { get; set; }
     public TransferInfo? TransferInfo { get; init; }
     public string? AdditionalQuestion1 { get; init; }
     public string? AdditionalQuestion2 { get; init; }
@@ -65,4 +67,5 @@ public class Vacancy
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public Guid? SubmittedByUserId { get; init; }
     public Guid? ReviewRequestedByUserId { get; init; }
+    public Guid? ArchivedByUserId { get; init; }
 }
