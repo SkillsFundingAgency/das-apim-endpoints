@@ -35,13 +35,6 @@ public class AccountLegalEntityPermissionService(
         return permittedLegalEntities is { Count: > 0 };
     }
 
-    public async Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn, List<Operation> operationTypes)
-    {
-        var response = await GetProviderAccountLegalEntities(ukprn, operationTypes);
-
-        return response is null ? [] : response.ToList();
-    }
-
     private async Task<AccountLegalEntityItem> GetProviderAccountLegalEntity(int ukprn,
         string accountLegalEntityPublicHashedId,
         List<Operation> operationTypes)
@@ -91,7 +84,7 @@ public class AccountLegalEntityPermissionService(
         };
     }
 
-    private async Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn,
+    public async Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn,
         long accountHashedId,
         List<Operation> operationTypes)
     {
@@ -102,7 +95,7 @@ public class AccountLegalEntityPermissionService(
             .ToList();
     }
 
-    private async Task<List<AccountLegalEntityItem>> GetProviderAccountLegalEntities(long ukprn, List<Operation> operationTypes)
+    public async Task<List<AccountLegalEntityItem>> GetProviderAccountLegalEntities(long ukprn, List<Operation> operationTypes)
     {
         var response = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
             new GetProviderAccountLegalEntitiesRequest(Convert.ToInt32(ukprn),

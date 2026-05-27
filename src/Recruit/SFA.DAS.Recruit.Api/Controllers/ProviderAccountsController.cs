@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Recruit.Api.Models;
-using SFA.DAS.Recruit.Application.Queries.GetProviderPermissions;
+using SFA.DAS.Recruit.Api.Models.Providers.Responses;
+using SFA.DAS.Recruit.Application.Queries.GetProviderPermissionsByUkprn;
+using SFA.DAS.Recruit.Application.Queries.GetProviderPermissionsByUkprnAndAccountId;
 using SFA.DAS.Recruit.Application.Queries.ProviderAccounts;
 using System;
 using System.Net;
@@ -41,8 +43,23 @@ namespace SFA.DAS.Recruit.Api.Controllers
             {
                 var result = await mediator.Send(new GetProviderPermissionsByUkprnQuery(ukprn));
 
-                return Ok(new GetProviderPermissionsResponse(result.Permissions));
+                return Ok(new GetProviderPermissionsApiResponse { LegalEntities = result.LegalEntities });
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
 
+        [HttpGet]
+        [Route("permissions/{accountId:long}/employerAccount")]
+        public async Task<IActionResult> GetProviderPermissions([FromRoute] int ukprn, [FromRoute] long accountId)
+        {
+            try
+            {
+                var result = await mediator.Send(new GetProviderPermissionsByUkprnAndAccountIdQuery(ukprn, accountId));
+
+                return Ok(result);
             }
             catch (Exception)
             {
