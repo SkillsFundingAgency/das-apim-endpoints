@@ -1,6 +1,13 @@
 namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
-public class UpdateLearnerApiPutResponse
+public class UpdateLearnerApiPutResponse : BaseLearnerApiPutResponse;
+
+public class CreateDraftLearnerApiPutResponse : BaseLearnerApiPutResponse
+{
+    public Guid LearningKey { get; set; }
+}
+
+public abstract class BaseLearnerApiPutResponse
 {
     public List<LearningUpdateChanges> Changes { get; set; } = [];
     public Guid LearningEpisodeKey { get; set; }

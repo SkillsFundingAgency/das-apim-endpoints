@@ -1,24 +1,59 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
 
 public class CreateLearnerCommandHandler(
     ILogger<CreateLearnerCommandHandler> logger,
-    IMessageSession messageSession) : IRequestHandler<CreateLearnerCommand>
+    IMessageSession messageSession,
+    ILearningApiClient<LearningApiConfiguration> learningApiClient,
+    IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+    IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
-        //call the new inner POST, needs to build a very similar/same payload to update, with same/similar response, expects response of reinstated or not.
+        var updateLearnerCommand = new UpdateLearnerCommand
+        {
+            Ukprn = command.Ukprn,
+            UpdateLearnerRequest = command.Request,
+            LearningKey = Guid.Empty
+        };
 
-        //new add draft learning post endpoint in inner
-        //    - find by ukprn, uln, course, &IsRemoved, reinstate
-        //    - return reinstated
+        var updateLearningRequest = updateLearningPutRequestBuilder.Build(updateLearnerCommand);
 
-        //if reinstated - call earnings 
+        var putRequest = new CreateDraftLearningApiPutRequest(updateLearningRequest.Data, command.Ukprn, command.Request.Learner.Uln);
+
+        var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, CreateDraftLearnerApiPutResponse>(putRequest);
+
+        if (!learningResponse.StatusCode.IsSuccessStatusCode())
+        {
+            logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
+            throw new Exception($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
+        }
+
+        if (learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
+        {
+            logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
+            var reinstatedCommand = new UpdateLearnerCommand
+            {
+                Ukprn = command.Ukprn,
+                UpdateLearnerRequest = command.Request,
+                LearningKey = learningResponse.Body.LearningKey
+            };
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(reinstatedCommand, learningResponse.Body, updateLearningRequest);
+            await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+        }
 
         logger.LogTrace("Publishing LearnerDataEvent");
         var evt = MapToEvent(command);

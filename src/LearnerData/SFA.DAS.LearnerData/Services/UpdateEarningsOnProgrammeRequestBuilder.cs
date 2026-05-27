@@ -11,19 +11,19 @@ namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
+    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
 }
 
 public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
 {
-    public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, UpdateLearnerApiPutResponse learningApiPutResponse,
+    public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, BaseLearnerApiPutResponse learningApiPutResponse,
         UpdateLearningApiPutRequest putRequest)
     {
         var fundingBandMaximum = default(int?);
         var includesFundingBandMaximumUpdate = false;
 
-        if (learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.Prices)
-            || learningApiPutResponse.Changes.Contains(UpdateLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
+        if (learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Prices)
+            || learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
         {
             fundingBandMaximum = await GetFundingBandMaximum(command);
             includesFundingBandMaximumUpdate = true;
