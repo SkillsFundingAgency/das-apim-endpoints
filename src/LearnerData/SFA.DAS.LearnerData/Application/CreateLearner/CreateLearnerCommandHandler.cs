@@ -8,7 +8,6 @@ using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
@@ -17,22 +16,13 @@ public class CreateLearnerCommandHandler(
     ILogger<CreateLearnerCommandHandler> logger,
     IMessageSession messageSession,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IUpdateLearningPutRequestBuilder updateLearningPutRequestBuilder,
+    ICreateDraftLearningApiPutRequestBuilder createDraftLearningApiPutRequestBuilder,
     IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
     IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
-        var updateLearnerCommand = new UpdateLearnerCommand
-        {
-            Ukprn = command.Ukprn,
-            UpdateLearnerRequest = command.Request,
-            LearningKey = Guid.Empty
-        };
-
-        var updateLearningRequest = updateLearningPutRequestBuilder.Build(updateLearnerCommand);
-
-        var putRequest = new CreateDraftLearningApiPutRequest(updateLearningRequest.Data, command.Ukprn, command.Request.Learner.Uln);
+        var putRequest = createDraftLearningApiPutRequestBuilder.Build(command.Ukprn, command.Request);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, CreateDraftLearnerApiPutResponse>(putRequest);
 
@@ -45,13 +35,8 @@ public class CreateLearnerCommandHandler(
         if (learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
         {
             logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
-            var reinstatedCommand = new UpdateLearnerCommand
-            {
-                Ukprn = command.Ukprn,
-                UpdateLearnerRequest = command.Request,
-                LearningKey = learningResponse.Body.LearningKey
-            };
-            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(reinstatedCommand, learningResponse.Body, updateLearningRequest);
+            var updateLearningRequest = new UpdateLearningApiPutRequest(Guid.Empty, putRequest.Data);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, updateLearningRequest);
             await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 

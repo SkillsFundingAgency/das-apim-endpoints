@@ -108,7 +108,7 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate); // on-prog change
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command, updateLearningApiResponse, apiPutRequest))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.LearningKey, command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest))
             .ReturnsAsync(updateOnProgPutRequest);
 
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);
@@ -203,7 +203,7 @@ public class WhenHandlingUpdateLearnerCommand
     {
         var fixture = new Fixture();
         var apiPutRequest = fixture.Create<UpdateLearningApiPutRequest>();
-        _updateLearningPutRequestBuilder.Setup(x => x.Build(command)).Returns(apiPutRequest);
+        _updateLearningPutRequestBuilder.Setup(x => x.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearningKey)).Returns(apiPutRequest);
         return apiPutRequest;
     }
 

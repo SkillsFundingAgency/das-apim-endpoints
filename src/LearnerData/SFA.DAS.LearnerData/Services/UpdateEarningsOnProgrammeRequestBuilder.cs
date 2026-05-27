@@ -6,17 +6,18 @@ using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Requests;
 
 namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
+    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
 }
 
 public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
 {
-    public async Task<UpdateOnProgrammeApiPutRequest> Build(UpdateLearnerCommand command, BaseLearnerApiPutResponse learningApiPutResponse,
+    public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
         UpdateLearningApiPutRequest putRequest)
     {
         var fundingBandMaximum = default(int?);
@@ -25,7 +26,7 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
         if (learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Prices)
             || learningApiPutResponse.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.ExpectedEndDate))
         {
-            fundingBandMaximum = await GetFundingBandMaximum(command);
+            fundingBandMaximum = await GetFundingBandMaximum(updateLearnerRequest);
             includesFundingBandMaximumUpdate = true;
         }
 
@@ -48,8 +49,8 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
                 EndPointAssessmentPrice = x.EndPointAssessmentPrice,
                 TotalPrice = x.TotalPrice
             }).ToList(),
-            PeriodsInLearning = GetPeriodsInLearning(command),
-            Care = new Care
+            PeriodsInLearning = GetPeriodsInLearning(updateLearnerRequest),
+            Care = new SFA.DAS.LearnerData.Requests.EarningsInner.Care
             {
                 HasEHCP = putRequest.Data.Learner.Care.HasEHCP,
                 IsCareLeaver = putRequest.Data.Learner.Care.IsCareLeaver,
@@ -57,12 +58,12 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
             }
         };
 
-        return new UpdateOnProgrammeApiPutRequest(command.LearningKey, payload);
+        return new UpdateOnProgrammeApiPutRequest(learningKey, payload);
     }
 
-    private async Task<int> GetFundingBandMaximum(UpdateLearnerCommand command)
+    private async Task<int> GetFundingBandMaximum(UpdateLearnerRequest updateLearnerRequest)
     {
-        var onProgramme = command.UpdateLearnerRequest.Delivery.OnProgramme.First();
+        var onProgramme = updateLearnerRequest.Delivery.OnProgramme.First();
         var standardId = onProgramme.StandardCode.ToString();
         var startDate = onProgramme.StartDate;
 
@@ -71,13 +72,13 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
         return response.MaxFundingOn(startDate);
     }
 
-    private List<PeriodInLearningItem> GetPeriodsInLearning(UpdateLearnerCommand command)
+    private List<PeriodInLearningItem> GetPeriodsInLearning(UpdateLearnerRequest updateLearnerRequest)
     {
         var periodsInLearning = new List<PeriodInLearningItem>();
 
-        var agreementId = command.UpdateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
+        var agreementId = updateLearnerRequest.Delivery.OnProgramme.First().AgreementId;
 
-        foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
+        foreach (var onProgramme in updateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
         {
             //todo:  onProgramme.CompletionDate should be included here in the coalescence. currently left
             //out of here to avoid re-writing the balancing logic in earnings,

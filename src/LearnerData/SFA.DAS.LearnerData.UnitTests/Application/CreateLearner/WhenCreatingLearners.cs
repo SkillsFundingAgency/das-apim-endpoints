@@ -25,7 +25,7 @@ public class WhenCreatingLearners
     private Mock<ILogger<CreateLearnerCommandHandler>> _mockLogger;
     private Mock<ILearningApiClient<LearningApiConfiguration>> _mockLearningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _mockEarningsApiClient;
-    private Mock<IUpdateLearningPutRequestBuilder> _mockUpdateLearningPutRequestBuilder;
+    private Mock<ICreateDraftLearningApiPutRequestBuilder> _mockCreateDraftLearningApiPutRequestBuilder;
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _mockUpdateEarningsOnProgrammeRequestBuilder;
     private CreateLearnerCommandHandler _sut;
 
@@ -43,20 +43,20 @@ public class WhenCreatingLearners
         _mockLogger = new Mock<ILogger<CreateLearnerCommandHandler>>();
         _mockLearningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
-        _mockUpdateLearningPutRequestBuilder = new Mock<IUpdateLearningPutRequestBuilder>();
+        _mockCreateDraftLearningApiPutRequestBuilder = new Mock<ICreateDraftLearningApiPutRequestBuilder>();
         _mockUpdateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
 
         _sut = new CreateLearnerCommandHandler(
             _mockLogger.Object,
             _mockMessageSession.Object,
             _mockLearningApiClient.Object,
-            _mockUpdateLearningPutRequestBuilder.Object,
+            _mockCreateDraftLearningApiPutRequestBuilder.Object,
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object);
 
-        _mockUpdateLearningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<UpdateLearnerCommand>()))
-            .Returns(new UpdateLearningApiPutRequest(Guid.Empty, new UpdateLearningRequestBody()));
+        _mockCreateDraftLearningApiPutRequestBuilder
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<UpdateLearnerRequest>()))
+            .Returns(new CreateDraftLearningApiPutRequest(new UpdateLearningRequestBody(), 0, 0));
 
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
             new CreateDraftLearnerApiPutResponse { Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>() },
@@ -163,7 +163,7 @@ public class WhenCreatingLearners
 
         var earningsPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
         _mockUpdateEarningsOnProgrammeRequestBuilder
-            .Setup(x => x.Build(It.Is<UpdateLearnerCommand>(c => c.LearningKey == learningKey), responseBody, It.IsAny<UpdateLearningApiPutRequest>()))
+            .Setup(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningApiPutRequest>()))
             .ReturnsAsync(earningsPutRequest);
 
         _mockEarningsApiClient
@@ -174,7 +174,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.Is<UpdateLearnerCommand>(c => c.LearningKey == learningKey), responseBody, It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
         _mockEarningsApiClient.Verify(x => x.Put(earningsPutRequest), Times.Once);
     }
 
@@ -201,7 +201,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<UpdateLearnerCommand>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<UpdateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
     }
 
