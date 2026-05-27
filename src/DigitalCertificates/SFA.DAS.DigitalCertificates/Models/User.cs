@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.DigitalCertificates.Models
 {
@@ -10,6 +12,8 @@ namespace SFA.DAS.DigitalCertificates.Models
         public string PhoneNumber { get; set; }
         public DateTime? LastLoginAt { get; set; }
         public bool IsLocked { get; set; }
+        public DateTime? DateOfBirth { get; set; }
+        public List<Name> Names { get; set; } = new List<Name>();
 
         public static explicit operator User(InnerApi.Responses.User source)
         {
@@ -22,7 +26,15 @@ namespace SFA.DAS.DigitalCertificates.Models
                 EmailAddress = source.EmailAddress,
                 PhoneNumber = source.PhoneNumber,
                 LastLoginAt = source.LastLoginAt,
-                IsLocked = source.IsLocked
+                IsLocked = source.IsLocked,
+                DateOfBirth = source.DateOfBirth,
+                Names = source.Names?.Select(n => new Name
+                {
+                    ValidSince = n.ValidSince,
+                    ValidUntil = n.ValidUntil,
+                    FamilyName = n.FamilyName,
+                    GivenNames = n.GivenNames
+                }).ToList() ?? new List<Name>()
             };
         }
     }
