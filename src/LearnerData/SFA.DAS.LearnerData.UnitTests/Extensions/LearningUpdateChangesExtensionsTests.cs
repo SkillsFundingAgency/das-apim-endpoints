@@ -12,6 +12,7 @@ namespace SFA.DAS.LearnerData.UnitTests.Extensions
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Withdrawal)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.ReverseWithdrawal)]
+        [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.Reinstated)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningStarted)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreakInLearningRemoved)]
         [TestCase(UpdateLearnerApiPutResponse.LearningUpdateChanges.BreaksInLearningUpdated)]

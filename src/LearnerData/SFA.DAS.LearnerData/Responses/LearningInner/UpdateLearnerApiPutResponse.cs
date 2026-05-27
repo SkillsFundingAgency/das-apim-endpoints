@@ -33,6 +33,7 @@ public class UpdateLearnerApiPutResponse
         DateOfBirthChanged = 12,
         Care = 13,
         EnglishAndMathsBreaksInLearningUpdated = 14,
-        AchievementDateChanged = 15
+        AchievementDateChanged = 15,
+		Reinstated = 16
     }
 }
