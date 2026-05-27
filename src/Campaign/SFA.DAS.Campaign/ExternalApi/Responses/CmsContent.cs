@@ -324,6 +324,21 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         [JsonPropertyName("cards")]
         public List<CardItem> Cards { get; set; }
 
+        [JsonPropertyName("cards2")]
+        public List<CardItem> Cards2 { get; set; }
+
+        [JsonPropertyName("cards3")]
+        public List<CardItem> Cards3 { get; set; }
+
+        [JsonPropertyName("cardsTitle")]
+        public string CardsTitle { get; set; }
+
+        [JsonPropertyName("cardsTitle2")]
+        public string CardsTitle2 { get; set; }
+
+        [JsonPropertyName("cardsTitle3")]
+        public string CardsTitle3 { get; set; }
+
         [JsonPropertyName("menuItems")]
         public List<MenuItem> MenuItems { get; set; }
 
