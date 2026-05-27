@@ -12,6 +12,14 @@ public class CreateLearnerCommandHandler(
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
+        //call the new inner POST, needs to build a very similar/same payload to update, with same/similar response, expects response of reinstated or not.
+
+        //new add draft learning post endpoint in inner
+        //    - find by ukprn, uln, course, &IsRemoved, reinstate
+        //    - return reinstated
+
+        //if reinstated - call earnings 
+
         logger.LogTrace("Publishing LearnerDataEvent");
         var evt = MapToEvent(command);
         await messageSession.Publish(evt);
