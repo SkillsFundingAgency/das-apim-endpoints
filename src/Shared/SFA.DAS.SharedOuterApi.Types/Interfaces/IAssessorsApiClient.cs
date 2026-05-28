@@ -2,4 +2,4 @@
 
 namespace SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-public interface IAssessorsApiClient<T> : IGetAllApiClient<T>;
+public interface IAssessorsApiClient<T> : IInternalApiClient<T>;
