@@ -2,7 +2,6 @@ using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 
 namespace SFA.DAS.LearnerData.Services;
 
@@ -100,6 +99,7 @@ public class UpdateLearningPutRequestBuilder(
 
         return new OnProgrammeDetails
         {
+            AchievementDate = latestOnProgramme.AchievementDate,
             ExpectedEndDate = latestOnProgramme.ExpectedEndDate,
             Costs = costs.GetCostsOrDefault(firstOnProgramme.StartDate),
             PauseDate = latestOnProgramme.PauseDate,

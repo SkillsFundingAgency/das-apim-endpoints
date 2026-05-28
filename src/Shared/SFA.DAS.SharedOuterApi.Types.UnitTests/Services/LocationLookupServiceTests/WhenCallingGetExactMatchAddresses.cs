@@ -1,12 +1,11 @@
-﻿using System;
-using System.Net;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+﻿using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using System;
+using System.Net;
 
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests;
@@ -52,8 +51,8 @@ public class WhenCallingGetExactMatchAddresses
         _locationApiClientMock.Setup(a => a.GetWithResponseCode<GetAddressesListResponse>(It.IsAny<GetAddressesQueryRequest>())).ReturnsAsync(apiResponse);
 
         Func<Task> action = () => _sut.GetExactMatchAddresses("CV1 2WT");
-            
+
         await action.Should().ThrowAsync<InvalidOperationException>();
-            
+
     }
 }

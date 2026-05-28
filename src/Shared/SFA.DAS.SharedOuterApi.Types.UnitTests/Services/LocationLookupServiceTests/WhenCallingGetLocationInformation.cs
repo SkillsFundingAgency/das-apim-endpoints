@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Text.Encodings.Web;
-using System.Web;
-using SFA.DAS.Apim.Shared.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Location;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Location;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using System.Collections.Generic;
+using System.Text.Encodings.Web;
+using System.Web;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.LocationLookupServiceTests;
 
@@ -158,7 +158,7 @@ public class WhenCallingGetLocationInformation
         var location = $"{postcode}";
         response.Outcode = "";
         response.Postcode = postcode;
-        
+
         GetLocationByFullPostcodeRequestV2? capturedRequest = null;
         mockLocationApiClient
             .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
@@ -167,11 +167,11 @@ public class WhenCallingGetLocationInformation
 
         // assert
         var result = await service.GetLocationInformation(location, 0, 0);
-        
+
         // assert
         capturedRequest.Should().NotBeNull();
         capturedRequest.GetUrl.Should().Be($"api/postcodes?postcode={UrlEncoder.Default.Encode(postcode)}");
-        
+
         result.Name.Should().Be(location);
         result.GeoPoint[0].Should().Be(response.Latitude);
         result.GeoPoint[1].Should().Be(response.Longitude);
@@ -195,14 +195,14 @@ public class WhenCallingGetLocationInformation
             .Setup(x => x.Get<GetLocationByFullPostcodeRequestV2Response>(It.IsAny<GetLocationByFullPostcodeRequestV2>()))
             .Callback<IGetApiRequest>(x => capturedRequest = x as GetLocationByFullPostcodeRequestV2)
             .ReturnsAsync(response);
-        
+
         // act
         var result = await service.GetLocationInformation(postcode, 0, 0, true);
 
         // assert
         capturedRequest.Should().NotBeNull();
         capturedRequest.GetUrl.Should().Be("api/postcodes?postcode=CV1%201AA");
-        
+
         result.Name.Should().Be(location);
         result.GeoPoint[0].Should().Be(response.Latitude);
         result.GeoPoint[1].Should().Be(response.Longitude);

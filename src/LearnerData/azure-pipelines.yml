@@ -56,3 +56,4 @@ stages:
       NServiceBusLicense: $(NServiceBusLicense)
       UserBearerTokenSigningKey: $(UserBearerTokenSigningKey)
       ApimEndpointsRedisConnectionString: $(ApimEndpointsRedisConnectionString)
+    CheckClientCert: $True

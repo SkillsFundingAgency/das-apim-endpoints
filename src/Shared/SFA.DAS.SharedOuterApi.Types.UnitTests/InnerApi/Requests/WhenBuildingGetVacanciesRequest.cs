@@ -2,44 +2,43 @@
 using System.Collections.Generic;
 using System.Web;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
+public class WhenBuildingGetVacanciesRequest
 {
-    public class WhenBuildingGetVacanciesRequest
+    [Test, AutoData]
+    public void Then_The_Request_Is_Correctly_Built(
+        int pageNumber,
+        int pageSize,
+        string accountPublicHashedId,
+        string accountLegalEntityPublicHashedId,
+        string employerName,
+        int? ukprn,
+        List<int> standardLarsCode,
+        bool? nationwideOnly,
+        double? lat,
+        double? lon,
+        uint? distanceInMiles,
+        List<string> routes,
+        uint? postedInLastNumberOfDays,
+        List<string> additionalDataSources,
+        string sort)
     {
-        [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Built(
-            int pageNumber, 
-            int pageSize,
-            string accountPublicHashedId,
-            string accountLegalEntityPublicHashedId,
-            string employerName,
-            int? ukprn,
-            List<int> standardLarsCode,
-            bool? nationwideOnly,
-            double? lat,
-            double? lon,
-            uint? distanceInMiles,
-            List<string> routes,
-            uint? postedInLastNumberOfDays,
-            List<string> additionalDataSources,
-            string sort)
-        {
-            accountLegalEntityPublicHashedId = $"{accountLegalEntityPublicHashedId} %£$^ {accountLegalEntityPublicHashedId}";
-            
-            var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, employerName, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, routes, postedInLastNumberOfDays, additionalDataSources, sort, null, true, true);
+        accountLegalEntityPublicHashedId = $"{accountLegalEntityPublicHashedId} %£$^ {accountLegalEntityPublicHashedId}";
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&onlyPrimaryLocations=True&includeDetails=True&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={string.Join("&standardLarsCode=",standardLarsCode)}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&categories={string.Join("&categories=",routes)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}&additionalDataSources={string.Join("&additionalDataSources=",additionalDataSources)}&employerName={HttpUtility.UrlEncode(employerName)}");
-            actual.Version.Should().Be("2.0");
-		}
+        var actual = new GetVacanciesRequest(pageNumber, pageSize, accountLegalEntityPublicHashedId, employerName, ukprn, accountPublicHashedId, standardLarsCode, nationwideOnly, lat, lon, distanceInMiles, routes, postedInLastNumberOfDays, additionalDataSources, sort, null, true, true);
 
-        [Test, AutoData]
-        public void Then_Is_Correctly_Built_With_No_Optionals(int pageNumber, 
-            int pageSize)
-        {
-            var actual = new GetVacanciesRequest(pageNumber, pageSize);
+        actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&onlyPrimaryLocations=True&includeDetails=True&ukprn={ukprn}&accountLegalEntityPublicHashedId={HttpUtility.UrlEncode(accountLegalEntityPublicHashedId)}&accountPublicHashedId={accountPublicHashedId}&standardLarsCode={string.Join("&standardLarsCode=", standardLarsCode)}&nationwideOnly={nationwideOnly}&lat={lat}&lon={lon}&distanceInMiles={distanceInMiles}&categories={string.Join("&categories=", routes)}&sort={sort}&postedInLastNumberOfDays={postedInLastNumberOfDays}&additionalDataSources={string.Join("&additionalDataSources=", additionalDataSources)}&employerName={HttpUtility.UrlEncode(employerName)}");
+        actual.Version.Should().Be("2.0");
+    }
 
-            actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&onlyPrimaryLocations=False&includeDetails=False");
-            actual.Version.Should().Be("2.0");
-		}
+    [Test, AutoData]
+    public void Then_Is_Correctly_Built_With_No_Optionals(int pageNumber,
+        int pageSize)
+    {
+        var actual = new GetVacanciesRequest(pageNumber, pageSize);
+
+        actual.GetUrl.Should().Be($"api/Vacancies?pageNumber={pageNumber}&pageSize={pageSize}&onlyPrimaryLocations=False&includeDetails=False");
+        actual.Version.Should().Be("2.0");
     }
 }

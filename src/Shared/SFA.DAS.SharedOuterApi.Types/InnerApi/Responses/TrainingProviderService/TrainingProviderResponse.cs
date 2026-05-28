@@ -5,16 +5,11 @@ namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderServic
 [Obsolete("Use SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.ProviderDetailsResponse instead")]
 public class TrainingProviderResponse
 {
-    public TrainingProviderResponse()
-    {
-        ProviderType = new ProviderTypeResponse();
-    }
-
     public Guid Id { get; set; }
     public long Ukprn { get; set; }
     public string LegalName { get; set; }
     public string TradingName { get; set; }
-    public ProviderTypeResponse ProviderType { get; set; }
+    public ProviderTypeResponse ProviderType { get; set; } = new();
 
     public bool IsMainProvider => ProviderType.Id == (short)ProviderTypeIdentifier.MainProvider;
 
