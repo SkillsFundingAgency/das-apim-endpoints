@@ -79,6 +79,7 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
             CourseType = standard.CourseType,
             Duration = standard.Duration,
             DurationUnits = standard.DurationUnits,
+            CourseType = standard.CourseType
         };
     }
 }
