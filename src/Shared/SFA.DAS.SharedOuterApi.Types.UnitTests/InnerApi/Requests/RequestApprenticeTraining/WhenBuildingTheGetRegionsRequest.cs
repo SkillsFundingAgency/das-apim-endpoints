@@ -1,20 +1,19 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests.RequestApprenticeTraining
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests.RequestApprenticeTraining;
+
+public class WhenBuildingTheGetRegionsRequest
 {
-    public class WhenBuildingTheGetRegionsRequest
+    [Test]
+    public void Then_The_Url_Is_Correctly_Built()
     {
-        [Test]
-        public void Then_The_Url_Is_Correctly_Built()
-        {
-            // Arrange
-            var request = new GetRegionsRequest();
+        // Arrange
+        var request = new GetRegionsRequest();
 
-            // Act
-            var actualUrl = request.GetUrl;
+        // Act
+        var actualUrl = request.GetUrl;
 
-            // Assert
-            actualUrl.Should().Be("api/regions");
-        }
+        // Assert
+        actualUrl.Should().Be("api/regions");
     }
 }

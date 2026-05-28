@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
+﻿using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.EmployerAccountsServiceTests;
 

@@ -6,6 +6,7 @@ using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Services;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -21,6 +22,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly ICalculateGrowthAndSkillsPaymentsEventBuilder _calculateGrowthAndSkillsPaymentsEventBuilder;
+    private readonly IUpdateShortCourseOnProgrammeEarningPutRequestBuilder _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private readonly IMessageSession _messageSession;
     private readonly PaymentsConfiguration _paymentsConfiguration;
 
@@ -29,6 +31,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
         ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
+        IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
         IMessageSession messageSession,
         PaymentsConfiguration paymentsConfiguration)
     {
@@ -36,6 +39,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
         _calculateGrowthAndSkillsPaymentsEventBuilder = calculateGrowthAndSkillsPaymentsEventBuilder;
+        _updateShortCourseOnProgrammeEarningPutRequestBuilder = updateShortCourseOnProgrammeEarningPutRequestBuilder;
         _messageSession = messageSession;
         _paymentsConfiguration = paymentsConfiguration;
     }
@@ -62,7 +66,14 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         if (EarningsUpdateRequired(learningResponse.Body))
         {
-            var earningRequest = MapToEarningRequest(command);
+            var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x => x.StartDate);
+            if (currentOnProgramme == null)
+            {
+                _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearningKey);
+                throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearningKey}");
+            }
+            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(currentOnProgramme);
+            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(command.LearningKey, earningBody);
             var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
             earningsResponse = response.Body;
         }
@@ -116,33 +127,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         return new UpdateShortCourseLearningPutRequest(command.LearningKey, body);
     }
 
-    private UpdateShortCourseOnProgrammeEarningPutRequest MapToEarningRequest(UpdateShortCourseLearningCommand command)
-    {
-        var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x => x.StartDate);
-
-        if (currentOnProgramme == null)
-        {
-            _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearningKey);
-            throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearningKey}");
-        }
-
-        var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
-            Enum.Parse<Milestone>(sourceMilestone.ToString())
-        ).ToList();
-
-        if (currentOnProgramme.CompletionDate.HasValue && !currentOnProgramme.Milestones.Contains(Milestone.LearningComplete))
-            milestones.Add(Milestone.LearningComplete);
-
-        var body = new UpdateShortCourseOnProgrammeRequestBody
-        {
-            WithdrawalDate = currentOnProgramme.WithdrawalDate,
-            CompletionDate = currentOnProgramme.CompletionDate,
-            Milestones = milestones
-        };
-
-        return new UpdateShortCourseOnProgrammeEarningPutRequest(command.LearningKey, body);
-    }
-
     private async Task PublishEvent(long ukprn, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
     {
         _logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
@@ -169,5 +153,4 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             changes.Contains(ShortCourseUpdateChanges.Milestone) ||
             changes.Contains(ShortCourseUpdateChanges.CompletionDate);
     }
-
 }

@@ -25,6 +25,7 @@ namespace SFA.DAS.DigitalCertificates.Api.AppStart
 
             services.AddTransient<IAssessorsApiClient<AssessorsApiConfiguration>, AssessorsApiClient>();
             services.AddTransient<IDigitalCertificatesApiClient<DigitalCertificatesApiConfiguration>, DigitalCertificatesApiClient>();
+            services.AddTransient<ILocationApiClient<LocationApiConfiguration>, LocationApiClient>();
         }
     }
 }

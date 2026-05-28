@@ -21,9 +21,12 @@ public class VacancyMapper()
             ApplicationMethod = vacancy.ApplicationMethod,
             ApplicationUrl = vacancy.ApplicationUrl,
             ApprenticeshipType = vacancy.ApprenticeshipType,
+            ArchiveType = vacancy.ArchiveType,
             ApprovedDate = vacancy.ApprovedDate,
             ClosedDate = vacancy.ClosedDate,
             ClosingDate = vacancy.ClosingDate,
+            ArchivedDate = vacancy.ArchivedDate,
+            ArchivedByUserId = vacancy.ArchivedByUserId,
             ClosureReason = vacancy.ClosureReason,
             Contact = vacancy.Contact,
             CreatedDate = vacancy.CreatedDate,
@@ -89,6 +92,9 @@ public class VacancyMapper()
             ApplicationUrl = result.ApplicationUrl,
             ApprenticeshipType = result.ApprenticeshipType,
             ApprovedDate = result.ApprovedDate,
+            ArchivedByUserId = result.ArchivedByUserId,
+            ArchivedDate = result.ArchivedDate,
+            ArchiveType = result.ArchiveType,
             ClosedDate = result.ClosedDate,
             ClosingDate = result.ClosingDate,
             ClosureReason = result.ClosureReason,
@@ -137,6 +143,7 @@ public class VacancyMapper()
             TransferInfo = result.TransferInfo,
             VacancyReference = result.VacancyReference,
             Wage = result.Wage,
+            SubmittedByUserId = result.SubmittedByUserId
         };
     }
 }

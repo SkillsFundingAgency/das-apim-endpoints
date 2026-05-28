@@ -1,4 +1,7 @@
 using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.Approvals.Application.Learners.Queries;
 
@@ -16,7 +19,9 @@ public class GetLearnerForProviderQueryResult
     public int TrainingPrice { get; set; }
     public string? TrainingCode { get; set; }
     public string? TrainingName { get; set; }
-    public string? LearningType { get; set; }
+
+    [JsonConverter(typeof(StringEnumConverter))]
+    public LearningType? LearningType { get; set; }
     public bool IsFlexiJob { get; set; }
     public int PlannedOTJTrainingHours { get; set; }
 
