@@ -57,7 +57,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilderTests
                 .Select(y => new PeriodInLearningItem
                 {
                     StartDate = y.StartDate,
-                    EndDate = y.PauseDate ?? y.CompletionDate ?? y.WithdrawalDate ?? y.EndDate,
+                    EndDate = y.CompletionDate ?? y.PauseDate ?? y.WithdrawalDate,
                     OriginalExpectedEndDate = y.EndDate
                 })
                 .OrderBy(p => p.StartDate)
