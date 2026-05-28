@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,9 +12,9 @@ public class GetProviderPermissionsByUkprnQueryHandler(IAccountLegalEntityPermis
         CancellationToken cancellationToken)
     {
         var accountLegalEntities = await accountLegalEntityPermissionService
-            .GetProviderAccountLegalEntities(
+            .GetProviderPermissionsAccountLegalEntities(
                 request.Ukprn,
-                [Operation.Recruitment, Operation.RecruitmentRequiresReview]) ?? [];
+                request.Operations) ?? [];
 
         return new GetProviderPermissionsByUkprnQueryResult(accountLegalEntities);
     }

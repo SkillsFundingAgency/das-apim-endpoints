@@ -1,16 +1,10 @@
-﻿using SFA.DAS.Recruit.InnerApi.Requests;
-using SFA.DAS.Recruit.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
-using System.Linq;
+﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetProviderPermissionsByUkprnAndAccountId;
 
-public class GetProviderPermissionsByUkprnQueryHandler(IAccountsApiClient<AccountsConfiguration> accountsApi,
-    IAccountLegalEntityPermissionService accountLegalEntityPermissionService)
+public class GetProviderPermissionsByUkprnAndAccountIdQueryHandler(IAccountLegalEntityPermissionService accountLegalEntityPermissionService)
     : MediatR.IRequestHandler<GetProviderPermissionsByUkprnAndAccountIdQuery, GetProviderPermissionsByUkprnAndAccountIdQueryResult>
 {
     public async Task<GetProviderPermissionsByUkprnAndAccountIdQueryResult> Handle(
@@ -18,23 +12,11 @@ public class GetProviderPermissionsByUkprnQueryHandler(IAccountsApiClient<Accoun
         CancellationToken cancellationToken)
     {
         var permissions = await accountLegalEntityPermissionService
-            .GetProviderPermissionsForEmployer(
+            .GetProviderPermissionsForEmployerAccountLegalEntities(
                 request.Ukprn,
                 request.AccountId,
-                [Operation.Recruitment, Operation.RecruitmentRequiresReview]) ?? [];
+                request.Operations) ?? [];
 
-        var accountLegalEntitiesResponse =
-            await accountsApi.GetAll<GetAccountLegalEntityResponseItem>(
-                new GetAccountLegalEntitiesRequest(request.AccountId));
-
-        var permittedAccountLegalEntityIds = permissions
-            .Select(x => x.AccountLegalEntityId)
-            .ToHashSet();
-
-        var accountLegalEntities = accountLegalEntitiesResponse
-            .Where(x => permittedAccountLegalEntityIds.Contains(x.AccountLegalEntityId))
-            .ToList();
-
-        return new GetProviderPermissionsByUkprnAndAccountIdQueryResult(accountLegalEntities);
+        return new GetProviderPermissionsByUkprnAndAccountIdQueryResult(permissions);
     }
 }

@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.Recruit.InnerApi.Responses;
+﻿using SFA.DAS.SharedOuterApi.Types.Models;
+using System.Collections.Generic;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetProviderPermissionsByUkprnAndAccountId;
 
-public sealed record GetProviderPermissionsByUkprnAndAccountIdQueryResult(List<GetAccountLegalEntityResponseItem> LegalEntities);
+public sealed record GetProviderPermissionsByUkprnAndAccountIdQueryResult(List<LegalEntityItem> LegalEntities);

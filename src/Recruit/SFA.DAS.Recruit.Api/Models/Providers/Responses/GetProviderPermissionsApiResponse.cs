@@ -5,5 +5,5 @@ namespace SFA.DAS.Recruit.Api.Models.Providers.Responses;
 
 public sealed record GetProviderPermissionsApiResponse
 {
-    public List<AccountLegalEntityItem> LegalEntities { get; init; } = [];
+    public List<LegalEntityItem> AccountProviderLegalEntities { get; init; } = [];
 }

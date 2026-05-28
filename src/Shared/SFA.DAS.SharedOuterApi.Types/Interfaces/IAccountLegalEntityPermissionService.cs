@@ -9,4 +9,7 @@ public interface IAccountLegalEntityPermissionService
     Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn, long accountHashedId, List<Operation> operationTypes);
     Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn, long accountId, List<Operation> operationTypes);
     Task<List<AccountLegalEntityItem>> GetProviderAccountLegalEntities(long ukprn, List<Operation> operationTypes);
+    Task<List<LegalEntityItem>> GetProviderPermissionsAccountLegalEntities(long ukprn, List<Operation> operationTypes);
+    Task<List<LegalEntityItem>> GetProviderPermissionsForEmployerAccountLegalEntities(long ukprn, long accountId, List<Operation> operationTypes);
+    Task<List<LegalEntityItem>> GetEmployerAccountLegalEntities(string accountHashedId, List<Operation> operationTypes);
 }

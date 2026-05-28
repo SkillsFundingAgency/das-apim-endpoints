@@ -106,7 +106,51 @@ public class AccountLegalEntityPermissionService(
             AccountLegalEntityPublicHashedId = e.AccountLegalEntityPublicHashedId,
             AccountHashedId = e.AccountHashedId,
             AccountId = e.AccountId,
-            AccountLegalEntityId = e.AccountLegalEntityId
+            AccountLegalEntityId = e.AccountLegalEntityId,
+        }).ToList() ?? [];
+    }
+
+    public async Task<List<LegalEntityItem>> GetProviderPermissionsAccountLegalEntities(long ukprn, List<Operation> operationTypes)
+    {
+        var response = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+            new GetProviderAccountLegalEntitiesRequest(Convert.ToInt32(ukprn),
+                operationTypes));
+        return response?.AccountProviderLegalEntities?.Select(e => new LegalEntityItem
+        {
+            AccountLegalEntityName = e.AccountLegalEntityName,
+            AccountLegalEntityPublicHashedId = e.AccountLegalEntityPublicHashedId,
+            AccountHashedId = e.AccountHashedId,
+            AccountId = e.AccountId,
+            AccountLegalEntityId = e.AccountLegalEntityId,
+            AccountProviderId = e.AccountProviderId,
+            AccountPublicHashedId = e.AccountPublicHashedId,
+            AccountName = e.AccountName,
+        }).ToList() ?? [];
+    }
+
+    public async Task<List<LegalEntityItem>> GetProviderPermissionsForEmployerAccountLegalEntities(long ukprn, long accountId, List<Operation> operationTypes)
+    {
+        var providerPermissions = await GetProviderPermissionsAccountLegalEntities(ukprn, operationTypes);
+        return providerPermissions
+            .Where(p => p.AccountId == accountId)
+            .ToList();
+    }
+
+    public async Task<List<LegalEntityItem>> GetEmployerAccountLegalEntities(string accountHashedId, List<Operation> operationTypes)
+    {
+        var response = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+            new GetProviderAccountLegalEntitiesRequest(accountHashedId,
+                operationTypes));
+        return response?.AccountProviderLegalEntities?.Select(e => new LegalEntityItem
+        {
+            AccountLegalEntityName = e.AccountLegalEntityName,
+            AccountLegalEntityPublicHashedId = e.AccountLegalEntityPublicHashedId,
+            AccountHashedId = e.AccountHashedId,
+            AccountId = e.AccountId,
+            AccountLegalEntityId = e.AccountLegalEntityId,
+            AccountProviderId = e.AccountProviderId,
+            AccountPublicHashedId = e.AccountPublicHashedId,
+            AccountName = e.AccountName,
         }).ToList() ?? [];
     }
 }
