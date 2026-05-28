@@ -1,34 +1,37 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
-
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using SFA.DAS.VacanciesManage.Services;
 
-namespace SFA.DAS.VacanciesManage.Api.AppStart
+namespace SFA.DAS.VacanciesManage.Api.AppStart;
+
+public static class AddServiceRegistrationExtensions
 {
-    public static class AddServiceRegistrationExtensions
+    public static void AddServiceRegistration(this IServiceCollection services)
     {
-        public static void AddServiceRegistration(this IServiceCollection services)
-        {
-            services.AddHttpClient();
-            services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-            services.AddTransient<ICacheStorageService, CacheStorageService>();
-            services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
+        services.AddHttpClient();
+        services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
-            services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
-            services.AddTransient<IRecruitApiClient<RecruitApiConfiguration>, RecruitApiClient>();
-            services.AddTransient<IRecruitApiClient<RecruitApiV2Configuration>, RecruitApiV2Client>();
-            services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
-            services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
-            services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
-            services.AddTransient<ICourseService, CourseService>();
-            services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
-        }
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
+        services.AddTransient<IAccountLegalEntityPermissionService, AccountLegalEntityPermissionService>();
+        
+        services.AddTransient<IBankHolidaysService, BankHolidaysService>();
+        services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
+        services.AddTransient<ISlaService, SlaService>();
+
+        services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
+        services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
+
+        services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+        services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
+        services.AddTransient<ICoursesApiClient<CoursesApiConfiguration>, CourseApiClient>();
+        services.AddTransient<ICourseService, CourseService>();
+        services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
     }
 }

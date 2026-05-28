@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.PensionsRegulator;
+
 public class PensionRegulatorOrganisation
 {
     public string Name { get; set; }
