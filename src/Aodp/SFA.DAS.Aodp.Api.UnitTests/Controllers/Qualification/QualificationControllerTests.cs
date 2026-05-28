@@ -10,8 +10,10 @@ using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Qualifications;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
+using SFA.DAS.Aodp.Application.UnitTests.Queries.Qualifications;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
+using SFA.DAS.AODP.Shared.UnitTests.Helpers;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 {
@@ -541,18 +543,6 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
-        }
-    }
-    public class DateOnlySpecimenBuilder : ISpecimenBuilder
-    {
-        public object Create(object request, ISpecimenContext context)
-        {
-            if (request is Type type && type == typeof(DateOnly))
-            {
-                return new DateOnly(2023, 1, 1); //a valid default date here
-            }
-
-            return new NoSpecimen();
         }
     }
 }

@@ -138,4 +138,79 @@ public class ApplicationsReviewControllerTests
         Assert.That(status.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
     }
 
+    [Test]
+    public async Task GetApplicationExportData_ReturnsOkResult()
+    {
+        // Arrange
+        var applicationReviewId = Guid.NewGuid();
+
+        var response = new GetApplicationExportDataQueryResponse();
+
+        var wrapper = new BaseMediatrResponse<GetApplicationExportDataQueryResponse>
+        {
+            Value = response,
+            Success = true
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<GetApplicationExportDataQuery>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.GetApplicationExportData(applicationReviewId);
+
+        // Assert
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<GetApplicationExportDataQuery>(q =>
+                    q.ApplicationReviewId == applicationReviewId),
+                default),
+            Times.Once);
+
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+
+        var okResult = (OkObjectResult)result;
+
+        Assert.That(okResult.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+
+        var model = okResult.Value as GetApplicationExportDataQueryResponse;
+
+        Assert.That(model, Is.EqualTo(response));
+    }
+
+    [Test]
+    public async Task GetApplicationExportData_WhenMediatorFails_ReturnsInternalServerError()
+    {
+        // Arrange
+        var applicationReviewId = Guid.NewGuid();
+
+        var wrapper = new BaseMediatrResponse<GetApplicationExportDataQueryResponse>
+        {
+            Success = false,
+            ErrorMessage = "Failure"
+        };
+
+        _mediatorMock
+            .Setup(m => m.Send(It.IsAny<GetApplicationExportDataQuery>(), default))
+            .ReturnsAsync(wrapper);
+
+        // Act
+        var result = await _controller.GetApplicationExportData(applicationReviewId);
+
+        // Assert
+        _mediatorMock.Verify(m =>
+            m.Send(
+                It.Is<GetApplicationExportDataQuery>(q =>
+                    q.ApplicationReviewId == applicationReviewId),
+                default),
+            Times.Once);
+
+        Assert.That(result, Is.InstanceOf<StatusCodeResult>());
+
+        var status = (StatusCodeResult)result;
+
+        Assert.That(status.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+    }
+
+
 }

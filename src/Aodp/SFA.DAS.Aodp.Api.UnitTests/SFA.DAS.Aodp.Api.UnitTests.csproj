@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.Aodp.Api\SFA.DAS.Aodp.Api.csproj" />
+    <ProjectReference Include="..\SFA.DAS.Aodp.UnitTests\SFA.DAS.Aodp.UnitTests.csproj" />
     <ProjectReference Include="..\SFA.DAS.Aodp\SFA.DAS.Aodp.csproj" />
   </ItemGroup>
 
