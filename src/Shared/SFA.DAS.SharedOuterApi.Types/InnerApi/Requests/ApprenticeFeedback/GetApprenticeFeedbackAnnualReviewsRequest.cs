@@ -1,15 +1,9 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
-
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ApprenticeFeedback;
 
-public class GetApprenticeFeedbackAnnualReviewsRequest : IGetApiRequest
+public class GetApprenticeFeedbackAnnualReviewsRequest(string timePeriod) : IGetApiRequest
 {
     public string GetUrl => $"api/ApprenticeFeedbackResult/reviews?timeperiod={_timePeriod}";
-    private string _timePeriod { get; }
-    public GetApprenticeFeedbackAnnualReviewsRequest(string timePeriod)
-    {
-        _timePeriod = timePeriod;
-    }
+    private string _timePeriod { get; } = timePeriod;
 }

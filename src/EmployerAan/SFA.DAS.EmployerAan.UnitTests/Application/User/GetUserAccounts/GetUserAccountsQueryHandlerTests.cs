@@ -2,7 +2,6 @@
 using FluentAssertions;
 using Moq;
 using SFA.DAS.EmployerAan.Application.User.GetUserAccounts;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 
 using SFA.DAS.SharedOuterApi.Types.Services;

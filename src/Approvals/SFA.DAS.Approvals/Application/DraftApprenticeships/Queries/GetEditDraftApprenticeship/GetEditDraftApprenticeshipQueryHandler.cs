@@ -114,7 +114,8 @@ namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Queries.GetEditDraf
                 LearnerDataId = apprenticeship.LearnerDataId,
                 HasLearnerDataChanges = apprenticeship.HasLearnerDataChanges,
                 LastLearnerDataSync = apprenticeship.LastLearnerDataSync,
-                TrainingCourseVersion = apprenticeship.TrainingCourseVersion
+                TrainingCourseVersion = apprenticeship.TrainingCourseVersion,
+                LearningType = apprenticeship.LearningType
             };
         }
     }

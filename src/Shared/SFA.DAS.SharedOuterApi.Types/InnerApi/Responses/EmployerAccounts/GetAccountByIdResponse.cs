@@ -20,6 +20,4 @@ public class Resource
     public string Href { get; set; }
 }
 
-public class ResourceList : List<Resource>
-{
-}
+public class ResourceList : List<Resource>;

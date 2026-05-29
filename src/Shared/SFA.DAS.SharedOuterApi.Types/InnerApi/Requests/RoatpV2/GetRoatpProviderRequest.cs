@@ -1,18 +1,8 @@
 using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2
+public class GetRoatpProviderRequest(int ukprn) : IGetApiRequest
 {
-    public class GetRoatpProviderRequest : IGetApiRequest
-    {
-        private readonly int _ukprn;
-
-        public GetRoatpProviderRequest(int ukprn)
-        {
-            _ukprn = ukprn;
-        }
-
-        public string GetUrl => $"api/providers/{_ukprn}";
-    }
+    public string GetUrl => $"api/providers/{ukprn}";
 }

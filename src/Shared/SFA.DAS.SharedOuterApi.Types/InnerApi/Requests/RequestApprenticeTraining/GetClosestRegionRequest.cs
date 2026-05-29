@@ -1,20 +1,8 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 
-using SFA.DAS.Apim.Shared.Interfaces;
+namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RequestApprenticeTraining
+public class GetClosestRegionRequest(double latitude, double longitude) : IGetApiRequest
 {
-    public class GetClosestRegionRequest : IGetApiRequest
-    {
-        private readonly double _latitude;
-        private readonly double _longitude;
-
-        public GetClosestRegionRequest(double latitude, double longitude)
-        {
-            _latitude = latitude;
-            _longitude = longitude;
-        }
-
-        public string GetUrl => $"api/regions/closest?latitude={_latitude}&longitude={_longitude}";
-    }
+    public string GetUrl => $"api/regions/closest?latitude={latitude}&longitude={longitude}";
 }
