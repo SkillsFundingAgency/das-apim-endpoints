@@ -45,9 +45,6 @@ public class CreateVacancyCommandHandler(
         var dateTimeNow = DateTime.UtcNow;
         var vacancy = request.PostVacancyRequest;
 
-        vacancy.HasSubmittedAdditionalQuestions = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1) ||
-                                                  !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1);
-        
         ValidateUkprn(vacancy);
 
         //additional check to validate the given Training Provider UKPRN is valid.
@@ -171,6 +168,11 @@ public class CreateVacancyCommandHandler(
         {
             vacancy.EmployerName = accountLegalEntity.Name;
         }
+        
+        vacancy.HasSubmittedAdditionalQuestions = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1) ||
+                                                  !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion2);
+        
+        vacancy.HasOptedToAddQualifications = vacancy.Qualifications is { Count: >0 };
     }
 
     private async Task<GetStandardsListItem?> GetCourse(string programmeId)

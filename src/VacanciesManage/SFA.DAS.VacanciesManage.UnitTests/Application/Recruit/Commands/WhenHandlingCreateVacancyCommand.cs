@@ -70,8 +70,11 @@ public class WhenHandlingCreateVacancyCommand
             .ReturnsAsync(getStandardsResponse);
 
         var apiResponse = new ApiResponse<Vacancy>(responseValue, HttpStatusCode.Created, "");
+        
+        PostVacanciesApiRequest? capturedVacancyRequest = null;
         mockRecruitApiClient
             .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
+            .Callback<IPostApiRequest, bool>((x, _) => capturedVacancyRequest = x as PostVacanciesApiRequest)
             .ReturnsAsync(apiResponse);
 
         PutVacancyreviewsByIdApiRequest? capturedVacancyReviewRequest = null;
@@ -93,6 +96,11 @@ public class WhenHandlingCreateVacancyCommand
 
         mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
         mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
+        
+        var postVacancyData = capturedVacancyRequest?.Data as PostVacancyRequest;
+        postVacancyData.Should().NotBeNull();
+        postVacancyData.HasOptedToAddQualifications.Should().BeTrue();
+        postVacancyData.HasSubmittedAdditionalQuestions.Should().BeTrue();
         
         capturedVacancyReviewRequest.Should().NotBeNull();
         capturedVacancyReviewRequest.Data.VacancyReference.Should().Be(apiResponse.Body.VacancyReference.ToString());
