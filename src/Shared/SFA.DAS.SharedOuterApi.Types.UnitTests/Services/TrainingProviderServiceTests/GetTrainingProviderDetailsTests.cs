@@ -1,13 +1,12 @@
-﻿using System.Net;
-using SFA.DAS.Apim.Shared.Infrastructure;
+﻿using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using System.Net;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Services.TrainingProviderServiceTests;
 

@@ -16,6 +16,7 @@ public class PutVacancyResponse
     public OwnerType? OwnerType { get; init; }
     public SourceOrigin? SourceOrigin { get; init; }
     public SourceType? SourceType { get; init; }
+    public ArchiveType? ArchiveType { get; init; }
     public long? SourceVacancyReference { get; init; }
     public DateTime? ApprovedDate { get; init; }
     public DateTime? CreatedDate { get; init; }
@@ -27,6 +28,7 @@ public class PutVacancyResponse
     public DateTime? LiveDate { get; init; }
     public DateTime? StartDate { get; init; }
     public DateTime? ClosingDate { get; init; }
+    public DateTime? ArchivedDate { get; init; }
     public int ReviewCount { get; init; }
     public string? ApplicationUrl { get; init; }
     public ApplicationMethod? ApplicationMethod { get; init; }
@@ -67,4 +69,5 @@ public class PutVacancyResponse
     public List<ReviewFieldIndicator>? EmployerReviewFieldIndicators { get; init; }
     public List<ReviewFieldIndicator>? ProviderReviewFieldIndicators { get; init; }
     public string? SubmittedByUserId { get; init; }
+    public string? ArchivedByUserId { get; init; }
 }

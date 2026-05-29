@@ -53,6 +53,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
         result.Data.CompletionDate.Should().Be(putRequest.Data.Learner.CompletionDate);
         result.Data.WithdrawalDate.Should().Be(putRequest.Data.Delivery.WithdrawalDate);
         result.Data.PauseDate.Should().Be(putRequest.Data.OnProgramme.PauseDate);
+        result.Data.AchievementDate.Should().Be(putRequest.Data.OnProgramme.AchievementDate);
         result.Data.ApprenticeshipEpisodeKey.Should().Be(response.LearningEpisodeKey);
         result.Data.DateOfBirth.Should().Be(putRequest.Data.Learner.DateOfBirth);
 
@@ -66,30 +67,15 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             TotalPrice = x.TotalPrice
         }));
 
-        if (completion)
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
-        else
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
+        result.Data.PeriodsInLearning.Should().BeEquivalentTo(
+            command.UpdateLearnerRequest.Delivery.OnProgramme
+                .Where(x => x.AgreementId == agreementId)
+                .Select(x => new PeriodInLearningItem
+                {
+                    StartDate = x.StartDate,
+                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.CompletionDate,
+                    OriginalExpectedEndDate = x.ExpectedEndDate
+                }));
 
 
         result.Data.FundingBandMaximum.Should().BeNull();

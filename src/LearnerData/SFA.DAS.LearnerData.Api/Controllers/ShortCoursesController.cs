@@ -8,7 +8,7 @@ using SFA.DAS.LearnerData.Application.RemoveShortCourse;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.LearnerData.Services.ShortCourses;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
@@ -31,6 +31,16 @@ public class ShortCoursesController(
             });
 
             return Accepted(new { result.CorrelationId });
+        }
+        catch (InvalidCourseException e)
+        {
+            logger.LogError(e, "Invalid course code when creating short course");
+            return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
+        }
+        catch (CoursesApiUnavailableException e)
+        {
+            logger.LogError(e, "Courses API unavailable when creating short course");
+            return new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
         }
         catch (Exception e)
         {

@@ -1,13 +1,7 @@
 ﻿namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.AccessorService;
 
-public sealed class GetAssessmentsResponse
+public sealed class GetAssessmentsResponse(DateTime? earliestAssessment, int endpointAssessmentCount)
 {
-    public DateTime? EarliestAssessment { get; }
-    public int EndpointAssessmentCount { get; }
-
-    public GetAssessmentsResponse(DateTime? earliestAssessment, int endpointAssessmentCount)
-    {
-        EarliestAssessment = earliestAssessment;
-        EndpointAssessmentCount = endpointAssessmentCount;
-    }
+    public DateTime? EarliestAssessment { get; } = earliestAssessment;
+    public int EndpointAssessmentCount { get; } = endpointAssessmentCount;
 }

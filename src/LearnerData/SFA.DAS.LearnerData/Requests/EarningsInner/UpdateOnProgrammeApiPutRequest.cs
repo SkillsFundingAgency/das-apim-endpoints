@@ -15,6 +15,7 @@ public class UpdateOnProgrammeRequest
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public DateTime? PauseDate { get; set; }
+    public DateTime? AchievementDate { get; set; }
     public DateTime DateOfBirth { get; set; }
     public int? FundingBandMaximum { get; set; }
     public bool IncludesFundingBandMaximumUpdate { get; set; }
@@ -33,11 +34,11 @@ public class PriceItem
     public decimal TotalPrice { get; set; }
 }
 
-[DebuggerDisplay("Start={StartDate.ToString(\"yyyy-MM-dd\")}, End={EndDate.ToString(\"yyyy-MM-dd\")}")]
+[DebuggerDisplay("Start={StartDate.ToString(\"yyyy-MM-dd\")}, End={EndDate?.ToString(\"yyyy-MM-dd\") ?? \"(in progress)\"}")]
 public class PeriodInLearningItem
 {
     public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
+    public DateTime? EndDate { get; set; }
     public DateTime OriginalExpectedEndDate { get; set; }
 }
 
