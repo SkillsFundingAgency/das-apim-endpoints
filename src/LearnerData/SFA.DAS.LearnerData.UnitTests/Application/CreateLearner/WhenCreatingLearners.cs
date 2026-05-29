@@ -25,7 +25,7 @@ public class WhenCreatingLearners
     private Mock<ILogger<CreateLearnerCommandHandler>> _mockLogger;
     private Mock<ILearningApiClient<LearningApiConfiguration>> _mockLearningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _mockEarningsApiClient;
-    private Mock<ICreateDraftLearningApiPutRequestBuilder> _mockCreateDraftLearningApiPutRequestBuilder;
+    private Mock<ICreateDraftLearningApiPostRequestBuilder> _mockCreateDraftLearningApiPostRequestBuilder;
     private Mock<IUpdateEarningsOnProgrammeRequestBuilder> _mockUpdateEarningsOnProgrammeRequestBuilder;
     private CreateLearnerCommandHandler _sut;
 
@@ -43,20 +43,20 @@ public class WhenCreatingLearners
         _mockLogger = new Mock<ILogger<CreateLearnerCommandHandler>>();
         _mockLearningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _mockEarningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
-        _mockCreateDraftLearningApiPutRequestBuilder = new Mock<ICreateDraftLearningApiPutRequestBuilder>();
+        _mockCreateDraftLearningApiPostRequestBuilder = new Mock<ICreateDraftLearningApiPostRequestBuilder>();
         _mockUpdateEarningsOnProgrammeRequestBuilder = new Mock<IUpdateEarningsOnProgrammeRequestBuilder>();
 
         _sut = new CreateLearnerCommandHandler(
             _mockLogger.Object,
             _mockMessageSession.Object,
             _mockLearningApiClient.Object,
-            _mockCreateDraftLearningApiPutRequestBuilder.Object,
+            _mockCreateDraftLearningApiPostRequestBuilder.Object,
             _mockEarningsApiClient.Object,
             _mockUpdateEarningsOnProgrammeRequestBuilder.Object);
 
-        _mockCreateDraftLearningApiPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<UpdateLearnerRequest>()))
-            .Returns(new CreateDraftLearningApiPutRequest(new UpdateLearningRequestBody(), 0, 0));
+        _mockCreateDraftLearningApiPostRequestBuilder
+            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>()))
+            .Returns(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0, 0));
 
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
             new CreateDraftLearnerApiPutResponse { Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>() },
@@ -64,7 +64,7 @@ public class WhenCreatingLearners
             string.Empty);
 
         _mockLearningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateLearningRequestBody, CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPutRequest>()))
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
             .ReturnsAsync(successResponse);
     }
 
@@ -134,7 +134,7 @@ public class WhenCreatingLearners
             "Internal Error");
 
         _mockLearningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateLearningRequestBody, CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPutRequest>()))
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
             .ReturnsAsync(failureResponse);
 
         // Act & Assert
@@ -158,7 +158,7 @@ public class WhenCreatingLearners
             string.Empty);
 
         _mockLearningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateLearningRequestBody, CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPutRequest>()))
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
             .ReturnsAsync(successResponse);
 
         var earningsPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
@@ -194,14 +194,14 @@ public class WhenCreatingLearners
             string.Empty);
 
         _mockLearningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateLearningRequestBody, CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPutRequest>()))
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
             .ReturnsAsync(successResponse);
 
         // Act
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<UpdateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
     }
 

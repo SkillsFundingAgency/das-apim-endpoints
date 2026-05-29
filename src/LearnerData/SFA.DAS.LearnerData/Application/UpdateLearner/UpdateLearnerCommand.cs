@@ -11,7 +11,6 @@ public class UpdateLearnerCommand : IRequest
     public long Ukprn { get; set; }
     public UpdateLearnerRequest UpdateLearnerRequest { get; set; }
 }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 public static class UpdateLearnerRequestExtensions
 {
@@ -25,4 +24,16 @@ public static class UpdateLearnerRequestExtensions
         return request.Delivery.EnglishAndMaths
             .Select(x => new KeyValuePair<string, List<LearningSupport>>(x.LearnAimRef, x.LearningSupport)).ToList();
     }
+
+    public static List<KeyValuePair<string, List<LearningSupport>>> EnglishAndMathsLearningSupport(this CreateLearnerRequest request)
+    {
+        if (request?.Delivery?.EnglishAndMaths == null)
+        {
+            return new List<KeyValuePair<string, List<LearningSupport>>>();
+        }
+
+        return request.Delivery.EnglishAndMaths
+            .Select(x => new KeyValuePair<string, List<LearningSupport>>(x.LearnAimRef, x.LearningSupport)).ToList();
+    }
 }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.

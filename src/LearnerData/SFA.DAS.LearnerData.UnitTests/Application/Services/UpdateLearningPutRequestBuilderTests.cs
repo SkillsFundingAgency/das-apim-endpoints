@@ -1,7 +1,11 @@
 using AutoFixture;
+using FluentAssertions;
+using Moq;
+using NUnit.Framework;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Services;
+using System;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 

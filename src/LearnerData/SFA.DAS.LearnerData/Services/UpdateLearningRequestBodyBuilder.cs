@@ -2,12 +2,17 @@ using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Shared;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateLearningRequestBodyBuilder
 {
     UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest);
+    UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest);
 }
 
 public class UpdateLearningRequestBodyBuilder(
@@ -18,11 +23,46 @@ public class UpdateLearningRequestBodyBuilder(
 {
     public UpdateLearningRequestBody Build(long ukprn, UpdateLearnerRequest updateLearnerRequest)
     {
-        var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(updateLearnerRequest);
+        return BuildInternal(
+            ukprn,
+            updateLearnerRequest.Learner,
+            updateLearnerRequest.Delivery.EnglishAndMaths,
+            updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
+            updateLearnerRequest.EnglishAndMathsLearningSupport());
+    }
+
+    public UpdateLearningRequestBody Build(long ukprn, CreateLearnerRequest createLearnerRequest)
+    {
+        var baseLearner = new LearnerRequestDetails
+        {
+            FirstName = createLearnerRequest.Learner.FirstName,
+            LastName = createLearnerRequest.Learner.LastName,
+            Email = createLearnerRequest.Learner.Email,
+            Dob = createLearnerRequest.Learner.Dob ?? DateTime.MinValue,
+            HasEhcp = createLearnerRequest.Learner.HasEhcp ?? false,
+            Uln = createLearnerRequest.Learner.Uln
+        };
+
+        return BuildInternal(
+            ukprn,
+            baseLearner,
+            createLearnerRequest.Delivery.EnglishAndMaths?.Cast<MathsAndEnglish>().ToList(),
+            createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(),
+            createLearnerRequest.EnglishAndMathsLearningSupport());
+    }
+
+    private UpdateLearningRequestBody BuildInternal(
+        long ukprn,
+        LearnerRequestDetails learner,
+        List<MathsAndEnglish> englishAndMaths,
+        List<OnProgrammeRequestDetails> onProgramme,
+        List<KeyValuePair<string, List<LearningSupport>>> englishAndMathsLearningSupport)
+    {
+        var (firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes) = SelectEpisode(onProgramme);
 
         var costs = costsService.GetCosts(allMatchingOnProgrammes);
         var onProgrammeDetails = BuildOnProgrammeDetails(firstOnProgramme, latestOnProgramme, allMatchingOnProgrammes, costs);
-        var englishAndMathsCourses = BuildEnglishAndMathsDetails(updateLearnerRequest.Delivery.EnglishAndMaths);
+        var englishAndMathsCourses = BuildEnglishAndMathsDetails(englishAndMaths ?? new List<MathsAndEnglish>());
 
         //Determine the effective end date of the latest OnProgramme
         var onProgrammeEndDate = new[]
@@ -38,7 +78,7 @@ public class UpdateLearningRequestBodyBuilder(
             onProgrammeEndDate,
             onProgrammeDetails.BreaksInLearning,
             englishAndMathsCourses,
-            updateLearnerRequest.EnglishAndMathsLearningSupport());
+            englishAndMathsLearningSupport);
 
         return new UpdateLearningRequestBody
         {
@@ -48,14 +88,14 @@ public class UpdateLearningRequestBodyBuilder(
             },
             Learner = new LearningUpdateDetails
             {
-                FirstName = updateLearnerRequest.Learner.FirstName,
-                LastName = updateLearnerRequest.Learner.LastName,
-                EmailAddress = updateLearnerRequest.Learner.Email,
+                FirstName = learner.FirstName,
+                LastName = learner.LastName,
+                EmailAddress = learner.Email,
                 CompletionDate = latestOnProgramme.CompletionDate,
-                DateOfBirth = updateLearnerRequest.Learner.Dob,
+                DateOfBirth = learner.Dob,
                 Care = new CareDetails
                 {
-                    HasEHCP = updateLearnerRequest.Learner.HasEhcp,
+                    HasEHCP = learner.HasEhcp,
                     IsCareLeaver = latestOnProgramme.Care.Careleaver,
                     CareLeaverEmployerConsentGiven = latestOnProgramme.Care.EmployerConsent
                 }
@@ -68,9 +108,9 @@ public class UpdateLearningRequestBodyBuilder(
 
     private static (OnProgrammeRequestDetails FirstOnProgramme,
         OnProgrammeRequestDetails LatestOnProgramme,
-        List<OnProgrammeRequestDetails> MatchingOnProgrammes) SelectEpisode(UpdateLearnerRequest updateLearnerRequest)
+        List<OnProgrammeRequestDetails> MatchingOnProgrammes) SelectEpisode(List<OnProgrammeRequestDetails> onProgramme)
     {
-        var orderedOnProgrammes = updateLearnerRequest.Delivery.OnProgramme
+        var orderedOnProgrammes = onProgramme
             .OrderBy(x => x.StartDate)
             .ToList();
 
