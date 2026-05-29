@@ -1,4 +1,3 @@
-using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
@@ -7,34 +6,30 @@ using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Requests;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.LearnerData.Services;
 
 public interface IUpdateEarningsOnProgrammeRequestBuilder
 {
-    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
-    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest);
+    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
+    Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody);
 }
 
 public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesApiConfiguration> coursesApiClient) : IUpdateEarningsOnProgrammeRequestBuilder
 {
     public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, UpdateLearnerRequest updateLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
-        UpdateLearningApiPutRequest putRequest)
+        UpdateLearningRequestBody requestBody)
     {
-        return await BuildInternal(learningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, putRequest);
+        return await BuildInternal(learningKey, updateLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
     }
 
     public async Task<UpdateOnProgrammeApiPutRequest> Build(Guid learningKey, CreateLearnerRequest createLearnerRequest, BaseLearnerApiPutResponse learningApiPutResponse,
-        UpdateLearningApiPutRequest putRequest)
+        UpdateLearningRequestBody requestBody)
     {
-        return await BuildInternal(learningKey, createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, putRequest);
+        return await BuildInternal(learningKey, createLearnerRequest.Delivery.OnProgramme.Cast<OnProgrammeRequestDetails>().ToList(), learningApiPutResponse, requestBody);
     }
 
-    private async Task<UpdateOnProgrammeApiPutRequest> BuildInternal(Guid learningKey, List<OnProgrammeRequestDetails> onProgramme, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningApiPutRequest putRequest)
+    private async Task<UpdateOnProgrammeApiPutRequest> BuildInternal(Guid learningKey, List<OnProgrammeRequestDetails> onProgramme, BaseLearnerApiPutResponse learningApiPutResponse, UpdateLearningRequestBody requestBody)
     {
         var fundingBandMaximum = default(int?);
         var includesFundingBandMaximumUpdate = false;
@@ -48,14 +43,14 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
 
         var payload = new UpdateOnProgrammeRequest
         {
-            CompletionDate = putRequest.Data.Learner.CompletionDate,
-            WithdrawalDate = putRequest.Data.Delivery.WithdrawalDate,
-            PauseDate = putRequest.Data.OnProgramme.PauseDate,
-            AchievementDate = putRequest.Data.OnProgramme.AchievementDate,
+            CompletionDate = requestBody.Learner.CompletionDate,
+            WithdrawalDate = requestBody.Delivery.WithdrawalDate,
+            PauseDate = requestBody.OnProgramme.PauseDate,
+            AchievementDate = requestBody.OnProgramme.AchievementDate,
             ApprenticeshipEpisodeKey = learningApiPutResponse.LearningEpisodeKey,
             FundingBandMaximum = fundingBandMaximum,
             IncludesFundingBandMaximumUpdate = includesFundingBandMaximumUpdate,
-            DateOfBirth = putRequest.Data.Learner.DateOfBirth,
+            DateOfBirth = requestBody.Learner.DateOfBirth,
             Prices = learningApiPutResponse.Prices.Select(x => new PriceItem
             {
                 Key = x.Key,
@@ -68,9 +63,9 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
             PeriodsInLearning = GetPeriodsInLearning(onProgramme),
             Care = new SFA.DAS.LearnerData.Requests.EarningsInner.Care
             {
-                HasEHCP = putRequest.Data.Learner.Care.HasEHCP,
-                IsCareLeaver = putRequest.Data.Learner.Care.IsCareLeaver,
-                CareLeaverEmployerConsentGiven = putRequest.Data.Learner.Care.CareLeaverEmployerConsentGiven
+                HasEHCP = requestBody.Learner.Care.HasEHCP,
+                IsCareLeaver = requestBody.Learner.Care.IsCareLeaver,
+                CareLeaverEmployerConsentGiven = requestBody.Learner.Care.CareLeaverEmployerConsentGiven
             }
         };
 

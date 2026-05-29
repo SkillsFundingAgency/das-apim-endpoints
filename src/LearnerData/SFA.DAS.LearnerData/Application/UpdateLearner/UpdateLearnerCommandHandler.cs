@@ -54,7 +54,7 @@ public class UpdateLearnerCommandHandler(
         if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
         {
             logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", command.LearningKey);
-            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.LearningKey, command.UpdateLearnerRequest, learningApiPutResponse, request);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.LearningKey, command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
             await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 

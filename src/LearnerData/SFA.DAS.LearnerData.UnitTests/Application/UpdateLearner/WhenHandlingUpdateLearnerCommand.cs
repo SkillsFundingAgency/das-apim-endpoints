@@ -108,7 +108,7 @@ public class WhenHandlingUpdateLearnerCommand
         updateLearningApiResponse.Changes.Clear();
         updateLearningApiResponse.Changes.Add(UpdateLearnerApiPutResponse.LearningUpdateChanges.CompletionDate); // on-prog change
 
-        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.LearningKey, command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest))
+        _updateEarningsOnProgrammeRequestBuilder.Setup(x => x.Build(command.LearningKey, command.UpdateLearnerRequest, updateLearningApiResponse, apiPutRequest.Data))
             .ReturnsAsync(updateOnProgPutRequest);
 
         MockLearningApiResponse(_learningApiClient, updateLearningApiResponse, HttpStatusCode.OK);

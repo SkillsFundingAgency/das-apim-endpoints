@@ -30,14 +30,13 @@ public class CreateLearnerCommandHandler(
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
             logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
-            throw new Exception($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
+            throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
         }
 
         if (learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
         {
             logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
-            var updateLearningRequest = new UpdateLearningApiPutRequest(Guid.Empty, (UpdateLearningRequestBody)postRequest.Data);
-            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, updateLearningRequest);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
             await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 

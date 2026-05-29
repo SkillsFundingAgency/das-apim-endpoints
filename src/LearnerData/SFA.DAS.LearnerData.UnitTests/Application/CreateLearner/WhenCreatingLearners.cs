@@ -138,7 +138,7 @@ public class WhenCreatingLearners
             .ReturnsAsync(failureResponse);
 
         // Act & Assert
-        Assert.ThrowsAsync<Exception>(async () => await _sut.Handle(command, CancellationToken.None));
+        Assert.ThrowsAsync<InvalidOperationException>(async () => await _sut.Handle(command, CancellationToken.None));
     }
 
     [Test]
@@ -163,7 +163,7 @@ public class WhenCreatingLearners
 
         var earningsPutRequest = _fixture.Create<UpdateOnProgrammeApiPutRequest>();
         _mockUpdateEarningsOnProgrammeRequestBuilder
-            .Setup(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningApiPutRequest>()))
+            .Setup(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>()))
             .ReturnsAsync(earningsPutRequest);
 
         _mockEarningsApiClient
@@ -174,7 +174,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningApiPutRequest>()), Times.Once);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(learningKey, command.Request, responseBody, It.IsAny<UpdateLearningRequestBody>()), Times.Once);
         _mockEarningsApiClient.Verify(x => x.Put(earningsPutRequest), Times.Once);
     }
 
@@ -201,7 +201,7 @@ public class WhenCreatingLearners
         await _sut.Handle(command, CancellationToken.None);
 
         // Assert
-        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningApiPutRequest>()), Times.Never);
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
         _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
     }
 

@@ -46,7 +46,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             
 
         // Act
-        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest);
+        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
@@ -108,7 +108,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                          });
 
         // Act
-        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest);
+        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.Data.FundingBandMaximum.Should().Be(expectedFundingBand);
@@ -126,7 +126,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         // Act
-        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest);
+        var result = await _sut.Build(command.LearningKey, command.UpdateLearnerRequest, response, putRequest.Data);
 
         // Assert
         result.PutUrl.Should().Be($"learning/{command.LearningKey}/on-programme");
