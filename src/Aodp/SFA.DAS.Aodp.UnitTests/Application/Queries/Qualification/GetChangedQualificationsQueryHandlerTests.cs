@@ -7,8 +7,6 @@ using SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications;
 using SFA.DAS.Aodp.Models;
 using SFA.DAS.Aodp.Services;
 using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Qualifications;
 
 
