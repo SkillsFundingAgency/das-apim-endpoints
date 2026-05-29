@@ -18,7 +18,10 @@ using SFA.DAS.VacanciesManage.InnerApi.Responses;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
+using SFA.DAS.Apim.Shared.Interfaces;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
 
@@ -70,9 +73,13 @@ public class WhenHandlingCreateVacancyCommand
         mockRecruitApiClient
             .Setup(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>(), true))
             .ReturnsAsync(apiResponse);
+
+        PutVacancyreviewsByIdApiRequest? capturedVacancyReviewRequest = null;
         mockRecruitApiClient
             .Setup(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()))
+            .Callback<IPutApiRequest<PutVacancyReviewRequest>>(x => capturedVacancyReviewRequest = x as PutVacancyreviewsByIdApiRequest)
             .ReturnsAsync(new ApiResponse<VacancyReview>(new VacancyReview(), HttpStatusCode.OK, ""));
+        
         accountLegalEntityPermissionService
             .Setup(x => x.GetAccountLegalEntity(It.Is<AccountIdentifier>(c => c.Equals(command.AccountIdentifier)),
                 command.PostVacancyRequest.AccountLegalEntityPublicHashedId))
@@ -86,7 +93,27 @@ public class WhenHandlingCreateVacancyCommand
 
         mockRecruitApiClient.Verify(x => x.PostWithResponseCode<Vacancy>(It.IsAny<PostVacanciesApiRequest>()), Times.Once);
         mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
+        
+        capturedVacancyReviewRequest.Should().NotBeNull();
+        capturedVacancyReviewRequest.Data.VacancyReference.Should().Be(apiResponse.Body.VacancyReference.ToString());
+        capturedVacancyReviewRequest.Data.VacancyTitle.Should().Be(apiResponse.Body.Title);
+        capturedVacancyReviewRequest.Data.CreatedDate.Should().NotBeNull();
+        capturedVacancyReviewRequest.Data.Status.Should().Be(ReviewStatus.New);
+        capturedVacancyReviewRequest.Data.VacancySnapshot.Should().BeEquivalentTo(JsonSerializer.Serialize(apiResponse.Body, options: new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
+        }));
+        capturedVacancyReviewRequest.Data.SubmittedByUserEmail.Should().Be(apiResponse.Body.Contact.Email);
+        capturedVacancyReviewRequest.Data.SubmissionCount.Should().Be(1);
+        capturedVacancyReviewRequest.Data.UpdatedFieldIdentifiers.Should().BeEquivalentTo([]);
+        capturedVacancyReviewRequest.Data.DismissedAutomatedQaOutcomeIndicators.Should().BeEquivalentTo([]);
+        capturedVacancyReviewRequest.Data.OwnerType.Should().Be(apiResponse.Body.OwnerType);
+        capturedVacancyReviewRequest.Data.AccountId.Should().Be(apiResponse.Body.AccountId);
+        capturedVacancyReviewRequest.Data.AccountLegalEntityId.Should().Be(apiResponse.Body.AccountLegalEntityId);
+        capturedVacancyReviewRequest.Data.Ukprn.Should().Be(apiResponse.Body.TrainingProvider.Ukprn);
     }
+    
     [Test, MoqAutoData]
     public async Task Then_The_Command_Is_Handled_With_Account_Info_looked_Up_For_Employer_And_Api_Called_With_Response_And_Vacancy_Review_Not_Created_For_Sandbox(
         Vacancy responseValue,

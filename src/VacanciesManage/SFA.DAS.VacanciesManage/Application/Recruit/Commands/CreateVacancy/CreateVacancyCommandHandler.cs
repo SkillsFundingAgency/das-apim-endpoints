@@ -44,6 +44,9 @@ public class CreateVacancyCommandHandler(
     {
         var dateTimeNow = DateTime.UtcNow;
         var vacancy = request.PostVacancyRequest;
+
+        vacancy.HasSubmittedAdditionalQuestions = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1) ||
+                                                  !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1);
         
         ValidateUkprn(vacancy);
 
@@ -70,26 +73,23 @@ public class CreateVacancyCommandHandler(
         ApplyVacancyStatus(vacancy, requiresEmployerApproval, dateTimeNow);
 
         vacancy.Id = request.Id;
-
         var result = await CreateVacancy(vacancy, request.IsSandbox);
-
         HandleHttpResponseError(result);
 
+        var createdVacancy = result.Body;
         if (!request.IsSandbox && !requiresEmployerApproval)
         {
             // only create a vacancy review if the vacancy is not in sandbox or if it is in sandbox but does not require employer approval.
             // If the vacancy is in sandbox and requires employer approval, the review will be created when the vacancy is submitted for review by the provider user.
-            await CreateVacancyReview(vacancy, result.Body.VacancyReference.ToString(), dateTimeNow);
+            await CreateVacancyReview(createdVacancy, createdVacancy.VacancyReference.ToString(), dateTimeNow);
         }
         
-        return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
+        return new CreateVacancyCommandResponse(createdVacancy.VacancyReference.ToString());
     }
 
-    private async Task CreateVacancyReview(PostVacancyRequest vacancy, string vacancyReference, DateTime createdDate)
+    private async Task CreateVacancyReview(Vacancy vacancy, string vacancyReference, DateTime createdDate)
     {
-        var slaDeadline =
-            await slaService.GetSlaDeadlineAsync(createdDate);
-
+        var slaDeadline = await slaService.GetSlaDeadlineAsync(createdDate);
         var reviewRequest = new PutVacancyreviewsByIdApiRequest
         {
             Id = Guid.NewGuid(),
@@ -108,7 +108,11 @@ public class CreateVacancyCommandHandler(
                 SubmissionCount = 1,
                 SlaDeadLine = slaDeadline,
                 UpdatedFieldIdentifiers = [],
-                DismissedAutomatedQaOutcomeIndicators = []
+                DismissedAutomatedQaOutcomeIndicators = [],
+                Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
+                AccountId = vacancy.AccountId!.Value,
+                AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
+                OwnerType = vacancy.OwnerType,
             }
         };
 
