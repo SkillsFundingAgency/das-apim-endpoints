@@ -8,7 +8,6 @@ using SFA.DAS.LearnerData.Application.RemoveShortCourse;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.Apim.Shared.Extensions;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
 
