@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.Aodp.Application.Queries.Rollover
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SFA.DAS.Aodp.Application.Queries.Rollover
 {
+    [ExcludeFromCodeCoverage]
     public class GetRolloverCandidatesForExportQueryResponse
     {
         public byte[] FileContent { get; set; } = Array.Empty<byte>();
