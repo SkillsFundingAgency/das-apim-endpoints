@@ -78,13 +78,19 @@ public class CreateVacancyCommandHandler(
         {
             // only create a vacancy review if the vacancy is not in sandbox or if it is in sandbox but does not require employer approval.
             // If the vacancy is in sandbox and requires employer approval, the review will be created when the vacancy is submitted for review by the provider user.
-            await CreateVacancyReview(createdVacancy, createdVacancy.VacancyReference.ToString(), dateTimeNow);
+            
+            var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
+            var postData = JsonSerializer.Deserialize<PostVacancyRequestData>(JsonSerializer.Serialize(createdVacancy, jsonOptions), jsonOptions)!;
+            postData.EmployerAccountId = accountLegalEntity.AccountHashedId;
+            postData.AccountLegalEntityPublicHashedId = accountLegalEntity.AccountLegalEntityPublicHashedId;
+            
+            await CreateVacancyReview(postData, createdVacancy.VacancyReference.ToString(), dateTimeNow);
         }
         
         return new CreateVacancyCommandResponse(createdVacancy.VacancyReference.ToString());
     }
 
-    private async Task CreateVacancyReview(Vacancy vacancy, string vacancyReference, DateTime createdDate)
+    private async Task CreateVacancyReview(PostVacancyRequestData vacancy, string vacancyReference, DateTime createdDate)
     {
         var slaDeadline = await slaService.GetSlaDeadlineAsync(createdDate);
         var reviewRequest = new PutVacancyreviewsByIdApiRequest
@@ -290,5 +296,11 @@ public class CreateVacancyCommandHandler(
                 });
 
         return response;
+    }
+    
+    public class PostVacancyRequestData : Vacancy
+    {
+        public string EmployerAccountId { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
     }
 }

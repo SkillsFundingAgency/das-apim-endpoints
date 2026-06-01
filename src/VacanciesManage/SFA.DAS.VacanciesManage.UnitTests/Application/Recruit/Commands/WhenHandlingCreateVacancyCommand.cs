@@ -107,7 +107,13 @@ public class WhenHandlingCreateVacancyCommand
         capturedVacancyReviewRequest.Data.VacancyTitle.Should().Be(apiResponse.Body.Title);
         capturedVacancyReviewRequest.Data.CreatedDate.Should().NotBeNull();
         capturedVacancyReviewRequest.Data.Status.Should().Be(ReviewStatus.New);
-        capturedVacancyReviewRequest.Data.VacancySnapshot.Should().BeEquivalentTo(JsonSerializer.Serialize(apiResponse.Body, options: new JsonSerializerOptions
+
+        var snapshotOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
+        var expectedPostData = JsonSerializer.Deserialize<CreateVacancyCommandHandler.PostVacancyRequestData>(JsonSerializer.Serialize(apiResponse.Body, snapshotOptions), snapshotOptions)!;
+        expectedPostData.AccountLegalEntityPublicHashedId = accountLegalEntityItem.AccountLegalEntityPublicHashedId;
+        expectedPostData.EmployerAccountId = accountLegalEntityItem.AccountHashedId;
+        
+        capturedVacancyReviewRequest.Data.VacancySnapshot.Should().BeEquivalentTo(JsonSerializer.Serialize(expectedPostData, options: new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
             Converters = { new JsonStringEnumConverter() }
