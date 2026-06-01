@@ -2,6 +2,7 @@
 
 namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 
+[Obsolete]
 [ExcludeFromCodeCoverage]
 public class UkrlpProviderDetails
 {
