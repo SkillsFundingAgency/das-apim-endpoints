@@ -67,6 +67,34 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     }
 
     [HttpGet]
+    [Route("{vacancyReference:long}")]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
+    public async Task<IResult> GetOneByVacancyReference(
+        [FromServices] IRecruitGqlClient recruitGqlClient,
+        [FromRoute] long vacancyReference,
+        CancellationToken cancellationToken)
+    {
+        var response = await recruitGqlClient.GetVacancyByReference.ExecuteAsync(vacancyReference, cancellationToken);
+        if (!response.IsSuccessResult())
+        {
+            logger.LogError("Error fetching vacancy '{VacancyReference}':\r\n {Errors}", vacancyReference, response.FormatErrors());
+            return TypedResults.Problem(response.ToProblemDetails());
+        }
+
+        if (response is not { Data.Vacancies.Count: > 0 })
+        {
+            return TypedResults.NotFound();
+        }
+
+        var vacancy = response.Data.Vacancies[0];
+        var domainVacancy = GqlVacancyMapper.From(vacancy);
+
+        return TypedResults.Ok(new DataResponse<Vacancy>(domainVacancy));
+    }
+
+    [HttpGet]
     [Route("{vacancyReference:long}/analytics")]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
