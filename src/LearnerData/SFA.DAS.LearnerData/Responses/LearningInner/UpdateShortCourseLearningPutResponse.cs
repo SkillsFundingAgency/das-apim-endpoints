@@ -27,7 +27,7 @@ public enum ShortCourseUpdateChanges
     WithdrawalDate = 0,
     Milestone = 1,
     CompletionDate = 2,
-    LearnerRef = 3
-
+    LearnerRef = 3,
+    Reinstated = 4
 }
 #pragma warning restore CS8618

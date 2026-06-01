@@ -5,6 +5,7 @@ public class GetQualificationDetailsQueryResponse
     public Guid Id { get; set; }
     public Guid QualificationId { get; set; }
     public Guid VersionFieldChangesId { get; set; }
+    public string Name { get; set; } = null!;
     public string AgeGroup { get; set; }
     public string? VersionFieldChanges { get; set; }
     public string? VersionType { get; set; }
