@@ -109,15 +109,11 @@ public class WhenHandlingCreateVacancyCommand
         capturedVacancyReviewRequest.Data.Status.Should().Be(ReviewStatus.New);
 
         var snapshotOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
-        var expectedPostData = JsonSerializer.Deserialize<CreateVacancyCommandHandler.PostVacancyRequestData>(JsonSerializer.Serialize(apiResponse.Body, snapshotOptions), snapshotOptions)!;
-        expectedPostData.AccountLegalEntityPublicHashedId = accountLegalEntityItem.AccountLegalEntityPublicHashedId;
-        expectedPostData.EmployerAccountId = accountLegalEntityItem.AccountHashedId;
-        
-        capturedVacancyReviewRequest.Data.VacancySnapshot.Should().BeEquivalentTo(JsonSerializer.Serialize(expectedPostData, options: new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true,
-            Converters = { new JsonStringEnumConverter() }
-        }));
+        var expectedVacancyNode = JsonSerializer.SerializeToNode(apiResponse.Body, snapshotOptions)!.AsObject();
+        expectedVacancyNode["EmployerAccountId"] = accountLegalEntityItem.AccountHashedId;
+        expectedVacancyNode["AccountLegalEntityPublicHashedId"] = accountLegalEntityItem.AccountLegalEntityPublicHashedId;
+
+        capturedVacancyReviewRequest.Data.VacancySnapshot.Should().BeEquivalentTo(expectedVacancyNode.ToJsonString(snapshotOptions));
         capturedVacancyReviewRequest.Data.SubmittedByUserEmail.Should().Be(apiResponse.Body.Contact.Email);
         capturedVacancyReviewRequest.Data.SubmissionCount.Should().Be(1);
         capturedVacancyReviewRequest.Data.UpdatedFieldIdentifiers.Should().BeEquivalentTo([]);

@@ -78,20 +78,24 @@ public class CreateVacancyCommandHandler(
         {
             // only create a vacancy review if the vacancy is not in sandbox or if it is in sandbox but does not require employer approval.
             // If the vacancy is in sandbox and requires employer approval, the review will be created when the vacancy is submitted for review by the provider user.
-            
-            var jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
-            var postData = JsonSerializer.Deserialize<PostVacancyRequestData>(JsonSerializer.Serialize(createdVacancy, jsonOptions), jsonOptions)!;
-            postData.EmployerAccountId = accountLegalEntity.AccountHashedId;
-            postData.AccountLegalEntityPublicHashedId = accountLegalEntity.AccountLegalEntityPublicHashedId;
-            
-            await CreateVacancyReview(postData, createdVacancy.VacancyReference.ToString(), dateTimeNow);
+            await CreateVacancyReview(
+                createdVacancy,
+                accountLegalEntity.AccountHashedId,
+                accountLegalEntity.AccountLegalEntityPublicHashedId,
+                createdVacancy.VacancyReference.ToString(),
+                dateTimeNow);
         }
         
         return new CreateVacancyCommandResponse(createdVacancy.VacancyReference.ToString());
     }
 
-    private async Task CreateVacancyReview(PostVacancyRequestData vacancy, string vacancyReference, DateTime createdDate)
+    private async Task CreateVacancyReview(Vacancy vacancy, string employerAccountId, string accountLegalEntityPublicHashedId, string vacancyReference, DateTime createdDate)
     {
+        var snapshotOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
+        var vacancyNode = JsonSerializer.SerializeToNode(vacancy, snapshotOptions)!.AsObject();
+        vacancyNode[nameof(PostVacancyRequestData.EmployerAccountId)] = employerAccountId;
+        vacancyNode[nameof(PostVacancyRequestData.AccountLegalEntityPublicHashedId)] = accountLegalEntityPublicHashedId;
+
         var slaDeadline = await slaService.GetSlaDeadlineAsync(createdDate);
         var reviewRequest = new PutVacancyreviewsByIdApiRequest
         {
@@ -102,11 +106,7 @@ public class CreateVacancyCommandHandler(
                 VacancyTitle = vacancy.Title,
                 CreatedDate = createdDate,
                 Status = ReviewStatus.New,
-                VacancySnapshot = JsonSerializer.Serialize(vacancy, options: new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() }
-                }),
+                VacancySnapshot = vacancyNode.ToJsonString(snapshotOptions),
                 SubmittedByUserEmail = vacancy.Contact.Email,
                 SubmissionCount = 1,
                 SlaDeadLine = slaDeadline,
