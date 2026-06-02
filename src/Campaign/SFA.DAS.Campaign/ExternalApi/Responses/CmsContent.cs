@@ -321,6 +321,9 @@ namespace SFA.DAS.Campaign.ExternalApi.Responses
         [JsonPropertyName("headerImage")]
         public HeaderImage HeaderImage { get; set; }
 
+        [JsonPropertyName("articleType")]
+        public string ArticleType { get; set; }
+
         [JsonPropertyName("cards")]
         public List<CardItem> Cards { get; set; }
 
