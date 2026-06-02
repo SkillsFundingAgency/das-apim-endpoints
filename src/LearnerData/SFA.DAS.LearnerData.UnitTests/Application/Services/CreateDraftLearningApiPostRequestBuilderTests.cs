@@ -34,6 +34,6 @@ public class CreateDraftLearningApiPostRequestBuilderTests
         result.Should().NotBeNull();
         result.Data.Should().BeSameAs(requestBody);
         result.Ukprn.Should().Be(ukprn);
-        result.PostUrl.Should().Be($"{ukprn}/apprenticeships/{createLearnerRequest.Learner.Uln}");
+        result.PostUrl.Should().Be($"{ukprn}/apprenticeships");
     }
 }

@@ -203,6 +203,7 @@ public class UpdateLearningRequestBodyBuilderTests
         var actualRequestBody = sut.Build(10005077, createRequest);
 
         // Assert
+        actualRequestBody.Learner.Uln.Should().Be(123456789);
         actualRequestBody.Learner.FirstName.Should().Be("John");
         actualRequestBody.Learner.LastName.Should().Be("Doe");
         actualRequestBody.Learner.EmailAddress.Should().Be("john.doe@test.com");

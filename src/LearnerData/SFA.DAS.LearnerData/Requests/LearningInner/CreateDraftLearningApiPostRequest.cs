@@ -9,9 +9,9 @@ public class CreateDraftLearningApiPostRequest : IPostApiRequest
     public object Data { get; set; }
     public long Ukprn { get; set; }
 
-    public CreateDraftLearningApiPostRequest(UpdateLearningRequestBody data, long ukprn, long uln)
+    public CreateDraftLearningApiPostRequest(UpdateLearningRequestBody data, long ukprn)
     {
-        PostUrl = $"{ukprn}/apprenticeships/{uln}";
+        PostUrl = $"{ukprn}/apprenticeships";
         Data = data;
         Ukprn = ukprn;
     }

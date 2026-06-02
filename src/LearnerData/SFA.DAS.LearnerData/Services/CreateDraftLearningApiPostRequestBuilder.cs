@@ -13,6 +13,6 @@ public class CreateDraftLearningApiPostRequestBuilder(IUpdateLearningRequestBody
     public CreateDraftLearningApiPostRequest Build(long ukprn, CreateLearnerRequest createLearnerRequest)
     {
         var body = requestBodyBuilder.Build(ukprn, createLearnerRequest);
-        return new CreateDraftLearningApiPostRequest(body, ukprn, createLearnerRequest.Learner.Uln);
+        return new CreateDraftLearningApiPostRequest(body, ukprn);
     }
 }

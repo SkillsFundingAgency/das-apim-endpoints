@@ -56,7 +56,7 @@ public class WhenCreatingLearners
 
         _mockCreateDraftLearningApiPostRequestBuilder
             .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<CreateLearnerRequest>()))
-            .Returns(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0, 0));
+            .Returns(new CreateDraftLearningApiPostRequest(new UpdateLearningRequestBody(), 0));
 
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
             new CreateDraftLearnerApiPutResponse { Changes = new List<BaseLearnerApiPutResponse.LearningUpdateChanges>() },
@@ -191,6 +191,28 @@ public class WhenCreatingLearners
         var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
             responseBody,
             HttpStatusCode.OK,
+            string.Empty);
+
+        _mockLearningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(It.IsAny<CreateDraftLearningApiPostRequest>(), true))
+            .ReturnsAsync(successResponse);
+
+        // Act
+        await _sut.Handle(command, CancellationToken.None);
+
+        // Assert
+        _mockUpdateEarningsOnProgrammeRequestBuilder.Verify(x => x.Build(It.IsAny<Guid>(), It.IsAny<CreateLearnerRequest>(), It.IsAny<BaseLearnerApiPutResponse>(), It.IsAny<UpdateLearningRequestBody>()), Times.Never);
+        _mockEarningsApiClient.Verify(x => x.Put(It.IsAny<UpdateOnProgrammeApiPutRequest>()), Times.Never);
+    }
+
+    [Test]
+    public async Task Then_does_not_reinstate_earnings_if_response_body_is_null()
+    {
+        // Arrange
+        var command = GetProcessLearnersCommand();
+        var successResponse = new ApiResponse<CreateDraftLearnerApiPutResponse>(
+            null!,
+            System.Net.HttpStatusCode.OK,
             string.Empty);
 
         _mockLearningApiClient

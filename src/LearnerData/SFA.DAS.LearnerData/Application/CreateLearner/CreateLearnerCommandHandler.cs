@@ -33,7 +33,7 @@ public class CreateLearnerCommandHandler(
             throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
         }
 
-        if (learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
+        if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
         {
             logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
             var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
