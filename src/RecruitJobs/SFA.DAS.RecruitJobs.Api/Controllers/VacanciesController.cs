@@ -39,7 +39,7 @@ namespace SFA.DAS.RecruitJobs.Api.Controllers;
 public class VacanciesController(ILogger<VacanciesController> logger) : ControllerBase
 {
     [HttpGet]
-    [Route("{id:guid}")]
+    [Route("byId/{id:guid}")]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
@@ -67,7 +67,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     }
 
     [HttpGet]
-    [Route("{vacancyReference:long}")]
+    [Route("byRef/{vacancyReference:long}")]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(DataResponse<Vacancy>), StatusCodes.Status200OK)]
