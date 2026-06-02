@@ -1,4 +1,8 @@
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Constants;
 using SFA.DAS.SharedOuterApi.Types.Extensions;
@@ -13,46 +17,64 @@ public interface IShortCourseLookupService
     Task<ShortCourseLookupResult> GetCourseDetails(string courseCode, DateTime startDate);
 }
 
-public class ShortCourseLookupService(
-    ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
-    ILogger<ShortCourseLookupService> logger) : IShortCourseLookupService
+public class ShortCourseLookupService : IShortCourseLookupService
 {
-    public async Task<ShortCourseLookupResult> GetCourseDetails(string courseCode, DateTime startDate)
+    private readonly ICoursesApiClient<CoursesApiConfiguration> _coursesApiClient;
+    private readonly ILogger<ShortCourseLookupService> _logger;
+    private readonly AsyncRetryPolicy<ApiResponse<CourseLookupDetailResponse>> _retryPolicy;
+
+    public ShortCourseLookupService(
+        ICoursesApiClient<CoursesApiConfiguration> coursesApiClient,
+        ILogger<ShortCourseLookupService> logger)
     {
-        try
-        {
-            var response = await coursesApiClient.Get<CourseLookupDetailResponse>(new GetCourseLookupDetailsByIdRequest(courseCode));
-
-            if (response == null)
-            {
-                logger.LogError("Courses API returned no data for course {CourseCode}. Using default values", courseCode);
-                return Defaults();
-            }
-
-            var price = response.ApprenticeshipFunding.MaxFundingOn(startDate);
-
-            if (price == 0)
-            {
-                logger.LogWarning("No funding band found for course {CourseCode} on start date {StartDate}. Using default values", courseCode, startDate);
-                return Defaults();
-            }
-
-            if (!Enum.TryParse<LearningType>(response.LearningType, out var learningType))
-            {
-                logger.LogWarning("Unrecognised learning type '{LearningType}' for course {CourseCode}. Defaulting to ApprenticeshipUnit", response.LearningType, courseCode);
-                learningType = LearningType.ApprenticeshipUnit;
-            }
-
-            return new ShortCourseLookupResult { Price = price, LearningType = learningType };
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Failed to retrieve course details for course {CourseCode}. Using default values", courseCode);
-            return Defaults();
-        }
+        _coursesApiClient = coursesApiClient;
+        _logger = logger;
+        _retryPolicy = Policy
+            .Handle<HttpRequestException>()
+            .Or<TaskCanceledException>()
+            .OrResult<ApiResponse<CourseLookupDetailResponse>>(r => (int)r.StatusCode >= 500)
+            .WaitAndRetryAsync(3,
+                attempt => TimeSpan.FromSeconds(Math.Pow(2, attempt)),
+                onRetry: (_, delay, attempt, _) =>
+                    logger.LogWarning("Courses API transient error for retry {Attempt}. Waiting {Delay}s before next attempt.", attempt, delay.TotalSeconds));
     }
 
-    private static ShortCourseLookupResult Defaults() => new() { Price = 0, LearningType = LearningType.ApprenticeshipUnit };
+    public async Task<ShortCourseLookupResult> GetCourseDetails(string courseCode, DateTime startDate)
+    {
+        ApiResponse<CourseLookupDetailResponse> apiResponse;
+        try
+        {
+            apiResponse = await _retryPolicy.ExecuteAsync(
+                () => _coursesApiClient.GetWithResponseCode<CourseLookupDetailResponse>(
+                    new GetCourseLookupDetailsByIdRequest(courseCode)));
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException)
+        {
+            throw new CoursesApiUnavailableException($"Courses API unavailable for course {courseCode} after retries.", ex);
+        }
+
+        if (!apiResponse.StatusCode.IsSuccessStatusCode())
+        {
+            if ((int)apiResponse.StatusCode >= 500)
+                throw new CoursesApiUnavailableException($"Courses API returned {apiResponse.StatusCode} for course {courseCode} after retries.");
+            throw new InvalidCourseException($"Courses API returned {apiResponse.StatusCode} for course {courseCode}.");
+        }
+
+        var response = apiResponse.Body;
+
+        if (response == null)
+            throw new InvalidOperationException($"Courses API returned no data for course {courseCode}.");
+
+        var price = response.ApprenticeshipFunding.MaxFundingOn(startDate);
+
+        if (price == 0)
+            throw new InvalidCourseException($"No funding band found for course {courseCode} on start date {startDate:yyyy-MM-dd}.");
+
+        if (!Enum.TryParse<LearningType>(response.LearningType, out var learningType))
+            throw new InvalidOperationException($"Unrecognised learning type '{response.LearningType}' for course {courseCode}.");
+
+        return new ShortCourseLookupResult { Price = price, LearningType = learningType };
+    }
 }
 
 public class ShortCourseLookupResult

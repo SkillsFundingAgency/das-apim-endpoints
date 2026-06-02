@@ -79,11 +79,7 @@ public class UpdateEarningsOnProgrammeRequestBuilder(ICoursesApiClient<CoursesAp
 
         foreach (var onProgramme in command.UpdateLearnerRequest.Delivery.OnProgramme.Where(x => x.AgreementId == agreementId))
         {
-            //todo:  onProgramme.CompletionDate should be included here in the coalescence. currently left
-            //out of here to avoid re-writing the balancing logic in earnings,
-            //when we come to do qualification period logic for each PIL we will have to re-write that logic anyway
-            //and at that point can include CompletionDate in this calculation
-            var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.ExpectedEndDate;
+            var endDate = onProgramme.PauseDate ?? onProgramme.WithdrawalDate ?? onProgramme.CompletionDate;
 
             periodsInLearning.Add(new PeriodInLearningItem
             {
