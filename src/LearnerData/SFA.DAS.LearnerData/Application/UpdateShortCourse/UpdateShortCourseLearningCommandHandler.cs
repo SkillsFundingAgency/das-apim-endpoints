@@ -80,7 +80,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         else
         {
             _logger.LogInformation("No changes requiring earnings update for shortcourse learning {LearningKey}", command.LearningKey);
-            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(command.Ukprn, command.LearningKey));
+            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(command.LearningKey, learningResponse.Body.UpdatedEpisodeKey));
         }
 
         await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse);
