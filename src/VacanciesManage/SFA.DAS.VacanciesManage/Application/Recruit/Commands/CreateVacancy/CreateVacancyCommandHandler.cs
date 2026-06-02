@@ -44,7 +44,7 @@ public class CreateVacancyCommandHandler(
     {
         var dateTimeNow = DateTime.UtcNow;
         var vacancy = request.PostVacancyRequest;
-        
+
         ValidateUkprn(vacancy);
 
         //additional check to validate the given Training Provider UKPRN is valid.
@@ -70,26 +70,33 @@ public class CreateVacancyCommandHandler(
         ApplyVacancyStatus(vacancy, requiresEmployerApproval, dateTimeNow);
 
         vacancy.Id = request.Id;
-
         var result = await CreateVacancy(vacancy, request.IsSandbox);
-
         HandleHttpResponseError(result);
 
+        var createdVacancy = result.Body;
         if (!request.IsSandbox && !requiresEmployerApproval)
         {
             // only create a vacancy review if the vacancy is not in sandbox or if it is in sandbox but does not require employer approval.
             // If the vacancy is in sandbox and requires employer approval, the review will be created when the vacancy is submitted for review by the provider user.
-            await CreateVacancyReview(vacancy, result.Body.VacancyReference.ToString(), dateTimeNow);
+            await CreateVacancyReview(
+                createdVacancy,
+                accountLegalEntity.AccountHashedId,
+                accountLegalEntity.AccountLegalEntityPublicHashedId,
+                createdVacancy.VacancyReference.ToString(),
+                dateTimeNow);
         }
         
-        return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
+        return new CreateVacancyCommandResponse(createdVacancy.VacancyReference.ToString());
     }
 
-    private async Task CreateVacancyReview(PostVacancyRequest vacancy, string vacancyReference, DateTime createdDate)
+    private async Task CreateVacancyReview(Vacancy vacancy, string employerAccountId, string accountLegalEntityPublicHashedId, string vacancyReference, DateTime createdDate)
     {
-        var slaDeadline =
-            await slaService.GetSlaDeadlineAsync(createdDate);
+        var snapshotOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
+        var vacancyNode = JsonSerializer.SerializeToNode(vacancy, snapshotOptions)!.AsObject();
+        vacancyNode[nameof(PostVacancyRequestData.EmployerAccountId)] = employerAccountId;
+        vacancyNode[nameof(PostVacancyRequestData.AccountLegalEntityPublicHashedId)] = accountLegalEntityPublicHashedId;
 
+        var slaDeadline = await slaService.GetSlaDeadlineAsync(createdDate);
         var reviewRequest = new PutVacancyreviewsByIdApiRequest
         {
             Id = Guid.NewGuid(),
@@ -99,16 +106,16 @@ public class CreateVacancyCommandHandler(
                 VacancyTitle = vacancy.Title,
                 CreatedDate = createdDate,
                 Status = ReviewStatus.New,
-                VacancySnapshot = JsonSerializer.Serialize(vacancy, options: new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() }
-                }),
+                VacancySnapshot = vacancyNode.ToJsonString(snapshotOptions),
                 SubmittedByUserEmail = vacancy.Contact.Email,
                 SubmissionCount = 1,
                 SlaDeadLine = slaDeadline,
                 UpdatedFieldIdentifiers = [],
-                DismissedAutomatedQaOutcomeIndicators = []
+                DismissedAutomatedQaOutcomeIndicators = [],
+                Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
+                AccountId = vacancy.AccountId!.Value,
+                AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
+                OwnerType = vacancy.OwnerType,
             }
         };
 
@@ -167,6 +174,11 @@ public class CreateVacancyCommandHandler(
         {
             vacancy.EmployerName = accountLegalEntity.Name;
         }
+        
+        vacancy.HasSubmittedAdditionalQuestions = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1) ||
+                                                  !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion2);
+        
+        vacancy.HasOptedToAddQualifications = vacancy.Qualifications is { Count: >0 };
     }
 
     private async Task<GetStandardsListItem?> GetCourse(string programmeId)
@@ -284,5 +296,11 @@ public class CreateVacancyCommandHandler(
                 });
 
         return response;
+    }
+    
+    public class PostVacancyRequestData : Vacancy
+    {
+        public string EmployerAccountId { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
     }
 }
