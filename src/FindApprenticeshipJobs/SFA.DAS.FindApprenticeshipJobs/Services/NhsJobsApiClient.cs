@@ -1,11 +1,11 @@
 using System.Net;
+using Polly;
+using Polly.Retry;
 using SFA.DAS.FindApprenticeshipJobs.Configuration;
 using SFA.DAS.FindApprenticeshipJobs.Interfaces;
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.FindApprenticeshipJobs.Services;
 
@@ -21,11 +21,14 @@ public class NhsJobsApiClient : INhsJobsApiClient
     
     public async Task<ApiResponse<string>> GetWithResponseCode(IGetApiRequest request)
     {
-        var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
-        httpRequestMessage.AddVersion(request.Version);
+        var response = await RetryPipeline.ExecuteAsync(async token =>
+        {
+            using var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            requestMessage.AddVersion(request.Version);
 
-        var response = await _httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
-
+            return await _httpClient.SendAsync(requestMessage, token);
+        });
+        
         var stringResponse = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
         var errorContent = "";
@@ -38,7 +41,7 @@ public class NhsJobsApiClient : INhsJobsApiClient
         else if (string.IsNullOrWhiteSpace(stringResponse))
         {
             // 204 No Content from a potential returned null
-            // Will throw if attempts to deserialise but didn't
+            // Will throw if attempts to deserialize but didn't
             // feel right making it part of the error if branch
             // even if there is no content.
         }
@@ -52,9 +55,35 @@ public class NhsJobsApiClient : INhsJobsApiClient
         return getWithResponseCode;
     }
 
+    private static readonly ResiliencePipeline<HttpResponseMessage> RetryPipeline =
+        new ResiliencePipelineBuilder<HttpResponseMessage>()
+            .AddRetry(new RetryStrategyOptions<HttpResponseMessage>
+            {
+                MaxRetryAttempts = 3,
+
+                ShouldHandle = args => ValueTask.FromResult(
+                    args.Outcome.Result is not null &&
+                    (
+                        args.Outcome.Result.StatusCode == HttpStatusCode.TooManyRequests ||
+                        args.Outcome.Result.StatusCode == HttpStatusCode.RequestTimeout ||
+                        (int)args.Outcome.Result.StatusCode >= 500
+                    )),
+
+                DelayGenerator = args =>
+                {
+                    var retryAfter = args.Outcome.Result?
+                        .Headers
+                        .RetryAfter?
+                        .Delta;
+
+                    return ValueTask.FromResult<TimeSpan?>(
+                        retryAfter ?? TimeSpan.FromSeconds(2));
+                }
+            })
+            .Build();
+
     private static bool IsNot200RangeResponseCode(HttpStatusCode statusCode)
     {
         return !((int)statusCode >= 200 && (int)statusCode <= 299);
     }
-    
 }
