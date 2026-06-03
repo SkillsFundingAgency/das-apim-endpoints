@@ -19,6 +19,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using EmployerNameOption = SFA.DAS.Recruit.Contracts.ApiResponses.EmployerNameOption;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
 using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
@@ -92,9 +93,19 @@ public class CreateVacancyCommandHandler(
     private async Task CreateVacancyReview(Vacancy vacancy, string employerAccountId, string accountLegalEntityPublicHashedId, string vacancyReference, DateTime createdDate)
     {
         var snapshotOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
+        var vacancyUser = new VacancyUser
+        {
+            UserId = vacancy.SubmittedByUserId.ToString(),
+            Name = vacancy.Contact.Name,
+            Email = vacancy.Contact.Email,
+        };
+        
         var vacancyNode = JsonSerializer.SerializeToNode(vacancy, snapshotOptions)!.AsObject();
         vacancyNode[nameof(PostVacancyRequestData.EmployerAccountId)] = employerAccountId;
         vacancyNode[nameof(PostVacancyRequestData.AccountLegalEntityPublicHashedId)] = accountLegalEntityPublicHashedId;
+        vacancyNode[nameof(PostVacancyRequestData.SubmittedByUser)] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
+        vacancyNode[nameof(PostVacancyRequestData.CreatedByUser)] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
+        vacancyNode[nameof(PostVacancyRequestData.LastUpdatedByUser)] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
 
         var slaDeadline = await slaService.GetSlaDeadlineAsync(createdDate);
         var reviewRequest = new PutVacancyreviewsByIdApiRequest
@@ -116,6 +127,7 @@ public class CreateVacancyCommandHandler(
                 AccountId = vacancy.AccountId!.Value,
                 AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
                 OwnerType = vacancy.OwnerType,
+                SubmittedByUserId = vacancy.SubmittedByUserId.ToString()
             }
         };
 
@@ -297,10 +309,13 @@ public class CreateVacancyCommandHandler(
 
         return response;
     }
-    
-    public class PostVacancyRequestData : Vacancy
+
+    private class PostVacancyRequestData : Vacancy
     {
         public string EmployerAccountId { get; set; }
         public string AccountLegalEntityPublicHashedId { get; set; }
+        public VacancyUser SubmittedByUser { get; set; }
+        public VacancyUser CreatedByUser { get; set; }
+        public VacancyUser LastUpdatedByUser { get; set; }
     }
 }
