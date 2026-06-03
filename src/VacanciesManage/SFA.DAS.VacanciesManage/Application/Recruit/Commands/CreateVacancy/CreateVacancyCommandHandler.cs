@@ -27,6 +27,7 @@ using Operation = SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Oper
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using PutVacancyReviewRequest = SFA.DAS.Recruit.Contracts.ApiResponses.PutVacancyReviewRequest;
 using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
+using TrainingProvider = SFA.DAS.Recruit.Contracts.ApiResponses.TrainingProvider;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 
@@ -168,6 +169,20 @@ public class CreateVacancyCommandHandler(
         {
             throw new HttpRequestContentException("UKPRN of a training provider must be registered to deliver apprenticeship training", HttpStatusCode.Forbidden);
         }
+
+        vacancy.TrainingProvider = new TrainingProvider
+        {
+            Name = provider.Name,
+            Ukprn = provider.Ukprn,
+            Address = provider.Address is not null ? new TrainingProviderAddress
+            {
+                AddressLine1 = provider.Address.AddressLine1,
+                AddressLine2 = provider.Address.AddressLine2,
+                AddressLine3 = provider.Address.AddressLine3,
+                AddressLine4 = provider.Address.AddressLine4,
+                Postcode = provider.Address.Postcode,
+            } : new TrainingProviderAddress()
+        };
     }
 
     private static void EnrichVacancy(PostVacancyRequest vacancy, CreateVacancyCommand request, AccountLegalEntityItem accountLegalEntity)
