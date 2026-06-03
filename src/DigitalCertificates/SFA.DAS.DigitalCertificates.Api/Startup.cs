@@ -17,6 +17,7 @@ using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
 using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
+using SFA.DAS.Telemetry.Startup;
 
 namespace SFA.DAS.DigitalCertificates.Api
 {
@@ -81,7 +82,9 @@ namespace SFA.DAS.DigitalCertificates.Api
                 options.LowercaseQueryStrings = true;
             });
 
-            services.AddOpenTelemetryRegistration(_configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]!);
+            services
+                .AddApplicationInsightsTelemetry()
+                .AddTelemetryUriRedaction("dob,name");
 
             services.AddSwaggerGen(opt =>
             {

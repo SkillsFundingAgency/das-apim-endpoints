@@ -24,11 +24,20 @@ namespace SFA.DAS.Campaign.Models
 
             Enum.TryParse<PageType>(item.Sys.ContentType.Sys.Id, true, out var pageTypeResult);
 
-            return GenerateHubPageModel(item, pageTypeResult, ProcessCards(hub), ProcessHeaderImage(hub, item), menu, banners);
+            return GenerateHubPageModel(item, pageTypeResult,
+                ProcessCards(hub, item.Fields.Cards),
+                ProcessCards(hub, item.Fields.Cards2),
+                ProcessCards(hub, item.Fields.Cards3),
+                ProcessHeaderImage(hub, item), menu, banners);
         }
 
-        private static List<CardPageModel> ProcessCards(CmsContent hub)
+        private static List<CardPageModel> ProcessCards(CmsContent hub, List<CardItem> cardItems)
         {
+            if (cardItems == null)
+            {
+                return new List<CardPageModel>();
+            }
+
             var cards = hub.Includes?.Entry != null
                 ? hub
                     .Includes
@@ -39,7 +48,7 @@ namespace SFA.DAS.Campaign.Models
                                           StringComparison.CurrentCultureIgnoreCase)
                                       && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true, out var type) &&
                                       type == PageType.Article &&
-                                      hub.Items[0].Fields.Cards.FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null
+                                      cardItems.FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null
                     )
                     .Select(entry => new CardPageModel
                     {
@@ -59,9 +68,9 @@ namespace SFA.DAS.Campaign.Models
                 return cards;
             }
 
-            for (var i = 0; i < hub.Items[0].Fields.Cards.Count; i++)
+            for (var i = 0; i < cardItems.Count; i++)
             {
-                cards = cards.OrderBy(o => o.Id == hub.Items[0].Fields.Cards[i].Sys.Id).ToList();
+                cards = cards.OrderBy(o => o.Id == cardItems[i].Sys.Id).ToList();
             }
 
             return cards;
@@ -93,7 +102,7 @@ namespace SFA.DAS.Campaign.Models
             };
         }
 
-        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, ContentItem headerImage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
+        private static HubPageModel GenerateHubPageModel(Item item, PageType pageTypeResult, List<CardPageModel> cards, List<CardPageModel> cards2, List<CardPageModel> cards3, ContentItem headerImage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
             return new HubPageModel()
             {
@@ -109,6 +118,11 @@ namespace SFA.DAS.Campaign.Models
                 MainContent = new HubContent()
                 {
                     Cards = cards,
+                    Cards2 = cards2,
+                    Cards3 = cards3,
+                    CardsTitle = item.Fields.CardsTitle,
+                    CardsTitle2 = item.Fields.CardsTitle2,
+                    CardsTitle3 = item.Fields.CardsTitle3,
                     HeaderImage = headerImage
                 },
                 MenuContent = menu,
@@ -119,8 +133,12 @@ namespace SFA.DAS.Campaign.Models
         public class HubContent
         {
             public ContentItem HeaderImage { get; set; }
+            public string CardsTitle { get; set; }
             public List<CardPageModel> Cards { get; set; }
-            
+            public string CardsTitle2 { get; set; }
+            public List<CardPageModel> Cards2 { get; set; }
+            public string CardsTitle3 { get; set; }
+            public List<CardPageModel> Cards3 { get; set; }
         }
     }
 }
