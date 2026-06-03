@@ -1,13 +1,12 @@
-﻿namespace SFA.DAS.SharedOuterApi.Types.Configuration
+﻿namespace SFA.DAS.SharedOuterApi.Types.Configuration;
+
+public class AccessTokenProviderApiConfiguration
 {
-    public class AccessTokenProviderApiConfiguration
-    {
-        public string Url { get; set; }
-        public string Scope { get; set; }
-        public string ClientId { get; set; }
-        public string Tenant { get; set; }
-        public string ClientSecret { get; set; }
-        public string GrantType { get; set; }
-        public bool ShouldSkipForLocal { get; set; }
-    }
+    public string Url { get; set; }
+    public string Scope { get; set; }
+    public string ClientId { get; set; }
+    public string Tenant { get; set; }
+    public string ClientSecret { get; set; }
+    public string GrantType { get; set; }
+    public bool ShouldSkipForLocal { get; set; }
 }

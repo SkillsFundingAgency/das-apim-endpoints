@@ -30,7 +30,8 @@ namespace SFA.DAS.Aodp.Application.Queries.Qualifications
                     Name = request.Name,
                     Organisation = request.Organisation,
                     QAN = request.QAN,
-                    ProcessStatusFilter = request.ProcessStatusFilter
+                    ProcessStatusFilter = request.ProcessStatusFilter,
+                    AgeGroups = request.AgeGroups
                 });
 
                 if (qualificationsResponse?.Data != null)

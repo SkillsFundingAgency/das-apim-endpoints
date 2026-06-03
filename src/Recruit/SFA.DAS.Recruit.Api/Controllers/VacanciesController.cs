@@ -222,7 +222,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
     
-    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review)$)}")]
+    [HttpGet, Route("employer/{accountId:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review|archived)$)}")]
     public async Task<IResult> GetEmployerVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
@@ -257,7 +257,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         }
 
         var vacancyReferences = items
-            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Archived)
             .Select(x => x.VacancyReference!.Value);
 
         var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetEmployerVacancyApplicationStatsRequest(accountId, vacancyReferences));
@@ -268,7 +268,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         return TypedResults.Ok(new PagedDataResponse<IEnumerable<VacancyListItem>>(data, pageInfo));
     }
 
-    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review)$)}")]
+    [HttpGet, Route("provider/{ukprn:int}/{status:regex(^(draft|submitted|live|closed|referred|rejected|review|archived)$)}")]
     public async Task<IResult> GetProviderVacanciesListByStatus(
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
@@ -304,7 +304,7 @@ public class VacanciesController(ILogger<VacanciesController> logger): Controlle
         }
 
         var vacancyReferences = items
-            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed)
+            .Where(x => x.VacancyReference is not null && x.Status is VacancyStatus.Live or VacancyStatus.Closed or VacancyStatus.Archived)
             .Select(x => x.VacancyReference!.Value);
 
         var statsResponse = await recruitApiClient.GetWithResponseCode<DataResponse<Dictionary<long, VacancyStatsItem>>>(new GetProviderVacancyApplicationStatsRequest(ukprn, vacancyReferences));
