@@ -1,8 +1,10 @@
+using SFA.DAS.LearnerData.Application.Fm36.Common;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Diagnostics;
+using static SFA.DAS.LearnerData.Application.Fm36.Common.EarningsFM36Constants;
 using EarningsApprenticeship = SFA.DAS.LearnerData.Responses.EarningsInner.Apprenticeship;
 using EarningsEpisode = SFA.DAS.LearnerData.Responses.EarningsInner.Episode;
 using Episode = SFA.DAS.LearnerData.Responses.LearningInner.Episode;
@@ -46,7 +48,7 @@ public class JoinedLearnerData
         StartDate = learning.StartDate;
         PlannedEndDate = learning.PlannedEndDate;
         Episodes = JoinEpisodes(learning, earningsApprenticeship, academicYear);
-        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes);
+        LearningDeliveries = JoinLearningDeliveries(sldLearnerData, Episodes, earningsApprenticeship);
         AgeAtStartOfApprenticeship = learning.AgeAtStartOfApprenticeship;
         WithdrawnDate = learning.WithdrawnDate;
         FundingLineType = earningsApprenticeship.FundingLineType;
@@ -76,13 +78,36 @@ public class JoinedLearnerData
         return joinedEpisodes.OrderBy(x => x.StartDate).ToList();
     }
 
-    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes)
+    private static List<JoinedLearningDelivery> JoinLearningDeliveries(UpdateLearnerRequest sldLearnerData, List<JoinedPriceEpisode> joinedPriceEpisodes, EarningsApprenticeship earningsApprenticeship)
     {
         var joinedLearningDeliveries = new List<JoinedLearningDelivery>();
 
-        foreach(var onProgram in sldLearnerData.Delivery.OnProgramme)
+        var unassignedAdditionalPayments = joinedPriceEpisodes.SelectMany(x => x.AdditionalPayments).ToList(); // these will be allocated to onprogramme or english and maths deliveries, being removed from this list as they are allocated 
+
+        foreach (var onProgram in sldLearnerData.Delivery.OnProgramme)
         {
-            var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), joinedPriceEpisodes.SelectMany(x=>x.AdditionalPayments));
+            var delivery = new JoinedLearningDelivery(onProgram, joinedPriceEpisodes.SelectMany(x=>x.Instalments), unassignedAdditionalPayments);
+            joinedLearningDeliveries.Add(delivery);
+        }
+
+        unassignedAdditionalPayments.AddRange(joinedPriceEpisodes.SelectMany(x => x.OutOfRangeAdditionalPayments));// These are additional payments that fell outside of onprogramme range
+
+        foreach (var englishAndMath in sldLearnerData.Delivery.EnglishAndMaths.OrderBy(x=>x.AimSequenceNumber))
+        {
+            var matchingCourse = earningsApprenticeship.Episodes
+                .SelectMany(x => x.EnglishAndMaths)
+                .FirstOrDefault(x => x.LearnAimRef == englishAndMath.LearnAimRef);
+
+            var delivery = new JoinedLearningDelivery(
+                englishAndMath,
+                matchingCourse.Instalments.Select(x => new JoinedInstalment
+                {
+                    AcademicYear = x.AcademicYear,
+                    DeliveryPeriod = x.DeliveryPeriod,
+                    Amount = x.Amount,
+                    InstalmentType = Enum.Parse<InstalmentType>(x.InstalmentType)
+                }),
+                unassignedAdditionalPayments);
             joinedLearningDeliveries.Add(delivery);
         }
 
@@ -106,6 +131,13 @@ public class JoinedPriceEpisode
 
     /// <summary> Derived from combining earnings.AdditionalPayments and apprenticeship.Episode.EpisodePrice</summary>
     public List<JoinedAdditionalPayment> AdditionalPayments { get; set; }
+
+    /// <summary> 
+    /// These are additional payments that belong to the episode, but are outside of the onprogramme start and end date. 
+    /// These may belong to english or maths aims
+    /// Derived from combining earnings.AdditionalPayments and apprenticeship.Episode.EpisodePrice 
+    /// </summary>
+    public List<JoinedAdditionalPayment> OutOfRangeAdditionalPayments { get; set; }
 
     /// <summary> Derived from earnings.CompletionPayment </summary>
     public decimal CompletionPayment { get; set; }
@@ -159,7 +191,15 @@ public class JoinedPriceEpisode
         EndPointAssessmentPrice = apprenticeshipEpisodePrice.EndPointAssessmentPrice;
         FundingBandMaximum = apprenticeshipEpisodePrice.FundingBandMaximum;
         Instalments = GetInstalments(apprenticeshipEpisodePrice, earningsEpisode?.Instalments ?? []);
-        AdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
+
+        var allAdditionalPayments = GetAdditionalPayments(apprenticeshipEpisodePrice, earningsEpisode?.AdditionalPayments ?? []);
+
+        AdditionalPayments = allAdditionalPayments.Where(x =>
+                x.DueDate >= apprenticeshipEpisodePrice.StartDate &&
+                x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
+
+        OutOfRangeAdditionalPayments = allAdditionalPayments.Except(AdditionalPayments).ToList();
+
         ActualEndDate = apprenticeshipEpisode.LastDayOfLearning;
     }
 
@@ -233,9 +273,7 @@ public class JoinedPriceEpisode
             DueDate = x.DueDate
         }).ToList();
 
-        return allAdditionalPayments.Where(x =>
-                x.DueDate >= apprenticeshipEpisodePrice.StartDate &&
-                x.DueDate <= apprenticeshipEpisodePrice.EndDate).ToList();
+        return allAdditionalPayments;
     }
 }
 
@@ -248,25 +286,59 @@ public class JoinedLearningDelivery
 
     public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
+    public LearningDeliveryType LearningDeliveryType { get; set; }
 
-    public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, IEnumerable<JoinedAdditionalPayment> additionalPayments)
+    public JoinedLearningDelivery(OnProgrammeRequestDetails onProgramme, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
     {
+        var startDate = onProgramme.StartDate;
+        var endDate = onProgramme.PauseDate ?? onProgramme.CompletionDate ?? onProgramme.ExpectedEndDate;
+
         AimSequenceNumber = onProgramme.AimSequenceNumber;
         LearnAimRef = onProgramme.LearnAimRef;
 
         Instalments = instalments
-            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= onProgramme.StartDate &&
-                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= startDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= endDate)
             .ToList();
 
-        AdditionalPayments = additionalPayments
-            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= onProgramme.StartDate &&
-                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= (onProgramme.PauseDate ?? onProgramme.ExpectedEndDate))
-            .ToList();
+        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate, 
+            includedTypes: [ 
+                AdditionalPaymentsTypes.ProviderIncentive, 
+                AdditionalPaymentsTypes.EmployerIncentive, 
+                AdditionalPaymentsTypes.LearningSupport
+            ]);
 
         StartDate = onProgramme.StartDate;
         ExpectedEndDate = onProgramme.ExpectedEndDate;
+        LearningDeliveryType = LearningDeliveryType.OnProgramme;
     }
+
+    public JoinedLearningDelivery(MathsAndEnglish englishAndMath, IEnumerable<JoinedInstalment> instalments, List<JoinedAdditionalPayment> unassignedAdditionalPayments)
+    {
+        var startDate = englishAndMath.StartDate;
+        var endDate = englishAndMath.PauseDate ?? englishAndMath.CompletionDate ?? englishAndMath.EndDate;
+
+        AimSequenceNumber = englishAndMath.AimSequenceNumber ?? 0;
+        LearnAimRef = englishAndMath.LearnAimRef;
+
+        Instalments = instalments
+            .Where(x => x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() >= startDate &&
+                        x.AcademicYear.GetDateTime(x.DeliveryPeriod).EndOfMonth() <= endDate)
+            .ToList();
+
+        AdditionalPayments = unassignedAdditionalPayments.TakeMatching(startDate, endDate,
+            includedTypes: [ AdditionalPaymentsTypes.LearningSupport ]);
+
+        StartDate = englishAndMath.StartDate;
+        ExpectedEndDate = englishAndMath.EndDate;
+        LearningDeliveryType = LearningDeliveryType.EnglishAndMaths;
+    }
+}
+
+public enum LearningDeliveryType
+{
+    OnProgramme = 0,
+    EnglishAndMaths = 1
 }
 
 [DebuggerDisplay("AY: {AcademicYear}, DP: {DeliveryPeriod}, Amount: {Amount}, InstalmentType: {InstalmentType}")]

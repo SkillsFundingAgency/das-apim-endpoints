@@ -1,8 +1,6 @@
-﻿using Azure.Core;
-using MediatR;
+﻿using MediatR;
 using SFA.DAS.EmployerAan.Application.Services;
 using SFA.DAS.EmployerAan.Infrastructure;
-using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 

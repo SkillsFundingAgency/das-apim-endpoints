@@ -53,7 +53,7 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     private static LearningDeliveryPeriodisedValues BuildInstPerPeriodValues(JoinedLearningDelivery joinedLearningDelivery, short academicYear, InstalmentType instalmentType)
     {
-        var instalments = GetInstalmentsForAcademicYear(joinedLearningDelivery, academicYear, instalmentType);
+        var instalments = joinedLearningDelivery.GetInstalmentsForAcademicYear(academicYear, instalmentType);
 
         return BuildLearningDeliveryPeriodisedValuesFromFunc(
             EarningsFM36Constants.PeriodisedAttributes.InstPerPeriod,
@@ -102,7 +102,7 @@ public static class LearningDeliveryPeriodisedValuesBuilder
 
     private static LearningDeliveryPeriodisedValues BuildCoInvestmentValues(JoinedLearningDelivery joinedLearningDelivery, short academicYear, string attributeName, decimal multiplier, InstalmentType instalmentType)
     {
-        var instalments = GetInstalmentsForAcademicYear(joinedLearningDelivery, academicYear, instalmentType);
+        var instalments = joinedLearningDelivery.GetInstalmentsForAcademicYear(academicYear, instalmentType);
 
         return BuildLearningDeliveryPeriodisedValuesFromFunc(
             attributeName,
@@ -202,13 +202,6 @@ public static class LearningDeliveryPeriodisedValuesBuilder
             attributeName,
             period => additionalPayments.Exists(x => x.AcademicYear == academicYear && x.DeliveryPeriod == period) ? 1 : 0
         );
-    }
-
-    private static List<JoinedInstalment> GetInstalmentsForAcademicYear(JoinedLearningDelivery joinedLearningDelivery, short academicYear, InstalmentType instalmentType)
-    {
-        return joinedLearningDelivery.Instalments
-            .Where(i => i.AcademicYear == academicYear && i.InstalmentType == instalmentType)
-            .ToList();
     }
 
     private static List<JoinedAdditionalPayment> GetAdditionalPayments(JoinedLearningDelivery joinedLearningDelivery, string additionalPaymentType)

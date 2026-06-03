@@ -2,6 +2,7 @@
 using System;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.Extensions;
+
 [TestFixture]
 internal class DateTimeExtensionsTests
 {

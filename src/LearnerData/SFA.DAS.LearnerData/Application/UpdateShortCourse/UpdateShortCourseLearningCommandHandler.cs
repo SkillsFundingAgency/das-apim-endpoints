@@ -153,5 +153,4 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             changes.Contains(ShortCourseUpdateChanges.Milestone) ||
             changes.Contains(ShortCourseUpdateChanges.CompletionDate);
     }
-
 }

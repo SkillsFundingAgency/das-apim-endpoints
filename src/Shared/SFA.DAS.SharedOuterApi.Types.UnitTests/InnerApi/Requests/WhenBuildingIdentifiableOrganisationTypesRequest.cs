@@ -1,17 +1,16 @@
 ﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
 
-namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests
+namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Requests;
+
+public class WhenBuildingIdentifiableOrganisationTypesRequest
 {
-    public class WhenBuildingIdentifiableOrganisationTypesRequest
+    [Test, AutoData]
+    public void Then_The_Request_Is_Correctly_Build()
     {
-        [Test, AutoData]
-        public void Then_The_Request_Is_Correctly_Build()
-        {
-            var actual = new IdentifiableOrganisationTypesRequest();
+        var actual = new IdentifiableOrganisationTypesRequest();
 
-            var expected = "api/EducationalOrganisations/IdentifiableOrganisationTypes";
+        var expected = "api/EducationalOrganisations/IdentifiableOrganisationTypes";
 
-            actual.GetUrl.Should().Be(expected);
-        }
+        actual.GetUrl.Should().Be(expected);
     }
 }

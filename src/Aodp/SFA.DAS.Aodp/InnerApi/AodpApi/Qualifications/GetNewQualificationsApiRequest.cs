@@ -1,4 +1,5 @@
 ﻿using SFA.DAS.Aodp.Application.Extensions;
+using SFA.DAS.Aodp.Models;
 using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 using System.Collections.Specialized;
@@ -12,7 +13,8 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
         public string? Name { get; set; }
         public string? Organisation { get; set; }
         public string? QAN { get; set; }
-        public string? ProcessStatusFilter { get; set; }
+        public List<Guid> ProcessStatusFilter { get; set; } = new();
+        public List<AgeGroup> AgeGroups { get; set; } = new();
 
         public string BaseUrl = "api/qualifications";
 
@@ -50,12 +52,23 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Qualifications
                     queryParams.Add("QAN", QAN);
                 }
 
-                if (!string.IsNullOrWhiteSpace(ProcessStatusFilter))
+                if (ProcessStatusFilter?.Count > 0)
                 {
-                    queryParams.Add("ProcessStatusFilter", ProcessStatusFilter);
+                    foreach (var id in ProcessStatusFilter)
+                    {
+                        queryParams.Add("ProcessStatusFilter", id.ToString());
+                    }
                 }
 
-                var url = BaseUrl.AttachParameters(queryParams);
+                if (AgeGroups?.Count > 0)
+                {
+                    foreach (var age in AgeGroups)
+                    {
+                        queryParams.Add("AgeGroups", ((int)age).ToString());
+                    }
+                }
+
+                var url = BaseUrl.AttachMultiValueParameters(queryParams);
                 
                 return url;
             }
