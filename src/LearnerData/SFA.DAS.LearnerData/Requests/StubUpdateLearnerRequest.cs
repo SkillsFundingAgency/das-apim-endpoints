@@ -56,6 +56,7 @@ public class StubOnProgramme
     public List<StubCost> Costs { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public short? WithdrawalReasonCode { get; set; }
     [Required]
     public List<StubLearningSupport> LearningSupport { get; set; }
     [Required]
