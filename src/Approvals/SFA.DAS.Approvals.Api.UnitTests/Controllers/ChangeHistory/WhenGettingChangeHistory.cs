@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -32,7 +31,7 @@ public class WhenGettingChangeHistory
     }
 
     [Test, MoqAutoData]
-    public async Task And_No_ChangeHistory_Then_Returns_NotFound(
+    public async Task And_No_ChangeHistory_Then_ReturnsEmptyResult(
          long apprenticeshipId,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] ChangeHistoryController controller)
@@ -41,10 +40,10 @@ public class WhenGettingChangeHistory
             .Setup(mediator => mediator.Send(
                 It.Is<GetChangeHistoryQuery>(q => q.ApprenticeshipId == apprenticeshipId),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((GetChangeHistoryResult)null);
+            .ReturnsAsync( new GetChangeHistoryResult() { ChangeHistory = [] });
 
-        var controllerResult = await controller.GetChangeHistory(apprenticeshipId) as NotFoundResult;
-
-        controllerResult.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+        var controllerResult = await controller.GetChangeHistory(apprenticeshipId) as ObjectResult;
+        var model = controllerResult.Value as GetChangeHistoryResult;
+        model.ChangeHistory.Should().BeEmpty();
     }
 }

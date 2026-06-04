@@ -18,12 +18,7 @@ public class ChangeHistoryController(IMediator mediator, ILogger<ChangeHistoryCo
         try
         {
             var queryResult = await mediator.Send(new GetChangeHistoryQuery(apprenticeshipId));
-
-            if (queryResult == null)
-            {
-                return NotFound();
-            }
-
+           
             var model = queryResult;
             return Ok(model);
         }
