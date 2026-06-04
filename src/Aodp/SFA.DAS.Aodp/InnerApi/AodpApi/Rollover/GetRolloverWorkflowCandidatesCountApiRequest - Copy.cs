@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.Apim.Shared.Interfaces;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.Rollover;
