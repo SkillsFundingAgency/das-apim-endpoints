@@ -39,7 +39,7 @@ public class GetProviderSummaryQueryHandler(IRoatpCourseManagementApiClient<Roat
             {
                 CourseName = course.CourseName,
                 CourseType = course.CourseType,
-                ApprenticeshipType = course.ApprenticeshipType,
+                LearningType = course.LearningType,
                 Level = course.Level,
                 LarsCode = course.LarsCode,
                 IfateReferenceNumber = course.IfateReferenceNumber

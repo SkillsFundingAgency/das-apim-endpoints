@@ -65,7 +65,7 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
             IfateReferenceNumber = standard.IfateReferenceNumber,
             CourseName = standard.Title,
             Level = standard.Level,
-            ApprenticeshipType = standard.ApprenticeshipType,
+            LearningType = standard.LearningType,
             RegulatorName = standard.ApprovalBody,
             Sector = standard.Route,
             StandardInfoUrl = course.StandardInfoUrl,
@@ -76,6 +76,7 @@ public class GetProviderCourseQueryHandler : IRequestHandler<GetProviderCourseQu
             IsRegulatedForProvider = course.IsRegulatedForProvider,
             HasLocations = course.HasLocations,
             HasOnlineDeliveryOption = course.HasOnlineDeliveryOption,
+            CourseType = standard.CourseType,
             Duration = standard.Duration,
             DurationUnits = standard.DurationUnits,
         };

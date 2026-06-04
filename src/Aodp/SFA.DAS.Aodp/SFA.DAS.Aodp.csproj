@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.189" />
   </ItemGroup>
 
   <ItemGroup>
