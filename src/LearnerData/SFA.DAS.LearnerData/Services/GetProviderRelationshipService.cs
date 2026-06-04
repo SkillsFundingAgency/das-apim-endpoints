@@ -1,4 +1,5 @@
 ﻿using System.Collections.Concurrent;
+using System.Threading;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
@@ -73,17 +74,14 @@ public class GetProviderRelationshipService(
             .ToList();
 
         var accountsById = new ConcurrentDictionary<long, GetAccountByIdResponse>();
+        using var semaphore = new SemaphoreSlim(AccountsQueryParallelism);
 
-        await Parallel.ForEachAsync(
-            batches,
-            new ParallelOptions
+        var batchTasks = batches.Select(async batch =>
+        {
+            await semaphore.WaitAsync(cancellationToken);
+            try
             {
-                MaxDegreeOfParallelism = AccountsQueryParallelism,
-                CancellationToken = cancellationToken
-            },
-            async (batch, token) =>
-            {
-                token.ThrowIfCancellationRequested();
+                cancellationToken.ThrowIfCancellationRequested();
 
                 var apiResponse = await accountsApiClient.PostWithResponseCode<AccountsQueryRequestBody, PostAccountsQueryResponse>(
                     new PostAccountsQueryRequest(batch));
@@ -103,7 +101,14 @@ public class GetProviderRelationshipService(
                         LegalEntities = account.LegalEntities ?? []
                     };
                 }
-            });
+            }
+            finally
+            {
+                semaphore.Release();
+            }
+        });
+
+        await Task.WhenAll(batchTasks);
 
         return accountsById;
     }
