@@ -77,7 +77,7 @@ public class NhsJobsApiClient : INhsJobsApiClient
                         .Delta;
 
                     return ValueTask.FromResult<TimeSpan?>(
-                        retryAfter ?? TimeSpan.FromSeconds(2));
+                        retryAfter ?? TimeSpan.FromSeconds(15));
                 }
             })
             .Build();
