@@ -27,29 +27,31 @@ public class GetAllProvidersRelationshipsQueryHandler(
         ConcurrentBag<GetProviderRelationshipQueryResponse> providerResponse = [];
 
         await Parallel.ForEachAsync(providers.RegisteredProviders,
-                new ParallelOptions { MaxDegreeOfParallelism = 5 },
-                async (p, cancellationToken) =>
+                new ParallelOptions { MaxDegreeOfParallelism = 5, CancellationToken = cancellationToken },
+                async (p, token) =>
                 {
-                    var providerDetails = await getProviderRelationshipService.GetAllProviderRelationShipDetails(p.Ukprn);
+                    var providerDetails = await getProviderRelationshipService.GetAllProviderRelationShipDetails(p.Ukprn, token);
 
                     if (providerDetails is null)
                     {
                         return;
                     }
 
-                    var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(p.Ukprn);
-
-                    var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails);
+                    var coursesForProviderTask = getProviderRelationshipService.GetCoursesForProviderByUkprn(p.Ukprn, token);
+                    var employerDetailsTask = getProviderRelationshipService.GetEmployerDetails(providerDetails, token);
 
                     await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
+
+                    var employers = await employerDetailsTask;
+                    var coursesForProvider = await coursesForProviderTask;
 
                     providerResponse.Add(new GetProviderRelationshipQueryResponse()
                     {
                         Ukprn = p.Ukprn,
                         Status = Enum.GetName(typeof(ProviderStatusType), p.StatusId) ?? string.Empty,
                         Type = Enum.GetName(typeof(ProviderType), p.ProviderTypeId) ?? string.Empty,
-                        Employers = employerDetailsTask.Result ?? [],
-                        SupportedCourses = coursesForProviderTask.Result?.CourseTypes?? []
+                        Employers = employers ?? [],
+                        SupportedCourses = coursesForProvider?.CourseTypes ?? []
                     });
                 });
 

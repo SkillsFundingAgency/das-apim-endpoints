@@ -5,6 +5,7 @@ using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
 using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure.Services;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 
@@ -38,7 +39,9 @@ public static class AddApiServicesExtension
         services.AddTransient<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder, UpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         services.AddTransient<IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>, ProviderRelationshipsApiClient>();
         services.AddTransient<IAccountsApiClient<AccountsConfiguration>, AccountsApiClient>();
+        services.AddTransient<ICacheStorageService, CacheStorageService>();
         services.AddTransient<IFjaaApiClient<FjaaApiConfiguration>, FjaaApiClient>();
+        services.AddTransient<IFjaaAgenciesService, FjaaAgenciesService>();
         services.AddTransient<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>, RoatpCourseManagementApiClient>();
         services.AddTransient<IRoatpV2TrainingProviderService, RoatpV2TrainingProviderService>();
         services.AddTransient<IGetProviderRelationshipService, GetProviderRelationshipService>();
