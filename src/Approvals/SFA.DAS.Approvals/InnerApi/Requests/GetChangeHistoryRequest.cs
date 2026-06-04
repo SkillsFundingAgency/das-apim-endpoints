@@ -5,5 +5,5 @@ namespace SFA.DAS.Approvals.InnerApi.Requests;
 public class GetChangeHistoryRequest(long apprenticeshipId) : IGetApiRequest
 {
     public long ApprenticeshipId { get; } = apprenticeshipId;
-    public string GetUrl => $"api/changehistory/{ApprenticeshipId}";
+    public string GetUrl => $"api/change-history/{ApprenticeshipId}";
 }

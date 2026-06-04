@@ -8,7 +8,7 @@ using SFA.DAS.Approvals.Application.ChangeHistory.Queries;
 namespace SFA.DAS.Approvals.Api.Controllers;
 
 [ApiController]
-[Route("[controller]/")]
+[Route("change-history/")]
 public class ChangeHistoryController(IMediator mediator, ILogger<ChangeHistoryController> logger) : ControllerBase
 {
     [HttpGet]
