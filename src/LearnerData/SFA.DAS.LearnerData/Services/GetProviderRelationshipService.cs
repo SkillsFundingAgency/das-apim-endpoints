@@ -1,14 +1,15 @@
 ﻿using System.Collections.Concurrent;
 using SFA.DAS.LearnerData.Application.GetProviderRelationships;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.ProviderRelationships;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Rofjaa;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerAccounts;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Rofjaa;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Rofjaa;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerAccounts;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ProviderRelationships;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Rofjaa;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.LearnerData.Services
 {
@@ -31,23 +32,21 @@ namespace SFA.DAS.LearnerData.Services
 
         public async Task<List<EmployerDetails>> GetEmployerDetails(GetProviderAccountLegalEntitiesResponse providerDetails)
         {
-            ConcurrentBag<EmployerDetails> employerDetails = [];
             GetAgencies = await GetAgencyDetails();
-            ConcurrentBag<GetAccountByIdResponse> accountdetails = [];
 
             var accountTasks = new ConcurrentDictionary<long, Task<GetAccountByIdResponse>>();
 
-            var employerTasks = providerDetails.AccountProviderLegalEntities.
-                Select(async legalEntity =>
-                {
-                    var accountTask = accountTasks.GetOrAdd(legalEntity.AccountId, GetEmployerAccountDetails);
-                    var accountDetails = await accountTask;
-                    var isFunded = accountDetails?.LegalEntities is not null && GetIsFunded(accountDetails.LegalEntities);
+            var results = new ConcurrentBag<EmployerDetails>();
 
-                    return CreateEmployerDetails(accountDetails, isFunded, legalEntity.AccountLegalEntityPublicHashedId);
-                });
-
-            var results = await Task.WhenAll(employerTasks);
+            await Parallel.ForEachAsync(providerDetails.AccountProviderLegalEntities,
+                new ParallelOptions { MaxDegreeOfParallelism = 10 },
+                async (legalEntity, cancellationToken) =>
+            {
+                var accountTask = accountTasks.GetOrAdd(legalEntity.AccountId, GetEmployerAccountDetails);
+                var accountDetails = await accountTask;
+                var isFunded = accountDetails?.LegalEntities is not null && GetIsFunded(accountDetails.LegalEntities);
+                results.Add(CreateEmployerDetails(accountDetails, isFunded, legalEntity.AccountLegalEntityPublicHashedId));
+            });
 
             return results.ToList();
         }

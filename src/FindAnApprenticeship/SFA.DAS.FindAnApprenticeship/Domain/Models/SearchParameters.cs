@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using SFA.DAS.SharedOuterApi.Domain;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+
 
 namespace SFA.DAS.FindAnApprenticeship.Domain.Models;
 

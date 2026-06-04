@@ -1,4 +1,4 @@
-﻿using SFA.DAS.SharedOuterApi.InnerApi.Responses.LevyTransferMatching;
+﻿using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.LevyTransferMatching;
 using System;
 using System.Collections.Generic;
 

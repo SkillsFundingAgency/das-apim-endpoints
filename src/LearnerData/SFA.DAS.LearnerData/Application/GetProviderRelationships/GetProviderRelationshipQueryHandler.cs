@@ -2,9 +2,9 @@
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Responses;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp.Common;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp.Common;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.GetProviderRelationships;
 
@@ -34,13 +34,16 @@ public class GetProviderRelationshipQueryHandler(
 
         await Task.WhenAll(coursesForProviderTask, employerDetailsTask);
 
+        var employers = await employerDetailsTask;
+        var coursesForProvider = await coursesForProviderTask;
+
         return new GetProviderRelationshipQueryResponse()
         {
             Ukprn = request.Ukprn,
             Status = Enum.GetName(typeof(ProviderStatusType), provider.StatusId) ?? string.Empty,
             Type = Enum.GetName(typeof(ProviderType), provider.ProviderTypeId) ?? string.Empty,
-            Employers = employerDetailsTask.Result ?? [],
-            SupportedCourses = coursesForProviderTask.Result?.CourseTypes ?? []
+            Employers = employers ?? [],
+            SupportedCourses = coursesForProvider?.CourseTypes ?? []
         };
     }
 

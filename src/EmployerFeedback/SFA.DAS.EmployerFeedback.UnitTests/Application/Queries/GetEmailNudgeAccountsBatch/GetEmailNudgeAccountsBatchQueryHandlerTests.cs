@@ -4,12 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
 using SFA.DAS.EmployerFeedback.Application.Queries.GetEmailNudgeAccountsBatch;
 using SFA.DAS.EmployerFeedback.InnerApi.Requests;
 using SFA.DAS.EmployerFeedback.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetEmailNudgeAccountsBatch
 {
@@ -57,7 +61,7 @@ namespace SFA.DAS.EmployerFeedback.UnitTests.Application.Queries.GetEmailNudgeAc
                 .Setup(x => x.GetWithResponseCode<GetEmailNudgeAccountsBatchResponse>(It.Is<GetEmailNudgeAccountsBatchRequest>(r => r.GetUrl == expectedRequest.GetUrl)))
                 .ReturnsAsync(apiResponse);
 
-            Assert.ThrowsAsync<SharedOuterApi.Exceptions.ApiResponseException>(async () =>
+            Assert.ThrowsAsync<ApiResponseException>(async () =>
                 await _handler.Handle(new GetEmailNudgeAccountsBatchQuery(batchSize), CancellationToken.None));
             _apiClientMock.Verify(x => x.GetWithResponseCode<GetEmailNudgeAccountsBatchResponse>(It.IsAny<GetEmailNudgeAccountsBatchRequest>()), Times.Once);
         }

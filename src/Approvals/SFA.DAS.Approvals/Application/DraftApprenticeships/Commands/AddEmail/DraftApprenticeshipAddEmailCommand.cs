@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 
 namespace SFA.DAS.Approvals.Application.DraftApprenticeships.Commands.AddEmail;
 

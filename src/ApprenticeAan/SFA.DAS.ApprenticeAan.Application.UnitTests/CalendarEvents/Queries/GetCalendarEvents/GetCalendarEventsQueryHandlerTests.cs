@@ -1,16 +1,18 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApprenticeAan.Application.CalendarEvents.Queries.GetCalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Common;
 using SFA.DAS.ApprenticeAan.Application.Infrastructure;
 using SFA.DAS.ApprenticeAan.Application.InnerApi.CalendarEvents;
 using SFA.DAS.ApprenticeAan.Application.Models;
 using SFA.DAS.ApprenticeAan.Application.Regions.Queries.GetRegions;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.ApprenticeAan.Application.UnitTests.CalendarEvents.Queries.GetCalendarEvents;
+
 public class GetCalendarEventsQueryHandlerTests
 {
     [Test]
@@ -63,7 +65,7 @@ public class GetCalendarEventsQueryHandlerTests
 
         var result = await handler.Handle(query, default);
 
-        result.IsInvalidLocation.Should().BeTrue();
+        result!.IsInvalidLocation.Should().BeTrue();
 
         apiClient.Verify(x => x.GetCalendarEvents(It.IsAny<Guid>(), It.IsAny<IDictionary<string, string[]>>(), It.IsAny<CancellationToken>()), Times.Never);
 
@@ -84,7 +86,7 @@ public class GetCalendarEventsQueryHandlerTests
         apiClient.Setup(x => x.GetRegions(cancellationToken)).ReturnsAsync(apiResponse);
         var actual = await handler.Handle(query, cancellationToken);
 
-        actual.Regions.Should().BeEquivalentTo(apiResponse.Regions, config => config.ExcludingMissingMembers());
+        actual!.Regions.Should().BeEquivalentTo(apiResponse.Regions, config => config.ExcludingMissingMembers());
     }
 
     [Test, MoqAutoData]
@@ -102,6 +104,6 @@ public class GetCalendarEventsQueryHandlerTests
         apiClient.Setup(x => x.GetCalendars(cancellationToken)).ReturnsAsync(apiResponse);
         var actual = await handler.Handle(query, cancellationToken);
 
-        actual.Calendars.Should().BeEquivalentTo(apiResponse, config => config.ExcludingMissingMembers());
+        actual!.Calendars.Should().BeEquivalentTo(apiResponse, config => config.ExcludingMissingMembers());
     }
 }

@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.SharedOuterApi.Domain;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
+using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.Domain;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 
@@ -23,17 +25,19 @@ public sealed class GetCourseByLarsCodeQueryResult
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
     public List<Ksb> Ksbs { get; set; }
-    public string ApprenticeshipType { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public CourseType CourseType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
+    public bool IsActiveAvailable { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public int IncentivePayment { get; set; }
 
-    public static implicit operator GetCourseByLarsCodeQueryResult(StandardDetailResponse source)
+    public static implicit operator GetCourseByLarsCodeQueryResult(GetCourseLookupResponse source)
     {
         return new()
         {
             StandardUId = source.StandardUId,
             IFateReferenceNumber = source.IfateReferenceNumber,
-            LarsCode = source.LarsCode.ToString(),
+            LarsCode = source.LarsCode,
             Title = source.Title,
             Level = source.Level,
             Version = source.Version,
@@ -42,9 +46,10 @@ public sealed class GetCourseByLarsCodeQueryResult
             RouteCode = source.RouteCode,
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
-            ApprenticeshipType = source.ApprenticeshipType,
-            Ksbs = source.Ksbs == null ? new List<Ksb>() : source.Ksbs.Select(c => (Ksb)c).ToList(),
-            RelatedOccupations = source.RelatedOccupations == null ? new List<RelatedOccupation>() : source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
+            CourseType = source.CourseType,
+            ApprenticeshipType = source.LearningType,
+            IsActiveAvailable = source.IsActiveAvailable,
+            RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList()
         };
     }
 }

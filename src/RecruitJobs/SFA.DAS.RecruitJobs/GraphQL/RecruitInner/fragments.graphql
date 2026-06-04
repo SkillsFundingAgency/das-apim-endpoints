@@ -8,6 +8,7 @@ fragment AllVacancyFields on VacancyEntity {
     ownerType
     sourceOrigin
     sourceType
+    archiveType
     sourceVacancyReference
     approvedDate
     createdDate
@@ -19,6 +20,7 @@ fragment AllVacancyFields on VacancyEntity {
     liveDate
     startDate
     closingDate
+    archivedDate
     reviewCount
     applicationUrl
     applicationMethod
@@ -71,4 +73,5 @@ fragment AllVacancyFields on VacancyEntity {
     providerReviewFieldIndicators
     submittedByUserId
     reviewRequestedByUserId
+    archivedByUserId
 }

@@ -7,11 +7,11 @@ using SFA.DAS.AdminAan.Application.Regions.Queries.GetRegions;
 using SFA.DAS.AdminAan.Application.Schools.Queries;
 using SFA.DAS.AdminAan.Domain.InnerApi.AanHubApi.Responses;
 using SFA.DAS.AdminAan.Infrastructure;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.EducationalOrganisations;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EducationalOrganisation;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.EducationalOrganisations;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EducationalOrganisation;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.AdminAan.UnitTests.Application.CalendarEvents.Queries.GetCalendarEvent;
 
@@ -58,7 +58,7 @@ public class GetCalendarEventQueryHandlerTests
         var callCount = regionId == null ? 0 : 1;
         aanHubRestApiClientMock.Verify(x => x.GetRegions(cancellationToken), Times.Exactly(callCount));
         aanHubRestApiClientMock.Verify(x => x.GetCalendarEvent(requestedByMemberId, calendarEventId, cancellationToken), Times.Once);
-        educationalOrgsApiClientMock 
+        educationalOrgsApiClientMock
             .Verify(x => x.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(It.IsAny<GetLatestDetailsForEducationalOrgRequest>()), Times.Never);
     }
 
@@ -69,7 +69,6 @@ public class GetCalendarEventQueryHandlerTests
     {
         var fixture = new Fixture();
 
-        const int OrganisationEducationType = 4;
         var cancellationToken = CancellationToken.None;
         var aanHubRestApiClientMock = new Mock<IAanHubRestApiClient>();
         var apiResponse = fixture.Create<GetCalendarEventByIdApiResponse>();
@@ -104,7 +103,7 @@ public class GetCalendarEventQueryHandlerTests
                 },
                 status,
                 string.Empty);
-                
+
             educationalOrgsApiClientMock
                 .Setup(x => x.GetWithResponseCode<GetLatestDetailsForEducationalOrgResponse>(
                     It.Is<GetLatestDetailsForEducationalOrgRequest>(x => x.Identifier == urn.Value.ToString())))

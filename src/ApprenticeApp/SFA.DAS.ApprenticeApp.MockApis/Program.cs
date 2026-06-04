@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using SFA.DAS.ApprenticeApp.MockApis.Helpers;
 
 namespace SFA.DAS.ApprenticeApp.MockApis

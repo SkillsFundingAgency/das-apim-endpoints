@@ -3,10 +3,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Extensions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Standards.Queries.GetStandards;
 
@@ -14,11 +17,11 @@ public class GetStandardsQueryHandler(ICoursesApiClient<CoursesApiConfiguration>
 {
     public async Task<GetStandardsQueryResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
     {
-        var standardsResponse = await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+        var standardsResponse = await _coursesApiClient.GetWithResponseCode<GetStandardsListResponse>(new GetActiveStandardsSearchRequest());
 
         standardsResponse.EnsureSuccessStatusCode();
 
-        var standards = standardsResponse.Body.Standards.Select(s => (Standard)s).ToList();
+        var standards = standardsResponse.Body.Courses.Select(s => (Standard)s).ToList();
 
         return new GetStandardsQueryResult(standards);
     }

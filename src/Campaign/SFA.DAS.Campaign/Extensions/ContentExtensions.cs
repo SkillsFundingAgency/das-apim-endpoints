@@ -388,6 +388,23 @@ namespace SFA.DAS.Campaign.Extensions
             }
         }
 
+        public static void ProcessEmbeddedEntryInlineNodeTypes(this CmsContent article, SubContentItems contentItem, List<ContentItem> contentItems)
+        {
+            if (contentItem.NodeType.Equals(EmbeddedEntryInlineNodeTypeKey, StringComparison.CurrentCultureIgnoreCase))
+            {
+                var linkedItemId = contentItem.Data.Target.Sys.Id;
+                var entry = article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(linkedItemId, StringComparison.CurrentCultureIgnoreCase));
+                if (entry?.Fields?.Table != null)
+                {
+                    contentItems.Add(new ContentItem
+                    {
+                        Type = contentItem.NodeType,
+                        TableValue = entry.Fields.Table.TableData
+                    });
+                }
+            }
+        }
+
         private static void ProcessTextNodeType(RelatedContent contentDefinition, List<string> returnList)
         {
             if (!contentDefinition.NodeType.Equals(TextNodeTypeKey))

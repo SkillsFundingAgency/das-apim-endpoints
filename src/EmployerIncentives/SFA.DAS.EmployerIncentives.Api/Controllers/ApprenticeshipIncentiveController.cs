@@ -6,7 +6,7 @@ using SFA.DAS.EmployerIncentives.Api.Models;
 using SFA.DAS.EmployerIncentives.Application.Commands.RecalculateEarnings;
 using SFA.DAS.EmployerIncentives.Application.Queries.GetApprenticeshipIncentives;
 using SFA.DAS.EmployerIncentives.InnerApi.Requests.RecalculateEarnings;
-using SFA.DAS.SharedOuterApi.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure;
 
 namespace SFA.DAS.EmployerIncentives.Api.Controllers
 {

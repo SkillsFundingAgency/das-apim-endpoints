@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses
+﻿namespace SFA.DAS.EmployerRequestApprenticeTraining.InnerApi.Responses
 {
     public class StandardResponse
     {

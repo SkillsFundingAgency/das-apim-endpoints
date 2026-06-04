@@ -31,7 +31,7 @@ namespace SFA.DAS.Campaign.Models
 
             if (item.Fields.Content?.Content == null)
             {
-                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, null, menu, banners);
+                return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, menu, banners);
             }
 
             foreach (var contentItem in item.Fields.Content.Content)
@@ -39,12 +39,10 @@ namespace SFA.DAS.Campaign.Models
                 article.ProcessContentNodeTypes(contentItem, contentItems);
                 contentItem.ProcessListNodeTypes(contentItems);
                 article.ProcessEmbeddedAssetBlockNodeTypes(contentItem, contentItems);
+                article.ProcessEmbeddedEntryInlineNodeTypes(contentItem, contentItems);
             }
 
-            var parentPage =
-                article.Includes.Entry.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage?.Sys?.Id));
-
-            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, parentPage, menu, banners);
+            return GenerateCmsPageModel(article, item, pageTypeResult, contentItems, menu, banners);
         }
 
         private static void ProcessEmbeddedAssetBlockNodeTypes(CmsContent article, SubContentItems contentItem,
@@ -86,8 +84,9 @@ namespace SFA.DAS.Campaign.Models
         }
 
         private CmsPageModel GenerateCmsPageModel(CmsContent article, Item item, PageType pageTypeResult, List<ContentItem> contentItems,
-Entry parentPage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
+            MenuPageModel.MenuPageContent menu, BannerPageModel banners)
         {
+            var parentPage = ProcessParentPage(article, item);
             return new CmsPageModel
             {
                 PageAttributes = new PageModel
@@ -98,10 +97,12 @@ Entry parentPage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
                     HubType = item.Fields.HubType,
                     MetaDescription = item.Fields.MetaDescription,
                     PageType = pageTypeResult,
+                    ArticleType = item.Fields.ArticleType,
                 },
                 MainContent = new PageContent
                 {
-                    Items = contentItems
+                    Items = contentItems,
+                    HeaderImage = ProcessHeaderImage(article, item)
                 },
                 Attachments = item.Fields.Attachments?.Select(attachment => article.GetEmbeddedResource(attachment.Sys.Id))
                     .ToList(),
@@ -144,25 +145,45 @@ Entry parentPage, MenuPageModel.MenuPageContent menu, BannerPageModel banners)
 
         public PageModel ParentPage { get; set; }
 
+        private static Entry ProcessParentPage(CmsContent article, Item item)
+        {
+            return article.Includes?.Entry?.FirstOrDefault(c => c.Sys.Id.Equals(item.Fields.LandingPage?.Sys?.Id));
+        }
+
+        private static ContentItem ProcessHeaderImage(CmsContent article, Item item)
+        {
+            if (item.Fields.HeaderImage == null)
+            {
+                return null;
+            }
+
+            return new ContentItem
+            {
+                Type = item.Fields.HeaderImage.Sys.LinkType,
+                EmbeddedResource = article.GetEmbeddedResource(item.Fields.HeaderImage.Sys.Id)
+            };
+        }
+
         public class PageContent
         {
             public List<ContentItem> Items { get; set; }
+            public ContentItem HeaderImage { get; set; }
 
         }
 
         private static List<TabbedContentModel> ProcessTabbedContent(CmsContent article, Item item)
         {
             var tabbedContent = article.Includes.Entry.Where(c => c.Sys?.ContentType?.Sys?.Type != null
-                                                        && c.Sys.ContentType.Sys.Type.Equals("link",
-                                                            StringComparison.CurrentCultureIgnoreCase)
-                                                        && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
-                                                            StringComparison.CurrentCultureIgnoreCase)
-                                                        && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true,
-                                                            out var type) &&
-                                                        type == PageType.Tab &&
-                                                        article.Items[0].Fields.TabbedContents
-                                                            .FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null);
-            if (!tabbedContent.Any())
+                                                                  && c.Sys.ContentType.Sys.Type.Equals("link",
+                                                                      StringComparison.CurrentCultureIgnoreCase)
+                                                                  && c.Sys.ContentType.Sys.LinkType.Equals("ContentType",
+                                                                      StringComparison.CurrentCultureIgnoreCase)
+                                                                  && Enum.TryParse<PageType>(c.Sys.ContentType.Sys.Id, true,
+                                                                      out var type) &&
+                                                                  type == PageType.Tab &&
+                                                                  article.Items[0].Fields.TabbedContents?
+                                                                      .FirstOrDefault(o => o.Sys.Id == c.Sys.Id) != null).ToList();
+            if (tabbedContent.Count == 0)
             {
                 return null;
             }

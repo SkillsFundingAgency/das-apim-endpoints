@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*_ignore.sln
 
 # Settings
 */local.settings.json
@@ -283,3 +284,5 @@ src/**/generated.sh
 #nservicebus
 *.learningtransport*
 src/ApprenticeApp/SFA.DAS.ApprenticeApp.Api/appsettings.json
+/src/FindApprenticeshipTraining/.github/copilot-instructions.md
+/src/RoatpCourseManagement/.github/copilot-instructions.md

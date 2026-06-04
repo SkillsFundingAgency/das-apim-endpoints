@@ -2,14 +2,15 @@
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
+using SFA.DAS.Apim.Shared.Infrastructure;
+using SFA.DAS.Apim.Shared.Infrastructure.Services;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Services;
 using SFA.DAS.Recruit.Api.Models.Vacancies;
-using SFA.DAS.Recruit.Application.Services;
 using SFA.DAS.Recruit.Domain;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Infrastructure;
-using SFA.DAS.SharedOuterApi.Infrastructure.Services;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Services;
 
 namespace SFA.DAS.Recruit.Api.AppStart
 {
@@ -37,11 +38,8 @@ namespace SFA.DAS.Recruit.Api.AppStart
             services.AddTransient<INotificationService, NotificationService>();
             services.AddTransient<VacancyMapper>();
             services.AddSingleton(new EmailEnvironmentHelper(configuration["ResourceEnvironmentName"]));
+
             services.AddTransient<IBankHolidaysService, BankHolidaysService>();
-            
-            services.AddTransient<IInternalApiClient<RecruitAiApiConfiguration>, InternalApiClient<RecruitAiApiConfiguration>>();
-            services.AddTransient<IRecruitArtificialIntelligenceClient, RecruitArtificialIntelligenceClient>();
-            services.AddTransient<IRecruitArtificialIntelligenceService, RecruitArtificialIntelligenceService>();
         }
     }
 }

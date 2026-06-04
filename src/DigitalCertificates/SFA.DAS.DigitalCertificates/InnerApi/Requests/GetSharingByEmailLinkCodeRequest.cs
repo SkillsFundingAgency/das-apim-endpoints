@@ -1,4 +1,5 @@
-﻿using SFA.DAS.SharedOuterApi.Interfaces;
+﻿using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using System;
 
 namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
@@ -12,6 +13,6 @@ namespace SFA.DAS.DigitalCertificates.InnerApi.Requests
             Code = code;
         }
 
-        public string GetUrl => $"api/sharing/emaillinkcode/{Code}";
+        public string GetUrl => $"api/sharing/sharingemail/emaillinkcode/{Code}";
     }
 }

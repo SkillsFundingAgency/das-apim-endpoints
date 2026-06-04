@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Text.Json;
-using SFA.DAS.RecruitJobs.Domain.Vacancy;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.RecruitJobs.Domain;
 
 namespace SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
 
@@ -39,14 +38,17 @@ public static class GqlVacancyMapper
             AdditionalTrainingDescription = source.AdditionalTrainingDescription,
             AnonymousReason = source.AnonymousReason,
             ApplicationInstructions = source.ApplicationInstructions,
-            ApplicationMethod = NullOrEnum<Domain.Vacancy.ApplicationMethod>(source.ApplicationMethod?.ToString()),
+            ApplicationMethod = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.ApplicationMethod>(source.ApplicationMethod?.ToString()),
             ApplicationUrl = source.ApplicationUrl,
-            ApprenticeshipType = NullOrEnum<SharedOuterApi.Domain.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
+            ApprenticeshipType = NullOrEnum<SharedOuterApi.Types.Domain.ApprenticeshipTypes>(source.ApprenticeshipType?.ToString()),
             ApprovedDate = source.ApprovedDate?.UtcDateTime,
+            ArchiveType = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.ArchiveType>(source.ArchiveType?.ToString()),
+            ArchivedDate = source.ArchivedDate?.UtcDateTime,
+            ArchivedByUserId = source.ArchivedByUserId,
             CreatedDate = source.CreatedDate?.UtcDateTime,
             ClosedDate = source.ClosedDate?.UtcDateTime,
             ClosingDate = source.ClosingDate?.UtcDateTime,
-            ClosureReason = NullOrEnum<Domain.Vacancy.ClosureReason>(source.ClosureReason?.ToString()),
+            ClosureReason = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.ClosureReason>(source.ClosureReason?.ToString()),
             Contact = source is { ContactName: null, ContactEmail: null, ContactPhone: null }
                 ? null
                 : new ContactDetail
@@ -63,11 +65,11 @@ public static class GqlVacancyMapper
             EmployerLocationOption = MapEmployerLocationOption(source, employerLocations),
             EmployerLocations = employerLocations,
             EmployerName = source.EmployerName,
-            EmployerNameOption = NullOrEnum<Domain.Vacancy.EmployerNameOption>(source.EmployerNameOption?.ToString()),
+            EmployerNameOption = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.EmployerNameOption>(source.EmployerNameOption?.ToString()),
             EmployerRejectedReason = source.EmployerRejectedReason,
             EmployerReviewFieldIndicators = DeserializeOrNull<List<ReviewFieldIndicator>>(source.EmployerReviewFieldIndicators),
             EmployerWebsiteUrl = source.EmployerWebsiteUrl,
-            GeoCodeMethod = NullOrEnum<Domain.Vacancy.GeoCodeMethod>(source.GeoCodeMethod?.ToString()),
+            GeoCodeMethod = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod>(source.GeoCodeMethod?.ToString()),
             HasChosenProviderContactDetails = source.HasChosenProviderContactDetails,
             HasOptedToAddQualifications = source.HasOptedToAddQualifications,
             HasSubmittedAdditionalQuestions = source.HasSubmittedAdditionalQuestions,
@@ -77,7 +79,7 @@ public static class GqlVacancyMapper
             LiveDate = source.LiveDate?.UtcDateTime,
             NumberOfPositions = source.NumberOfPositions,
             OutcomeDescription = source.OutcomeDescription,
-            OwnerType = NullOrEnum<Domain.Vacancy.OwnerType>(source.OwnerType?.ToString()),
+            OwnerType = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.OwnerType>(source.OwnerType?.ToString()),
             ProgrammeId = source.ProgrammeId,
             ProviderReviewFieldIndicators = DeserializeOrNull<List<ReviewFieldIndicator>>(source.ProviderReviewFieldIndicators),
             Qualifications = DeserializeOrNull<List<Qualification>>(source.Qualifications) ?? [],
@@ -86,11 +88,11 @@ public static class GqlVacancyMapper
             ReviewRequestedDate = source.ReviewRequestedDate?.UtcDateTime,
             ShortDescription = source.ShortDescription,
             Skills = DeserializeOrNull<List<string>>(source.Skills) ?? [],
-            SourceOrigin = NullOrEnum<Domain.Vacancy.SourceOrigin>(source.SourceOrigin?.ToString()),
-            SourceType = NullOrEnum<Domain.Vacancy.SourceType>(source.SourceType?.ToString()),
+            SourceOrigin = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.SourceOrigin>(source.SourceOrigin?.ToString()),
+            SourceType = NullOrEnum<SharedOuterApi.Types.Domain.Recruit.SourceType>(source.SourceType?.ToString()),
             SourceVacancyReference = source.SourceVacancyReference,
             StartDate = source.StartDate?.UtcDateTime,
-            Status = Enum.Parse<Domain.Vacancy.VacancyStatus>(source.Status.ToString()),
+            Status = Enum.Parse<SharedOuterApi.Types.Domain.Recruit.VacancyStatus>(source.Status.ToString()),
             SubmittedByUserId = source.SubmittedByUserId,
             SubmittedDate = source.SubmittedDate?.UtcDateTime,
             ThingsToConsider = source.ThingsToConsider,
@@ -112,21 +114,21 @@ public static class GqlVacancyMapper
                 {
                     CompanyBenefitsInformation = source.Wage_CompanyBenefitsInformation,
                     Duration = source.Wage_Duration,
-                    DurationUnit = source.Wage_DurationUnit != null ?  Enum.Parse<Domain.Vacancy.DurationUnit>(source.Wage_DurationUnit.ToString()!) : null,
+                    DurationUnit = source.Wage_DurationUnit != null ?  Enum.Parse<SharedOuterApi.Types.Domain.Recruit.DurationUnit>(source.Wage_DurationUnit.ToString()!) : null,
                     FixedWageYearlyAmount = source.Wage_FixedWageYearlyAmount,
                     WageAdditionalInformation = source.Wage_WageAdditionalInformation,
-                    WageType = source.Wage_WageType != null ? Enum.Parse<Domain.Vacancy.WageType>(source.Wage_WageType.ToString()!) : null,
+                    WageType = source.Wage_WageType != null ? Enum.Parse<SharedOuterApi.Types.Domain.Recruit.WageType>(source.Wage_WageType.ToString()!) : null,
                     WeeklyHours = source.Wage_WeeklyHours,
                     WorkingWeekDescription = source.Wage_WorkingWeekDescription,
                 },
         };
     }
 
-    private static SharedOuterApi.Domain.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Address> employerLocations)
+    private static SharedOuterApi.Types.Domain.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Address> employerLocations)
     {
         if (source is { EmployerLocationOption: not null })
         {
-            return NullOrEnum<SharedOuterApi.Domain.AvailableWhere>(source.EmployerLocationOption.ToString());
+            return NullOrEnum<SharedOuterApi.Types.Domain.AvailableWhere>(source.EmployerLocationOption.ToString());
         }
 
         return source.Status switch
@@ -137,9 +139,9 @@ public static class GqlVacancyMapper
             // field should be set by now, so guesstimate it based on the locations
             _ => employerLocations switch
             {
-                { Count: 1 } => SharedOuterApi.Domain.AvailableWhere.OneLocation,
-                { Count: > 1 } => SharedOuterApi.Domain.AvailableWhere.MultipleLocations,
-                _ => SharedOuterApi.Domain.AvailableWhere.AcrossEngland
+                { Count: 1 } => SharedOuterApi.Types.Domain.AvailableWhere.OneLocation,
+                { Count: > 1 } => SharedOuterApi.Types.Domain.AvailableWhere.MultipleLocations,
+                _ => SharedOuterApi.Types.Domain.AvailableWhere.AcrossEngland
             }
         };
     }

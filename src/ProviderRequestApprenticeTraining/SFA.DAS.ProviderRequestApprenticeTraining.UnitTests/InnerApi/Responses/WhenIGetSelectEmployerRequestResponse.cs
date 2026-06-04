@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.ProviderRequestApprenticeTraining.InnerApi.Responses;
-using System.Collections.Generic;
 using System;
 
 namespace SFA.DAS.SharedOuterApi.UnitTests.InnerApi.Responses

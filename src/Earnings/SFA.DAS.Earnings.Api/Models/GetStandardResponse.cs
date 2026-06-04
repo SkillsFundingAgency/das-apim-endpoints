@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.Earnings.InnerApi;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using System.Diagnostics.CodeAnalysis;
 
 namespace SFA.DAS.Earnings.Api.Models;

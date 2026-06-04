@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using MediatR.Extensions.FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -11,10 +10,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.Roatp.Api.AppStart;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Application.Charities.Queries;
-using SFA.DAS.SharedOuterApi.AppStart;
+using SFA.DAS.Roatp.Application.Providers.Commands;
 
 namespace SFA.DAS.Roatp.Api;
 
@@ -50,8 +50,6 @@ public class Startup
             .AddCheck<CharitiesApiHealthCheck>(nameof(CharitiesApiHealthCheck));
 
         services.AddMediatR(c => c.RegisterServicesFromAssembly(typeof(GetCharityQueryHandler).Assembly));
-
-        services.AddFluentValidation(new[] { typeof(GetCharityQueryHandler).Assembly });
 
         services.AddServiceRegistration(_configuration);
         services.AddServiceHealthChecks();

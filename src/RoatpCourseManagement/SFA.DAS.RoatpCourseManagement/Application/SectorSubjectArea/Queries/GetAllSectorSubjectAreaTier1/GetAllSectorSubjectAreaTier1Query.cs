@@ -1,6 +1,6 @@
 ﻿using MediatR;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Models;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.SectorSubjectArea.Queries.GetAllSectorSubjectAreaTier1;
 

@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.EmployerPR.Application.RoatpProviders.Queries.GetRoatpProviders;
 public class GetRoatpProvidersQueryHandler(IRoatpV2TrainingProviderService _roatpV2TrainingProviderService) : IRequestHandler<GetRoatpProvidersQuery, GetRoatpProvidersQueryResult>

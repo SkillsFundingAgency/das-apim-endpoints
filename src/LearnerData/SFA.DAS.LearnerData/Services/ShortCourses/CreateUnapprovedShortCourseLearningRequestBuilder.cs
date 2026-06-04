@@ -1,45 +1,53 @@
-﻿using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.Earnings;
-using Milestone = SFA.DAS.LearnerData.Requests.Milestone;
+using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Requests;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Services.ShortCourses;
 
 public interface ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, long ukprn);
+    CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, Guid episodeKey, long ukprn, CreateDraftShortCourseRequest learningRequest);
 }
 
 public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprovedShortCourseLearningRequestBuilder
 {
-    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, long ukprn)
+    public CreateUnapprovedShortCourseLearningRequest Build(ShortCourseRequest request, Guid learningKey, Guid episodeKey, long ukprn, CreateDraftShortCourseRequest learningRequest)
     {
         var firstOnProg = request.Delivery.OnProgramme.First();
+
+        var milestones = firstOnProg.Milestones.Select(x =>
+            x == Milestone.LearningComplete
+                ? Milestone.LearningComplete
+                : Milestone.ThirtyPercentLearningComplete).ToList();
+
+        if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
+            milestones.Add(Milestone.LearningComplete);
 
         return new CreateUnapprovedShortCourseLearningRequest
         {
             LearningKey = learningKey,
+            EpisodeKey = episodeKey,
             Learner = new Learner
             {
                 DateOfBirth = request.Learner.Dob,
                 Uln = request.Learner.Uln.ToString()
             },
-            LearningSupport = firstOnProg.LearningSupport.Select(x => new LearningSupportItem
+            LearningSupport = firstOnProg.LearningSupport.Select(x => new LearningSupport
             {
                 StartDate = x.StartDate,
                 EndDate = x.EndDate
             }).ToList(),
-            OnProgramme = new OnProgramme
+            OnProgramme = new Requests.EarningsInner.OnProgramme
             {
                 StartDate = firstOnProg.StartDate,
                 CompletionDate = firstOnProg.CompletionDate,
                 CourseCode = firstOnProg.CourseCode,
-                EmployerId = long.Parse(firstOnProg.AgreementId),
                 ExpectedEndDate = firstOnProg.ExpectedEndDate,
-                Milestones = firstOnProg.Milestones.Select(x =>
-                    x == Milestone.LearningComplete
-                        ? SharedOuterApi.InnerApi.Requests.Earnings.Milestone.LearningComplete
-                        : SharedOuterApi.InnerApi.Requests.Earnings.Milestone.ThirtyPercentLearningComplete).ToList(),
-                TotalPrice = 1000, //todo future story FLP-1530, default to 1000 until courses api ready
+                Milestones = milestones,
+                TotalPrice = learningRequest.OnProgramme.Price,
+                LearningType = learningRequest.OnProgramme.LearningType,
                 Ukprn = ukprn,
                 WithdrawalDate = firstOnProg.WithdrawalDate
             }

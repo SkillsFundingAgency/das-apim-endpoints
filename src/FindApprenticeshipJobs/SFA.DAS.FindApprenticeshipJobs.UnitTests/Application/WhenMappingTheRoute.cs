@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.FindApprenticeshipJobs.Application.Queries.CivilServiceJobs;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipJobs.UnitTests.Application;

@@ -10,7 +10,7 @@ using SFA.DAS.ApprenticeCommitments.Apis;
 using SFA.DAS.ApprenticeCommitments.Apis.InnerApi;
 using SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval;
 using SFA.DAS.ApprenticeCommitments.Application.Services;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Roatp;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.Matchers;
@@ -127,9 +127,9 @@ namespace SFA.DAS.ApprenticeCommitments.Api.AcceptanceTests.Steps
                 {
                     Level = course.Level,
                     Title = course.Title,
-                    ApprenticeshipFunding = new List<SharedOuterApi.InnerApi.Responses.ApprenticeshipFunding>
+                    ApprenticeshipFunding = new List<SharedOuterApi.Types.InnerApi.Responses.Courses.ApprenticeshipFunding>
                     {
-                        new SharedOuterApi.InnerApi.Responses.ApprenticeshipFunding
+                        new SharedOuterApi.Types.InnerApi.Responses.Courses.ApprenticeshipFunding
                         {
                             Duration = course.CourseDuration,
                             EffectiveFrom = new DateTime(2020, 1,1),

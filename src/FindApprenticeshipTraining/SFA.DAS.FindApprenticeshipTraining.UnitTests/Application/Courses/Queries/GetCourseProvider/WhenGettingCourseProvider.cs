@@ -8,20 +8,21 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Exceptions;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProvider;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Exceptions;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.AccessorService;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.RoatpV2;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.AccessorService;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.ApprenticeFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.EmployerFeedback;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.RoatpV2;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.AccessorService;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.AccessorService;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.ApprenticeFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.EmployerFeedback;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queries.GetCourseProvider;
@@ -107,12 +108,7 @@ public sealed class WhenGettingCourseProvider
 
             _roatpClientMock
                 .Setup(x => x.GetWithResponseCode<GetCourseTrainingProvidersCountResponse>(
-                    It.Is<GetCourseTrainingProvidersCountRequest>(a =>
-                        a.LarsCodes.SequenceEqual(new string[] { query.LarsCode }) &&
-                        a.Distance.Equals(query.Distance) &&
-                        a.Latitude.Equals(locationResponse.Latitude) &&
-                        a.Longitude.Equals(locationResponse.Longitude)
-                    )
+                    It.IsAny<GetCourseTrainingProvidersCountRequest>()
                 ))
             .ReturnsAsync(new ApiResponse<GetCourseTrainingProvidersCountResponse>(
                 courseTrainingProvidersCountResponse,
@@ -131,7 +127,7 @@ public sealed class WhenGettingCourseProvider
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Handle_Calls_The_Cached_Location_Api_With_The_Correct_Parameters(
+    public async Task Handle_QueryProvided_CallsCachedLocationApiWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -163,7 +159,7 @@ public sealed class WhenGettingCourseProvider
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Handle_Calls_The_Roatp_Api_With_The_Correct_Parameters(
+    public async Task Handle_QueryProvided_CallsRoatpApiWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -201,7 +197,7 @@ public sealed class WhenGettingCourseProvider
     }
 
     [Test, AutoData]
-    public async Task Then_Raise_Exception_If_Roatp_Api_Returns_Failed_Status_Code(
+    public async Task Handle_RoatpApiReturnsFailedStatusCode_ThrowsApiResponseException(
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         GetCourseProviderQuery query,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -245,7 +241,7 @@ public sealed class WhenGettingCourseProvider
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Handle_Calls_The_Accessor_Api_With_The_Correct_Parameters(
+    public async Task Handle_QueryProvided_CallsAccessorApiWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -281,7 +277,7 @@ public sealed class WhenGettingCourseProvider
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Handle_Calls_The_Feedback_Service_With_The_Correct_Parameters(
+    public async Task Handle_QueryProvided_CallsFeedbackServiceWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -312,7 +308,7 @@ public sealed class WhenGettingCourseProvider
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Handle_Calls_The_Roatp_Api_For_Course_Details_With_The_Correct_Parameters(
+    public async Task Handle_QueryProvided_CallsRoatpApiForCourseDetailsWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -349,7 +345,7 @@ public sealed class WhenGettingCourseProvider
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Handle_Calls_The_Roatp_Api_For_Provider_Count_With_The_Correct_Parameters(
+    public async Task Handle_QueryProvided_CallsRoatpApiForProviderCountWithCorrectParameters(
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,
         EmployerFeedbackAnnualDetails employerFeedbackResponse,
@@ -390,7 +386,7 @@ public sealed class WhenGettingCourseProvider
     [Test]
     [MoqInlineAutoData(HttpStatusCode.NotFound)]
     [MoqInlineAutoData(HttpStatusCode.BadRequest)]
-    public async Task And_Roatp_Api_Call_Returns_404_Or_400_Handler_Returns_Null(
+    public async Task Handle_RoatpApiReturnsNotFoundOrBadRequest_ReturnsNull(
         HttpStatusCode statusCode,
         GetCourseProviderQuery query,
         GetCourseProviderDetailsResponse courseProviderDetailsResponse,

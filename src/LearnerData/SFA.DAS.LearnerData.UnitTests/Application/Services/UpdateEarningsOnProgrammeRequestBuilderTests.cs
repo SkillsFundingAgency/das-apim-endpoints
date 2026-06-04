@@ -1,16 +1,13 @@
-﻿using AutoFixture;
-using FluentAssertions;
-using Moq;
-using NUnit.Framework;
+using AutoFixture;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests.LearnerData;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.Courses;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.LearnerData;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 
@@ -56,6 +53,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
         result.Data.CompletionDate.Should().Be(putRequest.Data.Learner.CompletionDate);
         result.Data.WithdrawalDate.Should().Be(putRequest.Data.Delivery.WithdrawalDate);
         result.Data.PauseDate.Should().Be(putRequest.Data.OnProgramme.PauseDate);
+        result.Data.AchievementDate.Should().Be(putRequest.Data.OnProgramme.AchievementDate);
         result.Data.ApprenticeshipEpisodeKey.Should().Be(response.LearningEpisodeKey);
         result.Data.DateOfBirth.Should().Be(putRequest.Data.Learner.DateOfBirth);
 
@@ -69,30 +67,15 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
             TotalPrice = x.TotalPrice
         }));
 
-        if (completion)
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
-        else
-        {
-            result.Data.PeriodsInLearning.Should().BeEquivalentTo(
-                command.UpdateLearnerRequest.Delivery.OnProgramme
-                    .Where(x => x.AgreementId == agreementId)
-                    .Select(x => new PeriodInLearningItem
-                    {
-                        StartDate = x.StartDate,
-                        EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.ExpectedEndDate,
-                        OriginalExpectedEndDate = x.ExpectedEndDate
-                    }));
-        }
+        result.Data.PeriodsInLearning.Should().BeEquivalentTo(
+            command.UpdateLearnerRequest.Delivery.OnProgramme
+                .Where(x => x.AgreementId == agreementId)
+                .Select(x => new PeriodInLearningItem
+                {
+                    StartDate = x.StartDate,
+                    EndDate = x.PauseDate ?? x.WithdrawalDate ?? x.CompletionDate,
+                    OriginalExpectedEndDate = x.ExpectedEndDate
+                }));
 
 
         result.Data.FundingBandMaximum.Should().BeNull();

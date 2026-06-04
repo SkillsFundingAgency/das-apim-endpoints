@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using SFA.DAS.ApprenticePortal.MockApis.Helpers;
 
 namespace SFA.DAS.ApprenticePortal.MockApis

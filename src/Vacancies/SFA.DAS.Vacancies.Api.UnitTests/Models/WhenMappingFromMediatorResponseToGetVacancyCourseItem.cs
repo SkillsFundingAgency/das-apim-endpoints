@@ -9,7 +9,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
     public class WhenMappingFromMediatorResponseToGetVacancyCourseItem
     {
         [Test, AutoData]
-        public void Then_The_Values_Are_Mapped(GetVacanciesListItem source)
+        public void Then_The_Values_Are_Mapped(GetVacancyApiResponse source)
         {
             var actual = (GetVacancyCourseItem)source;
             
@@ -20,7 +20,7 @@ namespace SFA.DAS.Vacancies.Api.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void Then_If_Course_Is_Null_Then_Not_Mapped(GetVacanciesListItem source)
+        public void Then_If_Course_Is_Null_Then_Not_Mapped(GetVacancyApiResponse source)
         {
             source.StandardLarsCode = null;
             

@@ -6,8 +6,9 @@ using Microsoft.OpenApi.Models;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.ApprenticeshipsManage.Api.AppStart;
 using SFA.DAS.ApprenticeshipsManage.Application.Queries.GetApprenticeships;
-using SFA.DAS.SharedOuterApi.AppStart;
-using SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck;
+using SFA.DAS.Apim.Shared.AppStart;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
+using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 
 var builder = WebApplication.CreateBuilder(args);
 

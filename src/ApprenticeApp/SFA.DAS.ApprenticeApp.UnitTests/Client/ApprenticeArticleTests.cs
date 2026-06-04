@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.ApprenticeApp.Models.Contentful;
 
 namespace SFA.DAS.ApprenticeApp.UnitTests.Client
 {

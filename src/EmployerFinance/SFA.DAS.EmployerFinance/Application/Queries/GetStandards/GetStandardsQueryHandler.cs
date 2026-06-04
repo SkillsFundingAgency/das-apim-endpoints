@@ -1,10 +1,10 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.EmployerFinance.InnerApi.Requests;
 using SFA.DAS.EmployerFinance.InnerApi.Responses;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.EmployerFinance.Application.Queries.GetStandards
 {
@@ -18,11 +18,11 @@ namespace SFA.DAS.EmployerFinance.Application.Queries.GetStandards
         }
         public async Task<GetStandardsQueryResult> Handle(GetStandardsQuery request, CancellationToken cancellationToken)
         {
-            var response = await _coursesApiClient.Get<GetStandardsListResponse>(new GetActiveStandardsListRequest());
+            var response = await _coursesApiClient.Get<GetStandardsListResponse>(new GetCoursesRequest());
             
             return new GetStandardsQueryResult
             {
-                Standards = response.Standards
+                Standards = response.Courses
             };
         }
     }

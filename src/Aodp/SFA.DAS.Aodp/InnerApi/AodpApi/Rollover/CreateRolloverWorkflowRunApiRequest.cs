@@ -1,5 +1,5 @@
 ﻿using SFA.DAS.Aodp.Application.Commands.Rollover;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.Aodp.InnerApi.AodpApi.Rollover
 {
@@ -7,6 +7,6 @@ namespace SFA.DAS.Aodp.InnerApi.AodpApi.Rollover
     {
         public string PostUrl => $"api/rollover/rolloverworkflowruns";
 
-        public object Data { get; set; }
+        public object Data { get; set; } = new { };
     }
 }

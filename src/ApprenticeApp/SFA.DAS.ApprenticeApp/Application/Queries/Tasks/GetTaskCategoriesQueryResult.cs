@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SFA.DAS.ApprenticeApp.Models;
+﻿using SFA.DAS.ApprenticeApp.Models;
 
 namespace SFA.DAS.ApprenticeApp.Application.Queries.Details
 {

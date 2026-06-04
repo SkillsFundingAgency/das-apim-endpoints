@@ -6,10 +6,9 @@ using SFA.DAS.ApprenticeCommitments.Configuration;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.SharedOuterApi.InnerApi.Responses.TrainingProviderService;
-using SFA.DAS.SharedOuterApi.Services;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.TrainingProviderService;
+using SFA.DAS.SharedOuterApi.Types.Services;
 using SFA.DAS.ApprenticeCommitments.Extensions;
-using SFA.DAS.ApprenticeCommitments.Types;
 using CreateApprenticeshipRequestData = SFA.DAS.ApprenticeCommitments.Apis.InnerApi.ApprovalCreatedRequestData;
 
 #nullable enable
@@ -45,9 +44,15 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             CreateApprovalCommand command,
             CancellationToken cancellationToken)
         {
-            var (apprentice, trainingProvider, course) = await GetExternalData(command);
+            var (apprentice, trainingProvider, course) = await GetExternalData(command);            
 
             if (apprentice == null) return default;
+
+            if (course.ApprenticeshipType == "ApprenticeshipUnit")
+            {
+                _logger.LogInformation("Method skipped due to ApprenticeshipType: Short Course | ApprenticeshipId: {Id}", apprentice.Id);
+                return default;
+            }
 
             var id = Guid.NewGuid();
 
@@ -113,7 +118,7 @@ namespace SFA.DAS.ApprenticeCommitments.Application.Commands.CreateApproval
             apprenticeship.ApprenticeshipType = course.ApprenticeshipType.GetApprenticeshipType();
 
             var provider = _trainingProviderService.GetTrainingProviderDetails(
-                command.TrainingProviderId);
+                command.TrainingProviderId);            
 
             return (apprenticeship, await provider, course);
         }

@@ -1,74 +1,57 @@
-﻿using SFA.DAS.SharedOuterApi.Common;
+using System;
+using System.Linq;
+using SFA.DAS.SharedOuterApi.Types.Constants;
+using SFA.DAS.SharedOuterApi.Types.InnerApi;
 
-namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses
+namespace SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
+
+public class GetStandardResponse
 {
-    public class GetStandardResponse
+    public string StandardUId { get; set; }
+    public string IfateReferenceNumber { get; set; }
+    public string LarsCode { get; set; }
+    public string Title { get; set; }
+    public int Level { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
+    public string ApprovalBody { get; set; }
+    public string Route { get; set; }
+    public bool IsRegulatedForProvider { get; set; }
+    public int Duration { get; set; }
+    public DurationUnits DurationUnits { get; set; }
+    public CourseType CourseType { get; set; }
+    public bool IsActiveAvailable { get; set; }
+
+    public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source)
     {
-        public string StandardUId { get; set; }
-        public string IfateReferenceNumber { get; set; }
-        public string LarsCode { get; set; }
-        public string Title { get; set; }
-        public int Level { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
-        public string ApprovalBody { get; set; }
-        public string Route { get; set; }
-        public int SectorSubjectAreaTier1 { get; set; }
-        public bool IsRegulatedForProvider { get; set; }
+        if (source == null) return null;
 
-        public static implicit operator GetStandardResponse(GetStandardResponseFromCoursesApi source) =>
-            new()
-            {
-                StandardUId = source.StandardUId,
-                IfateReferenceNumber = source.IfateReferenceNumber,
-                LarsCode = source.LarsCode.ToString(),
-                Title = source.Title,
-                Level = source.Level,
-                ApprenticeshipType = source.ApprenticeshipType,
-                ApprovalBody = source.ApprovalBody,
-                Route = source.Route,
-                SectorSubjectAreaTier1 = source.SectorSubjectAreaTier1,
-                IsRegulatedForProvider = source.IsRegulatedForProvider
-            };
+        var apprenticeshipFunding = source.ApprenticeshipFunding?.Count > 0 ?
+            source.ApprenticeshipFunding.OrderByDescending(a => a.EffectiveFrom).First() : null;
 
-        public static implicit operator GetStandardResponse(GetStandardResponseFromCourseManagementApi source) =>
-            new()
-            {
-                IfateReferenceNumber = source.IfateReferenceNumber,
-                LarsCode = source.LarsCode,
-                Title = source.Title,
-                Level = source.Level,
-                ApprenticeshipType = source.ApprenticeshipType,
-                ApprovalBody = source.ApprovalBody,
-                Route = source.Route,
-                SectorSubjectAreaTier1 = source.SectorSubjectAreaTier1,
-                IsRegulatedForProvider = source.IsRegulatedForProvider,
-            };
+        return new GetStandardResponse
+        {
+            StandardUId = source.StandardUId,
+            IfateReferenceNumber = source.IfateReferenceNumber,
+            LarsCode = source.LarsCode,
+            Title = source.Title,
+            Level = source.Level,
+            ApprenticeshipType = source.LearningType,
+            ApprovalBody = source.ApprovalBody,
+            Route = source.Route,
+            IsRegulatedForProvider = source.IsRegulatedForProvider,
+            Duration = apprenticeshipFunding?.Duration ?? 0,
+            DurationUnits = apprenticeshipFunding?.DurationUnits ?? default(DurationUnits),
+            CourseType = source.CourseType,
+            IsActiveAvailable = IsActiveAvailableStandard(source.CourseDates)
+        };
     }
 
-    public class GetStandardResponseFromCoursesApi
+    private static bool IsActiveAvailableStandard(CourseDates courseDates)
     {
-        public string StandardUId { get; set; }
-        public string IfateReferenceNumber { get; set; }
-        public int LarsCode { get; set; }
-        public string Title { get; set; }
-        public int Level { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
-        public string ApprovalBody { get; set; }
-        public string Route { get; set; }
-        public int SectorSubjectAreaTier1 { get; set; }
-        public bool IsRegulatedForProvider { get; set; }
-    }
+        if (courseDates == null) return false;
 
-    public class GetStandardResponseFromCourseManagementApi
-    {
-        public string IfateReferenceNumber { get; set; }
-        public string LarsCode { get; set; }
-        public string Title { get; set; }
-        public int Level { get; set; }
-        public ApprenticeshipType ApprenticeshipType { get; set; }
-        public string ApprovalBody { get; set; }
-        public string Route { get; set; }
-        public int SectorSubjectAreaTier1 { get; set; }
-        public bool IsRegulatedForProvider { get; set; }
+        return (courseDates.LastDateStarts == null || courseDates.LastDateStarts >= DateTime.UtcNow.Date)
+        && courseDates.LastDateStarts != courseDates.EffectiveFrom
+        && courseDates.EffectiveFrom <= DateTime.UtcNow.Date;
     }
 }

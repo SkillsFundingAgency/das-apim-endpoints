@@ -26,8 +26,6 @@ public class ProvidersController(IMediator _mediator) : ControllerBase
     [ProducesResponseType(typeof(GetProviderSummaryQueryResult), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProviderSummary([FromRoute] int ukprn, CancellationToken cancellationToken)
     {
-        return Ok(
-            await _mediator.Send(new GetProviderSummaryQuery(ukprn), cancellationToken)
-        );
+        return Ok(await _mediator.Send(new GetProviderSummaryQuery(ukprn), cancellationToken));
     }
 }

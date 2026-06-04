@@ -8,9 +8,12 @@ using SFA.DAS.Approvals.InnerApi.Responses;
 using SFA.DAS.Approvals.Services;
 using SFA.DAS.Approvals.Types;
 using Standard = SFA.DAS.Approvals.Types.Standard;
-using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
-using SFA.DAS.SharedOuterApi.Models;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.Approvals.UnitTests.Application.BulkUpload;
 
@@ -21,7 +24,7 @@ public class WhenValidatingBulkUpload
         ValidateBulkUploadRecordsCommand query,
         [Frozen] Mock<ICommitmentsV2ApiClient<CommitmentsV2ApiConfiguration>> apiClient,
         [Frozen] Mock<IReservationApiClient<ReservationApiConfiguration>> reservationApiClient,
-        [Frozen] Mock<IProviderStandardsService> providerStandardsService,
+        [Frozen] Mock<IProviderCoursesOrStandardsService> providerStandardsService,
         [Frozen] Mock<IBulkCourseMetadataService> bulkCourseMetadataService,
         [Frozen] Mock<IAddCourseTypeDataToCsvService> addCourseTypeDataToCsvService,
         List<BulkUploadAddDraftApprenticeshipExtendedRequest> csvRecordsExtendedRequests,
@@ -40,7 +43,7 @@ public class WhenValidatingBulkUpload
             IsMainProvider = true,
             Standards = new List<Standard> { new Standard("123", "Test", 3) }
         };
-        providerStandardsService.Setup(x => x.GetStandardsData(query.ProviderId)).ReturnsAsync(providerStandardsData);
+        providerStandardsService.Setup(x => x.GetCoursesData(query.ProviderId)).ReturnsAsync(providerStandardsData);
 
         var otjTrainingHours = new Dictionary<string, int?>();
         bulkCourseMetadataService.Setup(x => x.GetOtjTrainingHoursForBulkUploadAsync(It.IsAny<IEnumerable<string>>())).ReturnsAsync(otjTrainingHours);
@@ -87,7 +90,7 @@ public class WhenValidatingBulkUpload
             IsMainProvider = false,
             Standards = standards
         };
-        providerStandardsService.Setup(x => x.GetStandardsData(query.ProviderId)).ReturnsAsync(providerStandardsData);
+        providerStandardsService.Setup(x => x.GetCoursesData(query.ProviderId)).ReturnsAsync(providerStandardsData);
 
         var otjTrainingHours = new Dictionary<string, int?>();
         bulkCourseMetadataService.Setup(x => x.GetOtjTrainingHoursForBulkUploadAsync(It.IsAny<IEnumerable<string>>())).ReturnsAsync(otjTrainingHours);
