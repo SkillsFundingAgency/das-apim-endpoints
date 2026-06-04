@@ -13,14 +13,8 @@ namespace SFA.DAS.EmployerFinance.Api.UnitTests.Models
 
             //Assert
             actual.Should().BeEquivalentTo(source, options=> options
-                .Excluding(x=>x.ApprenticeshipFunding)
-                .Excluding(x=>x.StandardDates)
-                .Excluding(x=>x.TypicalDuration)
-                .Excluding(x=>x.IsActive)
-                .Excluding(x => x.StandardUId)
                 .Excluding(x => x.LarsCode)
             );
-            actual.Duration.Should().Be(source.TypicalDuration);
             actual.Id.Should().Be(source.LarsCode);
         }
     }

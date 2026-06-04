@@ -48,8 +48,7 @@ public class UpdateEarningsEnglishAndMathsRequestBuilder : IUpdateEarningsEnglis
         {
             var endDate = mathsAndEnglish.CompletionDate
                           ?? mathsAndEnglish.PauseDate
-                          ?? mathsAndEnglish.WithdrawalDate
-                          ?? mathsAndEnglish.EndDate;
+                          ?? mathsAndEnglish.WithdrawalDate;
 
             periodsInLearning.Add(new PeriodInLearningItem
             {
