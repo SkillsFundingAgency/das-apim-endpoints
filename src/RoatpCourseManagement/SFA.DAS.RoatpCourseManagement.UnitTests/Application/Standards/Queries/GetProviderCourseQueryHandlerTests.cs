@@ -67,7 +67,6 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                 result.CourseType.Should().Be(standard.CourseType);
                 result.Duration.Should().Be(standard.Duration);
                 result.DurationUnits.Should().Be(standard.DurationUnits);
-                result.CourseType.Should().Be(standard.CourseType);
             }
         }
 
