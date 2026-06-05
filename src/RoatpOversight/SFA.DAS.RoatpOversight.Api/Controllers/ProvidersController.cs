@@ -20,7 +20,7 @@ public class ProvidersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> CreateProvider([FromBody] CreateProviderCommand command, CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Outer API: Request received to create provider course for ukprn: {ukprn} by user: {userId}", command.Ukprn, command.UserId);
+        _logger.LogInformation("Outer API: Request received to create provider course for ukprn: {Ukprn} by user: {UserId}", command.Ukprn, command.UserId);
 
         await _mediator.Send(command, cancellationToken);
 
