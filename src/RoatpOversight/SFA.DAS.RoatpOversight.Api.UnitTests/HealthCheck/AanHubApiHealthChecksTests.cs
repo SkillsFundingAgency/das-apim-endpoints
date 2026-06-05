@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using SFA.DAS.RoatpOversight.Api.HealthCheck;
