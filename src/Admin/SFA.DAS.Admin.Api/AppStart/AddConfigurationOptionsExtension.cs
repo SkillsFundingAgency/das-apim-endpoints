@@ -5,7 +5,6 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.Admin.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 
-
 namespace SFA.DAS.Admin.Api.AppStart
 {
     [ExcludeFromCodeCoverage]
