@@ -343,5 +343,106 @@ public class RolloverControllerTests
             Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
     }
 
+    [Test]
+    public async Task ValidateFundingExtensionCandidates_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var command = new ValidateFundingExtensionCandidatesCommand 
+        { 
+            FundingExtensionCandidates = 
+            [
+                new (){ RowNumber = 1, Qan="12345678", FundingStreamName="Stream1", RolloverStatus="ToExtend", ProposedFundingEndDate=DateTime.UtcNow.AddMonths(6), ExclusionReason = ""}
+            ]
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<ValidateFundingExtensionCandidatesCommandResponse>
+        {
+            Success = true,
+            Value = new ValidateFundingExtensionCandidatesCommandResponse
+            {
+                TotalCandidates = 1,
+                FailedCandidateCount = 0,
+                IsValid = true,
+                Candidates = [new() { IsValid = true, Qan = "12345678", FundingStreamName = "Stream1", RolloverStatus = "ToExtend", ProposedFundingEndDate = DateTime.UtcNow.AddMonths(6), ExclusionReason = "" }]
+            }
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<ValidateFundingExtensionCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.ValidateFundingExtensionCandidates(command);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var ok = (OkObjectResult)result;
+
+        Assert.That(ok.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+        Assert.That(ok.Value, Is.InstanceOf<ValidateFundingExtensionCandidatesCommandResponse>());
+
+        var returned = (ValidateFundingExtensionCandidatesCommandResponse)ok.Value!;
+        Assert.That(returned.TotalCandidates, Is.EqualTo(1));
+        Assert.That(returned.FailedCandidateCount, Is.EqualTo(0));
+        Assert.That(returned.IsValid, Is.True);
+
+        Assert.That(returned.Candidates, Has.Count.EqualTo(1));
+        Assert.That(returned.Candidates[0].IsValid, Is.True);
+        Assert.That(returned.Candidates[0].Qan, Is.EqualTo("12345678"));
+        Assert.That(returned.Candidates[0].FundingStreamName, Is.EqualTo("Stream1"));
+        Assert.That(returned.Candidates[0].RolloverStatus, Is.EqualTo("ToExtend"));
+    }
+
+    [Test]
+    public async Task ValidateFundingExtensionCandidates_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var command = new ValidateFundingExtensionCandidatesCommand
+        {
+            FundingExtensionCandidates =
+            [
+                new()
+            {
+                RowNumber = 1,
+                Qan = "12345678",
+                FundingStreamName = "Stream1",
+                RolloverStatus = "ToExtend",
+                ProposedFundingEndDate = DateTime.UtcNow.AddMonths(6),
+                ExclusionReason = ""
+            }
+            ]
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<ValidateFundingExtensionCandidatesCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Validation failed"
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<ValidateFundingExtensionCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.ValidateFundingExtensionCandidates(command);
+
+        // Assert
+        const int expectedStatus = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
+        else
+            Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
+
+        _mockMediator.Verify(m => m.Send(
+            It.IsAny<ValidateFundingExtensionCandidatesCommand>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
 
 }

@@ -61,4 +61,12 @@ public class RolloverController : BaseController
     {
         return await SendRequestAsync(new GetRolloverCandidatesForExportQuery { RolloverWorkflowRunId = rolloverWorkflowRunId });
     }
+
+    [HttpPost("/api/rollover/rolloverextensionvalidation")]
+    [ProducesResponseType(typeof(BaseMediatrResponse<ValidateFundingExtensionCandidatesCommandResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ValidateFundingExtensionCandidates(ValidateFundingExtensionCandidatesCommand validateFundingExtensionCandidatesCommand)
+    {
+        return await SendRequestAsync(validateFundingExtensionCandidatesCommand);
+    }
 }
