@@ -697,6 +697,9 @@ components:
                   withdrawalDate:
                     type: string
                     format: date
+                  withdrawalReasonCode:
+                    type: number
+                    nullable: true
                   learningSupport:
                     type: array
                     items:
