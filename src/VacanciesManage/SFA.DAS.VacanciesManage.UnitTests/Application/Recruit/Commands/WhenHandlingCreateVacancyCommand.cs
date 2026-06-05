@@ -22,8 +22,12 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
+using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
+using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
+using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 
 namespace SFA.DAS.VacanciesManage.UnitTests.Application.Recruit.Commands;
 
@@ -108,10 +112,19 @@ public class WhenHandlingCreateVacancyCommand
         capturedVacancyReviewRequest.Data.CreatedDate.Should().NotBeNull();
         capturedVacancyReviewRequest.Data.Status.Should().Be(ReviewStatus.New);
 
+        var vacancyUser = new VacancyUser
+        {
+            UserId = apiResponse.Body.SubmittedByUserId.ToString(),
+            Name = apiResponse.Body.Contact.Name,
+            Email = apiResponse.Body.Contact.Email
+        };
         var snapshotOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
         var expectedVacancyNode = JsonSerializer.SerializeToNode(apiResponse.Body, snapshotOptions)!.AsObject();
         expectedVacancyNode["EmployerAccountId"] = accountLegalEntityItem.AccountHashedId;
         expectedVacancyNode["AccountLegalEntityPublicHashedId"] = accountLegalEntityItem.AccountLegalEntityPublicHashedId;
+        expectedVacancyNode["SubmittedByUser"] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
+        expectedVacancyNode["CreatedByUser"] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
+        expectedVacancyNode["LastUpdatedByUser"] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
 
         capturedVacancyReviewRequest.Data.VacancySnapshot.Should().BeEquivalentTo(expectedVacancyNode.ToJsonString(snapshotOptions));
         capturedVacancyReviewRequest.Data.SubmittedByUserEmail.Should().Be(apiResponse.Body.Contact.Email);
