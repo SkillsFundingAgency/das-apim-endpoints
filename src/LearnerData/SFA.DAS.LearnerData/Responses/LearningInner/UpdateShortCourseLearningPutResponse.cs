@@ -6,7 +6,6 @@ public class UpdateShortCourseLearningPutResponse : IShortCourseLearningPaymentE
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
     public string[] Changes { get; set; } = [];
-    public DateTime? CompletionDate { get; set; }
     public LearningInnerShortCourseLearner Learner { get; set; } = null!;
     public LearningInnerShortCourseEpisode[] Episodes { get; set; } = [];
 }
