@@ -12,7 +12,7 @@ namespace SFA.DAS.Approvals.Api.Controllers;
 public class ChangeHistoryController(IMediator mediator, ILogger<ChangeHistoryController> logger) : ControllerBase
 {
     [HttpGet]
-    [Route("{ApprenticeshipId:long}")]
+    [Route("{apprenticeshipId:long}")]
     public async Task<IActionResult> GetChangeHistory(long apprenticeshipId)
     {
         try
