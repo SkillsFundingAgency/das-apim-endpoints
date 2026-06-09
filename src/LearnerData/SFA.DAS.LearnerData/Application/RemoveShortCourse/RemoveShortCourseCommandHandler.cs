@@ -39,13 +39,7 @@ public class RemoveShortCourseCommandHandler(
             throw new Exception($"Failed to delete short course with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        if (learningResponse.StatusCode == HttpStatusCode.NoContent)
-        {
-            logger.LogInformation("Short course with key {LearningKey} was a no-op in Learning, skipping Earnings delete", command.LearningKey);
-            return;
-        }
-
-        var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey, learningResponse.Body.RemovedEpisodeKey);
 
         var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 

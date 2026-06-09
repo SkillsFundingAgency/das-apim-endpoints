@@ -97,7 +97,7 @@ public sealed class WhenGettingCourseByLarsCode
         Assert.Multiple(() =>
         {
             Assert.That(sut, Is.Not.Null);
-            Assert.That(sut.ApprenticeshipType, Is.EqualTo(LearningType.FoundationApprenticeship));
+            Assert.That(sut.LearningType, Is.EqualTo(LearningType.FoundationApprenticeship));
             Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(10));
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(20));
         });

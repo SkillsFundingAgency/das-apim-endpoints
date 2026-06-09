@@ -10,7 +10,7 @@ namespace SFA.DAS.RecruitQa.Api.UnitTests.Controller.VacancyReview;
 
 public class WhenCallingGetVacancyReviewsByVacancyReference
 {
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_The_Mediator_Query_Is_Handled_And_Data_Returned(
         bool includeNoStatus,
         long vacancyReference,

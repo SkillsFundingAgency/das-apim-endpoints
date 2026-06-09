@@ -3,17 +3,14 @@ using SFA.DAS.RecruitQa.Application.VacancyReviews.Queries.GetVacancyReviewsByAc
 using SFA.DAS.RecruitQa.InnerApi.Requests;
 using SFA.DAS.RecruitQa.InnerApi.Responses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 
 namespace SFA.DAS.RecruitQa.UnitTests.Application.Queries.VacancyReview;
 
 public class WhenHandlingGetVacancyReviewsByAccountLegalEntityQuery
 {
-    [Test, MoqAutoData]
+    [Test, RecursiveMoqAutoData]
     public async Task Then_The_Query_Is_Handled_And_Data_Returned(
         GetVacancyReviewsByAccountLegalEntityQuery query,
         List<GetVacancyReviewResponse> apiResponse,
