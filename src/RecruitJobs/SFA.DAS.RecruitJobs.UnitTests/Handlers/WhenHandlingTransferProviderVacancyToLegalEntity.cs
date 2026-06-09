@@ -266,9 +266,9 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
     
     [Test]
-    [MoqInlineAutoData(ReviewStatus.Closed)]
-    [MoqInlineAutoData(ReviewStatus.New)]
-    [MoqInlineAutoData(ReviewStatus.PendingReview)]
+    [RecursiveMoqInlineAutoData(ReviewStatus.Closed)]
+    [RecursiveMoqInlineAutoData(ReviewStatus.New)]
+    [RecursiveMoqInlineAutoData(ReviewStatus.PendingReview)]
     public async Task Then_The_Submitted_Vacancy_Is_Transferred_And_Made_Draft_As_Long_As_It_Is_Not_Under_Review(
         ReviewStatus status,
         Guid vacancyId,
@@ -323,8 +323,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
     
     [Test]
-    [MoqInlineAutoData(ReviewStatus.New)]
-    [MoqInlineAutoData(ReviewStatus.PendingReview)]
+    [RecursiveMoqInlineAutoData(ReviewStatus.New)]
+    [RecursiveMoqInlineAutoData(ReviewStatus.PendingReview)]
     public async Task Then_New_Or_Pending_Vacancy_Reviews_Are_Closed(
         ReviewStatus status,
         Guid vacancyId,
@@ -374,8 +374,8 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
     }
     
     [Test]
-    [MoqInlineAutoData(ReviewStatus.Closed)]
-    [MoqInlineAutoData(ReviewStatus.UnderReview)]
+    [RecursiveMoqInlineAutoData(ReviewStatus.Closed)]
+    [RecursiveMoqInlineAutoData(ReviewStatus.UnderReview)]
     public async Task Then_Closed_Or_Under_Review_Are_Not_Patched(
         ReviewStatus status,
         Guid vacancyId,

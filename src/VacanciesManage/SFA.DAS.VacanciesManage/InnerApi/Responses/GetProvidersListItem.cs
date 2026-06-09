@@ -9,4 +9,5 @@ public record GetProvidersListItem
     public string Phone { get; set; }
     public int ProviderTypeId { get; set; }
     public int StatusId { get; set; }
+    public GetProvidersListItemAddress Address { get; set; }
 }

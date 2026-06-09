@@ -2,6 +2,7 @@
 
 public class DeleteShortCourseResponse : IShortCourseLearningPaymentEventBuildContext
 {
+    public Guid RemovedEpisodeKey { get; set; }
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
     public DateTime? CompletionDate { get; set; }
