@@ -80,6 +80,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         }
 
         result.OnProgramme.CourseCode.Should().Be(onProgramme.CourseCode);
+        result.OnProgramme.EmployerId.Should().Be(onProgramme.EmployerAccountId);
         result.OnProgramme.Ukprn.Should().Be(ukprn);
         result.OnProgramme.StartDate.Should().Be(onProgramme.StartDate);
         result.OnProgramme.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);

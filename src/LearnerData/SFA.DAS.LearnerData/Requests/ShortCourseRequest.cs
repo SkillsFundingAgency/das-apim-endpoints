@@ -1,4 +1,4 @@
-﻿using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Requests;
@@ -27,6 +27,8 @@ public class ShortCourseOnProgramme
 {
     public string CourseCode { get; set; }
     public string? AgreementId { get; set; }
+    public long EmployerAccountId { get; set; }
+    public long? FundingEmployerAccountId { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
