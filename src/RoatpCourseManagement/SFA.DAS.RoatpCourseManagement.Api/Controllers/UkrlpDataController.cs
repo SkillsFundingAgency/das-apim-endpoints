@@ -1,4 +1,4 @@
-using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -23,14 +23,14 @@ public class UkrlpDataController : ControllerBase
         _logger = logger;
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("lookup/ukrlp/providers")]
     [ProducesResponseType<GetUkrlpProvidersQueryResult>(StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetProvidersData([FromQuery] DateTime? updatedSinceDate, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetProvidersData([FromBody] GetUkrlpProvidersQuery query, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Request to retrieve course directory data received");
 
-        GetUkrlpProvidersQuery query = new(updatedSinceDate);
+        if (!query.Ukprns.Any()) return BadRequest("No UKPRNs provided");
 
         GetUkrlpProvidersQueryResult response = await _mediator.Send(query, cancellationToken);
 

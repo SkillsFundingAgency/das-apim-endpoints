@@ -7,23 +7,19 @@ using MediatR;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Roatp;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Roatp;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.RoatpV2;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.RoatpCourseManagement.Application.UkrlpData.Queries.GetUkrlpProviders;
 
-public class GetUkrlpProvidersQueryHandler(
-    IRoatpServiceApiClient<RoatpConfiguration> _roatpServiceApiClient,
-    IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _roatpCourseManagementApiClient)
+public class GetUkrlpProvidersQueryHandler(IRoatpServiceApiClient<RoatpConfiguration> _roatpServiceApiClient)
     : IRequestHandler<GetUkrlpProvidersQuery, GetUkrlpProvidersQueryResult>
 {
     private const int MaximumRecords = 100;
 
     public async Task<GetUkrlpProvidersQueryResult> Handle(GetUkrlpProvidersQuery query, CancellationToken cancellationToken)
     {
-        var ukprns = await GetAllProvidersUkprn();
+        var ukprns = query.Ukprns;
 
         var response = new List<ProviderDetails>();
 
@@ -35,13 +31,6 @@ public class GetUkrlpProvidersQueryHandler(
         response.AddRange(results.SelectMany(r => r));
 
         return new GetUkrlpProvidersQueryResult(response);
-    }
-
-    private async Task<IEnumerable<int>> GetAllProvidersUkprn()
-    {
-        var response = await _roatpCourseManagementApiClient.GetWithResponseCode<GetProvidersResponse>(new GetRoatpProvidersRequest() { Live = true });
-        response.EnsureSuccessStatusCode();
-        return response.Body.RegisteredProviders.Select(p => p.Ukprn);
     }
 
     private async Task<IEnumerable<ProviderDetails>> ProcessUkrlpRequest(DateTime? updatedSinceDate, IEnumerable<int> ukprns)

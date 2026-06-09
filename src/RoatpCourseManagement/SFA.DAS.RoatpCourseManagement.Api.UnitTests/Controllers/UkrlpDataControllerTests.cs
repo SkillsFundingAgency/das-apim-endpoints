@@ -1,4 +1,3 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -21,18 +20,18 @@ public class UkrlpDataControllerTests
         [Frozen] Mock<IMediator> _mediatorMock,
         [Greedy] UkrlpDataController sut,
         GetUkrlpProvidersQueryResult result,
-        DateTime updatedSinceDate,
+        GetUkrlpProvidersQuery query,
         CancellationToken cancellationToken)
     {
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetUkrlpProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
-        await sut.GetProvidersData(updatedSinceDate, cancellationToken);
+        await sut.GetProvidersData(query, cancellationToken);
 
-        _mediatorMock.Verify(m => m.Send(It.Is<GetUkrlpProvidersQuery>(q => q.UpdatedSinceDate == updatedSinceDate), cancellationToken), Times.Once);
+        _mediatorMock.Verify(m => m.Send(query, cancellationToken), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public async Task WhenGettingProvidersData_NullUpdatedSinceDateIsAcceptable(
+    public async Task WhenGettingProvidersData_EmptyUkrpnList_ReturnsBadRequest(
         [Frozen] Mock<IMediator> _mediatorMock,
         [Greedy] UkrlpDataController sut,
         GetUkrlpProvidersQueryResult result,
@@ -40,9 +39,10 @@ public class UkrlpDataControllerTests
     {
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetUkrlpProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
-        await sut.GetProvidersData(null, cancellationToken);
+        var response = await sut.GetProvidersData(new GetUkrlpProvidersQuery(), cancellationToken);
 
-        _mediatorMock.Verify(m => m.Send(It.Is<GetUkrlpProvidersQuery>(q => q.UpdatedSinceDate == null), cancellationToken), Times.Once);
+        response.As<BadRequestObjectResult>().Should().NotBeNull();
+        _mediatorMock.Verify(m => m.Send(It.Is<GetUkrlpProvidersQuery>(q => q.UpdatedSinceDate == null), cancellationToken), Times.Never);
     }
 
     [Test, MoqAutoData]
@@ -50,12 +50,12 @@ public class UkrlpDataControllerTests
         [Frozen] Mock<IMediator> _mediatorMock,
         [Greedy] UkrlpDataController sut,
         GetUkrlpProvidersQueryResult result,
-        DateTime updatedSinceDate,
+        GetUkrlpProvidersQuery query,
         CancellationToken cancellationToken)
     {
         _mediatorMock.Setup(m => m.Send(It.IsAny<GetUkrlpProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
-        var response = await sut.GetProvidersData(updatedSinceDate, cancellationToken);
+        var response = await sut.GetProvidersData(query, cancellationToken);
 
         response.As<OkObjectResult>().Should().NotBeNull();
         response.As<OkObjectResult>().Value.Should().BeEquivalentTo(result);
