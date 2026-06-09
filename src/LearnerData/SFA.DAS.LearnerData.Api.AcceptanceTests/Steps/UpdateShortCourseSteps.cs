@@ -24,6 +24,7 @@ public class UpdateShortCourseSteps
     private const string ShortCourseLearnerKey = "ShortCourseLearnerKey";
     private const string UkprnKey = "ShortCourseUkprnKey";
     private const string ShortCourseChangesKey = "ShortCourseChanges";
+    private const string UpdatedEpisodeKeyKey = "UpdatedEpisodeKey";
 
     public UpdateShortCourseSteps(TestContext testContext, ScenarioContext scenarioContext)
     {
@@ -36,6 +37,7 @@ public class UpdateShortCourseSteps
     {
         _scenarioContext.Set(Guid.NewGuid(), ShortCourseLearnerKey);
         _scenarioContext.Set(_fixture.Create<long>(), UkprnKey);
+
     }
 
     [Given(@"the (.*) of short course passed is different to the value in the learning domain")]
@@ -69,7 +71,8 @@ public class UpdateShortCourseSteps
     public void ThenAOn_ProgrammeUpdateRequestIsSentForShortCoursesToTheEarningsDomain()
     {
         var learnerKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
-        var requestUrl = $"/{learnerKey}/shortCourses/on-programme";
+        var episodeKey = _scenarioContext.Get<Guid>(UpdatedEpisodeKeyKey);
+        var requestUrl = $"/{learnerKey}/shortCourses/{episodeKey}/on-programme";
         var requests = _testContext.EarningsApi.MockServer.LogEntries;
 
         requests.Should().ContainSingle(request => request.RequestMessage.Url.Contains(requestUrl),
@@ -95,8 +98,12 @@ public class UpdateShortCourseSteps
         var changes = _scenarioContext.Get<List<ShortCourseUpdateChanges>>(ShortCourseChangesKey);
         var onProgramme = shortCourseRequest.Delivery.OnProgramme.First();
 
+        var updatedEpisodeKey = Guid.NewGuid();
+        _scenarioContext.Set(updatedEpisodeKey, UpdatedEpisodeKeyKey);
+
         var response = new UpdateShortCourseLearningPutResponse
         {
+            UpdatedEpisodeKey = updatedEpisodeKey,
             LearningKey = learningKey,
             LearnerKey = learningKey,
             Changes = changes.Select(x => x.ToString()).ToArray(),

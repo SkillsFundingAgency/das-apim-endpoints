@@ -4,9 +4,9 @@ using SFA.DAS.LearnerData.Requests.EarningsInner;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
-public class UpdateShortCourseOnProgrammeEarningPutRequest(Guid learningKey, UpdateShortCourseOnProgrammeRequestBody data) : IPutApiRequest<UpdateShortCourseOnProgrammeRequestBody>
+public class UpdateShortCourseOnProgrammeEarningPutRequest(Guid learningKey, Guid episodeKey, UpdateShortCourseOnProgrammeRequestBody data) : IPutApiRequest<UpdateShortCourseOnProgrammeRequestBody>
 {
-    public string PutUrl { get; } = $"/{learningKey}/shortCourses/on-programme";
+    public string PutUrl { get; } = $"/{learningKey}/shortCourses/{episodeKey}/on-programme";
     public UpdateShortCourseOnProgrammeRequestBody Data { get; set; } = data;
 }
 
