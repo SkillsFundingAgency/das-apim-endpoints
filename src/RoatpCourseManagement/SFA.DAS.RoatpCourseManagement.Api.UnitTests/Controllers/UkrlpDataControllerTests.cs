@@ -1,144 +1,63 @@
 using System;
-using System.Collections.Generic;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoFixture.NUnit3;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.RoatpCourseManagement.Api.Controllers;
-using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
+using SFA.DAS.RoatpCourseManagement.Application.UkrlpData.Queries.GetUkrlpProviders;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers
+namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers;
+
+[TestFixture]
+public class UkrlpDataControllerTests
 {
-    [TestFixture]
-    public class UkrlpDataControllerTests
+    [Test, MoqAutoData]
+    public async Task WhenGettingProvidersData_ThenInvokesMediator(
+        [Frozen] Mock<IMediator> _mediatorMock,
+        [Greedy] UkrlpDataController sut,
+        GetUkrlpProvidersQueryResult result,
+        DateTime updatedSinceDate,
+        CancellationToken cancellationToken)
     {
-        private Mock<IMediator> _mediator;
-        private UkrlpDataController _sut;
-        [SetUp]
-        public void Before_Each_Test()
-        {
-            _mediator = new Mock<IMediator>();
-            _sut = new UkrlpDataController(_mediator.Object, Mock.Of<ILogger<UkrlpDataController>>());
-        }
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetUkrlpProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
-        [Test]
-        [MoqAutoData]
-        public async Task GetProviderAddressesFromProvidersUpdatedSince_ReturnsContent()
-        {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
-            var providerAddresses = new List<ProviderAddress>
-            {
-                new()
-                {
-                    Address1 = "1 Green Road"
-                }
-            };
-            var lookupResponse = new GetUkrlpDataQueryResponse
-            {
-                Results = providerAddresses,
-                Success = true
-            };
+        await sut.GetProvidersData(updatedSinceDate, cancellationToken);
 
-            _mediator.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(lookupResponse);
+        _mediatorMock.Verify(m => m.Send(It.Is<GetUkrlpProvidersQuery>(q => q.UpdatedSinceDate == updatedSinceDate), cancellationToken), Times.Once);
+    }
 
-            var response = await _sut.GetProvidersData(command);
+    [Test, MoqAutoData]
+    public async Task WhenGettingProvidersData_NullUpdatedSinceDateIsAcceptable(
+        [Frozen] Mock<IMediator> _mediatorMock,
+        [Greedy] UkrlpDataController sut,
+        GetUkrlpProvidersQueryResult result,
+        CancellationToken cancellationToken)
+    {
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetUkrlpProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
-            var okResult = response as OkObjectResult;
-            var actualResponse = okResult.Value;
-            Assert.That(actualResponse, Is.SameAs(providerAddresses));
-            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(okResult.StatusCode.GetValueOrDefault()));
-            _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataQuery>(), It.IsAny<CancellationToken>()), Times.Once);
-        }
+        await sut.GetProvidersData(null, cancellationToken);
 
-        [Test]
-        [MoqAutoData]
-        public async Task GetProviderAddressesFromUkprns_ReturnsContent()
-        {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = null, Ukprns = new List<long> { 12345678 } };
-            var providerAddresses = new List<ProviderAddress>
-            {
-                new()
-                {
-                    Address1 = "1 Green Road"
-                }
-            };
-            var lookupResponse = new GetUkrlpDataQueryResponse
-            {
-                Results = providerAddresses,
-                Success = true
-            };
-            _mediator.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(lookupResponse);
+        _mediatorMock.Verify(m => m.Send(It.Is<GetUkrlpProvidersQuery>(q => q.UpdatedSinceDate == null), cancellationToken), Times.Once);
+    }
 
-            var response = await _sut.GetProvidersData(command);
+    [Test, MoqAutoData]
+    public async Task WhenGettingProvidersData_ThenReturnsData(
+        [Frozen] Mock<IMediator> _mediatorMock,
+        [Greedy] UkrlpDataController sut,
+        GetUkrlpProvidersQueryResult result,
+        DateTime updatedSinceDate,
+        CancellationToken cancellationToken)
+    {
+        _mediatorMock.Setup(m => m.Send(It.IsAny<GetUkrlpProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(result);
 
-            var okResult = response as OkObjectResult;
-            var actualResponse = okResult.Value;
-            Assert.That(actualResponse, Is.SameAs(providerAddresses));
-            Assert.That((int)HttpStatusCode.OK, Is.EqualTo(okResult.StatusCode.GetValueOrDefault()));
-            _mediator.Verify(x => x.Send(It.IsAny<UkrlpDataQuery>(), It.IsAny<CancellationToken>()), Times.Once);
-        }
+        var response = await sut.GetProvidersData(updatedSinceDate, cancellationToken);
 
-        [Test]
-        [MoqAutoData]
-        public async Task GetProviderAddresses_TwoParameters_ReturnsBadRequest()
-        {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long> { 12345678 } };
-            var response = await _sut.GetProvidersData(command);
-
-            var badRequestResult = response as BadRequestResult;
-            Assert.That((int)HttpStatusCode.BadRequest, Is.EqualTo(badRequestResult.StatusCode));
-        }
-
-        [Test]
-        [MoqAutoData]
-        public async Task GetProviderAddresses_NoParameters_ReturnsBadRequest()
-        {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = null, Ukprns = new List<long>() };
-            var response = await _sut.GetProvidersData(command);
-
-            var badRequestResult = response as BadRequestResult;
-            Assert.That((int)HttpStatusCode.BadRequest, Is.EqualTo(badRequestResult.StatusCode));
-        }
-
-        [Test]
-        [MoqAutoData]
-        public async Task GetProviderAddresses_NoContentFromService_ReturnsNotFound()
-        {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
-            var lookupResponse = new GetUkrlpDataQueryResponse
-            {
-                Results = null,
-                Success = true
-            };
-            _mediator.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(lookupResponse);
-
-            var response = await _sut.GetProvidersData(command);
-
-            var notFoundResult = response as NotFoundResult;
-            Assert.That((int)HttpStatusCode.NotFound, Is.EqualTo(notFoundResult.StatusCode));
-        }
-
-        [Test]
-        [MoqAutoData]
-        public async Task GetProviderAddresses_UnsuccessfulFromService_ReturnsNotFound()
-        {
-            var command = new UkrlpDataQuery { ProvidersUpdatedSince = DateTime.Today, Ukprns = new List<long>() };
-            var lookupResponse = new GetUkrlpDataQueryResponse
-            {
-                Results = new List<ProviderAddress>(),
-                Success = false
-            };
-            _mediator.Setup(m => m.Send(command, It.IsAny<CancellationToken>())).ReturnsAsync(lookupResponse);
-
-            var response = await _sut.GetProvidersData(command);
-
-            var notFoundResult = response as NotFoundResult;
-            Assert.That((int)HttpStatusCode.NotFound, Is.EqualTo(notFoundResult.StatusCode));
-        }
+        response.As<OkObjectResult>().Should().NotBeNull();
+        response.As<OkObjectResult>().Value.Should().BeEquivalentTo(result);
     }
 }

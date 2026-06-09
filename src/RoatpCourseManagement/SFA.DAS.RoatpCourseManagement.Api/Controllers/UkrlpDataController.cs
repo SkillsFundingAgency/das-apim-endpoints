@@ -1,10 +1,11 @@
-using System.Linq;
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
+using SFA.DAS.RoatpCourseManagement.Application.UkrlpData.Queries.GetUkrlpProviders;
 
 namespace SFA.DAS.RoatpCourseManagement.Api.Controllers;
 
@@ -22,32 +23,17 @@ public class UkrlpDataController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost]
-    [Route("lookup/providers-address")]
-    public async Task<IActionResult> GetProvidersData(UkrlpDataQuery query)
+    [HttpGet]
+    [Route("lookup/ukrlp/providers")]
+    [ProducesResponseType<GetUkrlpProvidersQueryResult>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetProvidersData([FromQuery] DateTime? updatedSinceDate, CancellationToken cancellationToken)
     {
-        if (query.ProvidersUpdatedSince == null && !query.Ukprns.Any())
-        {
-            _logger.LogWarning("No parameter entered for providers address lookup");
-            return BadRequest();
-        }
-
-        if (query.ProvidersUpdatedSince != null && query.Ukprns.Any())
-        {
-            _logger.LogWarning("Two parameters entered for providers address lookup");
-            return BadRequest();
-        }
-
         _logger.LogInformation("Request to retrieve course directory data received");
 
-        var response = await _mediator.Send(query);
+        GetUkrlpProvidersQuery query = new(updatedSinceDate);
 
-        if (response.Results == null || !response.Success)
-        {
-            _logger.LogWarning("No results returned from ukrlp data handler");
-            return NotFound();
-        }
+        GetUkrlpProvidersQueryResult response = await _mediator.Send(query, cancellationToken);
 
-        return Ok(response.Results);
+        return Ok(response);
     }
 }
