@@ -376,7 +376,7 @@ public class WhenHandlingCreateVacancyCommand
             mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
         }
 
-        [Test, MoqAutoData]
+        [Test, RecursiveMoqAutoData]
         public async Task Then_Sets_Status_To_Review_When_Employer_Approval_Required(
             Vacancy responseValue,
             CreateVacancyCommand command,
@@ -438,7 +438,7 @@ public class WhenHandlingCreateVacancyCommand
             mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Once);
         }
 
-        [Test, MoqAutoData]
+        [Test, RecursiveMoqAutoData]
         public async Task Then_Sets_Status_To_Submitted_When_Employer_Approval_Not_Required(
             Vacancy responseValue,
             CreateVacancyCommand command,
@@ -492,7 +492,7 @@ public class WhenHandlingCreateVacancyCommand
             mockRecruitApiClient.Verify(x => x.PutWithResponseCode<PutVacancyReviewRequest, VacancyReview>(It.IsAny<PutVacancyreviewsByIdApiRequest>()), Times.Never);
         }
 
-        [Test, MoqAutoData]
+        [Test, RecursiveMoqAutoData]
         public async Task Then_Clears_Qualifications_And_Skills_For_Foundation_Apprenticeship(
             Vacancy responseValue,
             CreateVacancyCommand command,
