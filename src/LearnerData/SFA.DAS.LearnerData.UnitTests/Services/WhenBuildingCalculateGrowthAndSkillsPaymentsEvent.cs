@@ -124,7 +124,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
             expectedEndDate = DateTime.Parse(expectedEndDateString);
 
         episode.WithdrawalDate = withdrawalDate;
-        learningResponse.CompletionDate = completionDate;
+        episode.CompletionDate = completionDate;
 
         var earningsResponse = GetEarningsResponse();
         var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);
@@ -157,7 +157,7 @@ internal class WhenBuildingCalculateGrowthAndSkillsPaymentsEvent
             completionDate = DateTime.Parse(completionDateString);
 
         episode.WithdrawalDate = withdrawalDate;
-        learningResponse.CompletionDate = completionDate;
+        episode.CompletionDate = completionDate;
 
         var earningsResponse = GetEarningsResponse();
         var builder = new CalculateGrowthAndSkillsPaymentsEventBuilder(_mockLogger.Object, _mockCollectionCalendarApiClient.Object);

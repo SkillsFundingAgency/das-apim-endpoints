@@ -107,7 +107,6 @@ public class UpdateShortCourseSteps
             LearningKey = learningKey,
             LearnerKey = learningKey,
             Changes = changes.Select(x => x.ToString()).ToArray(),
-            CompletionDate = onProgramme.ActualEndDate,
             Learner = new LearningInnerShortCourseLearner
             {
                 Uln = shortCourseRequest.Learner.Uln.ToString(),
@@ -126,6 +125,7 @@ public class UpdateShortCourseSteps
                 AgeAtStart = 20,
                 PlannedEndDate = onProgramme.ExpectedEndDate,
                 WithdrawalDate = onProgramme.WithdrawalDate,
+                CompletionDate = onProgramme.CompletionDate,
                 IsApproved = true,
                 Price = 1000m,
                 LearnerRef = "LearnerRef",
