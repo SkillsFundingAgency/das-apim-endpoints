@@ -18,10 +18,7 @@ namespace SFA.DAS.LearnerData.Application.RemoveShortCourse;
 public class RemoveShortCourseCommandHandler(
     ILogger<RemoveShortCourseCommandHandler> logger,
     ILearningApiClient<LearningApiConfiguration> learningApiClient,
-    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-    ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
-    IMessageSession messageSession,
-    PaymentsConfiguration paymentsConfiguration
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient
 
 ) : IRequestHandler<RemoveShortCourseCommand>
 {
@@ -49,26 +46,6 @@ public class RemoveShortCourseCommandHandler(
             throw new Exception($"Failed to delete short course earnings with key {command.LearningKey}. Status code: {earningsResponse.StatusCode}.");
         }
 
-        await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse.Body);
-
         logger.LogInformation("Short course with key {LearningKey} deleted from Learning and Earnings successfully", command.LearningKey);
-    }
-
-    private async Task PublishEvent(long ukprn, DeleteShortCourseResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
-    {
-        logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        var command = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(paymentsConfiguration.PaymentsEndpoint);
-        await messageSession.Send(command, options);
-
-        logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        await messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
-
-        logger.LogInformation("GrowthAndSkillsPaymentsRecalculatedEvent published for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 }

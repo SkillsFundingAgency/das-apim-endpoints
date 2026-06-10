@@ -24,9 +24,7 @@ public class CreateDraftShortCourseCommandHandler(
     ICreateDraftShortCoursePostRequestBuilder createDraftShortCoursePostRequestBuilder,
     ICreateUnapprovedShortCourseLearningRequestBuilder createUnapprovedShortCourseLearningRequestBuilder,
     IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
-    ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
-    IMessageSession messageSession,
-    PaymentsConfiguration paymentsConfiguration
+    IMessageSession messageSession
 ) : IRequestHandler<CreateDraftShortCourseCommand, CreateDraftShortCourseResult>
 {
     public async Task<CreateDraftShortCourseResult> Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
@@ -34,6 +32,7 @@ public class CreateDraftShortCourseCommandHandler(
         logger.LogInformation("Creating draft short course for provider {ProviderUkprn}", command.Ukprn);
 
         var requestData = await createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
+
 
         var learningResponse = await learningApiClient.PostWithResponseCode<CreateShortCoursePostResponse>(new CreateDraftShortCourseApiPostRequest(requestData));
 
@@ -51,7 +50,6 @@ public class CreateDraftShortCourseCommandHandler(
             var earningsResponse = await earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
                 new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, earningsPutBody));
 
-            await PublishPaymentsEventForReinstatement(command.Ukprn, learningResponse.Body, earningsResponse.Body);
             return new CreateDraftShortCourseResult { CorrelationId = correlationId };
         }
 
@@ -63,21 +61,6 @@ public class CreateDraftShortCourseCommandHandler(
         return new CreateDraftShortCourseResult { CorrelationId = correlationId };
     }
 
-    private async Task PublishPaymentsEventForReinstatement(long ukprn, CreateShortCoursePostResponse learningResponse, UpdateShortCourseEarningPutResponse earningsResponse)
-    {
-        logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for reinstated LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        var command = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(paymentsConfiguration.PaymentsEndpoint);
-        await messageSession.Send(command, options);
-
-        await messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
-
-        logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for reinstated LearningKey: {LearningKey}", learningResponse.LearningKey);
-    }
 
     private static LearnerDataEvent MapToEvent(long ukprn, CreateDraftShortCourseRequest request, ShortCourseRequest shortCourseRequest, Guid correlationId)
     {

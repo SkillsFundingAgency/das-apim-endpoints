@@ -24,10 +24,7 @@ public class WhenHandlingRemoveShortCourseCommand
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ILogger<RemoveShortCourseCommandHandler>> _logger;
-    private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
-    private Mock<IMessageSession> _messageSession;
     private RemoveShortCourseCommandHandler _sut;
-    private PaymentsConfiguration _configuration;
 #pragma warning restore CS8618
 
     [SetUp]
@@ -36,16 +33,9 @@ public class WhenHandlingRemoveShortCourseCommand
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _logger = new Mock<ILogger<RemoveShortCourseCommandHandler>>();
-        _configuration = new PaymentsConfiguration { PaymentsEndpoint = "destination" };
-
-        _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
-        _messageSession = new Mock<IMessageSession>();
-
-        _calculateGrowthAndSkillsPaymentsEventBuilder.Setup(x => x.Build(It.IsAny<long>(), It.IsAny<IShortCourseLearningPaymentEventBuildContext>(), It.IsAny<ShortCourseEarningsResponse>()))
-            .ReturnsAsync(_fixture.Create<CalculateGrowthAndSkillsPayments>());
 
         _sut = new RemoveShortCourseCommandHandler(
-            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object, _calculateGrowthAndSkillsPaymentsEventBuilder.Object, _messageSession.Object, _configuration);
+            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object);
     }
 
     [Test]
