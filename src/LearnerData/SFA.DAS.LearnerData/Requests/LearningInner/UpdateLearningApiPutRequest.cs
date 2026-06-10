@@ -1,4 +1,4 @@
-﻿using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Shared;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner
@@ -32,6 +32,7 @@ namespace SFA.DAS.LearnerData.Requests.LearningInner
         public string? EmailAddress { get; set; }
         public DateTime? CompletionDate { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public long Uln { get; set; }
         public CareDetails Care { get; set; }
     }
 
