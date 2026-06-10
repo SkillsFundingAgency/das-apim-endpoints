@@ -21,6 +21,7 @@
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetEmployerReviewedVacanciesCreatedBefore.graphql" />
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetQaRejectedVacanciesCreatedBefore.graphql" />
     <GraphQL Remove="GraphQL\RecruitInner\Queries\GetVacancyById.graphql" />
+    <GraphQL Remove="GraphQL\RecruitInner\Queries\GetVacancyByReference.graphql" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
