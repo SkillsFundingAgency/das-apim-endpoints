@@ -12,6 +12,12 @@
     <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
   </ItemGroup>
 
+  <!--Transitive Packages-->
+  <ItemGroup>
+    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.5.0" />
+    <PackageReference Include="OpenTelemetry.Api" Version="1.15.3" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
     <ProjectReference Include="..\SFA.DAS.RoatpProviderModeration.Application\SFA.DAS.RoatpProviderModeration.Application.csproj" />

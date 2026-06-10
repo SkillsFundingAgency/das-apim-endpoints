@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Moq;
 using SFA.DAS.RoatpOversight.Api.HealthCheck;
@@ -6,7 +6,8 @@ using SFA.DAS.RoatpOversight.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.RoatpOversight.Api.UnitTests.HealthCheck;
-public class AanHubApiHealthChecksTests : HealthChecksTestsBase
+
+public class RoatpV2ApiHealthCheckTests : HealthChecksTestsBase
 {
     [Test, MoqAutoData]
     public async Task CheckHealthAsync_ValidQueryResult_ReturnsHealthyStatus(
