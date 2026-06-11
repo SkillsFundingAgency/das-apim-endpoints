@@ -10,4 +10,5 @@ public class GetChangeHistoryItem
     public string LearnerName { get; set; }
     public DateTime AppliedDate { get; set; }
     public Guid Id { get; set; }
+    public DateTime Created { get; set; }
 }
