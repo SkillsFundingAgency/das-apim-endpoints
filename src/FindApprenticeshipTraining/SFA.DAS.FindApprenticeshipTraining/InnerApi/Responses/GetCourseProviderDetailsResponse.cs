@@ -13,7 +13,7 @@ public sealed class GetCourseProviderDetailsResponse
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }

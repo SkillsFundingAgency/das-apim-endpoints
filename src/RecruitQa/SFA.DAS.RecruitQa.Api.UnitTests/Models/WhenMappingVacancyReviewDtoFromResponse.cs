@@ -6,7 +6,7 @@ namespace SFA.DAS.RecruitQa.Api.UnitTests.Models;
 
 public class WhenMappingVacancyReviewDtoFromResponse
 {
-    [Test, AutoData]
+    [Test, RecursiveMoqAutoData]
     public void Then_All_Fields_Are_Mapped_From_GetVacancyReviewResponse(GetVacancyReviewResponse source, long reference)
     {
         // Arrange 
@@ -33,7 +33,7 @@ public class WhenMappingVacancyReviewDtoFromResponse
             actual.ManualQaComment.Should().Be(source.ManualQaComment);
             actual.ManualQaFieldIndicators.Should().BeEquivalentTo(source.ManualQaFieldIndicators);
             actual.AutomatedQaOutcome.Should().Be(source.AutomatedQaOutcome);
-            actual.AutomatedQaOutcomeIndicators.Should().Be(source.AutomatedQaOutcomeIndicators);
+            actual.AutomatedQaOutcomeIndicators.Should().BeEquivalentTo(source.AutomatedQaOutcomeIndicators);
             actual.DismissedAutomatedQaOutcomeIndicators.Should().BeEquivalentTo(source.DismissedAutomatedQaOutcomeIndicators);
             actual.UpdatedFieldIdentifiers.Should().BeEquivalentTo(source.UpdatedFieldIdentifiers);
             actual.VacancySnapshot.Should().Be(source.VacancySnapshot);
