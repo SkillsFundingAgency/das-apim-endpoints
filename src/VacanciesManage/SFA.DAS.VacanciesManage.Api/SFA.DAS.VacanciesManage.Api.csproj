@@ -24,10 +24,6 @@
     <PackageReference Include="SFA.DAS.Configuration.AzureTableStorage" Version="17.1.165" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Azure.Monitor.OpenTelemetry.AspNetCore" Version="1.5.0" />
-    <PackageReference Include="OpenTelemetry.Api" Version="1.16.0" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Update="appsettings.json">
