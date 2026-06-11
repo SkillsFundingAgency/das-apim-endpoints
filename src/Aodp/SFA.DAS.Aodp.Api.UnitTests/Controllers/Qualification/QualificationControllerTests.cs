@@ -10,8 +10,11 @@ using SFA.DAS.Aodp.Application.Commands.Application.Review;
 using SFA.DAS.Aodp.Application.Commands.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Qualifications;
 using SFA.DAS.Aodp.Application.Queries.Qualifications;
+using SFA.DAS.Aodp.Application.UnitTests.Queries.Qualifications;
+using SFA.DAS.Aodp.Models;
 using SFA.DAS.AODP.Api.Controllers.Qualification;
 using SFA.DAS.AODP.Application.Queries.Qualifications;
+using SFA.DAS.AODP.Shared.UnitTests.Helpers;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
 {
@@ -49,7 +52,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "",processStatusFilter: null);
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "",processStatusFilter: new(), ageGroups:new());
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -72,7 +75,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: new(), ageGroups:new());
 
             // Assert
             Assert.That(result, Is.InstanceOf<OkObjectResult>());
@@ -96,7 +99,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(status: "new", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: new(), ageGroups:new());
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -115,7 +118,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
                          .ReturnsAsync(queryResponse);
 
             // Act
-            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(status: "changed", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: new(), ageGroups:new());
 
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
@@ -129,7 +132,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
 
             // Act
-            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: null);
+            var result = await controller.GetQualifications(status: "", skip: 0, take: 10, name: "", organisation: "", qan: "", processStatusFilter: new(), ageGroups:new());
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -143,7 +146,7 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
         {
             // Act
             var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
-            var result = await controller.GetQualifications("", 0, 0, "", "", "", null);
+            var result = await controller.GetQualifications("", 0, 0, "", "", "", null, null);
 
             // Assert
             Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
@@ -542,7 +545,127 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             // Assert
             Assert.That(result, Is.InstanceOf<StatusCodeResult>());
         }
+
+        [Test]
+        public async Task GetQualifications_Forwards_ProcessStatusFilter_To_Query()
+        {
+            // Arrange
+            var processStatuses = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+            GetNewQualificationsQuery? captured = null;
+
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetNewQualificationsQuery>(), It.IsAny<CancellationToken>()))
+                .Callback<object, CancellationToken>((q, _) => captured = (GetNewQualificationsQuery)q)
+                .ReturnsAsync(new BaseMediatrResponse<GetNewQualificationsQueryResponse>
+                {
+                    Success = true,
+                    Value = new GetNewQualificationsQueryResponse()
+                });
+
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            // Act
+            await controller.GetQualifications(
+                status: "new",
+                skip: 0,
+                take: 10,
+                name: "",
+                organisation: "",
+                qan: "",
+                processStatusFilter: processStatuses,
+                ageGroups: new List<AgeGroup>()
+            );
+
+            // Assert
+            Assert.That(captured, Is.Not.Null);
+            Assert.That(captured!.ProcessStatusFilter, Is.EqualTo(processStatuses));
+        }
+
+
+        [Test]
+        public async Task GetQualifications_Forwards_AgeGroups_To_Query()
+        {
+            // Arrange
+            var ageGroups = new List<AgeGroup> { AgeGroup.EighteenPlus, AgeGroup.NineteenPlus };
+            GetChangedQualificationsQuery? captured = null;
+
+            _mediatorMock
+                .Setup(m => m.Send(It.IsAny<GetChangedQualificationsQuery>(), It.IsAny<CancellationToken>()))
+                .Callback<object, CancellationToken>((q, _) => captured = (GetChangedQualificationsQuery)q)
+                .ReturnsAsync(new BaseMediatrResponse<GetChangedQualificationsQueryResponse>
+                {
+                    Success = true,
+                    Value = new GetChangedQualificationsQueryResponse()
+                });
+
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            // Act
+            await controller.GetQualifications(
+                status: "changed",
+                skip: 0,
+                take: 10,
+                name: "",
+                organisation: "",
+                qan: "",
+                processStatusFilter: new List<Guid>(),
+                ageGroups: ageGroups
+            );
+
+            // Assert
+            Assert.That(captured, Is.Not.Null);
+            Assert.That(captured!.AgeGroups, Is.EqualTo(ageGroups));
+        }
+
+
+        [Test]
+        public async Task GetQualifications_Returns_BadRequest_When_AgeGroup_Invalid()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            var invalidAge = (AgeGroup)999;
+
+            // Act
+            var result = await controller.GetQualifications(
+                status: "new",
+                skip: 0,
+                take: 10,
+                name: "",
+                organisation: "",
+                qan: "",
+                processStatusFilter: new List<Guid>(),
+                ageGroups: new List<AgeGroup> { invalidAge }
+            );
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        }
+
+
+        [Test]
+        public async Task GetQualifications_Returns_BadRequest_When_ProcessStatusFilter_Contains_EmptyGuid()
+        {
+            // Arrange
+            var controller = new QualificationsController(_mediatorMock.Object, _loggerMock.Object);
+
+            // Act
+            var result = await controller.GetQualifications(
+                status: "new",
+                skip: 0,
+                take: 10,
+                name: "",
+                organisation: "",
+                qan: "",
+                processStatusFilter: new List<Guid> { Guid.Empty },
+                ageGroups: new List<AgeGroup>()
+            );
+
+            // Assert
+            Assert.That(result, Is.InstanceOf<BadRequestObjectResult>());
+        }
     }
+  
     public class DateOnlySpecimenBuilder : ISpecimenBuilder
     {
         public object Create(object request, ISpecimenContext context)
@@ -555,4 +678,5 @@ namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification
             return new NoSpecimen();
         }
     }
+
 }

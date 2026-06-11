@@ -29,7 +29,7 @@ namespace SFA.DAS.Campaign.UnitTests.Application.Queries.LandingPages
             GetMenuQueryResult menuResult,
             MenuPageModel.MenuPageContent menuContent,
             CmsContent apiResponse,
-            HubPageModel response,
+            LandingPageModel response,
             GetBannerQueryResult bannerResult,
             BannerPageModel bannerContent,
             [Frozen] Mock<IContentService> contentService,

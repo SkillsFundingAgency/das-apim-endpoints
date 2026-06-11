@@ -19,6 +19,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using EmployerNameOption = SFA.DAS.Recruit.Contracts.ApiResponses.EmployerNameOption;
 using HttpRequestContentException = SFA.DAS.Apim.Shared.Infrastructure.HttpRequestContentException;
 using IRecruitApiClient = SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>;
@@ -26,6 +27,7 @@ using Operation = SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships.Oper
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using PutVacancyReviewRequest = SFA.DAS.Recruit.Contracts.ApiResponses.PutVacancyReviewRequest;
 using ReviewStatus = SFA.DAS.Recruit.Contracts.ApiResponses.ReviewStatus;
+using TrainingProvider = SFA.DAS.Recruit.Contracts.ApiResponses.TrainingProvider;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 
@@ -44,7 +46,7 @@ public class CreateVacancyCommandHandler(
     {
         var dateTimeNow = DateTime.UtcNow;
         var vacancy = request.PostVacancyRequest;
-        
+
         ValidateUkprn(vacancy);
 
         //additional check to validate the given Training Provider UKPRN is valid.
@@ -70,26 +72,43 @@ public class CreateVacancyCommandHandler(
         ApplyVacancyStatus(vacancy, requiresEmployerApproval, dateTimeNow);
 
         vacancy.Id = request.Id;
-
         var result = await CreateVacancy(vacancy, request.IsSandbox);
-
         HandleHttpResponseError(result);
 
+        var createdVacancy = result.Body;
         if (!request.IsSandbox && !requiresEmployerApproval)
         {
             // only create a vacancy review if the vacancy is not in sandbox or if it is in sandbox but does not require employer approval.
             // If the vacancy is in sandbox and requires employer approval, the review will be created when the vacancy is submitted for review by the provider user.
-            await CreateVacancyReview(vacancy, result.Body.VacancyReference.ToString(), dateTimeNow);
+            await CreateVacancyReview(
+                createdVacancy,
+                accountLegalEntity.AccountHashedId,
+                accountLegalEntity.AccountLegalEntityPublicHashedId,
+                createdVacancy.VacancyReference.ToString(),
+                dateTimeNow);
         }
         
-        return new CreateVacancyCommandResponse(result.Body.VacancyReference.ToString());
+        return new CreateVacancyCommandResponse(createdVacancy.VacancyReference.ToString());
     }
 
-    private async Task CreateVacancyReview(PostVacancyRequest vacancy, string vacancyReference, DateTime createdDate)
+    private async Task CreateVacancyReview(Vacancy vacancy, string employerAccountId, string accountLegalEntityPublicHashedId, string vacancyReference, DateTime createdDate)
     {
-        var slaDeadline =
-            await slaService.GetSlaDeadlineAsync(createdDate);
+        var snapshotOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true, Converters = { new JsonStringEnumConverter() } };
+        var vacancyUser = new VacancyUser
+        {
+            UserId = vacancy.SubmittedByUserId.ToString(),
+            Name = vacancy.Contact.Name,
+            Email = vacancy.Contact.Email,
+        };
+        
+        var vacancyNode = JsonSerializer.SerializeToNode(vacancy, snapshotOptions)!.AsObject();
+        vacancyNode[nameof(PostVacancyRequestData.EmployerAccountId)] = employerAccountId;
+        vacancyNode[nameof(PostVacancyRequestData.AccountLegalEntityPublicHashedId)] = accountLegalEntityPublicHashedId;
+        vacancyNode[nameof(PostVacancyRequestData.SubmittedByUser)] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
+        vacancyNode[nameof(PostVacancyRequestData.CreatedByUser)] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
+        vacancyNode[nameof(PostVacancyRequestData.LastUpdatedByUser)] = JsonSerializer.SerializeToNode(vacancyUser, snapshotOptions);
 
+        var slaDeadline = await slaService.GetSlaDeadlineAsync(createdDate);
         var reviewRequest = new PutVacancyreviewsByIdApiRequest
         {
             Id = Guid.NewGuid(),
@@ -99,16 +118,18 @@ public class CreateVacancyCommandHandler(
                 VacancyTitle = vacancy.Title,
                 CreatedDate = createdDate,
                 Status = ReviewStatus.New,
-                VacancySnapshot = JsonSerializer.Serialize(vacancy, options: new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true,
-                    Converters = { new JsonStringEnumConverter() }
-                }),
+                VacancySnapshot = vacancyNode.ToJsonString(snapshotOptions),
                 SubmittedByUserEmail = vacancy.Contact.Email,
                 SubmissionCount = 1,
                 SlaDeadLine = slaDeadline,
                 UpdatedFieldIdentifiers = [],
-                DismissedAutomatedQaOutcomeIndicators = []
+                DismissedAutomatedQaOutcomeIndicators = [],
+                Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
+                AccountId = vacancy.AccountId!.Value,
+                AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
+                OwnerType = vacancy.OwnerType,
+                SubmittedByUserId = vacancy.SubmittedByUserId.ToString(),
+                AutomatedQaOutcomeIndicators = []
             }
         };
 
@@ -149,6 +170,20 @@ public class CreateVacancyCommandHandler(
         {
             throw new HttpRequestContentException("UKPRN of a training provider must be registered to deliver apprenticeship training", HttpStatusCode.Forbidden);
         }
+
+        vacancy.TrainingProvider = new TrainingProvider
+        {
+            Name = provider.Name,
+            Ukprn = provider.Ukprn,
+            Address = provider.Address is not null ? new TrainingProviderAddress
+            {
+                AddressLine1 = provider.Address.AddressLine1,
+                AddressLine2 = provider.Address.AddressLine2,
+                AddressLine3 = provider.Address.AddressLine3,
+                AddressLine4 = provider.Address.AddressLine4,
+                Postcode = provider.Address.Postcode,
+            } : new TrainingProviderAddress()
+        };
     }
 
     private static void EnrichVacancy(PostVacancyRequest vacancy, CreateVacancyCommand request, AccountLegalEntityItem accountLegalEntity)
@@ -167,6 +202,11 @@ public class CreateVacancyCommandHandler(
         {
             vacancy.EmployerName = accountLegalEntity.Name;
         }
+        
+        vacancy.HasSubmittedAdditionalQuestions = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1) ||
+                                                  !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion2);
+        
+        vacancy.HasOptedToAddQualifications = vacancy.Qualifications is { Count: >0 };
     }
 
     private async Task<GetStandardsListItem?> GetCourse(string programmeId)
@@ -284,5 +324,14 @@ public class CreateVacancyCommandHandler(
                 });
 
         return response;
+    }
+
+    private class PostVacancyRequestData : Vacancy
+    {
+        public string EmployerAccountId { get; set; }
+        public string AccountLegalEntityPublicHashedId { get; set; }
+        public VacancyUser SubmittedByUser { get; set; }
+        public VacancyUser CreatedByUser { get; set; }
+        public VacancyUser LastUpdatedByUser { get; set; }
     }
 }

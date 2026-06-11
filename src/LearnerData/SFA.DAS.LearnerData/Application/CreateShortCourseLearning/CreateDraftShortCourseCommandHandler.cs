@@ -49,7 +49,7 @@ public class CreateDraftShortCourseCommandHandler(
         {
             var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(requestData.OnProgramme);
             var earningsResponse = await earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
-                new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, earningsPutBody));
+                new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, learningResponse.Body.EpisodeKey, earningsPutBody));
 
             await PublishPaymentsEventForReinstatement(command.Ukprn, learningResponse.Body, earningsResponse.Body);
             return new CreateDraftShortCourseResult { CorrelationId = correlationId };
