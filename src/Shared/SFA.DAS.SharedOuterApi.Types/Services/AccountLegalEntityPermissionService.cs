@@ -26,11 +26,11 @@ public class AccountLegalEntityPermissionService(
     }
 
     public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn,
-        long accountHashedId,
+        long accountId,
         List<Operation> operationTypes)
     {
         var permittedLegalEntities = await GetProviderPermissionsForEmployer(
-            ukprn, accountHashedId, operationTypes);
+            ukprn, accountId, operationTypes);
 
         return permittedLegalEntities is { Count: > 0 };
     }
@@ -85,13 +85,13 @@ public class AccountLegalEntityPermissionService(
     }
 
     public async Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn,
-        long accountHashedId,
+        long accountId,
         List<Operation> operationTypes)
     {
         var providerPermissions = await GetProviderAccountLegalEntities(ukprn, operationTypes);
 
         return providerPermissions
-            .Where(p => p.AccountId == accountHashedId)
+            .Where(p => p.AccountId == accountId)
             .ToList();
     }
 
