@@ -45,12 +45,6 @@ public class RolloverController : BaseController
         return await SendRequestAsync(createRolloverWorkflowRunCommand);
     }
 
-    [HttpPost("/api/rollover/p1checks")]
-    public async Task<IActionResult> UpdateRolloverWorkflowCandidatesAfterP1Checks(UpdateRolloverWorkflowCandidatesAfterP1ChecksCommand command)
-    {
-        return await SendRequestAsync(command);
-    }
-
     [HttpGet("/api/rollover/{rolloverWorkflowRunId}/rollovercandidatesforexport")]
     [ProducesResponseType(typeof(GetRolloverCandidatesForExportQueryResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
