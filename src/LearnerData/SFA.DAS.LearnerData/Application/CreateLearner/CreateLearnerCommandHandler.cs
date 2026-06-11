@@ -1,17 +1,45 @@
-﻿using MediatR;
+using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Extensions;
+using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
+using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Apim.Shared.Models;
 
 namespace SFA.DAS.LearnerData.Application.CreateLearner;
 
 public class CreateLearnerCommandHandler(
     ILogger<CreateLearnerCommandHandler> logger,
-    IMessageSession messageSession) : IRequestHandler<CreateLearnerCommand>
+    IMessageSession messageSession,
+    ILearningApiClient<LearningApiConfiguration> learningApiClient,
+    ICreateDraftLearningApiPostRequestBuilder createDraftLearningApiPostRequestBuilder,
+    IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+    IUpdateEarningsOnProgrammeRequestBuilder updateEarningsOnProgrammeRequestBuilder) : IRequestHandler<CreateLearnerCommand>
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
+        var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
+
+        var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
+
+        if (!learningResponse.StatusCode.IsSuccessStatusCode())
+        {
+            logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
+            throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
+        }
+
+        if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
+        {
+            logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
+            await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+        }
+
         logger.LogTrace("Publishing LearnerDataEvent");
         var evt = MapToEvent(command);
         await messageSession.Publish(evt);

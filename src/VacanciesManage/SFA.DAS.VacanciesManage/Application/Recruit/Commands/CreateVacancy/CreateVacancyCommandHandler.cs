@@ -128,7 +128,8 @@ public class CreateVacancyCommandHandler(
                 AccountId = vacancy.AccountId!.Value,
                 AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
                 OwnerType = vacancy.OwnerType,
-                SubmittedByUserId = vacancy.SubmittedByUserId.ToString()
+                SubmittedByUserId = vacancy.SubmittedByUserId.ToString(),
+                AutomatedQaOutcomeIndicators = []
             }
         };
 
