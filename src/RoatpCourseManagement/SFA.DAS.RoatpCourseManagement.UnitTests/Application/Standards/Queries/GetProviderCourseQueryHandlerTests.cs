@@ -54,7 +54,7 @@ namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries
                 result.IfateReferenceNumber.Should().Be(standard.IfateReferenceNumber);
                 result.CourseName.Should().Be(standard.Title);
                 result.Level.Should().Be(standard.Level);
-                result.ApprenticeshipType.Should().Be(standard.ApprenticeshipType);
+                result.LearningType.Should().Be(standard.LearningType);
                 result.RegulatorName.Should().Be(standard.ApprovalBody);
                 result.Sector.Should().Be(standard.Route);
                 result.StandardInfoUrl.Should().Be(course.StandardInfoUrl);

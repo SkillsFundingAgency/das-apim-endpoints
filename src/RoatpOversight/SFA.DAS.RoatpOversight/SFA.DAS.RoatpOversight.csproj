@@ -13,4 +13,10 @@
     <PackageReference Include="SFA.DAS.Api.Common" Version="17.1.165" />
   </ItemGroup>
 
+  <!--Transitive Packages-->
+  <ItemGroup>
+	  <PackageReference Include="OpenTelemetry.Api" Version="1.15.3" />
+	  <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.8" />
+  </ItemGroup>
+
 </Project>

@@ -77,6 +77,52 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.PageAttributes.Slug.Should().Be(source.Items.FirstOrDefault()?.Fields.Slug);
             actual.PageAttributes.HubType.Should().Be(source.Items.FirstOrDefault()?.Fields.HubType);
             actual.PageAttributes.Summary.Should().Be(source.Items.FirstOrDefault()?.Fields.Summary);
+            actual.PageAttributes.ArticleType.Should().Be(source.Items.FirstOrDefault()?.Fields.ArticleType);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Header_Image_Is_Added(CmsContent source, AssetFields fields, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            fields.File.Url = $"//{fields.File.Url}";
+
+            source.Includes.Asset = new List<Asset>()
+            {
+                new Asset
+                {
+                    Sys = new AssetSys
+                    {
+                        Id = source.Items[0].Fields.HeaderImage.Sys.Id
+                    },
+                    Fields = fields
+                }
+            };
+
+            //Act
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.HeaderImage.Should().NotBeNull();
+            actual.MainContent.HeaderImage.EmbeddedResource.Id.Should().Be(source.Items[0].Fields.HeaderImage.Sys.Id);
+            actual.MainContent.HeaderImage.EmbeddedResource.Title.Should().Be(fields.Title);
+            actual.MainContent.HeaderImage.EmbeddedResource.FileName.Should().Be(fields.File.FileName);
+            actual.MainContent.HeaderImage.EmbeddedResource.Url.Should().Be($"https:{fields.File.Url}");
+            actual.MainContent.HeaderImage.EmbeddedResource.ContentType.Should().Be(fields.File.ContentType);
+            actual.MainContent.HeaderImage.EmbeddedResource.Size.Should().Be(fields.File.Details.Size);
+            actual.MainContent.HeaderImage.EmbeddedResource.Description.Should().Be(fields.Description);
+        }
+
+        [Test, RecursiveMoqAutoData]
+        public void Then_If_No_Header_Image_Then_Null_Returned(CmsContent source, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items.FirstOrDefault().Fields.HeaderImage = null;
+
+            //Act
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.HeaderImage.Should().BeNull();
         }
 
         [Test, RecursiveMoqAutoData]
@@ -97,6 +143,25 @@ namespace SFA.DAS.Campaign.UnitTests.Models
             actual.ParentPage.Summary.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Summary);
         }
         
+        [Test, RecursiveMoqAutoData]
+        public void Then_The_Parent_Page_Is_Set_When_The_Article_Has_No_Content_Body(CmsContent source, string parentId, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
+        {
+            //Arrange
+            source.Items.FirstOrDefault().Fields.Content = null;
+            source.Items.FirstOrDefault().Fields.LandingPage.Sys.Id = parentId;
+            source.Includes.Entry.FirstOrDefault().Sys.Id = parentId;
+
+            //Act
+            var actual = new CmsPageModel().Build(source, menuContent, bannerContent);
+
+            //Assert
+            actual.MainContent.Items.Should().BeEmpty();
+            actual.ParentPage.Should().NotBeNull();
+            actual.ParentPage.Title.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Title);
+            actual.ParentPage.Slug.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.Slug);
+            actual.ParentPage.HubType.Should().Be(source.Includes.Entry.FirstOrDefault()?.Fields.HubType);
+        }
+
         [Test, RecursiveMoqAutoData]
         public void Then_If_No_Parent_Page_Is_Set_Then_Null_Returned_For_Parent_Page(CmsContent source, string parentId, MenuPageModel.MenuPageContent menuContent, BannerPageModel bannerContent)
         {
