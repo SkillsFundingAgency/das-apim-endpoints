@@ -351,7 +351,7 @@ public class RolloverControllerTests
         { 
             FundingExtensionCandidates = 
             [
-                new (){ RowNumber = 1, Qan="12345678", FundingStreamName="Stream1", RolloverStatus="ToExtend", ProposedFundingEndDate=DateTime.UtcNow.AddMonths(6), ExclusionReason = ""}
+                new (){ RowNumber = 1, Qan = "12345678", FundingStreamName = "Stream1", RollOverStatus = "ToExtend", ProposedFundingApprovalEndDate = DateTime.UtcNow.AddMonths(6), ExclusionReason = ""}
             ]
         };
 
@@ -363,7 +363,6 @@ public class RolloverControllerTests
                 TotalCandidates = 1,
                 FailedCandidateCount = 0,
                 IsValid = true,
-                Candidates = [new() { IsValid = true, Qan = "12345678", FundingStreamName = "Stream1", RolloverStatus = "ToExtend", ProposedFundingEndDate = DateTime.UtcNow.AddMonths(6), ExclusionReason = "" }]
             }
         };
 
@@ -387,12 +386,6 @@ public class RolloverControllerTests
         Assert.That(returned.TotalCandidates, Is.EqualTo(1));
         Assert.That(returned.FailedCandidateCount, Is.EqualTo(0));
         Assert.That(returned.IsValid, Is.True);
-
-        Assert.That(returned.Candidates, Has.Count.EqualTo(1));
-        Assert.That(returned.Candidates[0].IsValid, Is.True);
-        Assert.That(returned.Candidates[0].Qan, Is.EqualTo("12345678"));
-        Assert.That(returned.Candidates[0].FundingStreamName, Is.EqualTo("Stream1"));
-        Assert.That(returned.Candidates[0].RolloverStatus, Is.EqualTo("ToExtend"));
     }
 
     [Test]
@@ -408,8 +401,8 @@ public class RolloverControllerTests
                 RowNumber = 1,
                 Qan = "12345678",
                 FundingStreamName = "Stream1",
-                RolloverStatus = "ToExtend",
-                ProposedFundingEndDate = DateTime.UtcNow.AddMonths(6),
+                RollOverStatus = "ToExtend",
+                ProposedFundingApprovalEndDate = DateTime.UtcNow.AddMonths(6),
                 ExclusionReason = ""
             }
             ]
