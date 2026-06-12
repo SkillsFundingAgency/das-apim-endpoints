@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
+using GetUserActionByCodeQueryResponse=SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeQueryResult;
 
 namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
 {
@@ -27,7 +27,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
             public string Action { get; set; }
         }
 
-        public static implicit operator GetUserActionByCodeQueryResult(UserActionDetail response)
+        public static implicit operator GetUserActionByCodeQueryResult(GetUserActionByCodeQueryResponse response)
         {
             if (response == null) return null;
             return new GetUserActionByCodeQueryResult
