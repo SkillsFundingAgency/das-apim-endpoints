@@ -39,7 +39,7 @@ public class RemoveShortCourseCommandHandler(
             throw new Exception($"Failed to delete short course with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearnerKey, learningResponse.Body.RemovedEpisodeKey);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(learningResponse.Body.LearningKey, learningResponse.Body.RemovedEpisodeKey);
 
         var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 

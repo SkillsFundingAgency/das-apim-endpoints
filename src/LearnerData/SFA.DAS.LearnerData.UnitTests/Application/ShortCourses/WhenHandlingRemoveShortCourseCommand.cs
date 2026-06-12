@@ -59,13 +59,13 @@ public class WhenHandlingRemoveShortCourseCommand
             .ReturnsAsync(new ApiResponse<DeleteShortCourseResponse>(learningResponse, HttpStatusCode.OK, ""));
 
         _earningsApiClient.Setup(x => x.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(
-                It.Is<DeleteShortCourseEarningsRequest>(r => r.LearnerKey == command.LearnerKey && r.EpisodeKey == learningResponse.RemovedEpisodeKey), true))
+                It.Is<DeleteShortCourseEarningsRequest>(r => r.LearningKey == learningResponse.LearningKey && r.EpisodeKey == learningResponse.RemovedEpisodeKey), true))
             .ReturnsAsync(new ApiResponse<DeleteShortCourseEarningsResponse>(_fixture.Create<DeleteShortCourseEarningsResponse>(), HttpStatusCode.NoContent, ""));
 
         await _sut.Handle(command, CancellationToken.None);
 
         _earningsApiClient.Verify(x => x.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(
-            It.Is<DeleteShortCourseEarningsRequest>(r => r.LearnerKey == command.LearnerKey && r.EpisodeKey == learningResponse.RemovedEpisodeKey), true), Times.Once);
+            It.Is<DeleteShortCourseEarningsRequest>(r => r.LearningKey == learningResponse.LearningKey && r.EpisodeKey == learningResponse.RemovedEpisodeKey), true), Times.Once);
     }
 
     [Test]
