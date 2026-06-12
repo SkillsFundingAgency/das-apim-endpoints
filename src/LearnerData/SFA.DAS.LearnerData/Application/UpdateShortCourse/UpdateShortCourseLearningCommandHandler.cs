@@ -54,12 +54,12 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            _logger.LogError("Failed to update shortcourse learning with key {LearningKey}. Status code: {StatusCode}",
+            _logger.LogError("Failed to update shortcourse learner with key {LearnerKey}. Status code: {StatusCode}",
                 command.LearnerKey, learningResponse.StatusCode);
-            throw new Exception($"Failed to update shortcourse learning with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
+            throw new Exception($"Failed to update shortcourse learner with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        _logger.LogInformation("Shortcourse Learning with key {LearningKey} updated successfully. Changes: {@Changes}",
+        _logger.LogInformation("Shortcourse learner with key {LearnerKey} updated successfully. Changes: {@Changes}",
             command.LearnerKey, string.Join(", ", learningResponse.Body.Changes));
 
         ShortCourseEarningsResponse earningsResponse;
@@ -69,8 +69,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x => x.StartDate);
             if (currentOnProgramme == null)
             {
-                _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearnerKey);
-                throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearnerKey}");
+                _logger.LogWarning("No OnProgramme data found for LearnerKey: {LearnerKey}", command.LearnerKey);
+                throw new InvalidOperationException($"No OnProgramme data found for LearnerKey: {command.LearnerKey}");
             }
             var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(currentOnProgramme);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey, earningBody);
@@ -79,7 +79,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         }
         else
         {
-            _logger.LogInformation("No changes requiring earnings update for shortcourse learning {LearningKey}", command.LearnerKey);
+            _logger.LogInformation("No changes requiring earnings update for shortcourse learner {LearnerKey}", command.LearnerKey);
             earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey));
         }
 
@@ -90,15 +90,15 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     {
         if (command.Request.Delivery.OnProgramme.Count > 1)
         {
-            _logger.LogWarning("Multiple OnProgramme elements supplied for LearningKey: {LearningKey}. Element with earliest StartDate will be processed; subsequent will be ignored", command.LearnerKey);
+            _logger.LogWarning("Multiple OnProgramme elements supplied for LearnerKey: {LearnerKey}. Element with earliest StartDate will be processed; subsequent will be ignored", command.LearnerKey);
         }
 
         var currentOnProgramme = command.Request.Delivery.OnProgramme.MinBy(x=>x.StartDate);
 
         if (currentOnProgramme == null)
         {
-            _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearnerKey);
-            throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearnerKey}");
+            _logger.LogWarning("No OnProgramme data found for LearnerKey: {LearnerKey}", command.LearnerKey);
+            throw new InvalidOperationException($"No OnProgramme data found for LearnerKey: {command.LearnerKey}");
         }
 
         var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>

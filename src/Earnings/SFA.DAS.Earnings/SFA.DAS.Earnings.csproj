@@ -8,6 +8,8 @@
 
   <ItemGroup>
     <PackageReference Include="ESFA.DC.ILR.2425.FundingService.FM36.FundingOutput.Model" Version="0.1.17" />
+    <PackageReference Include="MediatR" Version="12.5.0" />
+    <PackageReference Include="SFA.DAS.Apim.Shared" Version="17.1.195" />
   </ItemGroup>
 
   <ItemGroup>
