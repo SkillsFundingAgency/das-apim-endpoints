@@ -11,7 +11,7 @@ using SFA.DAS.Admin.Application.Queries.GetUserActionByCode;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
 using SFA.DAS.Apim.Shared.AppStart;
-using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
+using SFA.DAS.Admin.Api.Infrastructure.HealthCheck;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -47,7 +47,6 @@ namespace SFA.DAS.Admin.Api
                 services.AddAuthentication(azureAdConfiguration, policies);
 
                 services.AddHealthChecks()
-                    .AddCheck<AssessorsApiHealthCheck>(AssessorsApiHealthCheck.HealthCheckResultDescription)
                     .AddCheck<DigitalCertificatesApiHealthCheck>(DigitalCertificatesApiHealthCheck.HealthCheckResultDescription);
             }
 

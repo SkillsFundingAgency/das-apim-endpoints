@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using SFA.DAS.Admin.InnerApi.Requests;
-using SFA.DAS.Admin.InnerApi.Responses;
+using SFA.DAS.DigitalCertificates.Contracts.ApiRequests;
+using SFA.DAS.DigitalCertificates.Contracts.ApiResponses;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +20,7 @@ namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
 
         public async Task<GetUserActionByCodeQueryResult> Handle(GetUserActionByCodeQuery request, CancellationToken cancellationToken)
         {
-            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<GetUserActionByCodeResponse>(new GetUserActionByCodeRequest(request.Code));
+            var apiResponse = await _digitalCertificatesApiClient.GetWithResponseCode<UserActionDetail>(new GetUsersUseractionsByCodeApiRequest(request.Code));
 
             if (apiResponse?.StatusCode == HttpStatusCode.NotFound)
             {
