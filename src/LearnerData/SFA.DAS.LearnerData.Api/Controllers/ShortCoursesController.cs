@@ -90,15 +90,15 @@ public class ShortCoursesController(
 
     }
 
-    [HttpDelete("/providers/{ukprn}/shortCourses/{learningKey}")]
-    public async Task<IActionResult> RemoveShortCourse([FromRoute] long ukprn, [FromRoute] Guid learningKey)
+    [HttpDelete("/providers/{ukprn}/shortCourses/{learnerKey}")]
+    public async Task<IActionResult> RemoveShortCourse([FromRoute] long ukprn, [FromRoute] Guid learnerKey)
     {
         try
         {
             await mediator.Send(new RemoveShortCourseCommand
             {
                 Ukprn = ukprn,
-                LearningKey = learningKey
+                LearnerKey = learnerKey
             });
 
             return Accepted();
@@ -110,14 +110,14 @@ public class ShortCoursesController(
         }
     }
 
-    [HttpPut("/providers/{ukprn}/shortCourses/{learningKey}")]
-    public async Task<IActionResult> UpdateShortCourseLearning(Guid learningKey, ShortCourseRequest request, long ukprn)
+    [HttpPut("/providers/{ukprn}/shortCourses/{learnerKey}")]
+    public async Task<IActionResult> UpdateShortCourseLearning(Guid learnerKey, ShortCourseRequest request, long ukprn)
     {
         try
         {
             await mediator.Send(new UpdateShortCourseLearningCommand
             {
-                LearningKey = learningKey,
+                LearnerKey = learnerKey,
                 Ukprn = ukprn,
                 Request = request
             });
