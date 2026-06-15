@@ -28,6 +28,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.5" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.104" />
     <PackageReference Include="StrawberryShake.Blazor" Version="16.0.0-p.11.47" />
   </ItemGroup>
   <ItemGroup>

@@ -5,14 +5,12 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Primitives;
 using SFA.DAS.RecruitJobs.Api.Controllers;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.DelayedNotifications;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
 
 namespace SFA.DAS.RecruitJobs.Api.UnitTests.Controllers.DelayedNotificationControllerTests;
 
@@ -26,10 +24,10 @@ public class WhenDeletingManyNotifications
     {
         // arrange
         var response = new ApiResponse<NullResponse>(null!, HttpStatusCode.NoContent, null); 
-        DeleteNotificationsByIdsRequest? capturedRequest = null;
+        DeleteNotificationsApiRequest? capturedRequest = null;
         recruitApiClient
-            .Setup(x => x.DeleteWithResponseCode<NullResponse>(It.IsAny<DeleteNotificationsByIdsRequest>(), false))
-            .Callback<IDeleteApiRequest, bool>((x, _) => capturedRequest = x as DeleteNotificationsByIdsRequest)
+            .Setup(x => x.DeleteWithResponseCode<NullResponse>(It.IsAny<DeleteNotificationsApiRequest>(), false))
+            .Callback<IDeleteApiRequest, bool>((x, _) => capturedRequest = x as DeleteNotificationsApiRequest)
             .ReturnsAsync(response);
         
         var expectedUrl = QueryHelpers.AddQueryString("api/notifications", [
