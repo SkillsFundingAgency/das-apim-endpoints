@@ -1,21 +1,21 @@
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.RecruitJobs.Domain;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ClosureReason = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ClosureReason;
-using OwnerType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.OwnerType;
-using TransferInfo = SFA.DAS.RecruitJobs.Domain.TransferInfo;
-using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
-using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
+using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
+using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
+using TransferInfo = SFA.DAS.Recruit.Contracts.ApiResponses.TransferInfo;
+using VacancyReview = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyReview;
 
 namespace SFA.DAS.RecruitJobs.Handlers;
 
@@ -91,7 +91,11 @@ public class TransferProviderVacancyToLegalEntityHandler(
         patchDocument.Replace(x => x.SubmittedByUserId, null);
         patchDocument.Replace(x => x.ReviewRequestedByUserId, null);
 
-        var patchRequest = new PatchVacancyRequest(vacancyId, patchDocument);
+        var patchRequest = new PatchVacanciesByVacancyIdApiRequest
+        {
+            VacancyId = vacancyId,
+            Data = patchDocument
+        };
         var patchResponse = await recruitApiClient.PatchWithResponseCode(patchRequest);
         patchResponse.EnsureSuccessStatusCode();
         
@@ -104,12 +108,15 @@ public class TransferProviderVacancyToLegalEntityHandler(
                     var vacancyReviewPatch = new JsonPatchDocument<VacancyReview>();
                     vacancyReviewPatch.Replace(x => x.ManualOutcome,
                         transferReason == TransferReason.BlockedByQa
-                            ? nameof(ManualQaOutcome.Blocked)
-                            : nameof(ManualQaOutcome.Transferred));
+                            ? nameof(Domain.ManualQaOutcome.Blocked)
+                            : nameof(Domain.ManualQaOutcome.Transferred));
                     vacancyReviewPatch.Replace(x => x.Status, ReviewStatus.Closed);
                     vacancyReviewPatch.Replace(x => x.ClosedDate, now);
-
-                    var vacancyReviewPatchResponse = await recruitApiClient.PatchWithResponseCode(new PatchVacancyReviewRequest(vacancyReview.Id, vacancyReviewPatch));
+                    var vacancyReviewPatchResponse = await recruitApiClient.PatchWithResponseCode(new PatchVacancyreviewsByIdApiRequest
+                    {
+                        Id = vacancyReview.Id,
+                        Data = vacancyReviewPatch
+                    });
                     vacancyReviewPatchResponse.EnsureSuccessStatusCode();
                     break;
                 }
