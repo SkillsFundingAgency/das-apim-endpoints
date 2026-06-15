@@ -32,7 +32,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<IMessageSession> _messageSession;
 
     private UpdateShortCourseLearningCommand _command;
-    private Guid _learningKey;
+    private Guid _learnerKey;
     private long _ukprn;
     private DateTime _completionDate;
 
@@ -58,13 +58,13 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _messageSession.Object,
             new PaymentsConfiguration { PaymentsEndpoint = "test-payments-endpoint" });
 
-        _learningKey = Guid.NewGuid();
+        _learnerKey = Guid.NewGuid();
         _ukprn = 12345678;
         _completionDate = new DateTime(2025, 12, 1);
 
         _command = new UpdateShortCourseLearningCommand
         {
-            LearningKey = _learningKey,
+            LearnerKey = _learnerKey,
             Ukprn = _ukprn,
             Request = new ShortCourseRequest
             {
@@ -102,7 +102,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Arrange
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 
@@ -138,7 +138,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Arrange
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = []
         };
 
@@ -168,7 +168,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
 
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 
@@ -203,7 +203,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
 
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 
@@ -232,7 +232,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Arrange
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 

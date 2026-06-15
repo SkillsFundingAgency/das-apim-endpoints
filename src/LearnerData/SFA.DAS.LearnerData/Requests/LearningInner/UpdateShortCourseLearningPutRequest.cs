@@ -12,9 +12,9 @@ public class UpdateShortCourseLearningPutRequest : IPutApiRequest<UpdateShortCou
     public string PutUrl { get; }
     public UpdateShortCourseLearningRequestBody Data { get; set; }
 
-    public UpdateShortCourseLearningPutRequest(Guid learningKey, UpdateShortCourseLearningRequestBody data)
+    public UpdateShortCourseLearningPutRequest(Guid learnerKey, UpdateShortCourseLearningRequestBody data)
     {
-        PutUrl = $"shortCourses/{learningKey}";
+        PutUrl = $"shortCourses/{learnerKey}";
         Data = data;
     }
 }
