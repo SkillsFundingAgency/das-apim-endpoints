@@ -35,9 +35,7 @@ public class OnProgramme
 {
     public string CourseCode { get; set; } = null!;
 
-    public long EmployerAccountId { get; set; }
-
-    public long? FundingEmployerAccountId { get; set; }
+    public long EmployerId { get; set; }
 
     public long Ukprn { get; set; }
 

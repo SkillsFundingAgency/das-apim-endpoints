@@ -53,7 +53,6 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                 OnProgramme = new SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme
                 {
                     CourseCode = firstOnProg.CourseCode,
-                    EmployerId = firstOnProg.EmployerAccountId,
                     Ukprn = ukprn,
                     StartDate = firstOnProg.StartDate,
                     ExpectedEndDate = firstOnProg.ExpectedEndDate,

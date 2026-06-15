@@ -44,8 +44,6 @@ public class CreateUnapprovedShortCourseLearningRequestBuilder : ICreateUnapprov
                 StartDate = firstOnProg.StartDate,
                 CompletionDate = firstOnProg.CompletionDate,
                 CourseCode = firstOnProg.CourseCode,
-                EmployerAccountId = firstOnProg.EmployerAccountId,
-                FundingEmployerAccountId = firstOnProg.FundingEmployerAccountId,
                 ExpectedEndDate = firstOnProg.ExpectedEndDate,
                 Milestones = milestones,
                 TotalPrice = learningRequest.OnProgramme.Price,
