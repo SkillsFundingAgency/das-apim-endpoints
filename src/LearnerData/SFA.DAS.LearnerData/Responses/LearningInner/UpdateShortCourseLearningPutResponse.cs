@@ -8,6 +8,9 @@ public class UpdateShortCourseLearningPutResponse : IShortCourseLearningPaymentE
     public string[] Changes { get; set; } = [];
     public LearningInnerShortCourseLearner Learner { get; set; } = null!;
     public LearningInnerShortCourseEpisode[] Episodes { get; set; } = [];
+    public bool IsNewLearning { get; set; }
+
+    public bool IsIgnored { get; set; }
 }
 
 public static class UpdateShortCourseLearningPutResponseExtensions

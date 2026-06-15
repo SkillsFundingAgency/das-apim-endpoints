@@ -29,6 +29,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
+    private Mock<IShortCourseLookupService> _shortCourseLookupService;
     private Mock<IMessageSession> _messageSession;
 
     private UpdateShortCourseLearningCommand _command;
@@ -47,6 +48,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
             .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
             .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
+        _shortCourseLookupService = new Mock<IShortCourseLookupService>();
         _messageSession = new Mock<IMessageSession>();
 
         _handler = new UpdateShortCourseLearningCommandHandler(
@@ -55,6 +57,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _earningsApiClient.Object,
             _calculateGrowthAndSkillsPaymentsEventBuilder.Object,
             _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
+            _shortCourseLookupService.Object,
             _messageSession.Object,
             new PaymentsConfiguration { PaymentsEndpoint = "test-payments-endpoint" });
 
