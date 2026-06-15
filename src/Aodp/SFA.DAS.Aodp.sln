@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.5.11716.220 stable
+VisualStudioVersion = 18.5.11716.220
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Aodp.Api", "SFA.DAS.Aodp.Api\SFA.DAS.Aodp.Api.csproj", "{710D3AD3-376B-4368-953D-66C2194BDBA6}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Types.UnitTests\SFA.DAS.SharedOuterApi.Types.UnitTests.csproj", "{0C2923A8-A4BF-0481-0A98-3EE75752A64C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.Aodp.Shared.UnitTests", "SFA.DAS.Aodp.Shared.UnitTests\SFA.DAS.Aodp.Shared.UnitTests.csproj", "{977F9BAE-7B0A-4996-B58E-C81A91923580}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{977F9BAE-7B0A-4996-B58E-C81A91923580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{977F9BAE-7B0A-4996-B58E-C81A91923580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{977F9BAE-7B0A-4996-B58E-C81A91923580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{977F9BAE-7B0A-4996-B58E-C81A91923580}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{FBB745A1-E2D5-42E4-AAD0-D8535635DF45} = {870CFEDF-ADE9-41EE-A170-733C85AA3CD3}
 		{4B382186-57D9-5A6C-1D74-9EAB7074B281} = {768B7054-6F9C-48B8-A565-9D4F729CD39A}
 		{0C2923A8-A4BF-0481-0A98-3EE75752A64C} = {768B7054-6F9C-48B8-A565-9D4F729CD39A}
+		{977F9BAE-7B0A-4996-B58E-C81A91923580} = {870CFEDF-ADE9-41EE-A170-733C85AA3CD3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {771EE7DC-6E50-485B-B3F3-DD5CFA9BB6B0}
