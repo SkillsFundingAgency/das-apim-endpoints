@@ -55,36 +55,36 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     {
         _logger.LogInformation("Handling UpdateShortCourseLearningCommand for Ukprn: {Ukprn}", command.Ukprn);
 
-        foreach (var onProg in command.Request.Delivery.OnProgramme)
+        var learningRequest = BuildLearningRequest(command);
+
+        var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(learningRequest);
+
+        if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            var learningRequest = BuildLearningRequest(command, onProg);
+            _logger.LogError("Failed to update short course learner with key {LearnerKey}. Status: {StatusCode}",
+                command.LearnerKey, learningResponse.StatusCode);
+            throw new Exception($"Failed to update short course learner {command.LearnerKey}. Status: {learningResponse.StatusCode}.");
+        }
 
-            var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningPutResponse>(learningRequest);
-
-            if (!learningResponse.StatusCode.IsSuccessStatusCode())
-            {
-                _logger.LogError("Failed to update short course learner with key {LearnerKey}, course {CourseCode}. Status: {StatusCode}",
-                    command.LearnerKey, onProg.CourseCode, learningResponse.StatusCode);
-                throw new Exception($"Failed to update short course learner {command.LearnerKey} / {onProg.CourseCode}. Status: {learningResponse.StatusCode}.");
-            }
-
-            if (learningResponse.Body.IsIgnored)
+        foreach (var (onProg, result) in command.Request.Delivery.OnProgramme.Zip(learningResponse.Body))
+        {
+            if (result.IsIgnored)
             {
                 _logger.LogInformation("Ignoring OnProgramme item for LearnerKey {LearnerKey} / CourseCode {CourseCode} — no matching Learning and ShortCourseProgression is disabled",
-                    command.LearnerKey, onProg.CourseCode);
+                    command.LearnerKey, result.CourseCode);
                 continue;
             }
 
-            if (learningResponse.Body.IsNewLearning)
+            if (result.IsNewLearning)
             {
-                await HandleNewLearning(command, onProg, learningResponse.Body);
+                await HandleNewLearning(command, onProg, result);
             }
             else
             {
                 _logger.LogInformation("Short course learner {LearnerKey} / {CourseCode} updated. Changes: {Changes}",
-                    command.LearnerKey, onProg.CourseCode, string.Join(", ", learningResponse.Body.Changes));
+                    command.LearnerKey, result.CourseCode, string.Join(", ", result.Changes));
 
-                await HandleExistingLearning(command, onProg, learningResponse.Body);
+                await HandleExistingLearning(command, onProg, result);
             }
         }
     }
@@ -125,29 +125,31 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         await PublishPaymentsEvent(command.Ukprn, learningResponse, earningsResponse);
     }
 
-    private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg)
+    private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command)
     {
-        var milestones = onProg.Milestones.Select(m => Enum.Parse<Milestone>(m.ToString())).ToList();
-
-        if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
-            milestones.Add(Milestone.LearningComplete);
-
         var body = new UpdateShortCourseLearningRequestBody
         {
             LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
             {
                 LearnerRef = command.Request.Learner.LearnerRef
             },
-            OnProgramme = new ShortCourseOnProgrammeUpdateDetails
+            OnProgramme = command.Request.Delivery.OnProgramme.Select(onProg =>
             {
-                Ukprn = command.Ukprn,
-                CourseCode = onProg.CourseCode,
-                StartDate = onProg.StartDate,
-                ExpectedEndDate = onProg.ExpectedEndDate,
-                CompletionDate = onProg.CompletionDate,
-                WithdrawalDate = onProg.WithdrawalDate,
-                Milestones = milestones
-            }
+                var milestones = onProg.Milestones.Select(m => Enum.Parse<Milestone>(m.ToString())).ToList();
+                if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
+                    milestones.Add(Milestone.LearningComplete);
+
+                return new ShortCourseOnProgrammeUpdateDetails
+                {
+                    Ukprn = command.Ukprn,
+                    CourseCode = onProg.CourseCode,
+                    StartDate = onProg.StartDate,
+                    ExpectedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate,
+                    Milestones = milestones
+                };
+            }).ToList()
         };
 
         return new UpdateShortCourseLearningPutRequest(command.LearnerKey, body);
