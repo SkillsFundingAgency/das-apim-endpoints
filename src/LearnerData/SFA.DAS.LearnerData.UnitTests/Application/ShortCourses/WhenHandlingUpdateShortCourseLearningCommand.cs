@@ -343,7 +343,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _earningsApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
                 It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
-                    r.LearningKey == learningKey && r.EpisodeKey == episodeKey)),
+                    r.PutUrl == $"/{learningKey}/shortCourses/{episodeKey}/on-programme")),
             Times.Once);
     }
 
@@ -376,7 +376,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _earningsApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
                 It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
-                    r.LearningKey == learningKey && r.EpisodeKey == episodeKey)),
+                    r.PutUrl == $"/{learningKey}/shortCourses/{episodeKey}/on-programme")),
             Times.Once);
     }
 }
