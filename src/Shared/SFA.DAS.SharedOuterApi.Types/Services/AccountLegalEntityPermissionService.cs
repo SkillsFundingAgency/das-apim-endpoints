@@ -9,7 +9,8 @@ using SFA.DAS.SharedOuterApi.Types.Models.ProviderRelationships;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
 
-public class AccountLegalEntityPermissionService(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient,
+public class AccountLegalEntityPermissionService(
+    IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration> providerRelationshipsApiClient,
     IAccountsApiClient<AccountsConfiguration> accountsApiClient) : IAccountLegalEntityPermissionService
 {
     public async Task<AccountLegalEntityItem> GetAccountLegalEntity(
@@ -25,11 +26,11 @@ public class AccountLegalEntityPermissionService(IProviderRelationshipsApiClient
     }
 
     public async Task<bool> HasProviderGotEmployersPermissionAsync(long ukprn,
-        long accountHashedId,
+        long accountId,
         List<Operation> operationTypes)
     {
         var permittedLegalEntities = await GetProviderPermissionsForEmployer(
-            ukprn, accountHashedId, operationTypes);
+            ukprn, accountId, operationTypes);
 
         return permittedLegalEntities is { Count: > 0 };
     }
@@ -83,18 +84,18 @@ public class AccountLegalEntityPermissionService(IProviderRelationshipsApiClient
         };
     }
 
-    private async Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn,
-        long accountHashedId,
+    public async Task<List<AccountLegalEntityItem>> GetProviderPermissionsForEmployer(long ukprn,
+        long accountId,
         List<Operation> operationTypes)
     {
         var providerPermissions = await GetProviderAccountLegalEntities(ukprn, operationTypes);
 
         return providerPermissions
-            .Where(p => p.AccountId == accountHashedId)
+            .Where(p => p.AccountId == accountId)
             .ToList();
     }
 
-    private async Task<List<AccountLegalEntityItem>> GetProviderAccountLegalEntities(long ukprn, List<Operation> operationTypes)
+    public async Task<List<AccountLegalEntityItem>> GetProviderAccountLegalEntities(long ukprn, List<Operation> operationTypes)
     {
         var response = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
             new GetProviderAccountLegalEntitiesRequest(Convert.ToInt32(ukprn),
@@ -105,7 +106,51 @@ public class AccountLegalEntityPermissionService(IProviderRelationshipsApiClient
             AccountLegalEntityPublicHashedId = e.AccountLegalEntityPublicHashedId,
             AccountHashedId = e.AccountHashedId,
             AccountId = e.AccountId,
-            AccountLegalEntityId = e.AccountLegalEntityId
+            AccountLegalEntityId = e.AccountLegalEntityId,
+        }).ToList() ?? [];
+    }
+
+    public async Task<List<LegalEntityItem>> GetProviderPermissionsAccountLegalEntities(long ukprn, List<Operation> operationTypes)
+    {
+        var response = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+            new GetProviderAccountLegalEntitiesRequest(Convert.ToInt32(ukprn),
+                operationTypes));
+        return response?.AccountProviderLegalEntities?.Select(e => new LegalEntityItem
+        {
+            AccountLegalEntityName = e.AccountLegalEntityName,
+            AccountLegalEntityPublicHashedId = e.AccountLegalEntityPublicHashedId,
+            AccountHashedId = e.AccountHashedId,
+            AccountId = e.AccountId,
+            AccountLegalEntityId = e.AccountLegalEntityId,
+            AccountProviderId = e.AccountProviderId,
+            AccountPublicHashedId = e.AccountPublicHashedId,
+            AccountName = e.AccountName,
+        }).ToList() ?? [];
+    }
+
+    public async Task<List<LegalEntityItem>> GetProviderPermissionsForEmployerAccountLegalEntities(long ukprn, long accountId, List<Operation> operationTypes)
+    {
+        var providerPermissions = await GetProviderPermissionsAccountLegalEntities(ukprn, operationTypes);
+        return providerPermissions
+            .Where(p => p.AccountId == accountId)
+            .ToList();
+    }
+
+    public async Task<List<LegalEntityItem>> GetEmployerAccountLegalEntities(string accountHashedId, List<Operation> operationTypes)
+    {
+        var response = await providerRelationshipsApiClient.Get<GetProviderAccountLegalEntitiesResponse>(
+            new GetProviderAccountLegalEntitiesRequest(accountHashedId,
+                operationTypes));
+        return response?.AccountProviderLegalEntities?.Select(e => new LegalEntityItem
+        {
+            AccountLegalEntityName = e.AccountLegalEntityName,
+            AccountLegalEntityPublicHashedId = e.AccountLegalEntityPublicHashedId,
+            AccountHashedId = e.AccountHashedId,
+            AccountId = e.AccountId,
+            AccountLegalEntityId = e.AccountLegalEntityId,
+            AccountProviderId = e.AccountProviderId,
+            AccountPublicHashedId = e.AccountPublicHashedId,
+            AccountName = e.AccountName,
         }).ToList() ?? [];
     }
 }

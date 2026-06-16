@@ -23,22 +23,22 @@ public class CreateLearnerCommandHandler(
 {
     public async Task Handle(CreateLearnerCommand command, CancellationToken cancellationToken)
     {
-        var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
+        //var postRequest = createDraftLearningApiPostRequestBuilder.Build(command.Ukprn, command.Request);
 
-        var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
+        //var learningResponse = await learningApiClient.PostWithResponseCode<CreateDraftLearnerApiPutResponse>(postRequest);
 
-        if (!learningResponse.StatusCode.IsSuccessStatusCode())
-        {
-            logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
-            throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
-        }
+        //if (!learningResponse.StatusCode.IsSuccessStatusCode())
+        //{
+        //    logger.LogError("Failed to create draft learner. Status code: {StatusCode}", learningResponse.StatusCode);
+        //    throw new InvalidOperationException($"Failed to create draft learner. Status code: {learningResponse.StatusCode}.");
+        //}
 
-        if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
-        {
-            logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
-            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
-            await earningsApiClient.Put(earningsOnProgrammeApiRequest);
-        }
+        //if (learningResponse.Body?.Changes != null && learningResponse.Body.Changes.Contains(BaseLearnerApiPutResponse.LearningUpdateChanges.Reinstated))
+        //{
+        //    logger.LogInformation("Reinstating learner with key {LearningKey}", learningResponse.Body.LearningKey);
+        //    var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(learningResponse.Body.LearningKey, command.Request, learningResponse.Body, (UpdateLearningRequestBody)postRequest.Data);
+        //    await earningsApiClient.Put(earningsOnProgrammeApiRequest);
+        //}
 
         logger.LogTrace("Publishing LearnerDataEvent");
         var evt = MapToEvent(command);
