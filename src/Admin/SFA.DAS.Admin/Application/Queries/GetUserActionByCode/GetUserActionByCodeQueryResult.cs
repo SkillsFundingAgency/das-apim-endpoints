@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.Admin.InnerApi.Responses;
+using System.Linq;
+using GetUserActionByCodeQueryResponse=SFA.DAS.DigitalCertificates.Contracts.ApiResponses.GetUserActionByCodeQueryResult;
 
 namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
 {
@@ -26,29 +27,28 @@ namespace SFA.DAS.Admin.Application.Queries.GetUserActionByCode
             public string Action { get; set; }
         }
 
-        public static implicit operator GetUserActionByCodeQueryResult(GetUserActionByCodeResponse response)
+        public static implicit operator GetUserActionByCodeQueryResult(GetUserActionByCodeQueryResponse response)
         {
             if (response == null) return null;
-
             return new GetUserActionByCodeQueryResult
             {
                 Id = response.Id,
                 UserId = response.UserId,
-                ActionType = response.ActionType,
+                ActionType = response.ActionType.ToString(),
                 ActionTime = response.ActionTime,
-                ActionStatus = response.ActionStatus,
+                ActionStatus = response.ActionStatus.ToString(),
                 Uln = response.Uln,
                 FamilyName = response.FamilyName,
                 GivenNames = response.GivenNames,
                 CertificateId = response.CertificateId,
-                CertificateType = string.IsNullOrEmpty(response.CertificateType) ? null : response.CertificateType,
+                CertificateType = response.CertificateType.ToString(),
                 CourseName = response.CourseName,
-                AdminActions = response.AdminActions?.ConvertAll(a => new AdminActionDetail
+                AdminActions = response.AdminActions?.Select(a => new AdminActionDetail
                 {
                     Username = a.Username,
                     ActionTime = a.ActionTime,
-                    Action = a.Action
-                })
+                    Action = a.Action.ToString()
+                }).ToList()
             };
         }
     }

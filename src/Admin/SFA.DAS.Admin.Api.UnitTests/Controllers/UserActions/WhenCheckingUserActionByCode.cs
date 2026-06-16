@@ -70,7 +70,7 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.UserActions
         }
 
         [Test, MoqAutoData]
-        public async Task Then_NotFound_Returned_If_Command_Result_Does_Not_Exist(
+        public async Task Then_Ok_Returned_With_Null_If_Command_Result_Does_Not_Exist(
             string code,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] UsersController controller)
@@ -81,11 +81,12 @@ namespace SFA.DAS.Admin.Api.UnitTests.Controllers.UserActions
                 .ReturnsAsync((CheckUserActionByCodeResult)null);
 
             // Act
-            var actual = await controller.CheckUserActionByCode(code, new CheckUserActionByCodeCommand { Code = code }) as NotFoundResult;
+            var actual = await controller.CheckUserActionByCode(code, new CheckUserActionByCodeCommand { Code = code }) as ObjectResult;
 
             // Assert
             actual.Should().NotBeNull();
-            actual.StatusCode.Should().Be((int)HttpStatusCode.NotFound);
+            actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
+            actual.Value.Should().BeNull();
 
             mediator.Verify(m => m.Send(It.Is<CheckUserActionByCodeCommand>(q => q.Code == code), It.IsAny<CancellationToken>()), Times.Once);
         }

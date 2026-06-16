@@ -3,7 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using SFA.DAS.Admin.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.DigitalCertificates.Contracts.Client;
 
 namespace SFA.DAS.Admin.Api.AppStart
 {
@@ -14,11 +14,9 @@ namespace SFA.DAS.Admin.Api.AppStart
         {
             services.AddOptions();
 
-            services.Configure<AssessorsApiConfiguration>(configuration.GetSection(nameof(AssessorsApiConfiguration)));
             services.Configure<DigitalCertificatesApiConfiguration>(configuration.GetSection(nameof(DigitalCertificatesApiConfiguration)));
             services.Configure<AdminConfiguration>(configuration.GetSection(nameof(AdminConfiguration)));
 
-            services.AddSingleton(cfg => cfg.GetService<IOptions<AssessorsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<DigitalCertificatesApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<AdminConfiguration>>().Value);
         }
