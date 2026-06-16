@@ -101,36 +101,42 @@ public class UpdateShortCourseSteps
         var updatedEpisodeKey = Guid.NewGuid();
         _scenarioContext.Set(updatedEpisodeKey, UpdatedEpisodeKeyKey);
 
-        var response = new UpdateShortCourseLearningPutResponse
+        var response = new UpdateShortCourseLearningResponse
         {
-            UpdatedEpisodeKey = updatedEpisodeKey,
-            LearningKey = learningKey,
-            LearnerKey = learningKey,
-            Changes = changes.Select(x => x.ToString()).ToArray(),
-            Learner = new LearningInnerShortCourseLearner
-            {
-                Uln = shortCourseRequest.Learner.Uln.ToString(),
-                FirstName = shortCourseRequest.Learner.FirstName,
-                LastName = shortCourseRequest.Learner.LastName,
-                DateOfBirth = shortCourseRequest.Learner.Dob,
-            },
-            Episodes = [new LearningInnerShortCourseEpisode
-            {
-                Ukprn = ukprn,
-                EmployerAccountId = 12,
-                CourseCode = "ZSC00001",
-                CourseType = "ShortCourse",
-                LearningType = "ApprenticeshipUnit",
-                StartDate = onProgramme.StartDate,
-                AgeAtStart = 20,
-                PlannedEndDate = onProgramme.ExpectedEndDate,
-                WithdrawalDate = onProgramme.WithdrawalDate,
-                CompletionDate = onProgramme.CompletionDate,
-                IsApproved = true,
-                Price = 1000m,
-                LearnerRef = "LearnerRef",
-                EmployerType = EmployerType.Levy.ToString()
-            }]
+            Results =
+            [
+                new UpdateShortCourseLearningPutResponse
+                {
+                    UpdatedEpisodeKey = updatedEpisodeKey,
+                    LearningKey = learningKey,
+                    LearnerKey = learningKey,
+                    Changes = changes.Select(x => x.ToString()).ToArray(),
+                    Learner = new LearningInnerShortCourseLearner
+                    {
+                        Uln = shortCourseRequest.Learner.Uln.ToString(),
+                        FirstName = shortCourseRequest.Learner.FirstName,
+                        LastName = shortCourseRequest.Learner.LastName,
+                        DateOfBirth = shortCourseRequest.Learner.Dob,
+                    },
+                    Episodes = [new LearningInnerShortCourseEpisode
+                    {
+                        Ukprn = ukprn,
+                        EmployerAccountId = 12,
+                        CourseCode = "ZSC00001",
+                        CourseType = "ShortCourse",
+                        LearningType = "ApprenticeshipUnit",
+                        StartDate = onProgramme.StartDate,
+                        AgeAtStart = 20,
+                        PlannedEndDate = onProgramme.ExpectedEndDate,
+                        WithdrawalDate = onProgramme.WithdrawalDate,
+                        CompletionDate = onProgramme.CompletionDate,
+                        IsApproved = true,
+                        Price = 1000m,
+                        LearnerRef = "LearnerRef",
+                        EmployerType = EmployerType.Levy.ToString()
+                    }]
+                }
+            ]
         };
 
         _testContext.ApprenticeshipsApi.MockServer

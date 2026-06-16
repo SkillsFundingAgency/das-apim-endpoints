@@ -1,5 +1,10 @@
 ﻿namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
+public class UpdateShortCourseLearningResponse
+{
+    public List<UpdateShortCourseLearningPutResponse> Results { get; set; } = [];
+}
+
 public class UpdateShortCourseLearningPutResponse : IShortCourseLearningPaymentEventBuildContext
 {
     public Guid UpdatedEpisodeKey { get; set; }

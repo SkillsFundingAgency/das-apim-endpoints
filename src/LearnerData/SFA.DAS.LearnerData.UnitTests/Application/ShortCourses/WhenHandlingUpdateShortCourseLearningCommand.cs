@@ -109,13 +109,17 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var removedEpisodeKey = Guid.NewGuid();
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>(
-                [
-                    new UpdateShortCourseLearningPutResponse { LearningKey = _learnerKey, CourseCode = "123", Changes = [] },
-                    new UpdateShortCourseLearningPutResponse { IsRemoved = true, LearningKey = removedLearningKey, UpdatedEpisodeKey = removedEpisodeKey, CourseCode = "TEST02" }
-                ],
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(
+                new UpdateShortCourseLearningResponse
+                {
+                    Results =
+                    [
+                        new UpdateShortCourseLearningPutResponse { LearningKey = _learnerKey, CourseCode = "123", Changes = [] },
+                        new UpdateShortCourseLearningPutResponse { IsRemoved = true, LearningKey = removedLearningKey, UpdatedEpisodeKey = removedEpisodeKey, CourseCode = "TEST02" }
+                    ]
+                },
                 HttpStatusCode.OK, string.Empty));
 
         _earningsApiClient
@@ -148,9 +152,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
             .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
@@ -185,9 +189,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         // Act
         await _handler.Handle(_command, CancellationToken.None);
@@ -216,9 +220,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         _earningsApiClient
             .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
@@ -252,9 +256,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         _earningsApiClient
             .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
@@ -282,9 +286,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         var builtBody = new UpdateShortCourseOnProgrammeRequestBody
         {
@@ -325,9 +329,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         _earningsApiClient
             .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
@@ -358,9 +362,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
 
         _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         _earningsApiClient
             .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(

@@ -58,7 +58,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         var learningRequest = BuildLearningRequest(command);
 
-        var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(learningRequest);
+        var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(learningRequest);
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
@@ -67,7 +67,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             throw new Exception($"Failed to update short course learner {command.LearnerKey}. Status: {learningResponse.StatusCode}.");
         }
 
-        foreach (var (onProg, result) in command.Request.Delivery.OnProgramme.Zip(learningResponse.Body))
+        foreach (var (onProg, result) in command.Request.Delivery.OnProgramme.Zip(learningResponse.Body.Results))
         {
             if (result.IsIgnored)
             {
@@ -89,7 +89,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             }
         }
 
-        foreach (var removedResult in learningResponse.Body.Where(r => r.IsRemoved))
+        foreach (var removedResult in learningResponse.Body.Results.Where(r => r.IsRemoved))
         {
             await HandleRemovedLearning(command, removedResult);
         }
