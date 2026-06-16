@@ -23,6 +23,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.Configure<CommitmentsV2ApiConfiguration>(configuration.GetSection("CommitmentsV2InnerApi"));
             services.Configure<CoursesApiConfiguration>(configuration.GetSection("CoursesApi"));
             services.Configure<RoatpV2ApiConfiguration>(configuration.GetSection("RoatpV2ApiConfiguration"));
+            services.Configure<LearnerNotificationsApiConfiguration>(configuration.GetSection("LearnerNotificationsInnerApi"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeAccountsApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeProgressApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<ApprenticeCommitmentsApiConfiguration>>().Value);
@@ -30,6 +31,7 @@ namespace SFA.DAS.ApprenticeApp.Api.AppStart
             services.AddSingleton(cfg => cfg.GetService<IOptions<CoursesApiConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<TrainingProviderConfiguration>>().Value);
             services.AddSingleton(cfg => cfg.GetService<IOptions<RoatpV2ApiConfiguration>>().Value);
+            services.AddSingleton(cfg => cfg.GetService<IOptions<LearnerNotificationsApiConfiguration>>().Value);
 
             services.Configure<NServiceBusConfiguration>(configuration.GetSection(nameof(NServiceBusConfiguration)));
             services.AddSingleton(cfg => cfg.GetService<IOptions<NServiceBusConfiguration>>().Value);
