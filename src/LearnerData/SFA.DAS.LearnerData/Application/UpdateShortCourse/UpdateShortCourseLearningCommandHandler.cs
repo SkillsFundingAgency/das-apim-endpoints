@@ -7,7 +7,6 @@ using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
-using SFA.DAS.LearnerData.Shared;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -71,8 +70,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         {
             if (result.IsIgnored)
             {
-                _logger.LogInformation("Ignoring OnProgramme item for LearnerKey {LearnerKey} / CourseCode {CourseCode} — no matching Learning and ShortCourseProgression is disabled",
-                    command.LearnerKey, result.CourseCode);
+                _logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", result.CourseCode);
                 continue;
             }
 
