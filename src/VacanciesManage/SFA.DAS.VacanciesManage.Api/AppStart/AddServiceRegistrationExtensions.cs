@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -7,6 +9,7 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Services;
+using SFA.DAS.VacanciesManage.Api.Validators;
 using SFA.DAS.VacanciesManage.Services;
 
 namespace SFA.DAS.VacanciesManage.Api.AppStart;
@@ -15,6 +18,12 @@ public static class AddServiceRegistrationExtensions
 {
     public static void AddServiceRegistration(this IServiceCollection services)
     {
+        services
+            .AddFluentValidationAutoValidation()
+            .AddFluentValidationClientsideAdapters();
+
+        services.AddValidatorsFromAssemblyContaining<CreateVacancyRequestValidator>();
+
         services.AddHttpClient();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
 
@@ -24,6 +33,7 @@ public static class AddServiceRegistrationExtensions
         services.AddTransient<IBankHolidaysService, BankHolidaysService>();
         services.AddTransient<IBankHolidayProvider, BankHolidayProvider>();
         services.AddTransient<ISlaService, SlaService>();
+        services.AddTransient<IHtmlValidatorService, HtmlValidatorService>();
 
         services.AddTransient(typeof(IInternalApiClient<>), typeof(InternalApiClient<>));
         services.AddTransient<SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>, SFA.DAS.Recruit.Contracts.Client.RecruitApiClient>();
