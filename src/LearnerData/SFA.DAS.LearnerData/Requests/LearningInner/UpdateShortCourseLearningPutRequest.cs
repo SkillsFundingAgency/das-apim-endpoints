@@ -21,6 +21,7 @@ public class UpdateShortCourseLearningPutRequest : IPutApiRequest<UpdateShortCou
 #pragma warning disable CS8618
 public class UpdateShortCourseLearningRequestBody
 {
+    public long Ukprn { get; set; }
     public ShortCourseLearnerUpdateDetails LearnerUpdateDetails { get; set; }
     public List<ShortCourseOnProgrammeUpdateDetails> OnProgramme { get; set; } = new();
 }

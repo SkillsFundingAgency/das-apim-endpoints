@@ -151,6 +151,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     {
         var body = new UpdateShortCourseLearningRequestBody
         {
+            Ukprn = command.Ukprn,
             LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
             {
                 LearnerRef = command.Request.Learner.LearnerRef
