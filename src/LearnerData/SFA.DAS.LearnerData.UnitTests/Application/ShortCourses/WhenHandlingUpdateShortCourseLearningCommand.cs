@@ -311,9 +311,8 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     }
 
     [Test]
-    public async Task Then_Earnings_Post_Is_Called_For_Reinstated_Unapproved_Learning()
+    public async Task Then_Earnings_Put_Is_Called_For_Reinstated_Unapproved_Learning()
     {
-        // Arrange
         var learningKey = Guid.NewGuid();
         var episodeKey = Guid.NewGuid();
 
@@ -322,16 +321,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             LearningKey = learningKey,
             UpdatedEpisodeKey = episodeKey,
             CourseCode = "123",
-            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
-                    IsApproved = false,
-                    Price = 2500m,
-                    LearningType = "ApprenticeshipUnit"
-                }
-            ]
+            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()]
         };
 
         _learningApiClient
@@ -339,35 +329,32 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
             .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
 
-        // Act
+        _earningsApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(_fixture.Create<UpdateShortCourseEarningPutResponse>(), HttpStatusCode.OK, string.Empty));
+
         await _handler.Handle(_command, CancellationToken.None);
 
-        // Assert
         _earningsApiClient.Verify(x =>
-            x.Post(It.Is<PostCreateUnapprovedShortCourseLearningRequest>(r =>
-                ((CreateUnapprovedShortCourseLearningRequest)r.Data).LearningKey == learningKey &&
-                ((CreateUnapprovedShortCourseLearningRequest)r.Data).EpisodeKey == episodeKey)),
+            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
+                    r.LearningKey == learningKey && r.EpisodeKey == episodeKey)),
             Times.Once);
     }
 
     [Test]
-    public async Task Then_Earnings_Post_Is_NOT_Called_For_Reinstated_Approved_Learning()
+    public async Task Then_Earnings_Put_Is_Called_For_Reinstated_Approved_Learning()
     {
-        // Arrange
+        var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
+
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learnerKey,
-            UpdatedEpisodeKey = Guid.NewGuid(),
+            LearningKey = learningKey,
+            UpdatedEpisodeKey = episodeKey,
             CourseCode = "123",
-            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
-            Episodes =
-            [
-                new LearningInnerShortCourseEpisode
-                {
-                    IsApproved = true,
-                    LearningType = "ApprenticeshipUnit"
-                }
-            ]
+            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()]
         };
 
         _learningApiClient
@@ -375,12 +362,17 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
             .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
 
-        // Act
+        _earningsApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseEarningPutResponse>(_fixture.Create<UpdateShortCourseEarningPutResponse>(), HttpStatusCode.OK, string.Empty));
+
         await _handler.Handle(_command, CancellationToken.None);
 
-        // Assert
         _earningsApiClient.Verify(x =>
-            x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()),
-            Times.Never);
+            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
+                    r.LearningKey == learningKey && r.EpisodeKey == episodeKey)),
+            Times.Once);
     }
 }

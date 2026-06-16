@@ -80,10 +80,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             {
                 await HandleNewLearning(command, onProg, result);
             }
-            else if (IsReinstatedUnapproved(result))
-            {
-                await HandleReinstatedLearning(command, onProg, result);
-            }
             else
             {
                 _logger.LogInformation("Short course learner {LearnerKey} / {CourseCode} updated. Changes: {Changes}",
@@ -264,32 +260,13 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("CalculateGrowthAndSkillsPayments sent for LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 
-    private async Task HandleReinstatedLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
-    {
-        _logger.LogInformation("Reinstating unapproved Learning {LearningKey} / {CourseCode}. Recreating Earnings profile.",
-            learningResponse.LearningKey, learningResponse.CourseCode);
-
-        var episode = learningResponse.Episodes.First(e => !e.IsApproved);
-        var learningType = Enum.Parse<SharedLearningType>(episode.LearningType);
-
-        var learningRequest = BuildCreateLearningRequest(command, onProg, learningResponse, episode.Price, learningType);
-        await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(learningRequest));
-
-        _logger.LogInformation("Earnings profile recreated for reinstated Learning {LearningKey}", learningResponse.LearningKey);
-    }
-
-    private static bool IsReinstatedUnapproved(UpdateShortCourseLearningPutResponse response)
-    {
-        return response.GetChangesEnums().Contains(ShortCourseUpdateChanges.Reinstated)
-            && response.Episodes.Any(e => !e.IsApproved);
-    }
-
     private static bool EarningsUpdateRequired(UpdateShortCourseLearningPutResponse response)
     {
         var changes = response.GetChangesEnums();
 
         return changes.Contains(ShortCourseUpdateChanges.WithdrawalDate) ||
             changes.Contains(ShortCourseUpdateChanges.Milestone) ||
-            changes.Contains(ShortCourseUpdateChanges.CompletionDate);
+            changes.Contains(ShortCourseUpdateChanges.CompletionDate) ||
+            changes.Contains(ShortCourseUpdateChanges.Reinstated);
     }
 }
