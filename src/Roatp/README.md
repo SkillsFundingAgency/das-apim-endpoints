@@ -16,6 +16,7 @@
 
 ### Dependencies
 * Charities Api: https://github.com/SkillsFundingAgency/das-charities-api
+* Roatp Api: https://github.com/SkillsFundingAgency/das-roatp-service
 
 
 ### Config
@@ -42,7 +43,7 @@ In the SFA.DAS.Roatp.API project, if not exist already, add appSettings.Developm
 ```
 
 ## Technologies
-* .Net 8.0
+* .Net 10.0
 * Azure Table Storage
 * NUnit
 * Moq
