@@ -11,6 +11,8 @@ namespace SFA.DAS.VacanciesManage.Api.Middlewares;
 
 public class ExceptionMiddleware(RequestDelegate next)
 {
+    private const string ValidationUri = "https://tools.ietf.org/html/rfc7231#section-6.5.1";
+
     public async Task Invoke(HttpContext context)
     {
         try
@@ -21,9 +23,9 @@ public class ExceptionMiddleware(RequestDelegate next)
         {
             await HandleValidationException(context, ex);
         }
-        catch (Exception ex)
+        catch
         {
-            await HandleGenericException(context, ex);
+            await HandleGenericException(context);
         }
     }
 
@@ -41,7 +43,7 @@ public class ExceptionMiddleware(RequestDelegate next)
 
         var response = new CreateVacancyExampleBadRequestResponse
         {
-            Type = new Uri("https://tools.ietf.org/html/rfc7231#section-6.5.1"),
+            Type = new Uri(ValidationUri),
             Title = $"Validation failed: {string.Join("; ", messages)}",
             Status = 400,
             TraceId = traceId
@@ -50,15 +52,14 @@ public class ExceptionMiddleware(RequestDelegate next)
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
     }
 
-    private static async Task HandleGenericException(HttpContext context,
-        Exception _)
+    private static async Task HandleGenericException(HttpContext context)
     {
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = 500;
 
         var response = new CreateVacancyExampleBadRequestResponse
         {
-            Type = new Uri("https://tools.ietf.org/html/rfc7231#section-6.6.1"),
+            Type = new Uri(ValidationUri),
             Title = "Internal server error",
             Status = 500,
             TraceId = context.TraceIdentifier

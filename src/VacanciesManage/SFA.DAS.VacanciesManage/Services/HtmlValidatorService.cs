@@ -18,6 +18,8 @@ public class HtmlValidatorService : IHtmlValidatorService
         "ul", "ol", "li", "a"
     ];
 
+    private const string Description = "HTML validation error";
+
     private static bool ContainsHtml(string input)
     {
         var doc = new HtmlDocument();
@@ -45,7 +47,7 @@ public class HtmlValidatorService : IHtmlValidatorService
         doc.LoadHtml(html);
 
         // 0. Catch malformed/broken markup (unclosed tags, mismatched tags, etc.)
-        var parseErrors = doc.ParseErrors.ToList() ?? [];
+        var parseErrors = doc.ParseErrors.ToList();
         foreach (var error in parseErrors)
         {
             result.Errors.Add(new ValidationFailure(
@@ -61,7 +63,7 @@ public class HtmlValidatorService : IHtmlValidatorService
 
             if (!AllowedTags.Contains(node.Name))
             {
-                result.Errors.Add(new ValidationFailure("Description", $"Tag <{node.Name}> is not allowed."));
+                result.Errors.Add(new ValidationFailure(Description, $"Tag <{node.Name}> is not allowed."));
             }
         }
 
@@ -72,19 +74,19 @@ public class HtmlValidatorService : IHtmlValidatorService
 
             if (parent.Name != "ul" && parent.Name != "ol")
             {
-                result.Errors.Add(new ValidationFailure("Description", "<li> must be inside <ul> or <ol>."));
+                result.Errors.Add(new ValidationFailure(Description, "<li> must be inside <ul> or <ol>."));
             }
         }
 
         // 3. Block dangerous tags explicitly
         if (doc.DocumentNode.Descendants("script").Any())
         {
-            result.Errors.Add(new ValidationFailure("Description", "<script> tags are not allowed."));
+            result.Errors.Add(new ValidationFailure(Description, "<script> tags are not allowed."));
         }
 
         if (doc.DocumentNode.Descendants("style").Any())
         {
-            result.Errors.Add(new ValidationFailure("Description", "<style> tags are not allowed."));
+            result.Errors.Add(new ValidationFailure(Description, "<style> tags are not allowed."));
         }
 
         return result;
