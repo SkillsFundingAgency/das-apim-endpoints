@@ -1,3 +1,5 @@
+using SFA.DAS.SharedOuterApi.Types.Domain.Recruit;
+
 namespace SFA.DAS.RecruitQa.InnerApi.Responses;
 
 public class GetVacancyReviewResponse
@@ -17,7 +19,7 @@ public class GetVacancyReviewResponse
     public string ManualQaComment { get; init; }
     public required List<string> ManualQaFieldIndicators { get; init; }
     public string AutomatedQaOutcome { get; set; }
-    public string AutomatedQaOutcomeIndicators { get; init; }
+    public List<RuleOutcome> AutomatedQaOutcomeIndicators { get; init; } = [];
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
     public required List<string> UpdatedFieldIdentifiers { get; init; }
     public required string VacancySnapshot { get; set; }
