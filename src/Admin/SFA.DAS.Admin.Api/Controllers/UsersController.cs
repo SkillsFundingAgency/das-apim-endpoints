@@ -10,7 +10,7 @@ using SFA.DAS.Admin.Application.Queries.GetUserActionByCode;
 namespace SFA.DAS.Admin.Api.Controllers
 {
     [ApiController]
-    [Route("api/users")]
+    [Route("users")]
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -48,7 +48,7 @@ namespace SFA.DAS.Admin.Api.Controllers
 
                 var result = await _mediator.Send(command);
 
-                return result == null ? NotFound() : Ok(result);
+                return Ok(result);
             }
             catch (Exception e)
             {
