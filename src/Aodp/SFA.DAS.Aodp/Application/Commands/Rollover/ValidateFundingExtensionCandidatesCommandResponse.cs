@@ -7,21 +7,27 @@ namespace SFA.DAS.Aodp.Application.Commands.Rollover
     {
         public bool IsValid { get; set; }
 
-        public int TotalCandidates { get; set; }
+        public ValidationFailureSummary? ValidationFailureSummary { get; set; }
 
+        public FundingExtensionSummary? ValidationSuccessSummary { get; set; }
+
+    }
+
+    [ExcludeFromCodeCoverage]
+    public class ValidationFailureSummary
+    {
         public int FailedCandidateCount { get; set; }
-
-        public List<ValidationFailureGroup> FailureSummary { get; set; } = new();
         public byte[]? ValidatedCandidateFile { get; set; }
     }
 
     [ExcludeFromCodeCoverage]
-    public class ValidationFailureGroup
+    public class FundingExtensionSummary
     {
-        public string Field { get; set; }   
+        public int TotalCandidatesCount { get; set; }
+        public int CandidatesExtendedInUploadCount { get; set; }
+        public int TotalCandidatesToBeExtendedCount { get; set; }
+        public int TotalCandidatesToBeExcludedCount { get; set; }
+        public int TotalCandidatesToBeReviewedCount { get; set; }
 
-        public string Message { get; set; } 
-
-        public int Count { get; set; }
     }
 }

@@ -1,6 +1,5 @@
 ﻿
 using MediatR;
-using Newtonsoft.Json.Linq;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Rollover;
 using SFA.DAS.Aodp.Services;
@@ -24,12 +23,12 @@ namespace SFA.DAS.Aodp.Application.Queries.Rollover
 
             try
             {
-                var result = await _apiClient.Get<BaseMediatrResponse<GetRolloverCandidatesForExportQueryResponse>>(new GetRolloverCandidatesForExportApiRequest()
+                var result = await _apiClient.Get<GetRolloverCandidatesForExportQueryResponse>(new GetRolloverCandidatesForExportApiRequest()
                 {
                     RolloverWorkflowRunId = request.RolloverWorkflowRunId
                 });
 
-                response.Value = result.Value;
+                response.Value = result;
                 response.Success = true;
             }
             catch (Exception ex)

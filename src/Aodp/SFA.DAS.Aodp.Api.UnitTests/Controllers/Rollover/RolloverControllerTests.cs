@@ -347,11 +347,11 @@ public class RolloverControllerTests
     public async Task ValidateFundingExtensionCandidates_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
     {
         // Arrange
-        var command = new ValidateFundingExtensionCandidatesCommand 
-        { 
-            FundingExtensionCandidates = 
+        var command = new ValidateFundingExtensionCandidatesCommand
+        {
+            FundingExtensionCandidates =
             [
-                new (){ RowNumber = 1, Qan = "12345678", FundingStreamName = "Stream1", RollOverStatus = "ToExtend", ProposedFundingApprovalEndDate = DateTime.UtcNow.AddMonths(6), ExclusionReason = ""}
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" }
             ]
         };
 
@@ -360,9 +360,15 @@ public class RolloverControllerTests
             Success = true,
             Value = new ValidateFundingExtensionCandidatesCommandResponse
             {
-                TotalCandidates = 1,
-                FailedCandidateCount = 0,
                 IsValid = true,
+                ValidationSuccessSummary = new FundingExtensionSummary
+                {
+                    TotalCandidatesCount = 10,
+                    CandidatesExtendedInUploadCount = 2,
+                    TotalCandidatesToBeExtendedCount = 5,
+                    TotalCandidatesToBeExcludedCount = 1,
+                    TotalCandidatesToBeReviewedCount = 4
+                }
             }
         };
 
@@ -383,10 +389,13 @@ public class RolloverControllerTests
         Assert.That(ok.Value, Is.InstanceOf<ValidateFundingExtensionCandidatesCommandResponse>());
 
         var returned = (ValidateFundingExtensionCandidatesCommandResponse)ok.Value!;
-        Assert.That(returned.TotalCandidates, Is.EqualTo(1));
-        Assert.That(returned.FailedCandidateCount, Is.EqualTo(0));
         Assert.That(returned.IsValid, Is.True);
+
+        _mockMediator.Verify(m => m.Send(
+            It.IsAny<ValidateFundingExtensionCandidatesCommand>(),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
+
 
     [Test]
     public async Task ValidateFundingExtensionCandidates_WhenMediatorReturnsFailure_ShouldReturn500()
@@ -396,15 +405,7 @@ public class RolloverControllerTests
         {
             FundingExtensionCandidates =
             [
-                new()
-            {
-                RowNumber = 1,
-                Qan = "12345678",
-                FundingStreamName = "Stream1",
-                RollOverStatus = "ToExtend",
-                ProposedFundingApprovalEndDate = DateTime.UtcNow.AddMonths(6),
-                ExclusionReason = ""
-            }
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" }
             ]
         };
 
@@ -437,5 +438,39 @@ public class RolloverControllerTests
             It.IsAny<ValidateFundingExtensionCandidatesCommand>(),
             It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    [Test]
+    public async Task ValidateFundingExtensionCandidates_ShouldSendCommandToMediator()
+    {
+        // Arrange
+        var command = new ValidateFundingExtensionCandidatesCommand
+        {
+            FundingExtensionCandidates =
+            [
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" }
+            ]
+        };
+
+        ValidateFundingExtensionCandidatesCommand? captured = null;
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<ValidateFundingExtensionCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .Callback<IRequest<BaseMediatrResponse<ValidateFundingExtensionCandidatesCommandResponse>>, CancellationToken>((cmd, _) =>
+            {
+                captured = cmd as ValidateFundingExtensionCandidatesCommand;
+            })
+            .ReturnsAsync(new BaseMediatrResponse<ValidateFundingExtensionCandidatesCommandResponse> { Success = true });
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        await controller.ValidateFundingExtensionCandidates(command);
+
+        // Assert
+        Assert.That(captured, Is.Not.Null);
+        Assert.That(captured, Is.EqualTo(command));
+    }
+
+
 
 }
