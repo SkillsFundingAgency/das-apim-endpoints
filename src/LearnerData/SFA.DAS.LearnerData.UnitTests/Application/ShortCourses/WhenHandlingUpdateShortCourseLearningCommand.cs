@@ -2,6 +2,7 @@ using AutoFixture;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Services.ShortCourses;
@@ -307,5 +308,79 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
                 It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r => r.Data == builtBody)),
             Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Earnings_Post_Is_Called_For_Reinstated_Unapproved_Learning()
+    {
+        // Arrange
+        var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = learningKey,
+            UpdatedEpisodeKey = episodeKey,
+            CourseCode = "123",
+            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    IsApproved = false,
+                    Price = 2500m,
+                    LearningType = "ApprenticeshipUnit"
+                }
+            ]
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.Post(It.Is<PostCreateUnapprovedShortCourseLearningRequest>(r =>
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).LearningKey == learningKey &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).EpisodeKey == episodeKey)),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Earnings_Post_Is_NOT_Called_For_Reinstated_Approved_Learning()
+    {
+        // Arrange
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learnerKey,
+            UpdatedEpisodeKey = Guid.NewGuid(),
+            CourseCode = "123",
+            Changes = [ShortCourseUpdateChanges.Reinstated.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    IsApproved = true,
+                    LearningType = "ApprenticeshipUnit"
+                }
+            ]
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, List<UpdateShortCourseLearningPutResponse>>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<List<UpdateShortCourseLearningPutResponse>>([learningResponse], HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()),
+            Times.Never);
     }
 }
