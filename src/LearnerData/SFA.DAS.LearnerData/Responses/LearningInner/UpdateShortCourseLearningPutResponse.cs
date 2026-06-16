@@ -11,6 +11,7 @@ public class UpdateShortCourseLearningPutResponse : IShortCourseLearningPaymentE
     public LearningInnerShortCourseEpisode[] Episodes { get; set; } = [];
     public bool IsNewLearning { get; set; }
     public bool IsIgnored { get; set; }
+    public bool IsRemoved { get; set; }
 }
 
 public static class UpdateShortCourseLearningPutResponseExtensions

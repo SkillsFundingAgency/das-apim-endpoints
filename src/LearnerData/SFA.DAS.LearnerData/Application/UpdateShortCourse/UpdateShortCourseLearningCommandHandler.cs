@@ -9,6 +9,7 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Shared;
 using SFA.DAS.LearnerData.Services.ShortCourses;
+using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
@@ -87,6 +88,29 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 await HandleExistingLearning(command, onProg, result);
             }
         }
+
+        foreach (var removedResult in learningResponse.Body.Where(r => r.IsRemoved))
+        {
+            await HandleRemovedLearning(command, removedResult);
+        }
+    }
+
+    private async Task HandleRemovedLearning(UpdateShortCourseLearningCommand command, UpdateShortCourseLearningPutResponse removedResult)
+    {
+        _logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings for LearnerKey {LearnerKey}",
+            removedResult.LearningKey, removedResult.CourseCode, command.LearnerKey);
+
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.UpdatedEpisodeKey);
+        var earningsResponse = await _earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
+
+        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        {
+            _logger.LogError("Failed to delete earnings for omitted Learning {LearningKey}. Status: {StatusCode}",
+                removedResult.LearningKey, earningsResponse.StatusCode);
+            throw new Exception($"Failed to delete earnings for omitted Learning {removedResult.LearningKey}. Status: {earningsResponse.StatusCode}.");
+        }
+
+        _logger.LogInformation("Earnings removed for omitted Learning {LearningKey}", removedResult.LearningKey);
     }
 
     private async Task HandleNewLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
