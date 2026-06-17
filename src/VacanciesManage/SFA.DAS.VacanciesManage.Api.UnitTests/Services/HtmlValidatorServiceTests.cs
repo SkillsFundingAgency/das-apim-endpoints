@@ -42,7 +42,7 @@ internal class HtmlValidatorServiceTests
 
         result.Errors.Should().NotBeEmpty();
         result.Errors.Select(e => e.PropertyName)
-            .Should().AllBeEquivalentTo("Description");
+            .Should().AllBeEquivalentTo("HTML validation error");
     }
 
     [Test, MoqAutoData]

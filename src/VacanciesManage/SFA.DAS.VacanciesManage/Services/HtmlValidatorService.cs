@@ -51,7 +51,7 @@ public class HtmlValidatorService : IHtmlValidatorService
         foreach (var error in parseErrors)
         {
             result.Errors.Add(new ValidationFailure(
-                "Description",
+                Description,
                 $"{error.Reason}"));
         }
 
