@@ -266,6 +266,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         return changes.Contains(ShortCourseUpdateChanges.WithdrawalDate) ||
             changes.Contains(ShortCourseUpdateChanges.Milestone) ||
             changes.Contains(ShortCourseUpdateChanges.CompletionDate) ||
-            changes.Contains(ShortCourseUpdateChanges.Reinstated);
+            changes.Contains(ShortCourseUpdateChanges.Reinstated) ||
+            changes.Contains(ShortCourseUpdateChanges.StartDate) ||
+            changes.Contains(ShortCourseUpdateChanges.ExpectedEndDate);
     }
 }

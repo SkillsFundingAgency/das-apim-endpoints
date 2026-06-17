@@ -38,6 +38,7 @@ public enum ShortCourseUpdateChanges
     CompletionDate = 2,
     LearnerRef = 3,
     Reinstated = 4,
-    StartDate = 5
+    StartDate = 5,
+    ExpectedEndDate = 6
 }
 #pragma warning restore CS8618

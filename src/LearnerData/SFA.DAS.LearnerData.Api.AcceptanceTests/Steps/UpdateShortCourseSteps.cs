@@ -25,6 +25,7 @@ public class UpdateShortCourseSteps
     private const string UkprnKey = "ShortCourseUkprnKey";
     private const string ShortCourseChangesKey = "ShortCourseChanges";
     private const string UpdatedEpisodeKeyKey = "UpdatedEpisodeKey";
+    private const string IsApprovedKey = "ShortCourseIsApproved";
 
     public UpdateShortCourseSteps(TestContext testContext, ScenarioContext scenarioContext)
     {
@@ -35,13 +36,24 @@ public class UpdateShortCourseSteps
     [Given(@"there is a short course learning")]
     public void GivenThereIsAShortCourseLearning()
     {
-        _scenarioContext.Set(Guid.NewGuid(), ShortCourseLearnerKey);
-        _scenarioContext.Set(_fixture.Create<long>(), UkprnKey);
-
+        SetUpShortCourseLearning(isApproved: true);
     }
 
-    [Given(@"the (.*) of short course passed is different to the value in the learning domain")]
-    public void GivenTheDetailsOfShortCoursePassedIsDifferentToTheValueInTheLearningDomain(ShortCourseUpdateChanges change)
+    [Given(@"there is an (approved|unapproved) short course learning")]
+    public void GivenThereIsAnApprovalStateShortCourseLearning(string approvalState)
+    {
+        SetUpShortCourseLearning(isApproved: approvalState == "approved");
+    }
+
+    private void SetUpShortCourseLearning(bool isApproved)
+    {
+        _scenarioContext.Set(Guid.NewGuid(), ShortCourseLearnerKey);
+        _scenarioContext.Set(_fixture.Create<long>(), UkprnKey);
+        _scenarioContext.Set(isApproved, IsApprovedKey);
+    }
+
+    [Given(@"SLD inform us that the (.*) has changed")]
+    public void GivenSLDInformUsThatTheChangeHasChanged(ShortCourseUpdateChanges change)
     {
         List<ShortCourseUpdateChanges> changes;
 
@@ -96,6 +108,7 @@ public class UpdateShortCourseSteps
     private void ConfigureLearnerInnerApi(long ukprn, Guid learningKey, ShortCourseRequest shortCourseRequest)
     {
         var changes = _scenarioContext.Get<List<ShortCourseUpdateChanges>>(ShortCourseChangesKey);
+        var isApproved = _scenarioContext.Get<bool>(IsApprovedKey);
         var onProgramme = shortCourseRequest.Delivery.OnProgramme.First();
 
         var updatedEpisodeKey = Guid.NewGuid();
@@ -130,7 +143,7 @@ public class UpdateShortCourseSteps
                         PlannedEndDate = onProgramme.ExpectedEndDate,
                         WithdrawalDate = onProgramme.WithdrawalDate,
                         CompletionDate = onProgramme.CompletionDate,
-                        IsApproved = true,
+                        IsApproved = isApproved,
                         Price = 1000m,
                         LearnerRef = "LearnerRef",
                         EmployerType = EmployerType.Levy.ToString()
