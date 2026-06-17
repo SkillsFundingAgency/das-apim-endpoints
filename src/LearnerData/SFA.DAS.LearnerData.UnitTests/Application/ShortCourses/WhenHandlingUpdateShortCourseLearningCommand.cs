@@ -18,6 +18,7 @@ using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Enums;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using SharedLearningType = SFA.DAS.SharedOuterApi.Types.Constants.LearningType;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -378,5 +379,193 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
                     r.PutUrl == $"/{learningKey}/shortCourses/{episodeKey}/on-programme")),
             Times.Once);
+    }
+
+    [Test]
+    public async Task Then_ShortCourseLookupService_Is_Called_For_New_Learning()
+    {
+        // Arrange
+        var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = learningKey,
+            UpdatedEpisodeKey = episodeKey,
+            CourseCode = onProg.CourseCode,
+            IsNewLearning = true,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _shortCourseLookupService.Verify(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Earnings_Post_Is_Called_With_Mapped_Request_For_New_Learning()
+    {
+        // Arrange
+        var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = learningKey,
+            UpdatedEpisodeKey = episodeKey,
+            CourseCode = onProg.CourseCode,
+            IsNewLearning = true,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.Post(It.Is<PostCreateUnapprovedShortCourseLearningRequest>(r =>
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).LearningKey == learningKey &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).EpisodeKey == episodeKey &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).Learner.Uln == _command.Request.Learner.Uln.ToString() &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).OnProgramme.CourseCode == onProg.CourseCode &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).OnProgramme.Ukprn == _ukprn &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).OnProgramme.TotalPrice == 1500 &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).OnProgramme.LearningType == SharedLearningType.Apprenticeship)),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_CompletionDate_Without_LearningComplete_Milestone_Adds_LearningComplete_For_New_Learning()
+    {
+        // Arrange
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+        onProg.CompletionDate = _completionDate;
+        onProg.Milestones = [];
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            UpdatedEpisodeKey = Guid.NewGuid(),
+            CourseCode = onProg.CourseCode,
+            IsNewLearning = true,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.Post(It.Is<PostCreateUnapprovedShortCourseLearningRequest>(r =>
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).OnProgramme.Milestones.Contains(Milestone.LearningComplete))),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_LearnerDataEvent_Is_Published_For_New_Learning()
+    {
+        // Arrange
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            UpdatedEpisodeKey = Guid.NewGuid(),
+            CourseCode = onProg.CourseCode,
+            IsNewLearning = true,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _messageSession.Verify(x =>
+            x.Publish(It.Is<LearnerDataEvent>(e =>
+                e.ULN == _command.Request.Learner.Uln &&
+                e.UKPRN == _ukprn &&
+                e.FirstName == _command.Request.Learner.FirstName &&
+                e.LastName == _command.Request.Learner.LastName &&
+                e.StartDate == onProg.StartDate &&
+                e.PlannedEndDate == onProg.ExpectedEndDate &&
+                e.TrainingPrice == 1500 &&
+                e.LarsCode == onProg.CourseCode &&
+                e.LearningType == LearningType.ApprenticeshipUnit &&
+                e.CorrelationId != Guid.Empty), It.IsAny<PublishOptions>()),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_PaymentsEvent_Is_Not_Sent_For_New_Learning()
+    {
+        // Arrange
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = Guid.NewGuid(),
+            UpdatedEpisodeKey = Guid.NewGuid(),
+            CourseCode = onProg.CourseCode,
+            IsNewLearning = true,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _calculateGrowthAndSkillsPaymentsEventBuilder.Verify(x =>
+            x.Build(It.IsAny<long>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<ShortCourseEarningsResponse>()),
+            Times.Never);
+        _messageSession.Verify(x => x.Send(It.IsAny<object>(), It.IsAny<SendOptions>()), Times.Never);
     }
 }
