@@ -2,13 +2,11 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Options;
 using RestEase.HttpClientFactory;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
 using SFA.DAS.Roatp.Api.HealthCheck;
 using SFA.DAS.Roatp.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.Infrastructure.Ukrlp;
 
 namespace SFA.DAS.Roatp.Api.AppStart;
 
@@ -19,7 +17,6 @@ public static class ServiceCollectionExtensions
     {
         services.AddHttpClient();
         services.AddSingleton<IAzureClientCredentialHelper, AzureClientCredentialHelper>();
-        AddUkrlpClient(services, configuration);
         AddCharityApiClient(services, configuration);
         AddRoatpApiClient(services, configuration);
     }
@@ -36,7 +33,7 @@ public static class ServiceCollectionExtensions
     {
         var apiConfig = GetApiConfiguration(configuration, "CharitiesApiConfiguration");
         services.AddRestEaseClient<ICharitiesRestApiClient>(apiConfig.Url)
-            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(), apiConfig.Identifier));
+            .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
     private static void AddRoatpApiClient(IServiceCollection services, IConfiguration configuration)
@@ -46,19 +43,17 @@ public static class ServiceCollectionExtensions
             .AddHttpMessageHandler(() => new InnerApiAuthenticationHeaderHandler(new AzureClientCredentialHelper(configuration), apiConfig.Identifier));
     }
 
-    private static void AddUkrlpClient(IServiceCollection services, IConfiguration configuration)
-    {
-        services.AddTransient<IUkrlpSoapSerializer, UkrlpSoapSerializer>();
-        services.Configure<UkrlpApiConfiguration>(configuration.GetSection(nameof(UkrlpApiConfiguration)));
-        services.AddSingleton(cfg => cfg.GetService<IOptions<UkrlpApiConfiguration>>().Value);
-    }
-
     public static IServiceCollection AddServiceHealthChecks(this IServiceCollection services)
     {
         services.AddHealthChecks()
             .AddCheck<CharitiesApiHealthCheck>(CharitiesApiHealthCheck.HealthCheckResultDescription,
                 failureStatus: HealthStatus.Unhealthy,
-                tags: new[] { "ready" });
+                tags: ["ready"]);
+
+        services.AddHealthChecks()
+            .AddCheck<RoatpApiHealthCheck>(RoatpApiHealthCheck.HealthCheckResultDescription,
+                failureStatus: HealthStatus.Unhealthy,
+                tags: ["ready"]);
 
         return services;
     }
