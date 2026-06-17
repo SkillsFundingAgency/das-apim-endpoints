@@ -20,7 +20,7 @@ public class GetVacancyReviewsByUserQueryHandler(IRecruitApiClient<RecruitApiCon
             return new GetVacancyReviewsByUserQueryResult
             {
                 VacancyReviews = new List<GetVacancyReviewResponse>()
-            };
+            }; 
         }
 
         return new GetVacancyReviewsByUserQueryResult
