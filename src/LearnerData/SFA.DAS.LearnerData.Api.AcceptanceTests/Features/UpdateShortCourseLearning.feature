@@ -15,3 +15,9 @@ Scenario: Completion
 	When the short course learning is updated
 	Then a on-programme update request is sent for short courses to the earnings domain
 	And a short course earnings updated event is published for payments
+
+Scenario: StartDate change on unapproved episode
+	Given there is a short course learning
+	And the StartDate of short course passed is different to the value in the learning domain
+	When the short course learning is updated
+	Then a on-programme update request is sent for short courses to the earnings domain

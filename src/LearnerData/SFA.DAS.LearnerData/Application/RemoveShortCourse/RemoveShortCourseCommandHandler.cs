@@ -39,22 +39,25 @@ public class RemoveShortCourseCommandHandler(
             throw new Exception($"Failed to delete short course with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(learningResponse.Body.LearningKey, learningResponse.Body.RemovedEpisodeKey);
-
-        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
-
-        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        foreach (var item in learningResponse.Body.Results)
         {
-            logger.LogError("Failed to delete short course earnings with key {LearningKey}. Status code: {StatusCode}", command.LearnerKey, earningsResponse.StatusCode);
-            throw new Exception($"Failed to delete short course earnings with key {command.LearnerKey}. Status code: {earningsResponse.StatusCode}.");
+            var earningsRequest = new DeleteShortCourseEarningsRequest(item.LearningKey, item.RemovedEpisodeKey);
+
+            var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
+
+            if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+            {
+                logger.LogError("Failed to delete short course earnings with key {LearningKey}. Status code: {StatusCode}", item.LearningKey, earningsResponse.StatusCode);
+                throw new Exception($"Failed to delete short course earnings with key {item.LearningKey}. Status code: {earningsResponse.StatusCode}.");
+            }
+
+            await PublishEvent(command.Ukprn, item, earningsResponse.Body);
         }
 
-        await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse.Body);
-
-        logger.LogInformation("Short course with key {LearningKey} deleted from Learning and Earnings successfully", command.LearnerKey);
+        logger.LogInformation("Short course with key {LearnerKey} deleted from Learning and Earnings successfully", command.LearnerKey);
     }
 
-    private async Task PublishEvent(long ukprn, DeleteShortCourseResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
+    private async Task PublishEvent(long ukprn, DeleteShortCourseItemResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
     {
         logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
 
