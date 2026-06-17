@@ -32,9 +32,7 @@ public class ShortCourseOnProgramme
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
     public List<LearningSupport> LearningSupport { get; set; }
-    public DateTime? PauseDate { get; set; }
     public int? AimSequenceNumber { get; set; }
-    public DateTime? ActualEndDate { get; set; }
     public Milestone[] Milestones { get; set; }
 }
 
