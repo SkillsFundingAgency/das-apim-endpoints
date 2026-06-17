@@ -35,8 +35,8 @@ public class RemoveShortCourseCommandHandler(
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            logger.LogError("Failed to delete short course with key {LearningKey}. Status code: {StatusCode}", command.LearnerKey, learningResponse.StatusCode);
-            throw new Exception($"Failed to delete short course with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
+            logger.LogError("Failed to delete short course episodes for learner {LearningKey}. Status code: {StatusCode}", command.LearnerKey, learningResponse.StatusCode);
+            throw new Exception($"Failed to delete short course episodes for learner {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
         foreach (var item in learningResponse.Body.Results)
@@ -54,7 +54,7 @@ public class RemoveShortCourseCommandHandler(
             await PublishEvent(command.Ukprn, item, earningsResponse.Body);
         }
 
-        logger.LogInformation("Short course with key {LearnerKey} deleted from Learning and Earnings successfully", command.LearnerKey);
+        logger.LogInformation("Short courses for learner {LearnerKey} deleted from Learning and Earnings successfully", command.LearnerKey);
     }
 
     private async Task PublishEvent(long ukprn, DeleteShortCourseItemResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
