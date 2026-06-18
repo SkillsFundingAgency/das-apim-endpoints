@@ -20,8 +20,13 @@ public class GetProviderSummaryQueryHandler(IRoatpCourseManagementApiClient<Roat
 {
     public async Task<GetProviderSummaryQueryResult> Handle(GetProviderSummaryQuery query, CancellationToken cancellationToken)
     {
-        var providerSummaryResponseTask = _roatpCourseManagementApiClient.Get<GetProviderSummaryQueryResponse>(
+        var providerSummaryResponse = await _roatpCourseManagementApiClient.Get<GetProviderSummaryQueryResponse>(
                 new GetProviderSummaryRequest(query.Ukprn));
+
+        if (providerSummaryResponse == null)
+        {
+            return null;
+        }
 
         var providerCourseDetailsTask = _roatpCourseManagementApiClient.Get<List<GetProviderAdditionalStandardsItem>>(
             new GetProviderAdditionalStandardsRequest(query.Ukprn));
@@ -30,10 +35,13 @@ public class GetProviderSummaryQueryHandler(IRoatpCourseManagementApiClient<Roat
 
         var feedbackTask = _cachedFeedbackService.GetProviderFeedback(query.Ukprn);
 
-        await Task.WhenAll(providerSummaryResponseTask, providerCourseDetailsTask, assessmentDetailsResponseTask, feedbackTask);
+        await Task.WhenAll(providerCourseDetailsTask, assessmentDetailsResponseTask, feedbackTask);
 
         var courses = new List<CourseDetails>();
-        foreach (var course in providerCourseDetailsTask.Result)
+
+        var providerCourseDetails = providerCourseDetailsTask.Result ?? [];
+
+        foreach (var course in providerCourseDetails)
         {
             courses.Add(new CourseDetails
             {
@@ -46,24 +54,23 @@ public class GetProviderSummaryQueryHandler(IRoatpCourseManagementApiClient<Roat
             });
         }
 
-        var providerSummary = providerSummaryResponseTask.Result;
         var assessmentDetailsResponse = assessmentDetailsResponseTask.Result;
         var (employerFeedback, apprenticeFeedback) = feedbackTask.Result;
 
         var result = new GetProviderSummaryQueryResult
         {
-            Ukprn = providerSummary.Ukprn,
-            ProviderName = providerSummary.Name,
-            ProviderAddress = providerSummary.Address,
+            Ukprn = providerSummaryResponse.Ukprn,
+            ProviderName = providerSummaryResponse.Name,
+            ProviderAddress = providerSummaryResponse.Address,
             Contact = new ContactDetails
             {
-                MarketingInfo = providerSummary.MarketingInfo,
-                Email = providerSummary.Email,
-                PhoneNumber = providerSummary.Phone,
-                Website = providerSummary.ContactUrl
+                MarketingInfo = providerSummaryResponse.MarketingInfo,
+                Email = providerSummaryResponse.Email,
+                PhoneNumber = providerSummaryResponse.Phone,
+                Website = providerSummaryResponse.ContactUrl
             },
-            Qar = providerSummary.Qar,
-            Reviews = providerSummary.Reviews,
+            Qar = providerSummaryResponse.Qar,
+            Reviews = providerSummaryResponse.Reviews,
             Courses = courses,
             EndpointAssessments = new EndpointAssessmentsDetails
             {
