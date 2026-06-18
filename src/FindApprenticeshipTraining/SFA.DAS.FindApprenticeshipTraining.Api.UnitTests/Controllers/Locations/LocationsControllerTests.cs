@@ -19,7 +19,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Locations
     public class LocationsControllerTests
     {
         [Test, MoqAutoData]
-        public async Task Then_Passes_Query_To_Mediator_And_Returns_Locations(
+        public async Task GetByQuery_ReturnsOkAndLocationsFromMediator(
             string searchTerm,
             GetLocationsQueryResponse queryResponse,
             [Frozen] Mock<IMediator> mockMediator,
@@ -41,7 +41,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Locations
         }
 
         [Test, MoqAutoData]
-        public async Task And_Exception_Then_Returns_Bad_Request(
+        public async Task GetByQuery_ReturnsBadRequestWhenExceptionThrown(
             string searchTerm,
             [Frozen] Mock<IMediator> mockMediator,
             [Greedy] LocationsController controller)

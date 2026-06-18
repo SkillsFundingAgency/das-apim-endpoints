@@ -16,7 +16,7 @@ public sealed class CoursesControllerGetCourseProviderTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Then_Get_Course_Provider_Calls_Mediator_With_Expected_Properties(
+    public async Task GetCourseProvider_CallsMediatorWithExpectedProperties(
         GetCourseProviderRequest request,
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] CoursesController sut
@@ -56,7 +56,7 @@ public sealed class CoursesControllerGetCourseProviderTests
 
     [Test]
     [MoqAutoData]
-    public async Task And_The_Handler_Returns_Null_Then_Returns_NotFound(
+    public async Task GetCourseProvider_ReturnsNotFoundWhenHandlerReturnsNull(
         [Frozen] Mock<IMediator> mockMediator,
         [Greedy] CoursesController sut)
     {

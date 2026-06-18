@@ -16,7 +16,7 @@ public sealed class CoursesControllerCourseRoutesTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Then_Passes_Query_To_Mediator_And_Returns_Routes(
+    public async Task GetCourseRoutes_ReturnsOkAndRoutesFromMediator(
         GetRoutesListResponse expectedResponse
     )
     {
