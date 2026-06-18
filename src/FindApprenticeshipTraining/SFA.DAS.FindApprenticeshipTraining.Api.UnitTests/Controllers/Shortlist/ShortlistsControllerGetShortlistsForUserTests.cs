@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist;
 
 
-public class WhenCallingGetShortlistsForUser
+public class ShortlistsControllerGetShortlistsForUserTests
 {
     [Test, MoqAutoData]
     public async Task Then_Gets_Shortlist_For_User_From_Mediator(

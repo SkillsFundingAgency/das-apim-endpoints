@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -6,13 +9,10 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseRoutes;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 
-public sealed class WhenQueryingCourseRoutes
+public sealed class CoursesControllerCourseRoutesTests
 {
     [Test]
     [MoqAutoData]

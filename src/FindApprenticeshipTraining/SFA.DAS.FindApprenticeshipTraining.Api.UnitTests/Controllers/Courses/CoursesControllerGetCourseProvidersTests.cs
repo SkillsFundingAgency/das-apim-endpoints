@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses
 {
-    public class WhenCallingGetCourseProvidersList
+    public class CoursesControllerGetCourseProvidersTests
     {
         [Test, MoqAutoData]
         public async Task Then_Gets_Training_Course_Providers_From_Mediator(

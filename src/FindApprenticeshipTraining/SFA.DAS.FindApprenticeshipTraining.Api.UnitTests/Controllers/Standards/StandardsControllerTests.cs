@@ -11,7 +11,7 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Standards.Queries.GetStanda
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Standards;
 
-public class WhenCallingGetStandards
+public class StandardsControllerTests
 {
     [Test]
     [AutoData]

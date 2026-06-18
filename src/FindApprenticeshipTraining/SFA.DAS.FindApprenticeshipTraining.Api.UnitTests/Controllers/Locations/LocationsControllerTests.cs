@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Locations
 {
-    public class WhenSearchingForLocations
+    public class LocationsControllerTests
     {
         [Test, MoqAutoData]
         public async Task Then_Passes_Query_To_Mediator_And_Returns_Locations(
@@ -36,10 +36,10 @@ namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Locations
 
             actual.StatusCode.Should().Be((int)HttpStatusCode.OK);
             var model = actual.Value as GetLocationSearchResponse;
-            model.Locations.Should().BeEquivalentTo(queryResponse.Locations, options=>options.ExcludingMissingMembers());
-            
+            model.Locations.Should().BeEquivalentTo(queryResponse.Locations, options => options.ExcludingMissingMembers());
+
         }
-        
+
         [Test, MoqAutoData]
         public async Task And_Exception_Then_Returns_Bad_Request(
             string searchTerm,

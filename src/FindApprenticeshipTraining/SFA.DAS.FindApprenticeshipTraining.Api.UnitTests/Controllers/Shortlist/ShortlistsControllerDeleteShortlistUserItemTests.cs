@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist;
 
-public class WhenCallingDeleteShortlistUserItem
+public class ShortlistsControllerDeleteShortlistUserItemTests
 {
     [Test, MoqAutoData]
     public async Task Then_Deletes_Shortlist_Item_For_User_From_Mediator(

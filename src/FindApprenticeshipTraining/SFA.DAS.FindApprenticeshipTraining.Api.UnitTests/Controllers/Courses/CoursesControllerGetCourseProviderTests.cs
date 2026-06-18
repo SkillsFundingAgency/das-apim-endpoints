@@ -12,7 +12,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 
-public sealed class WhenCallingGetCourseProvider
+public sealed class CoursesControllerGetCourseProviderTests
 {
     [Test]
     [MoqAutoData]
