@@ -58,6 +58,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     ExpectedEndDate = firstOnProg.ExpectedEndDate,
                     CompletionDate = firstOnProg.CompletionDate,
                     WithdrawalDate = firstOnProg.WithdrawalDate,
+                    WithdrawalReasonCode = firstOnProg.WithdrawalReasonCode,
                     Milestones = milestones,
                     Price = courseDetails.Price,
                     LearningType = courseDetails.LearningType

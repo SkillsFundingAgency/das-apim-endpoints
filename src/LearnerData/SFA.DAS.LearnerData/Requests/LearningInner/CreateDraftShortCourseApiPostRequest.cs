@@ -69,6 +69,11 @@ public class OnProgramme
     public DateTime? WithdrawalDate { get; set; }
 
     /// <summary>
+    /// Withdrawal reason code
+    /// </summary>
+    public short? WithdrawalReasonCode { get; set; }
+
+    /// <summary>
     /// Completion date of the short course
     /// </summary>
     public DateTime? CompletionDate { get; set; }
