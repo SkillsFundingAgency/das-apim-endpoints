@@ -15,66 +15,53 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries
+namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries;
+
+[TestFixture]
+public class GetAllProviderCoursesQueryHandlerTests
 {
-    [TestFixture]
-    public class GetAllProviderCoursesQueryHandlerTests
+    [Test, MoqAutoData]
+    public async Task Handle_CallsInnerApi_ReturnsResults(
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+        List<GetAllProviderCoursesResponse> courses,
+        GetAllProviderCoursesQuery query,
+        GetAllProviderCoursesQueryHandler sut)
     {
-        [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ReturnsResults(
-            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-            List<GetAllProviderCoursesResponse> courses,
-            GetAllProviderCoursesQuery query,
-            GetAllProviderCoursesQueryHandler sut)
-        {
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(courses);
-            var result = await sut.Handle(query, new CancellationToken());
+        apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(courses);
+        var result = await sut.Handle(query, new CancellationToken());
 
-            result.Should().BeEquivalentTo(courses, options =>
-               options.Excluding(c => c.IfateReferenceNumber)
-                   .Excluding(c => c.StandardInfoUrl)
-                   .Excluding(c => c.ContactUsPhoneNumber)
-                   .Excluding(c => c.ContactUsEmail)
-                   .Excluding(c => c.IsConfirmed)
-                   .Excluding(c => c.HasNationalDeliveryOption)
-                   .Excluding(c => c.DeliveryModels)
-                   .Excluding(c => c.HasHundredPercentEmployerDeliveryOption)
-           );
-        }
+        result.Should().BeEquivalentTo(courses, options =>
+           options.Excluding(c => c.IfateReferenceNumber)
+               .Excluding(c => c.StandardInfoUrl)
+               .Excluding(c => c.ContactUsPhoneNumber)
+               .Excluding(c => c.ContactUsEmail)
+               .Excluding(c => c.IsConfirmed)
+               .Excluding(c => c.HasNationalDeliveryOption)
+               .Excluding(c => c.DeliveryModels)
+               .Excluding(c => c.HasHundredPercentEmployerDeliveryOption)
+       );
+    }
 
-        [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ReturnsEmptySetWithNoCourses(
-            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-            GetAllProviderCoursesQuery query,
-            GetAllProviderCoursesQueryHandler sut)
-        {
-            var courses = new List<GetAllProviderCoursesResponse>();
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(courses);
-            var result = await sut.Handle(query, new CancellationToken());
+    [Test, MoqAutoData]
+    public async Task Handle_CallsInnerApi_ReturnsEmptySetWithNoCourses(
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+        GetAllProviderCoursesQuery query,
+        GetAllProviderCoursesQueryHandler sut)
+    {
+        var courses = new List<GetAllProviderCoursesResponse>();
+        apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync(courses);
+        var result = await sut.Handle(query, new CancellationToken());
 
-            result.Should().BeEmpty();
-        }
+        result.Should().BeEmpty();
+    }
 
-        [Test, MoqAutoData]
-        public async Task Handle_CallsInnerApi_ReturnsNullSetWithNullCourses(
-            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-            GetAllProviderCoursesQuery query,
-            GetAllProviderCoursesQueryHandler sut)
-        {
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ReturnsAsync((List<GetAllProviderCoursesResponse>)null);
-            var result = await sut.Handle(query, new CancellationToken());
-
-            result.Should().BeNull();
-        }
-
-        [Test, MoqAutoData]
-        public void Handle_CallsInnerApi_ThrowsException(
-            [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-            GetAllProviderCoursesQuery query,
-            GetAllProviderCoursesQueryHandler sut)
-        {
-            apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ThrowsAsync(new Exception());
-            Assert.ThrowsAsync<Exception>(() => sut.Handle(query, new CancellationToken()));
-        }
+    [Test, MoqAutoData]
+    public void Handle_CallsInnerApi_ThrowsException(
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
+        GetAllProviderCoursesQuery query,
+        GetAllProviderCoursesQueryHandler sut)
+    {
+        apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ThrowsAsync(new Exception());
+        Assert.ThrowsAsync<Exception>(() => sut.Handle(query, new CancellationToken()));
     }
 }

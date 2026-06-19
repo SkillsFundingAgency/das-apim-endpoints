@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -25,38 +24,25 @@ public class GetAllProviderCoursesQueryHandler : IRequestHandler<GetAllProviderC
     public async Task<List<GetAllProviderCoursesQueryResult>> Handle(GetAllProviderCoursesQuery request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Get Course request received for Ukprn number {Ukprn}", request.Ukprn);
-        try
+        var courses = await _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllProviderCoursesRequest(request.Ukprn, request.CourseType));
+        var results = new List<GetAllProviderCoursesQueryResult>();
+        foreach (var c in courses)
         {
-            var courses = await _courseManagementApiClient.Get<List<GetAllProviderCoursesResponse>>(new GetAllProviderCoursesRequest(request.Ukprn, request.CourseType));
-            if (courses == null)
+            var course = new GetAllProviderCoursesQueryResult
             {
-                _logger.LogInformation("Courses data not found for {Ukprn}", request.Ukprn);
-                return null;
-            }
-            var results = new List<GetAllProviderCoursesQueryResult>();
-            foreach (var c in courses)
-            {
-                var course = new GetAllProviderCoursesQueryResult
-                {
-                    ProviderCourseId = c.ProviderCourseId,
-                    CourseName = c.CourseName,
-                    Level = c.Level,
-                    LarsCode = c.LarsCode,
-                    ApprovalBody = c.ApprovalBody,
-                    IsApprovedByRegulator = c.IsApprovedByRegulator,
-                    IsRegulatedForProvider = c.IsRegulatedForProvider,
-                    HasLocations = c.HasLocations,
-                    HasOnlineDeliveryOption = c.HasOnlineDeliveryOption,
-                    CourseType = c.CourseType
-                };
-                results.Add(course);
-            }
-            return results;
+                ProviderCourseId = c.ProviderCourseId,
+                CourseName = c.CourseName,
+                Level = c.Level,
+                LarsCode = c.LarsCode,
+                ApprovalBody = c.ApprovalBody,
+                IsApprovedByRegulator = c.IsApprovedByRegulator,
+                IsRegulatedForProvider = c.IsRegulatedForProvider,
+                HasLocations = c.HasLocations,
+                HasOnlineDeliveryOption = c.HasOnlineDeliveryOption,
+                CourseType = c.CourseType
+            };
+            results.Add(course);
         }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, $"Error occurred trying to retrieve Courses for Ukprn {request.Ukprn}");
-            throw;
-        }
+        return results;
     }
 }
