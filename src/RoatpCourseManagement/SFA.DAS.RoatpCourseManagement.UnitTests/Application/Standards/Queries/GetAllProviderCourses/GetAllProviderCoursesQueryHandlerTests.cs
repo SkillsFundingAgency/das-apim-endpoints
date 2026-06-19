@@ -13,7 +13,7 @@ using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.RoatpCourseManagement.UnitTests.InnerApi.Standards.Queries;
+namespace SFA.DAS.RoatpCourseManagement.UnitTests.Application.Standards.Queries.GetAllProviderCourses;
 
 [TestFixture]
 public class GetAllProviderCoursesQueryHandlerTests

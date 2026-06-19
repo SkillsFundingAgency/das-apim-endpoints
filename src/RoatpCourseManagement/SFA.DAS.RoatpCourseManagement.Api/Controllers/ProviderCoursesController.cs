@@ -67,13 +67,6 @@ public class ProviderCoursesController : ControllerBase
         try
         {
             var result = await _mediator.Send(new GetAllProviderCoursesQuery(ukprn, courseType));
-
-            if (result.Count == 0)
-            {
-                _logger.LogInformation("Standards data not found for ukprn number {Ukprn}", ukprn);
-                return Ok(result);
-            }
-
             _logger.LogInformation("Standards data found for ukprn number {Ukprn}", ukprn);
             return Ok(result);
 
