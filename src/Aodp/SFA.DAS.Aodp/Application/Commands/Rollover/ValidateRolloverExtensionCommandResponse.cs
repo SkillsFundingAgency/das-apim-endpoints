@@ -3,7 +3,7 @@
 namespace SFA.DAS.Aodp.Application.Commands.Rollover
 {
     [ExcludeFromCodeCoverage]
-    public class ValidateFundingExtensionCandidatesCommandResponse
+    public class ValidateRolloverExtensionCommandResponse
     {
         public bool IsValid { get; set; }
 

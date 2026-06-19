@@ -3,7 +3,7 @@
 namespace SFA.DAS.AODP.Application.Commands.Rollover
 {
     [ExcludeFromCodeCoverage]
-    public class ApplyFundingExtensionsCommandResponse
+    public class SubmitRolloverExtensionCommandResponse
     {
         public string? ResultMessage { get; set; }
     }

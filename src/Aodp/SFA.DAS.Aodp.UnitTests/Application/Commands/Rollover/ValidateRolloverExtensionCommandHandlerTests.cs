@@ -1,9 +1,7 @@
 ﻿using AutoFixture;
 using AutoFixture.AutoMoq;
 using Moq;
-using SFA.DAS.Aodp.Application.Commands.Application.Application;
 using SFA.DAS.Aodp.Application.Commands.Rollover;
-using SFA.DAS.Aodp.Application.Queries.Rollover;
 using SFA.DAS.Aodp.Configuration;
 using SFA.DAS.Aodp.InnerApi.AodpApi.Rollover;
 using SFA.DAS.Aodp.Services;
@@ -14,28 +12,28 @@ using System.Net;
 namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
 {
     [TestFixture]
-    public class ValidateFundingExtensionCandidatesCommandHandlerTests
+    public class ValidateRolloverExtensionCommandHandlerTests
     {
         private IFixture _fixture;
         private Mock<IAodpApiClient<AodpApiConfiguration>> _apiClientMock;
-        private ValidateFundingExtensionCandidatesCommandHandler _handler;
+        private ValidateRolloverExtensionCommandHandler _handler;
 
         [SetUp]
         public void SetUp()
         {
             _fixture = new Fixture().Customize(new AutoMoqCustomization());
             _apiClientMock = _fixture.Freeze<Mock<IAodpApiClient<AodpApiConfiguration>>>();
-            _handler = new ValidateFundingExtensionCandidatesCommandHandler(_apiClientMock.Object);
+            _handler = new ValidateRolloverExtensionCommandHandler(_apiClientMock.Object);
         }
 
         [Test]
         public async Task Handle_WhenApiClientReturnsSuccess_ShouldReturnSuccessResponse()
         {
             // Arrange
-            var command = _fixture.Create<ValidateFundingExtensionCandidatesCommand>();
+            var command = _fixture.Create<ValidateRolloverExtensionCommand>();
 
-            var apiResponse = new ApiResponse<ValidateFundingExtensionCandidatesCommandResponse>(
-               new ValidateFundingExtensionCandidatesCommandResponse
+            var apiResponse = new ApiResponse<ValidateRolloverExtensionCommandResponse>(
+               new ValidateRolloverExtensionCommandResponse
                {
                    IsValid = true,
                    ValidationSuccessSummary = new FundingExtensionSummary 
@@ -51,8 +49,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
                string.Empty);
 
             _apiClientMock
-                .Setup(c => c.PostWithResponseCode<ValidateFundingExtensionCandidatesCommandResponse>(
-                    It.IsAny<ValidateFundingExtensionCandidatesApiRequest>(), true))
+                .Setup(c => c.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>(), true))
                 .ReturnsAsync(apiResponse);
 
 
@@ -60,8 +58,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
             var result = await _handler.Handle(command, CancellationToken.None);
 
             _apiClientMock.Verify(c =>
-                c.PostWithResponseCode<ValidateFundingExtensionCandidatesCommandResponse>(
-                    It.IsAny<ValidateFundingExtensionCandidatesApiRequest>(), true),
+                c.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>(), true),
                 Times.Once);
 
             // Assert
@@ -84,11 +82,11 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
         public async Task Handle_WhenApiClientThrows_ShouldReturnFailureResponse()
         {
             // Arrange
-            var command = _fixture.Create<ValidateFundingExtensionCandidatesCommand>();
+            var command = _fixture.Create<ValidateRolloverExtensionCommand>();
 
             _apiClientMock
-                .Setup(x => x.PostWithResponseCode<ValidateFundingExtensionCandidatesCommandResponse>(
-                    It.IsAny<ValidateFundingExtensionCandidatesApiRequest>()))
+                .Setup(x => x.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>()))
                 .ThrowsAsync(new Exception("API failure"));
 
             // Act
@@ -99,8 +97,8 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
             Assert.That(result.ErrorMessage, Is.EqualTo("API failure"));
 
             _apiClientMock.Verify(x =>
-                x.PostWithResponseCode<ValidateFundingExtensionCandidatesCommandResponse>(
-                    It.IsAny<ValidateFundingExtensionCandidatesApiRequest>()),
+                x.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
+                    It.IsAny<ValidateRolloverExtensionApiRequest>()),
                 Times.Once);
         }
 
@@ -108,19 +106,19 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Commands.Rollover
         public async Task Handle_ShouldSendCorrectApiRequest()
         {
             // Arrange
-            var command = _fixture.Create<ValidateFundingExtensionCandidatesCommand>();
+            var command = _fixture.Create<ValidateRolloverExtensionCommand>();
 
-            ValidateFundingExtensionCandidatesApiRequest? capturedRequest = null;
+            ValidateRolloverExtensionApiRequest? capturedRequest = null;
 
             _apiClientMock
-                .Setup(x => x.PostWithResponseCode<ValidateFundingExtensionCandidatesCommandResponse>(
+                .Setup(x => x.PostWithResponseCode<ValidateRolloverExtensionCommandResponse>(
                     It.IsAny<IPostApiRequest>(), true))
                 .Callback<IPostApiRequest, bool>((req, _) =>
                 {
-                    capturedRequest = req as ValidateFundingExtensionCandidatesApiRequest;
+                    capturedRequest = req as ValidateRolloverExtensionApiRequest;
                 })
-                .ReturnsAsync(new ApiResponse<ValidateFundingExtensionCandidatesCommandResponse>(
-                    new ValidateFundingExtensionCandidatesCommandResponse
+                .ReturnsAsync(new ApiResponse<ValidateRolloverExtensionCommandResponse>(
+                    new ValidateRolloverExtensionCommandResponse
                     {
                         IsValid = true
                     },

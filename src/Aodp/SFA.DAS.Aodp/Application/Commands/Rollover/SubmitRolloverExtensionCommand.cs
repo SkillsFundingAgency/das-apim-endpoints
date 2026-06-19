@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace SFA.DAS.AODP.Application.Commands.Rollover
 {
     [ExcludeFromCodeCoverage]
-    public class ApplyFundingExtensionsCommand : IRequest<BaseMediatrResponse<ApplyFundingExtensionsCommandResponse>>
+    public class SubmitRolloverExtensionCommand : IRequest<BaseMediatrResponse<SubmitRolloverExtensionCommandResponse>>
     {
         public List<FundingExtensionItem> Items { get; set; } = new();
     }

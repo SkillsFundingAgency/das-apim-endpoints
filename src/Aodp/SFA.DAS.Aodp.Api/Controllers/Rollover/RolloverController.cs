@@ -63,19 +63,19 @@ public class RolloverController : BaseController
         return await SendRequestAsync(new GetRolloverCandidatesForExportQuery { RolloverWorkflowRunId = rolloverWorkflowRunId });
     }
 
-    [HttpPost("/api/rollover/rolloverextensionvalidation")]
-    [ProducesResponseType(typeof(ValidateFundingExtensionCandidatesCommandResponse), StatusCodes.Status200OK)]
+    [HttpPost("/api/rollover/validaterolloverextension")]
+    [ProducesResponseType(typeof(ValidateRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ValidateFundingExtensionCandidates(ValidateFundingExtensionCandidatesCommand validateFundingExtensionCandidatesCommand)
+    public async Task<IActionResult> ValidateRolloverExtension(ValidateRolloverExtensionCommand validateFundingExtensionCandidatesCommand)
     {
         return await SendRequestAsync(validateFundingExtensionCandidatesCommand);
     }
 
-    [HttpPost("/api/rollover/applyrolloverextension")]
-    [ProducesResponseType(typeof(ApplyFundingExtensionsCommandResponse), StatusCodes.Status200OK)]
+    [HttpPost("/api/rollover/submitrolloverextension")]
+    [ProducesResponseType(typeof(SubmitRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> ApplyFundingExtensionsToCandidates(ApplyFundingExtensionsCommand applyFundingExtensionsCommand)
+    public async Task<IActionResult> SubmitRolloverExtension(SubmitRolloverExtensionCommand submitRolloverExtensionCommand)
     {
-        return await SendRequestAsync(applyFundingExtensionsCommand);
+        return await SendRequestAsync(submitRolloverExtensionCommand);
     }
 }
