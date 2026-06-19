@@ -170,6 +170,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                     ExpectedEndDate = onProg.ExpectedEndDate,
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = onProg.WithdrawalDate,
+                    WithdrawalReasonCode = onProg.WithdrawalReasonCode,
                     Milestones = milestones
                 };
             }).ToList()

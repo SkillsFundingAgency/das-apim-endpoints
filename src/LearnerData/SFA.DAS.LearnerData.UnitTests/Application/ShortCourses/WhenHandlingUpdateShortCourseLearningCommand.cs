@@ -11,6 +11,7 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
@@ -175,6 +176,39 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _earningsApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
                 r.Data.CompletionDate == _completionDate)),
+            Times.Once);
+    }
+
+    [Test]
+    public async Task Then_WithdrawalReasonCode_Is_Sent_To_Learning_Api()
+    {
+        // Arrange
+        const short withdrawalReasonCode = 5;
+        _command.Request.Delivery.OnProgramme[0].WithdrawalReasonCode = withdrawalReasonCode;
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learnerKey,
+            CourseCode = "123",
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _earningsApiClient
+            .Setup(x => x.Get<ShortCourseEarningGetResponse>(It.IsAny<GetShortCourseEarningsRequest>()))
+            .ReturnsAsync(_fixture.Create<ShortCourseEarningGetResponse>());
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.Is<UpdateShortCourseLearningPutRequest>(r =>
+                    r.Data.OnProgramme[0].WithdrawalReasonCode == withdrawalReasonCode)),
             Times.Once);
     }
 
