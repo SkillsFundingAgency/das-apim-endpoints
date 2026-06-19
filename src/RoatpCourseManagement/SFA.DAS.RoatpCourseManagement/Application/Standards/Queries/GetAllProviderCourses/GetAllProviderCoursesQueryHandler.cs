@@ -28,19 +28,7 @@ public class GetAllProviderCoursesQueryHandler : IRequestHandler<GetAllProviderC
         var results = new List<GetAllProviderCoursesQueryResult>();
         foreach (var c in courses)
         {
-            var course = new GetAllProviderCoursesQueryResult
-            {
-                ProviderCourseId = c.ProviderCourseId,
-                CourseName = c.CourseName,
-                Level = c.Level,
-                LarsCode = c.LarsCode,
-                ApprovalBody = c.ApprovalBody,
-                IsApprovedByRegulator = c.IsApprovedByRegulator,
-                IsRegulatedForProvider = c.IsRegulatedForProvider,
-                HasLocations = c.HasLocations,
-                HasOnlineDeliveryOption = c.HasOnlineDeliveryOption,
-                CourseType = c.CourseType
-            };
+            var course = (GetAllProviderCoursesQueryResult)c;
             results.Add(course);
         }
         return results;

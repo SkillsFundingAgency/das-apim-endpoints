@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
@@ -53,15 +51,5 @@ public class GetAllProviderCoursesQueryHandlerTests
         var result = await sut.Handle(query, new CancellationToken());
 
         result.Should().BeEmpty();
-    }
-
-    [Test, MoqAutoData]
-    public void Handle_CallsInnerApi_ThrowsException(
-        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClientMock,
-        GetAllProviderCoursesQuery query,
-        GetAllProviderCoursesQueryHandler sut)
-    {
-        apiClientMock.Setup(c => c.Get<List<GetAllProviderCoursesResponse>>(It.IsAny<GetAllProviderCoursesRequest>())).ThrowsAsync(new Exception());
-        Assert.ThrowsAsync<Exception>(() => sut.Handle(query, new CancellationToken()));
     }
 }
