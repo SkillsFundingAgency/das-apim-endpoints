@@ -54,6 +54,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
 
             return new CreateDraftShortCourseRequest
             {
+                Ukprn = ukprn,
                 LearnerUpdateDetails = new ShortCourseLearningUpdateDetails
                 {
                     Uln = request.Learner.Uln,
