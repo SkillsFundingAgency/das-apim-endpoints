@@ -44,7 +44,7 @@ resources:
     endpoint: SkillsFundingAgency
   pipelines:
   - pipeline: das-employer-config
-    project: Admin Apprenticeship Service
+    project: Digital Apprenticeship Service
     source: das-employer-config
     branch: master
 
