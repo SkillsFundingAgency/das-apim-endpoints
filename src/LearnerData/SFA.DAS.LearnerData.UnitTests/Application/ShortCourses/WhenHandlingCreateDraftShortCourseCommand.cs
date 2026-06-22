@@ -7,6 +7,7 @@ using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using OnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
@@ -34,10 +35,12 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
     private CreateDraftShortCourseCommand _command;
     private CreateDraftShortCourseRequest _builtRequest;
+    private OnProgramme _resolvedOnProg;
     private long _ukprn;
     private Guid _learningKey;
     private Guid _episodeKey;
     private ShortCourseRequest _shortCourseRequest;
+    private ShortCourseOnProgramme _onProg;
     private CreateUnapprovedShortCourseLearningRequest _builtEarningsRequest;
 
     [SetUp]
@@ -75,11 +78,13 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         _builtEarningsRequest = new CreateUnapprovedShortCourseLearningRequest();
 
+        _onProg = new ShortCourseOnProgramme { StartDate = new DateTime(2025, 8, 1), AgreementId = "AGR-001" };
+
         _shortCourseRequest = new ShortCourseRequest
         {
             Delivery = new ShortCourseDelivery
             {
-                OnProgramme = [new ShortCourseOnProgramme { StartDate = new DateTime(2025, 8, 1), AgreementId = "AGR-001" }]
+                OnProgramme = [_onProg]
             },
             ConsumerReference = "consumer-ref-123"
         };
@@ -88,6 +93,16 @@ public class WhenHandlingCreateDraftShortCourseCommand
         {
             Ukprn = _ukprn,
             ShortCourseRequest = _shortCourseRequest
+        };
+
+        _resolvedOnProg = new OnProgramme
+        {
+            StartDate = new DateTime(2025, 8, 1),
+            ExpectedEndDate = new DateTime(2026, 7, 31),
+            Price = 1500,
+            EmployerId = 123456,
+            CourseCode = "91",
+            WithdrawalReasonCode = 2
         };
 
         _builtRequest = new CreateDraftShortCourseRequest
@@ -100,31 +115,23 @@ public class WhenHandlingCreateDraftShortCourseCommand
                 EmailAddress = "john@test.com",
                 DateOfBirth = new DateTime(2000, 1, 1)
             },
-            OnProgramme = new()
-            {
-                StartDate = new DateTime(2025, 8, 1),
-                ExpectedEndDate = new DateTime(2026, 7, 31),
-                Price = 1500,
-                EmployerId = 123456,
-                CourseCode = "91",
-                WithdrawalReasonCode = 2
-            }
+            OnProgramme = [_resolvedOnProg]
         };
 
         _createDraftShortCoursePostRequestBuilder
             .Setup(x => x.Build(_shortCourseRequest, _ukprn))
             .ReturnsAsync(_builtRequest);
 
-        var apiResponse = new ApiResponse<CreateShortCoursePostResponse>(
-            new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey },
+        var apiResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(
+            new CreateDraftShortCoursePostResponse { Results = [new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey }] },
             HttpStatusCode.Created, "");
 
         _learningApiClient
-            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .Setup(x => x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()))
             .ReturnsAsync(apiResponse);
 
         _createUnapprovedShortCourseLearningRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, _learningKey, _episodeKey, _ukprn, _builtRequest))
+            .Setup(x => x.Build(_shortCourseRequest, _onProg, _learningKey, _episodeKey, _ukprn, _resolvedOnProg))
             .Returns(_builtEarningsRequest);
     }
 
@@ -136,8 +143,8 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         // Assert
         _learningApiClient.Verify(x =>
-                x.PostWithResponseCode<CreateShortCoursePostResponse>(
-                    It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == _builtRequest), true),
+                x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(
+                    It.Is<CreateDraftShortCourseApiPostRequest>(r => r.Data == _builtRequest)),
             Times.Once);
     }
 
@@ -157,19 +164,19 @@ public class WhenHandlingCreateDraftShortCourseCommand
                     e.LastName == _builtRequest.LearnerUpdateDetails.LastName &&
                     e.Email == _builtRequest.LearnerUpdateDetails.EmailAddress &&
                     e.DoB == _builtRequest.LearnerUpdateDetails.DateOfBirth &&
-                    e.StartDate == _builtRequest.OnProgramme.StartDate &&
-                    e.PlannedEndDate == _builtRequest.OnProgramme.ExpectedEndDate &&
+                    e.StartDate == _resolvedOnProg.StartDate &&
+                    e.PlannedEndDate == _resolvedOnProg.ExpectedEndDate &&
                     e.PercentageLearningToBeDelivered == 100 &&
                     e.EpaoPrice == 0 &&
-                    e.TrainingPrice == (int)_builtRequest.OnProgramme.Price &&
+                    e.TrainingPrice == (int)_resolvedOnProg.Price &&
                     e.IsFlexiJob == false &&
                     e.PlannedOTJTrainingHours == 0 &&
-                    e.AgreementId == _shortCourseRequest.Delivery.OnProgramme.MinBy(x => x.StartDate)!.AgreementId &&
+                    e.AgreementId == _onProg.AgreementId &&
                     e.ConsumerReference == _shortCourseRequest.ConsumerReference &&
                     e.StandardCode == 0 &&
-                    e.LarsCode == _builtRequest.OnProgramme.CourseCode &&
+                    e.LarsCode == _resolvedOnProg.CourseCode &&
                     e.CorrelationId != Guid.Empty &&
-                    e.LearningType == (LearningType)_builtRequest.OnProgramme.LearningType
+                    e.LearningType == (LearningType)_resolvedOnProg.LearningType
                 ),
                 It.IsAny<PublishOptions>()),
             Times.Once);
@@ -207,9 +214,9 @@ public class WhenHandlingCreateDraftShortCourseCommand
     public async Task Then_When_Learning_Returns_NoContent_Earnings_Is_Not_Called()
     {
         // Arrange
-        var noContentResponse = new ApiResponse<CreateShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
+        var noContentResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
         _learningApiClient
-            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .Setup(x => x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()))
             .ReturnsAsync(noContentResponse);
 
         // Act
@@ -223,9 +230,9 @@ public class WhenHandlingCreateDraftShortCourseCommand
     public async Task Then_When_Learning_Returns_NoContent_A_Result_Is_Returned()
     {
         // Arrange
-        var noContentResponse = new ApiResponse<CreateShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
+        var noContentResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(null, HttpStatusCode.NoContent, "");
         _learningApiClient
-            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .Setup(x => x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()))
             .ReturnsAsync(noContentResponse);
 
         // Act
@@ -243,7 +250,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
 
         var builtBody = new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] };
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(_builtRequest.OnProgramme))
+            .Setup(x => x.Build(_resolvedOnProg))
             .Returns(builtBody);
 
         _earningsApiClient
@@ -271,7 +278,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         SetupReinstatedLearningResponse();
 
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(_builtRequest.OnProgramme))
+            .Setup(x => x.Build(_resolvedOnProg))
             .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
 
         _earningsApiClient
@@ -297,13 +304,51 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _messageSession.Verify(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()), Times.Once);
     }
 
+    [Test]
+    public async Task Then_Bundled_Post_Processes_Each_Item_Independently()
+    {
+        // Arrange - AC3/AC4 shape: original (ignored, e.g. flag-off Progression) course alongside a new course in one POST.
+        var secondOnProg = new ShortCourseOnProgramme { StartDate = new DateTime(2025, 9, 1), AgreementId = "AGR-002" };
+        _shortCourseRequest.Delivery.OnProgramme = [_onProg, secondOnProg];
+
+        var secondResolvedOnProg = new OnProgramme { StartDate = new DateTime(2025, 9, 1), CourseCode = "92" };
+        _builtRequest.OnProgramme = [_resolvedOnProg, secondResolvedOnProg];
+
+        var secondLearningKey = Guid.NewGuid();
+        var secondEpisodeKey = Guid.NewGuid();
+        var apiResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(
+            new CreateDraftShortCoursePostResponse
+            {
+                Results =
+                [
+                    new CreateShortCoursePostResponse { IsIgnored = true },
+                    new CreateShortCoursePostResponse { LearningKey = secondLearningKey, EpisodeKey = secondEpisodeKey }
+                ]
+            },
+            HttpStatusCode.Created, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        _createUnapprovedShortCourseLearningRequestBuilder
+            .Setup(x => x.Build(_shortCourseRequest, secondOnProg, secondLearningKey, secondEpisodeKey, _ukprn, secondResolvedOnProg))
+            .Returns(new CreateUnapprovedShortCourseLearningRequest());
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Once);
+        _messageSession.Verify(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()), Times.Once);
+    }
+
     private void SetupReinstatedLearningResponse()
     {
-        var reinstatedResponse = new ApiResponse<CreateShortCoursePostResponse>(
-            new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey, IsReinstated = true, Episodes = [] },
+        var reinstatedResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(
+            new CreateDraftShortCoursePostResponse { Results = [new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey, IsReinstated = true, Episodes = [] }] },
             HttpStatusCode.OK, "");
         _learningApiClient
-            .Setup(x => x.PostWithResponseCode<CreateShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>(), true))
+            .Setup(x => x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()))
             .ReturnsAsync(reinstatedResponse);
     }
 }

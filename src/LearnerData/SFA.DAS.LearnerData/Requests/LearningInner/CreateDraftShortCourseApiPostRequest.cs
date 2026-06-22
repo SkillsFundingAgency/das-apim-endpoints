@@ -29,7 +29,7 @@ public class CreateDraftShortCourseRequest
     /// <summary>
     /// On programme details
     /// </summary>
-    public OnProgramme OnProgramme { get; set; }
+    public List<OnProgramme> OnProgramme { get; set; } = new();
 }
 
 public class ShortCourseLearningUpdateDetails : LearningUpdateDetails
