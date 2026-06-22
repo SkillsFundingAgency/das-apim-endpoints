@@ -97,10 +97,6 @@ public class GetManageApprenticeshipDetailsQueryHandler(
         result.OverlappingTrainingDateRequest = overlappingTrainingDateResponse.Body?.OverlappingTrainingDateRequest;
         result.HasMultipleDeliveryModelOptions = deliveryModel?.Count > 1;
         result.CanActualStartDateBeChanged = canActualStartDateBeChanged;
-        result.PendingPriceChange = null;
-        result.PendingStartDateChange = null;
-        result.PaymentsStatus = new PaymentsStatus { PaymentsFrozen = false };
-        result.LearnerStatusDetails = new LearnerStatusDetails { LearnerStatus = LearnerStatus.None };
         return result;
     }
 
