@@ -5,15 +5,14 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
@@ -63,7 +62,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
             .ReturnsAsync((LocationItem)null);
 
             coursesApiMock.Setup(
-                client => client.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(x => x.StandardId == query.LarsCode)))
+                client => client.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)))
             .ReturnsAsync(standardResponse);
 
             var expectedResponse = new GetCourseProvidersResponse
@@ -83,7 +82,7 @@ namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Courses.Queri
 
             result.Should().BeEquivalentTo(expectedResponse);
 
-            coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetStandardRequest>(x => x.StandardId == query.LarsCode)), Times.Once);
+            coursesApiMock.Verify(x => x.Get<GetStandardsListItem>(It.Is<GetCourseLookupDetailsByIdRequest>(x => x.Id == query.LarsCode)), Times.Once);
             courseManagementApiMock.Verify(x => x.GetWithResponseCode<GetCourseProvidersResponse>(It.IsAny<GetProvidersByCourseIdRequest>()), Times.Never);
         }
 
