@@ -30,8 +30,8 @@ namespace SFA.DAS.DigitalCertificates.Api.Attributes
             DigitalCertificatesConfiguration configuration,
             ILogger<PrivateBetaUlnWhitelistFilter> logger)
         {
-            _configuration = configuration.PrivateBetaConfiguration;
-            _allowedUlns = _configuration.AllowedUlns.ToHashSet();
+            _configuration = configuration.PrivateBetaConfiguration ?? new PrivateBetaConfiguration();
+            _allowedUlns = (_configuration.AllowedUlns ?? []).ToHashSet();
             _logger = logger;
         }
 
