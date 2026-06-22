@@ -22,6 +22,7 @@ namespace SFA.DAS.Approvals.Api.AppStart
             CreateMap<GetChangeOfProviderChainResponse.ChangeOfProviderLink, GetManageApprenticeshipDetailsResponse.ChangeOfProviderLink>();
             CreateMap<GetChangeOfEmployerChainResponse.ChangeOfEmployerLink, GetManageApprenticeshipDetailsResponse.ChangeOfEmployerLink>();
             CreateMap<GetOverlappingTrainingDateResponse.ApprenticeshipOverlappingTrainingDateRequest, GetManageApprenticeshipDetailsResponse.ApprenticeshipOverlappingTrainingDateRequest>();
+            CreateMap<PaymentsStatus, GetManageApprenticeshipDetailsResponse.PaymentsStatusDetails>();
             CreateMap<GetManageApprenticeshipDetailsQueryResult, GetManageApprenticeshipDetailsResponse>();
             CreateMap<GetApprenticeshipsResponse, GetApprenticeshipsCSVQueryResult>();
             CreateMap<GetApprenticeshipsResponse.ApprenticeshipDetailsResponse, GetApprenticeshipsCSVQueryResult.ApprenticeshipDetailsCSVResponse>();
