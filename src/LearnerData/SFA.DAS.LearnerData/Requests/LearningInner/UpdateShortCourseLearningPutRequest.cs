@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
@@ -43,6 +44,8 @@ public class ShortCourseOnProgrammeUpdateDetails
     public DateTime? CompletionDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<Milestone> Milestones { get; set; } = new();
+    public decimal Price { get; set; }
+    public LearningType LearningType { get; set; }
 }
 
 #pragma warning restore CS8618

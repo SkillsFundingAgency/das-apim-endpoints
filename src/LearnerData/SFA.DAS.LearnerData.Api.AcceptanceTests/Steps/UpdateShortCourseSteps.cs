@@ -6,6 +6,7 @@ using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.Payments.EarningEvents.Messages.External;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;
@@ -76,6 +77,7 @@ public class UpdateShortCourseSteps
 
         ConfigureLearnerInnerApi(ukprn, learningKey, requestBody);
         ConfigureEarningsInnerApiToRespondeOkToEverything();
+        ConfigureCoursesApi();
         await CallUpdateShortCourseLearningEndpoint(ukprn, learningKey, requestBody);
     }
 
@@ -199,6 +201,37 @@ public class UpdateShortCourseSteps
                 Response.Create()
                 .WithStatusCode(200)
                 .WithBodyAsJson(response)
+            );
+    }
+
+    private void ConfigureCoursesApi()
+    {
+        var response = new CourseLookupDetailResponse
+        {
+            LarsCode = _fixture.Create<string>(),
+            Title = _fixture.Create<string>(),
+            LearningType = "ApprenticeshipUnit",
+            CourseType = _fixture.Create<string>(),
+            ApprenticeshipFunding =
+            [
+                new ApprenticeshipFunding
+                {
+                    MaxEmployerLevyCap = 6000,
+                    EffectiveFrom = new DateTime(2020, 1, 1),
+                    EffectiveTo = null
+                }
+            ]
+        };
+
+        _testContext.CoursesApi.MockServer
+            .Given(
+                Request.Create()
+                    .WithPath("/api/courses/lookup/*")
+                    .UsingGet())
+            .RespondWith(
+                Response.Create()
+                    .WithStatusCode(HttpStatusCode.OK)
+                    .WithBodyAsJson(response)
             );
     }
 

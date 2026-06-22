@@ -55,7 +55,10 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     {
         _logger.LogInformation("Handling UpdateShortCourseLearningCommand for Ukprn: {Ukprn}", command.Ukprn);
 
-        var learningRequest = BuildLearningRequest(command);
+        var courseDetails = await Task.WhenAll(command.Request.Delivery.OnProgramme
+            .Select(onProg => _shortCourseLookupService.GetCourseDetails(onProg.CourseCode, onProg.StartDate)));
+
+        var learningRequest = BuildLearningRequest(command, courseDetails);
 
         var learningResponse = await _learningApiClient.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(learningRequest);
 
@@ -66,7 +69,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             throw new Exception($"Failed to update short course learner {command.LearnerKey}. Status: {learningResponse.StatusCode}.");
         }
 
-        foreach (var (onProg, result) in command.Request.Delivery.OnProgramme.Zip(learningResponse.Body.Results))
+        foreach (var (onProg, result, details) in command.Request.Delivery.OnProgramme.Zip(learningResponse.Body.Results, courseDetails))
         {
             if (result.IsIgnored)
             {
@@ -76,7 +79,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
             if (result.IsNewLearning)
             {
-                await HandleNewLearning(command, onProg, result);
+                await HandleNewLearning(command, onProg, result, details);
             }
             else
             {
@@ -111,15 +114,13 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("Earnings removed for omitted Learning {LearningKey}", removedResult.LearningKey);
     }
 
-    private async Task HandleNewLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
+    private async Task HandleNewLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseLookupResult courseDetails)
     {
         _logger.LogInformation("New Learning created for learner {LearnerKey} / course {CourseCode}. LearningKey: {LearningKey}",
             command.LearnerKey, onProg.CourseCode, learningResponse.LearningKey);
 
-        var courseDetails = await _shortCourseLookupService.GetCourseDetails(onProg.CourseCode, onProg.StartDate);
-
-        var learningRequest = BuildCreateLearningRequest(command, onProg, learningResponse, courseDetails.Price, courseDetails.LearningType);
-        await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(learningRequest));
+        var earningsRequest = BuildCreateEarningsRequest(command, onProg, learningResponse, courseDetails.Price, courseDetails.LearningType);
+        await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequest));
 
         var correlationId = Guid.NewGuid();
         await _messageSession.Publish(MapToLearnerDataEvent(command, onProg, courseDetails.Price, correlationId));
@@ -147,7 +148,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         await PublishPaymentsEvent(command.Ukprn, learningResponse, earningsResponse);
     }
 
-    private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command)
+    private UpdateShortCourseLearningPutRequest BuildLearningRequest(UpdateShortCourseLearningCommand command, IReadOnlyList<ShortCourseLookupResult> courseDetails)
     {
         var body = new UpdateShortCourseLearningRequestBody
         {
@@ -156,7 +157,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             {
                 LearnerRef = command.Request.Learner.LearnerRef
             },
-            OnProgramme = command.Request.Delivery.OnProgramme.Select(onProg =>
+            OnProgramme = command.Request.Delivery.OnProgramme.Select((onProg, i) =>
             {
                 var milestones = onProg.Milestones.Select(m => Enum.Parse<Milestone>(m.ToString())).ToList();
                 if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
@@ -171,7 +172,9 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                     CompletionDate = onProg.CompletionDate,
                     WithdrawalDate = onProg.WithdrawalDate,
                     WithdrawalReasonCode = onProg.WithdrawalReasonCode,
-                    Milestones = milestones
+                    Milestones = milestones,
+                    Price = courseDetails[i].Price,
+                    LearningType = courseDetails[i].LearningType
                 };
             }).ToList()
         };
@@ -179,7 +182,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         return new UpdateShortCourseLearningPutRequest(command.LearnerKey, body);
     }
 
-    private CreateUnapprovedShortCourseLearningRequest BuildCreateLearningRequest(
+    private CreateUnapprovedShortCourseLearningRequest BuildCreateEarningsRequest(
         UpdateShortCourseLearningCommand command,
         ShortCourseOnProgramme onProg,
         UpdateShortCourseLearningPutResponse learningResponse,

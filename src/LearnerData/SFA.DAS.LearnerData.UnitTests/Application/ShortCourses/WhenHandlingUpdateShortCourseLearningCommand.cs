@@ -53,6 +53,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
             .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
         _shortCourseLookupService = new Mock<IShortCourseLookupService>();
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(It.IsAny<string>(), It.IsAny<DateTime>()))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
         _messageSession = new Mock<IMessageSession>();
 
         _handler = new UpdateShortCourseLearningCommandHandler(
@@ -446,6 +449,65 @@ public class WhenHandlingUpdateShortCourseLearningCommand
 
         // Assert
         _shortCourseLookupService.Verify(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_ShortCourseLookupService_Is_Called_For_Existing_Learning_Too()
+    {
+        // Arrange
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learnerKey,
+            CourseCode = onProg.CourseCode,
+            IsNewLearning = false,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _shortCourseLookupService.Verify(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Price_And_LearningType_Are_Sent_To_Learning_Api()
+    {
+        // Arrange
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 2750, LearningType = SharedLearningType.ApprenticeshipUnit });
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learnerKey,
+            CourseCode = onProg.CourseCode,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.Is<UpdateShortCourseLearningPutRequest>(r =>
+                    r.Data.OnProgramme[0].Price == 2750 &&
+                    r.Data.OnProgramme[0].LearningType == SharedLearningType.ApprenticeshipUnit)),
+            Times.Once);
     }
 
     [Test]
