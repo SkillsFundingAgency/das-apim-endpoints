@@ -60,6 +60,10 @@ namespace SFA.DAS.DigitalCertificates.Api.Attributes
 
             if (!ulns.Any())
             {
+                _logger.LogError(
+                    "Private beta ULN whitelist check failed. No ULN was available in the response.");
+
+                context.Result = new StatusCodeResult(500);
                 return;
             }
 
