@@ -1,3 +1,5 @@
+## ⛔Never push sensitive information such as client id's, secrets or keys into repositories including in the README file⛔
+
 # _Roatp Outer API_
 
 <img src="https://avatars.githubusercontent.com/u/9841374?s=200&v=4" align="right" alt="UK Government logo">
