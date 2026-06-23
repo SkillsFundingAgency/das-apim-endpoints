@@ -2,6 +2,7 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Moq;
+using NServiceBus;
 using NUnit.Framework;
 using SFA.DAS.ApprenticeApp.Application.Commands.LearnerNotifications;
 using SFA.DAS.ApprenticeApp.Application.Queries.LearnerNotifications;
@@ -41,15 +42,15 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             };
 
             var apiResponse = new GetLearnerNotificationsQueryResult
-            {
-                Notifications = notifications
-            };
+                {
+                    Notifications = notifications
+                };
 
             apiClientMock
-                .Setup(c => c.Get<GetLearnerNotificationsQueryResult>(
-                    It.Is<GetLearnerNotificationsRequest>(r =>
-                        r.GetUrl == $"learner/{query.AccountIdentifier}")))
-                .ReturnsAsync(apiResponse);
+            .Setup(c => c.Get<GetLearnerNotificationsQueryResult>(
+                It.Is<GetLearnerNotificationsRequest>(r =>
+                    r.GetUrl == $"learner/{query.AccountIdentifier}")))
+            .ReturnsAsync(apiResponse);
 
             // Act
             var result = await sut.Handle(query, CancellationToken.None);
@@ -84,16 +85,11 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
                 Category = "General"
             };
 
-            var apiResponse = new GetLearnerNotificationByIdQueryResult
-            {
-                Notification = notification
-            };
-
-            apiClientMock
-                .Setup(c => c.Get<GetLearnerNotificationByIdQueryResult>(
-                    It.Is<GetLearnerNotificationByIdRequest>(r =>
-                        r.GetUrl == $"learner/{query.AccountIdentifier}/notifications/{query.NotificationIdentifier}")))
-                .ReturnsAsync(apiResponse);
+                    apiClientMock
+            .Setup(c => c.Get<LearnerNotification>(
+                It.Is<GetLearnerNotificationByIdRequest>(r =>
+                    r.GetUrl == $"learner/{query.AccountIdentifier}/notifications/{query.NotificationIdentifier}")))
+            .ReturnsAsync(notification);
 
             // Act
             var result = await sut.Handle(query, CancellationToken.None);
@@ -104,10 +100,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             result.Notification.NotificationId.Should().Be(12345L);
             result.Notification.Heading.Should().Be("Test Notification");
 
-            apiClientMock.Verify(c => c.Get<GetLearnerNotificationByIdQueryResult>(
-                It.IsAny<GetLearnerNotificationByIdRequest>()),
-                Times.Once);
-        }
+            apiClientMock.Verify(c => c.Get<LearnerNotification>(
+            It.IsAny<GetLearnerNotificationByIdRequest>()),
+            Times.Once);
+                }
 
         [Test, MoqAutoData]
         public async Task GetLearnerNotificationStatusQueryHandler_Returns_Status(
@@ -128,16 +124,11 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
                 LastUpdated = new DateTime(2025, 12, 13, 18, 02, 35)
             };
 
-            var apiResponse = new GetLearnerNotificationStatusQueryResult
-            {
-                NotificationStatus = notificationStatus
-            };
-
             apiClientMock
-                .Setup(c => c.Get<GetLearnerNotificationStatusQueryResult>(
-                    It.Is<GetLearnerNotificationStatusRequest>(r =>
-                        r.GetUrl == $"learner/{query.AccountIdentifier}/notifications/{query.NotificationIdentifier}/status")))
-                .ReturnsAsync(apiResponse);
+            .Setup(c => c.Get<LearnerNotificationStatus>(
+                It.Is<GetLearnerNotificationStatusRequest>(r =>
+                    r.GetUrl == $"learner/{query.AccountIdentifier}/notifications/{query.NotificationIdentifier}/status")))
+            .ReturnsAsync(notificationStatus);
 
             // Act
             var result = await sut.Handle(query, CancellationToken.None);
@@ -148,9 +139,9 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             result.NotificationStatus.StatusId.Should().Be(0);
             result.NotificationStatus.StatusName.Should().Be("Pending");
 
-            apiClientMock.Verify(c => c.Get<GetLearnerNotificationStatusQueryResult>(
-                It.IsAny<GetLearnerNotificationStatusRequest>()),
-                Times.Once);
+            apiClientMock.Verify(c => c.Get<LearnerNotificationStatus>(
+            It.IsAny<GetLearnerNotificationStatusRequest>()),
+            Times.Once);
         }
 
         [Test, MoqAutoData]
