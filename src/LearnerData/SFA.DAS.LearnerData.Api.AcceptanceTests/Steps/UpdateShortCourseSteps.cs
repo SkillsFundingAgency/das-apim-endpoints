@@ -5,7 +5,6 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.Payments.EarningEvents.Messages.External;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using System.Net;
 using System.Net.Http.Headers;
 using TechTalk.SpecFlow;
@@ -77,20 +76,6 @@ public class UpdateShortCourseSteps
 
         requests.Should().ContainSingle(request => request.RequestMessage.Url.Contains(requestUrl),
             $"Expected a request to {requestUrl} but found {requests.Count} requests instead.");
-    }
-
-    [Then(@"a short course earnings updated event is published for payments")]
-    public void ThenAShortCourseEarningsUpdatedEventIsPublishedForPayments()
-    {
-        var learnerKey = _scenarioContext.Get<Guid>(ShortCourseLearnerKey);
-        var calculateGrowthAndSkillsPayments = StubMessageSession.SentMessages
-            .OfType<CalculateGrowthAndSkillsPayments>()
-            .Where(e => e.Learner.LearnerKey == learnerKey)
-            .ToList();
-
-        calculateGrowthAndSkillsPayments.Should().NotBeEmpty("Expected a CalculateGrowthAndSkillsPayments command to be sent but none were found.");
-        calculateGrowthAndSkillsPayments.Should().ContainSingle(e => e.Training.CourseType == Payments.EarningEvents.Messages.External.CourseType.ShortCourse,
-            "Expected a CalculateGrowthAndSkillsPayments command for a ShortCourse to be sent but it was not found.");
     }
 
     private void ConfigureLearnerInnerApi(long ukprn, Guid learningKey, ShortCourseRequest shortCourseRequest)

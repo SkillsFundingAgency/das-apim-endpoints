@@ -180,8 +180,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             x.Put(It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()),
             Times.Never);
     }
-            LearningKey = _learnerKey,
-            LearningKey = _learnerKey,
 
     [Test]
     public async Task Then_Builder_Body_Is_Passed_To_Earnings_Api()
