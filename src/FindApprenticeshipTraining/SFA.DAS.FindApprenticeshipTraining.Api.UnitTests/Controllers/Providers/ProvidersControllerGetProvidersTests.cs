@@ -12,11 +12,11 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Providers;
 
-public class WhenCallingGetProviders
+public class ProvidersControllerGetProvidersTests
 {
 
     [Test, MoqAutoData]
-    public async Task Then_it_Sends_Query_To_Mediator(
+    public async Task GetProviders_SendsQueryToMediator(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProvidersController sut,
         CancellationToken cancellationToken
@@ -33,7 +33,7 @@ public class WhenCallingGetProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_it_Return_ExpectedResponse_From_Mediator(
+    public async Task GetProviders_ReturnsOkWithProviders(
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ProvidersController sut,
         GetRoatpProvidersQueryResult queryResult,

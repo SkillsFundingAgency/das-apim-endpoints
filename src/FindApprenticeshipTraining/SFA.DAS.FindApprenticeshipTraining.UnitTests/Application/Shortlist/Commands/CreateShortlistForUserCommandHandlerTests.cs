@@ -5,24 +5,21 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.FindApprenticeshipTraining.Application.Shortlist.Commands.CreateShortlistForUser;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.SharedOuterApi.Types.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Shortlist.Commands;
 
-public class WhenCreatingShortlistForUser
+public class CreateShortlistForUserCommandHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Creates_The_Shortlist_From_The_Request_Calling_Shortlist_Api(
+    public async Task Handle_WhenCalled_CreatesShortlistAndCallsRoatpApi(
         PostShortListResponse expectedResult,
         CreateShortlistForUserCommand command,
         LocationItem locationItem,
@@ -56,7 +53,7 @@ public class WhenCreatingShortlistForUser
     }
 
     [Test, MoqAutoData]
-    public async Task When_Location_Is_Null_Then_Shortlist_Is_Created_With_No_Longitude_And_Latitude(
+    public async Task Handle_WhenLocationNotFound_SetsLatitudeAndLongitudeToNull(
         PostShortListResponse expectedResult,
         CreateShortlistForUserCommand command,
         [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpApiClient,

@@ -54,13 +54,13 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            _logger.LogError("Failed to update shortcourse learning with key {LearningKey}. Status code: {StatusCode}",
-                command.LearningKey, learningResponse.StatusCode);
-            throw new Exception($"Failed to update shortcourse learning with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
+            _logger.LogError("Failed to update shortcourse learner with key {LearnerKey}. Status code: {StatusCode}",
+                command.LearnerKey, learningResponse.StatusCode);
+            throw new Exception($"Failed to update shortcourse learner with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        _logger.LogInformation("Shortcourse Learning with key {LearningKey} updated successfully. Changes: {@Changes}",
-            command.LearningKey, string.Join(", ", learningResponse.Body.Changes));
+        _logger.LogInformation("Shortcourse learner with key {LearnerKey} updated successfully. Changes: {@Changes}",
+            command.LearnerKey, string.Join(", ", learningResponse.Body.Changes));
 
         ShortCourseEarningsResponse earningsResponse;
 
@@ -69,18 +69,18 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x => x.StartDate);
             if (currentOnProgramme == null)
             {
-                _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearningKey);
-                throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearningKey}");
+                _logger.LogWarning("No OnProgramme data found for LearnerKey: {LearnerKey}", command.LearnerKey);
+                throw new InvalidOperationException($"No OnProgramme data found for LearnerKey: {command.LearnerKey}");
             }
             var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(currentOnProgramme);
-            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(command.LearningKey, learningResponse.Body.UpdatedEpisodeKey, earningBody);
+            var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey, earningBody);
             var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
             earningsResponse = response.Body;
         }
         else
         {
-            _logger.LogInformation("No changes requiring earnings update for shortcourse learning {LearningKey}", command.LearningKey);
-            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(command.LearningKey, learningResponse.Body.UpdatedEpisodeKey));
+            _logger.LogInformation("No changes requiring earnings update for shortcourse learner {LearnerKey}", command.LearnerKey);
+            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey));
         }
 
         await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse);
@@ -90,15 +90,15 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     {
         if (command.Request.Delivery.OnProgramme.Count > 1)
         {
-            _logger.LogWarning("Multiple OnProgramme elements supplied for LearningKey: {LearningKey}. Element with earliest StartDate will be processed; subsequent will be ignored", command.LearningKey);
+            _logger.LogWarning("Multiple OnProgramme elements supplied for LearnerKey: {LearnerKey}. Element with earliest StartDate will be processed; subsequent will be ignored", command.LearnerKey);
         }
 
         var currentOnProgramme = command.Request.Delivery.OnProgramme.MinBy(x=>x.StartDate);
 
         if (currentOnProgramme == null)
         {
-            _logger.LogWarning("No OnProgramme data found for LearningKey: {LearningKey}", command.LearningKey);
-            throw new InvalidOperationException($"No OnProgramme data found for LearningKey: {command.LearningKey}");
+            _logger.LogWarning("No OnProgramme data found for LearnerKey: {LearnerKey}", command.LearnerKey);
+            throw new InvalidOperationException($"No OnProgramme data found for LearnerKey: {command.LearnerKey}");
         }
 
         var milestones = currentOnProgramme.Milestones.Select(sourceMilestone =>
@@ -120,11 +120,12 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 ExpectedEndDate = currentOnProgramme.ExpectedEndDate,
                 CompletionDate = currentOnProgramme.CompletionDate,
                 WithdrawalDate = currentOnProgramme.WithdrawalDate,
+                WithdrawalReasonCode = currentOnProgramme.WithdrawalReasonCode,
                 Milestones = milestones
             }
         };
 
-        return new UpdateShortCourseLearningPutRequest(command.LearningKey, body);
+        return new UpdateShortCourseLearningPutRequest(command.LearnerKey, body);
     }
 
     private async Task PublishEvent(long ukprn, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseEarningsResponse earningsResponse)

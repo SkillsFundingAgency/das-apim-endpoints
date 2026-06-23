@@ -9,6 +9,7 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.LearnerData.Requests.LearningInner;
+using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
@@ -32,7 +33,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<IMessageSession> _messageSession;
 
     private UpdateShortCourseLearningCommand _command;
-    private Guid _learningKey;
+    private Guid _learnerKey;
     private long _ukprn;
     private DateTime _completionDate;
 
@@ -58,13 +59,13 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _messageSession.Object,
             new PaymentsConfiguration { PaymentsEndpoint = "test-payments-endpoint" });
 
-        _learningKey = Guid.NewGuid();
+        _learnerKey = Guid.NewGuid();
         _ukprn = 12345678;
         _completionDate = new DateTime(2025, 12, 1);
 
         _command = new UpdateShortCourseLearningCommand
         {
-            LearningKey = _learningKey,
+            LearnerKey = _learnerKey,
             Ukprn = _ukprn,
             Request = new ShortCourseRequest
             {
@@ -102,7 +103,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Arrange
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 
@@ -133,12 +134,44 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     }
 
     [Test]
+    public async Task Then_WithdrawalReasonCode_Is_Sent_To_Learning_Api()
+    {
+        // Arrange
+        const short withdrawalReasonCode = 5;
+        _command.Request.Delivery.OnProgramme[0].WithdrawalReasonCode = withdrawalReasonCode;
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = _learnerKey,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningPutResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
+
+        _earningsApiClient
+            .Setup(x => x.Get<ShortCourseEarningGetResponse>(It.IsAny<GetShortCourseEarningsRequest>()))
+            .ReturnsAsync(_fixture.Create<ShortCourseEarningGetResponse>());
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _learningApiClient.Verify(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningPutResponse>(
+                It.Is<UpdateShortCourseLearningPutRequest>(r =>
+                    r.Data.OnProgramme.WithdrawalReasonCode == withdrawalReasonCode)),
+            Times.Once);
+    }
+
+    [Test]
     public async Task Then_Earnings_Api_Is_Not_Called_When_There_Are_No_Changes()
     {
         // Arrange
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = []
         };
 
@@ -168,7 +201,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
 
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 
@@ -203,7 +236,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
 
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 
@@ -232,7 +265,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Arrange
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
-            LearningKey = _learningKey,
+            LearningKey = _learnerKey,
             Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
         };
 

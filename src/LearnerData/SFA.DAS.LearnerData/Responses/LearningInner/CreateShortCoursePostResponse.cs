@@ -7,7 +7,6 @@ public class CreateShortCoursePostResponse : IShortCourseLearningPaymentEventBui
     public Guid EpisodeKey { get; set; }
     public bool IsReinstated { get; set; }
     public Guid LearnerKey { get; set; }
-    public DateTime? CompletionDate { get; set; }
     public LearningInnerShortCourseLearner Learner { get; set; }
     public LearningInnerShortCourseEpisode[] Episodes { get; set; }
 }
