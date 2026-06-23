@@ -21,6 +21,7 @@ public class GetManageApprenticeshipDetailsResponse
     public IReadOnlyCollection<ApprenticeshipOverlappingTrainingDateRequest> OverlappingTrainingDateRequest { get; set; }
     public bool HasMultipleDeliveryModelOptions { get; set; }
     public bool? CanActualStartDateBeChanged { get; set; }
+    public PaymentsStatusDetails PaymentsStatus { get; set; }
 
     public class ApprenticeshipDetails
     {
@@ -177,4 +178,39 @@ public class GetManageApprenticeshipDetailsResponse
         public short Status { get; set; }
         public DateTime? ActionedOn { get; set; }
     }
+
+    public class PendingPriceChangeDetails
+    {
+        public decimal Cost { get; set; }
+        public decimal? TrainingPrice { get; set; }
+        public decimal? EndPointAssessmentPrice { get; set; }
+        public DateTime? ProviderApprovedDate { get; set; }
+        public DateTime? EmployerApprovedDate { get; set; }
+        public string Initiator { get; set; }
+    }
+
+    public class PendingStartDateChangeDetails
+    {
+        public DateTime PendingActualStartDate { get; set; }
+        public DateTime PendingPlannedEndDate { get; set; }
+        public string? Initiator { get; set; }
+        public DateTime? ProviderApprovedDate { get; set; }
+        public DateTime? EmployerApprovedDate { get; set; }
+    }
+
+    public class PaymentsStatusDetails
+    {
+        public bool FreezeStatus { get; set; }
+        public string ReasonFrozen { get; set; }
+        public DateTime? PaymentFreezeDate { get; set; }
+    }
+}
+
+public class LearnerStatusDetails
+{
+    public LearnerStatus LearnerStatus { get; set; }
+    public DateTime? WithdrawalChangedDate { get; set; }
+    public string WithdrawalReason { get; set; }
+    public DateTime? LastCensusDateOfLearning { get; set; }
+    public DateTime? LastDayOfLearning { get; set; }
 }
