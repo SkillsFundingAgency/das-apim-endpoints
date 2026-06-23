@@ -96,7 +96,9 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
     {
         var employerType = Enum.Parse<EmployerType>(episode.EmployerType);
 
-        var earnings = earningsResponse.Instalments
+        var payableEarnings = earningsResponse.Instalments.Where(x => x.IsPayable);
+
+        var earnings = payableEarnings
             .GroupBy(i => i.CollectionYear)
             .Select(g => new SFA.DAS.Payments.EarningEvents.Messages.External.Earnings
             {
@@ -108,7 +110,7 @@ public class CalculateGrowthAndSkillsPaymentsEventBuilder : ICalculateGrowthAndS
                         StartDate = episode.StartDate, // This will be adjusted if there are multiple years
                         EndDate = episode.PlannedEndDate, // This will be adjusted if there are multiple years
                         Periods = g
-                        .Where(x => x.IsPayable).Select(instalment => new EarningPeriod
+                        .Select(instalment => new EarningPeriod
                         {
                             EarningType = GetEarningType(instalment),
                             DeliveryPeriod = instalment.CollectionPeriod,
