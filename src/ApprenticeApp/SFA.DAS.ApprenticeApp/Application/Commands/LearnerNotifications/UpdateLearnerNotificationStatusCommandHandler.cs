@@ -2,7 +2,7 @@ using MediatR;
 using SFA.DAS.ApprenticeApp.InnerApi.LearnerNotifications.Requests;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,13 +21,13 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.LearnerNotifications
         {
             var data = new UpdateNotificationStatusData
             {
-                Status = request.Status
+                StatusId = request.StatusId
             };
 
             await _notificationsApiClient.Put(
                 new UpdateLearnerNotificationStatusRequest(
-                    request.AccountIdentifier, 
-                    request.NotificationIdentifier, 
+                    request.AccountIdentifier,
+                    request.NotificationIdentifier,
                     data));
 
             return Unit.Value;

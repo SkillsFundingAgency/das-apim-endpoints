@@ -1,7 +1,7 @@
 using MediatR;
 using SFA.DAS.ApprenticeApp.InnerApi.LearnerNotifications.Requests;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +19,11 @@ namespace SFA.DAS.ApprenticeApp.Application.Queries.LearnerNotifications
         public async Task<GetLearnerNotificationsQueryResult> Handle(GetLearnerNotificationsQuery request, CancellationToken cancellationToken)
         {
             var result = await _notificationsApiClient.Get<GetLearnerNotificationsQueryResult>(
-                new GetLearnerNotificationsRequest(request.AccountIdentifier));
+                new GetLearnerNotificationsRequest(
+                    request.AccountIdentifier,  
+                    request.Order,
+                    request.DateFrom,
+                    request.Statuses));
 
             return new GetLearnerNotificationsQueryResult
             {

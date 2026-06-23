@@ -1,9 +1,10 @@
-using Microsoft.Extensions.Diagnostics.HealthChecks;
+﻿using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Infrastructure.HealthCheck
+namespace SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck
 {
     public class LearnerNotificationsApiHealthCheck : ApiHealthCheck<LearnerNotificationsApiConfiguration>, IHealthCheck
     {

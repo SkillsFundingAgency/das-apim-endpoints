@@ -58,10 +58,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Models
         {
             var sut = new UpdateNotificationStatusData
             {
-                Status = "Read"
+                StatusId = 999
             };
 
-            ClassicAssert.AreEqual("Read", sut.Status);
+            ClassicAssert.AreEqual(999, sut.StatusId);
         }
 
         [Test]
@@ -69,10 +69,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Models
         {
             var sut = new UpdateNotificationStatusRequest
             {
-                Status = "Read"
+                StatusId = 999
             };
 
-            ClassicAssert.AreEqual("Read", sut.Status);
+            ClassicAssert.AreEqual(999, sut.StatusId);
         }
     }
 }

@@ -1,5 +1,5 @@
+using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.ApprenticeApp.Models;
-using SFA.DAS.SharedOuterApi.Interfaces;
 using System;
 
 namespace SFA.DAS.ApprenticeApp.InnerApi.LearnerNotifications.Requests

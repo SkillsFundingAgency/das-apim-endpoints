@@ -210,7 +210,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
 
             var accountIdentifier = Guid.NewGuid();
             long notificationIdentifier = 12345L;
-            var request = new UpdateNotificationStatusRequest { Status = "Test" };
+            var request = new UpdateNotificationStatusRequest {    StatusId = 999 };
 
             mediatorMock
                 .Setup(m => m.Send(
@@ -228,7 +228,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Controllers
                     It.Is<UpdateLearnerNotificationStatusCommand>(c =>
                         c.AccountIdentifier == accountIdentifier &&
                         c.NotificationIdentifier == notificationIdentifier &&
-                        c.Status == request.Status),
+                        c.StatusId == request.StatusId),
                     It.IsAny<CancellationToken>()),
                 Times.Once);
         }

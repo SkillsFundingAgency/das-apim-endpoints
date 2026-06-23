@@ -2,6 +2,6 @@ namespace SFA.DAS.ApprenticeApp.Models
 {
     public class UpdateNotificationStatusData
     {
-        public string Status { get; set; }
+        public int StatusId { get; set; }
     }
 }

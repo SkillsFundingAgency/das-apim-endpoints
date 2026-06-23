@@ -46,7 +46,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.InnerApi.LearnerNotifications.Requests
         {
             var accountIdentifier = Guid.NewGuid();
             long notificationIdentifier = 12345L;
-            var data = new UpdateNotificationStatusData { Status = "Read" };
+            var data = new UpdateNotificationStatusData {  StatusId = 999 };
 
             var instance = new UpdateLearnerNotificationStatusRequest(accountIdentifier, notificationIdentifier, data);
 

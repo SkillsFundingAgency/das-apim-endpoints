@@ -15,5 +15,6 @@ namespace SFA.DAS.ApprenticeApp.Models
         public DateTime? TimeToExpire { get; set; }
         public DateTime? TimeReceived { get; set; }
         public string Link { get; set; }
+        public byte? UrgencyId { get; set; }
     }
 }

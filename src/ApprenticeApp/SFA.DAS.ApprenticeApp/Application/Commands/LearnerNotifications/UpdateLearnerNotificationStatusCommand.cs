@@ -7,6 +7,6 @@ namespace SFA.DAS.ApprenticeApp.Application.Commands.LearnerNotifications
     {
         public Guid AccountIdentifier { get; set; }
         public long NotificationIdentifier { get; set; }
-        public string Status { get; set; }
+        public int StatusId { get; set; }
     }
 }

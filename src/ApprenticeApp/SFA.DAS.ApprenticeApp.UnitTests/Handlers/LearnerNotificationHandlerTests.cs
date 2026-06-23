@@ -8,7 +8,7 @@ using SFA.DAS.ApprenticeApp.Application.Queries.LearnerNotifications;
 using SFA.DAS.ApprenticeApp.InnerApi.LearnerNotifications.Requests;
 using SFA.DAS.ApprenticeApp.Models;
 using SFA.DAS.SharedOuterApi.Configuration;
-using SFA.DAS.SharedOuterApi.Interfaces;
+using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 using System;
 using System.Collections.Generic;
@@ -160,10 +160,10 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
         {
             // Arrange
             var command = new UpdateLearnerNotificationStatusCommand
-            {
+{
                 AccountIdentifier = Guid.NewGuid(),
                 NotificationIdentifier = 12345L,
-                Status = "Read"
+                StatusId = 1
             };
 
             apiClientMock
@@ -179,7 +179,7 @@ namespace SFA.DAS.ApprenticeApp.UnitTests.Handlers
             apiClientMock.Verify(c => c.Put(
                 It.Is<UpdateLearnerNotificationStatusRequest>(r =>
                     r.PutUrl == $"learner/{command.AccountIdentifier}/notifications/{command.NotificationIdentifier}/status" &&
-                    r.Data.Status == "Read")),
+                    r.Data.StatusId == command.StatusId)),
                 Times.Once);
         }
     }

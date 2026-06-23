@@ -5,6 +5,8 @@ using SFA.DAS.ApprenticeApp.Application.Queries.LearnerNotifications;
 using SFA.DAS.ApprenticeApp.Models;
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+
 
 namespace SFA.DAS.ApprenticeApp.Api.Controllers
 {
@@ -20,11 +22,18 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetLearnerNotifications(Guid accountIdentifier)
+        public async Task<IActionResult> GetLearnerNotifications(
+            Guid accountIdentifier,
+            [FromQuery] string order = null,
+            [FromQuery] DateTime? dateFrom = null,
+            [FromQuery] List<int> statuses = null)
         {
             var result = await _mediator.Send(new GetLearnerNotificationsQuery 
             { 
-                AccountIdentifier = accountIdentifier 
+                AccountIdentifier = accountIdentifier,
+                Order = order,
+                DateFrom = dateFrom,
+                Statuses = statuses
             });
 
             if (result?.Notifications == null)
@@ -73,7 +82,7 @@ namespace SFA.DAS.ApprenticeApp.Api.Controllers
             { 
                 AccountIdentifier = accountIdentifier,
                 NotificationIdentifier = notificationIdentifier,
-                Status = request.Status
+                StatusId = request.StatusId
             });
 
             return Ok();
