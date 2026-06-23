@@ -52,6 +52,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .With(x => x.ExpectedEndDate, DateTime.UtcNow.AddMonths(6))
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.WithdrawalDate, (DateTime?)null)
+            .With(x => x.WithdrawalReasonCode, (short?)2)
             .With(x => x.LearningSupport, _fixture.CreateMany<LearningSupport>(2).ToList())
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
             .Create();
@@ -85,6 +86,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         result.OnProgramme.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
         result.OnProgramme.CompletionDate.Should().Be(onProgramme.CompletionDate);
         result.OnProgramme.WithdrawalDate.Should().Be(onProgramme.WithdrawalDate);
+        result.OnProgramme.WithdrawalReasonCode.Should().Be(onProgramme.WithdrawalReasonCode);
         result.OnProgramme.Price.Should().Be(ExpectedPrice);
         result.OnProgramme.LearningType.Should().Be(ExpectedLearningType);
 

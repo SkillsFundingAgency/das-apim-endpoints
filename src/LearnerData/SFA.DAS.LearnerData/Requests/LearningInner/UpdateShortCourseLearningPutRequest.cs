@@ -12,9 +12,9 @@ public class UpdateShortCourseLearningPutRequest : IPutApiRequest<UpdateShortCou
     public string PutUrl { get; }
     public UpdateShortCourseLearningRequestBody Data { get; set; }
 
-    public UpdateShortCourseLearningPutRequest(Guid learningKey, UpdateShortCourseLearningRequestBody data)
+    public UpdateShortCourseLearningPutRequest(Guid learnerKey, UpdateShortCourseLearningRequestBody data)
     {
-        PutUrl = $"shortCourses/{learningKey}";
+        PutUrl = $"shortCourses/{learnerKey}";
         Data = data;
     }
 }
@@ -37,6 +37,7 @@ public class ShortCourseOnProgrammeUpdateDetails
     public long Ukprn { get; set; }
     public string CourseCode { get; set; } = "";
     public DateTime? WithdrawalDate { get; set; }
+    public short? WithdrawalReasonCode { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<Milestone> Milestones { get; set; } = new();

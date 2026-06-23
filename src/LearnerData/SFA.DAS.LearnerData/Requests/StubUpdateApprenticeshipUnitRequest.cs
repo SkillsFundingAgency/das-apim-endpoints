@@ -34,6 +34,7 @@ public class StubShortCourseOnProgramme
     public DateTime? ExpectedEndDate { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public short? WithdrawalReasonCode { get; set; }
     [Required]
     public List<StubLearningSupport> LearningSupport { get; set; }
     [Required]
