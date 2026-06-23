@@ -2,7 +2,9 @@ using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.LearnerData.Application.CreateShortCourse;
+using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
@@ -45,12 +47,8 @@ public class CreateDraftShortCourseCommandHandler(
 
         var correlationId = Guid.NewGuid();
 
-        for (var i = 0; i < learningResponse.Body.Results.Count; i++)
+        foreach (var (onProg, resolvedOnProg, result) in command.ShortCourseRequest.Delivery.OnProgramme.Zip(requestData.OnProgramme, learningResponse.Body.Results))
         {
-            var onProg = command.ShortCourseRequest.Delivery.OnProgramme[i];
-            var resolvedOnProg = requestData.OnProgramme[i];
-            var result = learningResponse.Body.Results[i];
-
             if (result.IsIgnored)
             {
                 logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", onProg.CourseCode);
@@ -66,7 +64,30 @@ public class CreateDraftShortCourseCommandHandler(
             await HandleNewLearning(command, requestData, onProg, resolvedOnProg, result, correlationId);
         }
 
+        foreach (var removedResult in learningResponse.Body.Results.Where(r => r.IsRemoved))
+        {
+            await HandleRemovedLearning(removedResult);
+        }
+
         return new CreateDraftShortCourseResult { CorrelationId = correlationId };
+    }
+
+    private async Task HandleRemovedLearning(CreateShortCoursePostResponse removedResult)
+    {
+        logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings",
+            removedResult.LearningKey, removedResult.CourseCode);
+
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.EpisodeKey);
+        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
+
+        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        {
+            logger.LogError("Failed to delete earnings for omitted Learning {LearningKey}. Status: {StatusCode}",
+                removedResult.LearningKey, earningsResponse.StatusCode);
+            throw new Exception($"Failed to delete earnings for omitted Learning {removedResult.LearningKey}. Status: {earningsResponse.StatusCode}.");
+        }
+
+        logger.LogInformation("Earnings removed for omitted Learning {LearningKey}", removedResult.LearningKey);
     }
 
     private async Task HandleReinstatedLearning(long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProg, CreateShortCoursePostResponse result)

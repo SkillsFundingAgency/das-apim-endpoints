@@ -2,6 +2,7 @@ using System.Net;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
+using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
@@ -340,6 +341,46 @@ public class WhenHandlingCreateDraftShortCourseCommand
         // Assert
         _earningsApiClient.Verify(x => x.Post(It.IsAny<PostCreateUnapprovedShortCourseLearningRequest>()), Times.Once);
         _messageSession.Verify(x => x.Publish(It.IsAny<LearnerDataEvent>(), It.IsAny<PublishOptions>()), Times.Once);
+    }
+
+    [Test]
+    public async Task Then_Earnings_Delete_Is_Called_For_Omitted_Learning()
+    {
+        // Arrange - the Learning inner appends IsRemoved results after the matched OnProgramme items,
+        // so the response list can be longer than the request's OnProgramme array.
+        var removedLearningKey = Guid.NewGuid();
+        var removedEpisodeKey = Guid.NewGuid();
+
+        var apiResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(
+            new CreateDraftShortCoursePostResponse
+            {
+                Results =
+                [
+                    new CreateShortCoursePostResponse { LearningKey = _learningKey, EpisodeKey = _episodeKey },
+                    new CreateShortCoursePostResponse { IsRemoved = true, LearningKey = removedLearningKey, EpisodeKey = removedEpisodeKey, CourseCode = "TEST02" }
+                ]
+            },
+            HttpStatusCode.Created, "");
+        _learningApiClient
+            .Setup(x => x.PostWithResponseCode<CreateDraftShortCoursePostResponse>(It.IsAny<CreateDraftShortCourseApiPostRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        _earningsApiClient
+            .Setup(x => x.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(
+                It.IsAny<DeleteShortCourseEarningsRequest>(), It.IsAny<bool>()))
+            .ReturnsAsync(new ApiResponse<DeleteShortCourseEarningsResponse>(
+                new DeleteShortCourseEarningsResponse(), HttpStatusCode.OK, string.Empty));
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(
+                It.Is<DeleteShortCourseEarningsRequest>(r =>
+                    r.LearningKey == removedLearningKey && r.EpisodeKey == removedEpisodeKey),
+                It.IsAny<bool>()),
+            Times.Once);
     }
 
     private void SetupReinstatedLearningResponse()

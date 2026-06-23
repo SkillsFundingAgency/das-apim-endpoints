@@ -76,7 +76,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 _logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", result.CourseCode);
                 continue;
             }
-
+            
             if (result.IsNewLearning)
             {
                 await HandleNewLearning(command, onProg, result, details);
