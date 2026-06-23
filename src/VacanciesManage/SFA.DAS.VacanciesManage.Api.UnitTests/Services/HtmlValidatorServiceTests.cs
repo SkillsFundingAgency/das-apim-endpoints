@@ -60,7 +60,7 @@ internal class HtmlValidatorServiceTests
         var result = htmlValidatorService.ValidateHtml("<div><li>Item</li></div>");
 
         result.Errors.Should().Contain(e =>
-            e.ErrorMessage.Contains("<li> must be inside <ul> or <ol>."));
+            e.ErrorMessage.Contains("<li> must be inside <ul>."));
     }
 
     [Test, MoqAutoData]

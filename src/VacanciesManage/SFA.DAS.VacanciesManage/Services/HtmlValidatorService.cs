@@ -14,8 +14,7 @@ public class HtmlValidatorService : IHtmlValidatorService
 {
     private static readonly HashSet<string> AllowedTags =
     [
-        "p", "br", "strong", "b", "em", "i", "u",
-        "ul", "ol", "li", "a"
+        "p", "br", "ul", "li"
     ];
 
     private const string Description = "HTML validation error";
@@ -72,9 +71,9 @@ public class HtmlValidatorService : IHtmlValidatorService
         {
             var parent = li.ParentNode;
 
-            if (parent.Name != "ul" && parent.Name != "ol")
+            if (parent.Name != "ul")
             {
-                result.Errors.Add(new ValidationFailure(Description, "<li> must be inside <ul> or <ol>."));
+                result.Errors.Add(new ValidationFailure(Description, "<li> must be inside <ul>."));
             }
         }
 

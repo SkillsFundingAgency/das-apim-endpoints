@@ -21,6 +21,9 @@ public class CreateVacancyRequestValidator : AbstractValidator<CreateVacancyRequ
         RuleFor(x => x.OutcomeDescription)
             .MustBeValidHtml(htmlValidator);
 
+        RuleFor(x => x.ThingsToConsider)
+            .MustBeValidHtml(htmlValidator);
+
         RuleFor(x => x.TrainingDescription)
             .MustBeValidHtml(htmlValidator);
 
@@ -31,12 +34,6 @@ public class CreateVacancyRequestValidator : AbstractValidator<CreateVacancyRequ
             .MustBeValidHtml(htmlValidator);
 
         RuleFor(x => x.Wage.CompanyBenefitsInformation)
-            .MustBeValidHtml(htmlValidator);
-
-        RuleFor(x => x.AdditionalQuestion1)
-            .MustBeValidHtml(htmlValidator);
-
-        RuleFor(x => x.AdditionalQuestion2)
             .MustBeValidHtml(htmlValidator);
     }
 }
