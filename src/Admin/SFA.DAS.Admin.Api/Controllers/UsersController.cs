@@ -38,6 +38,22 @@ namespace SFA.DAS.Admin.Api.Controllers
             }
         }
 
+        [HttpGet("useractions/{code}/all-activity")]
+        public async Task<IActionResult> GetAllUserActivityByCode([FromRoute] string code)
+        {
+            try
+            {
+                var result = await _mediator.Send(new Application.Queries.GetAllUserActivityByCode.GetAllUserActivityByCodeQuery { Code = code });
+
+                return result == null ? NotFound() : Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to retrieve all user activity by code {Code}", code);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
         [HttpPost("useractions/{code}/search")]
         public async Task<IActionResult> CheckUserActionByCode([FromRoute] string code, [FromBody] CheckUserActionByCodeCommand command)
         {
