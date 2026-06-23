@@ -21,7 +21,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.UnitTests.Application.Providers.Queries;
 
-public class WhenGettingProviderSummary
+public class GetProviderSummaryQueryHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Handle_ValidDependenciesResponse_ReturnsProviderSummaryFromRoatpApi(
@@ -183,6 +183,70 @@ public class WhenGettingProviderSummary
         var sut = await handler.Handle(query, cancellationToken);
 
         sut.EndpointAssessments.Should().BeEquivalentTo(assessorResponse);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_NullCourseResponse_ReturnsEmptyProviderCourses(
+       int ukprn,
+       [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> apiClient,
+       [Frozen] Mock<IAssessorsApiClient<AssessorsApiConfiguration>> assessorsApiClient,
+       [Frozen] Mock<ICachedFeedbackService> cachedFeedbackService,
+       [Greedy] GetProviderSummaryQueryHandler handler,
+       GetProviderSummaryQueryResponse providerSummaryResponse,
+       GetEndpointAssessmentsResponse assessorResponse,
+       EmployerFeedbackAnnualDetails feedbackResponse,
+       ApprenticeFeedbackAnnualDetails apprenticeFeedbackResponse,
+       CancellationToken cancellationToken
+   )
+    {
+        var query = new GetProviderSummaryQuery(ukprn);
+
+        apiClient.Setup(x =>
+                x.Get<GetProviderSummaryQueryResponse>(
+                    It.Is<GetProviderSummaryRequest>(x => x.Ukprn == ukprn)
+                )
+            )
+            .ReturnsAsync(providerSummaryResponse);
+
+        apiClient.Setup(x =>
+                x.Get<List<GetProviderAdditionalStandardsItem>>(
+                    It.Is<GetProviderAdditionalStandardsRequest>(c => c.GetUrl.Contains(ukprn.ToString()))
+                )
+            )
+            .ReturnsAsync((List<GetProviderAdditionalStandardsItem>)null);
+
+        assessorsApiClient.Setup(x =>
+                x.Get<GetEndpointAssessmentsResponse>(
+                    It.Is<GetEndpointAssessmentsRequest>(c => c.GetUrl.Contains(ukprn.ToString()))
+                )
+            )
+            .ReturnsAsync(assessorResponse);
+
+        cachedFeedbackService.Setup(x =>
+                x.GetProviderFeedback(ukprn))
+            .ReturnsAsync((feedbackResponse, apprenticeFeedbackResponse));
+
+        var sut = await handler.Handle(query, cancellationToken);
+
+        sut.Courses.Should().NotBeNull();
+        sut.Courses.Should().BeEmpty();
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_ProviderSummaryIsNull_ReturnsNull(
+        int ukprn,
+        [Frozen] Mock<IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>> roatpApiClient,
+        [Greedy] GetProviderSummaryQueryHandler handler,
+        CancellationToken cancellationToken
+    )
+    {
+        roatpApiClient
+            .Setup(x => x.Get<GetProviderSummaryQueryResponse>(It.Is<GetProviderSummaryRequest>(r => r.Ukprn == ukprn)))
+            .ReturnsAsync((GetProviderSummaryQueryResponse)null);
+
+        var result = await handler.Handle(new GetProviderSummaryQuery(ukprn), cancellationToken);
+
+        result.Should().BeNull();
     }
 
     [Test, MoqAutoData]

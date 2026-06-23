@@ -1,4 +1,6 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -6,15 +8,13 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourses;
 using SFA.DAS.Testing.AutoFixture;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 
-public sealed class WhenQueryingCourses
+public sealed class CoursesControllerGetCoursesTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Passes_Get_Courses_Query_To_Mediator(
+    public async Task GetCourses_ReturnsOkAndPassesQueryToMediator(
         GetCoursesQuery query,
         GetCoursesQueryResult result,
         [Frozen] Mock<IMediator> mockMediator,

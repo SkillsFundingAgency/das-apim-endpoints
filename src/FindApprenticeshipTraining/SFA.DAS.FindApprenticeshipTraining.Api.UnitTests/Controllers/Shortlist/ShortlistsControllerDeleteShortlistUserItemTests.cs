@@ -15,10 +15,10 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist;
 
-public class WhenCallingDeleteShortlistUserItem
+public class ShortlistsControllerDeleteShortlistUserItemTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Deletes_Shortlist_Item_For_User_From_Mediator(
+    public async Task DeleteShortlistItemForUser_ReturnsAcceptedAndDeletesViaMediator(
         Guid id,
         DeleteShortlistItemCommandResult expected,
         [Frozen] Mock<IMediator> mockMediator,
@@ -37,7 +37,7 @@ public class WhenCallingDeleteShortlistUserItem
 public class WhenCallingGetShortlistCountForUser
 {
     [Test, MoqAutoData]
-    public async Task Then_Gets_Shortlist_Count_For_User_From_Mediator(
+    public async Task GetShortlistCountForUser_ReturnsOkAndCountFromMediator(
         Guid id,
         GetShortlistCountForUserQueryResult mediatorResult,
         [Frozen] Mock<IMediator> mockMediator,
