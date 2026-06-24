@@ -1,5 +1,4 @@
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.Api.Common.Infrastructure;
 using SFA.DAS.Api.Common.Interfaces;
@@ -18,10 +17,6 @@ public static class AddServiceRegistrationExtensions
 {
     public static void AddServiceRegistration(this IServiceCollection services)
     {
-        services
-            .AddFluentValidationAutoValidation()
-            .AddFluentValidationClientsideAdapters();
-
         services.AddValidatorsFromAssemblyContaining<CreateVacancyRequestValidator>();
 
         services.AddHttpClient();

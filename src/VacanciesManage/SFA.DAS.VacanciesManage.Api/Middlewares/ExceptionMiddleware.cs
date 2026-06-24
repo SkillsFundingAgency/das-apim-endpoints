@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using SFA.DAS.VacanciesManage.Api.Models;
-using System;
+﻿using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using FluentValidation;
 
 namespace SFA.DAS.VacanciesManage.Api.Middlewares;
 
@@ -35,34 +34,40 @@ public class ExceptionMiddleware(RequestDelegate next)
         context.Response.ContentType = "application/json";
         context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
 
-        var traceId = context.TraceIdentifier;
+        var errors = ex.Errors
+            .GroupBy(x => x.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(x => x.ErrorMessage).ToArray());
 
-        var messages = ex.Errors
-            .SelectMany(x => x.ErrorMessage)
-            .ToList();
-
-        var response = new CreateVacancyExampleBadRequestResponse
+        var problemDetails = new ValidationProblemDetails(errors)
         {
-            Type = new Uri(ValidationUri),
-            Title = $"Validation failed: {string.Join("; ", messages)}",
-            Status = 400,
-            TraceId = traceId
+            Type = ValidationUri,
+            Title = "One or more validation errors occurred.",
+            Status = StatusCodes.Status400BadRequest,
+            Extensions =
+            {
+                ["traceId"] = context.TraceIdentifier
+            }
         };
 
-        await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+        await context.Response.WriteAsJsonAsync(problemDetails);
     }
 
     private static async Task HandleGenericException(HttpContext context)
     {
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = 500;
+        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-        var response = new CreateVacancyExampleBadRequestResponse
+        var response = new ValidationProblemDetails
         {
-            Type = new Uri(ValidationUri),
+            Type = ValidationUri,
             Title = "Internal server error",
-            Status = 500,
-            TraceId = context.TraceIdentifier
+            Status = StatusCodes.Status500InternalServerError,
+            Extensions =
+            {
+                ["traceId"] = context.TraceIdentifier
+            }
         };
 
         await context.Response.WriteAsync(JsonSerializer.Serialize(response));
