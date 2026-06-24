@@ -20,7 +20,7 @@ public class ShortCoursesController(
 {
     [HttpPost]
     [Route("/providers/{ukprn}/shortCourses")]
-    public async Task<IActionResult> CreateShortCourse(ShortCourseRequest request, [FromRoute] long ukprn)
+    public async Task<IActionResult> CreateShortCourse(ShortCourseRequest request, [FromRoute] long ukprn, [FromQuery] int academicYear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
@@ -49,8 +49,10 @@ public class ShortCoursesController(
         }
     }
 
-    [HttpGet("/providers/{ukprn}/academicyears/{academicyear}/shortCourses")]
-    public async Task<IActionResult> GetShortCourseLearners([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    [HttpGet]
+    [Route("/providers/{ukprn}/academicyears/{academicyear}/shortCourses")]
+    [Route("/providers/{ukprn}/shortCourses/learners")]
+    public async Task<IActionResult> GetShortCourseLearners([FromRoute] string ukprn, int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
 
         logger.LogInformation("GetShortCourseLearners for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
@@ -73,8 +75,10 @@ public class ShortCoursesController(
     }
 
     // This is the short course equivalent of FM36
-    [HttpGet("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
-    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromRoute] int collectionYear, [FromRoute] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    [HttpGet]
+    [Route("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
+    [Route("/providers/{ukprn}/shortCourses/earnings")]
+    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
 
         logger.LogInformation("GetShortCourseEarnings for ukprn {Ukprn}, year {Year} and period {period}", ukprn, collectionYear, collectionPeriod);
@@ -91,7 +95,7 @@ public class ShortCoursesController(
     }
 
     [HttpDelete("/providers/{ukprn}/shortCourses/{learnerKey}")]
-    public async Task<IActionResult> RemoveShortCourse([FromRoute] long ukprn, [FromRoute] Guid learnerKey)
+    public async Task<IActionResult> RemoveShortCourse([FromRoute] long ukprn, [FromRoute] Guid learnerKey, [FromQuery] int academicYear = 2526)
     {
         try
         {
@@ -111,7 +115,7 @@ public class ShortCoursesController(
     }
 
     [HttpPut("/providers/{ukprn}/shortCourses/{learnerKey}")]
-    public async Task<IActionResult> UpdateShortCourseLearning(Guid learnerKey, ShortCourseRequest request, long ukprn)
+    public async Task<IActionResult> UpdateShortCourseLearning(Guid learnerKey, ShortCourseRequest request, long ukprn, [FromQuery] int academicYear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {

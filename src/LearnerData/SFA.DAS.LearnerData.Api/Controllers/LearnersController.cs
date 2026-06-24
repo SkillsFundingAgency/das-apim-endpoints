@@ -8,7 +8,6 @@ using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
-using FluentValidation.Results;
 using MediatR;
 
 namespace SFA.DAS.LearnerData.Api.Controllers;
@@ -19,8 +18,10 @@ public class LearnersController(
     IMediator mediator, 
     ILogger<LearnersController> logger) : ControllerBase
 {
-    [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
-    public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    [HttpGet]
+    [Route("providers/{ukprn}/academicyears/{academicyear}/learners")]
+    [Route("providers/{ukprn}/apprenticeships/learners")]
+    public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
         logger.LogInformation("GetLearners for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
@@ -42,7 +43,8 @@ public class LearnersController(
 
     [HttpPost]
     [Route("/providers/{ukprn}/learners")]
-    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest)
+    [Route("/providers/{ukprn}/apprenticeships")]
+    public async Task<IActionResult> CreateLearningRecord([FromRoute] long ukprn, [FromBody] CreateLearnerRequest dataRequest, [FromQuery] int academicYear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
@@ -65,7 +67,8 @@ public class LearnersController(
 
     [HttpPut]
     [Route("/providers/{ukprn}/learning/{learningKey}")]
-    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request)
+    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
+    public async Task<IActionResult> UpdateLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromBody] UpdateLearnerRequest request, [FromQuery] int academicyear = 2526, [FromQuery] int collectionPeriod = 0)
     {
         try
         {
@@ -84,10 +87,10 @@ public class LearnersController(
         }
     }
 
-    [HttpDelete("/providers/{ukprn}/learning/{learningKey}")]
-    public async Task<IActionResult> RemoveLearner(
-        [FromRoute] long ukprn,
-        [FromRoute] Guid learningKey)
+    [HttpDelete]
+    [Route("/providers/{ukprn}/learning/{learningKey}")]
+    [Route("/providers/{ukprn}/apprenticeships/{learningKey}")]
+    public async Task<IActionResult> RemoveLearner([FromRoute] long ukprn, [FromRoute] Guid learningKey, [FromQuery] int academicyear = 2526)
     {
         logger.LogInformation(
             "RemoveLearner for provider {ukprn}, apprenticeship {learningKey}",
@@ -120,6 +123,7 @@ public class LearnersController(
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
     [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
+    [Route("providers/{ukprn}/fm36data")]
     public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
     {
         try
