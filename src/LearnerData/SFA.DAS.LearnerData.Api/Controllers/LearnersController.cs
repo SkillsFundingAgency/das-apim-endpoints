@@ -2,14 +2,12 @@
 using SFA.DAS.LearnerData.Application.CreateLearner;
 using SFA.DAS.LearnerData.Application.Fm36;
 using SFA.DAS.LearnerData.Application.GetLearners;
-using SFA.DAS.LearnerData.Application.ProcessLearners;
 using SFA.DAS.LearnerData.Application.RemoveLearner;
 using SFA.DAS.LearnerData.Application.UpdateLearner;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses;
 using System.Net;
-using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 
@@ -19,7 +17,6 @@ namespace SFA.DAS.LearnerData.Api.Controllers;
 [ApiController]
 public class LearnersController(
     IMediator mediator, 
-    IValidator<IEnumerable<LearnerDataRequest>> originalValidator,
     ILogger<LearnersController> logger) : ControllerBase
 {
     [HttpGet("providers/{ukprn}/academicyears/{academicyear}/learners")]
@@ -41,40 +38,6 @@ public class LearnersController(
         HttpContext.SetPageLinksInResponseHeaders(query, response);
 
         return Ok((GetLearnersResponse)response);
-    }
-
-    [HttpPut]
-    [Route("/provider/{ukprn}/academicyears/{academicyear}/learners")]
-    public async Task<IActionResult> Put([FromRoute] long ukprn, [FromRoute] int academicyear,
-        [FromBody] IEnumerable<LearnerDataRequest> dataRequests)
-    {
-        logger.LogInformation("UpdateLearner invoked with batch of {RequestCount} requests for ukprn {Ukprn}",
-            dataRequests.Count(), ukprn);
-
-        var validatorResult = await originalValidator.ValidateAsync(dataRequests);
-
-        if (!validatorResult.IsValid)
-        {
-            return BuildErrorResponse(validatorResult.Errors);
-        }
-
-        try
-        {
-            var correlationId = Guid.NewGuid();
-            await mediator.Send(new ProcessLearnersCommand
-            {
-                CorrelationId = correlationId,
-                ReceivedOn = DateTime.Now,
-                AcademicYear = academicyear,
-                Learners = dataRequests
-            });
-            return Accepted(new CorrelationResponse { CorrelationId = correlationId });
-        }
-        catch (Exception e)
-        {
-            logger.LogError(e, "Internal error occurred when processing learners list");
-            return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
-        }
     }
 
     [HttpPost]
@@ -180,15 +143,5 @@ public class LearnersController(
             logger.LogError(e, "Error attempting to get all earnings");
             return BadRequest();
         }
-    }
-
-    private IActionResult BuildErrorResponse(List<ValidationFailure> errors)
-    {
-        foreach (var error in errors)
-        {
-            ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-        }
-        return BadRequest(ModelState);
-
     }
 }
