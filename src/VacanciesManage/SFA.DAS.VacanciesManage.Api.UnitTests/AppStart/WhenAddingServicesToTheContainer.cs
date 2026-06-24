@@ -17,7 +17,7 @@ namespace SFA.DAS.VacanciesManage.Api.UnitTests.AppStart;
 public class WhenAddingServicesToTheContainer
 {
     [TestCase(typeof(IAzureClientCredentialHelper))]
-    [TestCase(typeof(SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration>))]
+    [TestCase(typeof(SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.   Recruit.Contracts.Client.RecruitApiConfiguration>))]
     [TestCase(typeof(IProviderRelationshipsApiClient<ProviderRelationshipsApiConfiguration>))]
     [TestCase(typeof(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration>))]
     [TestCase(typeof(IAccountsApiClient<AccountsConfiguration>))]

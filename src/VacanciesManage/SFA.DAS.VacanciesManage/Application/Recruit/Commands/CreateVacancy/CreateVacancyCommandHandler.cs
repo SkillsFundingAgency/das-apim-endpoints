@@ -127,7 +127,7 @@ public class CreateVacancyCommandHandler(
                 Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
                 AccountId = vacancy.AccountId!.Value,
                 AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
-                OwnerType = vacancy.OwnerType,
+                OwnerType = (OwnerType)vacancy.OwnerType,
                 SubmittedByUserId = vacancy.SubmittedByUserId.ToString(),
                 AutomatedQaOutcomeIndicators = []
             }
@@ -281,7 +281,7 @@ public class CreateVacancyCommandHandler(
             return false;
         }
 
-        if (vacancy.TrainingProvider.Ukprn is null)
+        if (vacancy.TrainingProvider?.Ukprn is null)
         {
             return false;
         }
@@ -311,6 +311,7 @@ public class CreateVacancyCommandHandler(
 
         vacancy.Status = VacancyStatus.Submitted;
         vacancy.SubmittedDate = now;
+        vacancy.ArchiveType = null;
     }
 
     private async Task<ApiResponse<Vacancy>> CreateVacancy(PostVacancyRequest vacancy, bool isSandbox)

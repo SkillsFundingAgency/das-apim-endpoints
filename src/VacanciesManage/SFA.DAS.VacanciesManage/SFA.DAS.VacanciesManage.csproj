@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="12.5.0" />
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.103" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.106-prerelease-6" />
   </ItemGroup>
 
   <ItemGroup>
