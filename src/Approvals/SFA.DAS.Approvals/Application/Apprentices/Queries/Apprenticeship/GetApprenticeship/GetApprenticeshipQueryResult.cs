@@ -1,11 +1,11 @@
-using Newtonsoft.Json;
+﻿using System;
+using System.Text.Json.Serialization;
 using Newtonsoft.Json.Converters;
 using SFA.DAS.SharedOuterApi.Types.Constants;
-using SFA.DAS.SharedOuterApi.Types.InnerApi.Interfaces;
 
-namespace SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Commitments;
+namespace SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetApprenticeship;
 
-public class GetApprenticeshipResponse : IPartyResource
+public class GetApprenticeshipQueryResult
 {
     public long Id { get; set; }
     public long CohortId { get; set; }
@@ -57,10 +57,12 @@ public class GetApprenticeshipResponse : IPartyResource
     public int? DurationReducedByHours { get; set; }
     public int? TrainingTotalHours { get; set; }
     public bool? IsDurationReducedByRpl { get; set; }
+
     [JsonConverter(typeof(StringEnumConverter))]
     public LearningType? LearningType { get; set; }
+
     public int? EmployerVerificationStatus { get; set; }
     public string EmployerVerificationNotes { get; set; }
     public bool HasChangeHistory { get; set; }
-    public int? WithdrawnReasonCode { get; set; }   
+    public int? WithdrawnReasonCode { get; set; }
 }
