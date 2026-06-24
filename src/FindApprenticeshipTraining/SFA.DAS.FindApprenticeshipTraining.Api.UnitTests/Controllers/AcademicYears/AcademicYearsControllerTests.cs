@@ -12,7 +12,8 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.AcademicYears.Queries.GetLatest;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.AcademicYears;
-public sealed class WhenQueryingAcademicYearsLatest
+
+public sealed class AcademicYearsControllerTests
 {
 
     [Test]

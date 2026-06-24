@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -6,17 +9,14 @@ using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseLevels;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 
-public sealed class WhenQueryingCourseLevels
+public sealed class CoursesControllerCourseLevelsTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Then_Passes_Query_To_Mediator_And_Returns_Levels(
+    public async Task GetCourseLevels_WithValidQuery_ReturnsLevels(
         GetCourseLevelsListResponse expectedResponse
     )
     {

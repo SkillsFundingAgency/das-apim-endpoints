@@ -14,10 +14,10 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Shortlist;
 
-public class WhenCallingPostToCreateShortlistUserItem
+public class ShortlistsControllerPostToCreateShortlistUserItemTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Creates_Shortlist_From_Mediator_Command(
+    public async Task CreateShortlistForUser_ReturnsOkAndSendsCreateCommandToMediator(
         CreateShortListRequest shortlistRequest,
         PostShortListResponse expectedResult,
         [Frozen] Mock<IMediator> mockMediator,

@@ -11,11 +11,11 @@ using SFA.DAS.FindApprenticeshipTraining.Application.Standards.Queries.GetStanda
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Standards;
 
-public class WhenCallingGetStandards
+public class StandardsControllerTests
 {
     [Test]
     [AutoData]
-    public async Task Then_Gets_Standards_From_Mediator(GetStandardsQueryResult expectedResult)
+    public async Task GetStandards_CallsMediatorAndReturnsOkObjectResult(GetStandardsQueryResult expectedResult)
     {
         Mock<IMediator> mockMediator = new Mock<IMediator>();
         mockMediator
