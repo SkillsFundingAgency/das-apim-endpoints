@@ -57,10 +57,12 @@ public class GetApprenticeshipResponse : IPartyResource
     public int? DurationReducedByHours { get; set; }
     public int? TrainingTotalHours { get; set; }
     public bool? IsDurationReducedByRpl { get; set; }
+
     [JsonConverter(typeof(StringEnumConverter))]
     public LearningType? LearningType { get; set; }
+
     public int? EmployerVerificationStatus { get; set; }
     public string EmployerVerificationNotes { get; set; }
     public bool HasChangeHistory { get; set; }
-    public int? WithdrawnReasonCode { get; set; }   
+    public int? WithdrawnReasonCode { get; set; }
 }
