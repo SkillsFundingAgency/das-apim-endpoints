@@ -22,6 +22,7 @@ public class VacancyReviewDto
     public string? ManualOutcome { get; set; }
     public string? ManualQaComment { get; init; }
     public required List<string> ManualQaFieldIndicators { get; init; }
+    public required List<ManualQaEditFieldIndicator> ManualQaEditFieldIndicators { get; init; }
     public string? AutomatedQaOutcome { get; set; }
     public List<RuleOutcome> AutomatedQaOutcomeIndicators { get; init; } = [];
     public required List<string> DismissedAutomatedQaOutcomeIndicators { get; init; }
@@ -36,6 +37,7 @@ public class VacancyReviewDto
     public Guid VacancyId { get; set; }
     public List<Address> EmployerLocations { get; set; }
     public AvailableWhere EmployerLocationOption { get; set; }
+    
     public static explicit operator VacancyReviewDto(GetVacancyReviewResponse source)
     {
         return new VacancyReviewDto
@@ -53,7 +55,8 @@ public class VacancyReviewDto
             ClosedDate = source.ClosedDate,
             ManualOutcome = source.ManualOutcome,
             ManualQaComment = source.ManualQaComment,
-            ManualQaFieldIndicators = source.ManualQaFieldIndicators.ToList(),
+            ManualQaFieldIndicators = source.ManualQaFieldIndicators,
+            ManualQaEditFieldIndicators = source.ManualQaEditFieldIndicators,
             AutomatedQaOutcome = source.AutomatedQaOutcome,
             AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators,
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
@@ -63,8 +66,6 @@ public class VacancyReviewDto
             VacancyId = source.VacancyId
         };
     }
-
-    
 
     public static explicit operator InnerApi.Requests.VacancyReviewDto(VacancyReviewDto source)
     {
@@ -83,6 +84,7 @@ public class VacancyReviewDto
             ManualOutcome = source.ManualOutcome,
             ManualQaComment = source.ManualQaComment,
             ManualQaFieldIndicators = source.ManualQaFieldIndicators.ToList(),
+            ManualQaEditFieldIndicators = source.ManualQaEditFieldIndicators,
             AutomatedQaOutcome = source.AutomatedQaOutcome,
             AutomatedQaOutcomeIndicators = source.AutomatedQaOutcomeIndicators,
             DismissedAutomatedQaOutcomeIndicators = source.DismissedAutomatedQaOutcomeIndicators,
