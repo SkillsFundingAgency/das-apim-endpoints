@@ -352,7 +352,7 @@ public class RolloverControllerTests
         {
             RolloverCandidates =
             [
-                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" }
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend", ProposedFundingApprovalEndDate = DateTime.UtcNow }
             ]
         };
 
@@ -406,7 +406,7 @@ public class RolloverControllerTests
         {
             RolloverCandidates =
             [
-                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" }
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" , ProposedFundingApprovalEndDate =  DateTime.UtcNow}
             ]
         };
 
@@ -448,7 +448,7 @@ public class RolloverControllerTests
         {
             RolloverCandidates =
             [
-                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" }
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend", ProposedFundingApprovalEndDate = DateTime.UtcNow }
             ]
         };
 
