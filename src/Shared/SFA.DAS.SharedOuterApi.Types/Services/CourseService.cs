@@ -3,6 +3,7 @@ using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Responses.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
 namespace SFA.DAS.SharedOuterApi.Types.Services;
@@ -54,5 +55,19 @@ public class CourseService(ICoursesApiClient<CoursesApiConfiguration> coursesApi
         await cacheStorageService.SaveToCache(cacheItemName, apiCourses, CourseCacheExpiryInHours);
 
         return apiCourses;
+    }
+
+    public async Task<CourseLookupDetailResponse> GetCourseLookupDetailsById(string courseCode)
+    {
+        string cacheItemName = nameof(CourseLookupDetailResponse) + "_" + courseCode;
+        var response = await cacheStorageService.RetrieveFromCache<CourseLookupDetailResponse>(cacheItemName);
+
+        if (response == null)
+        {
+            response = await coursesApiClient.Get<CourseLookupDetailResponse>(new GetCourseLookupDetailsByIdRequest(courseCode));
+            await cacheStorageService.SaveToCache(cacheItemName, response, CourseCacheExpiryInHours);
+        }
+
+        return response;
     }
 }

@@ -37,11 +37,6 @@ public class ShortCoursesController(
             logger.LogError(e, "Invalid course code when creating short course");
             return new StatusCodeResult((int)HttpStatusCode.UnprocessableEntity);
         }
-        catch (CoursesApiUnavailableException e)
-        {
-            logger.LogError(e, "Courses API unavailable when creating short course");
-            return new StatusCodeResult((int)HttpStatusCode.ServiceUnavailable);
-        }
         catch (Exception e)
         {
             logger.LogError(e, "Internal error occurred when creating short course");
