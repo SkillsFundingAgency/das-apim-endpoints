@@ -20,6 +20,8 @@ public class UpdateShortCourseOnProgrammeEarningPutRequestBuilderTests
         {
             WithdrawalDate = new DateTime(2025, 6, 1),
             CompletionDate = new DateTime(2025, 12, 1),
+            StartDate = new DateTime(2025, 1, 1),
+            ExpectedEndDate = new DateTime(2025, 6, 30),
             Milestones = [Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete]
         };
 
@@ -27,6 +29,8 @@ public class UpdateShortCourseOnProgrammeEarningPutRequestBuilderTests
 
         result.WithdrawalDate.Should().Be(onProgramme.WithdrawalDate);
         result.CompletionDate.Should().Be(onProgramme.CompletionDate);
+        result.StartDate.Should().Be(onProgramme.StartDate);
+        result.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
         result.Milestones.Should().BeEquivalentTo(onProgramme.Milestones);
     }
 
@@ -37,6 +41,8 @@ public class UpdateShortCourseOnProgrammeEarningPutRequestBuilderTests
         {
             WithdrawalDate = new DateTime(2025, 6, 1),
             CompletionDate = new DateTime(2025, 12, 1),
+            StartDate = new DateTime(2025, 1, 1),
+            ExpectedEndDate = new DateTime(2025, 6, 30),
             Milestones = [Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete]
         };
 
@@ -44,6 +50,8 @@ public class UpdateShortCourseOnProgrammeEarningPutRequestBuilderTests
 
         result.WithdrawalDate.Should().Be(onProgramme.WithdrawalDate);
         result.CompletionDate.Should().Be(onProgramme.CompletionDate);
+        result.StartDate.Should().Be(onProgramme.StartDate);
+        result.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
         result.Milestones.Should().BeEquivalentTo(onProgramme.Milestones);
     }
 

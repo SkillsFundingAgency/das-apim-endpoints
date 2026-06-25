@@ -1,4 +1,7 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -8,16 +11,13 @@ using NUnit.Framework;
 using SFA.DAS.FindApprenticeshipTraining.Api.Controllers;
 using SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseByLarsCode;
 using SFA.DAS.Testing.AutoFixture;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Api.UnitTests.Controllers.Courses;
 
-public sealed class WhenCallingGetCourseByLarsCode
+public sealed class CoursesControllerGetCourseByLarsCodeTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Gets_Course_From_Mediator(
+    public async Task GetCourseByLarsCode_ReturnsOkAndCourseFromMediator(
         GetCourseByLarsCodeQuery query,
         GetCourseByLarsCodeQueryResult result,
         [Frozen] Mock<IMediator> mockMediator,
@@ -46,7 +46,7 @@ public sealed class WhenCallingGetCourseByLarsCode
     }
 
     [Test, MoqAutoData]
-    public async Task And_Null_Course_Returns_Not_Found_Status_Code(
+    public async Task GetCourseByLarsCode_ReturnsNotFoundWhenCourseIsNull(
         GetCourseByLarsCodeQuery query,
         [Frozen] Mock<IMediator> mockMediator,
         [Frozen] ILogger<CoursesController> mockLogger,

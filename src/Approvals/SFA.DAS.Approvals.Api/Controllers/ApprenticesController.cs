@@ -9,6 +9,8 @@ using SFA.DAS.Approvals.Api.Models.Apprentices.ChangeEmployer;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangeEmployer.Confirm;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.ConfirmEditApprenticeship;
 using SFA.DAS.Approvals.Application.Apprentices.Commands.EditApprenticeship;
+using SFA.DAS.Approvals.Application.Apprentices.Commands.ChangePayments;
+using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.GetChangePayments;
 using SFA.DAS.Approvals.Application.Apprentices.Queries;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.ApprenticeshipDetails;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.Apprenticeship.EditApprenticeship;
@@ -22,6 +24,7 @@ using SFA.DAS.Approvals.Application.Apprentices.Queries.ChangeEmployer.SelectDel
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetApprenticeshipsCSV;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetReviewApprenticeshipUpdates;
 using SFA.DAS.Approvals.Application.Apprentices.Queries.GetSelectNewEmployer;
+using SFA.DAS.Approvals.Exceptions;
 using SFA.DAS.Approvals.Exceptions;
 
 namespace SFA.DAS.Approvals.Api.Controllers;
@@ -506,6 +509,63 @@ public class ApprenticesController(
         [FromBody] ConfirmEditApprenticeshipRequest request)
     {
         return await ConfirmEditApprenticeshipInternal(apprenticeshipId, null, accountId, request);
+    }
+
+
+    [HttpGet]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/payments")]
+    public async Task<IActionResult> GetChangePaymentsEmployer(
+        [FromRoute] long accountId,
+        [FromRoute] long apprenticeshipId)
+    {
+        try
+        {
+            var result = await mediator.Send(new GetChangePaymentsQuery { ApprenticeshipId = apprenticeshipId });
+
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return Ok((GetChangePaymentsResponse)result);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error getting change payments for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+
+    [HttpPatch]
+    [Route("/employer/{accountId}/apprentices/{apprenticeshipId}/payments")]
+    [Consumes("application/json", "application/json-patch+json", "text/json", "application/*+json")]
+    public async Task<IActionResult> ChangePaymentsEmployer(
+        [FromRoute] long accountId,
+        [FromRoute] long apprenticeshipId,
+        [FromBody] ChangePaymentsRequest request)
+    {
+        try
+        {
+            await mediator.Send(new ChangePaymentsCommand
+            {
+                AccountId = accountId,
+                ApprenticeshipId = apprenticeshipId,
+                PaymentFreezeDate = request.PaymentFreezeDate,
+                UserInfo = request.UserInfo,
+                FreezePaymentsReason = request.FreezePaymentsReason
+            });
+
+            return Ok();
+        }
+        catch (DomainApimException)
+        {
+            throw;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error changing payments for apprenticeship {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
     }
 
     [HttpPost]

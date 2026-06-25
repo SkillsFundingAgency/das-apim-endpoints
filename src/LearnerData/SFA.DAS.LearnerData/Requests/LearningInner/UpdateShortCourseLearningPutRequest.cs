@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.SharedOuterApi.Types.Constants;
 
 namespace SFA.DAS.LearnerData.Requests.LearningInner;
 
@@ -21,8 +22,9 @@ public class UpdateShortCourseLearningPutRequest : IPutApiRequest<UpdateShortCou
 #pragma warning disable CS8618
 public class UpdateShortCourseLearningRequestBody
 {
+    public long Ukprn { get; set; }
     public ShortCourseLearnerUpdateDetails LearnerUpdateDetails { get; set; }
-    public ShortCourseOnProgrammeUpdateDetails OnProgramme { get; set; }
+    public List<ShortCourseOnProgrammeUpdateDetails> OnProgramme { get; set; } = new();
 }
 
 public class ShortCourseLearnerUpdateDetails
@@ -36,10 +38,14 @@ public class ShortCourseOnProgrammeUpdateDetails
 {
     public long Ukprn { get; set; }
     public string CourseCode { get; set; } = "";
+    public DateTime StartDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public short? WithdrawalReasonCode { get; set; }
     public DateTime? CompletionDate { get; set; }
     public DateTime ExpectedEndDate { get; set; }
     public List<Milestone> Milestones { get; set; } = new();
+    public decimal Price { get; set; }
+    public LearningType LearningType { get; set; }
 }
 
 #pragma warning restore CS8618
