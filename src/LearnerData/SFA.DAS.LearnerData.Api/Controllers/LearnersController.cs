@@ -20,8 +20,23 @@ public class LearnersController(
 {
     [HttpGet]
     [Route("providers/{ukprn}/academicyears/{academicyear}/learners")]
+    public async Task<IActionResult> GetLearners_Legacy([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
+    }
+
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
     [Route("providers/{ukprn}/apprenticeships/learners")]
     public async Task<IActionResult> GetLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetLearnersInternal(ukprn, academicyear, page, pagesize);
+    }
+
+    private async Task<IActionResult> GetLearnersInternal(string ukprn, int academicyear, int page, int? pagesize)
     {
         logger.LogInformation("GetLearners for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
