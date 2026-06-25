@@ -103,9 +103,9 @@ public class ShortCoursesController(
     /// </summary>
     [HttpGet]
     [Route("/providers/{ukprn}/shortCourses/earnings")]
-    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromQuery] int collectionYear, [FromQuery] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromQuery] int academicYear, [FromQuery] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
-        return await GetShortCourseEarnings_Internal(ukprn, collectionYear, collectionPeriod, page, pagesize);
+        return await GetShortCourseEarnings_Internal(ukprn, academicYear, collectionPeriod, page, pagesize);
     }
 
     private async Task<IActionResult> GetShortCourseEarnings_Internal(long ukprn, int collectionYear, byte collectionPeriod, int page, int? pagesize)
