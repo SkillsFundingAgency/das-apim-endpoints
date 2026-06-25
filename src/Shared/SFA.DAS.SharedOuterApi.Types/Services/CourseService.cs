@@ -70,4 +70,18 @@ public class CourseService(ICoursesApiClient<CoursesApiConfiguration> coursesApi
 
         return response;
     }
+
+    public async Task<StandardDetailResponse> GetStandardDetailsById(string standardId)
+    {
+        string cacheItemName = nameof(StandardDetailResponse) + "_" + standardId;
+        var response = await cacheStorageService.RetrieveFromCache<StandardDetailResponse>(cacheItemName);
+
+        if (response == null)
+        {
+            response = await coursesApiClient.Get<StandardDetailResponse>(new GetStandardDetailsByIdRequest(standardId));
+            await cacheStorageService.SaveToCache(cacheItemName, response, CourseCacheExpiryInHours);
+        }
+
+        return response;
+    }
 }

@@ -15,14 +15,14 @@ namespace SFA.DAS.LearnerData.UnitTests.Application.Services;
 public class UpdateEarningsOnProgrammeRequestBuilderTests
 {
     private readonly Fixture _fixture = new();
-    private Mock<ICoursesApiClient<CoursesApiConfiguration>> _coursesApiClient;
+    private Mock<ICourseService> _courseService;
     private UpdateEarningsOnProgrammeRequestBuilder _sut;
 
     [SetUp]
     public void SetUp()
     {
-        _coursesApiClient = new Mock<ICoursesApiClient<CoursesApiConfiguration>>();
-        _sut = new UpdateEarningsOnProgrammeRequestBuilder(_coursesApiClient.Object);
+        _courseService = new Mock<ICourseService>();
+        _sut = new UpdateEarningsOnProgrammeRequestBuilder(_courseService.Object);
     }
 
     [TestCase(true)]
@@ -93,7 +93,7 @@ public class UpdateEarningsOnProgrammeRequestBuilderTests
                                .Create();
 
         var expectedFundingBand = 9000;
-        _coursesApiClient.Setup(c => c.Get<StandardDetailResponse>(It.IsAny<GetStandardDetailsByIdRequest>()))
+        _courseService.Setup(c => c.GetStandardDetailsById(It.IsAny<string>()))
                          .ReturnsAsync(new StandardDetailResponse
                          {
                              ApprenticeshipFunding =

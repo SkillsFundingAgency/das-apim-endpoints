@@ -9,4 +9,5 @@ public interface ICourseService
     Task<GetCourseLevelsListResponse> GetLevels();
     Task<T> GetActiveStandards<T>(string cacheItemName);
     Task<CourseLookupDetailResponse> GetCourseLookupDetailsById(string courseCode);
+    Task<StandardDetailResponse> GetStandardDetailsById(string standardId);
 }
