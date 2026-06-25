@@ -65,4 +65,7 @@ public class GetApprenticeshipResponse
     public string EmployerVerificationNotes { get; set; }
     public bool HasChangeHistory { get; set; }
     public int? WithdrawnReasonCode { get; set; }
+    public bool FreezeStatus { get; set; }
+    public byte? FreezePaymentsReason { get; set; }
+    public DateTime? PaymentFreezeDate { get; set; }
 }
