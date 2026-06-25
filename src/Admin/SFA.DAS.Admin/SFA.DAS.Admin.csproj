@@ -6,7 +6,7 @@
 
   <ItemGroup>
     <PackageReference Include="MediatR" Version="14.1.0" />
-    <PackageReference Include="SFA.DAS.DigitalCertificates.Contracts" Version="1.0.8" />
+    <PackageReference Include="SFA.DAS.DigitalCertificates.Contracts" Version="0.1.18-prerelease-24" />
   </ItemGroup>
 
 </Project>
