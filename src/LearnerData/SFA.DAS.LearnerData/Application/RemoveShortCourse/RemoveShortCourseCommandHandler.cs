@@ -36,7 +36,22 @@ public class RemoveShortCourseCommandHandler(
             throw new Exception($"Failed to delete short course with key {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(learningResponse.Body.LearningKey, learningResponse.Body.RemovedEpisodeKey);
+        var learnerRef = learningResponse.Body.Episodes
+            .Where(e => e.Ukprn == command.Ukprn)
+            .OrderByDescending(e => e.StartDate)
+            .Select(e => e.LearnerRef)
+            .FirstOrDefault();
+
+        if (string.IsNullOrWhiteSpace(learnerRef))
+        {
+            throw new InvalidOperationException($"No episode LearnerRef found for Ukprn {command.Ukprn} and LearnerKey {command.LearnerKey}");
+        }
+
+        var earningsRequest = new DeleteShortCourseEarningsRequest(
+            learningResponse.Body.LearningKey,
+            learningResponse.Body.RemovedEpisodeKey,
+            learningResponse.Body.LearnerKey,
+            learnerRef);
 
         var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 

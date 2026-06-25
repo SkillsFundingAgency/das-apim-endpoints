@@ -44,8 +44,18 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
-            .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<long>()))
+            .Returns((ShortCourseOnProgramme _, UpdateShortCourseLearningPutResponse learningResponse, long ukprn) =>
+                new UpdateShortCourseOnProgrammeRequestBody
+                {
+                    Milestones = [],
+                    LearnerKey = learningResponse.LearnerKey,
+                    LearnerRef = learningResponse.Episodes
+                        .Where(e => e.Ukprn == ukprn)
+                        .OrderByDescending(e => e.StartDate)
+                        .Select(e => e.LearnerRef)
+                        .FirstOrDefault() ?? string.Empty
+                });
         _messageSession = new Mock<IMessageSession>();
 
         _handler = new UpdateShortCourseLearningCommandHandler(
@@ -88,15 +98,27 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             }
         };
     }
-
+    
+//todo these tests need reviewing
     [Test]
     public async Task Then_CompletionDate_Is_Sent_To_Earnings_Api_When_There_Are_Changes()
     {
         // Arrange
+        var learnerRef = "learner-ref-1";
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
+            LearnerKey = _learnerKey,
+            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    Ukprn = _ukprn,
+                    StartDate = new DateTime(2025, 1, 1),
+                    LearnerRef = learnerRef
+                }
+            ]
         };
 
         _learningApiClient
@@ -105,8 +127,19 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
 
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
-            .Returns(new UpdateShortCourseOnProgrammeRequestBody { CompletionDate = _completionDate, Milestones = [] });
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<long>()))
+            .Returns((ShortCourseOnProgramme _, UpdateShortCourseLearningPutResponse learningResponse, long ukprn) =>
+                new UpdateShortCourseOnProgrammeRequestBody
+                {
+                    CompletionDate = _completionDate,
+                    Milestones = [],
+                    LearnerKey = learningResponse.LearnerKey,
+                    LearnerRef = learningResponse.Episodes
+                        .Where(e => e.Ukprn == ukprn)
+                        .OrderByDescending(e => e.StartDate)
+                        .Select(e => e.LearnerRef)
+                        .FirstOrDefault() ?? string.Empty
+                });
 
         var earningsResponse = _fixture.Create<UpdateShortCourseEarningPutResponse>();
 
@@ -121,7 +154,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Assert
         _earningsApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
-                r.Data.CompletionDate == _completionDate)),
+                r.Data.CompletionDate == _completionDate &&
+                r.Data.LearnerKey == _learnerKey &&
+                r.Data.LearnerRef == learnerRef)),
             Times.Once);
     }
 
@@ -181,14 +216,26 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             Times.Never);
     }
 
+//todo these tests need reviewing
     [Test]
     public async Task Then_Builder_Body_Is_Passed_To_Earnings_Api()
     {
         // Arrange
+        var learnerRef = "learner-ref-2";
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
-            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()]
+            LearnerKey = _learnerKey,
+            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()],
+            Episodes =
+            [
+                new LearningInnerShortCourseEpisode
+                {
+                    Ukprn = _ukprn,
+                    StartDate = new DateTime(2025, 1, 1),
+                    LearnerRef = learnerRef
+                }
+            ]
         };
 
         _learningApiClient
@@ -199,10 +246,12 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         var builtBody = new UpdateShortCourseOnProgrammeRequestBody
         {
             CompletionDate = _completionDate,
-            Milestones = [Milestone.LearningComplete]
+            Milestones = [Milestone.LearningComplete],
+            LearnerKey = _learnerKey,
+            LearnerRef = learnerRef
         };
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<long>()))
             .Returns(builtBody);
 
         _earningsApiClient
@@ -216,7 +265,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Assert
         _earningsApiClient.Verify(x =>
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
-                It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r => r.Data == builtBody)),
+                It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
+                    r.Data == builtBody &&
+                    r.Data.LearnerKey == _learnerKey &&
+                    r.Data.LearnerRef == learnerRef)),
             Times.Once);
     }
 }

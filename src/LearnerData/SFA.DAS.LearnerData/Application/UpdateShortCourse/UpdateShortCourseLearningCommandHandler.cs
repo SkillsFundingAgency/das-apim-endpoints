@@ -66,7 +66,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 _logger.LogWarning("No OnProgramme data found for LearnerKey: {LearnerKey}", command.LearnerKey);
                 throw new InvalidOperationException($"No OnProgramme data found for LearnerKey: {command.LearnerKey}");
             }
-            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(currentOnProgramme);
+            var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(currentOnProgramme, learningResponse.Body, command.Ukprn);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey, earningBody);
             var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
             earningsResponse = response.Body;
@@ -76,6 +76,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             _logger.LogInformation("No changes requiring earnings update for shortcourse learner {LearnerKey}", command.LearnerKey);
             earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey));
         }
+
+        //todo we don't need to get earnings here anymore since we are not sending event?
     }
 
     private UpdateShortCourseLearningPutRequest MapToLearningRequest(UpdateShortCourseLearningCommand command)
@@ -126,6 +128,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
         return changes.Contains(ShortCourseUpdateChanges.WithdrawalDate) ||
             changes.Contains(ShortCourseUpdateChanges.Milestone) ||
-            changes.Contains(ShortCourseUpdateChanges.CompletionDate);
+            changes.Contains(ShortCourseUpdateChanges.CompletionDate) ||
+            changes.Contains(ShortCourseUpdateChanges.LearnerRef);
     }
 }
