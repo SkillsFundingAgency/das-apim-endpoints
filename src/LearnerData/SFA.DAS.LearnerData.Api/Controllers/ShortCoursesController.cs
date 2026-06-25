@@ -51,10 +51,26 @@ public class ShortCoursesController(
 
     [HttpGet]
     [Route("/providers/{ukprn}/academicyears/{academicyear}/shortCourses")]
-    [Route("/providers/{ukprn}/shortCourses/learners")]
-    public async Task<IActionResult> GetShortCourseLearners([FromRoute] string ukprn, int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    public async Task<IActionResult> GetShortCourseLearners_Legacy([FromRoute] string ukprn, [FromRoute] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
+        return await GetShortCourseLearner_Internal(ukprn, academicyear, page, pagesize);
 
+    }
+
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
+    [Route("/providers/{ukprn}/shortCourses/learners")]
+    public async Task<IActionResult> GetShortCourseLearners([FromRoute] string ukprn, [FromQuery] int academicyear, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetShortCourseLearner_Internal(ukprn, academicyear, page, pagesize);
+
+    }
+
+    private async Task<IActionResult> GetShortCourseLearner_Internal(string ukprn, int academicyear, int page, int? pagesize)
+    {
         logger.LogInformation("GetShortCourseLearners for ukprn {Ukprn}, year {Year}", ukprn, academicyear);
 
         pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
@@ -71,16 +87,29 @@ public class ShortCoursesController(
         HttpContext.SetPageLinksInResponseHeaders(query, response);
 
         return Ok((GetShortCourseLearnersResponse)response);
-
     }
 
     // This is the short course equivalent of FM36
     [HttpGet]
     [Route("/providers/{ukprn}/collectionPeriods/{collectionYear}/{collectionPeriod}/shortCourses")]
-    [Route("/providers/{ukprn}/shortCourses/earnings")]
-    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    public async Task<IActionResult> GetShortCourseEarnings_Legacy([FromRoute] long ukprn, [FromRoute] int collectionYear, [FromRoute] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
     {
+        return await GetShortCourseEarnings_Internal(ukprn, collectionYear, collectionPeriod, page, pagesize);
+    }
 
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
+    [Route("/providers/{ukprn}/shortCourses/earnings")]
+    public async Task<IActionResult> GetShortCourseEarnings([FromRoute] long ukprn, [FromQuery] int collectionYear, [FromQuery] byte collectionPeriod, [FromQuery] int page = 1, [FromQuery] int? pagesize = 20)
+    {
+        return await GetShortCourseEarnings_Internal(ukprn, collectionYear, collectionPeriod, page, pagesize);
+    }
+
+    private async Task<IActionResult> GetShortCourseEarnings_Internal(long ukprn, int collectionYear, byte collectionPeriod, int page, int? pagesize)
+    {
         logger.LogInformation("GetShortCourseEarnings for ukprn {Ukprn}, year {Year} and period {period}", ukprn, collectionYear, collectionPeriod);
 
         pagesize = pagesize.HasValue ? Math.Clamp(pagesize.Value, 1, 100) : pagesize;
@@ -91,7 +120,6 @@ public class ShortCoursesController(
         HttpContext.SetPageLinksInResponseHeaders(query, result);
 
         return Ok(result);
-
     }
 
     [HttpDelete("/providers/{ukprn}/shortCourses/{learnerKey}")]

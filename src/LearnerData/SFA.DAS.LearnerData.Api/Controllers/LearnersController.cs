@@ -123,12 +123,27 @@ public class LearnersController(
     /// <returns>All earnings data in the format of an FM36Learner array.</returns>
     [HttpGet]
     [Route("providers/{ukprn}/collectionPeriod/{collectionYear}/{collectionPeriod}/fm36data")]
-    [Route("providers/{ukprn}/fm36data")]
     public async Task<IActionResult> GetFm36Learners(long ukprn, int collectionYear, byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
+    {
+        return await GetFm36Data_Internal(ukprn, collectionYear, collectionPeriod, page, pageSize);
+    }
+
+    /// <summary>
+    /// This is needed because I don't seem to be able to find from both query and route for the same parameter.
+    /// The original method can be removed when SLD stop using it.  At which point, the internal method can also be moved directly into this method.
+    /// </summary>
+    [HttpGet]
+    [Route("providers/{ukprn}/fm36data")]
+    public async Task<IActionResult> GetFm36Data(long ukprn, [FromQuery] int academicYear, [FromQuery] byte collectionPeriod, [FromQuery] int? page, [FromQuery] int? pageSize)
+    {
+        return await GetFm36Data_Internal(ukprn, academicYear, collectionPeriod, page, pageSize);
+    }
+
+    private async Task<IActionResult> GetFm36Data_Internal(long ukprn, int collectionYear, byte collectionPeriod, int? page, int? pageSize)
     {
         try
         {
-            var query = new GetFm36Query(ukprn, collectionYear, collectionPeriod, page, pageSize); 
+            var query = new GetFm36Query(ukprn, collectionYear, collectionPeriod, page, pageSize);
 
             var queryResult = await mediator.Send(query);
 
