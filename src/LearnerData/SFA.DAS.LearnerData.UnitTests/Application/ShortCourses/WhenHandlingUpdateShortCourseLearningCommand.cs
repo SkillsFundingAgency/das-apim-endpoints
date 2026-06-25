@@ -1,11 +1,9 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
-using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
-using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using System.Net;
@@ -30,6 +28,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Guid _learnerKey;
     private long _ukprn;
     private DateTime _completionDate;
+    private string _learnerRef;
 
     [SetUp]
     public void Setup()
@@ -60,6 +59,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _learnerKey = Guid.NewGuid();
         _ukprn = 12345678;
         _completionDate = new DateTime(2025, 12, 1);
+        _learnerRef = "learner-ref-1";
 
         _command = new UpdateShortCourseLearningCommand
         {
@@ -91,12 +91,10 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         };
     }
     
-//todo these tests need reviewing
     [Test]
     public async Task Then_CompletionDate_Is_Sent_To_Earnings_Api_When_There_Are_Changes()
     {
         // Arrange
-        var learnerRef = "learner-ref-1";
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
@@ -108,7 +106,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 {
                     Ukprn = _ukprn,
                     StartDate = new DateTime(2025, 1, 1),
-                    LearnerRef = learnerRef
+                    LearnerRef = _learnerRef
                 }
             ]
         };
@@ -148,7 +146,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
                 r.Data.CompletionDate == _completionDate &&
                 r.Data.LearnerKey == _learnerKey &&
-                r.Data.LearnerRef == learnerRef)),
+                r.Data.LearnerRef == _learnerRef)),
             Times.Once);
     }
 
@@ -205,24 +203,22 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             Times.Never);
     }
 
-//todo these tests need reviewing
     [Test]
     public async Task Then_Builder_Body_Is_Passed_To_Earnings_Api()
     {
         // Arrange
-        var learnerRef = "learner-ref-2";
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
             LearnerKey = _learnerKey,
-            Changes = [ShortCourseUpdateChanges.CompletionDate.ToString()],
+            Changes = [nameof(ShortCourseUpdateChanges.CompletionDate)],
             Episodes =
             [
                 new LearningInnerShortCourseEpisode
                 {
                     Ukprn = _ukprn,
                     StartDate = new DateTime(2025, 1, 1),
-                    LearnerRef = learnerRef
+                    LearnerRef = _learnerRef
                 }
             ]
         };
@@ -237,7 +233,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             CompletionDate = _completionDate,
             Milestones = [Milestone.LearningComplete],
             LearnerKey = _learnerKey,
-            LearnerRef = learnerRef
+            LearnerRef = _learnerRef
         };
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
             .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<long>()))
@@ -257,7 +253,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.Is<UpdateShortCourseOnProgrammeEarningPutRequest>(r =>
                     r.Data == builtBody &&
                     r.Data.LearnerKey == _learnerKey &&
-                    r.Data.LearnerRef == learnerRef)),
+                    r.Data.LearnerRef == _learnerRef)),
             Times.Once);
     }
 }
