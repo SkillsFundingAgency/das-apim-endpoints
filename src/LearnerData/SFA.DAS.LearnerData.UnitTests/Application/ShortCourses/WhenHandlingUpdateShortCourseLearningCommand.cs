@@ -1,13 +1,9 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
 using SFA.DAS.LearnerData.Application.UpdateShortCourse;
 using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
-using SFA.DAS.LearnerData.Services;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
@@ -29,7 +25,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
-    private Mock<IMessageSession> _messageSession;
 
     private UpdateShortCourseLearningCommand _command;
     private Guid _learnerKey;
@@ -56,14 +51,11 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                         .Select(e => e.LearnerRef)
                         .FirstOrDefault() ?? string.Empty
                 });
-        _messageSession = new Mock<IMessageSession>();
-
         _handler = new UpdateShortCourseLearningCommandHandler(
             _logger.Object,
             _learningApiClient.Object,
             _earningsApiClient.Object,
-            _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
-            _messageSession.Object);
+            _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object);
 
         _learnerKey = Guid.NewGuid();
         _ukprn = 12345678;
@@ -178,10 +170,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 It.IsAny<UpdateShortCourseLearningPutRequest>()))
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningPutResponse>(learningResponse, HttpStatusCode.OK, string.Empty));
 
-        _earningsApiClient
-            .Setup(x => x.Get<ShortCourseEarningGetResponse>(It.IsAny<GetShortCourseEarningsRequest>()))
-            .ReturnsAsync(_fixture.Create<ShortCourseEarningGetResponse>());
-
         // Act
         await _handler.Handle(_command, CancellationToken.None);
 
@@ -212,7 +200,8 @@ public class WhenHandlingUpdateShortCourseLearningCommand
 
         // Assert
         _earningsApiClient.Verify(x =>
-            x.Put(It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()),
+            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()),
             Times.Never);
     }
 

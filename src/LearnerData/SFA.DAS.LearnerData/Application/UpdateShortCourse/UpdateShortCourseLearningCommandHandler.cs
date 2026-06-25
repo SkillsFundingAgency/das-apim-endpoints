@@ -1,13 +1,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
-using NServiceBus;
 using SFA.DAS.Apim.Shared.Extensions;
-using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Enums;
-using SFA.DAS.LearnerData.Events;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
@@ -22,20 +17,17 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
     private readonly IUpdateShortCourseOnProgrammeEarningPutRequestBuilder _updateShortCourseOnProgrammeEarningPutRequestBuilder;
-    private readonly IMessageSession _messageSession;
 
     public UpdateShortCourseLearningCommandHandler(
         ILogger<UpdateShortCourseLearningCommandHandler> logger,
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
         IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
-        IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
-        IMessageSession messageSession)
+        IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder)
     {
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = updateShortCourseOnProgrammeEarningPutRequestBuilder;
-        _messageSession = messageSession;
     }
 
     public async Task Handle(UpdateShortCourseLearningCommand command, CancellationToken cancellationToken)
@@ -56,8 +48,6 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         _logger.LogInformation("Shortcourse learner with key {LearnerKey} updated successfully. Changes: {@Changes}",
             command.LearnerKey, string.Join(", ", learningResponse.Body.Changes));
 
-        ShortCourseEarningsResponse earningsResponse;
-
         if (EarningsUpdateRequired(learningResponse.Body))
         {
             var currentOnProgramme = command.Request.Delivery.OnProgramme.MaxBy(x => x.StartDate);
@@ -68,16 +58,12 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
             }
             var earningBody = _updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(currentOnProgramme, learningResponse.Body, command.Ukprn);
             var earningRequest = new UpdateShortCourseOnProgrammeEarningPutRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey, earningBody);
-            var response = await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
-            earningsResponse = response.Body;
+            await _earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(earningRequest);
         }
         else
         {
             _logger.LogInformation("No changes requiring earnings update for shortcourse learner {LearnerKey}", command.LearnerKey);
-            earningsResponse = await _earningsApiClient.Get<ShortCourseEarningGetResponse>(new GetShortCourseEarningsRequest(learningResponse.Body.LearningKey, learningResponse.Body.UpdatedEpisodeKey));
         }
-
-        //todo we don't need to get earnings here anymore since we are not sending event?
     }
 
     private UpdateShortCourseLearningPutRequest MapToLearningRequest(UpdateShortCourseLearningCommand command)
