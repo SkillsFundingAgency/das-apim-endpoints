@@ -26,4 +26,5 @@ public class ChangedQualification
     public string SectorSubjectArea { get; set; } = string.Empty;
     public string ChangedFieldNames { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public bool EligibleForFunding {get; set; } = false; 
 }
