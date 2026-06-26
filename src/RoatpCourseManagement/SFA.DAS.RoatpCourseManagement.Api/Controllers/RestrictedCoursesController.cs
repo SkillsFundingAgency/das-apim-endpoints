@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Commands;
+using SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Commands.AddRestrictedCourse;
 using SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Queries.GetAllRestrictedCourses;
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 
@@ -23,12 +23,12 @@ public class RestrictedCoursesController(IMediator _mediator, ILogger<Restricted
     }
 
     [HttpPost]
-    public async Task<IActionResult> CreateRestrictedCourse(AddRestrictedCourseCommand command)
+    public async Task<IActionResult> AddRestrictedCourse(AddRestrictedCourseCommand command)
     {
-        _logger.LogInformation("Request to create restricted course for {LarsCode}", command.LarsCode);
+        _logger.LogInformation("Request to add restricted course for {LarsCode}", command.LarsCode);
 
         await _mediator.Send(command);
 
-        return NoContent();
+        return Created();
     }
 }

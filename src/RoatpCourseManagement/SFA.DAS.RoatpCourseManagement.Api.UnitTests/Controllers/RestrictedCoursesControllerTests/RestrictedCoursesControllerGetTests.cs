@@ -11,9 +11,9 @@ using SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Queries.GetAll
 using SFA.DAS.RoatpCourseManagement.InnerApi.Responses;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers;
+namespace SFA.DAS.RoatpCourseManagement.Api.UnitTests.Controllers.RestrictedCoursesControllerTests;
 
-public class RestrictedCoursesControllerTests
+public class RestrictedCoursesControllerGetTests
 {
     [Test, MoqAutoData]
     public async Task WhenGetRestrictedCoursesIsInvoked_ThenReturnsOkResult(

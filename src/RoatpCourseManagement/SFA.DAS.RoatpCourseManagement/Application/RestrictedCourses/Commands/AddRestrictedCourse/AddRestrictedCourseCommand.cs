@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Commands;
+namespace SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Commands.AddRestrictedCourse;
 
 public class AddRestrictedCourseCommand : IRequest
 {

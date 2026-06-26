@@ -7,15 +7,18 @@ using SFA.DAS.RoatpCourseManagement.InnerApi.Requests;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 
-namespace SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Commands;
+namespace SFA.DAS.RoatpCourseManagement.Application.RestrictedCourses.Commands.AddRestrictedCourse;
 
 public class AddRestrictedCourseCommandHandler(IRoatpCourseManagementApiClient<RoatpV2ApiConfiguration> _courseManagementApiClient, ILogger<AddRestrictedCourseCommandHandler> _logger) : IRequestHandler<AddRestrictedCourseCommand>
 {
     public async Task Handle(AddRestrictedCourseCommand command, CancellationToken cancellationToken)
     {
         var apiRequest = new AddRestrictedCourseRequest(command);
-        _logger.LogInformation("Request to create restricted course for larscode: {LarsCode} by user: {UserId}", command.LarsCode, command.UserId);
+
+        _logger.LogInformation("Handling request to add restricted course for larscode: {LarsCode} by user: {UserId}", command.LarsCode, command.UserId);
+
         var response = await _courseManagementApiClient.PostWithResponseCode<Unit>(apiRequest);
+
         response.EnsureSuccessStatusCode();
     }
 }
