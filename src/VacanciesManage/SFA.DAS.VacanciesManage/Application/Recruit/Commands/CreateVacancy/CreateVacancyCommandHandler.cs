@@ -205,8 +205,8 @@ public class CreateVacancyCommandHandler(
         
         vacancy.HasSubmittedAdditionalQuestions = !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion1) ||
                                                   !string.IsNullOrWhiteSpace(vacancy.AdditionalQuestion2);
-        
-        vacancy.HasOptedToAddQualifications = vacancy.Qualifications is { Count: >0 };
+
+        vacancy.HasOptedToAddQualifications = vacancy.Qualifications is { Count: > 0 };
     }
 
     private async Task<GetStandardsListItem?> GetCourse(string programmeId)
