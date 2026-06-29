@@ -76,8 +76,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
                 _logger.LogInformation("Ignoring OnProgramme item for CourseCode {CourseCode}", result.CourseCode);
                 continue;
             }
-
-            if (result.IsNewLearning)
+            
+            if (result.IsNewLearning || result.IsNewEpisode)
             {
                 await HandleNewLearning(command, onProg, result, details);
             }
@@ -116,8 +116,8 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
 
     private async Task HandleNewLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse, ShortCourseLookupResult courseDetails)
     {
-        _logger.LogInformation("New Learning created for learner {LearnerKey} / course {CourseCode}. LearningKey: {LearningKey}",
-            command.LearnerKey, onProg.CourseCode, learningResponse.LearningKey);
+        _logger.LogInformation("New {LearningOrEpisode} created for learner {LearnerKey} / course {CourseCode}. LearningKey: {LearningKey}",
+            learningResponse.IsNewEpisode ? "Episode" : "Learning", command.LearnerKey, onProg.CourseCode, learningResponse.LearningKey);
 
         var earningsRequest = BuildCreateEarningsRequest(command, onProg, learningResponse, courseDetails.Price, courseDetails.LearningType);
         await _earningsApiClient.Post(new PostCreateUnapprovedShortCourseLearningRequest(earningsRequest));
@@ -125,7 +125,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         var correlationId = Guid.NewGuid();
         await _messageSession.Publish(MapToLearnerDataEvent(command, onProg, courseDetails.Price, correlationId));
 
-        _logger.LogInformation("LearnerDataEvent published for new Learning {LearningKey}", learningResponse.LearningKey);
+        _logger.LogInformation("LearnerDataEvent published for Learning {LearningKey}", learningResponse.LearningKey);
     }
 
     private async Task HandleExistingLearning(UpdateShortCourseLearningCommand command, ShortCourseOnProgramme onProg, UpdateShortCourseLearningPutResponse learningResponse)
