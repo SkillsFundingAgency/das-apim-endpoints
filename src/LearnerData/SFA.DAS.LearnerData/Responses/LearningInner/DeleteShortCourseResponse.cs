@@ -1,6 +1,11 @@
 ﻿namespace SFA.DAS.LearnerData.Responses.LearningInner;
 
-public class DeleteShortCourseResponse : IShortCourseLearningPaymentEventBuildContext
+public class DeleteShortCourseResponse
+{
+    public List<DeleteShortCourseItemResponse> Results { get; set; } = [];
+}
+
+public class DeleteShortCourseItemResponse : IShortCourseLearningPaymentEventBuildContext
 {
     public Guid RemovedEpisodeKey { get; set; }
     public Guid LearningKey { get; set; }
