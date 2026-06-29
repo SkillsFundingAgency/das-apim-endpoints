@@ -26,7 +26,7 @@ public class WhenMappingAVacancy
         var source = AllVacancyFieldsFake.Create();
         
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
     
         // assert
         result.AccountId.Should().Be(source.AccountId);
@@ -83,7 +83,7 @@ public class WhenMappingAVacancy
         source.ContactPhone = contactPhone;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.Contact.Should().NotBeNull();
@@ -102,7 +102,7 @@ public class WhenMappingAVacancy
         source.ContactPhone = null;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.Contact.Should().BeNull();
@@ -121,7 +121,7 @@ public class WhenMappingAVacancy
         source.ApplicationMethod = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.ApplicationMethod.Should().Be(dstValue);
@@ -138,7 +138,7 @@ public class WhenMappingAVacancy
         source.ApprenticeshipType = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.ApprenticeshipType.Should().Be(dstValue);
@@ -159,7 +159,7 @@ public class WhenMappingAVacancy
         source.ClosureReason = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.ClosureReason.Should().Be(dstValue);
@@ -177,7 +177,7 @@ public class WhenMappingAVacancy
         source.EmployerNameOption = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.EmployerNameOption.Should().Be(dstValue);
@@ -199,7 +199,7 @@ public class WhenMappingAVacancy
         source.GeoCodeMethod = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.GeoCodeMethod.Should().Be(dstValue);
@@ -217,7 +217,7 @@ public class WhenMappingAVacancy
         source.OwnerType = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.OwnerType.Should().Be(dstValue);
@@ -236,7 +236,7 @@ public class WhenMappingAVacancy
         source.SourceOrigin = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.SourceOrigin.Should().Be(dstValue);
@@ -254,7 +254,7 @@ public class WhenMappingAVacancy
         source.SourceType = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.SourceType.Should().Be(dstValue);
@@ -268,7 +268,7 @@ public class WhenMappingAVacancy
         source.EmployerReviewFieldIndicators = JsonSerializer.Serialize(reviewFieldIndicators, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.EmployerReviewFieldIndicators.Should().BeEquivalentTo(reviewFieldIndicators);
@@ -282,7 +282,7 @@ public class WhenMappingAVacancy
         source.ProviderReviewFieldIndicators = JsonSerializer.Serialize(reviewFieldIndicators, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.ProviderReviewFieldIndicators.Should().BeEquivalentTo(reviewFieldIndicators);
@@ -296,7 +296,7 @@ public class WhenMappingAVacancy
         source.Qualifications = JsonSerializer.Serialize(qualifications, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.Qualifications.Should().BeEquivalentTo(qualifications);
@@ -311,7 +311,7 @@ public class WhenMappingAVacancy
         source.Skills = JsonSerializer.Serialize(skills, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.Skills.Should().BeEquivalentTo(skills);
@@ -327,7 +327,7 @@ public class WhenMappingAVacancy
         source.TrainingProvider_Address = JsonSerializer.Serialize(trainingProvider.Address, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.TrainingProvider.Should().BeEquivalentTo(trainingProvider);
@@ -341,7 +341,7 @@ public class WhenMappingAVacancy
         source.TransferInfo = JsonSerializer.Serialize(transferInfo, Global.JsonSerializerOptions);
         
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.TransferInfo.Should().BeEquivalentTo(transferInfo);
@@ -362,7 +362,7 @@ public class WhenMappingAVacancy
         source.Wage_WorkingWeekDescription = wage.WorkingWeekDescription;
             
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.Wage.Should().BeEquivalentTo(wage, options => options
@@ -386,7 +386,7 @@ public class WhenMappingAVacancy
         source.EmployerLocationOption = srcValue;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.EmployerLocationOption.Should().Be(dstValue);
@@ -401,7 +401,7 @@ public class WhenMappingAVacancy
         source.Status = VacancyStatus.Draft;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.EmployerLocationOption.Should().BeNull();
@@ -416,7 +416,7 @@ public class WhenMappingAVacancy
         source.Status = VacancyStatus.Live;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.EmployerLocationOption.Should().Be(AvailableWhere.MultipleLocations);
@@ -432,7 +432,7 @@ public class WhenMappingAVacancy
         source.EmployerLocations = JsonSerializer.Serialize(new List<Address> { address }, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.EmployerLocationOption.Should().Be(AvailableWhere.OneLocation);
@@ -448,7 +448,7 @@ public class WhenMappingAVacancy
         source.EmployerLocations = null;
 
         // act
-        var result = GqlVacancyMapper.ToDomain(source);
+        var result = GqlVacancyMapper.From(source);
 
         // assert
         result.EmployerLocationOption.Should().Be(AvailableWhere.AcrossEngland);

@@ -1,30 +1,27 @@
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.Handlers;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
-using SFA.DAS.Recruit.Contracts.ApiRequests;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
-using SFA.DAS.RecruitJobs.InnerApi.Requests;
 using TransferInfo = SFA.DAS.Recruit.Contracts.ApiResponses.TransferInfo;
 using Vacancy = SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy;
 using VacancyReview = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyReview;
 
 namespace SFA.DAS.RecruitJobs.UnitTests.Handlers;
 
-public class WhenHandlingTransferProviderVacancyToLegalEntity
+public abstract class WhenHandlingTransferProviderVacancyToLegalEntity
 {
-    public record MockVacancyDetails(
+    public abstract record MockVacancyDetails(
         Guid Id,
         long? VacancyReference,
         string? Title,
@@ -58,7 +55,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Guid vacancyId,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -87,15 +84,15 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
         };
 
@@ -114,7 +111,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
             .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
@@ -132,15 +129,15 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
         };
 
@@ -159,7 +156,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
             .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
@@ -177,15 +174,15 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
         };
 
@@ -204,7 +201,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
             .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
@@ -225,15 +222,15 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         MockVacancyDetails vacancyDetails,
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
         };
 
@@ -252,7 +249,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
             .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
@@ -277,15 +274,15 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
         var expectedTransferInfo = new TransferInfo
         {
             Ukprn = vacancyDetails.Ukprn!.Value,
-            ProviderName = vacancyDetails.TrainingProvider_Name,
-            LegalEntityName = vacancyDetails.LegalEntityName,
+            ProviderName = vacancyDetails.TrainingProvider_Name!,
+            LegalEntityName = vacancyDetails.LegalEntityName!,
             Reason = TransferReason.EmployerRevokedPermission,
         };
         vacancyDetails = vacancyDetails with { Status = GraphQL.VacancyStatus.Submitted };
@@ -300,7 +297,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
             .Callback<IPatchApiRequest<JsonPatchDocument<Vacancy>>>(x => capturedPatchRequest = x as PatchVacanciesByVacancyIdApiRequest)
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         vacancyReviews.Add(new VacancyReview
         {
@@ -308,12 +305,12 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             Status = status
         });
         recruitApiClient
-            .Setup(x => x.GetAll<VacancyReview>(It.IsAny<GetVacancyReviewsByVacancyReferenceRequest>()))
+            .Setup(x => x.Get<List<VacancyReview>>(It.IsAny<GetVacanciesByVacancyReferenceReviewsApiRequest>()))
             .ReturnsAsync(vacancyReviews);
 
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyreviewsByIdApiRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);
@@ -333,7 +330,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -346,7 +343,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         vacancyReviews.Add(new VacancyReview
         {
@@ -355,7 +352,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             Status = status
         });
         recruitApiClient
-            .Setup(x => x.GetAll<VacancyReview>(It.IsAny<GetVacancyReviewsByVacancyReferenceRequest>()))
+            .Setup(x => x.Get<List<VacancyReview>>(It.IsAny<GetVacanciesByVacancyReferenceReviewsApiRequest>()))
             .ReturnsAsync(vacancyReviews);
 
         PatchVacancyreviewsByIdApiRequest? capturedPatchRequest = null;
@@ -384,7 +381,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
         Mock<IGetProviderTransferableVacancyDetailsResult> data,
         List<VacancyReview> vacancyReviews,
         [Frozen] Mock<IRecruitGqlClient> recruitGqlClient,
-        [Frozen] Mock<IRecruitApiClient<RecruitApiConfiguration>> recruitApiClient,
+        [Frozen] Mock<Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration>> recruitApiClient,
         [Greedy] TransferProviderVacancyToLegalEntityHandler sut)
     {
         // arrange
@@ -397,7 +394,7 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             .ReturnsAsync(new OperationResult<IGetProviderTransferableVacancyDetailsResult>(data.Object, null, null!, null));
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacanciesByVacancyIdApiRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         vacancyReviews.Add(new VacancyReview
         {
@@ -406,12 +403,12 @@ public class WhenHandlingTransferProviderVacancyToLegalEntity
             Status = status
         });
         recruitApiClient
-            .Setup(x => x.GetAll<VacancyReview>(It.IsAny<GetVacancyReviewsByVacancyReferenceRequest>()))
+            .Setup(x => x.Get<List<VacancyReview>>(It.IsAny<GetVacanciesByVacancyReferenceReviewsApiRequest>()))
             .ReturnsAsync(vacancyReviews);
 
         recruitApiClient
             .Setup(x => x.PatchWithResponseCode(It.IsAny<PatchVacancyreviewsByIdApiRequest>()))
-            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null));
+            .ReturnsAsync(new ApiResponse<string>(null!, HttpStatusCode.OK, null!));
 
         // act
         await sut.HandleAsync(vacancyId, TransferReason.EmployerRevokedPermission, CancellationToken.None);

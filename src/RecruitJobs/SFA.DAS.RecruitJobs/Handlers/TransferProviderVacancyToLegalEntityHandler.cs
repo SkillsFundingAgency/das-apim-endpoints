@@ -1,21 +1,20 @@
+using System.Collections.Generic;
 using Microsoft.AspNetCore.JsonPatch.SystemTextJson;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.GraphQL;
 using SFA.DAS.RecruitJobs.InnerApi.Requests;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using StrawberryShake;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using SFA.DAS.Recruit.Contracts.ApiRequests;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
-using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 using ClosureReason = SFA.DAS.Recruit.Contracts.ApiResponses.ClosureReason;
 using OwnerType = SFA.DAS.Recruit.Contracts.ApiResponses.OwnerType;
 using TransferInfo = SFA.DAS.Recruit.Contracts.ApiResponses.TransferInfo;
 using VacancyReview = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyReview;
+using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 
 namespace SFA.DAS.RecruitJobs.Handlers;
 
@@ -27,7 +26,7 @@ public interface ITransferProviderVacancyToLegalEntityHandler
 public class TransferProviderVacancyToLegalEntityHandler(
     ILogger<TransferProviderVacancyToLegalEntityHandler> logger,
     IRecruitGqlClient recruitGqlClient,
-    IRecruitApiClient<RecruitApiConfiguration> recruitApiClient) : ITransferProviderVacancyToLegalEntityHandler
+    Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient) : ITransferProviderVacancyToLegalEntityHandler
 {
     public async Task HandleAsync(Guid vacancyId, TransferReason transferReason, CancellationToken cancellationToken)
     {
@@ -51,7 +50,9 @@ public class TransferProviderVacancyToLegalEntityHandler(
             case GraphQL.VacancyStatus.Closed:
                 break;
             case GraphQL.VacancyStatus.Submitted:
-                var vacancyReviews = (await recruitApiClient.GetAll<VacancyReview>(new GetVacancyReviewsByVacancyReferenceRequest(vacancyDetails.VacancyReference!.Value))).ToList() ?? [];
+                var vacancyReviews = await recruitApiClient.Get<List<VacancyReview>>(
+                    new GetVacanciesByVacancyReferenceReviewsApiRequest(
+                        vacancyDetails.VacancyReference.GetValueOrDefault().ToString(), null, null, null));
                 vacancyReview = vacancyReviews.OrderByDescending(x => x.CreatedDate).FirstOrDefault();
                 if (vacancyReview is not null && vacancyReview.Status is not ReviewStatus.UnderReview)
                 {

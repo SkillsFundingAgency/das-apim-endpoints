@@ -51,7 +51,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data.Vacancies[0];
-        var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
+        var domainVacancy = GqlVacancyMapper.From(vacancy);
 
         return TypedResults.Ok(new DataResponse<Vacancy>(domainVacancy));
     }
@@ -79,7 +79,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data.Vacancies[0];
-        var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
+        var domainVacancy = GqlVacancyMapper.From(vacancy);
 
         return TypedResults.Ok(new DataResponse<Vacancy>(domainVacancy));
     }
@@ -97,6 +97,10 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         try
         {
             logger.LogInformation("Recruit API: Received request to get vacancy analytics for vacancy reference: {VacancyReference}", vacancyReference);
+
+            var vacancyReviews = await recruitApiClient.Get<List<VacancyReview>>(
+                new GetVacanciesByVacancyReferenceReviewsApiRequest(
+                    vacancyReference.ToString(), null, null, null));
 
             var result = await recruitApiClient.Get<VacancyAnalyticsResponse>(new GetVacancyanalyticsByVacancyReferenceApiRequest(vacancyReference));
 
@@ -312,7 +316,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
                 return TypedResults.NotFound();
             }
 
-            var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
+            var domainVacancy = GqlVacancyMapper.From(vacancy);
             domainVacancy.ClosureReason = request.ClosureReason;
             domainVacancy.Status = VacancyStatus.Closed;
             domainVacancy.ClosedDate = DateTime.UtcNow;
@@ -488,7 +492,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
                 return TypedResults.NotFound();
             }
 
-            var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
+            var domainVacancy = GqlVacancyMapper.From(vacancy);
             domainVacancy.Status = VacancyStatus.Archived;
             domainVacancy.ArchiveType = Recruit.Contracts.ApiResponses.ArchiveType.Auto;
             domainVacancy.LastUpdatedDate = DateTime.UtcNow;

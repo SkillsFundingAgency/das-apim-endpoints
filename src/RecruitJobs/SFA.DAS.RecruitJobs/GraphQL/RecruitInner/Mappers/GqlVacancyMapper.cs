@@ -24,7 +24,7 @@ public static class GqlVacancyMapper
             : throw new InvalidOperationException($"Could not convert {value} to type {typeof(T)}");
     }
 
-    public static Recruit.Contracts.ApiResponses.Vacancy ToDomain(IAllVacancyFields source)
+    public static Recruit.Contracts.ApiResponses.Vacancy From(IAllVacancyFields source)
     {
         var employerLocations = DeserializeOrNull<List<Recruit.Contracts.ApiResponses.Address>>(source.EmployerLocations) ?? [];
 
@@ -61,7 +61,7 @@ public static class GqlVacancyMapper
             DisabilityConfident = source.DisabilityConfident,
             EmployerDescription = source.EmployerDescription,
             EmployerLocationInformation = source.EmployerLocationInformation,
-            EmployerLocationOption = ToDomainEmployerLocationOption(source, employerLocations),
+            EmployerLocationOption = MapEmployerLocationOption(source, employerLocations),
             EmployerLocations = employerLocations,
             EmployerName = source.EmployerName,
             EmployerNameOption = NullOrEnum<Recruit.Contracts.ApiResponses.EmployerNameOption>(source.EmployerNameOption?.ToString()),
@@ -123,7 +123,7 @@ public static class GqlVacancyMapper
         };
     }
 
-    private static Recruit.Contracts.ApiResponses.AvailableWhere? ToDomainEmployerLocationOption(IAllVacancyFields source, List<Recruit.Contracts.ApiResponses.Address> employerLocations)
+    private static Recruit.Contracts.ApiResponses.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Recruit.Contracts.ApiResponses.Address> employerLocations)
     {
         if (source is { EmployerLocationOption: not null })
         {
