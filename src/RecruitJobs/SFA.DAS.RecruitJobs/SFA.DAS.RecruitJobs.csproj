@@ -7,9 +7,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Application\**" />
+    <Compile Remove="InnerApi\Responses\DelayedNotifications\**" />
     <EmbeddedResource Remove="Application\**" />
+    <EmbeddedResource Remove="InnerApi\Responses\DelayedNotifications\**" />
     <GraphQL Remove="Application\**" />
+    <GraphQL Remove="InnerApi\Responses\DelayedNotifications\**" />
     <None Remove="Application\**" />
+    <None Remove="InnerApi\Responses\DelayedNotifications\**" />
   </ItemGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="SFA.DAS.RecruitJobs.UnitTests" />
@@ -28,7 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="10.0.9" />
-    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.106-prerelease-7" />
+    <PackageReference Include="SFA.DAS.Recruit.Contracts" Version="0.8.106-prerelease-8" />
     <PackageReference Include="StrawberryShake.Blazor" Version="16.3.0" />
   </ItemGroup>
   <ItemGroup>
@@ -55,7 +59,6 @@
     </GraphQL>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="InnerApi\Responses\DelayedNotifications\" />
     <Folder Include="obj\Debug\net8.0\berry\" />
   </ItemGroup>
 </Project>

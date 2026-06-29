@@ -29,8 +29,4 @@
       <ProjectReference Include="..\SFA.DAS.RecruitJobs\SFA.DAS.RecruitJobs.csproj" />
     <ProjectReference Include="..\..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj" />
   </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Models\Mappers\" />
-    </ItemGroup>
 </Project>

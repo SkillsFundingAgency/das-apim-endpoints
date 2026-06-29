@@ -6,6 +6,7 @@ using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
 using SFA.DAS.Recruit.Contracts.ApiResponses;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
@@ -55,7 +56,7 @@ public class DelayedNotificationsController: ControllerBase
         [FromServices] INotificationService notificationService,
         [FromBody, Required] NotificationEmail email)
     {
-        var command = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, email.Tokens as IReadOnlyDictionary<string, string>);
+        var command = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, new ReadOnlyDictionary<string, string>(email.Tokens));
         await notificationService.Send(command);
         return Results.NoContent();
     }

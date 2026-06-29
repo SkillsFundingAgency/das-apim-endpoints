@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Text.Json;
-using SFA.DAS.RecruitJobs.Domain;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.GraphQL.RecruitInner.Mappers;
-using Address = SFA.DAS.RecruitJobs.Domain.Address;
 using GqlApplicationMethod = SFA.DAS.RecruitJobs.GraphQL.ApplicationMethod;
 using GqlApprenticeshipTypes = SFA.DAS.RecruitJobs.GraphQL.ApprenticeshipTypes;
 using GqlClosureReason = SFA.DAS.RecruitJobs.GraphQL.ClosureReason;
@@ -27,7 +26,7 @@ public class WhenMappingAVacancy
         var source = AllVacancyFieldsFake.Create();
         
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
     
         // assert
         result.AccountId.Should().Be(source.AccountId);
@@ -84,7 +83,7 @@ public class WhenMappingAVacancy
         source.ContactPhone = contactPhone;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.Contact.Should().NotBeNull();
@@ -103,160 +102,159 @@ public class WhenMappingAVacancy
         source.ContactPhone = null;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.Contact.Should().BeNull();
     }
 
     [Test]
-    [MoqInlineAutoData(GqlApplicationMethod.ThroughExternalApplicationSite, SharedOuterApi.Types.Domain.Recruit.ApplicationMethod.ThroughExternalApplicationSite)]
-    [MoqInlineAutoData(GqlApplicationMethod.ThroughFindAnApprenticeship, SharedOuterApi.Types.Domain.Recruit.ApplicationMethod.ThroughFindAnApprenticeship)]
-    [MoqInlineAutoData(GqlApplicationMethod.ThroughFindATraineeship, SharedOuterApi.Types.Domain.Recruit.ApplicationMethod.ThroughFindATraineeship)]
-    [MoqInlineAutoData(GqlApplicationMethod.Unspecified, SharedOuterApi.Types.Domain.Recruit.ApplicationMethod.Unspecified)]
+    [MoqInlineAutoData(GqlApplicationMethod.ThroughExternalApplicationSite, ApplicationMethod.ThroughExternalApplicationSite)]
+    [MoqInlineAutoData(GqlApplicationMethod.ThroughFindAnApprenticeship, ApplicationMethod.ThroughFindAnApprenticeship)]
+    [MoqInlineAutoData(GqlApplicationMethod.ThroughFindATraineeship, ApplicationMethod.ThroughFindATraineeship)]
+    [MoqInlineAutoData(GqlApplicationMethod.Unspecified, ApplicationMethod.Unspecified)]
     [MoqInlineAutoData(null, null)]
-    public void ApplicationMethod_Is_Mapped(GqlApplicationMethod? srcValue, SharedOuterApi.Types.Domain.Recruit.ApplicationMethod? dstValue)
+    public void ApplicationMethod_Is_Mapped(GqlApplicationMethod? srcValue, ApplicationMethod? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.ApplicationMethod = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.ApplicationMethod.Should().Be(dstValue);
     }
     
     [Test]
-    [MoqInlineAutoData(GqlApprenticeshipTypes.Foundation, SharedOuterApi.Types.Domain.ApprenticeshipTypes.Foundation)]
-    [MoqInlineAutoData(GqlApprenticeshipTypes.Standard, SharedOuterApi.Types.Domain.ApprenticeshipTypes.Standard)]
+    [MoqInlineAutoData(GqlApprenticeshipTypes.Foundation, ApprenticeshipTypes.Foundation)]
+    [MoqInlineAutoData(GqlApprenticeshipTypes.Standard, ApprenticeshipTypes.Standard)]
     [MoqInlineAutoData(null, null)]
-    public void ApprenticeshipType_Is_Mapped(GqlApprenticeshipTypes? srcValue, SharedOuterApi.Types.Domain.ApprenticeshipTypes? dstValue)
+    public void ApprenticeshipType_Is_Mapped(GqlApprenticeshipTypes? srcValue, ApprenticeshipTypes? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.ApprenticeshipType = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.ApprenticeshipType.Should().Be(dstValue);
     }
     
     [Test]
-    [MoqInlineAutoData(GqlClosureReason.Auto, SharedOuterApi.Types.Domain.Recruit.ClosureReason.Auto)]
-    [MoqInlineAutoData(GqlClosureReason.BlockedByQa, SharedOuterApi.Types.Domain.Recruit.ClosureReason.BlockedByQa)]
-    [MoqInlineAutoData(GqlClosureReason.Manual, SharedOuterApi.Types.Domain.Recruit.ClosureReason.Manual)]
-    [MoqInlineAutoData(GqlClosureReason.TransferredByEmployer, SharedOuterApi.Types.Domain.Recruit.ClosureReason.TransferredByEmployer)]
-    [MoqInlineAutoData(GqlClosureReason.TransferredByQa, SharedOuterApi.Types.Domain.Recruit.ClosureReason.TransferredByQa)]
-    [MoqInlineAutoData(GqlClosureReason.WithdrawnByQa, SharedOuterApi.Types.Domain.Recruit.ClosureReason.WithdrawnByQa)]
+    [MoqInlineAutoData(GqlClosureReason.Auto, ClosureReason.Auto)]
+    [MoqInlineAutoData(GqlClosureReason.BlockedByQa, ClosureReason.BlockedByQa)]
+    [MoqInlineAutoData(GqlClosureReason.Manual, ClosureReason.Manual)]
+    [MoqInlineAutoData(GqlClosureReason.TransferredByEmployer, ClosureReason.TransferredByEmployer)]
+    [MoqInlineAutoData(GqlClosureReason.TransferredByQa, ClosureReason.TransferredByQa)]
+    [MoqInlineAutoData(GqlClosureReason.WithdrawnByQa, ClosureReason.WithdrawnByQa)]
     [MoqInlineAutoData(null, null)]
-    public void ClosureReason_Is_Mapped(GqlClosureReason? srcValue, SharedOuterApi.Types.Domain.Recruit.ClosureReason? dstValue)
+    public void ClosureReason_Is_Mapped(GqlClosureReason? srcValue, ClosureReason? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.ClosureReason = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.ClosureReason.Should().Be(dstValue);
     }
     
     [Test]
-    [MoqInlineAutoData(GqlEmployerNameOption.Anonymous, SharedOuterApi.Types.Domain.Recruit.EmployerNameOption.Anonymous)]
-    [MoqInlineAutoData(GqlEmployerNameOption.RegisteredName, SharedOuterApi.Types.Domain.Recruit.EmployerNameOption.RegisteredName)]
-    [MoqInlineAutoData(GqlEmployerNameOption.TradingName, SharedOuterApi.Types.Domain.Recruit.EmployerNameOption.TradingName)]
+    [MoqInlineAutoData(GqlEmployerNameOption.Anonymous, EmployerNameOption.Anonymous)]
+    [MoqInlineAutoData(GqlEmployerNameOption.RegisteredName, EmployerNameOption.RegisteredName)]
+    [MoqInlineAutoData(GqlEmployerNameOption.TradingName, EmployerNameOption.TradingName)]
     [MoqInlineAutoData(null, null)]
-    public void EmployerNameOption_Is_Mapped(GqlEmployerNameOption? srcValue, SharedOuterApi.Types.Domain.Recruit.EmployerNameOption? dstValue)
+    public void EmployerNameOption_Is_Mapped(GqlEmployerNameOption? srcValue, EmployerNameOption? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerNameOption = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.EmployerNameOption.Should().Be(dstValue);
     }
     
     [Test]
-    [MoqInlineAutoData(GqlGeoCodeMethod.ExistingVacancy, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod.ExistingVacancy)]
-    [MoqInlineAutoData(GqlGeoCodeMethod.FailedToGeoCode, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod.FailedToGeoCode)]
-    [MoqInlineAutoData(GqlGeoCodeMethod.Loqate, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod.Loqate)]
-    [MoqInlineAutoData(GqlGeoCodeMethod.OuterApi, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod.OuterApi)]
-    [MoqInlineAutoData(GqlGeoCodeMethod.PostcodesIo, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod.PostcodesIo)]
-    [MoqInlineAutoData(GqlGeoCodeMethod.PostcodesIoOutcode, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod.PostcodesIoOutcode)]
-    [MoqInlineAutoData(GqlGeoCodeMethod.Unspecified, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod.Unspecified)]
+    [MoqInlineAutoData(GqlGeoCodeMethod.ExistingVacancy, GeoCodeMethod.ExistingVacancy)]
+    [MoqInlineAutoData(GqlGeoCodeMethod.FailedToGeoCode, GeoCodeMethod.FailedToGeoCode)]
+    [MoqInlineAutoData(GqlGeoCodeMethod.Loqate, GeoCodeMethod.Loqate)]
+    [MoqInlineAutoData(GqlGeoCodeMethod.OuterApi, GeoCodeMethod.OuterApi)]
+    [MoqInlineAutoData(GqlGeoCodeMethod.PostcodesIo, GeoCodeMethod.PostcodesIo)]
+    [MoqInlineAutoData(GqlGeoCodeMethod.PostcodesIoOutcode, GeoCodeMethod.PostcodesIoOutcode)]
+    [MoqInlineAutoData(GqlGeoCodeMethod.Unspecified, GeoCodeMethod.Unspecified)]
     [MoqInlineAutoData(null, null)]
-    public void GeoCodeMethod_Is_Mapped(GqlGeoCodeMethod? srcValue, SharedOuterApi.Types.Domain.Recruit.GeoCodeMethod? dstValue)
+    public void GeoCodeMethod_Is_Mapped(GqlGeoCodeMethod? srcValue, GeoCodeMethod? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.GeoCodeMethod = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.GeoCodeMethod.Should().Be(dstValue);
     }
     
     [Test]
-    [MoqInlineAutoData(GqlOwnerType.Employer, SharedOuterApi.Types.Domain.Recruit.OwnerType.Employer)]
-    [MoqInlineAutoData(GqlOwnerType.External, SharedOuterApi.Types.Domain.Recruit.OwnerType.External)]
-    [MoqInlineAutoData(GqlOwnerType.Provider, SharedOuterApi.Types.Domain.Recruit.OwnerType.Provider)]
-    [MoqInlineAutoData(GqlOwnerType.Unknown, SharedOuterApi.Types.Domain.Recruit.OwnerType.Unknown)]
-    [MoqInlineAutoData(null, null)]
-    public void OwnerType_Is_Mapped(GqlOwnerType? srcValue, SharedOuterApi.Types.Domain.Recruit.OwnerType? dstValue)
+    [MoqInlineAutoData(GqlOwnerType.Employer, OwnerType.Employer)]
+    [MoqInlineAutoData(GqlOwnerType.External, OwnerType.External)]
+    [MoqInlineAutoData(GqlOwnerType.Provider, OwnerType.Provider)]
+    [MoqInlineAutoData(GqlOwnerType.Unknown, OwnerType.Unknown)]
+    public void OwnerType_Is_Mapped(GqlOwnerType srcValue, OwnerType dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.OwnerType = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.OwnerType.Should().Be(dstValue);
     }
     
     [Test]
-    [MoqInlineAutoData(GqlSourceOrigin.Api, SharedOuterApi.Types.Domain.Recruit.SourceOrigin.Api)]
-    [MoqInlineAutoData(GqlSourceOrigin.EmployerWeb, SharedOuterApi.Types.Domain.Recruit.SourceOrigin.EmployerWeb)]
-    [MoqInlineAutoData(GqlSourceOrigin.ProviderWeb, SharedOuterApi.Types.Domain.Recruit.SourceOrigin.ProviderWeb)]
-    [MoqInlineAutoData(GqlSourceOrigin.WebComplaint, SharedOuterApi.Types.Domain.Recruit.SourceOrigin.WebComplaint)]
+    [MoqInlineAutoData(GqlSourceOrigin.Api, SourceOrigin.Api)]
+    [MoqInlineAutoData(GqlSourceOrigin.EmployerWeb, SourceOrigin.EmployerWeb)]
+    [MoqInlineAutoData(GqlSourceOrigin.ProviderWeb, SourceOrigin.ProviderWeb)]
+    [MoqInlineAutoData(GqlSourceOrigin.WebComplaint, SourceOrigin.WebComplaint)]
     [MoqInlineAutoData(null, null)]
-    public void SourceOrigin_Is_Mapped(GqlSourceOrigin? srcValue, SharedOuterApi.Types.Domain.Recruit.SourceOrigin? dstValue)
+    public void SourceOrigin_Is_Mapped(GqlSourceOrigin? srcValue, SourceOrigin? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.SourceOrigin = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.SourceOrigin.Should().Be(dstValue);
     }
     
     [Test]
-    [MoqInlineAutoData(GqlSourceType.Clone, SharedOuterApi.Types.Domain.Recruit.SourceType.Clone)]
-    [MoqInlineAutoData(GqlSourceType.Extension, SharedOuterApi.Types.Domain.Recruit.SourceType.Extension)]
-    [MoqInlineAutoData(GqlSourceType.New, SharedOuterApi.Types.Domain.Recruit.SourceType.New)]
+    [MoqInlineAutoData(GqlSourceType.Clone, SourceType.Clone)]
+    [MoqInlineAutoData(GqlSourceType.Extension, SourceType.Extension)]
+    [MoqInlineAutoData(GqlSourceType.New, SourceType.New)]
     [MoqInlineAutoData(null, null)]
-    public void SourceType_Is_Mapped(GqlSourceType? srcValue, SharedOuterApi.Types.Domain.Recruit.SourceType? dstValue)
+    public void SourceType_Is_Mapped(GqlSourceType? srcValue, SourceType? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.SourceType = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.SourceType.Should().Be(dstValue);
@@ -270,7 +268,7 @@ public class WhenMappingAVacancy
         source.EmployerReviewFieldIndicators = JsonSerializer.Serialize(reviewFieldIndicators, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.EmployerReviewFieldIndicators.Should().BeEquivalentTo(reviewFieldIndicators);
@@ -284,7 +282,7 @@ public class WhenMappingAVacancy
         source.ProviderReviewFieldIndicators = JsonSerializer.Serialize(reviewFieldIndicators, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.ProviderReviewFieldIndicators.Should().BeEquivalentTo(reviewFieldIndicators);
@@ -298,7 +296,7 @@ public class WhenMappingAVacancy
         source.Qualifications = JsonSerializer.Serialize(qualifications, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.Qualifications.Should().BeEquivalentTo(qualifications);
@@ -313,7 +311,7 @@ public class WhenMappingAVacancy
         source.Skills = JsonSerializer.Serialize(skills, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.Skills.Should().BeEquivalentTo(skills);
@@ -329,7 +327,7 @@ public class WhenMappingAVacancy
         source.TrainingProvider_Address = JsonSerializer.Serialize(trainingProvider.Address, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.TrainingProvider.Should().BeEquivalentTo(trainingProvider);
@@ -343,7 +341,7 @@ public class WhenMappingAVacancy
         source.TransferInfo = JsonSerializer.Serialize(transferInfo, Global.JsonSerializerOptions);
         
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.TransferInfo.Should().BeEquivalentTo(transferInfo);
@@ -357,32 +355,38 @@ public class WhenMappingAVacancy
         source.Wage_CompanyBenefitsInformation = wage.CompanyBenefitsInformation;
         source.Wage_Duration = wage.Duration;
         source.Wage_DurationUnit = (GqlDurationUnit)Enum.Parse(typeof(GqlDurationUnit), wage.DurationUnit.ToString()!);
-        source.Wage_FixedWageYearlyAmount = wage.FixedWageYearlyAmount;
+        source.Wage_FixedWageYearlyAmount = (decimal?) wage.FixedWageYearlyAmount;
         source.Wage_WageAdditionalInformation = wage.WageAdditionalInformation;
         source.Wage_WageType = (GqlWageType)Enum.Parse(typeof(GqlWageType), wage.WageType.ToString()!);
-        source.Wage_WeeklyHours = wage.WeeklyHours;
+        source.Wage_WeeklyHours = (decimal?) wage.WeeklyHours;
         source.Wage_WorkingWeekDescription = wage.WorkingWeekDescription;
             
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
-        result.Wage.Should().BeEquivalentTo(wage);
+        result.Wage.Should().BeEquivalentTo(wage, options => options
+            .Excluding(x => x.ApprenticeMinimumWage)
+            .Excluding(x => x.Under18NationalMinimumWage)
+            .Excluding(x => x.Between18AndUnder21NationalMinimumWage)
+            .Excluding(x => x.Between21AndUnder25NationalMinimumWage)
+            .Excluding(x => x.Over25NationalMinimumWage)
+            .Excluding(x => x.WageText));
     }
     
     
     [Test]
-    [MoqInlineAutoData(GqlAvailableWhere.AcrossEngland, SharedOuterApi.Types.Domain.AvailableWhere.AcrossEngland)]
-    [MoqInlineAutoData(GqlAvailableWhere.MultipleLocations, SharedOuterApi.Types.Domain.AvailableWhere.MultipleLocations)]
-    [MoqInlineAutoData(GqlAvailableWhere.OneLocation, SharedOuterApi.Types.Domain.AvailableWhere.OneLocation)]
-    public void EmployerLocationOption_Is_Mapped(GqlAvailableWhere? srcValue, SharedOuterApi.Types.Domain.AvailableWhere? dstValue)
+    [MoqInlineAutoData(GqlAvailableWhere.AcrossEngland, AvailableWhere.AcrossEngland)]
+    [MoqInlineAutoData(GqlAvailableWhere.MultipleLocations, AvailableWhere.MultipleLocations)]
+    [MoqInlineAutoData(GqlAvailableWhere.OneLocation, AvailableWhere.OneLocation)]
+    public void EmployerLocationOption_Is_Mapped(GqlAvailableWhere? srcValue, AvailableWhere? dstValue)
     {
         // arrange
         var source = AllVacancyFieldsFake.Create();
         source.EmployerLocationOption = srcValue;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.EmployerLocationOption.Should().Be(dstValue);
@@ -397,7 +401,7 @@ public class WhenMappingAVacancy
         source.Status = VacancyStatus.Draft;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
         result.EmployerLocationOption.Should().BeNull();
@@ -412,10 +416,10 @@ public class WhenMappingAVacancy
         source.Status = VacancyStatus.Live;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
-        result.EmployerLocationOption.Should().Be(SharedOuterApi.Types.Domain.AvailableWhere.MultipleLocations);
+        result.EmployerLocationOption.Should().Be(AvailableWhere.MultipleLocations);
     }
     
     [Test, MoqAutoData]
@@ -428,10 +432,10 @@ public class WhenMappingAVacancy
         source.EmployerLocations = JsonSerializer.Serialize(new List<Address> { address }, Global.JsonSerializerOptions);
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
-        result.EmployerLocationOption.Should().Be(SharedOuterApi.Types.Domain.AvailableWhere.OneLocation);
+        result.EmployerLocationOption.Should().Be(AvailableWhere.OneLocation);
     }
     
     [Test, MoqAutoData]
@@ -444,9 +448,9 @@ public class WhenMappingAVacancy
         source.EmployerLocations = null;
 
         // act
-        var result = GqlVacancyMapper.From(source);
+        var result = GqlVacancyMapper.ToDomain(source);
 
         // assert
-        result.EmployerLocationOption.Should().Be(SharedOuterApi.Types.Domain.AvailableWhere.AcrossEngland);
+        result.EmployerLocationOption.Should().Be(AvailableWhere.AcrossEngland);
     }
 }

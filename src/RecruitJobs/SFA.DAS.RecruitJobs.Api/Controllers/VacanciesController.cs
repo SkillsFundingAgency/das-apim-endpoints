@@ -18,9 +18,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
-using ArchiveType = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.ArchiveType;
-using Vacancy = SFA.DAS.RecruitJobs.Domain.Vacancy;
-using VacancyStatus = SFA.DAS.SharedOuterApi.Types.Domain.Recruit.VacancyStatus;
+using SFA.DAS.RecruitJobs.Api.Models.Mappers;
+using VacancyStatus = SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus;
 using ValidationProblemDetails = Microsoft.AspNetCore.Mvc.ValidationProblemDetails;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
@@ -52,7 +51,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data.Vacancies[0];
-        var domainVacancy = GqlVacancyMapper.From(vacancy);
+        var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
 
         return TypedResults.Ok(new DataResponse<Vacancy>(domainVacancy));
     }
@@ -80,7 +79,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
 
         var vacancy = response.Data.Vacancies[0];
-        var domainVacancy = GqlVacancyMapper.From(vacancy);
+        var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
 
         return TypedResults.Ok(new DataResponse<Vacancy>(domainVacancy));
     }
@@ -289,6 +288,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     public async Task<IResult> CloseVacancy(
         [FromRoute] long vacancyReference,
         [FromBody] CloseVacancyRequest request,
+        [FromServices] VacancyMapper vacancyMapper,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
@@ -306,27 +306,25 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             }
 
             var vacancy = response.Data!.Vacancies.FirstOrDefault();
-            if (vacancy is null || vacancy.VacancyReference != vacancyReference)
+            if(vacancy is null || vacancy.VacancyReference != vacancyReference)
             {
                 logger.LogWarning("Vacancy with id {VacancyId} not found at CloseVacancy", request.VacancyId);
                 return TypedResults.NotFound();
             }
 
-            var domainVacancy = GqlVacancyMapper.From(vacancy);
+            var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
             domainVacancy.ClosureReason = request.ClosureReason;
             domainVacancy.Status = VacancyStatus.Closed;
             domainVacancy.ClosedDate = DateTime.UtcNow;
 
-            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest>(new PutVacanciesByVacancyIdApiRequest
-            {
-                VacancyId = request.VacancyId,
-                RuleSet = VacancyRuleSet.All,
-                ValidateOnly = false,
-                Data = new PutVacancyRequest
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>(
+                new PutVacanciesByVacancyIdApiRequest
                 {
-                    //mapping needs to happen here, but the PutVacancyRequest is empty in this snippet. You would typically map the domainVacancy properties to the PutVacancyRequest properties.
-                }
-            });
+                    VacancyId = request.VacancyId,
+                    RuleSet = VacancyRuleSet.All,
+                    ValidateOnly = false,
+                    Data = vacancyMapper.ToInnerDto(domainVacancy)
+                });
 
             putResponse.EnsureSuccessStatusCode();
             return TypedResults.NoContent();
@@ -363,7 +361,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         
         // Patch the Vacancy
         var patchDocument = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
-        patchDocument.Replace(x => x.Status, Recruit.Contracts.ApiResponses.VacancyStatus.Approved);
+        patchDocument.Replace(x => x.Status, VacancyStatus.Approved);
         patchDocument.Replace(x => x.ApprovedDate, DateTime.UtcNow);
         
         var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
@@ -400,7 +398,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         
         // Patch the Vacancy
         var patchDocument = new JsonPatchDocument<SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>();
-        patchDocument.Replace(x => x.Status, SFA.DAS.Recruit.Contracts.ApiResponses.VacancyStatus.Live);
+        patchDocument.Replace(x => x.Status, VacancyStatus.Live);
         patchDocument.Replace(x => x.LiveDate, DateTime.UtcNow);
 
         var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
@@ -464,7 +462,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
     public async Task<IResult> ArchiveVacancy(
         [FromRoute] long vacancyReference,
         [FromBody] ArchiveVacancyRequest request,
-        //[FromServices] VacancyMapper vacancyMapper,
+        [FromServices] VacancyMapper vacancyMapper,
         [FromServices] IRecruitGqlClient recruitGqlClient,
         [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         CancellationToken cancellationToken)
@@ -490,22 +488,20 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
                 return TypedResults.NotFound();
             }
 
-            var domainVacancy = GqlVacancyMapper.From(vacancy);
+            var domainVacancy = GqlVacancyMapper.ToDomain(vacancy);
             domainVacancy.Status = VacancyStatus.Archived;
-            domainVacancy.ArchiveType = ArchiveType.Auto;
+            domainVacancy.ArchiveType = Recruit.Contracts.ApiResponses.ArchiveType.Auto;
             domainVacancy.LastUpdatedDate = DateTime.UtcNow;
             domainVacancy.ArchivedDate = DateTime.UtcNow;
 
-            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest>(new PutVacanciesByVacancyIdApiRequest
-            {
-                VacancyId = request.VacancyId,
-                RuleSet = VacancyRuleSet.All,
-                ValidateOnly = false,
-                Data = new PutVacancyRequest
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>(
+                new PutVacanciesByVacancyIdApiRequest
                 {
-                    // mapping needs to happen here, but the PutVacancyRequest is empty in this snippet. You would typically map the domainVacancy properties to the PutVacancyRequest properties.
-                }
-            });
+                    VacancyId = request.VacancyId,
+                    RuleSet = VacancyRuleSet.All,
+                    ValidateOnly = false,
+                    Data = vacancyMapper.ToInnerDto(domainVacancy)
+                });
 
             putResponse.EnsureSuccessStatusCode();
             return TypedResults.NoContent();

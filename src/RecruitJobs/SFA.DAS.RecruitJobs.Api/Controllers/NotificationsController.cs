@@ -4,13 +4,12 @@ using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.Apim.Shared.Interfaces;
 using SFA.DAS.Notifications.Messages.Commands;
 using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
 using SFA.DAS.RecruitJobs.Api.Models;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using SFA.DAS.Recruit.Contracts.ApiResponses;
-
-//using NotificationEmail = SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications.NotificationEmail;
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -22,9 +21,9 @@ public class NotificationsController: ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IResult> SendOne(
         [FromServices] INotificationService notificationService,
-        [FromBody, Required] Recruit.Contracts.ApiResponses.NotificationEmail email)
+        [FromBody, Required] NotificationEmail email)
     {
-        var command = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, email.Tokens as IReadOnlyDictionary<string, string>);
+        var command = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, new ReadOnlyDictionary<string, string>(email.Tokens));
         await notificationService.Send(command);
         return TypedResults.NoContent();
     }
@@ -34,7 +33,7 @@ public class NotificationsController: ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IResult> CreateVacancyNotifications(
-        [FromServices] SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         [FromRoute] Guid vacancyId,
         CancellationToken cancellationToken)
     {
@@ -59,8 +58,8 @@ public class NotificationsController: ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IResult> CreateVacancyNotificationsByStatus(
-        [FromServices] SFA.DAS.Recruit.Contracts.Client.IRecruitApiClient<SFA.DAS.Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
-        [FromRoute] Recruit.Contracts.ApiResponses.VacancyStatus status,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
+        [FromRoute] VacancyStatus status,
         [FromRoute] Guid vacancyId,
         CancellationToken cancellationToken)
     {
