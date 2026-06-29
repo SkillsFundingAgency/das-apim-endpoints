@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.Notifications.Messages.Commands;
-using SFA.DAS.RecruitJobs.Api.Models.Mappers;
-using SFA.DAS.RecruitJobs.InnerApi.Requests.DelayedNotifications;
-using SFA.DAS.RecruitJobs.InnerApi.Responses.DelayedNotifications;
-using SFA.DAS.SharedOuterApi.Types.Configuration;
-
 using SFA.DAS.Apim.Shared.Infrastructure;
-using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Interfaces;
+using SFA.DAS.Notifications.Messages.Commands;
+using SFA.DAS.Recruit.Contracts.ApiRequests;
+using SFA.DAS.Recruit.Contracts.ApiResponses;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+
 
 namespace SFA.DAS.RecruitJobs.Api.Controllers;
 
@@ -19,13 +17,12 @@ public class DelayedNotificationsController: ControllerBase
 {
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(typeof(List<NotificationEmail>), StatusCodes.Status200OK)]
     public async Task<IResult> GetBatchByDate(
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         [FromQuery, Required] DateTime? dateTime)
     {
-        var results = await recruitApiClient.Get<GetDelayedNotificationsByDateResponse>(new GetDelayedNotificationsByDateRequest(dateTime!.Value));
-        return TypedResults.Ok(results?.Emails.ToGetResponse() ?? []);
+        var results = await recruitApiClient.Get<GetNotificationsBatchByDateResponse>(new GetNotificationsBatchByDateApiRequest(dateTime!.Value));
+        return TypedResults.Ok(results?.Emails ?? []);
     }
 
 
@@ -34,20 +31,20 @@ public class DelayedNotificationsController: ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(List<NotificationEmail>), StatusCodes.Status200OK)]
     public async Task<IResult> GetBatchByUserInActiveStatus(
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient)
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient)
     {
-        var results = await recruitApiClient.Get<GetDelayedNotificationsByUserStatusResponse>(new GetDelayedNotificationsByUserStatusRequest());
-        return TypedResults.Ok(results?.Emails.ToGetResponse() ?? []);
+        var results = await recruitApiClient.Get<GetNotificationsBatchByUserStatusResponse>(new GetNotificationsBatchByUserstatusApiRequest(UserStatus.Inactive));
+        return TypedResults.Ok(results?.Emails ?? []);
     }
 
     [HttpPost, Route("delete")]
     [ProducesResponseType(typeof(IEnumerable<string>), StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IResult> DeleteMany(
-        [FromServices] IRecruitApiClient<RecruitApiConfiguration> recruitApiClient,
+        [FromServices] Recruit.Contracts.Client.IRecruitApiClient<Recruit.Contracts.Client.RecruitApiConfiguration> recruitApiClient,
         [FromBody, Required] IEnumerable<long> ids)
     {
-        var results = await recruitApiClient.DeleteWithResponseCode<NullResponse>(new DeleteNotificationsByIdsRequest(ids));
+        var results = await recruitApiClient.DeleteWithResponseCode<NullResponse>(new DeleteNotificationsApiRequest(ids.ToList()));
         return Results.StatusCode((int)results.StatusCode);
     }
     
@@ -58,7 +55,7 @@ public class DelayedNotificationsController: ControllerBase
         [FromServices] INotificationService notificationService,
         [FromBody, Required] NotificationEmail email)
     {
-        var command = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, email.Tokens);
+        var command = new SendEmailCommand(email.TemplateId.ToString(), email.RecipientAddress, email.Tokens as IReadOnlyDictionary<string, string>);
         await notificationService.Send(command);
         return Results.NoContent();
     }
