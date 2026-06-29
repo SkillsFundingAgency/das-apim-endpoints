@@ -56,7 +56,7 @@ public class GetAllRestrictedCoursesQueryHandlerTests
         GetAllRestrictedCoursesQueryHandler sut)
     {
         // Arrange
-        apiClientMock.Setup(c => c.GetWithResponseCode<GetAllRestrictedCoursesResponse>(It.IsAny<GetAllRestrictedCoursesRequest>())).ReturnsAsync(new ApiResponse<GetAllRestrictedCoursesResponse>(null, HttpStatusCode.InternalServerError, ""));
+        apiClientMock.Setup(c => c.GetWithResponseCode<GetAllRestrictedCoursesResponse>(It.IsAny<GetAllRestrictedCoursesRequest>())).ReturnsAsync(new ApiResponse<GetAllRestrictedCoursesResponse>(new GetAllRestrictedCoursesResponse(), HttpStatusCode.InternalServerError, ""));
 
         // Act & Assert
         Assert.ThrowsAsync<ApiResponseException>(() => sut.Handle(query, new CancellationToken()));
