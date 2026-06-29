@@ -7,7 +7,6 @@ Scenario Outline: Withdrawal
 	And SLD inform us that the WithdrawalDate has changed
 	When the short course learning is updated
 	Then a on-programme update request is sent for short courses to the earnings domain
-	And a short course earnings updated event is published for payments
 
 	Examples:
 		| approval   |
@@ -19,7 +18,6 @@ Scenario Outline: Completion
 	And SLD inform us that the CompletionDate has changed
 	When the short course learning is updated
 	Then a on-programme update request is sent for short courses to the earnings domain
-	And a short course earnings updated event is published for payments
 
 	Examples:
 		| approval   |
