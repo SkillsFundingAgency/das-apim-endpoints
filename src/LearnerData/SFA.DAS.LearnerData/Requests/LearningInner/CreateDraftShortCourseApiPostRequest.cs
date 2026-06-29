@@ -17,6 +17,11 @@ public class CreateDraftShortCourseApiPostRequest(CreateDraftShortCourseRequest 
 public class CreateDraftShortCourseRequest
 {
     /// <summary>
+    /// Provider UKPRN for this request
+    /// </summary>
+    public long Ukprn { get; set; }
+
+    /// <summary>
     /// Learner details to be updated
     /// </summary>
     public ShortCourseLearningUpdateDetails LearnerUpdateDetails { get; set; }
@@ -29,7 +34,7 @@ public class CreateDraftShortCourseRequest
     /// <summary>
     /// On programme details
     /// </summary>
-    public OnProgramme OnProgramme { get; set; }
+    public List<OnProgramme> OnProgramme { get; set; } = new();
 }
 
 public class ShortCourseLearningUpdateDetails : LearningUpdateDetails
