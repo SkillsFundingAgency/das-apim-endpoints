@@ -24,15 +24,12 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
         _sut = new CreateUnapprovedShortCourseLearningRequestBuilder();
     }
 
-    private static CreateDraftShortCourseRequest BuildLearningRequest(decimal price = ExpectedPrice, LearningType learningType = ExpectedLearningType)
+    private static Requests.LearningInner.OnProgramme BuildResolvedOnProgramme(decimal price = ExpectedPrice, LearningType learningType = ExpectedLearningType)
     {
-        return new CreateDraftShortCourseRequest
+        return new Requests.LearningInner.OnProgramme
         {
-            OnProgramme = new Requests.LearningInner.OnProgramme
-            {
-                Price = price,
-                LearningType = learningType
-            }
+            Price = price,
+            LearningType = learningType
         };
     }
 
@@ -75,7 +72,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, episodeKey, ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, episodeKey, ukprn, BuildResolvedOnProgramme());
 
         // Assert
         result.LearningKey.Should().Be(learningKey);
@@ -124,7 +121,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, Guid.NewGuid(), ukprn, BuildResolvedOnProgramme());
 
         // Assert
         result.OnProgramme.Milestones.Should().Contain(Milestone.LearningComplete);
@@ -147,7 +144,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, Guid.NewGuid(), ukprn, BuildResolvedOnProgramme());
 
         // Assert
         result.OnProgramme.Milestones.Should().ContainSingle(m =>
@@ -171,7 +168,7 @@ public class CreateUnapprovedShortCourseLearningRequestBuilderTests
             .Create();
 
         // Act
-        var result = _sut.Build(request, learningKey, Guid.NewGuid(), ukprn, BuildLearningRequest());
+        var result = _sut.Build(request, onProgramme, learningKey, Guid.NewGuid(), ukprn, BuildResolvedOnProgramme());
 
         // Assert
         result.OnProgramme.Milestones.Should().NotContain(Milestone.LearningComplete);
