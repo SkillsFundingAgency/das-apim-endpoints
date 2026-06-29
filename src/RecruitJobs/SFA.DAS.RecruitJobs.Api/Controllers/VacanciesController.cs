@@ -317,7 +317,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             domainVacancy.Status = VacancyStatus.Closed;
             domainVacancy.ClosedDate = DateTime.UtcNow;
 
-            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>(
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, Vacancy>(
                 new PutVacanciesByVacancyIdApiRequest
                 {
                     VacancyId = request.VacancyId,
@@ -360,11 +360,11 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
         
         // Patch the Vacancy
-        var patchDocument = new JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>();
+        var patchDocument = new JsonPatchDocument<Vacancy>();
         patchDocument.Replace(x => x.Status, VacancyStatus.Approved);
         patchDocument.Replace(x => x.ApprovedDate, DateTime.UtcNow);
         
-        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<Recruit.Contracts.ApiResponses.Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
         {
             Data = patchDocument,
             VacancyId = vacancyId
@@ -397,11 +397,11 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         }
         
         // Patch the Vacancy
-        var patchDocument = new JsonPatchDocument<SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>();
+        var patchDocument = new JsonPatchDocument<Vacancy>();
         patchDocument.Replace(x => x.Status, VacancyStatus.Live);
         patchDocument.Replace(x => x.LiveDate, DateTime.UtcNow);
 
-        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
+        var patchResponse = await recruitApiClient.PatchWithResponseCode<JsonPatchDocument<Vacancy>, NullResponse>(new PatchVacanciesByVacancyIdApiRequest
         {
             Data = patchDocument,
             VacancyId = vacancyId
@@ -494,7 +494,7 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
             domainVacancy.LastUpdatedDate = DateTime.UtcNow;
             domainVacancy.ArchivedDate = DateTime.UtcNow;
 
-            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, SFA.DAS.Recruit.Contracts.ApiResponses.Vacancy>(
+            var putResponse = await recruitApiClient.PutWithResponseCode<PutVacancyRequest, Vacancy>(
                 new PutVacanciesByVacancyIdApiRequest
                 {
                     VacancyId = request.VacancyId,
