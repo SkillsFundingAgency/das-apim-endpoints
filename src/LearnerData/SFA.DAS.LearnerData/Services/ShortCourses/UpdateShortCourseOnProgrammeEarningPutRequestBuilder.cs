@@ -13,15 +13,17 @@ public interface IUpdateShortCourseOnProgrammeEarningPutRequestBuilder
 public class UpdateShortCourseOnProgrammeEarningPutRequestBuilder : IUpdateShortCourseOnProgrammeEarningPutRequestBuilder
 {
     public UpdateShortCourseOnProgrammeRequestBody Build(OnProgramme onProgramme)
-        => BuildBody(onProgramme.WithdrawalDate, onProgramme.CompletionDate, onProgramme.Milestones);
+        => BuildBody(onProgramme.WithdrawalDate, onProgramme.CompletionDate, onProgramme.Milestones, onProgramme.StartDate, onProgramme.ExpectedEndDate);
 
     public UpdateShortCourseOnProgrammeRequestBody Build(ShortCourseOnProgramme onProgramme)
-        => BuildBody(onProgramme.WithdrawalDate, onProgramme.CompletionDate, onProgramme.Milestones);
+        => BuildBody(onProgramme.WithdrawalDate, onProgramme.CompletionDate, onProgramme.Milestones, onProgramme.StartDate, onProgramme.ExpectedEndDate);
 
     private static UpdateShortCourseOnProgrammeRequestBody BuildBody(
         DateTime? withdrawalDate,
         DateTime? completionDate,
-        IEnumerable<Milestone> sourceMilestones)
+        IEnumerable<Milestone> sourceMilestones,
+        DateTime startDate,
+        DateTime expectedEndDate)
     {
         var milestones = sourceMilestones.ToList();
         if (completionDate.HasValue && !milestones.Contains(Milestone.LearningComplete))
@@ -31,7 +33,9 @@ public class UpdateShortCourseOnProgrammeEarningPutRequestBuilder : IUpdateShort
         {
             WithdrawalDate = withdrawalDate,
             CompletionDate = completionDate,
-            Milestones = milestones
+            Milestones = milestones,
+            StartDate = startDate,
+            ExpectedEndDate = expectedEndDate
         };
     }
 }

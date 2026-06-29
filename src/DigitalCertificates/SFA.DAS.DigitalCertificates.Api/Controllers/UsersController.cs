@@ -4,16 +4,17 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.DigitalCertificates.Api.Attributes;
 using SFA.DAS.DigitalCertificates.Application.Commands.CreateOrUpdateUser;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
+using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificates;
+using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetSharings;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
-using SFA.DAS.DigitalCertificates.Models;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAction;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserMatch;
-using SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch;
-using SFA.DAS.DigitalCertificates.Application.Commands.CreateUserAuthorise;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUserActions;
+using SFA.DAS.DigitalCertificates.Models;
 
 namespace SFA.DAS.DigitalCertificates.Api.Controllers
 {
@@ -70,6 +71,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpGet("{userId}/certificates")]
+        [PrivateBetaUlnWhitelist]
         public async Task<IActionResult> GetCertificates([FromRoute] Guid userId)
         {
             try
@@ -100,6 +102,7 @@ namespace SFA.DAS.DigitalCertificates.Api.Controllers
         }
 
         [HttpGet("{userId}/match")]
+        [PrivateBetaUlnWhitelist]
         public async Task<IActionResult> GetCertificatesMatch([FromRoute] Guid userId)
         {
             try
