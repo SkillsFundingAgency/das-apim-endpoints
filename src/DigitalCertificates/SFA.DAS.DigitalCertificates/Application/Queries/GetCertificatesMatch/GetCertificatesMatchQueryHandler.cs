@@ -81,15 +81,7 @@ namespace SFA.DAS.DigitalCertificates.Application.Queries.GetCertificatesMatch
 
                     if (searchResponse.Body?.Matches != null)
                     {
-                        allMatches.AddRange(searchResponse.Body.Matches.Select(m =>
-                        {
-                            var match = (CertificateMatchResult)m;
-
-                            match.FamilyName = familyName;
-                            match.DateOfBirth = identity.DateOfBirth.Value;
-
-                            return match;
-                        }));
+                        allMatches.AddRange(searchResponse.Body.Matches.Select(m => (CertificateMatchResult)m));
                     }
                 }
             }

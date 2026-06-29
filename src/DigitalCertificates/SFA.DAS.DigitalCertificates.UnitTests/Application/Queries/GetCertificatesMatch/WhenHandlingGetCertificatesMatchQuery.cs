@@ -148,7 +148,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             var identityBody = new GetUserIdentityResponse
             {
                 Authorisation = null,
-                DateOfBirth = new DateTime(2002, 2, 2, 0, 0, 0, DateTimeKind.Unspecified),
+                DateOfBirth = new DateTime(1990, 1, 1),
                 Identity = [new IdentityName { FamilyName = "Smith", GivenNames = "John" }],
                 Excluded = []
             };
@@ -191,18 +191,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
 
             // Assert
             actual.Should().NotBeNull();
-
-            var expectedMatches = searchBody.Matches.Select(m =>
-            {
-                var result = (CertificateMatchResult)m;
-
-                result.FamilyName = "Smith";
-                result.DateOfBirth = identityBody.DateOfBirth.Value;
-
-                return result;
-            });
-
-            actual.Matches.Should().BeEquivalentTo(expectedMatches);
+            actual.Matches.Should().BeEquivalentTo(searchBody.Matches.Select(m => (CertificateMatchResult)m));
             actual.Masks.Should().BeEquivalentTo(masksBody.Masks.Select(m => (CertificateMaskResult)m));
         }
 
@@ -222,7 +211,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
             var identityBody = new GetUserIdentityResponse
             {
                 Authorisation = null,
-                DateOfBirth = new DateTime(2002, 1, 1, 0, 0, 0, DateTimeKind.Unspecified),
+                DateOfBirth = new DateTime(1990, 1, 1),
                 Identity = [new IdentityName { FamilyName = "Jones", GivenNames = "Jane" }],
                 Excluded = []
             };
@@ -265,18 +254,7 @@ namespace SFA.DAS.DigitalCertificates.UnitTests.Application.Queries.GetCertifica
 
             // Assert
             actual.Should().NotBeNull();
-            
-            var expectedMatches = searchBody.Matches.Select(m =>
-            {
-                var result = (CertificateMatchResult)m;
-
-                result.FamilyName = "Jones";
-                result.DateOfBirth = identityBody.DateOfBirth.Value;
-
-                return result;
-            });
-
-            actual.Matches.Should().BeEquivalentTo(expectedMatches);
+            actual.Matches.Should().BeEquivalentTo(searchBody.Matches.Select(m => (CertificateMatchResult)m));
             actual.Masks.Should().BeEquivalentTo(masksBody.Masks.Select(m => (CertificateMaskResult)m));
         }
 
