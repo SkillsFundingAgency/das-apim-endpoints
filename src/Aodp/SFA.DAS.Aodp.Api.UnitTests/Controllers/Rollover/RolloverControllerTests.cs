@@ -38,17 +38,14 @@ public class RolloverControllerTests
     public async Task GetRolloverWorkflowCandidates_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
     {
         // Arrange
-        var payload = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
+        var payload = new GetRolloverWorkflowCandidatesCountQueryResponse
         {
-            Value = new GetRolloverWorkflowCandidatesCountQueryResponse
-            {
-                TotalRecords = 5
-            },
+            TotalRecords = 5
         };
         var mediatrResponse = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
         {
             Success = true,
-            Value = payload.Value
+            Value = payload
         };
 
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
@@ -58,16 +55,16 @@ public class RolloverControllerTests
             .ReturnsAsync(mediatrResponse);
 
         // Act
-        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(default);
+        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(CancellationToken.None);
 
         // Assert
         Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
         var ok = (OkObjectResult)actionResult;
         Assert.That(ok.StatusCode, Is.EqualTo(200));
-        Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>());
-        var returned = (BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>)ok.Value;
-        Assert.That(returned.Success, Is.EqualTo(true));
-        Assert.That(returned.Value, Is.EqualTo(payload.Value));
+        Assert.That(ok.Value, Is.InstanceOf<GetRolloverWorkflowCandidatesCountQueryResponse>());
+        var returned = (GetRolloverWorkflowCandidatesCountQueryResponse)ok.Value;
+
+        Assert.That(returned, Is.EqualTo(payload));
 
         _mockMediator.Verify(m => m.Send(It.IsAny<GetRolloverWorkflowCandidatesCountQuery>(), It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -88,17 +85,12 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(default);
+        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(CancellationToken.None);
 
         // Assert
-        Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
-        var status = (OkObjectResult)actionResult;
-
-        Assert.That(status.Value, Is.InstanceOf<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>());
-        var value = (BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>)status.Value;
-
-        Assert.That(value.Success, Is.False);
-        Assert.That(value.ErrorMessage, Is.EqualTo("some error"));
+        Assert.That(actionResult, Is.InstanceOf<StatusCodeResult>());
+        var status = (StatusCodeResult)actionResult;
+        Assert.AreEqual(500, status.StatusCode);
     }
 
 
@@ -112,7 +104,7 @@ public class RolloverControllerTests
 
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
-        _mockMediator.Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), default))
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), CancellationToken.None))
                      .ReturnsAsync(response);
 
         // Act
@@ -141,7 +133,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         _mockMediator
-            .Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), default))
+            .Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), CancellationToken.None))
             .ReturnsAsync(response);
 
         // Act

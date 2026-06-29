@@ -10,12 +10,10 @@ namespace SFA.DAS.Aodp.Api.Controllers.Rollover;
 [Route("api/[controller]")]
 public class RolloverController : BaseController
 {
-    private readonly IMediator _mediator;
     private readonly ILogger<RolloverController> _logger;
 
     public RolloverController(IMediator mediator, ILogger<RolloverController> logger) : base(mediator, logger)
     {
-        _mediator = mediator;
         _logger = logger;
     }
 
@@ -25,8 +23,7 @@ public class RolloverController : BaseController
     public async Task<IActionResult> GetRolloverWorkflowCandidatesCount(CancellationToken cancellationToken)
     {
         var query = new GetRolloverWorkflowCandidatesCountQuery();
-        var result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/rollover/rollovercandidates")]
