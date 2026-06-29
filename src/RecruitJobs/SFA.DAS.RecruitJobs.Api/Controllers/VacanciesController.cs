@@ -98,10 +98,6 @@ public class VacanciesController(ILogger<VacanciesController> logger) : Controll
         {
             logger.LogInformation("Recruit API: Received request to get vacancy analytics for vacancy reference: {VacancyReference}", vacancyReference);
 
-            var vacancyReviews = await recruitApiClient.Get<List<VacancyReview>>(
-                new GetVacanciesByVacancyReferenceReviewsApiRequest(
-                    vacancyReference.ToString(), null, null, null));
-
             var result = await recruitApiClient.Get<VacancyAnalyticsResponse>(new GetVacancyanalyticsByVacancyReferenceApiRequest(vacancyReference));
 
             var response = result ?? new VacancyAnalyticsResponse

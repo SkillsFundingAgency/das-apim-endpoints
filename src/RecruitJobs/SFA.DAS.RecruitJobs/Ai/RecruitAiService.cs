@@ -23,7 +23,7 @@ public class RecruitAiService(
     ICourseService courseService,
     IRecruitAiApiClient<RecruitAiApiConfiguration> recruitAiApiClient) : IRecruitAiService
 {
-    private record TrainingProgrammeSummary
+    private sealed record TrainingProgrammeSummary
     {
         public string Id { get; set; }
         public string Title { get; set; }

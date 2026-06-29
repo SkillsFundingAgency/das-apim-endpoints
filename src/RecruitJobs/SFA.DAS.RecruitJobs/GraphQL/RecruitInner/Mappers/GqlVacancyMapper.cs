@@ -116,11 +116,21 @@ public static class GqlVacancyMapper
                     DurationUnit = source.Wage_DurationUnit != null ? Enum.Parse<Recruit.Contracts.ApiResponses.DurationUnit>(source.Wage_DurationUnit.ToString()!) : null,
                     FixedWageYearlyAmount = (double?)source.Wage_FixedWageYearlyAmount,
                     WageAdditionalInformation = source.Wage_WageAdditionalInformation,
-                    WageType = source.Wage_WageType != null ? Enum.Parse<Recruit.Contracts.ApiResponses.WageType>(source.Wage_WageType.ToString()!) : null,
+                    WageType = GetWageType(source),
                     WeeklyHours = (double?)source.Wage_WeeklyHours,
                     WorkingWeekDescription = source.Wage_WorkingWeekDescription,
                 },
         };
+    }
+
+    private static Recruit.Contracts.ApiResponses.WageType? GetWageType(IAllVacancyFields source)
+    {
+        if (source.Wage_WageType == null)
+        {
+            return null;
+        }
+
+        return Enum.Parse<Recruit.Contracts.ApiResponses.WageType>(source.Wage_WageType.ToString()!);
     }
 
     private static Recruit.Contracts.ApiResponses.AvailableWhere? MapEmployerLocationOption(IAllVacancyFields source, List<Recruit.Contracts.ApiResponses.Address> employerLocations)
