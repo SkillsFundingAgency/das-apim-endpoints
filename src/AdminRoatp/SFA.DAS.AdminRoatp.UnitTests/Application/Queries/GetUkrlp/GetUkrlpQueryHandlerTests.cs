@@ -22,19 +22,16 @@ public class GetUkrlpQueryHandlerTests
         GetUkrlpQuery query)
     {
         // Arrange
-        UkrlpProvidersResponse apiResponse = new
-        ([
-            new UkrlpProviderModel
-            {
-                LegalName = "TestName1",
-                TradingName = "TestAlias1",
-                VerificationDetails =
-                [
-                    new (VerificationAuthority.CharityCommission, "12345", false),
-                    new (VerificationAuthority.CompaniesHouse, "67890", false)
-                ]
-            }
-        ]);
+        var apiResponse = new UkrlpProviderModel
+        {
+            LegalName = "TestName1",
+            TradingName = "TestAlias1",
+            VerificationDetails =
+            [
+                new (VerificationAuthority.CharityCommission, "12345", false),
+                new (VerificationAuthority.CompaniesHouse, "67890", false)
+            ]
+        };
 
         var expectedResponse = new GetUkrlpQueryResult
         {
@@ -44,32 +41,14 @@ public class GetUkrlpQueryHandlerTests
             CompanyNumber = "67890"
         };
 
-        apiClientMock.Setup(a => a.GetWithResponseCode<UkrlpProvidersResponse>(It.Is<GetUkrlpRequest>(r => r.GetUrl.Equals(new GetUkrlpRequest(query.Ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<UkrlpProvidersResponse>(apiResponse, System.Net.HttpStatusCode.OK, ""));
+        apiClientMock.Setup(a => a.GetWithResponseCode<UkrlpProviderModel>(It.Is<GetUkrlpRequest>(r => r.GetUrl.Equals(new GetUkrlpRequest(query.Ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<UkrlpProviderModel>(apiResponse, System.Net.HttpStatusCode.OK, ""));
 
         // Act
         var result = await sut.Handle(query, CancellationToken.None);
 
         // Assert
         result.Should().BeEquivalentTo(expectedResponse);
-        apiClientMock.Verify(a => a.GetWithResponseCode<UkrlpProvidersResponse>(It.Is<GetUkrlpRequest>(r => r.GetUrl.Equals(new GetUkrlpRequest(query.Ukprn).GetUrl))), Times.Once);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Handle_SuccessfulResponse_ReturnsNull(
-        [Frozen] Mock<IRoatpServiceApiClient<RoatpConfiguration>> apiClientMock,
-        GetUkrlpQueryHandler sut,
-        GetUkrlpQuery query)
-    {
-        // Arrange
-        UkrlpProvidersResponse apiResponse = new([]);
-
-        apiClientMock.Setup(a => a.GetWithResponseCode<UkrlpProvidersResponse>(It.Is<GetUkrlpRequest>(r => r.GetUrl.Equals(new GetUkrlpRequest(query.Ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<UkrlpProvidersResponse>(apiResponse, System.Net.HttpStatusCode.OK, ""));
-
-        // Act
-        var result = await sut.Handle(query, CancellationToken.None);
-
-        // Assert
-        result.Should().BeNull();
+        apiClientMock.Verify(a => a.GetWithResponseCode<UkrlpProviderModel>(It.Is<GetUkrlpRequest>(r => r.GetUrl.Equals(new GetUkrlpRequest(query.Ukprn).GetUrl))), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -79,9 +58,9 @@ public class GetUkrlpQueryHandlerTests
         GetUkrlpQuery query)
     {
         // Arrange
-        UkrlpProvidersResponse apiResponse = new([]);
+        UkrlpProviderModel apiResponse = new();
 
-        apiClientMock.Setup(a => a.GetWithResponseCode<UkrlpProvidersResponse>(It.Is<GetUkrlpRequest>(r => r.GetUrl.Equals(new GetUkrlpRequest(query.Ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<UkrlpProvidersResponse>(apiResponse, System.Net.HttpStatusCode.InternalServerError, ""));
+        apiClientMock.Setup(a => a.GetWithResponseCode<UkrlpProviderModel>(It.Is<GetUkrlpRequest>(r => r.GetUrl.Equals(new GetUkrlpRequest(query.Ukprn).GetUrl)))).ReturnsAsync(new ApiResponse<UkrlpProviderModel>(apiResponse, System.Net.HttpStatusCode.InternalServerError, ""));
 
         // Act
         Func<Task> result = () => sut.Handle(query, CancellationToken.None);
