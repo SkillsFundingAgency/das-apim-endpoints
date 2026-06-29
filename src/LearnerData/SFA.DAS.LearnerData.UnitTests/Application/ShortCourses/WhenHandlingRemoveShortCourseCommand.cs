@@ -1,18 +1,17 @@
 using AutoFixture;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Application.RemoveShortCourse;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
 using SFA.DAS.LearnerData.Application.Requests.Learning;
+using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
-using System.Net;
-using SFA.DAS.Apim.Shared.Models;
-using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.UnitTests.Application.ShortCourses;
 
@@ -24,7 +23,6 @@ public class WhenHandlingRemoveShortCourseCommand
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
     private Mock<ILogger<RemoveShortCourseCommandHandler>> _logger;
-    private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
     private Mock<IMessageSession> _messageSession;
     private RemoveShortCourseCommandHandler _sut;
     private PaymentsConfiguration _configuration;
@@ -38,14 +36,10 @@ public class WhenHandlingRemoveShortCourseCommand
         _logger = new Mock<ILogger<RemoveShortCourseCommandHandler>>();
         _configuration = new PaymentsConfiguration { PaymentsEndpoint = "destination" };
 
-        _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
         _messageSession = new Mock<IMessageSession>();
 
-        _calculateGrowthAndSkillsPaymentsEventBuilder.Setup(x => x.Build(It.IsAny<long>(), It.IsAny<IShortCourseLearningPaymentEventBuildContext>(), It.IsAny<ShortCourseEarningsResponse>()))
-            .ReturnsAsync(_fixture.Create<CalculateGrowthAndSkillsPayments>());
-
         _sut = new RemoveShortCourseCommandHandler(
-            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object, _calculateGrowthAndSkillsPaymentsEventBuilder.Object, _messageSession.Object, _configuration);
+            _logger.Object, _learningApiClient.Object, _earningsApiClient.Object, _messageSession.Object, _configuration);
     }
 
     [Test]

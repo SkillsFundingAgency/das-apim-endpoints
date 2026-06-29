@@ -31,7 +31,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     private Mock<ILogger<UpdateShortCourseLearningCommandHandler>> _logger;
     private Mock<ILearningApiClient<LearningApiConfiguration>> _learningApiClient;
     private Mock<IEarningsApiClient<EarningsApiConfiguration>> _earningsApiClient;
-    private Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder> _calculateGrowthAndSkillsPaymentsEventBuilder;
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private Mock<IShortCourseLookupService> _shortCourseLookupService;
     private Mock<IMessageSession> _messageSession;
@@ -47,10 +46,9 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         _logger = new Mock<ILogger<UpdateShortCourseLearningCommandHandler>>();
         _learningApiClient = new Mock<ILearningApiClient<LearningApiConfiguration>>();
         _earningsApiClient = new Mock<IEarningsApiClient<EarningsApiConfiguration>>();
-        _calculateGrowthAndSkillsPaymentsEventBuilder = new Mock<ICalculateGrowthAndSkillsPaymentsEventBuilder>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(new UpdateShortCourseOnProgrammeRequestBody { Milestones = [] });
         _shortCourseLookupService = new Mock<IShortCourseLookupService>();
         _shortCourseLookupService
@@ -62,7 +60,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             _logger.Object,
             _learningApiClient.Object,
             _earningsApiClient.Object,
-            _calculateGrowthAndSkillsPaymentsEventBuilder.Object,
             _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
             _shortCourseLookupService.Object,
             _messageSession.Object,
@@ -101,9 +98,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             }
         };
 
-        _calculateGrowthAndSkillsPaymentsEventBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<ShortCourseEarningsResponse>()))
-            .ReturnsAsync(_fixture.Create<CalculateGrowthAndSkillsPayments>());
     }
 
     [Test]
@@ -162,7 +156,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
 
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(new UpdateShortCourseOnProgrammeRequestBody { CompletionDate = _completionDate, Milestones = [] });
 
         var earningsResponse = _fixture.Create<UpdateShortCourseEarningPutResponse>();
@@ -246,10 +240,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
         // Arrange
         var builtCommand = _fixture.Create<CalculateGrowthAndSkillsPayments>();
 
-        _calculateGrowthAndSkillsPaymentsEventBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<ShortCourseEarningsResponse>()))
-            .ReturnsAsync(builtCommand);
-
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
             LearningKey = _learnerKey,
@@ -281,10 +271,6 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     {
         // Arrange
         var builtCommand = _fixture.Create<CalculateGrowthAndSkillsPayments>();
-
-        _calculateGrowthAndSkillsPaymentsEventBuilder
-            .Setup(x => x.Build(It.IsAny<long>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<ShortCourseEarningsResponse>()))
-            .ReturnsAsync(builtCommand);
 
         var learningResponse = new UpdateShortCourseLearningPutResponse
         {
@@ -334,7 +320,7 @@ public class WhenHandlingUpdateShortCourseLearningCommand
             Milestones = [Milestone.LearningComplete]
         };
         _updateShortCourseOnProgrammeEarningPutRequestBuilder
-            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>()))
+            .Setup(x => x.Build(It.IsAny<ShortCourseOnProgramme>(), It.IsAny<Guid>(), It.IsAny<string>()))
             .Returns(builtBody);
 
         _earningsApiClient
@@ -671,39 +657,5 @@ public class WhenHandlingUpdateShortCourseLearningCommand
                 e.LearningType == LearningType.ApprenticeshipUnit &&
                 e.CorrelationId != Guid.Empty), It.IsAny<PublishOptions>()),
             Times.Once);
-    }
-
-    [Test]
-    public async Task Then_PaymentsEvent_Is_Not_Sent_For_New_Learning()
-    {
-        // Arrange
-        var onProg = _command.Request.Delivery.OnProgramme.Single();
-
-        var learningResponse = new UpdateShortCourseLearningPutResponse
-        {
-            LearningKey = Guid.NewGuid(),
-            UpdatedEpisodeKey = Guid.NewGuid(),
-            CourseCode = onProg.CourseCode,
-            IsNewLearning = true,
-            Changes = []
-        };
-
-        _learningApiClient
-            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
-                It.IsAny<UpdateShortCourseLearningPutRequest>()))
-            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
-
-        _shortCourseLookupService
-            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
-            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
-
-        // Act
-        await _handler.Handle(_command, CancellationToken.None);
-
-        // Assert
-        _calculateGrowthAndSkillsPaymentsEventBuilder.Verify(x =>
-            x.Build(It.IsAny<long>(), It.IsAny<UpdateShortCourseLearningPutResponse>(), It.IsAny<ShortCourseEarningsResponse>()),
-            Times.Never);
-        _messageSession.Verify(x => x.Send(It.IsAny<object>(), It.IsAny<SendOptions>()), Times.Never);
     }
 }
