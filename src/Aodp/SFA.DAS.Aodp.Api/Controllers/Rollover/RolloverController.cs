@@ -37,6 +37,24 @@ public class RolloverController : BaseController
         return await SendRequestAsync(new GetRolloverCandidatesQuery());
     }
 
+    [HttpPost("/api/rollover/querybuilder/awardingorganisations")]
+    [ProducesResponseType(typeof(GetAwardingOrganisationsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetAwardingOrganisationsForRolloverQueryBuilder(
+        [FromBody] RolloverQueryBuilderRequest filters)
+    {
+        return await SendRequestAsync(new GetAwardingOrganisationsForRolloverQueryBuilderQuery(filters));
+    }
+
+    [HttpPost("/api/rollover/querybuilder/qualificationversions")]
+    [ProducesResponseType(typeof(GetQualificationVersionsForRolloverQueryBuilderQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetQualificationVersionsForRolloverQueryBuilder(
+        [FromBody] RolloverQueryBuilderRequest filters)
+    {
+        return await SendRequestAsync(new GetQualificationVersionsForRolloverQueryBuilderQuery(filters));
+    }
+
     [HttpPost("/api/rollover/rolloverworkflowruns")]
     [ProducesResponseType(typeof(BaseMediatrResponse<CreateRolloverWorkflowRunCommandResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
