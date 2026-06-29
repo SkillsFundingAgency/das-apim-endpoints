@@ -127,7 +127,7 @@ public class CreateVacancyCommandHandler(
                 Ukprn = vacancy.TrainingProvider.Ukprn!.Value,
                 AccountId = vacancy.AccountId!.Value,
                 AccountLegalEntityId = vacancy.AccountLegalEntityId!.Value,
-                OwnerType = (OwnerType)vacancy.OwnerType,
+                OwnerType = vacancy.OwnerType,
                 SubmittedByUserId = vacancy.SubmittedByUserId.ToString(),
                 AutomatedQaOutcomeIndicators = []
             }
