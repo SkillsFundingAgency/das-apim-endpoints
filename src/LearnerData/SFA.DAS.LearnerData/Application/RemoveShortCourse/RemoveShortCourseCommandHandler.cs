@@ -29,7 +29,7 @@ public class RemoveShortCourseCommandHandler(
     {
         logger.LogInformation("Handling DeleteShortCourseCommand for Ukprn: {Ukprn}, LearningKey: {LearningKey}", command.Ukprn, command.LearnerKey);
 
-        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearnerKey);
+        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearnerKey, command.AcademicYear);
 
         var learningResponse = await learningApiClient.DeleteWithResponseCode<DeleteShortCourseResponse>(learningRequest, true);
 

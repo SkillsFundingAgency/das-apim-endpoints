@@ -93,6 +93,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _command = new CreateDraftShortCourseCommand
         {
             Ukprn = _ukprn,
+            AcademicYear = 2526,
             ShortCourseRequest = _shortCourseRequest
         };
 
@@ -120,7 +121,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         };
 
         _createDraftShortCoursePostRequestBuilder
-            .Setup(x => x.Build(_shortCourseRequest, _ukprn))
+            .Setup(x => x.Build(_shortCourseRequest, _ukprn, It.IsAny<int>()))
             .ReturnsAsync(_builtRequest);
 
         var apiResponse = new ApiResponse<CreateDraftShortCoursePostResponse>(
