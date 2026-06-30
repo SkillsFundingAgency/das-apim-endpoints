@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Admin.Application.Commands.CheckUserActionByCode;
 using SFA.DAS.Admin.Application.Queries.GetUserActionByCode;
+using SFA.DAS.Admin.Application.Commands.UnlockUser;
 
 namespace SFA.DAS.Admin.Api.Controllers
 {
@@ -69,6 +70,29 @@ namespace SFA.DAS.Admin.Api.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e, "Error attempting to search user action by code {Code}", code);
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
+        }
+
+        [HttpPost("{userId}/unlock")]
+        public async Task<IActionResult> UnlockUser([FromRoute] Guid userId, [FromBody] UnlockUserCommand command)
+        {
+            try
+            {
+                if (command == null) command = new UnlockUserCommand();
+                command.UserId = userId;
+
+                var result = await _mediator.Send(command);
+
+                return result == null ? BadRequest() : NoContent();
+            }
+            catch (ArgumentException)
+            {
+                return BadRequest();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error attempting to unlock user {UserId}", userId);
                 return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
             }
         }
