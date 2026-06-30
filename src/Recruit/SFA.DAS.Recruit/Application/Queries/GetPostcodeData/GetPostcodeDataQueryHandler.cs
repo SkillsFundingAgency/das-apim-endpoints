@@ -1,8 +1,7 @@
-using System.Threading;
-using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.Recruit.Application.Queries.GetPostcodeData;
 
