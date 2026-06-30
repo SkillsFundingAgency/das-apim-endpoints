@@ -553,6 +553,48 @@ public class WhenHandlingUpdateShortCourseLearningCommand
     }
 
     [Test]
+    public async Task Then_Earnings_Post_Is_Called_For_New_Episode_On_Existing_Learning()
+    {
+        // Arrange — Change of Provider via PUT: existing Learning, but a new episode for this provider
+        var learningKey = Guid.NewGuid();
+        var episodeKey = Guid.NewGuid();
+        var onProg = _command.Request.Delivery.OnProgramme.Single();
+
+        var learningResponse = new UpdateShortCourseLearningPutResponse
+        {
+            LearningKey = learningKey,
+            UpdatedEpisodeKey = episodeKey,
+            CourseCode = onProg.CourseCode,
+            IsNewLearning = false,
+            IsNewEpisode = true,
+            Changes = []
+        };
+
+        _learningApiClient
+            .Setup(x => x.PutWithResponseCode<UpdateShortCourseLearningRequestBody, UpdateShortCourseLearningResponse>(
+                It.IsAny<UpdateShortCourseLearningPutRequest>()))
+            .ReturnsAsync(new ApiResponse<UpdateShortCourseLearningResponse>(new UpdateShortCourseLearningResponse { Results = [learningResponse] }, HttpStatusCode.OK, string.Empty));
+
+        _shortCourseLookupService
+            .Setup(x => x.GetCourseDetails(onProg.CourseCode, onProg.StartDate))
+            .ReturnsAsync(new ShortCourseLookupResult { Price = 1500, LearningType = SharedLearningType.Apprenticeship });
+
+        // Act
+        await _handler.Handle(_command, CancellationToken.None);
+
+        // Assert
+        _earningsApiClient.Verify(x =>
+            x.Post(It.Is<PostCreateUnapprovedShortCourseLearningRequest>(r =>
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).LearningKey == learningKey &&
+                ((CreateUnapprovedShortCourseLearningRequest)r.Data).EpisodeKey == episodeKey)),
+            Times.Once);
+        _earningsApiClient.Verify(x =>
+            x.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
+                It.IsAny<UpdateShortCourseOnProgrammeEarningPutRequest>()),
+            Times.Never);
+    }
+
+    [Test]
     public async Task Then_CompletionDate_Without_LearningComplete_Milestone_Adds_LearningComplete_For_New_Learning()
     {
         // Arrange
