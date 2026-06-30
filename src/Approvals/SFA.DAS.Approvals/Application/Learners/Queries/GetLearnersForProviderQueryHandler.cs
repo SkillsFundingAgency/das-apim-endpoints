@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Logging;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Requests.Courses;
-using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses;
 using SFA.DAS.Approvals.InnerApi.CommitmentsV2Api.Responses.Courses;
 using SFA.DAS.Approvals.InnerApi.LearnerData;
 using SFA.DAS.Approvals.InnerApi.Requests;
@@ -87,14 +84,14 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
 
         var learnerDataTask = GetLearnerData(request);
         var standardsTask = GetStandardsData();
-        var coursesTask = GetCourses(request.ProviderId);
 
-        await Task.WhenAll(learnerDataTask, standardsTask, coursesTask);
-        var learnerData = learnerDataTask.Result;
-        var standards = standardsTask.Result;
-        var courses = coursesTask.Result;
+        await Task.WhenAll(learnerDataTask, standardsTask);
+        var learnerData = await learnerDataTask;
+        var standards = await standardsTask;
 
         logger.LogInformation("Building Learner Data result");
+
+        var trainingProgrammes = standards.TrainingProgrammes.ToList();
 
         return new GetLearnersForProviderQueryResult
         {
@@ -105,9 +102,9 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
             Page = learnerData.Page,
             PageSize = learnerData.PageSize,
             TotalPages = learnerData.TotalPages,
-            Learners = await mapper.Map(learnerData.Data, standards.TrainingProgrammes.ToList()),
+            Learners = mapper.Map(learnerData.Data, trainingProgrammes),
             FutureMonths = futureMonths,
-            TrainingCourses = courses.ToList()
+            TrainingCourses = mapper.PopulateMissingTrainingNames(learnerData.Courses, trainingProgrammes)
         };
     }
 
@@ -151,18 +148,5 @@ ILogger<GetLearnersForProviderQueryHandler> logger)
         }
 
         return response.Body;
-    }
-
-    private async Task<IEnumerable<TrainingProgramme>> GetCourses(long ukprn)
-    {
-        var response = await commitmentsClient.GetWithResponseCode<GetCourseCodesResponse>(new GetAllTrainingProgrammesRequest());
-
-        var courseCodes = await learnerDataClient.GetWithResponseCode<GetCourseCodesByUkprnResponse>(new GetCourseCodesByUkprnRequest(ukprn));
-
-        var codes = courseCodes.Body.CourseCodes.Select(t => t.ToString());
-
-        var trainingProgrammesForUkprn = response.Body.TrainingProgrammes.Where(t => codes.Contains(t.CourseCode));
-
-        return trainingProgrammesForUkprn;
     }
 }
