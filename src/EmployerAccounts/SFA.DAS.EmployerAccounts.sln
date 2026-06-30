@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.7.11822.327 insiders
+VisualStudioVersion = 18.7.11822.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SFA.DAS.EmployerAccounts", "SFA.DAS.EmployerAccounts\SFA.DAS.EmployerAccounts.csproj", "{0752042E-BF83-4538-AA91-026F93B1CEE0}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types", "..\Shared\SFA.DAS.SharedOuterApi.Types\SFA.DAS.SharedOuterApi.Types.csproj", "{4B382186-57D9-5A6C-1D74-9EAB7074B281}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Types.UnitTests", "..\Shared\SFA.DAS.SharedOuterApi.Types.UnitTests\SFA.DAS.SharedOuterApi.Types.UnitTests.csproj", "{0C2923A8-A4BF-0481-0A98-3EE75752A64C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SFA.DAS.SharedOuterApi.Employer.GovUK.Auth", "..\Shared\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth\SFA.DAS.SharedOuterApi.Employer.GovUK.Auth.csproj", "{A5A83116-5DAD-BC79-2B61-339EBE131F9A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C2923A8-A4BF-0481-0A98-3EE75752A64C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5A83116-5DAD-BC79-2B61-339EBE131F9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
