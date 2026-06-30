@@ -41,7 +41,7 @@ In the SFA.DAS.AdminAan.API project, if not exist already, add appSettings.Devel
 ```
 
 ## Technologies
-* .Net 8.0
+* .Net 10.0
 * Azure Table Storage
 * NUnit
 * Moq
