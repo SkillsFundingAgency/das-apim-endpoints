@@ -770,6 +770,11 @@ components:
         learner:
           type: object
           $ref: '#/components/schemas/learner'
+        employment:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/employment'
         delivery:
           type: object
           properties:
@@ -829,6 +834,18 @@ components:
           type: string
         hasEhcp:
           type: boolean
+
+    employment:
+      type: object
+      properties:
+        agreementId:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
 
     learningSupport:
       type: object
