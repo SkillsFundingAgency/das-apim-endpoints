@@ -27,6 +27,7 @@ public class ShortCoursesController(
             var result = await mediator.Send(new CreateDraftShortCourseCommand
             {
                 Ukprn = ukprn,
+                AcademicYear = academicYear,
                 ShortCourseRequest = request
             });
 
@@ -130,7 +131,8 @@ public class ShortCoursesController(
             await mediator.Send(new RemoveShortCourseCommand
             {
                 Ukprn = ukprn,
-                LearnerKey = learnerKey
+                LearnerKey = learnerKey,
+                AcademicYear = academicYear
             });
 
             return Accepted();
@@ -151,6 +153,7 @@ public class ShortCoursesController(
             {
                 LearnerKey = learnerKey,
                 Ukprn = ukprn,
+                AcademicYear = academicYear,
                 Request = request
             });
         }

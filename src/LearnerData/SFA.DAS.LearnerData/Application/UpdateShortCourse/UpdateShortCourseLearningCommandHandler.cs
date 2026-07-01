@@ -149,6 +149,7 @@ public class UpdateShortCourseLearningCommandHandler : IRequestHandler<UpdateSho
         var body = new UpdateShortCourseLearningRequestBody
         {
             Ukprn = command.Ukprn,
+            AcademicYear = command.AcademicYear,
             LearnerUpdateDetails = new ShortCourseLearnerUpdateDetails
             {
                 LearnerRef = command.Request.Learner.LearnerRef
