@@ -11,6 +11,7 @@ public class PostcodeInfo
     public double? Longitude { get; set; }
     public string Outcode { get; set; }
     public string Postcode { get; set; }
+    public string DistrictName { get; set; }
 
     public static PostcodeInfo From(GetLookupPostcodeResponse source)
     {
@@ -23,6 +24,22 @@ public class PostcodeInfo
             Longitude = source.Longitude,
             Outcode = source.Outcode,
             Postcode = source.Postcode,
+            DistrictName = source.DistrictName
+        };
+    }
+
+    public static PostcodeInfo From(GetLookupPostcodeResponseV1 source)
+    {
+        return new PostcodeInfo
+        {
+            AdminDistrict = source.DistrictName,
+            Country = source.Country,
+            Incode = source.Incode,
+            Latitude = source.Location?.Coordinates[0],
+            Longitude = source.Location?.Coordinates[1],
+            Outcode = source.Outcode,
+            Postcode = source.Postcode,
+            DistrictName = source.DistrictName
         };
     }
 }
