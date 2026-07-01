@@ -1,4 +1,3 @@
-using System.Net;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using NServiceBus;
@@ -11,10 +10,10 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
+using System.Net;
 
 namespace SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 
@@ -26,7 +25,6 @@ public class CreateDraftShortCourseCommandHandler(
     ICreateDraftShortCoursePostRequestBuilder createDraftShortCoursePostRequestBuilder,
     ICreateUnapprovedShortCourseLearningRequestBuilder createUnapprovedShortCourseLearningRequestBuilder,
     IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
-    ICalculateGrowthAndSkillsPaymentsEventBuilder calculateGrowthAndSkillsPaymentsEventBuilder,
     IMessageSession messageSession,
     PaymentsConfiguration paymentsConfiguration
 ) : IRequestHandler<CreateDraftShortCourseCommand, CreateDraftShortCourseResult>
@@ -57,7 +55,7 @@ public class CreateDraftShortCourseCommandHandler(
 
             if (result.IsReinstated)
             {
-                await HandleReinstatedLearning(command.Ukprn, resolvedOnProg, result);
+                await HandleReinstatedLearning(command, resolvedOnProg, result);
                 continue;
             }
 
@@ -66,18 +64,18 @@ public class CreateDraftShortCourseCommandHandler(
 
         foreach (var removedResult in learningResponse.Body.Results.Where(r => r.IsRemoved))
         {
-            await HandleRemovedLearning(removedResult);
+            await HandleRemovedLearning(removedResult, command.ShortCourseRequest.Learner.LearnerRef);
         }
 
         return new CreateDraftShortCourseResult { CorrelationId = correlationId };
     }
 
-    private async Task HandleRemovedLearning(CreateShortCoursePostResponse removedResult)
+    private async Task HandleRemovedLearning(CreateShortCoursePostResponse removedResult, string learnerRef)
     {
         logger.LogInformation("Removing omitted Learning {LearningKey} / {CourseCode} from Earnings",
             removedResult.LearningKey, removedResult.CourseCode);
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.EpisodeKey);
+        var earningsRequest = new DeleteShortCourseEarningsRequest(removedResult.LearningKey, removedResult.EpisodeKey, removedResult.LearnerKey, learnerRef);
         var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
 
         if (!earningsResponse.StatusCode.IsSuccessStatusCode())
@@ -90,13 +88,11 @@ public class CreateDraftShortCourseCommandHandler(
         logger.LogInformation("Earnings removed for omitted Learning {LearningKey}", removedResult.LearningKey);
     }
 
-    private async Task HandleReinstatedLearning(long ukprn, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProg, CreateShortCoursePostResponse result)
+    private async Task HandleReinstatedLearning(CreateDraftShortCourseCommand command, SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme resolvedOnProg, CreateShortCoursePostResponse result)
     {
-        var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(resolvedOnProg);
+        var earningsPutBody = updateShortCourseOnProgrammeEarningPutRequestBuilder.Build(resolvedOnProg, result.LearnerKey, command.ShortCourseRequest.Learner.LearnerRef);
         var earningsResponse = await earningsApiClient.PutWithResponseCode<UpdateShortCourseOnProgrammeRequestBody, UpdateShortCourseEarningPutResponse>(
             new UpdateShortCourseOnProgrammeEarningPutRequest(result.LearningKey, result.EpisodeKey, earningsPutBody));
-
-        await PublishPaymentsEventForReinstatement(ukprn, result, earningsResponse.Body);
     }
 
     private async Task HandleNewLearning(
@@ -111,22 +107,6 @@ public class CreateDraftShortCourseCommandHandler(
         await earningsApiClient.Post(new SFA.DAS.LearnerData.Requests.EarningsInner.PostCreateUnapprovedShortCourseLearningRequest(earningsRequestData));
 
         await messageSession.Publish(MapToEvent(command.Ukprn, requestData, onProg, resolvedOnProg, command.ShortCourseRequest.ConsumerReference, correlationId));
-    }
-
-    private async Task PublishPaymentsEventForReinstatement(long ukprn, CreateShortCoursePostResponse learningResponse, UpdateShortCourseEarningPutResponse earningsResponse)
-    {
-        logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for reinstated LearningKey: {LearningKey}", learningResponse.LearningKey);
-
-        var command = await calculateGrowthAndSkillsPaymentsEventBuilder.Build(ukprn, learningResponse, earningsResponse);
-
-        var options = new SendOptions();
-        options.DoNotEnforceBestPractices();
-        options.SetDestination(paymentsConfiguration.PaymentsEndpoint);
-        await messageSession.Send(command, options);
-
-        await messageSession.Publish(new GrowthAndSkillsPaymentsRecalculatedEvent { Command = command });
-
-        logger.LogInformation("CalculateGrowthAndSkillsPayments command sent for reinstated LearningKey: {LearningKey}", learningResponse.LearningKey);
     }
 
     private static LearnerDataEvent MapToEvent(
