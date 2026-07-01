@@ -7,9 +7,9 @@ using SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests;
 using SFA.DAS.FindApprenticeshipTraining.InnerApi.Responses;
 using SFA.DAS.FindApprenticeshipTraining.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
+using SFA.DAS.SharedOuterApi.Types.InnerApi.Requests.Courses;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.SharedOuterApi.Types.Models;
-using GetStandardRequest = SFA.DAS.FindApprenticeshipTraining.InnerApi.Requests.GetStandardRequest;
 
 namespace SFA.DAS.FindApprenticeshipTraining.Application.Courses.Queries.GetCourseProviders;
 
@@ -25,7 +25,7 @@ public class GetTrainingCourseProvidersQueryHandler(IRoatpCourseManagementApiCli
 
             if (locationItem is null)
             {
-                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetStandardRequest(request.LarsCode));
+                GetStandardsListItem standard = await _coursesApiClient.Get<GetStandardsListItem>(new GetCourseLookupDetailsByIdRequest(request.LarsCode));
 
                 var standardName = standard != null ? $"{standard.Title} (level {standard.Level})" : string.Empty;
 

@@ -27,34 +27,37 @@ public class RemoveShortCourseCommandHandler(
 {
     public async Task Handle(RemoveShortCourseCommand command, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Handling DeleteShortCourseCommand for Ukprn: {Ukprn}, LearningKey: {LearningKey}", command.Ukprn, command.LearningKey);
+        logger.LogInformation("Handling DeleteShortCourseCommand for Ukprn: {Ukprn}, LearningKey: {LearningKey}", command.Ukprn, command.LearnerKey);
 
-        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearningKey);
+        var learningRequest = new DeleteShortCourseApiDeleteRequest(command.Ukprn, command.LearnerKey);
 
         var learningResponse = await learningApiClient.DeleteWithResponseCode<DeleteShortCourseResponse>(learningRequest, true);
 
         if (!learningResponse.StatusCode.IsSuccessStatusCode())
         {
-            logger.LogError("Failed to delete short course with key {LearningKey}. Status code: {StatusCode}", command.LearningKey, learningResponse.StatusCode);
-            throw new Exception($"Failed to delete short course with key {command.LearningKey}. Status code: {learningResponse.StatusCode}.");
+            logger.LogError("Failed to delete short course episodes for learner {LearningKey}. Status code: {StatusCode}", command.LearnerKey, learningResponse.StatusCode);
+            throw new Exception($"Failed to delete short course episodes for learner {command.LearnerKey}. Status code: {learningResponse.StatusCode}.");
         }
 
-        var earningsRequest = new DeleteShortCourseEarningsRequest(command.LearningKey, learningResponse.Body.RemovedEpisodeKey);
-
-        var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
-
-        if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+        foreach (var item in learningResponse.Body.Results)
         {
-            logger.LogError("Failed to delete short course earnings with key {LearningKey}. Status code: {StatusCode}", command.LearningKey, earningsResponse.StatusCode);
-            throw new Exception($"Failed to delete short course earnings with key {command.LearningKey}. Status code: {earningsResponse.StatusCode}.");
+            var earningsRequest = new DeleteShortCourseEarningsRequest(item.LearningKey, item.RemovedEpisodeKey);
+
+            var earningsResponse = await earningsApiClient.DeleteWithResponseCode<DeleteShortCourseEarningsResponse>(earningsRequest, true);
+
+            if (!earningsResponse.StatusCode.IsSuccessStatusCode())
+            {
+                logger.LogError("Failed to delete short course earnings with key {LearningKey}. Status code: {StatusCode}", item.LearningKey, earningsResponse.StatusCode);
+                throw new Exception($"Failed to delete short course earnings with key {item.LearningKey}. Status code: {earningsResponse.StatusCode}.");
+            }
+
+            await PublishEvent(command.Ukprn, item, earningsResponse.Body);
         }
 
-        await PublishEvent(command.Ukprn, learningResponse.Body, earningsResponse.Body);
-
-        logger.LogInformation("Short course with key {LearningKey} deleted from Learning and Earnings successfully", command.LearningKey);
+        logger.LogInformation("Short courses for learner {LearnerKey} deleted from Learning and Earnings successfully", command.LearnerKey);
     }
 
-    private async Task PublishEvent(long ukprn, DeleteShortCourseResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
+    private async Task PublishEvent(long ukprn, DeleteShortCourseItemResponse learningResponse, ShortCourseEarningsResponse earningsResponse)
     {
         logger.LogInformation("Sending CalculateGrowthAndSkillsPayments command for LearningKey: {LearningKey}", learningResponse.LearningKey);
 

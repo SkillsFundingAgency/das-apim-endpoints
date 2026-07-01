@@ -52,6 +52,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             .With(x => x.ExpectedEndDate, DateTime.UtcNow.AddMonths(6))
             .With(x => x.CompletionDate, DateTime.UtcNow.AddMonths(5))
             .With(x => x.WithdrawalDate, (DateTime?)null)
+            .With(x => x.WithdrawalReasonCode, (short?)2)
             .With(x => x.LearningSupport, _fixture.CreateMany<LearningSupport>(2).ToList())
             .With(x => x.Milestones, new[] { Milestone.ThirtyPercentLearningComplete, Milestone.LearningComplete })
             .Create();
@@ -79,16 +80,18 @@ public class CreateDraftShortCoursePostRequestBuilderTests
             result.LearningSupport[i].EndDate.Should().Be(onProgramme.LearningSupport[i].EndDate);
         }
 
-        result.OnProgramme.CourseCode.Should().Be(onProgramme.CourseCode);
-        result.OnProgramme.Ukprn.Should().Be(ukprn);
-        result.OnProgramme.StartDate.Should().Be(onProgramme.StartDate);
-        result.OnProgramme.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
-        result.OnProgramme.CompletionDate.Should().Be(onProgramme.CompletionDate);
-        result.OnProgramme.WithdrawalDate.Should().Be(onProgramme.WithdrawalDate);
-        result.OnProgramme.Price.Should().Be(ExpectedPrice);
-        result.OnProgramme.LearningType.Should().Be(ExpectedLearningType);
+        var op = result.OnProgramme.Single();
+        op.CourseCode.Should().Be(onProgramme.CourseCode);
+        op.Ukprn.Should().Be(ukprn);
+        op.StartDate.Should().Be(onProgramme.StartDate);
+        op.ExpectedEndDate.Should().Be(onProgramme.ExpectedEndDate);
+        op.CompletionDate.Should().Be(onProgramme.CompletionDate);
+        op.WithdrawalDate.Should().Be(onProgramme.WithdrawalDate);
+        op.WithdrawalReasonCode.Should().Be(onProgramme.WithdrawalReasonCode);
+        op.Price.Should().Be(ExpectedPrice);
+        op.LearningType.Should().Be(ExpectedLearningType);
 
-        result.OnProgramme.Milestones.Should().BeEquivalentTo(onProgramme.Milestones);
+        op.Milestones.Should().BeEquivalentTo(onProgramme.Milestones);
     }
 
     [Test]
@@ -134,7 +137,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().Contain(Milestone.LearningComplete);
+        result.OnProgramme.Single().Milestones.Should().Contain(Milestone.LearningComplete);
     }
 
     [Test]
@@ -156,7 +159,7 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().ContainSingle(m => m == Milestone.LearningComplete);
+        result.OnProgramme.Single().Milestones.Should().ContainSingle(m => m == Milestone.LearningComplete);
     }
 
     [Test]
@@ -178,6 +181,6 @@ public class CreateDraftShortCoursePostRequestBuilderTests
         var result = await _sut.Build(request, ukprn);
 
         // Assert
-        result.OnProgramme.Milestones.Should().NotContain(Milestone.LearningComplete);
+        result.OnProgramme.Single().Milestones.Should().NotContain(Milestone.LearningComplete);
     }
 }

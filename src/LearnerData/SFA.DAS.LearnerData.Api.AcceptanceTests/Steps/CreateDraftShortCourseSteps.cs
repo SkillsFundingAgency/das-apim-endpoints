@@ -214,7 +214,7 @@ public class CreateDraftShortCourseSteps
                 .RespondWith(
                     Response.Create()
                         .WithStatusCode(HttpStatusCode.Created)
-                        .WithBodyAsJson(learningResponse)
+                        .WithBodyAsJson(new CreateDraftShortCoursePostResponse { Results = [learningResponse] })
                 );
         }
     }
