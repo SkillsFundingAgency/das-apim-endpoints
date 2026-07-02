@@ -603,5 +603,116 @@ public class RolloverControllerTests
         Assert.That(captured, Is.EqualTo(command));
     }
 
+    [Test]
+    public async Task RemovePreviousWorkflowCandidates_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var payload = new RemovePreviousWorkflowCandidatesCommandResponse
+        {
+            Success = true
+        };
+        var mediatrResponse = new BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse>
+        {
+            Success = true,
+            Value = payload
+        };
+
+        var command = new RemovePreviousWorkflowCandidatesCommand
+        {
+            RolloverWorkflowRunId = Guid.NewGuid(),
+            CandidateIds = [Guid.NewGuid(), Guid.NewGuid()]
+        };
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatrResponse);
+
+        // Act
+        var actionResult = await controller.RemovePreviousWorkflowCandidates(command);
+
+        // Assert
+        Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
+        var ok = (OkObjectResult)actionResult;
+        Assert.That(ok.StatusCode, Is.EqualTo(200));
+        Assert.That(ok.Value, Is.InstanceOf<RemovePreviousWorkflowCandidatesCommandResponse>());
+        var returned = (RemovePreviousWorkflowCandidatesCommandResponse)ok.Value;
+
+        Assert.That(returned.Success, Is.True);
+
+        _mockMediator.Verify(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task RemovePreviousWorkflowCandidates_WhenMediatorReturnsFailure_ShouldReturn500Error()
+    {
+        // Arrange
+        var mediatrResponse = new BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Failed to remove candidates"
+        };
+
+        var command = new RemovePreviousWorkflowCandidatesCommand
+        {
+            RolloverWorkflowRunId = Guid.NewGuid(),
+            CandidateIds = [Guid.NewGuid()]
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatrResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var actionResult = await controller.RemovePreviousWorkflowCandidates(command);
+
+        // Assert
+        Assert.That(actionResult, Is.InstanceOf<StatusCodeResult>());
+        var status = (StatusCodeResult)actionResult;
+        Assert.That(status.StatusCode, Is.EqualTo(500));
+
+        _mockMediator.Verify(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task RemovePreviousWorkflowCandidates_ShouldSendCommandToMediator()
+    {
+        // Arrange
+        var rolloverWorkflowRunId = Guid.NewGuid();
+        var candidateIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+        var command = new RemovePreviousWorkflowCandidatesCommand
+        {
+            RolloverWorkflowRunId = rolloverWorkflowRunId,
+            CandidateIds = candidateIds
+        };
+
+        RemovePreviousWorkflowCandidatesCommand? captured = null;
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .Callback<IRequest<BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse>>, CancellationToken>((cmd, _) =>
+            {
+                captured = cmd as RemovePreviousWorkflowCandidatesCommand;
+            })
+            .ReturnsAsync(new BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse> 
+            { 
+                Success = true,
+                Value = new RemovePreviousWorkflowCandidatesCommandResponse { Success = true }
+            });
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        await controller.RemovePreviousWorkflowCandidates(command);
+
+        // Assert
+        Assert.That(captured, Is.Not.Null);
+        Assert.That(captured.RolloverWorkflowRunId, Is.EqualTo(rolloverWorkflowRunId));
+        Assert.That(captured.CandidateIds, Is.EqualTo(candidateIds));
+    }
+
 
 }

@@ -75,4 +75,12 @@ public class RolloverController : BaseController
     {
         return await SendRequestAsync(submitRolloverExtensionCommand);
     }
+
+    [HttpPost("/api/rollover/removepreviousworkflowcandidates")]
+    [ProducesResponseType(typeof(RemovePreviousWorkflowCandidatesCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> RemovePreviousWorkflowCandidates(RemovePreviousWorkflowCandidatesCommand removePreviousWorkflowCandidatesCommand)
+    {
+        return await SendRequestAsync(removePreviousWorkflowCandidatesCommand);
+    }
 }
