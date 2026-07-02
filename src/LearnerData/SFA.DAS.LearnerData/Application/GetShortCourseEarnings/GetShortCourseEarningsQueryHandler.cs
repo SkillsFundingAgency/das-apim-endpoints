@@ -2,10 +2,12 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.LearnerData.Enums;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using Fm99ShortCourseLearning = SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Learning;
@@ -20,15 +22,18 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
     private readonly ILogger<GetShortCourseEarningsQueryHandler> _logger;
     private readonly ILearningApiClient<LearningApiConfiguration> _learningApiClient;
     private readonly IEarningsApiClient<EarningsApiConfiguration> _earningsApiClient;
+    private readonly ILearnerDataCacheService _distributedCache;
 
     public GetShortCourseEarningsQueryHandler(
         ILogger<GetShortCourseEarningsQueryHandler> logger,
         ILearningApiClient<LearningApiConfiguration> learningApiClient,
-        IEarningsApiClient<EarningsApiConfiguration> earningsApiClient)
+        IEarningsApiClient<EarningsApiConfiguration> earningsApiClient,
+        ILearnerDataCacheService distributedCache)
     {
         _logger = logger;
         _learningApiClient = learningApiClient;
         _earningsApiClient = earningsApiClient;
+        _distributedCache = distributedCache;
     }
 
     public async Task<GetShortCourseEarningsQueryResult> Handle(GetShortCourseEarningsQuery request, CancellationToken cancellationToken)
@@ -37,9 +42,11 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
         var (learnings, totalLearners) = await GetLearnings(request);
 
+        var sldLearners = await _distributedCache.GetLearners<ShortCourseRequest>(request.Ukprn, learnings.Select(x => x.Learner.Uln), cancellationToken);
+
         var earningsByKey = await GetEarningsByKey(request, learnings);
 
-        return BuildResponse(request, learnings, earningsByKey, totalLearners);
+        return BuildResponse(request, learnings, earningsByKey, totalLearners, sldLearners);
     }
 
     private async Task<(List<Fm99ShortCourseLearning>, int)> GetLearnings(GetShortCourseEarningsQuery request)
@@ -88,11 +95,13 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         GetShortCourseEarningsQuery query,
         List<Fm99ShortCourseLearning> learnings,
         Dictionary<Guid, GetFm99ShortCourseDataResponse> earningsByKey,
-        int totalItems)
+        int totalItems,
+        List<ShortCourseRequest> sldLearners)
     {
         var learnerItems = learnings.Select(learning =>
         {
             var earnings = earningsByKey[learning.LearningKey];
+            var cachedLearner = sldLearners.Single(l => l.Learner.Uln.ToString() == learning.Learner.Uln);
 
             return new ShortCourseEarningsLearner
             {
@@ -100,7 +109,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
                 LearnerRef = learning.Episodes.FirstOrDefault()?.LearnerRef ?? "",
                 Courses = learning.Episodes.Select(episode => new ShortCourseEarningsCourse
                 {
-                    AimSequenceNumber = 1,
+                    AimSequenceNumber = GetAimSequenceNumber(cachedLearner, episode),
                     FundingLineType = episode.EmployerType == EmployerType.Levy
                         ? LevyFundingLineType
                         : NonLevyFundingLineType,
@@ -125,5 +134,11 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
             PageSize = query.PageSize!.Value,
             TotalPages = (int)Math.Ceiling((double)totalItems / query.PageSize!.Value)
         };
+    }
+
+    private static int GetAimSequenceNumber(ShortCourseRequest cachedLearner, Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Episode episode)
+    {
+        var onprogramme = cachedLearner.Delivery.OnProgramme.Single(op => op.CourseCode == episode.CourseCode);
+        return onprogramme.AimSequenceNumber!.Value; //TODO:Why is this nullable? Should we handle nulls?
     }
 }

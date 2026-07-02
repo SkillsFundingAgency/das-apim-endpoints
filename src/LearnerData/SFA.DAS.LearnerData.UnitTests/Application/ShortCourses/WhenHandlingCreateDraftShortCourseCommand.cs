@@ -31,7 +31,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private Mock<ICreateUnapprovedShortCourseLearningRequestBuilder> _createUnapprovedShortCourseLearningRequestBuilder;
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private Mock<IMessageSession> _messageSession;
-    private PaymentsConfiguration _paymentsConfiguration;
+    private Mock<ILearnerDataCacheService> _learnerDataCacheService;
 
     private CreateDraftShortCourseCommand _command;
     private CreateDraftShortCourseRequest _builtRequest;
@@ -55,7 +55,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _createUnapprovedShortCourseLearningRequestBuilder = new Mock<ICreateUnapprovedShortCourseLearningRequestBuilder>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         _messageSession = new Mock<IMessageSession>();
-        _paymentsConfiguration = new PaymentsConfiguration { PaymentsEndpoint = "payments-endpoint" };
+        _learnerDataCacheService = new Mock<ILearnerDataCacheService>();
 
 
         _handler = new CreateDraftShortCourseCommandHandler(
@@ -66,7 +66,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             _createUnapprovedShortCourseLearningRequestBuilder.Object,
             _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
             _messageSession.Object,
-            _paymentsConfiguration);
+            _learnerDataCacheService.Object);
 
         // Arrange
         _ukprn = 12345;

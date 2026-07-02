@@ -10,6 +10,7 @@ using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
+using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
@@ -26,12 +27,14 @@ public class CreateDraftShortCourseCommandHandler(
     ICreateUnapprovedShortCourseLearningRequestBuilder createUnapprovedShortCourseLearningRequestBuilder,
     IUpdateShortCourseOnProgrammeEarningPutRequestBuilder updateShortCourseOnProgrammeEarningPutRequestBuilder,
     IMessageSession messageSession,
-    PaymentsConfiguration paymentsConfiguration
+    ILearnerDataCacheService learnerDataCacheService
 ) : IRequestHandler<CreateDraftShortCourseCommand, CreateDraftShortCourseResult>
 {
     public async Task<CreateDraftShortCourseResult> Handle(CreateDraftShortCourseCommand command, CancellationToken cancellationToken)
     {
         logger.LogInformation("Creating draft short course for provider {ProviderUkprn}", command.Ukprn);
+
+        await learnerDataCacheService.StoreLearner(command.ShortCourseRequest, command.Ukprn, cancellationToken);
 
         var requestData = await createDraftShortCoursePostRequestBuilder.Build(command.ShortCourseRequest, command.Ukprn);
 
