@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.Aodp.Application.Commands.Rollover;
 using SFA.DAS.Aodp.Application.Queries.Rollover;
+using SFA.DAS.AODP.Application.Commands.Rollover;
 
 namespace SFA.DAS.Aodp.Api.Controllers.Rollover;
 
@@ -9,12 +10,10 @@ namespace SFA.DAS.Aodp.Api.Controllers.Rollover;
 [Route("api/[controller]")]
 public class RolloverController : BaseController
 {
-    private readonly IMediator _mediator;
     private readonly ILogger<RolloverController> _logger;
 
     public RolloverController(IMediator mediator, ILogger<RolloverController> logger) : base(mediator, logger)
     {
-        _mediator = mediator;
         _logger = logger;
     }
 
@@ -24,8 +23,7 @@ public class RolloverController : BaseController
     public async Task<IActionResult> GetRolloverWorkflowCandidatesCount(CancellationToken cancellationToken)
     {
         var query = new GetRolloverWorkflowCandidatesCountQuery();
-        var result = await _mediator.Send(query, cancellationToken);
-        return Ok(result);
+        return await SendRequestAsync(query);
     }
 
     [HttpGet("/api/rollover/rollovercandidates")]
@@ -35,6 +33,15 @@ public class RolloverController : BaseController
     public async Task<IActionResult> GetRolloverCandidates()
     {
         return await SendRequestAsync(new GetRolloverCandidatesQuery());
+    }
+
+    [HttpGet("/api/rollover/rolloverworkflowcandidates")]
+    [ProducesResponseType(typeof(GetRolloverWorkflowCandidatesQueryResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> GetRolloverWorkflowCandidates()
+    {
+        return await SendRequestAsync(new GetRolloverWorkflowCandidatesQuery());
     }
 
     [HttpPost("/api/rollover/rolloverworkflowruns")]
@@ -51,5 +58,21 @@ public class RolloverController : BaseController
     public async Task<IActionResult> GetRolloverCandidatesForExport(Guid rolloverWorkflowRunId)
     {
         return await SendRequestAsync(new GetRolloverCandidatesForExportQuery { RolloverWorkflowRunId = rolloverWorkflowRunId });
+    }
+
+    [HttpPost("/api/rollover/validaterolloverextension")]
+    [ProducesResponseType(typeof(ValidateRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> ValidateRolloverExtension(ValidateRolloverExtensionCommand validateFundingExtensionCandidatesCommand)
+    {
+        return await SendRequestAsync(validateFundingExtensionCandidatesCommand);
+    }
+
+    [HttpPost("/api/rollover/submitrolloverextension")]
+    [ProducesResponseType(typeof(SubmitRolloverExtensionCommandResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<IActionResult> SubmitRolloverExtension(SubmitRolloverExtensionCommand submitRolloverExtensionCommand)
+    {
+        return await SendRequestAsync(submitRolloverExtensionCommand);
     }
 }

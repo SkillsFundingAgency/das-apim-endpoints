@@ -26,19 +26,15 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Rollover
             // Arrange
             var workflowRunId = Guid.NewGuid();
 
-            var innerResponse = new BaseMediatrResponse<GetRolloverCandidatesForExportQueryResponse>
+            var innerResponse = new GetRolloverCandidatesForExportQueryResponse
             {
-                Success = true,
-                Value = new GetRolloverCandidatesForExportQueryResponse
-                {
-                    FileContent = new byte[] { 1, 2, 3 },
-                    FileName = "export.csv",
-                    ContentType = "text/csv"
-                }
+                FileContent = new byte[] { 1, 2, 3 },
+                FileName = "export.csv",
+                ContentType = "text/csv"
             };
 
             _mockApiClient
-                .Setup(x => x.Get<BaseMediatrResponse<GetRolloverCandidatesForExportQueryResponse>>(
+                .Setup(x => x.Get<GetRolloverCandidatesForExportQueryResponse>(
                     It.IsAny<GetRolloverCandidatesForExportApiRequest>()))
                 .ReturnsAsync(innerResponse);
 
@@ -66,7 +62,7 @@ namespace SFA.DAS.Aodp.UnitTests.Application.Queries.Rollover
             var exceptionMessage = "boom";
 
             _mockApiClient
-                .Setup(x => x.Get<BaseMediatrResponse<GetRolloverCandidatesForExportQueryResponse>>(
+                .Setup(x => x.Get<GetRolloverCandidatesForExportQueryResponse>(
                     It.IsAny<GetRolloverCandidatesForExportApiRequest>()))
                 .ThrowsAsync(new Exception(exceptionMessage));
 
