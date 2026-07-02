@@ -1,13 +1,12 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
+using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.LearnerData.Extensions;
 using SFA.DAS.LearnerData.Requests.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Services;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
-using SFA.DAS.Apim.Shared.Extensions;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
-using SFA.DAS.Apim.Shared.Interfaces;
 
 namespace SFA.DAS.LearnerData.Application.UpdateLearner;
 
@@ -28,7 +27,7 @@ public class UpdateLearnerCommandHandler(
 
         await learnerDataCacheService.StoreLearner(command.UpdateLearnerRequest, command.Ukprn, cancellationToken);
 
-        var request = updateLearningPutRequestBuilder.Build(command);
+        var request = updateLearningPutRequestBuilder.Build(command.Ukprn, command.UpdateLearnerRequest, command.LearningKey);
 
         var learningResponse = await learningApiClient.PutWithResponseCode<UpdateLearningRequestBody, UpdateLearnerApiPutResponse>(request);
 
@@ -54,7 +53,7 @@ public class UpdateLearnerCommandHandler(
         if (learningApiPutResponse.Changes.HasOnProgrammeUpdate())
         {
             logger.LogInformation("Updating Earnings with OnProgramme changes for learning {LearningKey}", command.LearningKey);
-            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command, learningApiPutResponse, request);
+            var earningsOnProgrammeApiRequest = await updateEarningsOnProgrammeRequestBuilder.Build(command.LearningKey, command.UpdateLearnerRequest, learningApiPutResponse, request.Data);
             await earningsApiClient.Put(earningsOnProgrammeApiRequest);
         }
 

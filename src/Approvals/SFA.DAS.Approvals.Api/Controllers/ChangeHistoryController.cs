@@ -1,0 +1,31 @@
+﻿using System;
+using System.Threading.Tasks;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using SFA.DAS.Approvals.Application.ChangeHistory.Queries;
+
+namespace SFA.DAS.Approvals.Api.Controllers;
+
+[ApiController]
+[Route("change-history/")]
+public class ChangeHistoryController(IMediator mediator, ILogger<ChangeHistoryController> logger) : ControllerBase
+{
+    [HttpGet]
+    [Route("{apprenticeshipId:long}")]
+    public async Task<IActionResult> GetChangeHistory(long apprenticeshipId)
+    {
+        try
+        {
+            var queryResult = await mediator.Send(new GetChangeHistoryQuery(apprenticeshipId));
+           
+            var model = queryResult;
+            return Ok(model);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Error attempting to get change history for apprenticeshipId: {ApprenticeshipId}", apprenticeshipId);
+            return BadRequest();
+        }
+    }
+}

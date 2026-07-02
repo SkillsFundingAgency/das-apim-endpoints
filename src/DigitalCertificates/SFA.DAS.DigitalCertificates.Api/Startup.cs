@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Routing;
@@ -12,12 +9,15 @@ using Microsoft.OpenApi.Models;
 using NServiceBus.ObjectBuilder.MSDependencyInjection;
 using SFA.DAS.Api.Common.AppStart;
 using SFA.DAS.Api.Common.Configuration;
+using SFA.DAS.Apim.Shared.AppStart;
 using SFA.DAS.DigitalCertificates.Api.AppStart;
 using SFA.DAS.DigitalCertificates.Application.Queries.GetUser;
-using SFA.DAS.Apim.Shared.AppStart;
-using SFA.DAS.Apim.Shared.Infrastructure.HealthCheck;
 using SFA.DAS.SharedOuterApi.Types.Infrastructure.HealthCheck;
 using SFA.DAS.Telemetry.Startup;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading.Tasks;
 
 namespace SFA.DAS.DigitalCertificates.Api
 {
@@ -38,6 +38,10 @@ namespace SFA.DAS.DigitalCertificates.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(_env);
+            services.AddHsts(options =>
+            {
+                options.MaxAge = TimeSpan.FromDays(90);
+            });
             services.AddConfigurationOptions(_configuration);
 
             if (!_configuration.IsLocalOrDev())
@@ -128,6 +132,7 @@ namespace SFA.DAS.DigitalCertificates.Api
             }
             else
             {
+                // HSTS configured to 90 days in ConfigureServices.
                 app.UseHsts();
             }
 

@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SFA.DAS.Aodp.Shared.UnitTests\SFA.DAS.Aodp.Shared.UnitTests.csproj" />
     <ProjectReference Include="..\SFA.DAS.Aodp\SFA.DAS.Aodp.csproj" />
   </ItemGroup>
 

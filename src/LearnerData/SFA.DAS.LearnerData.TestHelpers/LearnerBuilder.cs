@@ -15,7 +15,7 @@ public static class LearnerBuilder
     // we can use this because the data being generated is for fm36 tests only.
     // these concrete class have their own tests to validate their behaviour.
     private static UpdateLearningPutRequestBuilder _updateLearningPutRequestBuilder = 
-        new UpdateLearningPutRequestBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService());
+        new UpdateLearningPutRequestBuilder(new UpdateLearningRequestBodyBuilder(new LearningSupportService(), new BreaksInLearningService(), new CostsService()));
 
     internal static Learning BuildLearningInnerApiResponse(TestLearner testLearner)
     {
@@ -25,18 +25,11 @@ public static class LearnerBuilder
         var firstOnProg = sldDelivery.OnProgramme.OrderBy(x => x.StartDate).First();
         var latestOnProg = sldDelivery.OnProgramme.OrderByDescending(x => x.StartDate).First();
 
-        var command = new UpdateLearnerCommand
-        {
-            LearningKey = testLearner.LearningKey,
-            Ukprn = testLearner.Ukprn,
-            UpdateLearnerRequest = testLearner.UpdateLearnerRequest
-        };
-
-        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(command);
+        var updateLearningRequest = _updateLearningPutRequestBuilder.Build(testLearner.Ukprn, testLearner.UpdateLearnerRequest, testLearner.LearningKey);
 
         return new Learning
         {
-            Key = command.LearningKey,
+            Key = testLearner.LearningKey,
             Uln = sldLearner.Uln.ToString(),
             StartDate = sldDelivery.OnProgramme.Min(x => x.StartDate),
             PlannedEndDate = sldDelivery.OnProgramme.Max(x => x.ExpectedEndDate),
