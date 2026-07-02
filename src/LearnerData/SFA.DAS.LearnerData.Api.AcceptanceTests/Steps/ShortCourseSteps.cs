@@ -1,12 +1,15 @@
 ﻿using AutoFixture;
 using FluentAssertions;
 using Newtonsoft.Json;
+using SFA.DAS.Apim.Shared.Models;
 using SFA.DAS.LearnerData.Api.AcceptanceTests.Models;
 using SFA.DAS.LearnerData.Application.GetShortCourseEarnings;
+using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
 using SFA.DAS.LearnerData.Responses.LearningInner.GetShortCourseLearnersForEarningsResponse;
 using System.Net;
+using System.Numerics;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using WireMock.RequestBuilders;
@@ -37,6 +40,10 @@ public class ShortCourseSteps
         int totalCourses, string ukprn, int academicYear, byte period)
     {
         var learnings = _fixture.CreateMany<Fm99ShortCourseLearning>(totalCourses).ToList();
+        foreach(var learning in learnings)
+        {
+            learning.Learner.Uln = _fixture.Create<long>().ToString();
+        }
         var earnings = _fixture.CreateMany<GetFm99ShortCourseDataResponse>(totalCourses).ToList();
 
         _scenarioContext.Set(new ShortCourseTestData(ukprn, learnings, earnings));
@@ -47,7 +54,7 @@ public class ShortCourseSteps
         string ukprn, int academicYear, byte period, int pageNumber, int pageSize)
     {
         var testData = _scenarioContext.Get<ShortCourseTestData>();
-        MockInnerApiResponses(testData, academicYear, period, pageNumber, pageSize);
+        await MockInnerApiResponses(testData, academicYear, period, pageNumber, pageSize);
 
         var response = await _testContext.OuterApiClient.GetAsync($"/providers/{testData.Ukprn}/collectionPeriods/{academicYear}/{period}/shortCourses?page={pageNumber}&pagesize={pageSize}");
         var contentString = await response.Content.ReadAsStringAsync();
@@ -86,6 +93,7 @@ public class ShortCourseSteps
         foreach(var expectedLearning in expectedLearnings)
         {
             var learning = _fixture.Create<Fm99ShortCourseLearning>();
+            learning.Learner.Uln = _fixture.Create<long>().ToString();
             learning.Episodes = new List<LearningEpisode>
             {
                 new LearningEpisode
@@ -152,7 +160,7 @@ public class ShortCourseSteps
         }
     }
 
-    private void MockInnerApiResponses(ShortCourseTestData testData, int academicYear, byte period, int pageNumber, int pageSize)
+    private async Task MockInnerApiResponses(ShortCourseTestData testData, int academicYear, byte period, int pageNumber, int pageSize)
     {
         var slicedLearnings = testData.ShortCourseLearnings.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         var learningResponse = new GetPagedShortCourseLearnersResponse
@@ -189,7 +197,27 @@ public class ShortCourseSteps
                         .WithStatusCode(HttpStatusCode.OK)
                         .WithBodyAsJson(earning)
                 );
+
+            var aimNumber = 1;
+
+            await _testContext.Cache.StoreLearner(new ShortCourseRequest
+                {
+                    Learner = new ShortCourseLearnerRequestDetails
+                    {
+                        Uln = long.Parse(learning.Learner.Uln)
+                    },
+                    Delivery = new ShortCourseDelivery
+                    {
+                        OnProgramme = learning.Episodes.Select(e => new ShortCourseOnProgramme
+                        {
+                            CourseCode = e.CourseCode,
+                            AimSequenceNumber = aimNumber++,
+                        }).ToList()
+                    }
+                }, 
+                long.Parse(testData.Ukprn), new CancellationToken());
         }
+
 
     }
 }
