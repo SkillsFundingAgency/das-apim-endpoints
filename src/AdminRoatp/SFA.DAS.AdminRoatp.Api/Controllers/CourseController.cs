@@ -7,7 +7,7 @@ namespace SFA.DAS.AdminRoatp.Api.Controllers;
 
 [ApiController]
 [Route("/courses")]
-public class CourseController(IMediator _mediator, ILogger<RestrictedCoursesController> _logger) : ControllerBase
+public class CourseController(IMediator _mediator, ILogger<CourseController> _logger) : ControllerBase
 {
     [HttpGet("{larsCode}/providers/allowed")]
     [ProducesResponseType(typeof(GetAllowedProvidersResponse), StatusCodes.Status200OK)]
