@@ -101,7 +101,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
         var learnerItems = learnings.Select(learning =>
         {
             var earnings = earningsByKey[learning.LearningKey];
-            var cachedLearner = sldLearners.Single(l => l.Learner.Uln.ToString() == learning.Learner.Uln); //TODO:Check if single is safe
+            var cachedLearner = sldLearners.Single(l => l.Learner.Uln.ToString() == learning.Learner.Uln);
 
             return new ShortCourseEarningsLearner
             {
