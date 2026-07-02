@@ -3,7 +3,6 @@ using Microsoft.Extensions.Logging;
 using NServiceBus;
 using SFA.DAS.LearnerData.Application.CreateShortCourseLearning;
 using SFA.DAS.LearnerData.Application.Requests.Earnings;
-using SFA.DAS.LearnerData.Configuration;
 using SFA.DAS.LearnerData.Events;
 using SFA.DAS.LearnerData.Requests;
 using SFA.DAS.LearnerData.Requests.EarningsInner;
@@ -11,9 +10,7 @@ using SFA.DAS.LearnerData.Requests.LearningInner;
 using OnProgramme = SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme;
 using SFA.DAS.LearnerData.Responses.EarningsInner;
 using SFA.DAS.LearnerData.Responses.LearningInner;
-using SFA.DAS.LearnerData.Services;
 using SFA.DAS.LearnerData.Services.ShortCourses;
-using SFA.DAS.Payments.EarningEvents.Messages.External.Commands;
 using SFA.DAS.SharedOuterApi.Types.Configuration;
 using SFA.DAS.SharedOuterApi.Types.Interfaces;
 using SFA.DAS.Apim.Shared.Models;
@@ -31,7 +28,6 @@ public class WhenHandlingCreateDraftShortCourseCommand
     private Mock<ICreateUnapprovedShortCourseLearningRequestBuilder> _createUnapprovedShortCourseLearningRequestBuilder;
     private Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder> _updateShortCourseOnProgrammeEarningPutRequestBuilder;
     private Mock<IMessageSession> _messageSession;
-    private PaymentsConfiguration _paymentsConfiguration;
 
     private CreateDraftShortCourseCommand _command;
     private CreateDraftShortCourseRequest _builtRequest;
@@ -55,8 +51,6 @@ public class WhenHandlingCreateDraftShortCourseCommand
         _createUnapprovedShortCourseLearningRequestBuilder = new Mock<ICreateUnapprovedShortCourseLearningRequestBuilder>();
         _updateShortCourseOnProgrammeEarningPutRequestBuilder = new Mock<IUpdateShortCourseOnProgrammeEarningPutRequestBuilder>();
         _messageSession = new Mock<IMessageSession>();
-        _paymentsConfiguration = new PaymentsConfiguration { PaymentsEndpoint = "payments-endpoint" };
-
 
         _handler = new CreateDraftShortCourseCommandHandler(
             _logger.Object,
@@ -65,8 +59,7 @@ public class WhenHandlingCreateDraftShortCourseCommand
             _createDraftShortCoursePostRequestBuilder.Object,
             _createUnapprovedShortCourseLearningRequestBuilder.Object,
             _updateShortCourseOnProgrammeEarningPutRequestBuilder.Object,
-            _messageSession.Object,
-            _paymentsConfiguration);
+            _messageSession.Object);
 
         // Arrange
         _ukprn = 12345;
