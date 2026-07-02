@@ -138,7 +138,7 @@ public class GetShortCourseEarningsQueryHandler : IRequestHandler<GetShortCourse
 
     private static int GetAimSequenceNumber(ShortCourseRequest cachedLearner, Responses.LearningInner.GetShortCourseLearnersForEarningsResponse.Episode episode)
     {
-        var onprogramme = cachedLearner.Delivery.OnProgramme.Single(op => op.CourseCode == episode.CourseCode); //TODO:Check if single is safe
+        var onprogramme = cachedLearner.Delivery.OnProgramme.Single(op => op.CourseCode == episode.CourseCode);
         return onprogramme.AimSequenceNumber!.Value; //TODO:Why is this nullable? Should we handle nulls?
     }
 }
