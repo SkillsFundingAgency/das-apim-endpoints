@@ -138,6 +138,31 @@ public class WhenHandlingGetShortCourseEarningsQuery
         course.AimSequenceNumber.Should().Be(1);
     }
 
+    [Test]
+    public async Task Then_AimSequenceNumber_Is_Mapped_By_CourseCode()
+    {
+        var episodes = new List<LearningResponse.Episode>
+        {
+            new() { CourseCode = "91", Price = 1500m, IsApproved = true, LearnerRef = "X1" },
+            new() { CourseCode = "92", Price = 1200m, IsApproved = false, LearnerRef = "X1" }
+        };
+
+        var learning = BuildLearning(episodes: episodes);
+        SetupLearningApi([learning]);
+        SetupEarningsApi(learning.LearningKey, []);
+        SetupCacheService([learning], new Dictionary<string, int>
+        {
+            ["91"] = 7,
+            ["92"] = 3
+        });
+
+        var result = await _handler.Handle(BuildQuery(), CancellationToken.None);
+
+        var coursesByPrice = result.Learners[0].Courses.ToDictionary(x => x.CoursePrice);
+        coursesByPrice[1500m].AimSequenceNumber.Should().Be(7);
+        coursesByPrice[1200m].AimSequenceNumber.Should().Be(3);
+    }
+
     [TestCase(EmployerType.Levy, "GSO Short Courses (Apprenticeship Units) Levy")]
     [TestCase(EmployerType.NonLevy, "GSO Short Courses (Apprenticeship Units) Non-Levy")]
     public async Task Then_FundingLineType_Is_Derived_From_EmployerType(EmployerType employerType, string expectedFundingLineType)
@@ -216,7 +241,7 @@ public class WhenHandlingGetShortCourseEarningsQuery
                 System.Net.HttpStatusCode.OK, ""));
     }
 
-    private void SetupCacheService(List<LearningResponse.Learning> learningInnerLearners)
+    private void SetupCacheService(List<LearningResponse.Learning> learningInnerLearners, Dictionary<string, int> aimSequenceNumberByCourseCode = null)
     {
         var aimNumber = 1;
 
@@ -230,7 +255,10 @@ public class WhenHandlingGetShortCourseEarningsQuery
                 OnProgramme = l.Episodes.Select(e => new ShortCourseOnProgramme
                 {
                     CourseCode = e.CourseCode,
-                    AimSequenceNumber = aimNumber++,
+                    AimSequenceNumber = aimSequenceNumberByCourseCode != null &&
+                                        aimSequenceNumberByCourseCode.TryGetValue(e.CourseCode, out var aimSequenceNumber)
+                        ? aimSequenceNumber
+                        : aimNumber++,
                 }).ToList()
             }
         }).ToList();
