@@ -678,8 +678,6 @@ components:
                         type: boolean
                   standardCode:
                     type: integer
-                  agreementId:
-                    type: string
                   startDate:
                     type: string
                     format: date
@@ -770,11 +768,6 @@ components:
         learner:
           type: object
           $ref: '#/components/schemas/learner'
-        employment:
-          type: array
-          items:
-            type: object
-            $ref: '#/components/schemas/employment'
         delivery:
           type: object
           properties:
@@ -784,8 +777,6 @@ components:
                 type: object
                 properties:
                   courseCode:
-                    type: string
-                  agreementId:
                     type: string
                   startDate:
                     type: string
@@ -834,6 +825,11 @@ components:
           type: string
         hasEhcp:
           type: boolean
+        employment:
+          type: array
+          items:
+            type: object
+            $ref: '#/components/schemas/employment'
 
     employment:
       type: object
