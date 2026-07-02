@@ -56,53 +56,85 @@ namespace SFA.DAS.DigitalCertificates.Api.Attributes
                 return;
             }
 
-            var ulns = GetUlns(objectResult.Value).Distinct().ToList();
-
-            if (!ulns.Any())
-            {
-                _logger.LogError(
-                    "Private beta ULN whitelist check failed. No ULN was available in the response.");
-
-                context.Result = new StatusCodeResult(500);
-                return;
-            }
-
-            var disallowedUlns = ulns
-                .Where(uln => !_allowedUlns.Contains(uln))
-                .ToList();
-
-            if (!disallowedUlns.Any())
+            if (IsAllowed(objectResult.Value))
             {
                 return;
             }
 
             _logger.LogError(
-                "Private beta ULN whitelist check failed. Disallowed ULNs: {DisallowedUlns}",
-                string.Join(",", disallowedUlns));
+                "Private beta ULN whitelist check failed for response type {ResponseType}.",
+                objectResult.Value?.GetType().Name);
 
             context.Result = new StatusCodeResult(500);
         }
 
-        private static IEnumerable<long> GetUlns(object result)
+        private bool IsAllowed(object? result)
         {
-            switch (result)
+            return result switch
             {
-                case GetCertificatesResult certificatesResult:
-                    if (certificatesResult.Authorisation != null)
-                    {
-                        yield return certificatesResult.Authorisation.Uln;
-                    }
+                GetCertificatesResult certificatesResult =>
+                    IsAllowed(certificatesResult),
 
-                    break;
+                GetCertificatesMatchResult certificatesMatchResult =>
+                    IsAllowed(certificatesMatchResult),
 
-                case GetCertificatesMatchResult certificatesMatchResult:
-                    foreach (var uln in certificatesMatchResult.Matches.Select(m => m.Uln))
-                    {
-                        yield return uln;
-                    }
+                _ => true
+            };
+        }
 
-                    break;
+        private bool IsAllowed(GetCertificatesResult certificatesResult)
+        {
+            if (certificatesResult.Authorisation == null)
+            {
+                _logger.LogInformation(
+                    "Private beta ULN whitelist check skipped. No authorised ULN was available, allowing user to attempt authorisation.");
+
+                return true;
             }
+
+            var uln = certificatesResult.Authorisation.Uln;
+
+            if (_allowedUlns.Contains(uln))
+            {
+                return true;
+            }
+
+            _logger.LogError(
+                "Private beta ULN whitelist check failed. Authorised ULN {Uln} is not allowed.",
+                uln);
+
+            return false;
+        }
+
+        private bool IsAllowed(GetCertificatesMatchResult certificatesMatchResult)
+        {
+            var matchedUlns = certificatesMatchResult.Matches
+                .Select(match => match.Uln)
+                .Distinct()
+                .ToList();
+
+            if (!matchedUlns.Any())
+            {
+                _logger.LogError(
+                    "Private beta ULN whitelist check failed. No matching ULNs were available.");
+
+                return false;
+            }
+
+            var allowedMatchedUlns = matchedUlns
+                .Where(uln => _allowedUlns.Contains(uln))
+                .ToList();
+
+            if (allowedMatchedUlns.Any())
+            {
+                return true;
+            }
+
+            _logger.LogError(
+                "Private beta ULN whitelist check failed. None of the matched ULNs were allowed. Matched ULNs: {MatchedUlns}",
+                string.Join(",", matchedUlns));
+
+            return false;
         }
     }
 }
