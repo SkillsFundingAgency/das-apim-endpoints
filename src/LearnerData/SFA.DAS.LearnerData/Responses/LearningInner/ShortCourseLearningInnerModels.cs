@@ -5,7 +5,6 @@ public interface IShortCourseLearningPaymentEventBuildContext
 {
     public Guid LearningKey { get; set; }
     public Guid LearnerKey { get; set; }
-    public DateTime? CompletionDate { get; set; }
     public LearningInnerShortCourseLearner Learner { get; set; }
     public LearningInnerShortCourseEpisode[] Episodes { get; set; }
 }
@@ -30,6 +29,7 @@ public class LearningInnerShortCourseEpisode
     public int AgeAtStart { get; set; }
     public DateTime PlannedEndDate { get; set; }
     public DateTime? WithdrawalDate { get; set; }
+    public DateTime? CompletionDate { get; set; }
     public bool IsApproved { get; set; }
     public decimal Price { get; set; }
     public string LearnerRef { get; set; }

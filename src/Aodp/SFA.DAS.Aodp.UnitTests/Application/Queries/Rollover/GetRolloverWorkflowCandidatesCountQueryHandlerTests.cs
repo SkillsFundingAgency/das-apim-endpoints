@@ -23,14 +23,10 @@ public class GetRolloverWorkflowCandidatesCountQueryHandlerTests
     public async Task Handle_WhenApiReturnsSuccessfulResponse_ShouldReturnSuccessAndTotalRecords()
     {
         // Arrange
-        var apiResponse = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
-        {
-            Value = new GetRolloverWorkflowCandidatesCountQueryResponse { TotalRecords = 7 },
-            Success = true
-        };
+        var apiResponse = new GetRolloverWorkflowCandidatesCountQueryResponse { TotalRecords = 7 };
 
         _mockApiClient
-            .Setup(c => c.Get<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>(It.IsAny<IGetApiRequest>()))
+            .Setup(c => c.Get<GetRolloverWorkflowCandidatesCountQueryResponse>(It.IsAny<IGetApiRequest>()))
             .ReturnsAsync(apiResponse);
 
         var query = new GetRolloverWorkflowCandidatesCountQuery();
@@ -44,7 +40,7 @@ public class GetRolloverWorkflowCandidatesCountQueryHandlerTests
         Assert.That(result.Value, Is.Not.Null);
         Assert.That(result.Value.TotalRecords, Is.EqualTo(7));
 
-        _mockApiClient.Verify(c => c.Get<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>(It.IsAny<IGetApiRequest>()), Times.Once);
+        _mockApiClient.Verify(c => c.Get<GetRolloverWorkflowCandidatesCountQueryResponse>(It.IsAny<IGetApiRequest>()), Times.Once);
     }
 
     [Test]
@@ -53,7 +49,7 @@ public class GetRolloverWorkflowCandidatesCountQueryHandlerTests
         // Arrange
         var ex = new InvalidOperationException("api failure");
         _mockApiClient
-            .Setup(c => c.Get<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>(It.IsAny<IGetApiRequest>()))
+            .Setup(c => c.Get<GetRolloverWorkflowCandidatesCountQueryResponse>(It.IsAny<IGetApiRequest>()))
             .ThrowsAsync(ex);
 
         var query = new GetRolloverWorkflowCandidatesCountQuery();
@@ -66,6 +62,6 @@ public class GetRolloverWorkflowCandidatesCountQueryHandlerTests
         Assert.That(result.Success, Is.False);
         Assert.That(result.ErrorMessage, Is.EqualTo("api failure"));
 
-        _mockApiClient.Verify(c => c.Get<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>(It.IsAny<IGetApiRequest>()), Times.Once);
+        _mockApiClient.Verify(c => c.Get<GetRolloverWorkflowCandidatesCountQueryResponse>(It.IsAny<IGetApiRequest>()), Times.Once);
     }
 }

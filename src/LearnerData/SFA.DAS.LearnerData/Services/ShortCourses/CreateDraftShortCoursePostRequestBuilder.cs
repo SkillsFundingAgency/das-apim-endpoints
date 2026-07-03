@@ -18,28 +18,43 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
     {
         public async Task<CreateDraftShortCourseRequest> Build(ShortCourseRequest request, long ukprn)
         {
-            if (request.Delivery.OnProgramme.Count > 1)
+            var onProgrammeItems = new List<SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme>();
+
+            foreach (var onProg in request.Delivery.OnProgramme)
             {
-                logger.LogWarning("Multiple OnProgramme elements supplied for ShortCourse. Element with earliest StartDate will be processed; subsequent will be ignored");
+                var milestones = onProg.Milestones
+                    .Select(m =>
+                    {
+                        if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
+                        throw new InvalidOperationException($"Invalid milestone value: {m}");
+                    })
+                    .ToList();
+
+                if (onProg.CompletionDate.HasValue && !onProg.Milestones.Contains(Milestone.LearningComplete))
+                    milestones.Add(Milestone.LearningComplete);
+
+                var courseDetails = await shortCourseLookupService.GetCourseDetails(onProg.CourseCode, onProg.StartDate);
+
+                onProgrammeItems.Add(new SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme
+                {
+                    CourseCode = onProg.CourseCode,
+                    Ukprn = ukprn,
+                    StartDate = onProg.StartDate,
+                    ExpectedEndDate = onProg.ExpectedEndDate,
+                    CompletionDate = onProg.CompletionDate,
+                    WithdrawalDate = onProg.WithdrawalDate,
+                    WithdrawalReasonCode = onProg.WithdrawalReasonCode,
+                    Milestones = milestones,
+                    Price = courseDetails.Price,
+                    LearningType = courseDetails.LearningType
+                });
             }
 
-            var firstOnProg = request.Delivery.OnProgramme.MinBy(x => x.StartDate);
-
-            var milestones = firstOnProg.Milestones
-                .Select(m =>
-                {
-                    if (Enum.TryParse<Milestone>(m.ToString(), out var milestone)) return milestone;
-                    throw new InvalidOperationException($"Invalid milestone value: {m}");
-                })
-                .ToList();
-
-            if (firstOnProg.CompletionDate.HasValue && !firstOnProg.Milestones.Contains(Milestone.LearningComplete))
-                milestones.Add(Milestone.LearningComplete);
-
-            var courseDetails = await shortCourseLookupService.GetCourseDetails(firstOnProg.CourseCode, firstOnProg.StartDate);
+            var firstOnProg = request.Delivery.OnProgramme.First();
 
             return new CreateDraftShortCourseRequest
             {
+                Ukprn = ukprn,
                 LearnerUpdateDetails = new ShortCourseLearningUpdateDetails
                 {
                     Uln = request.Learner.Uln,
@@ -50,18 +65,7 @@ namespace SFA.DAS.LearnerData.Services.ShortCourses
                     LearnerRef = request.Learner.LearnerRef
                 },
                 LearningSupport = firstOnProg.LearningSupport,
-                OnProgramme = new SFA.DAS.LearnerData.Requests.LearningInner.OnProgramme
-                {
-                    CourseCode = firstOnProg.CourseCode,
-                    Ukprn = ukprn,
-                    StartDate = firstOnProg.StartDate,
-                    ExpectedEndDate = firstOnProg.ExpectedEndDate,
-                    CompletionDate = firstOnProg.CompletionDate,
-                    WithdrawalDate = firstOnProg.WithdrawalDate,
-                    Milestones = milestones,
-                    Price = courseDetails.Price,
-                    LearningType = courseDetails.LearningType
-                }
+                OnProgramme = onProgrammeItems
             };
         }
     }

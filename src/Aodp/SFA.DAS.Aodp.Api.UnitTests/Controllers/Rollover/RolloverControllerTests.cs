@@ -9,6 +9,7 @@ using SFA.DAS.Aodp.Api.Controllers.Rollover;
 using SFA.DAS.Aodp.Api.UnitTests.Controllers.Qualification;
 using SFA.DAS.Aodp.Application.Commands.Rollover;
 using SFA.DAS.Aodp.Application.Queries.Rollover;
+using SFA.DAS.AODP.Application.Commands.Rollover;
 
 namespace SFA.DAS.Aodp.Api.UnitTests.Controllers.Rollover;
 
@@ -37,17 +38,14 @@ public class RolloverControllerTests
     public async Task GetRolloverWorkflowCandidates_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
     {
         // Arrange
-        var payload = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
+        var payload = new GetRolloverWorkflowCandidatesCountQueryResponse
         {
-            Value = new GetRolloverWorkflowCandidatesCountQueryResponse
-            {
-                TotalRecords = 5
-            },
+            TotalRecords = 5
         };
         var mediatrResponse = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>
         {
             Success = true,
-            Value = payload.Value
+            Value = payload
         };
 
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
@@ -57,16 +55,16 @@ public class RolloverControllerTests
             .ReturnsAsync(mediatrResponse);
 
         // Act
-        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(default);
+        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(CancellationToken.None);
 
         // Assert
         Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
         var ok = (OkObjectResult)actionResult;
         Assert.That(ok.StatusCode, Is.EqualTo(200));
-        Assert.That(ok.Value, Is.InstanceOf<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>());
-        var returned = (BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>)ok.Value;
-        Assert.That(returned.Success, Is.EqualTo(true));
-        Assert.That(returned.Value, Is.EqualTo(payload.Value));
+        Assert.That(ok.Value, Is.InstanceOf<GetRolloverWorkflowCandidatesCountQueryResponse>());
+        var returned = (GetRolloverWorkflowCandidatesCountQueryResponse)ok.Value;
+
+        Assert.That(returned, Is.EqualTo(payload));
 
         _mockMediator.Verify(m => m.Send(It.IsAny<GetRolloverWorkflowCandidatesCountQuery>(), It.IsAny<CancellationToken>()), Times.Once);
     }
@@ -87,17 +85,12 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         // Act
-        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(default);
+        var actionResult = await controller.GetRolloverWorkflowCandidatesCount(CancellationToken.None);
 
         // Assert
-        Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
-        var status = (OkObjectResult)actionResult;
-
-        Assert.That(status.Value, Is.InstanceOf<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>());
-        var value = (BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>)status.Value;
-
-        Assert.That(value.Success, Is.False);
-        Assert.That(value.ErrorMessage, Is.EqualTo("some error"));
+        Assert.That(actionResult, Is.InstanceOf<StatusCodeResult>());
+        var status = (StatusCodeResult)actionResult;
+        Assert.AreEqual(500, status.StatusCode);
     }
 
 
@@ -111,7 +104,7 @@ public class RolloverControllerTests
 
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
-        _mockMediator.Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), default))
+        _mockMediator.Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), CancellationToken.None))
                      .ReturnsAsync(response);
 
         // Act
@@ -140,7 +133,7 @@ public class RolloverControllerTests
         var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
 
         _mockMediator
-            .Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), default))
+            .Setup(m => m.Send(It.IsAny<GetRolloverCandidatesQuery>(), CancellationToken.None))
             .ReturnsAsync(response);
 
         // Act
@@ -265,4 +258,461 @@ public class RolloverControllerTests
         else
             Assert.Fail($"Expected ObjectResult or StatusCodeResult with {expected}, got {result?.GetType().FullName ?? "null"}");
     }
+
+    [Test]
+    public async Task GetRolloverCandidatesForExport_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var workflowRunId = Guid.NewGuid();
+
+        var expected = new GetRolloverCandidatesForExportQueryResponse
+        {
+            FileContent = new byte[] { 1, 2, 3 },
+            FileName = "export.csv",
+            ContentType = "text/csv"
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<GetRolloverCandidatesForExportQueryResponse>
+        {
+            Success = true,
+            Value = expected
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<GetRolloverCandidatesForExportQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetRolloverCandidatesForExport(workflowRunId);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var ok = (OkObjectResult)result;
+
+        Assert.That(ok.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+        Assert.That(ok.Value, Is.InstanceOf<GetRolloverCandidatesForExportQueryResponse>());
+
+        var returned = (GetRolloverCandidatesForExportQueryResponse)ok.Value!;
+        Assert.That(returned.FileName, Is.EqualTo("export.csv"));
+        Assert.That(returned.ContentType, Is.EqualTo("text/csv"));
+        Assert.That(returned.FileContent, Is.EqualTo(new byte[] { 1, 2, 3 }));
+
+        _mockMediator.Verify(m => m.Send(
+            It.IsAny<GetRolloverCandidatesForExportQuery>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task GetRolloverCandidatesForExport_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var workflowRunId = Guid.NewGuid();
+
+        var mediatorResponse = new BaseMediatrResponse<GetRolloverCandidatesForExportQueryResponse>
+        {
+            Success = false,
+            ErrorMessage = "something went wrong"
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<GetRolloverCandidatesForExportQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.GetRolloverCandidatesForExport(workflowRunId);
+
+        // Assert
+        const int expectedStatus = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
+        else
+            Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
+    }
+
+    [Test]
+    public async Task ValidateRolloverExtension_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var command = new ValidateRolloverExtensionCommand
+        {
+            RolloverCandidates =
+            [
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend", ProposedFundingApprovalEndDate = DateTime.UtcNow }
+            ]
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<ValidateRolloverExtensionCommandResponse>
+        {
+            Success = true,
+            Value = new ValidateRolloverExtensionCommandResponse
+            {
+                IsValid = true,
+                ValidationSuccessSummary = new FundingExtensionSummary
+                {
+                    TotalCandidatesCount = 10,
+                    CandidatesExtendedInUploadCount = 2,
+                    TotalCandidatesToBeExtendedCount = 5,
+                    TotalCandidatesToBeExcludedCount = 1,
+                    TotalCandidatesToBeReviewedCount = 4
+                }
+            }
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<ValidateRolloverExtensionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.ValidateRolloverExtension(command);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var ok = (OkObjectResult)result;
+
+        Assert.That(ok.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+        Assert.That(ok.Value, Is.InstanceOf<ValidateRolloverExtensionCommandResponse>());
+
+        var returned = (ValidateRolloverExtensionCommandResponse)ok.Value!;
+        Assert.That(returned.IsValid, Is.True);
+
+        _mockMediator.Verify(m => m.Send(
+            It.IsAny<ValidateRolloverExtensionCommand>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+
+    [Test]
+    public async Task ValidateRolloverExtension_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var command = new ValidateRolloverExtensionCommand
+        {
+            RolloverCandidates =
+            [
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend" , ProposedFundingApprovalEndDate =  DateTime.UtcNow}
+            ]
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<ValidateRolloverExtensionCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Validation failed"
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<ValidateRolloverExtensionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.ValidateRolloverExtension(command);
+
+        // Assert
+        const int expectedStatus = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
+        else
+            Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
+
+        _mockMediator.Verify(m => m.Send(
+            It.IsAny<ValidateRolloverExtensionCommand>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task ValidateRolloverExtension_ShouldSendCommandToMediator()
+    {
+        // Arrange
+        var command = new ValidateRolloverExtensionCommand
+        {
+            RolloverCandidates =
+            [
+                new() { Qan = "123", FundingStreamName = "FS", RollOverStatus = "ToExtend", ProposedFundingApprovalEndDate = DateTime.UtcNow }
+            ]
+        };
+
+        ValidateRolloverExtensionCommand? captured = null;
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<ValidateRolloverExtensionCommand>(), It.IsAny<CancellationToken>()))
+            .Callback<IRequest<BaseMediatrResponse<ValidateRolloverExtensionCommandResponse>>, CancellationToken>((cmd, _) =>
+            {
+                captured = cmd as ValidateRolloverExtensionCommand;
+            })
+            .ReturnsAsync(new BaseMediatrResponse<ValidateRolloverExtensionCommandResponse> { Success = true });
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        await controller.ValidateRolloverExtension(command);
+
+        // Assert
+        Assert.That(captured, Is.Not.Null);
+        Assert.That(captured, Is.EqualTo(command));
+    }
+
+    [Test]
+    public async Task SubmitRolloverExtension_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var command = new SubmitRolloverExtensionCommand
+        {
+            Items =
+            [
+                new() 
+                { 
+                    Qan = "123", 
+                    FundingStreamName = "FS", 
+                    RolloverStatus = "Extended", 
+                    ProposedFundingApprovalEndDate = DateTime.UtcNow.AddMonths(3)
+                }
+            ]
+        };
+
+        var returnMessageText = "The return value";
+
+        var mediatorResponse = new BaseMediatrResponse<SubmitRolloverExtensionCommandResponse>
+        {
+            Success = true,
+            Value = new SubmitRolloverExtensionCommandResponse
+            {
+                ResultMessage = returnMessageText
+            }
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<SubmitRolloverExtensionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.SubmitRolloverExtension(command);
+
+        // Assert
+        Assert.That(result, Is.InstanceOf<OkObjectResult>());
+        var ok = (OkObjectResult)result;
+
+        Assert.That(ok.StatusCode, Is.EqualTo(StatusCodes.Status200OK));
+        Assert.That(ok.Value, Is.InstanceOf<SubmitRolloverExtensionCommandResponse>());
+
+        var returned = (SubmitRolloverExtensionCommandResponse)ok.Value!;
+        Assert.That(returned.ResultMessage, Is.EqualTo(returnMessageText));
+
+        _mockMediator.Verify(m => m.Send(
+            It.IsAny<SubmitRolloverExtensionCommand>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task SubmitRolloverExtension_WhenMediatorReturnsFailure_ShouldReturn500()
+    {
+        // Arrange
+        var command = new SubmitRolloverExtensionCommand
+        {
+            Items =
+            [
+                new FundingExtensionItem
+                {
+                    Qan = "123",
+                    FundingStreamName = "FS",
+                    RolloverStatus = "Extended",
+                    ProposedFundingApprovalEndDate = DateTime.UtcNow
+                }
+            ]
+        };
+
+        var mediatorResponse = new BaseMediatrResponse<SubmitRolloverExtensionCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Submit failed"
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<SubmitRolloverExtensionCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var result = await controller.SubmitRolloverExtension(command);
+
+        // Assert
+        const int expectedStatus = StatusCodes.Status500InternalServerError;
+
+        if (result is ObjectResult objectResult)
+            Assert.That(objectResult.StatusCode, Is.EqualTo(expectedStatus));
+        else if (result is StatusCodeResult statusCodeResult)
+            Assert.That(statusCodeResult.StatusCode, Is.EqualTo(expectedStatus));
+        else
+            Assert.Fail($"Expected 500 result, got {result?.GetType().FullName ?? "null"}");
+
+        _mockMediator.Verify(m => m.Send(
+            It.IsAny<SubmitRolloverExtensionCommand>(),
+            It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task SubmitRolloverExtension_ShouldSendCommandToMediator()
+    {
+        // Arrange
+        var command = new SubmitRolloverExtensionCommand
+        {
+            Items =
+            [
+                new FundingExtensionItem
+            {
+                Qan = "123",
+                FundingStreamName = "FS",
+                RolloverStatus = "Extended",
+                ProposedFundingApprovalEndDate = DateTime.UtcNow
+            }
+            ]
+        };
+
+        SubmitRolloverExtensionCommand? captured = null;
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<SubmitRolloverExtensionCommand>(), It.IsAny<CancellationToken>()))
+            .Callback<IRequest<BaseMediatrResponse<SubmitRolloverExtensionCommandResponse>>, CancellationToken>((cmd, _) =>
+            {
+                captured = cmd as SubmitRolloverExtensionCommand;
+            })
+            .ReturnsAsync(new BaseMediatrResponse<SubmitRolloverExtensionCommandResponse> { Success = true });
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        await controller.SubmitRolloverExtension(command);
+
+        // Assert
+        Assert.That(captured, Is.Not.Null);
+        Assert.That(captured, Is.EqualTo(command));
+    }
+
+    [Test]
+    public async Task RemovePreviousWorkflowCandidates_WhenMediatorReturnsSuccess_ShouldReturnOkWithValue()
+    {
+        // Arrange
+        var payload = new RemovePreviousWorkflowCandidatesCommandResponse
+        {
+            Success = true
+        };
+        var mediatrResponse = new BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse>
+        {
+            Success = true,
+            Value = payload
+        };
+
+        var command = new RemovePreviousWorkflowCandidatesCommand
+        {
+            RolloverWorkflowRunId = Guid.NewGuid(),
+            CandidateIds = [Guid.NewGuid(), Guid.NewGuid()]
+        };
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatrResponse);
+
+        // Act
+        var actionResult = await controller.RemovePreviousWorkflowCandidates(command);
+
+        // Assert
+        Assert.That(actionResult, Is.InstanceOf<OkObjectResult>());
+        var ok = (OkObjectResult)actionResult;
+        Assert.That(ok.StatusCode, Is.EqualTo(200));
+        Assert.That(ok.Value, Is.InstanceOf<RemovePreviousWorkflowCandidatesCommandResponse>());
+        var returned = (RemovePreviousWorkflowCandidatesCommandResponse)ok.Value;
+
+        Assert.That(returned.Success, Is.True);
+
+        _mockMediator.Verify(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task RemovePreviousWorkflowCandidates_WhenMediatorReturnsFailure_ShouldReturn500Error()
+    {
+        // Arrange
+        var mediatrResponse = new BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse>
+        {
+            Success = false,
+            ErrorMessage = "Failed to remove candidates"
+        };
+
+        var command = new RemovePreviousWorkflowCandidatesCommand
+        {
+            RolloverWorkflowRunId = Guid.NewGuid(),
+            CandidateIds = [Guid.NewGuid()]
+        };
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatrResponse);
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        var actionResult = await controller.RemovePreviousWorkflowCandidates(command);
+
+        // Assert
+        Assert.That(actionResult, Is.InstanceOf<StatusCodeResult>());
+        var status = (StatusCodeResult)actionResult;
+        Assert.That(status.StatusCode, Is.EqualTo(500));
+
+        _mockMediator.Verify(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test]
+    public async Task RemovePreviousWorkflowCandidates_ShouldSendCommandToMediator()
+    {
+        // Arrange
+        var rolloverWorkflowRunId = Guid.NewGuid();
+        var candidateIds = new List<Guid> { Guid.NewGuid(), Guid.NewGuid() };
+        var command = new RemovePreviousWorkflowCandidatesCommand
+        {
+            RolloverWorkflowRunId = rolloverWorkflowRunId,
+            CandidateIds = candidateIds
+        };
+
+        RemovePreviousWorkflowCandidatesCommand? captured = null;
+
+        _mockMediator
+            .Setup(m => m.Send(It.IsAny<RemovePreviousWorkflowCandidatesCommand>(), It.IsAny<CancellationToken>()))
+            .Callback<IRequest<BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse>>, CancellationToken>((cmd, _) =>
+            {
+                captured = cmd as RemovePreviousWorkflowCandidatesCommand;
+            })
+            .ReturnsAsync(new BaseMediatrResponse<RemovePreviousWorkflowCandidatesCommandResponse> 
+            { 
+                Success = true,
+                Value = new RemovePreviousWorkflowCandidatesCommandResponse { Success = true }
+            });
+
+        var controller = new RolloverController(_mockMediator.Object, _mockLogger.Object);
+
+        // Act
+        await controller.RemovePreviousWorkflowCandidates(command);
+
+        // Assert
+        Assert.That(captured, Is.Not.Null);
+        Assert.That(captured.RolloverWorkflowRunId, Is.EqualTo(rolloverWorkflowRunId));
+        Assert.That(captured.CandidateIds, Is.EqualTo(candidateIds));
+    }
+
+
 }

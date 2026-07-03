@@ -13,9 +13,9 @@ public class GetRolloverWorkflowCandidatesCountQueryHandler(IAodpApiClient<AodpA
         var response = new BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>();
         try
         {
-            var result = await _apiClient.Get<BaseMediatrResponse<GetRolloverWorkflowCandidatesCountQueryResponse>>(new GetRolloverWorkflowCandidatesCountApiRequest());
+            var result = await _apiClient.Get<GetRolloverWorkflowCandidatesCountQueryResponse>(new GetRolloverWorkflowCandidatesCountApiRequest());
 
-            response.Value.TotalRecords = result.Value.TotalRecords;
+            response.Value.TotalRecords = result.TotalRecords;
             response.Success = true;
         }
         catch (Exception ex)
